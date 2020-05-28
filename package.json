@@ -1,0 +1,9 @@
+{
+  "name": "haus",
+  "version": "1.0.0",
+  "repository": "git@github.com:bryceklinker/haus.git",
+  "author": "Bryce Klinker <bryce.klinker@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": ["features"]
+}

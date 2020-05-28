@@ -1,0 +1,10 @@
+{
+  "name": "haus.features",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "4.7.0",
+    "cypress-cucumber-preprocessor": "2.3.1"
+  }
+}
