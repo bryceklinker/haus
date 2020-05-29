@@ -1,0 +1,14 @@
+{
+  "name": "haus.identity",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env PORT=80 node index.js"
+  },
+  "dependencies": {
+    "cross-env": "7.0.2",
+    "express": "4.17.1",
+    "morgan": "1.10.0",
+    "oidc-provider": "6.26.1"
+  }
+}

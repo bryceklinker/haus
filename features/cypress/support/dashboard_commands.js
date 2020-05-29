@@ -1,0 +1,1 @@
+Cypress.Commands.add('getDashboard', () => cy.getByTestId('haus-dashboard'));

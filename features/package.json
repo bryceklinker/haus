@@ -3,8 +3,21 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start:app": "docker-compose up -d",
+    "stop:app": "docker-compose down",
+    "pretest": "yarn start:app",
+    "test": "cypress run",
+    "posttest": "yarn stop:app",
+    "pretest:dev": "yarn start:app",
+    "test:dev": "cypress open",
+    "posttest:dev": "yarn stop:app"
+  },
   "devDependencies": {
     "cypress": "4.7.0",
     "cypress-cucumber-preprocessor": "2.3.1"
+  },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": true
   }
 }
