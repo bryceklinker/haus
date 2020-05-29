@@ -3,12 +3,20 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "start": "cross-env PORT=80 node index.js"
+    "start": "cross-env PORT=80 node index.js",
+    "test": "jest"
   },
   "dependencies": {
+    "@babel/core": "7.10.1",
+    "@babel/preset-env": "7.10.1",
+    "@babel/register": "7.10.1",
     "cross-env": "7.0.2",
     "express": "4.17.1",
     "morgan": "1.10.0",
     "oidc-provider": "6.26.1"
+  },
+  "devDependencies": {
+    "jest": "26.0.1",
+    "node-fetch": "2.6.0"
   }
 }
