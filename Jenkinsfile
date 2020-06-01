@@ -4,6 +4,14 @@ pipeline {
         YARN_VERSION = '1.22.4'
     }
 
+    triggers {
+        cron('H/15 * * * *')
+    }
+
+    options {
+        timestamps()
+    }
+
     stages {
         stage('Run Tests') {
             steps {
