@@ -6,8 +6,11 @@ jobs:
     name: Continuous Integration
     runs-on: ubuntu-18.04
     steps:
+      - name: Clone
+        uses: actions/checkout@v2
+
       - name: Unit Tests
-        shell: ./scripts/run_unit_tests.sh
+        run: ./scripts/run_unit_tests.sh
 
       - name: Acceptance Tests
-        shell: ./scripts/run_acceptance_tests.sh
+        run: ./scripts/run_acceptance_tests.sh
