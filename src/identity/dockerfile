@@ -4,6 +4,6 @@ COPY . /app
 
 WORKDIR /app
 
-RUN npm install --global yarn && yarn
+RUN yarn
 
 ENTRYPOINT yarn start
