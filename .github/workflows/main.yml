@@ -1,6 +1,10 @@
 on: [push]
 env:
   YARN_VERSION: "1.22.4"
+
+strategy:
+  matrix:
+    node-version: [12.14.1]
 jobs:
   ci:
     name: Continuous Integration
@@ -8,6 +12,11 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v2
+
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: Unit Tests
         run: ./scripts/run_unit_tests.sh
