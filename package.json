@@ -6,7 +6,6 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "features",
-    "src/identity"
+    "features"
   ]
 }

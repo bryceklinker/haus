@@ -2,8 +2,8 @@
 
 set -ex
 
-install_tools() {
-  /bin/bash './scripts/install_tools.sh'
+generate_certs() {
+  /bin/bash './scripts/generate_certs'
 }
 
 run_acceptance_tests() {
@@ -14,7 +14,7 @@ run_acceptance_tests() {
 }
 
 main() {
-  install_tools
+  generate_certs
   run_acceptance_tests
 }
 

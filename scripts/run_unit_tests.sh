@@ -2,9 +2,6 @@
 
 set -ex
 
-install_tools() {
-  /bin/bash './scripts/install_tools.sh'
-}
 
 run_unit_tests() {
   pushd $1
@@ -14,7 +11,6 @@ run_unit_tests() {
 }
 
 main() {
-  install_tools
   run_unit_tests './src/identity'
 }
 

@@ -2,6 +2,19 @@ version: '3'
 services:
 
   identity:
-    build: ../src/identity
+    build: ../src/identity/Haus.Identity.Web
     ports:
-      - 3000:80
+      - 5000:80
+      - 5001:443
+    environment:
+      DB_CONNECTION_STRING: 'Server=database;Port=5432;User Id=haus;Password=4bP0u@miBKxrvTHiWZgR;'
+    links:
+      - database
+
+  database:
+    image: postgres:12.3-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: haus
+      POSTGRES_PASSWORD: '4bP0u@miBKxrvTHiWZgR'
