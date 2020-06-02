@@ -3,15 +3,19 @@
 set -ex
 
 
-run_unit_tests() {
+run_javascript_unit_tests() {
   pushd $1
     yarn install
     yarn test
   popd
 }
 
+run_dotnet_unit_tests() {
+  dotnet test
+}
+
 main() {
-  run_unit_tests './src/identity'
+  run_dotnet_unit_tests
 }
 
 main
