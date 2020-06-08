@@ -1,10 +1,6 @@
-using System.Reflection;
-using Haus.Identity.Web.Account.Entities;
-using Haus.Identity.Web.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,7 +9,7 @@ namespace Haus.Identity.Web
 {
     public class Startup
     {
-        private static readonly string MigrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name; 
+        
         public IConfiguration Configuration { get; }
 
         private string ConnectionString => Configuration["DB_CONNECTION_STRING"];
@@ -25,32 +21,7 @@ namespace Haus.Identity.Web
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<HausIdentityDbContext>(opts =>
-            {
-                opts.UseNpgsql(ConnectionString, b => b.MigrationsAssembly(MigrationsAssembly));
-            });
-                
-            services.AddIdentity<HausUser, HausRole>()
-                .AddEntityFrameworkStores<HausIdentityDbContext>();
-            
-            services.AddControllersWithViews();
-
-            services.AddIdentityServer()
-                .AddAspNetIdentity<HausUser>()
-                .AddConfigurationStore(opts =>
-                {
-                    opts.ConfigureDbContext = dbOpts =>
-                    {
-                        dbOpts.UseNpgsql(ConnectionString, b => b.MigrationsAssembly(MigrationsAssembly));
-                    };
-                })
-                .AddOperationalStore(opts =>
-                {
-                    opts.ConfigureDbContext = dbOpts =>
-                    {
-                        dbOpts.UseNpgsql(ConnectionString, b => b.MigrationsAssembly(MigrationsAssembly));
-                    };
-                });
+            services.AddHausIdentityWeb(ConnectionString);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,14 +31,19 @@ namespace Haus.Identity.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
+            
+            app.UseRouting()
+                .UseEndpoints(endPoints =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                    endPoints.MapControllers();
+                })
+                .UseIdentityServer()
+                .UseStaticFiles()
+                .UseSpaStaticFiles();
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "client-app";
+                if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
             });
         }
     }

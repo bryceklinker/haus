@@ -8,6 +8,8 @@ services:
       - 5001:443
     environment:
       DB_CONNECTION_STRING: 'Server=database;Port=5432;User Id=haus;Password=4bP0u@miBKxrvTHiWZgR;'
+      ADMIN_USERNAME: 'admin'
+      ADMIN_PASSWORD: 'dW42M^UeFf0zUs!4p17L'
     links:
       - database
 

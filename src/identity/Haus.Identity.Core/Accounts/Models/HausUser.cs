@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Haus.Identity.Web.Account.Entities
+namespace Haus.Identity.Core.Accounts.Models
 {
     public class HausUser : IdentityUser
     {

@@ -1,8 +1,8 @@
-using Haus.Identity.Web.Account.Entities;
+using Haus.Identity.Core.Accounts.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Haus.Identity.Web.Storage
+namespace Haus.Identity.Core.Storage
 {
     public class HausIdentityDbContext : IdentityDbContext<HausUser, HausRole, string>
     {
