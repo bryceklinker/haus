@@ -32,7 +32,8 @@ namespace Haus.Identity.Web
                 app.UseDeveloperExceptionPage();
             }
             
-            app.UseRouting()
+            app.UseHttpsRedirection()
+                .UseRouting()
                 .UseEndpoints(endPoints =>
                 {
                     endPoints.MapControllers();

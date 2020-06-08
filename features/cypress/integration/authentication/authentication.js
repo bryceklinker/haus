@@ -11,5 +11,5 @@ When(/^I login to HAUS$/, () => {
 })
 
 Then(/^I should see the HAUS dashboard$/, () => {
-    cy.getDashboard().should('be.visible');
+    cy.getWelcome().should('be.visible');
 })

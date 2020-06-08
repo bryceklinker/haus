@@ -1,4 +1,8 @@
 {
-  "baseUrl": "http://localhost:3000",
-  "testFiles": "**/*.feature"
+  "baseUrl": "https://localhost:5001",
+  "testFiles": "**/*.feature",
+  "env":  {
+    "ADMIN_USERNAME": "admin",
+    "ADMIN_PASSWORD": "dW42M^UeFf0zUs!4p17L"
+  }
 }

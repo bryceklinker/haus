@@ -4,7 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start:app": "docker-compose up -d",
+    "clean:app": "rimraf ../src/identity/Haus.Identity.Web/dist",
+    "prebuild:app": "yarn clean:app",
+    "build:app": "cd ../src/identity/Haus.Identity.Web && dotnet publish -c Release -o ./dist",
+    "prestart:app": "yarn build:app && yarn stop:app",
+    "start:app": "docker-compose up -d --build",
     "stop:app": "docker-compose down",
     "pretest": "yarn start:app",
     "test": "cypress run",
@@ -15,7 +19,8 @@
   },
   "devDependencies": {
     "cypress": "4.7.0",
-    "cypress-cucumber-preprocessor": "2.3.1"
+    "cypress-cucumber-preprocessor": "2.3.1",
+    "rimraf": "3.0.2"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
