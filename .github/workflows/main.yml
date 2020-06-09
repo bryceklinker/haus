@@ -2,7 +2,6 @@ on: [push]
 env:
   YARN_VERSION: "1.22.4"
 
-
 jobs:
   ci:
     name: Continuous Integration
@@ -11,7 +10,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.14.1]
-        dotnet-version: [3.1.200]
+        dotnet-version: [3.1.100]
     steps:
       - name: Clone
         uses: actions/checkout@v2
