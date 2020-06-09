@@ -16,7 +16,7 @@ generate_dev_cert() {
         -newkey rsa:2048 \
         -keyout ${CERT_KEY_PATH} \
         -out ${CERT_CRT_PATH} \
-        -config ${CERT_CONF_PATH}   
+        -subj '/CN=localhost'
 }
 
 convert_cert_to_pfx() {
