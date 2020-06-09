@@ -1,9 +1,12 @@
 using System.Reflection;
 using Haus.Identity.Core;
 using Haus.Identity.Core.Accounts.Models;
-using Haus.Identity.Core.Storage;
+using Haus.Identity.Core.Common.Storage;
+using IdentityModel;
+using IdentityServer4;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Haus.Identity.Web
 {
@@ -40,6 +43,7 @@ namespace Haus.Identity.Web
                         dbOpts.UseNpgsql(connectionString, b => b.MigrationsAssembly(MigrationsAssembly));
                     };
                 });
+            
             services.AddSpaStaticFiles(opts => opts.RootPath = "client-app/build");
             return services;
         }

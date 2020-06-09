@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Identity.Core.Accounts.Models;
-using Haus.Identity.Core.Storage;
+using Haus.Identity.Core.Common.Storage;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,13 +43,11 @@ namespace Haus.Identity.Core.Accounts
 
             if (ShouldCreateAdminAccount(AdminPassword, usernames))
                 await _userManager.CreateAsync(CreateAdminAccount(AdminUsername), AdminPassword);
-
         }
 
         public static bool ShouldCreateAdminAccount(string adminUsername, string[] existingUsernames)
         {
-            return !existingUsernames
-                .Any(username => username.Equals(adminUsername, StringComparison.OrdinalIgnoreCase));
+            return !existingUsernames.ContainsIgnoreCase(adminUsername);
         }
 
         public static HausUser CreateAdminAccount(string username)

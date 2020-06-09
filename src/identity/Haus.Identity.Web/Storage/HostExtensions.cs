@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Haus.Identity.Core.Accounts;
-using Haus.Identity.Core.Storage;
+using Haus.Identity.Core.Common.Storage;
 using IdentityServer4.EntityFramework.DbContexts;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

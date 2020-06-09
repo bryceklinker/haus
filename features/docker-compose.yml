@@ -4,16 +4,16 @@ services:
   identity:
     build: ../src/identity/Haus.Identity.Web
     ports:
-      - 5000:80
-      - 5001:443
+      - 5000:5000
+      - 5001:5001
     environment:
       DB_CONNECTION_STRING: 'Server=database;Port=5432;User Id=haus;Password=4bP0u@miBKxrvTHiWZgR;'
       ADMIN_USERNAME: 'admin'
       ADMIN_PASSWORD: 'dW42M^UeFf0zUs!4p17L'
       ASPNETCORE_Kestrel__Certificates__Default__Path: '/https/haus.pfx'
       ASPNETCORE_Kestrel__Certificates__Default__Password: 'haus'
-      ASPNETCORE_HTTPS_PORT: 443
-      ASPNETCORE_URLS: 'https://+;http://+'
+      ASPNETCORE_HTTPS_PORT: 5001
+      ASPNETCORE_URLS: 'https://+:5001;http://+:5000'
     volumes:
       - '${HOME}/.aspnet/https:/https/'
     links:

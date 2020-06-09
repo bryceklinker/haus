@@ -2,25 +2,25 @@
 
 set -ex
 
-generate_cert() {
-  OUTPUT_KEY_PATH=$1
-  OUTPUT_CERT_PATH=$2
+PFX_CERT_PATH="${HOME}/.aspnet/https/haus.pfx"
+CRT_CERT_PATH="${HOME}/.aspnet/https/haus.crt"
+CA_CERTS_PATH="/usr/local/share/ca-certificates"
+CERT_PASSWORD="haus"
 
-  rm -f "${OUTPUT_KEY_PATH}"
-  rm -f "${OUTPUT_CERT_PATH}"
-
-  openssl req -nodes -new -x509 \
-    -keyout "${OUTPUT_KEY_PATH}" \
-    -out "${OUTPUT_CERT_PATH}" \
-    -subj "/C=US/ST=Iowa/L=IDK/O=Klinker Consulting, LLC./OU=IT/CN=localhost"
+generate_dev_cert() {
+    dotnet dev-certs https -ep ${PFX_CERT_PATH} -p ${CERT_PASSWORD}
 }
 
-generate_certs() {
-  generate_cert "./src/identity/server.key" "./src/identity/server.cert"
+trust_dev_cert() {
+    openssl pkcs12 -in ${PFX_CERT_PATH} -nokeys -out ${CRT_CERT_PATH} -nodes
+    cp ${CRT_CERT_PATH} ${CA_CERTS_PATH}
+    sudo update-ca-certificates
+    openssl verify ${CRT_CERT_PATH}
 }
 
 main() {
-  generate_certs
+  generate_dev_cert
+  trust_dev_cert
 }
 
 main

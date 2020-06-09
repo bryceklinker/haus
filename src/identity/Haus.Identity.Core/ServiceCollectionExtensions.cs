@@ -1,5 +1,5 @@
 using Haus.Identity.Core.Accounts.Models;
-using Haus.Identity.Core.Storage;
+using Haus.Identity.Core.Common.Storage;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
