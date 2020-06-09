@@ -13,7 +13,8 @@ generate_dev_cert() {
 
 trust_dev_cert() {
 #    sudo dotnet dev-certs https --trust
-    ls -la ~/.aspnet/https
+#    ls -la ~/.aspnet/https
+echo "Something"
 }
 
 main() {
