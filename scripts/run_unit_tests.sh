@@ -15,6 +15,7 @@ run_dotnet_unit_tests() {
 }
 
 main() {
+  run_javascript_unit_tests "./src/identity/Haus.Identity.Web/client-app"
   run_dotnet_unit_tests
 }
 

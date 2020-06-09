@@ -17,7 +17,7 @@ function Routes() {
     )
 }
 
-export function Shell({}) {
+export function Shell() {
     return (
         <div>
             <Header />

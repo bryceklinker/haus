@@ -2,7 +2,7 @@ import React from 'react';
 import {useHistory} from "react-router";
 import {LoginView} from "../views/LoginView";
 
-export function LoginContainer({}) {
+export function LoginContainer() {
     const history = useHistory();
     const loginHandler = async (credentials) => {
         const response = await fetch('/api/account/login', {
