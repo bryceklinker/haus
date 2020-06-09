@@ -9,6 +9,7 @@ CERT_PFX_PATH="${CERT_DIRECTORY}/haus.pfx"
 CERT_CRT_PATH="${CERT_DIRECTORY}/haus.crt"
 
 generate_dev_cert() {
+    mkdir -p ${CERT_DIRECTORY}
     openssl req -x509 \
         -nodes \
         -days 365 \
