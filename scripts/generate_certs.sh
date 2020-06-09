@@ -7,6 +7,7 @@ CERT_CONF_PATH="./scripts/haus-cert.conf"
 CERT_KEY_PATH="${CERT_DIRECTORY}/haus.key"
 CERT_PFX_PATH="${CERT_DIRECTORY}/haus.pfx"
 CERT_CRT_PATH="${CERT_DIRECTORY}/haus.crt"
+CERT_PASSWORD="haus"
 
 generate_dev_cert() {
     mkdir -p ${CERT_DIRECTORY}
@@ -23,7 +24,8 @@ convert_cert_to_pfx() {
     openssl pkcs12 -export \
         -out ${CERT_PFX_PATH} \
         -inkey ${CERT_KEY_PATH} \
-        -in ${CERT_CRT_PATH}
+        -in ${CERT_CRT_PATH} \
+        -passout pass:${CERT_PASSWORD}
 }
 
 trust_dev_cert() {
