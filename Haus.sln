@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{1D49
 		scripts\generate_certs.sh = scripts\generate_certs.sh
 		scripts\run_acceptance_tests.sh = scripts\run_acceptance_tests.sh
 		scripts\run_unit_tests.sh = scripts\run_unit_tests.sh
+		scripts\haus-cert.conf = scripts\haus-cert.conf
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Identity.Core", "src\identity\Haus.Identity.Core\Haus.Identity.Core.csproj", "{4A271CDC-0E63-4FF5-8983-5B051F1C759D}"

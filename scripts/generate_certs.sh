@@ -2,24 +2,37 @@
 
 set -ex
 
-PFX_CERT_PATH="${HOME}/.aspnet/https/haus.pfx"
-CRT_CERT_PATH="${HOME}/.aspnet/https/haus.crt"
-CA_CERTS_PATH="/usr/local/share/ca-certificates"
-CERT_PASSWORD="haus"
+CERT_DIRECTORY="${HOME}/.aspnet/https"
+CERT_CONF_PATH="./scripts/haus-cert.conf"
+CERT_KEY_PATH="${CERT_DIRECTORY}/haus.key"
+CERT_PFX_PATH="${CERT_DIRECTORY}/haus.pfx"
+CERT_CRT_PATH="${CERT_DIRECTORY}/haus.crt"
 
 generate_dev_cert() {
-    dotnet dev-certs https -ep ${PFX_CERT_PATH} -p ${CERT_PASSWORD}
+    openssl req -x509 \
+        -nodes \
+        -days 365 \
+        -newkey rsa:2048 \
+        -keyout ${CERT_KEY_PATH} \
+        -out ${CERT_CRT_PATH} \
+        -config ${CERT_CONF_PATH}   
+}
+
+convert_cert_to_pfx() {
+    openssl pkcs12 -export \
+        -out ${CERT_PFX_PATH} \
+        -inkey ${CERT_KEY_PATH} \
+        -in ${CERT_CRT_PATH}
 }
 
 trust_dev_cert() {
-    openssl pkcs12 -in ${PFX_CERT_PATH} -nokeys -out ${CRT_CERT_PATH} -nodes -passin ${CERT_PASSWORD}
-    cp ${CRT_CERT_PATH} ${CA_CERTS_PATH}
-    sudo update-ca-certificates
-    openssl verify ${CRT_CERT_PATH}
+ cp ${CERT_CRT_PATH} /usr/local/share/ca-certificates
+ sudo update-ca-certificates
 }
 
 main() {
   generate_dev_cert
+  convert_cert_to_pfx
   trust_dev_cert
 }
 
