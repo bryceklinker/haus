@@ -15,7 +15,7 @@ trust_dev_cert() {
 }
 
 main() {
-  generate_dev_cert
+#  generate_dev_cert
   trust_dev_cert
 }
 
