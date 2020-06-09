@@ -1,25 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -ex
 
-PFX_CERT_PATH="${HOME}/.aspnet/https/haus.pfx"
+IDENTITY_PFX_CERT_PATH="${HOME}/.aspnet/https/haus-identity.pfx"
 CERT_PASSWORD="haus"
 
-generate_dev_cert() {
-#    sudo security set-key-partition-list -D localhost -S unsigned:,teamid:UBF8T346G9 /Users/runner/Library/Keychains/login.keychain-db
-#    sudo dotnet dev-certs https -ep ${PFX_CERT_PATH} -p ${CERT_PASSWORD}
-    echo "WAIT"
-}
-
-trust_dev_cert() {
-#    sudo dotnet dev-certs https --trust
-#    ls -la ~/.aspnet/https
-echo "Something"
+setup_dev_cert() {
+    EXPORT_PATH=$1
+    
+    dotnet dev-certs https --export-path ${IDENTITY_PFX_CERT_PATH} -p ${CERT_PASSWORD}
+    dotnet dev-certs https --trust
 }
 
 main() {
-  generate_dev_cert
-  trust_dev_cert
+    setup_dev_cert ${IDENTITY_PFX_CERT_PATH}
 }
 
 main

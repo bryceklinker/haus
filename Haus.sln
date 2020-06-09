@@ -18,18 +18,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{1D49
 		scripts\generate_certs.sh = scripts\generate_certs.sh
 		scripts\run_acceptance_tests.sh = scripts\run_acceptance_tests.sh
 		scripts\run_unit_tests.sh = scripts\run_unit_tests.sh
+		scripts\verify.sh = scripts\verify.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Identity.Core", "src\identity\Haus.Identity.Core\Haus.Identity.Core.csproj", "{4A271CDC-0E63-4FF5-8983-5B051F1C759D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Identity.Core.Tests", "src\identity\Haus.Identity.Core.Tests\Haus.Identity.Core.Tests.csproj", "{23855767-E4B0-4CC9-9564-3A8B1A84A68B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{2FCD2EF8-2658-49EB-8C6C-791F5DA0AAD3}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{B06C2AA4-ED2F-4E54-9251-7FE3A7B6BBAC}"
-ProjectSection(SolutionItems) = preProject
-	.github\workflows\main.yml = .github\workflows\main.yml
-EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +93,5 @@ Global
 		{7BFB53CC-D12E-4DEC-B459-CEE4D727CFA1} = {5F1A8328-C3C1-47B0-9078-8E051A947A05}
 		{4A271CDC-0E63-4FF5-8983-5B051F1C759D} = {B2BCE543-0F49-4B3D-B9EC-2BC451D02B1F}
 		{23855767-E4B0-4CC9-9564-3A8B1A84A68B} = {B2BCE543-0F49-4B3D-B9EC-2BC451D02B1F}
-		{B06C2AA4-ED2F-4E54-9251-7FE3A7B6BBAC} = {2FCD2EF8-2658-49EB-8C6C-791F5DA0AAD3}
 	EndGlobalSection
 EndGlobal

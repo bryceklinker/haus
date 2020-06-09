@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -ex
 
@@ -6,7 +6,7 @@ set -ex
 run_javascript_unit_tests() {
   pushd $1
     yarn install
-    yarn test
+    yarn test --watchAll=false
   popd
 }
 
