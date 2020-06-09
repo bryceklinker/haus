@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.14.1]
-        dotnet-version: [3.1.100]
+        dotnet-version: [3.1.200]
     steps:
       - name: Clone
         uses: actions/checkout@v2
