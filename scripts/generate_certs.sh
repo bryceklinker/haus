@@ -29,7 +29,7 @@ convert_cert_to_pfx() {
 }
 
 trust_dev_cert() {
- cp ${CERT_CRT_PATH} /usr/local/share/ca-certificates
+ sudo cp ${CERT_CRT_PATH} /usr/local/share/ca-certificates
  sudo update-ca-certificates
 }
 
