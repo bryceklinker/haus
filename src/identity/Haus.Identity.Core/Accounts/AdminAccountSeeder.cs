@@ -1,9 +1,7 @@
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Identity.Core.Accounts.Models;
-using Haus.Identity.Core.Common.Storage;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,25 +17,22 @@ namespace Haus.Identity.Core.Accounts
     public class AdminAccountSeeder : AsyncRequestHandler<SeedAdminAccountRequest>
     {
         private readonly IConfiguration _configuration;
-        private readonly HausIdentityDbContext _context;
         private readonly UserManager<HausUser> _userManager;
 
-        private string AdminUsername => _configuration["ADMIN_USERNAME"];
-        private string AdminPassword => _configuration["ADMIN_PASSWORD"];
+        private string AdminUsername => _configuration.AdminUsername();
+        private string AdminPassword => _configuration.AdminPassword();
         
         public AdminAccountSeeder(
-            HausIdentityDbContext context,
             UserManager<HausUser> userManager,
             IConfiguration configuration)
         {
-            _context = context;
             _userManager = userManager;
             _configuration = configuration;
         }
 
         protected override async Task Handle(SeedAdminAccountRequest request, CancellationToken cancellationToken)
         {
-            var usernames = await _context.Set<HausUser>()
+            var usernames = await _userManager.Users
                 .Select(u => u.UserName)
                 .ToArrayAsync(cancellationToken);
 

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Haus.Identity.Web.Storage.Migrations.HausIdentityDb
+namespace Haus.Identity.Web.Common.Storage.Migrations.HausIdentityDb
 {
     public partial class InitialHausIdentityDbMigration : Migration
     {

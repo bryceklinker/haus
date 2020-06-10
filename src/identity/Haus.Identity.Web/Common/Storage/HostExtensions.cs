@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
 using Haus.Identity.Core.Accounts;
+using Haus.Identity.Core.ApiResources;
+using Haus.Identity.Core.Clients;
 using Haus.Identity.Core.Common.Storage;
 using IdentityServer4.EntityFramework.DbContexts;
 using MediatR;
@@ -7,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Haus.Identity.Web.Storage
+namespace Haus.Identity.Web.Common.Storage
 {
     public static class HostExtensions
     {
@@ -29,6 +31,8 @@ namespace Haus.Identity.Web.Storage
         public static async Task SeedDatabaseAsync(this IHost host)
         {
             await host.ExecuteRequest(new SeedAdminAccountRequest());
+            await host.ExecuteRequest(new SeedIdentityClientRequest());
+            await host.ExecuteRequest(new SeedIdentityApiResourceRequest());
         }
         
         private static async Task ExecuteRequest<TRequest>(this IHost host, TRequest request)

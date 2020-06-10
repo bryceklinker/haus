@@ -12,12 +12,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace Haus.Identity.Core.Clients
 {
-    public class IdentityClientSeederRequest : IRequest
+    public class SeedIdentityClientRequest : IRequest
     {
         
     }
     
-    public class IdentityClientSeeder : AsyncRequestHandler<IdentityClientSeederRequest>
+    public class IdentityClientSeeder : AsyncRequestHandler<SeedIdentityClientRequest>
     {
         private readonly IConfiguration _configuration;
         private readonly ConfigurationDbContext _context;
@@ -28,7 +28,7 @@ namespace Haus.Identity.Core.Clients
             _configuration = configuration;
         }
 
-        protected override async Task Handle(IdentityClientSeederRequest request, CancellationToken cancellationToken)
+        protected override async Task Handle(SeedIdentityClientRequest request, CancellationToken cancellationToken)
         {
             var clientIds = await _context.Set<IdentityServer4.EntityFramework.Entities.Client>()
                 .Select(c => c.ClientId)

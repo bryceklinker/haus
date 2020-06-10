@@ -2,11 +2,8 @@ using System.Reflection;
 using Haus.Identity.Core;
 using Haus.Identity.Core.Accounts.Models;
 using Haus.Identity.Core.Common.Storage;
-using IdentityModel;
-using IdentityServer4;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Haus.Identity.Web
 {
@@ -18,15 +15,14 @@ namespace Haus.Identity.Web
             this IServiceCollection services, 
             string connectionString)
         {
-            services.AddHausIdentityCore();
+            services.AddHausIdentityCore()
+                .AddControllers();
 
             services.AddDbContext<HausIdentityDbContext>(opts =>
             {
                 opts.UseNpgsql(connectionString, b => b.MigrationsAssembly(MigrationsAssembly));
             });
                 
-            services.AddControllers();
-
             services.AddIdentityServer()
                 .AddAspNetIdentity<HausUser>()
                 .AddConfigurationStore(opts =>

@@ -73,12 +73,12 @@ namespace Haus.Identity.Core.Tests.Clients
         [Fact]
         public async Task WhenIdentityClientIsSeededThenClientIsAddedToAvailableClients()
         {
-            var config = InMemoryConfigurationFactory.Create();
+            var config = InMemoryConfigurationFactory.CreateEmpty();
             var context = InMemoryDbContextFactory.CreateConfigurationDbContext();
             
-            IRequestHandler<IdentityClientSeederRequest> seeder = new IdentityClientSeeder(context, config);
+            IRequestHandler<SeedIdentityClientRequest> seeder = new IdentityClientSeeder(context, config);
 
-            await seeder.Handle(new IdentityClientSeederRequest(), CancellationToken.None);
+            await seeder.Handle(new SeedIdentityClientRequest(), CancellationToken.None);
             
             context.Set<Client>().Should().HaveCount(1);
         }

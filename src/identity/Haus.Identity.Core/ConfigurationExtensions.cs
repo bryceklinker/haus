@@ -1,4 +1,3 @@
-using Haus.Identity.Core.Accounts.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace Haus.Identity.Core
@@ -7,17 +6,32 @@ namespace Haus.Identity.Core
     {
         public static string IdentityClientId(this IConfiguration configuration)
         {
-            return configuration["IDENTITY_CLIENT_ID"] ?? "haus.identity";
+            return configuration["IDENTITY_CLIENT_ID"] ?? ConfigurationDefaults.IdentityClientId;
         }
 
         public static string IdentityClientName(this IConfiguration configuration)
         {
-            return configuration["IDENTITY_CLIENT_NAME"] ?? "HAUS Identity";
+            return configuration["IDENTITY_CLIENT_NAME"] ?? ConfigurationDefaults.IdentityClientName;
         }
 
         public static string IdentityApiScope(this IConfiguration configuration)
         {
-            return configuration["IDENTITY_API_SCOPE"] ?? "haus.identity";
+            return configuration["IDENTITY_API_SCOPE"] ?? ConfigurationDefaults.IdentityApiScope;
+        }
+
+        public static string IdentityApiName(this IConfiguration configuration)
+        {
+            return configuration["IDENTITY_API_NAME"] ?? ConfigurationDefaults.IdentityApiName;
+        }
+
+        public static string AdminUsername(this IConfiguration configuration)
+        {
+            return configuration["ADMIN_USERNAME"] ?? ConfigurationDefaults.AdminUsername;
+        }
+
+        public static string AdminPassword(this IConfiguration configuration)
+        {
+            return configuration["ADMIN_PASSWORD"] ?? ConfigurationDefaults.AdminPassword;
         }
     }
 }

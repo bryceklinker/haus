@@ -30,6 +30,12 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Storage\Migrations\ConfigurationDb" />
+    <Folder Include="Storage\Migrations\HausIdentityDb" />
+    <Folder Include="Storage\Migrations\PersistedGrantDb" />
+  </ItemGroup>
+
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec WorkingDirectory="$(SpaRoot)" Command="yarn install" />

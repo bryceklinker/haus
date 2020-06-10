@@ -1,5 +1,10 @@
+using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Identity.Core.Accounts;
+using Haus.Identity.Core.Accounts.Models;
+using Haus.Identity.Core.Tests.Support;
+using MediatR;
 using Xunit;
 
 namespace Haus.Identity.Core.Tests.Accounts
@@ -46,6 +51,18 @@ namespace Haus.Identity.Core.Tests.Accounts
 
             adminUser.UserName.Should().Be("bill");
             adminUser.EmailConfirmed.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task WhenAdminAccountSeedingIsRequestedThenAdminAccountIsAddedToDatabase()
+        {
+            var config = InMemoryConfigurationFactory.CreateEmpty();
+            var userManager = InMemoryUserManagerFactory.Create();
+
+            IRequestHandler<SeedAdminAccountRequest> handler = new AdminAccountSeeder(userManager, config);
+            await handler.Handle(new SeedAdminAccountRequest(), CancellationToken.None);
+
+            userManager.Users.Should().HaveCount(1);
         }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Haus.Identity.Web.Storage;
-using IdentityServer4.EntityFramework.DbContexts;
+using Haus.Identity.Web.Common.Storage;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
