@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,12 @@ namespace Haus.Identity.Core.Clients
 {
     public class SeedIdentityClientRequest : IRequest
     {
-        
+        public string RedirectUrl { get; }
+
+        public SeedIdentityClientRequest(string redirectUrl)
+        {
+            RedirectUrl = redirectUrl;
+        }
     }
     
     public class IdentityClientSeeder : AsyncRequestHandler<SeedIdentityClientRequest>
@@ -35,16 +41,17 @@ namespace Haus.Identity.Core.Clients
                 .ToArrayAsync(cancellationToken);
 
             if (ShouldCreateIdentityClient(_configuration.IdentityClientId(), clientIds))
-                await AddIdentityClientAsync();
+                await AddIdentityClientAsync(request.RedirectUrl);
         }
 
-        private async Task AddIdentityClientAsync()
+        private async Task AddIdentityClientAsync(string redirectUri)
         {
             var client = CreateIdentityClient(new CreateClientRequest
             {
                 Id = _configuration.IdentityClientId(),
                 Name = _configuration.IdentityClientName(),
-                Scopes = new[] {_configuration.IdentityApiScope()}
+                Scopes = new[] {_configuration.IdentityApiScope()},
+                RedirectUris = new [] {redirectUri}
             });
             _context.Add(client.ToEntity());
             await _context.SaveChangesAsync();
@@ -61,13 +68,20 @@ namespace Haus.Identity.Core.Clients
             {
                 OidcConstants.StandardScopes.OpenId,
                 OidcConstants.StandardScopes.Email,
-                OidcConstants.StandardScopes.Profile,
-                OidcConstants.StandardScopes.OfflineAccess
+                OidcConstants.StandardScopes.Profile
             };
             return new Client
             {
                 ClientId = request.Id,
                 ClientName = request.Name,
+                RequireClientSecret = false,
+                RequireConsent = false,
+                RedirectUris = request.RedirectUris,
+                AllowedGrantTypes = new List<string>
+                {
+                    OidcConstants.GrantTypes.Password,
+                    OidcConstants.GrantTypes.ClientCredentials
+                },
                 AllowedScopes = request.Scopes
                     .Concat(defaultScopes)
                     .ToArray()

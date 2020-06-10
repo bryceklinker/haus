@@ -24,7 +24,6 @@ namespace Haus.Identity.Web
             {
                 var host = CreateHostBuilder(args).Build();
                 await host.MigrateDatabasesAsync();
-                await host.SeedDatabaseAsync();
                 await host.RunAsync();
                 return 0;
             }

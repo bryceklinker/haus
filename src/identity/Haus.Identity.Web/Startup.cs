@@ -1,3 +1,5 @@
+using Haus.Identity.Web.Common;
+using Haus.Identity.Web.Common.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -31,6 +33,8 @@ namespace Haus.Identity.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.SeedDatabaseAsync().Wait();
             
             app.UseHttpsRedirection()
                 .UseRouting()

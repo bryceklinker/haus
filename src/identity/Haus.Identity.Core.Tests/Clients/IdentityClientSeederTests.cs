@@ -71,6 +71,34 @@ namespace Haus.Identity.Core.Tests.Clients
         }
 
         [Fact]
+        public void WhenIdentityClientCreatedThenClientHasDefaultAllowedGrantTypes()
+        {
+            var client = IdentityClientSeeder.CreateIdentityClient(new CreateClientRequest());
+
+            client.AllowedGrantTypes.Should().Contain(OidcConstants.GrantTypes.Password);
+            client.AllowedGrantTypes.Should().Contain(OidcConstants.GrantTypes.ClientCredentials);
+        }
+
+        [Fact]
+        public void WhenIdentityClientCreatedThenClientDoesNotRequireSecret()
+        {
+            var client = IdentityClientSeeder.CreateIdentityClient(new CreateClientRequest());
+
+            client.RequireClientSecret.Should().BeFalse();
+        }
+
+        [Fact]
+        public void WhenIdentityClientCreatedThenIdentityCallbackUrlIsUsed()
+        {
+            var client = IdentityClientSeeder.CreateIdentityClient(new CreateClientRequest
+            {
+                RedirectUris = new []{"https://localhost:5001/callback.html"}
+            });
+
+            client.RedirectUris.Should().Contain("https://localhost:5001/callback.html");
+        }
+
+        [Fact]
         public async Task WhenIdentityClientIsSeededThenClientIsAddedToAvailableClients()
         {
             var config = InMemoryConfigurationFactory.CreateEmpty();
@@ -78,7 +106,7 @@ namespace Haus.Identity.Core.Tests.Clients
             
             IRequestHandler<SeedIdentityClientRequest> seeder = new IdentityClientSeeder(context, config);
 
-            await seeder.Handle(new SeedIdentityClientRequest(), CancellationToken.None);
+            await seeder.Handle(new SeedIdentityClientRequest("https://localhost:5001/callback.html"), CancellationToken.None);
             
             context.Set<Client>().Should().HaveCount(1);
         }

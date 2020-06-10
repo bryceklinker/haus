@@ -7,5 +7,6 @@ namespace Haus.Identity.Core.Clients.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public string[] Scopes { get; set; } = Array.Empty<string>();
+        public string[] RedirectUris { get; set; } = Array.Empty<string>();
     }
 }

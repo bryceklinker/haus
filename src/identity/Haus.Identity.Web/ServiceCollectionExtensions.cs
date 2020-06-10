@@ -38,7 +38,8 @@ namespace Haus.Identity.Web
                     {
                         dbOpts.UseNpgsql(connectionString, b => b.MigrationsAssembly(MigrationsAssembly));
                     };
-                });
+                })
+                .AddDeveloperSigningCredential();
             
             services.AddSpaStaticFiles(opts => opts.RootPath = "client-app/build");
             return services;

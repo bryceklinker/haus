@@ -8,3 +8,5 @@ obj/
 dist/
 videos/
 screenshots/
+*.rsa
+*.user
