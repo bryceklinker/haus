@@ -1,7 +1,9 @@
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Identity.Core.Accounts.Models;
+using IdentityModel;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -35,9 +37,16 @@ namespace Haus.Identity.Core.Accounts
             var usernames = await _userManager.Users
                 .Select(u => u.UserName)
                 .ToArrayAsync(cancellationToken);
-
+            
             if (ShouldCreateAdminAccount(AdminPassword, usernames))
-                await _userManager.CreateAsync(CreateAdminAccount(AdminUsername), AdminPassword);
+                await AddAdminUserAsync();
+        }
+
+        private async Task AddAdminUserAsync()
+        {
+            await _userManager.CreateAsync(CreateAdminAccount(AdminUsername), AdminPassword);
+            var user = await _userManager.FindByNameAsync(AdminUsername);
+            await _userManager.AddClaimAsync(user, CreateAdminClaim());
         }
 
         public static bool ShouldCreateAdminAccount(string adminUsername, string[] existingUsernames)
@@ -52,6 +61,11 @@ namespace Haus.Identity.Core.Accounts
                 UserName = username,
                 EmailConfirmed = true
             };
+        }
+
+        public static Claim CreateAdminClaim()
+        {
+            return new Claim(JwtClaimTypes.Role, "admin");
         }
     }
 }

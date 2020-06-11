@@ -1,40 +1,45 @@
 using System.Threading.Tasks;
-using IdentityServer4.ResponseHandling;
-using IdentityServer4.Validation;
+using Haus.Identity.Core.Accounts;
+using Haus.Identity.Core.Accounts.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Haus.Identity.Web.Account
 {
-    [Route("api/account")]
-    public class AccountsController : Controller
+    [Authorize]
+    [Route("account")]
+    public class AccountController : Controller
     {
-        private readonly IClientSecretValidator _clientSecretValidator;
-        private readonly ITokenRequestValidator _tokenRequestValidator;
-        private readonly ITokenResponseGenerator _tokenResponseGenerator;
-        
-        public AccountsController(
-            ITokenRequestValidator tokenRequestValidator, 
-            IClientSecretValidator clientSecretValidator, 
-            ITokenResponseGenerator tokenResponseGenerator)
+        private readonly SignInManager<HausUser> _signInManager;
+
+        public AccountController(SignInManager<HausUser> signInManager)
         {
-            _tokenRequestValidator = tokenRequestValidator;
-            _clientSecretValidator = clientSecretValidator;
-            _tokenResponseGenerator = tokenResponseGenerator;
+            _signInManager = signInManager;
         }
 
+        [HttpGet("login")]
         [AllowAnonymous]
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(IFormCollection form)
+        public IActionResult Login([FromQuery] string returnUrl = null)
         {
-            var clientResult = await _clientSecretValidator.ValidateAsync(HttpContext);
-            var tokenResult = await _tokenRequestValidator.ValidateRequestAsync(form.AsNameValueCollection(), clientResult);
-            if (tokenResult.IsError)
-                return Unauthorized(tokenResult);
+            var request = new LoginRequest
+            {
+                ReturnUrl = returnUrl
+            };
+            return View(request);
+        }
 
-            var response = await _tokenResponseGenerator.ProcessAsync(tokenResult);
-            return Ok(response);
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromForm] LoginRequest request, [FromQuery] string returnUrl = null)
+        {
+            request.ReturnUrl = returnUrl;
+
+            var signInResult = await _signInManager.PasswordSignInAsync(request);
+            if (signInResult.Succeeded)
+                return RedirectToAction("Index", "Home");
+
+            return View(request);
         }
     }
 }

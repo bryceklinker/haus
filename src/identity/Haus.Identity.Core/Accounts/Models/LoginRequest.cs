@@ -4,6 +4,6 @@ namespace Haus.Identity.Core.Accounts.Models
     {
         public string Username { get; set; }
         public string Password { get; set; }
-        public string RedirectUrl { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

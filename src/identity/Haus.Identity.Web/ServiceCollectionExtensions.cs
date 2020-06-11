@@ -1,7 +1,9 @@
 using System.Reflection;
+using System.Security.Claims;
 using Haus.Identity.Core;
 using Haus.Identity.Core.Accounts.Models;
 using Haus.Identity.Core.Common.Storage;
+using Haus.Identity.Web.Common.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,8 +17,18 @@ namespace Haus.Identity.Web
             this IServiceCollection services, 
             string connectionString)
         {
+            services.AddAuthorization(opts =>
+            {
+                opts.AddPolicy(AuthorizationPolicies.AdminPolicyName, AuthorizationPolicies.Admin);
+                opts.DefaultPolicy = AuthorizationPolicies.Default;
+            });
             services.AddHausIdentityCore()
-                .AddControllers();
+                .AddControllersWithViews()
+                .AddRazorOptions(opts =>
+                {
+                    opts.ViewLocationFormats.Add("/{1}/Views/{0}.cshtml");
+                    opts.ViewLocationFormats.Add("/Common/Views/{0}.cshtml");
+                });
 
             services.AddDbContext<HausIdentityDbContext>(opts =>
             {

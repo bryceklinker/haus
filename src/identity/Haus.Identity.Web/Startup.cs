@@ -1,5 +1,6 @@
-using Haus.Identity.Web.Common;
 using Haus.Identity.Web.Common.Storage;
+using IdentityServer4.Extensions;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -11,7 +12,6 @@ namespace Haus.Identity.Web
 {
     public class Startup
     {
-        
         public IConfiguration Configuration { get; }
 
         private string ConnectionString => Configuration["DB_CONNECTION_STRING"];
@@ -20,7 +20,7 @@ namespace Haus.Identity.Web
         {
             Configuration = configuration;
         }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHausIdentityWeb(ConnectionString);
@@ -35,21 +35,30 @@ namespace Haus.Identity.Web
             }
 
             app.SeedDatabaseAsync().Wait();
-            
+
             app.UseHttpsRedirection()
                 .UseRouting()
-                .UseEndpoints(endPoints =>
-                {
-                    endPoints.MapControllers();
-                })
                 .UseIdentityServer()
+                .UseAuthorization()
+                .UseEndpoints(endPoints => { endPoints.MapControllers(); })
                 .UseStaticFiles()
                 .UseSpaStaticFiles();
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "client-app";
-                if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
-            });
+            app.Use(async (context, next) =>
+                {
+                    if (!context.User.IsAuthenticated())
+                    {
+                        await context.ChallengeAsync();
+                    }
+                    else
+                    {
+                        await next();
+                    }
+                })
+                .UseSpa(spa =>
+                {
+                    spa.Options.SourcePath = "client-app";
+                    if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
+                });
         }
     }
 }

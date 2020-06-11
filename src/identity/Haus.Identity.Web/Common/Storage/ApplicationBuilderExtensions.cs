@@ -19,7 +19,7 @@ namespace Haus.Identity.Web.Common.Storage
             var serverAddresses = app.ServerFeatures.Get<IServerAddressesFeature>();
             var httpsAddress = serverAddresses.Addresses.Single(a => a.StartsWith("https://"));
             await app.ExecuteRequest(new SeedAdminAccountRequest());
-            await app.ExecuteRequest(new SeedIdentityClientRequest($"{httpsAddress}/callback.html"));
+            await app.ExecuteRequest(new SeedIdentityClientRequest($"{httpsAddress}/auth-callback"));
             await app.ExecuteRequest(new SeedIdentityApiResourceRequest());
             await app.ExecuteRequest(new SeedIdentityResourcesRequest(
                 new IdentityResources.Profile(),

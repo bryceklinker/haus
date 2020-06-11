@@ -1,9 +1,12 @@
+using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Identity.Core.Accounts;
 using Haus.Identity.Core.Accounts.Models;
 using Haus.Identity.Core.Tests.Support;
+using IdentityModel;
 using MediatR;
 using Xunit;
 
@@ -54,6 +57,15 @@ namespace Haus.Identity.Core.Tests.Accounts
         }
 
         [Fact]
+        public void WhenAdminClaimCreatedThenAdminClaimReturned()
+        {
+            var adminClaim = AdminAccountSeeder.CreateAdminClaim();
+
+            adminClaim.Type.Should().Be(JwtClaimTypes.Role);
+            adminClaim.Value.Should().Be("admin");
+        }
+        
+        [Fact]
         public async Task WhenAdminAccountSeedingIsRequestedThenAdminAccountIsAddedToDatabase()
         {
             var config = InMemoryConfigurationFactory.CreateEmpty();
@@ -63,6 +75,7 @@ namespace Haus.Identity.Core.Tests.Accounts
             await handler.Handle(new SeedAdminAccountRequest(), CancellationToken.None);
 
             userManager.Users.Should().HaveCount(1);
+            (await userManager.GetClaimsAsync(userManager.Users.Single())).Should().HaveCount(1);
         }
     }
 }

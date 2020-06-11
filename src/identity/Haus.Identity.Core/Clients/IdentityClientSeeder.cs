@@ -68,14 +68,14 @@ namespace Haus.Identity.Core.Clients
             {
                 OidcConstants.StandardScopes.OpenId,
                 OidcConstants.StandardScopes.Email,
-                OidcConstants.StandardScopes.Profile
+                OidcConstants.StandardScopes.Profile,
+                OidcConstants.StandardScopes.OfflineAccess
             };
             return new Client
             {
                 ClientId = request.Id,
                 ClientName = request.Name,
                 RequireClientSecret = false,
-                RequireConsent = false,
                 RedirectUris = request.RedirectUris,
                 AllowedGrantTypes = new List<string>
                 {
