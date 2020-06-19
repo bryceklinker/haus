@@ -1,0 +1,32 @@
+@model Haus.Identity.Core.Clients.Models.ConsentRequest
+@addTagHelper "*, Microsoft.AspNetCore.Mvc.TagHelpers"
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>Consent : Haus Identity</title>
+</head>
+<body>
+<div>
+    <div>
+        @Model.ClientName
+        <small>is requesting your permission</small>
+    </div>
+    
+    <form asp-action="Index" asp-controller="Consent" method="post">
+        <div>The permissions below are required</div>
+        <ul style="list-style-type: none;">
+            @foreach (var scope in Model.AllScopes)
+            {
+                <partial name="_ConsentScopeItem" model="@scope"/>
+            }
+        </ul>
+        
+        <div>
+            <button value="@true" type="submit">Consent</button>
+            <button value="@false" type="submit">Deny</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

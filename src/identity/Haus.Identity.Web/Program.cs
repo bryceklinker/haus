@@ -18,7 +18,8 @@ namespace Haus.Identity.Web
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Application", "Haus.Identity.Web")
-                .WriteTo.Console(new RenderedCompactJsonFormatter())
+                // .WriteTo.Console(new RenderedCompactJsonFormatter())
+                .WriteTo.Console()
                 .CreateLogger();
             try
             {

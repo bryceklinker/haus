@@ -1,0 +1,7 @@
+{
+  "authority": "https://localhost:5001",
+  "client_id": "haus.identity",
+  "response_type": "id_token token",
+  "scope": "openid profile haus.identity",
+  "redirect_uri": "https://localhost:5001/auth-callback"
+}

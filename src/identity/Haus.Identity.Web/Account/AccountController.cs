@@ -37,7 +37,7 @@ namespace Haus.Identity.Web.Account
 
             var signInResult = await _signInManager.PasswordSignInAsync(request);
             if (signInResult.Succeeded)
-                return RedirectToAction("Index", "Home");
+                return Redirect(returnUrl);
 
             return View(request);
         }

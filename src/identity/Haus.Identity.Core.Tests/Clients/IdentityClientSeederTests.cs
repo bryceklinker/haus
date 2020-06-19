@@ -99,6 +99,14 @@ namespace Haus.Identity.Core.Tests.Clients
         }
 
         [Fact]
+        public void WhenIdentityClientCreatedThenConsentIsOptional()
+        {
+            var client = IdentityClientSeeder.CreateIdentityClient(new CreateClientRequest());
+
+            client.RequireConsent.Should().BeFalse();
+        }
+        
+        [Fact]
         public async Task WhenIdentityClientIsSeededThenClientIsAddedToAvailableClients()
         {
             var config = InMemoryConfigurationFactory.CreateEmpty();

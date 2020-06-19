@@ -1,5 +1,4 @@
 import React from "react";
-import { UserManager} from 'oidc-client';
 
 import {Footer} from "./Footer";
 import {MainContent} from "./MainContent";

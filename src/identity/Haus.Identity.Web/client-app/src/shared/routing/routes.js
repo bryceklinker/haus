@@ -1,23 +1,21 @@
 import {Redirect, Route, Switch} from "react-router";
-import {WelcomeView} from "../../welcome/views/WelcomeView";
 import React from "react";
 
-export const ROUTING = {
-    welcome: {
-        path: '/welcome',
-        component: WelcomeView
-    }
+import {WelcomeView} from "../../welcome/views/WelcomeView";
+import {ProtectedRoute} from "./ProtectedRoute";
+import {AuthCallbackView} from "../authentication/AuthCallbackView";
+
+export const ROUTING_PATHS = {
+    WELCOME: '/welcome',
+    AUTH_CALLBACK: '/auth-callback'
 };
 
 export function Routes() {
-    const routes = Object.keys(ROUTING)
-        .filter(k => ROUTING.hasOwnProperty(k))
-        .map(k => ROUTING[k])
-        .map(r => <Route {...r} />);
     return (
         <Switch>
-            {routes}
-            <Redirect to={'/welcome'} from={'/**'} />
+            <ProtectedRoute path={ROUTING_PATHS.WELCOME} component={WelcomeView} />
+            <Route path={ROUTING_PATHS.AUTH_CALLBACK} component={AuthCallbackView}/>
+            <Redirect to={ROUTING_PATHS.WELCOME} from={'/**'}/>
         </Switch>
     )
 }

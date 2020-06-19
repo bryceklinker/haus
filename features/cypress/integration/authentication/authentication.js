@@ -1,5 +1,6 @@
 import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
 import {ADMIN_USER} from "../../support/users";
+import {IDENTITY_CLIENT} from "../../support/clients";
 
 let user = null;
 Given(/^I have valid user credentials$/, () => {
@@ -7,7 +8,7 @@ Given(/^I have valid user credentials$/, () => {
 })
 
 When(/^I login to HAUS$/, () => {
-    cy.login(user);
+    cy.login(user, IDENTITY_CLIENT);
 })
 
 Then(/^I should see the HAUS dashboard$/, () => {

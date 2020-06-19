@@ -77,10 +77,17 @@ namespace Haus.Identity.Core.Clients
                 ClientName = request.Name,
                 RequireClientSecret = false,
                 RedirectUris = request.RedirectUris,
+                RequireConsent = false,
+                AllowAccessTokensViaBrowser = true,
                 AllowedGrantTypes = new List<string>
                 {
+                    OidcConstants.GrantTypes.Implicit,
                     OidcConstants.GrantTypes.Password,
                     OidcConstants.GrantTypes.ClientCredentials
+                },
+                AllowedCorsOrigins = new List<string>
+                {
+                    "https://localhost:5001"
                 },
                 AllowedScopes = request.Scopes
                     .Concat(defaultScopes)

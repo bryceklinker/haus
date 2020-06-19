@@ -1,14 +1,11 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Haus.Identity.Core.Common.Storage;
 using IdentityServer4.EntityFramework.DbContexts;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Haus.Identity.Web.Common.Storage
+namespace Haus.Identity.Web
 {
     public static class HostExtensions
     {
