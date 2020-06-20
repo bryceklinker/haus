@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using Haus.Identity.Core.Accounts;
-using Haus.Identity.Core.Accounts.Models;
+using Haus.Identity.Core.Accounts.Entities;
+using Haus.Identity.Web.Account.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +22,7 @@ namespace Haus.Identity.Web.Account
         [AllowAnonymous]
         public IActionResult Login([FromQuery] string returnUrl = null)
         {
-            var request = new LoginRequest
+            var request = new LoginViewModel
             {
                 ReturnUrl = returnUrl
             };
@@ -31,15 +31,15 @@ namespace Haus.Identity.Web.Account
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromForm] LoginRequest request, [FromQuery] string returnUrl = null)
+        public async Task<IActionResult> Login([FromForm] LoginViewModel viewModel, [FromQuery] string returnUrl = null)
         {
-            request.ReturnUrl = returnUrl;
+            viewModel.ReturnUrl = returnUrl;
 
-            var signInResult = await _signInManager.PasswordSignInAsync(request);
+            var signInResult = await _signInManager.PasswordSignInAsync(viewModel);
             if (signInResult.Succeeded)
                 return Redirect(returnUrl);
 
-            return View(request);
+            return View(viewModel);
         }
     }
 }

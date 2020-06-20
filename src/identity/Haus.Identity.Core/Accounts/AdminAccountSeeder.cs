@@ -2,7 +2,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Identity.Core.Accounts.Models;
+using Haus.Identity.Core.Accounts.Entities;
 using IdentityModel;
 using MediatR;
 using Microsoft.AspNetCore.Identity;

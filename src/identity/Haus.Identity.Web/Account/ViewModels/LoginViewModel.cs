@@ -1,6 +1,6 @@
-namespace Haus.Identity.Core.Accounts.Models
+namespace Haus.Identity.Web.Account.ViewModels
 {
-    public class LoginRequest
+    public class LoginViewModel
     {
         public string Username { get; set; }
         public string Password { get; set; }

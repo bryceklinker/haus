@@ -1,4 +1,4 @@
-using Haus.Identity.Core.Accounts.Models;
+using Haus.Identity.Core.Accounts.Entities;
 using Haus.Identity.Core.Common.Storage;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

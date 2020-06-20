@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Identity.Core.Accounts;
-using Haus.Identity.Core.Accounts.Models;
 using Haus.Identity.Core.Tests.Support;
 using IdentityModel;
 using MediatR;

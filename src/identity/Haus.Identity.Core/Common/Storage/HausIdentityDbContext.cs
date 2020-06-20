@@ -1,4 +1,4 @@
-using Haus.Identity.Core.Accounts.Models;
+using Haus.Identity.Core.Accounts.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

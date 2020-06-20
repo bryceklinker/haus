@@ -1,18 +1,19 @@
 using System.Threading.Tasks;
-using Haus.Identity.Core.Accounts.Models;
+using Haus.Identity.Core.Accounts.Entities;
+using Haus.Identity.Web.Account.ViewModels;
 using Microsoft.AspNetCore.Identity;
 
-namespace Haus.Identity.Core.Accounts
+namespace Haus.Identity.Web.Account
 {
     public static class SignInManagerExtensions
     {
         public static async Task<SignInResult> PasswordSignInAsync(
             this SignInManager<HausUser> signInManager,
-            LoginRequest request)
+            LoginViewModel viewModel)
         {
             return await signInManager.PasswordSignInAsync(
-                request.Username,
-                request.Password,
+                viewModel.Username,
+                viewModel.Password,
                 true,
                 false
             ).ConfigureAwait(false);

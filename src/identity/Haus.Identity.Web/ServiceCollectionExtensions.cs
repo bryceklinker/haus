@@ -1,6 +1,6 @@
 using System.Reflection;
 using Haus.Identity.Core;
-using Haus.Identity.Core.Accounts.Models;
+using Haus.Identity.Core.Accounts.Entities;
 using Haus.Identity.Core.Common.Storage;
 using Haus.Identity.Web.Common.Authorization;
 using Microsoft.EntityFrameworkCore;
