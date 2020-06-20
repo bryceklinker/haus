@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Security.Claims;
 using Haus.Identity.Core;
 using Haus.Identity.Core.Accounts.Models;
 using Haus.Identity.Core.Common.Storage;

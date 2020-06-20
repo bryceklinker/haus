@@ -9,13 +9,13 @@ import {Routes} from "../../shared/routing/routes";
 export function Shell() {
     return (
         <div>
-            <Header />
-            
+            <Header/>
+
             <MainContent>
-                <Routes />
+                <Routes/>
             </MainContent>
 
-            <Footer />    
+            <Footer/>
         </div>
     )
 }
