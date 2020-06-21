@@ -3,50 +3,41 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Identity.Core.Accounts.Entities;
+using Haus.Identity.Core.Common.Messaging;
 using IdentityModel;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Haus.Identity.Core.Accounts
+namespace Haus.Identity.Core.Accounts.CreateAccount
 {
-    public class SeedAdminAccountRequest : IRequest
-    {
-        
-    }
-    
-    public class AdminAccountSeeder : AsyncRequestHandler<SeedAdminAccountRequest>
+    public class CreateAdminAccountCommandHandler : CommandHandler<CreateAdminAccountCommand>
     {
         private readonly IConfiguration _configuration;
+        private readonly IMessageBus _messageBus;
         private readonly UserManager<HausUser> _userManager;
 
         private string AdminUsername => _configuration.AdminUsername();
         private string AdminPassword => _configuration.AdminPassword();
         
-        public AdminAccountSeeder(
+        public CreateAdminAccountCommandHandler(
             UserManager<HausUser> userManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IMessageBus messageBus)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _messageBus = messageBus;
         }
 
-        protected override async Task Handle(SeedAdminAccountRequest request, CancellationToken cancellationToken)
+        protected override async Task InnerHandle(CreateAdminAccountCommand command, CancellationToken cancellationToken = default)
         {
             var usernames = await _userManager.Users
                 .Select(u => u.UserName)
                 .ToArrayAsync(cancellationToken);
             
             if (ShouldCreateAdminAccount(AdminPassword, usernames))
-                await AddAdminUserAsync();
-        }
-
-        private async Task AddAdminUserAsync()
-        {
-            await _userManager.CreateAsync(CreateAdminAccount(AdminUsername), AdminPassword);
-            var user = await _userManager.FindByNameAsync(AdminUsername);
-            await _userManager.AddClaimAsync(user, CreateAdminClaim());
+                await _messageBus.ExecuteCommand(new CreateAccountCommand(AdminUsername, AdminPassword, AccountDefaults.AdminUserRole), cancellationToken);
         }
 
         public static bool ShouldCreateAdminAccount(string adminUsername, string[] existingUsernames)

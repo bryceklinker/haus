@@ -14,6 +14,11 @@ namespace Haus.Identity.Core
             return configuration["IDENTITY_CLIENT_NAME"] ?? ConfigurationDefaults.IdentityClientName;
         }
 
+        public static string IdentityClientRedirectUri(this IConfiguration configuration)
+        {
+            return configuration["IdentityClient:RedirectUri"];
+        }
+
         public static string IdentityApiScope(this IConfiguration configuration)
         {
             return configuration["IDENTITY_API_SCOPE"] ?? ConfigurationDefaults.IdentityApiScope;

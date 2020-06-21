@@ -1,31 +1,27 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Identity.Core.Common.Messaging;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Haus.Identity.Core.ApiResources
+namespace Haus.Identity.Core.ApiResources.CreateApiResource
 {
-    public class SeedIdentityApiResourceRequest : IRequest
-    {
-    }
-
-    public class IdentityApiResourceSeeder : AsyncRequestHandler<SeedIdentityApiResourceRequest>
+    public class CreateIdentityApiResourceCommandHandler : CommandHandler<CreateApiResourceCommand>
     {
         private readonly ConfigurationDbContext _context;
         private readonly IConfiguration _config;
 
-        public IdentityApiResourceSeeder(ConfigurationDbContext context, IConfiguration config)
+        public CreateIdentityApiResourceCommandHandler(ConfigurationDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;
         }
 
-        protected override async Task Handle(SeedIdentityApiResourceRequest request, CancellationToken cancellationToken)
+        protected override async Task InnerHandle(CreateApiResourceCommand command, CancellationToken cancellationToken = default)
         {
             var apiResourceScopes = await _context.ApiResources
                 .Select(a => a.Name)

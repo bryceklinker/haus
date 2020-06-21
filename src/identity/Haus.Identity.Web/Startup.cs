@@ -1,3 +1,4 @@
+using Haus.Identity.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -12,7 +13,6 @@ namespace Haus.Identity.Web
         public IConfiguration Configuration { get; }
 
         private string ConnectionString => Configuration["DB_CONNECTION_STRING"];
-        private string IdentityClientRedirectUri => Configuration["IdentityClient:RedirectUri"];
 
         public Startup(IConfiguration configuration)
         {
@@ -32,14 +32,13 @@ namespace Haus.Identity.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            app.SeedDatabaseAsync(IdentityClientRedirectUri).Wait();
+            app.SeedDatabaseAsync().Wait();
 
             app.UseHttpsRedirection()
                 .UseRouting()
                 .UseIdentityServer()
                 .UseAuthorization()
                 .UseEndpoints(endPoints => { endPoints.MapControllers(); })
-                // .UseSpaAuthentication()
                 .UseStaticFiles()
                 .UseSpaStaticFiles();
             app.UseSpa(spa =>

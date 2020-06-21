@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Identity.Core.Common.Messaging;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Identity.Core.IdentityResources
 {
-    public class SeedIdentityResourcesRequest : IRequest
+    public class SeedIdentityResourcesRequest : ICommand
     {
         public IdentityResource[] Resources { get; }
 
@@ -19,7 +20,7 @@ namespace Haus.Identity.Core.IdentityResources
         }
     }
 
-    public class IdentityResourceSeeder : AsyncRequestHandler<SeedIdentityResourcesRequest>
+    public class IdentityResourceSeeder : CommandHandler<SeedIdentityResourcesRequest>
     {
         private readonly ConfigurationDbContext _context;
 
@@ -28,7 +29,7 @@ namespace Haus.Identity.Core.IdentityResources
             _context = context;
         }
 
-        protected override async Task Handle(SeedIdentityResourcesRequest request, CancellationToken cancellationToken)
+        protected override async Task InnerHandle(SeedIdentityResourcesRequest request, CancellationToken cancellationToken)
         {
             foreach (var resource in request.Resources) 
                 await AddResource(resource, cancellationToken);
