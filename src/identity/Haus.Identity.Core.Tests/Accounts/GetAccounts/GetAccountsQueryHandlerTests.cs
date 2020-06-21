@@ -1,14 +1,13 @@
 using System.Threading.Tasks;
 using FluentAssertions;
+using Haus.Cqrs;
 using Haus.Identity.Core.Accounts.Entities;
 using Haus.Identity.Core.Accounts.GetAccounts;
 using Haus.Identity.Core.Accounts.Models;
-using Haus.Identity.Core.Common.Messaging;
-using Haus.Identity.Core.Common.Models;
 using Haus.Identity.Core.Tests.Support;
+using Haus.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit;
 
 namespace Haus.Identity.Core.Tests.Accounts.GetAccounts
@@ -68,11 +67,10 @@ namespace Haus.Identity.Core.Tests.Accounts.GetAccounts
 
         private async Task<ListModel<HausUserModel>> Handle(GetAccountsQuery query)
         {
-            var messageBus = ServiceProviderFactory.CreateProvider(opts =>
-                {
-                    opts.WithUserManager(_userManager);
-                })
-                .GetRequiredService<IMessageBus>();
+            var messageBus = MessageBusFactory.Create(opts =>
+            {
+                opts.WithUserManager(_userManager);
+            });
             return await messageBus.ExecuteQuery(query);
         }
     }

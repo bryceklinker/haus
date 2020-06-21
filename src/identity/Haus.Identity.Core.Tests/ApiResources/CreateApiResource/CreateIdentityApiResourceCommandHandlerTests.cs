@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Identity.Core.ApiResources.CreateApiResource;
-using Haus.Identity.Core.Common.Messaging;
 using Haus.Identity.Core.Tests.Support;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
@@ -56,11 +55,11 @@ namespace Haus.Identity.Core.Tests.ApiResources.CreateApiResource
 
         private async Task Handle(CreateIdentityApiResourceCommand command)
         {
-            var messageBus = ServiceProviderFactory.CreateProvider(opts =>
+            var messageBus = MessageBusFactory.Create(opts =>
             {
                 opts.WithConfiguration(_configuration)
                     .WithConfigurationDb(_context);
-            }).GetRequiredService<IMessageBus>();
+            });
             await messageBus.ExecuteCommand(command);
         }
     }

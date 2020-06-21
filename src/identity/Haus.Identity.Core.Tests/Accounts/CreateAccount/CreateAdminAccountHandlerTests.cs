@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Identity.Core.Accounts.CreateAccount;
 using Haus.Identity.Core.Accounts.Entities;
-using Haus.Identity.Core.Common.Messaging;
 using Haus.Identity.Core.Tests.Support;
 using IdentityModel;
 using MediatR;
@@ -59,11 +58,11 @@ namespace Haus.Identity.Core.Tests.Accounts.CreateAccount
         
         private async Task Handle(CreateAdminAccountCommand command)
         {
-            var messageBus = ServiceProviderFactory.CreateProvider(opts =>
+            var messageBus = MessageBusFactory.Create(opts =>
             {
                 opts.WithUserManager(_userManager)
                     .WithConfiguration(_configuration);
-            }).GetRequiredService<IMessageBus>();
+            });
             await messageBus.ExecuteCommand(command);
         }
     }

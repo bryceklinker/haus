@@ -4,13 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Haus.Cqrs.Queries;
 using Haus.Identity.Core.Accounts.Entities;
 using Haus.Identity.Core.Accounts.Models;
 using Haus.Identity.Core.Common;
-using Haus.Identity.Core.Common.Messaging;
-using Haus.Identity.Core.Common.Messaging.Queries;
-using Haus.Identity.Core.Common.Models;
-using MediatR;
+using Haus.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Haus.Identity.Core.Accounts.GetAccounts

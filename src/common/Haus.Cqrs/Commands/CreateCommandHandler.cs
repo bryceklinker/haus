@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Haus.Identity.Core.Common.Messaging.Commands
+namespace Haus.Cqrs.Commands
 {
     public abstract class CreateCommandHandler<TCommand, TResult> : ICommandHandler<TCommand, TResult> 
         where TCommand : ICommand<TResult>

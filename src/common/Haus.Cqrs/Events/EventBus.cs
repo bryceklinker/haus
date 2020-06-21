@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace Haus.Identity.Core.Common.Messaging.Events
+namespace Haus.Cqrs.Events
 {
     public interface IEvent : INotification
     {

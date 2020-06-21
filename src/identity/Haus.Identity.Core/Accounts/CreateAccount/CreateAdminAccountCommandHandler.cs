@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Cqrs;
+using Haus.Cqrs.Commands;
 using Haus.Identity.Core.Accounts.Entities;
-using Haus.Identity.Core.Common.Messaging;
-using Haus.Identity.Core.Common.Messaging.Commands;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

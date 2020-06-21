@@ -1,5 +1,4 @@
-using Haus.Identity.Core.Common.Messaging;
-using Haus.Identity.Core.Common.Messaging.Commands;
+using Haus.Cqrs.Commands;
 
 namespace Haus.Identity.Core.Clients.CreateClient
 {

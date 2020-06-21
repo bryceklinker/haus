@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
+using Haus.Cqrs;
 using Haus.Identity.Core.ApiResources.CreateApiResource;
-using Haus.Identity.Core.Common.Messaging;
 using Haus.Identity.Core.Tests.Support;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,10 +64,10 @@ namespace Haus.Identity.Core.Tests.ApiResources.CreateApiResource
 
         private async Task<CreateApiResourceResult> Handle(CreateApiResourceCommand command)
         {
-            var messageBus = ServiceProviderFactory.CreateProvider(opts =>
+            var messageBus = MessageBusFactory.Create(opts =>
             {
                 opts.WithConfigurationDb(_context);
-            }).GetRequiredService<IMessageBus>();
+            });
 
             return await messageBus.ExecuteCommand(command);
         }

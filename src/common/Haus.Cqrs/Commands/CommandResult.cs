@@ -1,4 +1,6 @@
-namespace Haus.Identity.Core.Common.Messaging.Commands
+using Haus.Extensions;
+
+namespace Haus.Cqrs.Commands
 {
     public abstract class CommandResult
     {

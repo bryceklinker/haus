@@ -2,8 +2,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Cqrs.Commands;
 using Haus.Identity.Core.Accounts.Entities;
-using Haus.Identity.Core.Common.Messaging.Commands;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 

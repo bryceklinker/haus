@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace Haus.Identity.Core.Common.Messaging.Queries
+namespace Haus.Cqrs.Queries
 {
     public interface IQuery<out TResult> : IRequest<TResult>
     {

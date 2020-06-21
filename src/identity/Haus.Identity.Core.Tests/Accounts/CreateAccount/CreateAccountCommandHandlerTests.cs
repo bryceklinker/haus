@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Identity.Core.Accounts.CreateAccount;
 using Haus.Identity.Core.Accounts.Entities;
-using Haus.Identity.Core.Common.Messaging;
 using Haus.Identity.Core.Tests.Support;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
@@ -86,11 +85,10 @@ namespace Haus.Identity.Core.Tests.Accounts.CreateAccount
 
         private async Task<CreateAccountResult> Handle(CreateAccountCommand request)
         {
-            var messageBus = ServiceProviderFactory.CreateProvider(opts =>
+            var messageBus = MessageBusFactory.Create(opts =>
                 {
                     opts.WithUserManager(_userManager);
-                })
-                .GetRequiredService<IMessageBus>();
+                });
             return await messageBus.ExecuteCommand(request);
         }
     }

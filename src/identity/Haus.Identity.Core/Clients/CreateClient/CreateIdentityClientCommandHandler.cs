@@ -1,9 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Identity.Core.Common.Messaging;
-using Haus.Identity.Core.Common.Messaging.Commands;
-using IdentityServer4.EntityFramework.DbContexts;
-using Microsoft.EntityFrameworkCore;
+using Haus.Cqrs;
+using Haus.Cqrs.Commands;
 using Microsoft.Extensions.Configuration;
 
 namespace Haus.Identity.Core.Clients.CreateClient

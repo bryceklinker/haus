@@ -1,5 +1,5 @@
 using System;
-using Haus.Identity.Core.Common.Messaging;
+using Haus.Cqrs;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Haus.Identity.Core.Tests.Support

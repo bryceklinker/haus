@@ -1,8 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Identity.Core.Common.Messaging;
-using Haus.Identity.Core.Common.Messaging.Commands;
-using IdentityServer4.EntityFramework.DbContexts;
+using Haus.Cqrs;
+using Haus.Cqrs.Commands;
 using Microsoft.Extensions.Configuration;
 
 namespace Haus.Identity.Core.ApiResources.CreateApiResource
@@ -12,7 +11,7 @@ namespace Haus.Identity.Core.ApiResources.CreateApiResource
         private readonly IMessageBus _messageBus;
         private readonly IConfiguration _config;
 
-        public CreateIdentityApiResourceCommandHandler(ConfigurationDbContext context, IConfiguration config, IMessageBus messageBus)
+        public CreateIdentityApiResourceCommandHandler(IConfiguration config, IMessageBus messageBus)
         {
             _config = config;
             _messageBus = messageBus;

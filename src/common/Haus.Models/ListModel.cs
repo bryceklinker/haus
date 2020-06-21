@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace Haus.Identity.Core.Common.Models
+namespace Haus.Models
 {
     public class ListModel<TItem>
     {

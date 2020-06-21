@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Identity.Core.Clients.CreateClient;
-using Haus.Identity.Core.Common.Messaging;
 using Haus.Identity.Core.Tests.Support;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,10 +44,10 @@ namespace Haus.Identity.Core.Tests.Clients.CreateClient
         
         private async Task<CreateClientResult> Handle(CreateClientCommand command)
         {
-            var messageBus = ServiceProviderFactory.CreateProvider(opts =>
+            var messageBus = MessageBusFactory.Create(opts =>
             {
                 opts.WithConfigurationDb(_context);
-            }).GetRequiredService<IMessageBus>();
+            });
             return await messageBus.ExecuteCommand(command);
         }
     }

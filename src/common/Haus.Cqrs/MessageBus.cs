@@ -1,10 +1,10 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Identity.Core.Common.Messaging.Commands;
-using Haus.Identity.Core.Common.Messaging.Events;
-using Haus.Identity.Core.Common.Messaging.Queries;
+using Haus.Cqrs.Commands;
+using Haus.Cqrs.Events;
+using Haus.Cqrs.Queries;
 
-namespace Haus.Identity.Core.Common.Messaging
+namespace Haus.Cqrs
 {
     public interface IMessageBus : ICommandBus, IQueryBus, IEventBus
     {

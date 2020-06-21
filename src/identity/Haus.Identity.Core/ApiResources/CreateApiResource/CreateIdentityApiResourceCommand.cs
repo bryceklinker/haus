@@ -1,4 +1,4 @@
-using Haus.Identity.Core.Common.Messaging.Commands;
+using Haus.Cqrs.Commands;
 using IdentityServer4.Models;
 
 namespace Haus.Identity.Core.ApiResources.CreateApiResource
