@@ -1,5 +1,6 @@
 using Haus.Identity.Core.Accounts.Entities;
 using Haus.Identity.Core.Common.Messaging;
+using Haus.Identity.Core.Common.Messaging.Commands;
 using MediatR;
 
 namespace Haus.Identity.Core.Accounts.CreateAccount

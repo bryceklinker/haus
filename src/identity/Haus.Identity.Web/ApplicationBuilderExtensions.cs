@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Haus.Identity.Core.Accounts.CreateAccount;
 using Haus.Identity.Core.ApiResources.CreateApiResource;
 using Haus.Identity.Core.Clients.CreateClient;
-using Haus.Identity.Core.IdentityResources;
+using Haus.Identity.Core.IdentityResources.CreateIdentityResource;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using MediatR;
@@ -19,7 +19,7 @@ namespace Haus.Identity.Web
             await app.ExecuteRequest(new CreateAdminAccountCommand());
             await app.ExecuteRequest(new CreateIdentityClientCommand());
             await app.ExecuteRequest(new CreateIdentityApiResourceCommand());
-            await app.ExecuteRequest(new SeedIdentityResourcesRequest(
+            await app.ExecuteRequest(new CreateDefaultIdentityResourceCommand(
                 new IdentityResources.Profile(),
                 new IdentityResources.OpenId(),
                 new IdentityResources.Email()

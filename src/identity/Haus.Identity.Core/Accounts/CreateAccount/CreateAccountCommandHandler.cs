@@ -3,9 +3,8 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Identity.Core.Accounts.Entities;
-using Haus.Identity.Core.Common.Messaging;
+using Haus.Identity.Core.Common.Messaging.Commands;
 using IdentityModel;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Haus.Identity.Core.Accounts.CreateAccount
@@ -29,7 +28,10 @@ namespace Haus.Identity.Core.Accounts.CreateAccount
                 return CreateAccountResult.Success(hausUser.Id);
             }
 
-            return CreateAccountResult.Failed(result.Errors.Select(e => e.Description));
+            var errors = result.Errors
+                .Select(e => e.Description)
+                .ToArray();
+            return CreateAccountResult.Failed(errors);
         }
     }
 }

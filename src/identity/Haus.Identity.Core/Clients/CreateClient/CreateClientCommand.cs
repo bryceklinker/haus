@@ -1,5 +1,6 @@
 using System;
 using Haus.Identity.Core.Common.Messaging;
+using Haus.Identity.Core.Common.Messaging.Commands;
 
 namespace Haus.Identity.Core.Clients.CreateClient
 {

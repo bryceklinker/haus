@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using AutoMapper.Execution;
 using FluentAssertions;
 using Haus.Identity.Core.Clients.CreateClient;
 using Haus.Identity.Core.Common.Messaging;
@@ -41,7 +40,7 @@ namespace Haus.Identity.Core.Tests.Clients.CreateClient
             var result = await Handle(command);
 
             result.WasSuccessful.Should().BeFalse();
-            result.ErrorMessage.Should().Contain("'bob'");
+            result.Errors.Should().ContainMatch("*'bob'*already*exists*");
         }
         
         private async Task<CreateClientResult> Handle(CreateClientCommand command)

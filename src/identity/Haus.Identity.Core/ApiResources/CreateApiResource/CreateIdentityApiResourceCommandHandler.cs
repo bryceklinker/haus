@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Identity.Core.Common.Messaging;
+using Haus.Identity.Core.Common.Messaging.Commands;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.Extensions.Configuration;
 
@@ -20,7 +21,7 @@ namespace Haus.Identity.Core.ApiResources.CreateApiResource
         protected override async Task InnerHandle(CreateIdentityApiResourceCommand command, CancellationToken cancellationToken = default)
         {
             var createCommand = new CreateApiResourceCommand(_config.IdentityApiScope(), _config.IdentityApiName());
-            await _messageBus.ExecuteCommand(createCommand);
+            await _messageBus.ExecuteCommand(createCommand, cancellationToken);
         }
     }
 }

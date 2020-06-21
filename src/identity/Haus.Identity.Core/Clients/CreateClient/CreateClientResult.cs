@@ -1,11 +1,16 @@
+using Haus.Identity.Core.Common.Messaging.Commands;
+
 namespace Haus.Identity.Core.Clients.CreateClient
 {
-    public class CreateClientResult
+    public class CreateClientResult : CommandResult
     {
-        public bool WasSuccessful => string.IsNullOrWhiteSpace(ErrorMessage);
         public string Id { get; private set; }
-        public string ErrorMessage { get; private set; }
 
+        private CreateClientResult(params string[] errors)
+            : base(errors)
+        {
+            
+        }        
         public static CreateClientResult Success(string id)
         {
             return new CreateClientResult
@@ -14,12 +19,9 @@ namespace Haus.Identity.Core.Clients.CreateClient
             };
         }
 
-        public static CreateClientResult Failed(string errorMessage)
+        public static CreateClientResult Failed(params string[] errors)
         {
-            return new CreateClientResult
-            {
-                ErrorMessage = errorMessage
-            };
+            return new CreateClientResult(errors);
         }
     }
 }

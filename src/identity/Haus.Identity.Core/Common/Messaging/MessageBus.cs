@@ -1,5 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Identity.Core.Common.Messaging.Commands;
+using Haus.Identity.Core.Common.Messaging.Events;
+using Haus.Identity.Core.Common.Messaging.Queries;
 
 namespace Haus.Identity.Core.Common.Messaging
 {

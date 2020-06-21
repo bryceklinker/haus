@@ -1,26 +1,19 @@
-using System.Collections.Generic;
-using System.Collections.Immutable;
+using Haus.Identity.Core.Common.Messaging.Commands;
 
 namespace Haus.Identity.Core.Accounts.CreateAccount
 {
-    public class CreateAccountResult
+    public class CreateAccountResult : CommandResult
     {
         public string Id { get; }
         
-        public bool WasSuccessful { get; }
-
-        public ImmutableArray<string> Errors { get; }
-        
         private CreateAccountResult(string id)
         {
-            WasSuccessful = true;
             Id = id;
         }
 
-        private CreateAccountResult(IEnumerable<string> errors)
+        private CreateAccountResult(params string[] errors)
+            : base(errors)
         {
-            WasSuccessful = false;
-            Errors = errors.ToImmutableArray();
         }
         
         public static CreateAccountResult Success(string id)
@@ -28,7 +21,7 @@ namespace Haus.Identity.Core.Accounts.CreateAccount
             return new CreateAccountResult(id);
         }
 
-        public static CreateAccountResult Failed(IEnumerable<string> errors)
+        public static CreateAccountResult Failed(string[] errors)
         {
             return new CreateAccountResult(errors);
         }

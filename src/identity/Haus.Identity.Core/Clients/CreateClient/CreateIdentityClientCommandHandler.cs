@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Identity.Core.Common.Messaging;
+using Haus.Identity.Core.Common.Messaging.Commands;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

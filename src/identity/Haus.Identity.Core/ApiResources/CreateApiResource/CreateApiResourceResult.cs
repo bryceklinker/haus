@@ -1,17 +1,12 @@
-using System;
-using System.Linq;
+using Haus.Identity.Core.Common.Messaging.Commands;
 
 namespace Haus.Identity.Core.ApiResources.CreateApiResource
 {
-    public class CreateApiResourceResult
+    public class CreateApiResourceResult : CommandResult
     {
-        public bool WasSuccessful => Errors.IsEmptyOrNull();
-
-        public string[] Errors { get; }
-
-        private CreateApiResourceResult(string[] errors)
+        private CreateApiResourceResult(params string[] errors)
+            : base(errors)
         {
-            Errors = errors;
         }
 
         public static CreateApiResourceResult Failed(params string[] errors)
@@ -21,7 +16,7 @@ namespace Haus.Identity.Core.ApiResources.CreateApiResource
 
         public static CreateApiResourceResult Success()
         {
-            return new CreateApiResourceResult(Array.Empty<string>());
+            return new CreateApiResourceResult();
         }
     }
 }

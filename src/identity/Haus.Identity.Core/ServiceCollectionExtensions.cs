@@ -1,6 +1,9 @@
 using Haus.Identity.Core.Accounts.Entities;
 using Haus.Identity.Core.Clients.CreateClient;
 using Haus.Identity.Core.Common.Messaging;
+using Haus.Identity.Core.Common.Messaging.Commands;
+using Haus.Identity.Core.Common.Messaging.Events;
+using Haus.Identity.Core.Common.Messaging.Queries;
 using Haus.Identity.Core.Common.Storage;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
