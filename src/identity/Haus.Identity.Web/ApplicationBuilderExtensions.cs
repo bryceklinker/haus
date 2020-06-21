@@ -18,7 +18,7 @@ namespace Haus.Identity.Web
         {
             await app.ExecuteRequest(new CreateAdminAccountCommand());
             await app.ExecuteRequest(new CreateIdentityClientCommand());
-            await app.ExecuteRequest(new CreateApiResourceCommand());
+            await app.ExecuteRequest(new CreateIdentityApiResourceCommand());
             await app.ExecuteRequest(new SeedIdentityResourcesRequest(
                 new IdentityResources.Profile(),
                 new IdentityResources.OpenId(),

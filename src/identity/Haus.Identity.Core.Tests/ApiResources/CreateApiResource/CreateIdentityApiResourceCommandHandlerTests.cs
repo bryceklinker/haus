@@ -30,7 +30,7 @@ namespace Haus.Identity.Core.Tests.ApiResources.CreateApiResource
             _context.Add(new ApiResource(_configuration.IdentityApiScope(), _configuration.IdentityApiName()).ToEntity());
             await _context.SaveChangesAsync();
 
-            await Handle(new CreateApiResourceCommand());
+            await Handle(new CreateIdentityApiResourceCommand());
 
             _context.ApiResources.Should().HaveCount(1);
         }
@@ -38,7 +38,7 @@ namespace Haus.Identity.Core.Tests.ApiResources.CreateApiResource
         [Fact]
         public async Task WhenIdentityApiResourceDoesNotExistThenIdentityApiResourceIsAdded()
         {
-            await Handle(new CreateApiResourceCommand());
+            await Handle(new CreateIdentityApiResourceCommand());
 
             var resource = _context.ApiResources.Single();
             resource.Name.Should().Be(_configuration.IdentityApiScope());
@@ -49,12 +49,12 @@ namespace Haus.Identity.Core.Tests.ApiResources.CreateApiResource
         [Fact]
         public async Task WhenIdentityApiResourceIsSeededThenIdentityApiResourceIsAddedToApiResources()
         {
-            await Handle(new CreateApiResourceCommand());
+            await Handle(new CreateIdentityApiResourceCommand());
 
             _context.ApiResources.Should().HaveCount(1);
         }
 
-        private async Task Handle(CreateApiResourceCommand command)
+        private async Task Handle(CreateIdentityApiResourceCommand command)
         {
             var messageBus = ServiceProviderFactory.CreateProvider(opts =>
             {

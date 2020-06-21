@@ -14,6 +14,12 @@ namespace Haus.Identity.Core
             return source.Any(i => i.Equals(item, StringComparison.OrdinalIgnoreCase));
         }
 
+        public static bool IsEmptyOrNull(this IEnumerable<string> source)
+        {
+            return source == null
+                   || !source.Any();
+        }
+        
         public static async Task<ListModel<T>> ToListModelAsync<T>(this IQueryable<T> source)
         {
             var items = await source.ToArrayAsync();
