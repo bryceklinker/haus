@@ -2,15 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import {Shell} from "./shell/views/Shell";
-import {BrowserRouter} from "react-router-dom";
-import {AuthProvider} from "./shared/authentication/auth-hooks";
+import {Shell} from './shell/views/Shell';
+import {BrowserRouter} from 'react-router-dom';
+import {AuthProvider} from './shared/authentication/auth-hooks';
+import {configureStore} from './configure-store';
 
+const store = configureStore();
 ReactDOM.render(
     <React.StrictMode>
         <AuthProvider>
             <BrowserRouter>
-                <Shell/>
+                <Provider store={store}>
+                    <Shell/>
+                </Provider>
             </BrowserRouter>
         </AuthProvider>
     </React.StrictMode>,
