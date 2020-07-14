@@ -14,7 +14,6 @@ run_acceptance_tests() {
     echo "**************************** FINISHED ACCEPTANCE TESTS ****************************"
 }
 
-
 main() {
     run_unit_tests
     run_acceptance_tests

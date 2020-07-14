@@ -19,8 +19,18 @@ namespace Haus.Identity.Core.ApiResources.CreateApiResource
 
         protected override async Task<CreateApiResourceResult> Create(CreateApiResourceCommand command, CancellationToken cancellationToken)
         {
-            var resource = new ApiResource(command.Name, command.DisplayName);
+            var resource = new ApiResource(command.Name, command.DisplayName)
+            {
+                Scopes =
+                {
+                    command.Name
+                }
+            };
             _context.Add(resource.ToEntity());
+
+            var apiScope = new ApiScope(command.Name, command.DisplayName);
+            _context.Add(apiScope.ToEntity());
+            
             await _context.SaveChangesAsync(cancellationToken);
             return CreateApiResourceResult.Success();
         }

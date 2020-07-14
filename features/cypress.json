@@ -4,5 +4,6 @@
   "env":  {
     "ADMIN_USERNAME": "admin",
     "ADMIN_PASSWORD": "9FhV7$P^cSuhKXBaHdkr"
-  }
+  },
+  "chromeWebSecurity": false
 }

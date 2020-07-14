@@ -42,7 +42,7 @@ namespace Haus.Identity.Core.Tests.ApiResources.CreateApiResource
             var resource = _context.ApiResources.Single();
             resource.Name.Should().Be(_configuration.IdentityApiScope());
             resource.DisplayName.Should().Be(_configuration.IdentityApiName());
-            resource.Scopes.Should().Contain(s => s.Name == _configuration.IdentityApiScope());
+            resource.Scopes.Should().Contain(s => s.Scope == _configuration.IdentityApiScope());
         }
         
         [Fact]

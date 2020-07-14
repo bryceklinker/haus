@@ -37,7 +37,22 @@ namespace Haus.Identity.Core.Tests.ApiResources.CreateApiResource
 
             _context.ApiResources
                 .Should()
-                .Contain(r => r.Name == "scope.value" && r.DisplayName == "Display Name Value");
+                .Contain(r => r.Name == "scope.value"
+                              && r.DisplayName == "Display Name Value"
+                              && r.Enabled);
+        }
+
+        [Fact]
+        public async Task WhenApiResourceCreatedThenApiScopeIsCreatedFromCommand()
+        {
+            var command = new CreateApiResourceCommand("scoped", "Values");
+
+            await Handle(command);
+
+            _context.ApiScopes
+                .Should()
+                .Contain(s => s.DisplayName == "Values"
+                              && s.Name == "scoped");
         }
 
         [Fact]
@@ -49,13 +64,13 @@ namespace Haus.Identity.Core.Tests.ApiResources.CreateApiResource
 
             result.WasSuccessful.Should().BeTrue();
         }
-        
+
         [Fact]
         public async Task WhenApiResourceAlreadyExistsThenCommandFails()
         {
             var command = new CreateApiResourceCommand("one", "two");
             await Handle(command);
-            
+
             var result = await Handle(command);
 
             result.WasSuccessful.Should().BeFalse();
@@ -64,10 +79,7 @@ namespace Haus.Identity.Core.Tests.ApiResources.CreateApiResource
 
         private async Task<CreateApiResourceResult> Handle(CreateApiResourceCommand command)
         {
-            var messageBus = MessageBusFactory.Create(opts =>
-            {
-                opts.WithConfigurationDb(_context);
-            });
+            var messageBus = MessageBusFactory.Create(opts => { opts.WithConfigurationDb(_context); });
 
             return await messageBus.ExecuteCommand(command);
         }

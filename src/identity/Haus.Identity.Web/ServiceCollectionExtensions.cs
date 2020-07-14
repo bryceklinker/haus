@@ -1,7 +1,7 @@
 using System.Reflection;
 using Haus.Identity.Core;
-using Haus.Identity.Core.Accounts.Entities;
 using Haus.Identity.Core.Common.Storage;
+using Haus.Identity.Core.Users.Entities;
 using Haus.Identity.Web.Common.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +16,7 @@ namespace Haus.Identity.Web
             this IServiceCollection services, 
             string connectionString)
         {
+            services.AddHealthChecks();
             services.AddAuthorization(opts =>
             {
                 opts.AddPolicy(AuthorizationPolicies.AdminPolicyName, AuthorizationPolicies.Admin);
@@ -26,7 +27,6 @@ namespace Haus.Identity.Web
                 .AddRazorOptions(opts =>
                 {
                     opts.ViewLocationFormats.Add("/{1}/Views/{0}.cshtml");
-                    opts.ViewLocationFormats.Add("/Common/Views/{0}.cshtml");
                 });
 
             services.AddDbContext<HausIdentityDbContext>(opts =>
@@ -34,7 +34,10 @@ namespace Haus.Identity.Web
                 opts.UseNpgsql(connectionString, b => b.MigrationsAssembly(MigrationsAssembly));
             });
                 
-            services.AddIdentityServer()
+            services.AddIdentityServer(opts =>
+                {
+                    opts.UserInteraction.LoginUrl = "/users/login";
+                })
                 .AddAspNetIdentity<HausUser>()
                 .AddConfigurationStore(opts =>
                 {
@@ -51,8 +54,10 @@ namespace Haus.Identity.Web
                     };
                 })
                 .AddDeveloperSigningCredential();
-            
-            services.AddSpaStaticFiles(opts => opts.RootPath = "client-app/build");
+            services.AddCors(opts => opts.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            }));
             return services;
         }
     }

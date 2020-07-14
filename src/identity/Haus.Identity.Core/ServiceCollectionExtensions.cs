@@ -1,7 +1,7 @@
 using Haus.Cqrs;
-using Haus.Identity.Core.Accounts.Entities;
 using Haus.Identity.Core.Clients.CreateClient;
 using Haus.Identity.Core.Common.Storage;
+using Haus.Identity.Core.Users.Entities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Haus.Identity.Core

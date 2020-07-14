@@ -1,5 +1,5 @@
 using System;
-using Haus.Identity.Core.Accounts.Entities;
+using Haus.Identity.Core.Users.Entities;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;

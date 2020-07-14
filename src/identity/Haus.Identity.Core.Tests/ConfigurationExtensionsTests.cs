@@ -20,8 +20,8 @@ namespace Haus.Identity.Core.Tests
                     new KeyValuePair<string, string>("DB_CONNECTION_STRING", "in-memory"), 
                     new KeyValuePair<string, string>("ADMIN_USERNAME", "will"), 
                     new KeyValuePair<string, string>("ADMIN_PASSWORD", "some-password"), 
-                    new KeyValuePair<string, string>("IDENTITY_CLIENT_ID", "haus.identity.custom"), 
-                    new KeyValuePair<string, string>("IDENTITY_CLIENT_NAME", "HAUS Identity Custom"), 
+                    new KeyValuePair<string, string>("WEB_CLIENT_ID", "haus.web.custom"), 
+                    new KeyValuePair<string, string>("WEB_CLIENT_NAME", "HAUS Web Custom"), 
                     new KeyValuePair<string, string>("IDENTITY_API_SCOPE", "haus.identity.scope.custom"), 
                     new KeyValuePair<string, string>("IDENTITY_API_NAME", "HAUS Identity Api Custom"), 
                 })
@@ -29,15 +29,15 @@ namespace Haus.Identity.Core.Tests
         }
         
         [Fact]
-        public void WhenIdentityClientIdIsNotProvidedThenReturnsDefaultIdentityClientId()
+        public void WhenIdentityClientIdIsNotProvidedThenReturnsDefaultWebClientId()
         {
-            _emptyConfiguration.IdentityClientId().Should().Be("haus.identity");
+            _emptyConfiguration.IdentityClientId().Should().Be("haus.web");
         }
 
         [Fact]
-        public void WhenIdentityClientNameIsNotProvidedThenReturnsDefaultIdentityClientName()
+        public void WhenIdentityClientNameIsNotProvidedThenReturnsDefaultWebClientName()
         {
-            _emptyConfiguration.IdentityClientName().Should().Be("HAUS Identity");
+            _emptyConfiguration.IdentityClientName().Should().Be("HAUS Web");
         }
 
         [Fact]
@@ -79,13 +79,13 @@ namespace Haus.Identity.Core.Tests
         [Fact]
         public void WhenIdentityClientIdIsProvidedThenReturnsProvidedClientId()
         {
-            _populatedConfiguration.IdentityClientId().Should().Be("haus.identity.custom");
+            _populatedConfiguration.IdentityClientId().Should().Be("haus.web.custom");
         }
         
         [Fact]
         public void WhenIdentityClientNameIsProvidedThenReturnsProvidedClientName()
         {
-            _populatedConfiguration.IdentityClientName().Should().Be("HAUS Identity Custom");
+            _populatedConfiguration.IdentityClientName().Should().Be("HAUS Web Custom");
         }
         
         [Fact]

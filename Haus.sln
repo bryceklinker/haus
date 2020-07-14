@@ -19,7 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{1D49
 		scripts\run_acceptance_tests.sh = scripts\run_acceptance_tests.sh
 		scripts\run_unit_tests.sh = scripts\run_unit_tests.sh
 		scripts\verify.sh = scripts\verify.sh
-		scripts\start_app.sh = scripts\start_app.sh
+		scripts\start_database.sh = scripts\start_database.sh
+		scripts\stop_database.sh = scripts\stop_database.sh
+		scripts\start_identity.sh = scripts\start_identity.sh
+		scripts\start_web.sh = scripts\start_web.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Identity.Core", "src\identity\Haus.Identity.Core\Haus.Identity.Core.csproj", "{4A271CDC-0E63-4FF5-8983-5B051F1C759D}"
@@ -33,6 +36,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Extensions", "src\common\Haus.Extensions\Haus.Extensions.csproj", "{AC11693E-A12C-4D8D-AFEA-ED4817FC53D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Models", "src\common\Haus.Models\Haus.Models.csproj", "{19FE83EF-B54F-46B9-8F1F-C66D997BF474}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{C0370475-19DD-4478-8F55-CB422A587125}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Web", "src\web\Haus.Web\Haus.Web.csproj", "{A2D26965-AD54-4BF0-99DA-0793E962E295}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Logging", "src\common\Haus.Logging\Haus.Logging.csproj", "{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +140,30 @@ Global
 		{19FE83EF-B54F-46B9-8F1F-C66D997BF474}.Release|x64.Build.0 = Release|Any CPU
 		{19FE83EF-B54F-46B9-8F1F-C66D997BF474}.Release|x86.ActiveCfg = Release|Any CPU
 		{19FE83EF-B54F-46B9-8F1F-C66D997BF474}.Release|x86.Build.0 = Release|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Debug|x64.Build.0 = Debug|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Debug|x86.Build.0 = Debug|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Release|x64.ActiveCfg = Release|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Release|x64.Build.0 = Release|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Release|x86.ActiveCfg = Release|Any CPU
+		{A2D26965-AD54-4BF0-99DA-0793E962E295}.Release|x86.Build.0 = Release|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Debug|x64.Build.0 = Debug|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Debug|x86.Build.0 = Debug|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Release|x64.ActiveCfg = Release|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Release|x64.Build.0 = Release|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Release|x86.ActiveCfg = Release|Any CPU
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B2BCE543-0F49-4B3D-B9EC-2BC451D02B1F} = {DDE85C12-ACA6-4B01-9947-6F94FF7D4478}
@@ -142,5 +175,8 @@ Global
 		{903C805C-5EF6-45EE-BD17-F13371269BAB} = {1234E670-CA88-4CD5-BB97-7BAF17077618}
 		{AC11693E-A12C-4D8D-AFEA-ED4817FC53D2} = {1234E670-CA88-4CD5-BB97-7BAF17077618}
 		{19FE83EF-B54F-46B9-8F1F-C66D997BF474} = {1234E670-CA88-4CD5-BB97-7BAF17077618}
+		{C0370475-19DD-4478-8F55-CB422A587125} = {DDE85C12-ACA6-4B01-9947-6F94FF7D4478}
+		{A2D26965-AD54-4BF0-99DA-0793E962E295} = {C0370475-19DD-4478-8F55-CB422A587125}
+		{F4B0DD68-ECEE-432D-A1DF-80BD3F7C35CE} = {1234E670-CA88-4CD5-BB97-7BAF17077618}
 	EndGlobalSection
 EndGlobal

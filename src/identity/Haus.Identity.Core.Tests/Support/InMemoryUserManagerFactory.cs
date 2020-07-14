@@ -1,6 +1,6 @@
 using System;
-using Haus.Identity.Core.Accounts.Entities;
 using Haus.Identity.Core.Common.Storage;
+using Haus.Identity.Core.Users.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

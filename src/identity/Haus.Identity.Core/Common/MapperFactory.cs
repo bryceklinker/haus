@@ -1,5 +1,5 @@
 using AutoMapper;
-using Haus.Identity.Core.Accounts;
+using Haus.Identity.Core.Users;
 
 namespace Haus.Identity.Core.Common
 {
@@ -7,7 +7,7 @@ namespace Haus.Identity.Core.Common
     {
         public static IMapper CreateMapper()
         {
-            var mapperConfig = new MapperConfiguration(c => c.AddProfile<AccountsMapperProfile>());
+            var mapperConfig = new MapperConfiguration(c => c.AddProfile<UsersMapperProfile>());
             return new Mapper(mapperConfig);
         }
     }

@@ -6,12 +6,12 @@ namespace Haus.Identity.Core
     {
         public static string IdentityClientId(this IConfiguration configuration)
         {
-            return configuration["IDENTITY_CLIENT_ID"] ?? ConfigurationDefaults.IdentityClientId;
+            return configuration["WEB_CLIENT_ID"] ?? ConfigurationDefaults.WebClientId;
         }
 
         public static string IdentityClientName(this IConfiguration configuration)
         {
-            return configuration["IDENTITY_CLIENT_NAME"] ?? ConfigurationDefaults.IdentityClientName;
+            return configuration["WEB_CLIENT_NAME"] ?? ConfigurationDefaults.WebClientName;
         }
 
         public static string IdentityClientRedirectUri(this IConfiguration configuration)

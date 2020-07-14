@@ -2,8 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Haus.Identity.Core.Accounts.Entities;
-using Haus.Identity.Core.Accounts.Models;
 using Haus.Identity.Core.IdentityResources.CreateIdentityResource;
 using Haus.Identity.Core.Tests.Support;
 using IdentityServer4.EntityFramework.DbContexts;

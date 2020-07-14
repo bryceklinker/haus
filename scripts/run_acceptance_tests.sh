@@ -2,10 +2,6 @@
 
 set -ex
 
-generate_certs() {
-  /bin/bash './scripts/generate_certs.sh'
-}
-
 run_acceptance_tests() {
     pushd './features'
       yarn install
@@ -14,7 +10,6 @@ run_acceptance_tests() {
 }
 
 main() {
-  generate_certs
   run_acceptance_tests
 }
 

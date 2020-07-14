@@ -1,7 +1,5 @@
-using Haus.Identity.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,16 +30,15 @@ namespace Haus.Identity.Web
 
             app.UseHttpsRedirection()
                 .UseRouting()
+                .UseCors()
                 .UseIdentityServer()
                 .UseAuthorization()
-                .UseEndpoints(endPoints => { endPoints.MapControllers(); })
-                .UseStaticFiles()
-                .UseSpaStaticFiles();
-            app.UseSpa(spa =>
+                .UseEndpoints(endPoints =>
                 {
-                    spa.Options.SourcePath = "client-app";
-                    if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
-                });
+                    endPoints.MapControllers();
+                    endPoints.MapHealthChecks("/.health");
+                })
+                .UseStaticFiles();
         }
     }
 }
