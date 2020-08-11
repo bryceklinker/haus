@@ -27,6 +27,10 @@
     <Folder Include="Properties" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="client-app\src\shell\views\Sidenav.js" />
+  </ItemGroup>
+
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec WorkingDirectory="$(SpaRoot)" Command="yarn install" />

@@ -1,9 +1,12 @@
 import React from "react";
+import Container from '@material-ui/core/Container';
 
-export function MainContent({children}) {
+export function MainContent({isDrawerOpen, children}) {
     return (
         <main>
-            {children}
+            <Container>
+                {children}
+            </Container>
         </main>
     )
 }

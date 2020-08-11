@@ -1,6 +1,7 @@
 import React from 'react';
 import {Route} from "react-router";
 import {useAuthService} from "../authentication/auth-hooks";
+import {LoadingView} from '../loading/LoadingView';
 
 
 export function ProtectedRoute({component: Component, ...rest}) {
@@ -13,7 +14,7 @@ export function ProtectedRoute({component: Component, ...rest}) {
                 )
             }
             authService.startSignIn();
-            return null;
+            return <LoadingView show={true}/>;
         }} />
 )
 }

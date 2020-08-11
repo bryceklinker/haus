@@ -81,9 +81,9 @@ namespace Haus.Identity.Core.Tests.Clients.CreateClient
         public void WhenClientCreatedThenHasDefaultGrantTypes()
         {
             var client = _clientFactory.CreateFromCommand(new CreateClientCommand("", ""));
-            
-            client.AllowedGrantTypes.Should().Contain(OidcConstants.GrantTypes.Implicit);
-            client.AllowedGrantTypes.Should().Contain(OidcConstants.GrantTypes.Password);
+
+            client.AllowedGrantTypes.Should().HaveCount(2);
+            client.AllowedGrantTypes.Should().Contain(OidcConstants.GrantTypes.AuthorizationCode);
             client.AllowedGrantTypes.Should().Contain(OidcConstants.GrantTypes.ClientCredentials);
         }
 

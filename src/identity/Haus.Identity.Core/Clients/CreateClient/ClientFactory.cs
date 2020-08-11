@@ -21,8 +21,7 @@ namespace Haus.Identity.Core.Clients.CreateClient
 
         private static readonly string[] DefaultGrantTypes = 
         {
-            OidcConstants.GrantTypes.Implicit,
-            OidcConstants.GrantTypes.Password,
+            OidcConstants.GrantTypes.AuthorizationCode,
             OidcConstants.GrantTypes.ClientCredentials
         };
         

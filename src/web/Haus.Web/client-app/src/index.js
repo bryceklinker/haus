@@ -11,15 +11,14 @@ import {configureStore} from './configure-store';
 
 const store = configureStore();
 ReactDOM.render(
-    <React.StrictMode>
-        <AuthProvider>
-            <BrowserRouter>
-                <Provider store={store}>
-                    <Shell/>
-                </Provider>
-            </BrowserRouter>
-        </AuthProvider>
-    </React.StrictMode>,
+    <AuthProvider>
+        <BrowserRouter>
+            <Provider store={store}>
+
+                <Shell/>
+            </Provider>
+        </BrowserRouter>
+    </AuthProvider>,
     document.getElementById('root')
 );
 
