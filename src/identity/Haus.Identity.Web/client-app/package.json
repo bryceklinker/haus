@@ -1,8 +1,11 @@
 {
-  "name": "Haus.Identity.Web",
+  "name": "client-app",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "echo 'Starting the development server' && webpack-dev-server"
+  },
   "devDependencies": {
     "@babel/core": "7.11.4",
     "@babel/preset-env": "7.11.0",

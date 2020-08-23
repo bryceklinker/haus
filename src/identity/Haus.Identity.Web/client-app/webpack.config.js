@@ -1,26 +1,28 @@
 const path = require('path');
 
+const DIST_PATH = path.resolve(path.join(__dirname, 'dist'));
 module.exports = {
     entry: {
         users: path.resolve(path.join(__dirname, 'users', 'index.js'))
     },
     output: {
+        path: DIST_PATH,
         filename: '[name].js',
-        path: path.resolve(path.join(__dirname, 'dist')),
         sourceMapFilename: '[file].map'
+    },
+    resolve: {
+      extensions: ['.js', '.css', '.scss']  
     },
     module: {
         rules: [
             {
                 test: /\.jsx?$/i,
                 use: [
-                    {
-                        loader: 'babel-loader'
-                    }
+                    'babel-loader'
                 ]
             },
             {
-                test: /\s[ac]ss.$/i,
+                test: /\.(s[ac]ss)$/i,
                 use: [
                     'style-loader',
                     'css-loader',
@@ -41,16 +43,18 @@ module.exports = {
             {
                 test: /\.(png|jpg|gif|svg)$/i,
                 use: [
-                    {
-                        loader: 'file-loader'
-                    }
+                    'file-loader'
                 ]
             }
         ]
     },
     devServer: {
-        port: 3000,
-        contentBase: path.resolve(path.join(__dirname, 'dist')),
-        historyApiFallback: true
+        contentBase: DIST_PATH,
+        disableHostCheck: true,
+        publicPath: '/dist/',
+        compress: true,
+        port: process.env.PORT || 3000,
+        hot: true,
+        injectClient: false
     }
 }

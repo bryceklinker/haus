@@ -23,6 +23,14 @@
 
   <ItemGroup>
     <Folder Include="Common\Storage\Migrations" />
+    <Folder Include="wwwroot\assets" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Properties\launchSettings.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\bootstrap.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\jquery.slim.min.js" />
   </ItemGroup>
 
 </Project>

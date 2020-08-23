@@ -60,16 +60,16 @@ namespace Haus.Identity.Web
                         psqlOpts => { psqlOpts.MigrationsAssembly(MigrationsAssembly); });
                 })
                 .AddDeveloperSigningCredential();
-            services.AddSpaStaticFiles(opts => opts.RootPath = "client-app/dist");
+            services.AddSpaStaticFiles(opts => opts.RootPath = "client-app/build");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsNonProd()) app.UseDeveloperExceptionPage();
 
-            app.UseSerilogRequestLogging()
+            app.UseSerilogRequestLogging();
+            app.UseCors()
                 .UseRouting()
-                .UseCors()
                 .UseIdentityServer()
                 .UseEndpoints(endpoints =>
                 {

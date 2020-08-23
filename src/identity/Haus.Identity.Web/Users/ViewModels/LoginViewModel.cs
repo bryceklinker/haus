@@ -12,6 +12,12 @@ namespace Haus.Identity.Web.Users.ViewModels
 
         public async Task<bool> Login(SignInManager<HausUser> signInManager)
         {
+            if (string.IsNullOrWhiteSpace(Username))
+                return false;
+
+            if (string.IsNullOrWhiteSpace(Password))
+                return false;
+            
             var result = await signInManager.PasswordSignInAsync(Username, Password, false, false);
             return result.Succeeded;
         }

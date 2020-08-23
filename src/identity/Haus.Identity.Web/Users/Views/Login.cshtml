@@ -1,3 +1,4 @@
+@model Haus.Identity.Web.Users.ViewModels.LoginViewModel
 @{
     Layout = "Layout";
 }
@@ -6,5 +7,8 @@
 
 @section scripts
 {
-    <script src="~/client-app/dist/users.js" ></script>
+    <script>
+        var initialUsername = '@Model.Username';
+    </script>
+    <script src="~/dist/users.js" asp-append-version="true"></script>
 }

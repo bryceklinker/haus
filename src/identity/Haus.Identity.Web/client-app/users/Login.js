@@ -1,35 +1,38 @@
-import React, {useState} from "react";
-import {createMuiTheme, ThemeProvider} from '@material-ui/core'
-import orange from "@material-ui/core/colors/orange";
-import yellow from "@material-ui/core/colors/yellow";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import React from "react";
+import {TextInput, useInput, Main, ContainedButton} from "../shared";
+import {makeStyles} from "@material-ui/core";
 
-const theme = createMuiTheme({
-    palette: {
-        primary: orange,
-        secondary: yellow,
-        type: 'dark'
+const useStyles = makeStyles(theme => ({
+    loginButton: {
+        marginTop: theme.spacing(1),
+        marginLeft: theme.spacing(1)
     }
-});
+}))
 
 export function Login() {
-    const [state, setState] = useState({username: null, password: null});
-    const createChangeHandler = (field) => {
-        return (evt) => setState({...state, [field]: evt.target.value});
-    };
+    const [, bindUsername] = useInput(initialUsername || '');
+    const [, bindPassword] = useInput();
+    const classes = useStyles();
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <form method={'POST'} action={'/users/login'} >
-                <TextField data-testid={'username-input'} onChange={createChangeHandler('username')} />
-                <TextField data-testid={'password-input'} onChange={createChangeHandler('password')} />
-                <Button variant={'contained'} color={'primary'} type={'submit'}>
+        <Main>
+            <form action={'/users/login'} method={'POST'}>
+                <TextInput data-testid={'username-input'}
+                           fullWidth
+                           label={'Username'}
+                           name={'username'}
+                           placeholder={'Username'}
+                           {...bindUsername} />
+                <TextInput data-testid={'password-input'}
+                           fullWidth
+                           label={'Password'}
+                           type={'password'}
+                           name={'password'}
+                           placeholder={'Password'}
+                           {...bindPassword} />
+                <ContainedButton className={classes.loginButton} type={'submit'} color={'primary'}>
                     Login
-                </Button>
+                </ContainedButton>
             </form>
-        </ThemeProvider>
-        
+        </Main>
     )
 }
