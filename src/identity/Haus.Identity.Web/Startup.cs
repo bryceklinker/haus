@@ -1,3 +1,4 @@
+using Haus.Cqrs;
 using Haus.Identity.Web.Common.Storage;
 using Haus.Identity.Web.Users.Entities;
 using Microsoft.AspNetCore.Builder;
@@ -27,6 +28,8 @@ namespace Haus.Identity.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHealthChecks();
+            services.AddHausCqrs(typeof(Startup).Assembly);
+            
             services.AddCors(opts => opts.AddDefaultPolicy(policy =>
             {
                 policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();

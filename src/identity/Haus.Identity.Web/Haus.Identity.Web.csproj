@@ -33,4 +33,8 @@
     <_ContentIncludedByDefault Remove="wwwroot\js\jquery.slim.min.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\Haus.Cqrs\Haus.Cqrs.csproj" />
+  </ItemGroup>
+
 </Project>
