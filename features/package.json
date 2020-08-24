@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "babel-node index.js run",
-    "test:open": "babel-node index.js open"
+    "test": "babel-node index.js run -i \"[]\"",
+    "test:open": "babel-node index.js open -i \"[]\""
   },
   "dependencies": {
     "@babel/core": "7.11.4",
@@ -13,6 +13,7 @@
     "@babel/plugin-proposal-class-properties": "7.10.4",
     "@babel/preset-env": "7.11.0",
     "cypress": "5.0.0",
+    "haus-runner": "file:../runner",
     "rimraf": "3.0.2",
     "tree-kill": "1.2.2",
     "wait-on": "5.2.0",

@@ -1,29 +1,30 @@
 import cypress from 'cypress';
-import {ALL} from "./web-app-options";
-import {WebApp} from "./web-app";
-import {Database} from "./database";
-import {logger} from "./logger";
+import path from 'path';
+import {HausApp, logger} from 'haus-runner'
 
 const FAILURE_EXIT_CODE = 1;
 const SUCCESS_EXIT_CODE = 0;
+const REPOSITORY_ROOT = path.resolve(path.join(__dirname, '..', '..'))
 
 export class TestExecutor {
     constructor() {
-        this.apps = ALL.map(opts => new WebApp(opts));
-        this.db = new Database();
+        this.runner = new HausApp(REPOSITORY_ROOT);
     }
     
     execute = async (type) => {
         try {
-            await this.clean();
-            await this.start();
+            await this.runner.clean();
+            this.runner.publish();
+            await this.runner.startPublishedApp();
+            await this.runner.waitToForAppToBeReady();
+            
             const result = await this.executeTests(type);
             this.printResult(result);
             return this.wasSuccessful(result)
                 ? SUCCESS_EXIT_CODE
                 : FAILURE_EXIT_CODE;
         } finally {
-            await this.stop();
+            await this.runner.stop();
         }
     }
     
@@ -36,26 +37,6 @@ export class TestExecutor {
             default:
                 throw new Error(`Unknown execution type: ${type}`);
         }
-    }
-    
-    start = async () => {
-        for (let i = 0; i < this.apps.length; i++) {
-            this.apps[i].publish();
-        }
-        const promises = this.apps.map(a => a.start());
-        this.db.start();
-        await Promise.all(promises);
-    }
-    
-    clean = async () => {
-        const promises = this.apps.map(a => a.clean());
-        await Promise.all(promises);
-    }
-    
-    stop = async () => {
-        const promises = this.apps.map(a => a.stop());
-        this.db.stop();
-        await Promise.all(promises);
     }
     
     printResult = (result) => {

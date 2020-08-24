@@ -1,5 +1,5 @@
+import {logger} from 'haus-runner';
 import {TestExecutor} from "./src";
-import {logger} from "./src/logger";
 
 const executor = new TestExecutor();
 

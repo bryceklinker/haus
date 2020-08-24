@@ -1,10 +1,17 @@
 import waitOn from "wait-on";
 import treeKill from "tree-kill";
+import path from "path";
+import rimraf from "rimraf";
 
 import {logger} from "./logger";
 import dotnet from './dotnet-cli';
+const DIST_PATH = path.resolve(path.join(__dirname, 'dist'));
 
 export class WebApp {
+    get outputPath() {
+        return path.resolve(path.join(DIST_PATH, this.name));
+    }
+    
     get baseUrl() {
         return `https://localhost:${this.httpsPort}`;
     }
@@ -14,13 +21,38 @@ export class WebApp {
         return `${httpsGetUrl}/.health`;
     }
 
-    constructor({name, projectPath, httpPort, httpsPort}) {
+    constructor(repositoryRoot, {name, projectPath, httpPort, httpsPort}) {
         this.name = name;
-        this.projectPath = projectPath;
+        this.projectPath = path.join(repositoryRoot, projectPath);
+        logger.info(`${this.name} Project Path: ${this.projectPath}`)
         this.httpPort = httpPort;
         this.httpsPort = httpsPort;
     }
 
+    publish = () => {
+        logger.info(`Publishing ${this.name} to ${this.outputPath}...`)
+        const {success, output} = dotnet.publish({projectPath: this.projectPath, outputPath: this.outputPath});
+        if (success) {
+            logger.info(`Successfully published ${this.name} to ${this.outputPath}`);
+        } else {
+            logger.error(`Failed to publish ${this.name} to ${this.outputPath}\r\n${output}`)
+        }
+    };
+    
+    startPublished = () => {
+        logger.info(`Starting ${this.name} from ${this.outputPath}...`);
+        this.app = dotnet.exec({
+            publishPath: this.outputPath,
+            projectPath: this.projectPath,
+            httpPort: this.httpPort,
+            httpsPort: this.httpsPort
+        });
+        this.app.stdout.on('data', data => logger.info(`[${this.name}]: ${data}`));
+        this.app.stderr.on('data', data => logger.error(`[${this.name}]: ${data}`));
+        this.app.on('exit', () => logger.info(`Exiting ${this.name}`));
+        this.app.on('close', () => logger.info(`Closing ${this.name}`));
+    }
+    
     start = () => {
         logger.info(`Starting ${this.name} from ${this.projectPath}...`);
         this.app = dotnet.run({
@@ -45,6 +77,12 @@ export class WebApp {
         logger.info(`${this.name} is ready at ${this.baseUrl}`);
     }
 
+    clean = async () => {
+        return new Promise((resolve) => {
+            rimraf(this.outputPath, {}, resolve);
+        })
+    }
+    
     stop = async () => {
         return new Promise((resolve) => {
             logger.info(`Killing process: ${this.app.pid}`);

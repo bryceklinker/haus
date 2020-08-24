@@ -1,6 +1,9 @@
 import readline from 'readline';
-import{ HausApp } from "./src/haus-app";
-import {logger} from "./src/logger";
+import path from 'path';
+
+import{ HausApp, logger } from "./src";
+
+const REPOSITORY_ROOT = path.resolve(path.join(__dirname, '..'));
 
 function waitForUserToStop() {
     return new Promise((resolve) => {
@@ -16,9 +19,9 @@ function waitForUserToStop() {
 }
 
 async function main() {
-    const app = new HausApp();
+    const app = new HausApp(REPOSITORY_ROOT);
     try {
-        app.start();
+        await app.start();
         await app.waitToForAppToBeReady();
         logger.info('Haus is ready...');
         await waitForUserToStop();

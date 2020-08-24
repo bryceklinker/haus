@@ -1,7 +1,8 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {useSettings} from "../settings";
-import {UserManager} from "oidc-client";
 import {Loading} from "../loading";
+import {createUserManager, ensureUserIsAuthenticated, AUTH_STATE} from "./auth-handler";
+import {AuthFailure} from "./AuthFailure";
 
 const AuthContext = createContext(null);
 
@@ -10,44 +11,36 @@ export function useCurrentUser() {
     if (context) {
         return context;
     }
-    
+
     throw new Error(`${Function.name} must be used under AuthProvider`);
 }
 
-function isCallback(responseType) {
-    const params = new URLSearchParams(window.location.query);
-    return params.has(responseType);
-}
-
-async function ensureUserIsAuthenticated(userManager, responseType) {
-    const user = isCallback(responseType)
-        ? await userManager.signinRedirectCallback()
-        : await userManager.getUser();
-    
-    if (user) {
-        return user;
+function AuthView({children, state}) {
+    if (state === AUTH_STATE.AUTHENTICATED) {
+        return children
     }
     
-    throw new Error('User is not authenticated');
+    if (state === AUTH_STATE.ERROR) {
+        return <AuthFailure />;
+    }
+    
+    return <Loading />;
 }
 
 export function AuthProvider({children, ...rest}) {
     const settings = useSettings();
-    const [userManager] = useState(new UserManager({
-        authority: settings.authority,
-        client_id: settings.clientId,
-        response_type: settings.responseType,
-        redirect_uri: window.origin
-    }));
-    const [user, setUser] = useState(null);
+    const [userManager] = useState(createUserManager(settings));
+    const [auth, setAuth] = useState({state: AUTH_STATE.UNAUTHENTICATED, user: null});
     useEffect(() => {
         ensureUserIsAuthenticated(userManager, settings.responseType)
-            .then(user => setUser(user))
+            .then(value => setAuth(value))
             .catch(() => userManager.signinRedirect());
-    })
+    });
     return (
-        <AuthContext.Provider value={user}>
-            {user ? children : <Loading />}
+        <AuthContext.Provider value={auth.user} {...rest}>
+            <AuthView auth={auth.state} {...rest}>
+                {children}
+            </AuthView>
         </AuthContext.Provider>
     )
 }
