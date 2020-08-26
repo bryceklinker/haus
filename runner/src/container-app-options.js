@@ -27,6 +27,7 @@ export const SERVICE_BUS_OPTIONS = {
     imageName: 'rabbitmq:3.8.7-management-alpine',
     startArgs: [
         '-p', '15672:15672',
+        '-p', '5672:5672',
         '-e', `RABBITMQ_DEFAULT_USER=haus`,
         '-e', `RABBITMQ_DEFAULT_PASS=4bP0u@miBKxrvTHiWZgR`,
         '--hostname', 'haus-service-bus',

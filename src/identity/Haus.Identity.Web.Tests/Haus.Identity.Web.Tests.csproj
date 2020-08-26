@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\common\Haus.Testing.Utilities\Haus.Testing.Utilities.csproj" />
     <ProjectReference Include="..\Haus.Identity.Web\Haus.Identity.Web.csproj" />
   </ItemGroup>
 

@@ -6,9 +6,12 @@ using Haus.Cqrs.Queries;
 
 namespace Haus.Cqrs
 {
-    public interface ICqrsBus : ICommandBus, IQueryBus, IEventBus
+    public interface ICqrsBus
     {
-        
+        Task ExecuteCommand(ICommand command, CancellationToken token = default);
+        Task<TResult> ExecuteCommand<TResult>(ICommand<TResult> command, CancellationToken token = default);
+        Task<TResult> ExecuteQuery<TResult>(IQuery<TResult> query, CancellationToken token = default);
+        Task Publish<TEvent>(TEvent @event, CancellationToken token = default) where TEvent : IEvent;
     }
     
     public class CqrsBus : ICqrsBus
@@ -24,17 +27,17 @@ namespace Haus.Cqrs
             _eventBus = eventBus;
         }
 
-        public async Task Execute(ICommand command, CancellationToken token = default)
+        public async Task ExecuteCommand(ICommand command, CancellationToken token = default)
         {
             await _commandBus.Execute(command, token).ConfigureAwait(false);
         }
 
-        public async Task<TResult> Execute<TResult>(ICommand<TResult> command, CancellationToken token = default)
+        public async Task<TResult> ExecuteCommand<TResult>(ICommand<TResult> command, CancellationToken token = default)
         {
             return await _commandBus.Execute(command, token).ConfigureAwait(false);
         }
 
-        public async Task<TResult> Execute<TResult>(IQuery<TResult> query, CancellationToken token = default)
+        public async Task<TResult> ExecuteQuery<TResult>(IQuery<TResult> query, CancellationToken token = default)
         {
             return await _queryBus.Execute(query, token).ConfigureAwait(false);
         }
