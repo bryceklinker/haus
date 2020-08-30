@@ -1,33 +1,30 @@
-using Haus.ServiceBus.Common;
-using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
+using System.Threading.Tasks;
+using MassTransit;
+using Microsoft.Extensions.Logging;
 
 namespace Haus.ServiceBus.Publish
 {
     public interface IHausServiceBusPublisher
     {
-        void Publish<TPayload>(ServiceBusMessage<TPayload> message);
+        Task PublishAsync<TPayload>(TPayload payload);
     }
     
     public class HausServiceBusPublisher : IHausServiceBusPublisher
     {
-        private readonly IOptions<ServiceBusOptions> _options;
+        private readonly ILogger _logger;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        private string ExchangeName => _options.Value.ExchangeName;
-        
-        public HausServiceBusPublisher(IOptions<ServiceBusOptions> options)
+        public HausServiceBusPublisher(ILoggerFactory loggerFactory, IPublishEndpoint publishEndpoint)
         {
-            _options = options;
+            _publishEndpoint = publishEndpoint;
+            _logger = loggerFactory.CreateLogger<HausServiceBusPublisher>();
         }
         
-        public void Publish<TPayload>(ServiceBusMessage<TPayload> message)
+        public async Task PublishAsync<TPayload>(TPayload payload)
         {
-            using var connection = _options.Value.CreateConnection();
-            using var model = connection.CreateModel();
-            model.ExchangeDeclare(ExchangeName, ExchangeType.Fanout);
-            var properties = model.CreateBasicProperties();
-            properties.ContentType = "application/json";
-            model.BasicPublish(ExchangeName, "", properties, message.ToBytes());
+            _logger.LogInformation("Publishing message to service bus...");
+            await _publishEndpoint.Publish(payload);
+            _logger.LogInformation("Published message to service bus.");
         }
     }
 }

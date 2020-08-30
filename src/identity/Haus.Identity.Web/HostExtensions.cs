@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Haus.Hosting;
 using Haus.Identity.Web.Common.Storage;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +15,6 @@ namespace Haus.Identity.Web
             await host.MigrateDatabaseAsync<HausIdentityDbContext>();
             await host.MigrateDatabaseAsync<PersistedGrantDbContext>();
             await host.MigrateDatabaseAsync<ConfigurationDbContext>();
-        }
-
-        private static async Task MigrateDatabaseAsync<TContext>(this IHost host)
-            where TContext : DbContext
-        {
-            using var scope = host.Services.CreateScope();
-            await using var context = scope.ServiceProvider.GetRequiredService<TContext>();
-            await context.Database.MigrateAsync();
         }
     }
 }

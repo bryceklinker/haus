@@ -1,46 +1,41 @@
-using System;
 using System.Threading.Tasks;
+using Haus.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Serilog;
-using Serilog.Events;
 
 namespace Haus.Identity.Web
 {
-    public class Program
+    public class Program : HausProgram
     {
+        public Program(string[] args) 
+            : base("Haus Identity Web", args)
+        {
+        }
+
         public static async Task<int> Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .CreateLogger();
-            try
-            {
-                Log.Information("Starting Haus Identity Web...");
-                var host = CreateHostBuilder(args).Build();
-                await host.MigrateDatabasesAsync();
-                await host.RunAsync();
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Log.Fatal(e, "Haus Identity Web stopped unexpectedly.");
-                return 1;
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+            var program = new Program(args);
+            return await program.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog()
+            GetHausHostBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        protected override void ConfigureHost(IHostBuilder builder)
+        {
+            builder.ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
+        }
+
+        protected override async Task BeforeRunAsync(IHost host)
+        {
+            await host.MigrateDatabasesAsync();
+        }
     }
 }

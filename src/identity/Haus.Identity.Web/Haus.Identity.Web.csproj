@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\common\Haus.Cqrs\Haus.Cqrs.csproj" />
+    <ProjectReference Include="..\..\common\Haus.Hosting\Haus.Hosting.csproj" />
     <ProjectReference Include="..\..\common\Haus.ServiceBus\Haus.ServiceBus.csproj" />
     <ProjectReference Include="..\Haus.Identity.Models\Haus.Identity.Models.csproj" />
   </ItemGroup>

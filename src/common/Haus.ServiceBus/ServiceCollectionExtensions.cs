@@ -1,20 +1,33 @@
-using System;
-using Haus.ServiceBus.Common;
+using System.Reflection;
+using GreenPipes;
 using Haus.ServiceBus.Publish;
-using Haus.ServiceBus.Subscribe;
+using MassTransit;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Haus.ServiceBus
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddHausServiceBus(this IServiceCollection services, Action<ServiceBusOptions> configureOptions)
+        public static IServiceCollection AddHausServiceBus(this IServiceCollection services, IConfiguration config, params Assembly[] assemblies)
         {
-            services.AddOptions<ServiceBusOptions>()
-                .Configure(configureOptions);
-
-            return services.AddTransient<IHausServiceBusPublisher, HausServiceBusPublisher>()
-                .AddTransient<IHausServiceBusSubscriber, HausServiceBusSubscriber>();
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumers(assemblies);
+                x.SetKebabCaseEndpointNameFormatter();
+                
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.ConfigureEndpoints(context);
+                    cfg.Host(config["ServiceBus:Hostname"], "/", rabbitConfig =>
+                    {
+                        rabbitConfig.Password(config["ServiceBus:Password"]);
+                        rabbitConfig.Username(config["ServiceBus:Username"]);
+                    });
+                });
+            });
+            return services.AddMassTransitHostedService()
+                .AddTransient<IHausServiceBusPublisher, HausServiceBusPublisher>();;
         }
     }
 }

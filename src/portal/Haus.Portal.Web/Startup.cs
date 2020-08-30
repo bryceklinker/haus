@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Haus.Cqrs;
+using Haus.Portal.Web.Common.Storage;
+using Haus.ServiceBus;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,8 +14,9 @@ namespace Haus.Portal.Web
 {
     public class Startup
     {
+        private static readonly string MigrationsAssembly = typeof(Startup).Assembly.GetName().Name;
         private IConfiguration Config { get; }
-        private string Authority => Config.GetValue<string>("Auth:Authority");
+        private string DbConnectionString => Config.GetValue<string>("DbConnectionString");
 
         public Startup(IConfiguration config)
         {
@@ -27,19 +27,21 @@ namespace Haus.Portal.Web
         {
             services.AddHealthChecks();
             services.AddControllers();
-            services.AddAuthentication()
-                .AddIdentityServerAuthentication(opts =>
-                {
-                    opts.Authority = Authority;
-                });
+            services.AddHausServiceBus(Config, typeof(Startup).Assembly);
+            services.AddHausCqrs(typeof(Startup).Assembly);
+            services.AddAuthentication();
+            services.AddDbContext<HausPortalDbContext>(opts =>
+                opts.UseNpgsql(DbConnectionString,
+                    builder => builder.MigrationsAssembly(MigrationsAssembly))
+            );
             services.AddCors(opts =>
             {
-                opts.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
+                opts.AddDefaultPolicy(policy =>
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             });
             services.AddSpaStaticFiles(opts => opts.RootPath = "client-app/build");
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

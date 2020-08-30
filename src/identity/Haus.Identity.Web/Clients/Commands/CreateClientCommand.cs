@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Haus.Cqrs.Commands;
+using Haus.Identity.Models.Clients;
 using IdentityServer4.Models;
 
 namespace Haus.Identity.Web.Clients.Commands
@@ -22,6 +23,12 @@ namespace Haus.Identity.Web.Clients.Commands
             RedirectUri = redirectUri;
             ClientId = $"{Guid.NewGuid()}";
             Secret = GenerateSecret ? $"{Guid.NewGuid()}" : null;
+        }
+
+        public CreateClientCommand(CreateClientPayload payload)
+            : this(payload.Name)
+        {
+            
         }
 
         public Client ToClient()

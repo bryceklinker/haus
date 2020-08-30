@@ -1,8 +1,5 @@
-using System;
-using System.Threading.Tasks;
 using Haus.Cqrs;
-using Haus.Cqrs.Commands;
-using Haus.Identity.Web.Clients.Commands;
+using Haus.Hosting;
 using Haus.Identity.Web.Common.Storage;
 using Haus.Identity.Web.Users.Entities;
 using Haus.ServiceBus;
@@ -33,14 +30,10 @@ namespace Haus.Identity.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHealthChecks();
-            services.AddHausCqrs(typeof(Startup).Assembly)
-                .AddHausServiceBus(opts =>
-                {
-                    opts.Hostname = Config.ServiceBusHostname();
-                    opts.Username = Config.ServiceBusUsername();
-                    opts.Password = Config.ServiceBusPassword();
-                });
 
+            services.AddHausCqrs(typeof(Startup).Assembly)
+                .AddHausServiceBus(Config, typeof(Startup).Assembly);
+            services.AddHttpContextAccessor();
             services.AddCors(opts => opts.AddDefaultPolicy(policy =>
             {
                 policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
@@ -99,14 +92,6 @@ namespace Haus.Identity.Web
                     spa.UseReactDevelopmentServer("start");
                 }
             });
-            SeedIdentity(app.ApplicationServices).Wait();
-        }
-
-        private async Task SeedIdentity(IServiceProvider serviceProvider)
-        {
-            using var scope = serviceProvider.CreateScope();
-            var cqrsBus = scope.ServiceProvider.GetRequiredService<ICqrsBus>();
-            await cqrsBus.ExecuteCommand((ICommand) new CreatePortalClientCommand(Config.PortalRedirectUri()));
         }
     }
 }
