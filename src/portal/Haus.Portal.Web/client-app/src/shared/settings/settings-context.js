@@ -13,6 +13,7 @@ export function useSettings() {
 }
 
 async function getSettings() {
+    console.log('Getting Settings');
     const response = await fetch('/settings');
     return await response.json();
 }
@@ -23,7 +24,7 @@ export function SettingsProvider({children, ...rest}) {
         getSettings()
             .then(value => setSettings(value))
             .catch(err => console.error(err));
-    }, [settings])
+    }, [])
     return (
         <SettingsContext.Provider value={settings} {...rest}>
             {

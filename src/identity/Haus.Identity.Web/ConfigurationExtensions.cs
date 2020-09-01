@@ -28,5 +28,15 @@ namespace Haus.Identity.Web
         {
             return config.GetValue<string>("DbConnectionString");
         }
+
+        public static string AdminUsername(this IConfiguration config)
+        {
+            return config.GetValue<string>("AdminUser:Username");
+        }
+
+        public static string AdminPassword(this IConfiguration config)
+        {
+            return config.GetValue<string>("AdminUser:Password");
+        }
     }
 }

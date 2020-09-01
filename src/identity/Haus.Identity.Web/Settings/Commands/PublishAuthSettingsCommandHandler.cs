@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Haus.Cqrs.Commands;
 using Haus.Identity.Models.Settings;
 using Haus.ServiceBus.Publish;
-using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Configuration;
 
 namespace Haus.Identity.Web.Settings.Commands
 {
@@ -15,15 +15,17 @@ namespace Haus.Identity.Web.Settings.Commands
     public class PublishAuthSettingsCommandHandler : CommandHandler<PublishAuthSettingsCommand>
     {
         private readonly IHausServiceBusPublisher _publisher;
+        private readonly IConfiguration _config;
 
-        public PublishAuthSettingsCommandHandler(IHausServiceBusPublisher publisher)
+        public PublishAuthSettingsCommandHandler(IHausServiceBusPublisher publisher, IConfiguration config)
         {
             _publisher = publisher;
+            _config = config;
         }
 
         protected override async Task InnerHandle(PublishAuthSettingsCommand command, CancellationToken token = default)
         {
-            await _publisher.PublishAsync(new AuthoritySettingsPayload($"https://localhost:{5003}"));
+            await _publisher.PublishAsync(new AuthoritySettingsPayload(_config.GetValue<string>("AuthorityUrl")));
         }
     }
 }

@@ -16,7 +16,6 @@ export class TestExecutor {
             await this.runner.clean();
             this.runner.publish();
             await this.runner.startPublishedApp();
-            await this.runner.waitToForAppToBeReady();
             
             const result = await this.executeTests(type);
             this.printResult(result);

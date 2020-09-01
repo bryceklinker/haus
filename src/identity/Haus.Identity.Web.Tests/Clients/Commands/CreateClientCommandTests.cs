@@ -18,12 +18,31 @@ namespace Haus.Identity.Web.Tests.Clients.Commands
         }
 
         [Fact]
+        public void WhenConvertedToClientThenSecretIsNotRequiredToGetAToken()
+        {
+            var client = new CreateClientCommand("idk")
+                .ToClient();
+
+            Assert.False(client.RequireClientSecret);
+        }
+        
+        [Fact]
         public void WhenConvertedToClientThenRedirectUriIsPopulated()
         {
             var client = new CreateClientCommand("", redirectUri: "https://localhost:5000")
                 .ToClient();
 
             Assert.Contains("https://localhost:5000", client.RedirectUris);
+        }
+
+        [Fact]
+        public void WhenConvertedToClientThenScopesArePopulated()
+        {
+            var client = new CreateClientCommand("", scopes: new[] {"one", "two"})
+                .ToClient();
+
+            Assert.Contains("one", client.AllowedScopes);
+            Assert.Contains("two", client.AllowedScopes);
         }
 
         [Fact]
@@ -93,12 +112,30 @@ namespace Haus.Identity.Web.Tests.Clients.Commands
         }
 
         [Fact]
-        public void WhenConvertedToClientThenDefaultOriginsAreAllowed()
+        public void WhenConvertedToClientThenRedirectUriOriginIsAllowed()
         {
-            var client = new CreateClientCommand("")
+            var client = new CreateClientCommand("", redirectUri: "https://localhost:5001")
                 .ToClient();
 
-            Assert.Contains("*", client.AllowedCorsOrigins);
+            Assert.Contains("https://localhost:5001", client.AllowedCorsOrigins);
+        }
+
+        [Fact]
+        public void WhenConvertedToClientWithSpecificPathForRedirectUriThenClientAllowsRedirectUriOrigin()
+        {
+            var client = new CreateClientCommand("", redirectUri: "https://localhost:5001/.auth/callback")
+                .ToClient();
+
+            Assert.Contains("https://localhost:5001", client.AllowedCorsOrigins);
+        }
+
+        [Fact]
+        public void WhenConvertedToClientWithDefaultPortThenClientAllowsRedirectUriOrigin()
+        {
+            var client = new CreateClientCommand("", redirectUri: "http://hello.com")
+                .ToClient();
+
+            Assert.Contains("http://hello.com", client.AllowedCorsOrigins);
         }
 
         [Fact]

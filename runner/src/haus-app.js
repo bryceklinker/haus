@@ -19,20 +19,21 @@ export class HausApp {
         const promises = this.containerApps.map(c => c.wait());
         await Promise.all(promises);
 
-        this.webApps.forEach(s => s.startPublished());
+        for (let i = 0; i < this.webApps.length; i++) {
+            await this.webApps[i].startPublished();
+            await this.webApps[i].wait();
+        }
     }
     
     start = async () => {
         this.containerApps.forEach(s => s.start());
         const promises = this.containerApps.map(c => c.wait());
         await Promise.all(promises);
-        
-        this.webApps.forEach(s => s.start());
-    }
-    
-    waitToForAppToBeReady = async () => {
-        const promises = this.webApps.map(s => s.wait());
-        await Promise.all(promises);
+
+        for (let i = 0; i < this.webApps.length; i++) {
+            await this.webApps[i].start();
+            await this.webApps[i].wait();
+        }
     }
     
     stop = async () => {

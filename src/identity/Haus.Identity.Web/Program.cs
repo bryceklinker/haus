@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
 using Haus.Hosting;
+using Haus.Identity.Web.IdentityResources.Commands;
+using Haus.Identity.Web.Users.Commands;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -35,7 +37,10 @@ namespace Haus.Identity.Web
 
         protected override async Task BeforeRunAsync(IHost host)
         {
+            var config = host.Configuration();
             await host.MigrateDatabasesAsync();
+            await host.ExecuteCommand(new CreateDefaultIdentityResourcesCommand());
+            await host.ExecuteCommand(new CreateUserCommand(config.AdminUsername(), config.AdminPassword()));
         }
     }
 }

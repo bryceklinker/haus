@@ -22,7 +22,6 @@ async function main() {
     const app = new HausApp(REPOSITORY_ROOT);
     try {
         await app.start();
-        await app.waitToForAppToBeReady();
         logger.info('Haus is ready...');
         await waitForUserToStop();
     } finally {

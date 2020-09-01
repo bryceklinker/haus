@@ -25,9 +25,6 @@ namespace Haus.Portal.Web.Common.Storage.Migrations.HausPortalDb
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Authority")
-                        .HasColumnType("text");
-
                     b.Property<string>("ClientId")
                         .HasColumnType("text");
 

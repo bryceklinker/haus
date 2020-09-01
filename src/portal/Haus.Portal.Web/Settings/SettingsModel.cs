@@ -1,21 +1,17 @@
-using Microsoft.Extensions.Configuration;
+using System.Text.Json.Serialization;
 
 namespace Haus.Portal.Web.Settings
 {
     public class SettingsModel
     {
         public string Authority { get; set; }
+        
+        [JsonPropertyName("client_id")]
         public string ClientId { get; set; }
+        
+        [JsonPropertyName("response_type")]
         public string ResponseType { get; set; }
-
-        public static SettingsModel FromConfig(IConfiguration config)
-        {
-            return new SettingsModel
-            {
-                Authority = config.GetValue<string>("Auth:Authority"),
-                ClientId = config.GetValue<string>("Auth:ClientId"),
-                ResponseType = config.GetValue<string>("Auth:ResponseType")
-            };
-        }
+        
+        public string Scope { get; set; }
     }
 }

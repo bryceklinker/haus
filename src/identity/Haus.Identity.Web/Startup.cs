@@ -7,11 +7,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace Haus.Identity.Web
@@ -67,7 +65,6 @@ namespace Haus.Identity.Web
                         psqlOpts => { psqlOpts.MigrationsAssembly(MigrationsAssembly); });
                 })
                 .AddDeveloperSigningCredential();
-            services.AddSpaStaticFiles(opts => opts.RootPath = "client-app/build");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -84,14 +81,6 @@ namespace Haus.Identity.Web
                     endpoints.MapHealthChecks("/.health");
                 })
                 .UseStaticFiles();
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "client-app";
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer("start");
-                }
-            });
         }
     }
 }

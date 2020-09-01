@@ -23,7 +23,7 @@ namespace Haus.Identity.Web.Users
         {
             return View("Login", new LoginViewModel
             {
-                ReturntUrl = returnUrl
+                ReturnUrl = returnUrl
             });
         }
 
@@ -32,9 +32,10 @@ namespace Haus.Identity.Web.Users
         {
             if (await viewModel.Login(_signInManager))
                 return Redirect(returnUrl);
+            
             return View("Login", new LoginViewModel
             {
-                ReturntUrl = returnUrl,
+                ReturnUrl = returnUrl,
                 Username = viewModel.Username
             });
         }

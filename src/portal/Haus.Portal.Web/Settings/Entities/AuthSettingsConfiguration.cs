@@ -9,7 +9,6 @@ namespace Haus.Portal.Web.Settings.Entities
         {
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.Authority);
             builder.Property(c => c.ClientId);
             builder.Property(c => c.ClientSecret);
         }

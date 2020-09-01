@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Haus.Portal.Web.Common.Storage;
 using Haus.Portal.Web.Settings.Entities;
@@ -18,7 +17,7 @@ namespace Haus.Portal.Web.Tests.Settings.Queries
         {
             _context = InMemoryDbContextFactory.CreatePortalContext();
             
-            _handler = new GetSettingsQueryHandler(_context);
+            _handler = new GetSettingsQueryHandler(_context, InMemoryConfiguration.Get());
         }
 
         [Fact]
@@ -32,12 +31,34 @@ namespace Haus.Portal.Web.Tests.Settings.Queries
         [Fact]
         public async Task WhenSettingsAreAvailableThenGetsAuthSettingsFromDatabase()
         {
-            AddAuthSettings("my-client-id", "https://authority.com");
+            AddAuthSettings("my-client-id");
 
             var settings = await _handler.Handle(new GetSettingsQuery());
 
             Assert.Equal("my-client-id", settings.ClientId);
-            Assert.Equal("https://authority.com", settings.Authority);
+            Assert.Equal(InMemoryConfiguration.AuthorityUrl, settings.Authority);
+        }
+
+        [Fact]
+        public async Task WhenSettingsAreAvailableThenScopesComeFromAuthSettingsConstants()
+        {
+            AddAuthSettings("my-client-id");
+
+            var settings = await _handler.Handle(new GetSettingsQuery());
+
+            Assert.Contains(AuthSettings.Scopes[0], settings.Scope);
+            Assert.Contains(AuthSettings.Scopes[1], settings.Scope);
+        }
+
+        [Fact]
+        public async Task WhenSettingsAreAvailableThenScopesIncludeDefaultScopes()
+        {
+            AddAuthSettings("idk");
+
+            var settings = await _handler.Handle(new GetSettingsQuery());
+
+            Assert.Contains(OidcConstants.StandardScopes.Profile, settings.Scope);
+            Assert.Contains(OidcConstants.StandardScopes.OpenId, settings.Scope);
         }
 
         [Fact]
@@ -50,11 +71,10 @@ namespace Haus.Portal.Web.Tests.Settings.Queries
             Assert.Equal(OidcConstants.ResponseTypes.Code, settings.ResponseType);
         }
 
-        private void AddAuthSettings(string clientId = null, string authority = null)
+        private void AddAuthSettings(string clientId = null)
         {
             var settings = new AuthSettings
             {
-                Authority = authority,
                 ClientId = clientId
             };
             _context.Add(settings);

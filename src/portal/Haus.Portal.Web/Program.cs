@@ -1,10 +1,17 @@
 using System;
 using System.Threading.Tasks;
+using Haus.Cqrs;
 using Haus.Hosting;
+using Haus.Identity.Models.ApiResources;
+using Haus.Identity.Models.Clients;
 using Haus.Portal.Web.Common.Storage;
+using Haus.Portal.Web.Settings;
+using Haus.Portal.Web.Settings.Entities;
+using Haus.Portal.Web.Settings.Queries;
+using Haus.ServiceBus.Publish;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
 
 namespace Haus.Portal.Web
 {
@@ -36,6 +43,15 @@ namespace Haus.Portal.Web
         protected override async Task BeforeRunAsync(IHost host)
         {
             await host.MigrateDatabaseAsync<HausPortalDbContext>();
+            await WaitForClientSettingsToBeReady(host);
+        }
+
+        private async Task WaitForClientSettingsToBeReady(IHost host)
+        {
+            using var scope = host.Services.CreateScope();
+            var publisher = scope.ServiceProvider.GetRequiredService<IHausServiceBusPublisher>();
+            await publisher.PublishAsync(new CreateApiResourcePayload(AuthSettings.ApiResourceIdentifier, AuthSettings.Scopes, AuthSettings.ClientName));
+            await publisher.PublishAsync(new CreateClientPayload(AuthSettings.ClientName, "https://localhost:5001", AuthSettings.Scopes));
         }
     }
 }

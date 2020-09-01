@@ -29,7 +29,11 @@ namespace Haus.Portal.Web
             services.AddControllers();
             services.AddHausServiceBus(Config, typeof(Startup).Assembly);
             services.AddHausCqrs(typeof(Startup).Assembly);
-            services.AddAuthentication();
+            services.AddAuthentication()
+                .AddIdentityServerAuthentication(opts =>
+                {
+                    opts.Authority = Config.AuthorityUrl();
+                });
             services.AddDbContext<HausPortalDbContext>(opts =>
                 opts.UseNpgsql(DbConnectionString,
                     builder => builder.MigrationsAssembly(MigrationsAssembly))
@@ -37,7 +41,10 @@ namespace Haus.Portal.Web
             services.AddCors(opts =>
             {
                 opts.AddDefaultPolicy(policy =>
-                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
+                    policy.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin()
+                        .AllowCredentials());
             });
             services.AddSpaStaticFiles(opts => opts.RootPath = "client-app/build");
         }

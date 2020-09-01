@@ -1,11 +1,30 @@
 import React from "react";
-import {ThemeProvider, CssBaseline} from '@material-ui/core';
+import {ThemeProvider, CssBaseline, makeStyles} from '@material-ui/core';
 
 import {SettingsProvider} from "../shared/settings";
 import {darkTheme} from "../shared/theming";
-import {AuthProvider} from "../shared/auth";
+import {AuthProvider, useCurrentUser} from "../shared/auth";
 import {Header} from "./Header";
 import {Main} from "./Main";
+import {Loading} from "../shared/loading";
+
+const useStyles = makeStyles(theme => ({
+    spacer: theme.mixins.toolbar
+}))
+function ShellView() {
+    const classes = useStyles();
+    const user = useCurrentUser();
+    if (!user) {
+        return <Loading />;
+    }
+    return (
+        <div>
+            <Header />
+            <div className={classes.spacer} />
+            <Main />
+        </div>
+    );
+}
 
 export function Shell() {
     return (
@@ -13,10 +32,7 @@ export function Shell() {
             <CssBaseline />
             <SettingsProvider>
                 <AuthProvider>
-                    <div>
-                        <Header />
-                        <Main />
-                    </div>
+                    <ShellView />
                 </AuthProvider>
             </SettingsProvider>    
         </ThemeProvider>

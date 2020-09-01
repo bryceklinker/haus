@@ -5,7 +5,7 @@ using Haus.Portal.Web.Settings.Commands;
 using Haus.ServiceBus.Subscribe;
 using MassTransit;
 
-namespace Haus.Portal.Web.Settings.Consumers
+namespace Haus.Portal.Web.Settings.Subscribers
 {
     public class ClientCreatedPayloadSubscriber : IHausServiceBusSubscriber<ClientCreatedPayload>
     {

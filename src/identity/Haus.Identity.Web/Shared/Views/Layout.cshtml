@@ -22,9 +22,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Haus Identity</title>
     <link rel="stylesheet" href="~/css/roboto-fonts.css"/>
+    <link rel="stylesheet" href="~/css/material-icons.css">
+    <link rel="stylesheet" href="~/css/bootstrap-material-design.min.css">
 </head>
 <body>
-@RenderBody()
+@{
+    await Html.RenderPartialAsync("_Header");
+}
+<main class="container">
+    @RenderBody()
+</main>
+
+<script src="~/js/jquery.slim.min.js" asp-append-version="true"></script>
+<script src="~/js/popper.js" asp-append-version="true"></script>
+<script src="~/js/bootstrap-material-design.js" asp-append-version="true"></script>
+<script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
 @await RenderSectionAsync("scripts", false)
 </body>
 </html>
