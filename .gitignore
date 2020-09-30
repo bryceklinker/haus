@@ -9,4 +9,5 @@ dist/
 videos/
 screenshots/
 *.rsa
-*.user
+*.user,
+settings.json

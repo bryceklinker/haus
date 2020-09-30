@@ -1,0 +1,21 @@
+{
+  "name": "haus",
+  "version": "0.0.0",
+  "repository": "git@github.com:bryceklinker/haus.git",
+  "author": "Bryce Klinker <bryce.klinker@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "yarn lerna run test --stream",
+    "build": "yarn lerna run build --stream",
+    "start": "yarn lerna run start --parallel"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "devDependencies": {
+    "lerna": "^3.22.1"
+  }
+}
