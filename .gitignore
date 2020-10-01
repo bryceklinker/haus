@@ -11,3 +11,4 @@ screenshots/
 *.rsa
 *.user,
 settings.json
+zigbee_data/

@@ -1,16 +1,5 @@
-import winston from 'winston';
 import expressWinston from 'express-winston';
-
-const LOGGER_CONFIG = {
-    level: 'info',
-    transports: [
-        new winston.transports.Console()
-    ],
-    format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-    )
-};
+import {LOGGER_CONFIG, logger} from '@haus/logging';
 
 const EXPRESS_LOGGER_CONFIG = {
     ...LOGGER_CONFIG,
@@ -19,6 +8,6 @@ const EXPRESS_LOGGER_CONFIG = {
     colorize: true
 }
 
-export const logger = winston.createLogger(LOGGER_CONFIG);
+export {logger} from '@haus/logging';
 export const expressLogger = expressWinston.logger(EXPRESS_LOGGER_CONFIG);
 export const expressErrorLogger = expressWinston.errorLogger(EXPRESS_LOGGER_CONFIG);

@@ -1,3 +1,7 @@
 module.exports = {
-    testEnvironment: 'node'
+    testEnvironment: 'node',
+    testTimeout: 15000,
+    setupFiles: [
+        '<rootDir>/jest-setup.js'
+    ]
 }

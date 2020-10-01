@@ -337,7 +337,7 @@
     "@babel/helper-remap-async-to-generator" "^7.10.4"
     "@babel/plugin-syntax-async-generators" "^7.8.0"
 
-"@babel/plugin-proposal-class-properties@^7.10.4":
+"@babel/plugin-proposal-class-properties@7.10.4", "@babel/plugin-proposal-class-properties@^7.10.4":
   version "7.10.4"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@babel/plugin-proposal-class-properties/-/@babel/plugin-proposal-class-properties-7.10.4.tgz#a33bf632da390a59c7a8c570045d1115cd778807"
   integrity sha1-ozv2Mto5ClnHqMVwBF0RFc13iAc=
@@ -4795,6 +4795,11 @@ dot-prop@^5.1.0:
   dependencies:
     is-obj "^2.0.0"
 
+dotenv@8.2.0:
+  version "8.2.0"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
+  integrity sha1-l+YZJZradQ7qPk6j4mvO6lQksWo=
+
 duplexer@^0.1.1:
   version "0.1.2"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/duplexer/-/duplexer-0.1.2.tgz#3abe43aef3835f8ae077d136ddce0f276b0400e6"
@@ -8260,7 +8265,7 @@ mqtt-packet@^6.3.2:
     debug "^4.1.1"
     process-nextick-args "^2.0.1"
 
-mqtt@^4.2.1:
+mqtt@4.2.1, mqtt@^4.2.1:
   version "4.2.1"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/mqtt/-/mqtt-4.2.1.tgz#7dbc4a01b5188186db90919c6fce318692c77004"
   integrity sha1-fbxKAbUYgYbbkJGcb84xhpLHcAQ=
@@ -11583,15 +11588,15 @@ utils-merge@1.0.1:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
+uuid@8.3.0, uuid@^8.3.0:
+  version "8.3.0"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
+  integrity sha1-q3OAhcoi3JqMknJeRZsdUH311uo=
+
 uuid@^3.0.1, uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha1-sj5DWK+oogL+ehAK8fX4g/AgB+4=
-
-uuid@^8.3.0:
-  version "8.3.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
-  integrity sha1-q3OAhcoi3JqMknJeRZsdUH311uo=
 
 v8-compile-cache@^2.1.1:
   version "2.1.1"

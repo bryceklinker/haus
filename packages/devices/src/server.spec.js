@@ -1,13 +1,25 @@
-import Controller from 'zigbee2mqtt/lib/controller';
+import {createDevicesServer} from './server';
 
 describe('Server', () => {
-    let controller;
+    let zigbeeFake, server;
 
-    beforeAll(() => {
-        controller = new Controller();
-    })
+    beforeEach(async () => {
+        zigbeeFake = {
+            start: jest.fn().mockResolvedValue(null),
+            stop: jest.fn().mockResolvedValue(null)
+        };
 
-    test('when started then listens for devices', async () => {
-        await controller.start();
+        server = createDevicesServer(zigbeeFake);
     });
+
+    test('when started then zigbee listener is started', async () => {
+        await server.start();
+
+        expect(zigbeeFake.start).toHaveBeenCalled();
+    });
+
+    test('when stopped then zigbee listener is stopped', async () => {
+        await server.stop();
+        expect(zigbeeFake.stop).toHaveBeenCalled();
+    })
 });
