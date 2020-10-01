@@ -1,0 +1,4 @@
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://localhost
+  permit_join: true
