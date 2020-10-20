@@ -19,7 +19,11 @@ describe('discovery-listener', () => {
         await testServer.mqttClient.publish('haus/events', JSON.stringify(message));
 
         await eventually(async () => {
-            expect(await testServer.createDb().findAll(DeviceModel)).toHaveLength(1);
+            const devices = await testServer.createDb().findAll(DeviceModel);
+            expect(devices).toContainEqual(expect.objectContaining({
+                external_id: 'idk',
+                device_config: {friendly_name: 'idk'}
+            }));
         });
     });
 
