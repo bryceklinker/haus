@@ -1,4 +1,7 @@
 import superagent from 'superagent';
+import {createDbFactory} from '../src/common/database';
+import testSettings from './test-settings';
+import {bootstrapApp} from '../src/app/bootstrapper';
 
 function resolveUrl(baseUrl, path) {
     baseUrl = baseUrl.endsWith('/')
@@ -21,10 +24,12 @@ function createServerClient(baseUrl) {
     }
 }
 
-export async function startTestServer(app) {
-    await app.listen(0);
+export async function startTestServer() {
+    const app = bootstrapApp(testSettings);
+    await app.start(0);
     return {
         ...app,
-        client: createServerClient(app.baseUrl)
+        client: createServerClient(app.baseUrl),
+        createDb: createDbFactory(testSettings)
     };
 }

@@ -1,14 +1,13 @@
-import {startTestServer} from '../testing/start-test-server';
-import app from './app';
-import {eventually} from '../testing/eventually';
+import {startTestServer} from '../../testing/start-test-server';
+import {eventually} from '../../testing/eventually';
 
-describe('app', () => {
+describe('discovery-router', () => {
     let testServer, publishedCommands;
 
     beforeAll(async () => {
         publishedCommands = [];
 
-        testServer = await startTestServer(app);
+        testServer = await startTestServer();
         listenForCommands(testServer.mqttClient);
     });
 
@@ -35,7 +34,7 @@ describe('app', () => {
     })
 
     afterAll(() => {
-        testServer.close();
+        testServer.stop();
     });
 
     function listenForCommands(mqttClient) {

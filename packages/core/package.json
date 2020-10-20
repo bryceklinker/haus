@@ -5,6 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build": "babel src --out-dir ./build",
+    "prestart": "yarn build",
+    "start": "node ./build/index.js",
     "test": "jest"
   },
   "dependencies": {
@@ -12,6 +14,8 @@
     "express": "4.17.1",
     "express-winston": "4.0.5",
     "mqtt": "4.2.1",
+    "sequelize": "6.3.5",
+    "sqlite3": "5.0.0",
     "superagent": "6.1.0",
     "winston": "3.3.3"
   }
