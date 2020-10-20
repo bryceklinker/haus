@@ -412,7 +412,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.8.0"
 
-"@babel/plugin-syntax-class-properties@^7.12.1", "@babel/plugin-syntax-class-properties@^7.8.3":
+"@babel/plugin-syntax-class-properties@7.12.1", "@babel/plugin-syntax-class-properties@^7.12.1", "@babel/plugin-syntax-class-properties@^7.8.3":
   version "7.12.1"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@babel/plugin-syntax-class-properties/-/@babel/plugin-syntax-class-properties-7.12.1.tgz#bcb297c5366e79bebadef509549cd93b04f19978"
   integrity sha1-vLKXxTZueb663vUJVJzZOwTxmXg=

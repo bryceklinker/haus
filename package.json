@@ -19,6 +19,7 @@
     "@babel/cli": "7.12.1",
     "@babel/core": "7.12.3",
     "@babel/node": "7.12.1",
+    "@babel/plugin-syntax-class-properties": "7.12.1",
     "@babel/preset-env": "7.12.1",
     "jest": "26.5.3",
     "lerna": "^3.22.1"

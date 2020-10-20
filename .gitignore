@@ -12,3 +12,4 @@ screenshots/
 *.user,
 settings.json
 zigbee_data/
+build/

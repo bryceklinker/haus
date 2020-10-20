@@ -17,4 +17,11 @@ export class DeviceModel extends Model {
     }
 
     static tableName = 'Devices';
+
+    static async createFromNewDevice(payload) {
+        await DeviceModel.create({
+            external_id: payload.friendly_name,
+            device_config: payload
+        })
+    }
 }
