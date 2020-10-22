@@ -5,8 +5,6 @@
   "license": "MIT",
   "scripts": {
     "build": "babel src --out-dir ./build",
-    "prestart": "yarn build",
-    "start": "node ./build/index.js",
     "test": "jest"
   },
   "dependencies": {

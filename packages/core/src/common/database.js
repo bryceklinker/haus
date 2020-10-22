@@ -1,7 +1,7 @@
 import settings from './settings';
 import {Sequelize} from 'sequelize';
 import {DeviceModel} from '../devices/device-model';
-import logger from './logger';
+import {getLogger} from './logger';
 
 let hasInitialized = false;
 export function createDbFactory({connectionString} = settings) {
@@ -11,8 +11,9 @@ export function createDbFactory({connectionString} = settings) {
 class Database {
     constructor(connectionString) {
         this.connectionString = connectionString;
+        this.logger = getLogger();
         this.sequelize = new Sequelize(this.connectionString, {
-            logging: (...args) => logger.info(...args)
+            logging: (...args) => this.logger.info(...args)
         });
     }
 
@@ -27,12 +28,12 @@ class Database {
         }
 
         hasInitialized = true;
-        logger.info('Creating database with connection string', {connectionString: this.connectionString});
+        this.logger.info('Creating database with connection string', {connectionString: this.connectionString});
         DeviceModel.init(DeviceModel.schema, {
             sequelize: this.sequelize,
             modelName: DeviceModel.tableName
         });
         await this.sequelize.sync({alter: true});
-        logger.info('Finished creating database');
+        this.logger.info('Finished creating database');
     };
 }

@@ -1,8 +1,8 @@
 import settings from './settings';
-import winston, {createLogger} from 'winston';
+import winston, {createLogger, log} from 'winston';
 import {logger as createExpressLogger, errorLogger as createExpressErrorLogger} from 'express-winston';
 
-const LOGGER_CONFIG = {
+let LOGGER_CONFIG = {
     level: settings.logLevel,
     meta: true,
     transports: [
@@ -14,12 +14,31 @@ const LOGGER_CONFIG = {
     )
 };
 
-const EXPRESS_LOGGER_CONFIG = {
+let EXPRESS_LOGGER_CONFIG = {
     ...LOGGER_CONFIG,
     expressFormat: true
 }
 
-export const logger = createLogger(LOGGER_CONFIG);
-export const expressLogger = createExpressLogger(EXPRESS_LOGGER_CONFIG);
-export const expressErrorLogger = createExpressErrorLogger(EXPRESS_LOGGER_CONFIG);
-export default logger;
+export function getLogger() {
+    return createLogger(LOGGER_CONFIG);
+}
+
+export function getExpressLogger() {
+    return createExpressLogger(EXPRESS_LOGGER_CONFIG);
+}
+
+export function getExpressErrorLogger() {
+    return createExpressErrorLogger(EXPRESS_LOGGER_CONFIG);
+}
+
+export function configureLogger({logLevel}) {
+    LOGGER_CONFIG = {
+        ...LOGGER_CONFIG,
+        level: logLevel
+    };
+
+    EXPRESS_LOGGER_CONFIG = {
+        ...EXPRESS_LOGGER_CONFIG,
+        level: logLevel
+    }
+}

@@ -1,7 +1,7 @@
 import superagent from 'superagent';
 import {createDbFactory} from '../src/common/database';
 import testSettings from './test-settings';
-import {bootstrapApp} from '../src/app/bootstrapper';
+import {bootstrapApp} from '../src';
 
 function resolveUrl(baseUrl, path) {
     baseUrl = baseUrl.endsWith('/')
