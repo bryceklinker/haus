@@ -19,8 +19,7 @@ async function startRestApi(port, appSettings) {
 }
 
 async function startMqttApp(appSettings) {
-    const mqttClient = await MQTT_CLIENT.getClient();
-    await configureMqttApp(appSettings);
+    const {mqttClient} = await configureMqttApp(appSettings);
     return {
         mqttClient,
         close: () => mqttClient.end()

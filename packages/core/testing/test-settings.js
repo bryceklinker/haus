@@ -1,6 +1,7 @@
 const testSettings = {
     logLevel: 'debug',
-    connectionString: 'sqlite::memory:'
+    connectionString: 'sqlite::memory:',
+    mqttUrl: 'mqtt://localhost'
 };
 
 export default testSettings;
