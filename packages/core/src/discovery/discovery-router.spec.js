@@ -1,5 +1,6 @@
 import {startTestServer} from '../../testing/start-test-server';
-import {eventually} from '../../testing/eventually';
+import {DISCOVERY_MESSAGES} from './discovery-messages';
+import eventually from '../../testing/eventually';
 
 describe('discovery-router', () => {
     let testServer, publishedCommands;
@@ -12,24 +13,20 @@ describe('discovery-router', () => {
     });
 
     test('when starting discovery then start discovery command published', async () => {
-        const response = await testServer.client.post('/discovery/start');
+        const response = await testServer.httpClient.post('/discovery/start');
 
         await eventually(() => {
             expect(response.status).toEqual(200);
-            expect(publishedCommands).toContainEqual({
-                type: 'discovery/start'
-            });
+            expect(publishedCommands).toContainEqual(DISCOVERY_MESSAGES.start());
         });
     });
 
     test('when stopping discovery then stop discovery command published', async () => {
-        const response = await testServer.client.post('/discovery/stop');
+        const response = await testServer.httpClient.post('/discovery/stop');
 
         await eventually(() => {
             expect(response.status).toEqual(200);
-            expect(publishedCommands).toContainEqual({
-                type: 'discovery/stop'
-            });
+            expect(publishedCommands).toContainEqual(DISCOVERY_MESSAGES.stop());
         });
     })
 

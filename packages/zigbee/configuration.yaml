@@ -1,0 +1,10 @@
+homeassistant: false
+permit_join: true
+mqtt:
+  server: 'mqtt://localhost'
+  base_topic: zigbee2mqtt
+serial:
+  adapter: deconz
+devices:
+  '0x00124b001f6fc6b4':
+    friendly_name: '0x00124b001f6fc6b4'

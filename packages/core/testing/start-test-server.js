@@ -2,6 +2,7 @@ import superagent from 'superagent';
 import {createDbFactory} from '../src/common/database';
 import testSettings from './test-settings';
 import {bootstrapApp} from '../src';
+import {configureRestApi} from '../src/app/configure-rest-api';
 
 function resolveUrl(baseUrl, path) {
     baseUrl = baseUrl.endsWith('/')
@@ -24,12 +25,19 @@ function createServerClient(baseUrl) {
     }
 }
 
+export async function startTestRestApi(settings = testSettings) {
+    const app = configureRestApi(settings);
+    return {
+
+    }
+}
+
 export async function startTestServer() {
     const app = bootstrapApp(testSettings);
     await app.start(0);
     return {
         ...app,
-        client: createServerClient(app.baseUrl),
+        httpClient: createServerClient(app.baseUrl),
         createDb: createDbFactory(testSettings)
     };
 }

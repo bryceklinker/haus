@@ -29,7 +29,7 @@ class Database {
 
         hasInitialized = true;
         this.logger.info('Creating database with connection string', {connectionString: this.connectionString});
-        DeviceModel.init(DeviceModel.schema, {
+        DeviceModel.init(DeviceModel.db_schema, {
             sequelize: this.sequelize,
             modelName: DeviceModel.tableName
         });

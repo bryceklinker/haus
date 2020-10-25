@@ -1,7 +1,9 @@
 module.exports = {
     verbose: true,
-    testEnvironment: 'node',
     testPathIgnorePatterns: [
         '<rootDir>/build'
+    ],
+    setupFilesAfterEnv: [
+        '<rootDir>/testing/jest.setup.js'
     ]
 }

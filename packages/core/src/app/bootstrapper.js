@@ -1,6 +1,5 @@
 import settings from '../common/settings';
 import {configureLogger, getLogger} from '../common/logger';
-import MQTT_CLIENT from '../common/mqtt-client';
 import {configureRestApi} from './configure-rest-api';
 import {configureMqttApp} from './configure-mqtt';
 

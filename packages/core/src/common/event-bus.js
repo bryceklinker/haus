@@ -1,6 +1,5 @@
+import {HAUS_TOPICS} from './haus-topics';
 import MQTT_CLIENT from './mqtt-client';
-
-const EVENT_TOPIC = 'haus/events';
 
 let handlers = {};
 let hasSubscribed = false;
@@ -20,7 +19,7 @@ async function ensureSubscribed() {
     }
 
     const client = await MQTT_CLIENT.getClient();
-    client.subscribe(EVENT_TOPIC);
+    client.subscribe(HAUS_TOPICS.EVENTS);
     client.on('message', async (topic, buffer) => {
         const message = JSON.parse(buffer.toString());
         const messageHandlers = handlers[message.type] || [];

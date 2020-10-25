@@ -1,6 +1,6 @@
 import {startTestServer} from '../../testing/start-test-server';
 import {DeviceModel} from '../devices/device-model';
-import {eventually} from '../../testing/eventually';
+import eventually from '../../testing/eventually';
 
 describe('discovery-listener', () => {
     let testServer;

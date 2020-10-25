@@ -1,4 +1,4 @@
-export async function eventually(expectation, interval = 50, timeout = 4000) {
+export default async function eventually(expectation, interval = 50, timeout = 4000) {
     let error = null;
     const endTime = Date.now() + timeout;
     while (endTime >= Date.now()) {

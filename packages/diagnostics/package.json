@@ -1,0 +1,22 @@
+{
+  "name": "@haus/diagnostics",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack --mode production",
+    "test": "jest",
+    "start": "babel-node ./src/server/main.js"
+  },
+  "dependencies": {
+    "@material-ui/core": "4.11.0",
+    "@material-ui/icons": "4.9.1",
+    "buffer": "5.6.1",
+    "express": "4.17.1",
+    "mqtt": "4.2.1",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "socket.io": "2.3.0",
+    "socket.io-client": "2.3.1"
+  }
+}

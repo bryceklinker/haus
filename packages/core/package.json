@@ -4,7 +4,9 @@
   "main": "build/index.js",
   "license": "MIT",
   "scripts": {
-    "build": "babel src --out-dir ./build",
+    "clean": "rimraf ./build",
+    "prebuild": "yarn clean",
+    "build": "babel src --out-dir ./build --ignore 'src/**/*.spec.js'",
     "test": "jest"
   },
   "dependencies": {

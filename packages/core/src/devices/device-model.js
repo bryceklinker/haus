@@ -1,7 +1,7 @@
 import {Model, DataTypes} from 'sequelize';
 
 export class DeviceModel extends Model {
-    static schema = {
+    static db_schema = {
         id: {
             type: DataTypes.BIGINT,
             primaryKey: true,
