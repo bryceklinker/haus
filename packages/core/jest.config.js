@@ -1,7 +1,8 @@
+const base = require('../../jest.config');
+const packageJson = require('./package.json');
+
 module.exports = {
-    verbose: true,
-    testEnvironment: 'node',
-    testPathIgnorePatterns: [
-        '<rootDir>/build'
-    ]
+    ...base,
+    name: packageJson.name,
+    displayName: packageJson.name
 }

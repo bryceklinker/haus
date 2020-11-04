@@ -1,22 +1,13 @@
 {
   "name": "@haus/core",
   "version": "0.0.0",
-  "main": "build/index.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf ./build",
-    "prebuild": "yarn clean",
-    "build": "babel src --out-dir ./build --ignore 'src/**/*.spec.js'",
-    "test": "jest"
+    "build": "tsc"
   },
   "dependencies": {
-    "cors": "2.8.5",
-    "express": "4.17.1",
-    "express-winston": "4.0.5",
-    "mqtt": "4.2.1",
-    "sequelize": "6.3.5",
-    "sqlite3": "5.0.0",
-    "superagent": "6.1.0",
     "winston": "3.3.3"
   }
 }

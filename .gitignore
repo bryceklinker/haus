@@ -13,3 +13,4 @@ screenshots/
 settings.json
 zigbee_data/
 build/
+coverage/

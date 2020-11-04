@@ -1,8 +1,8 @@
 homeassistant: false
 permit_join: true
 mqtt:
-  server: 'mqtt://localhost'
   base_topic: zigbee2mqtt
+  server: 'mqtt://localhost'
 serial:
   adapter: deconz
 devices:
