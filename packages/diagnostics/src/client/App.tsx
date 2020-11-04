@@ -20,6 +20,9 @@ const useStyles = makeStyles(theme => ({
     },
     buffer: theme.mixins.toolbar,
     content: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
         padding: theme.spacing(2)
     }
 }));

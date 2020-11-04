@@ -4,6 +4,7 @@ import {MessagesProvider} from './messages/context/messages.context';
 import {App} from './App';
 import {ThemeProvider} from './common/theming/theme.context';
 
+import './index.scss';
 render(
     <MessagesProvider>
         <ThemeProvider>
