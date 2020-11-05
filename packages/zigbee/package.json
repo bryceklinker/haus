@@ -4,6 +4,8 @@
   "main": "./src/index.js",
   "license": "MIT",
   "scripts": {
+    "clean": "rimraf ./data",
+    "prestart": "yarn clean",
     "start": "cross-env ZIGBEE2MQTT_CONFIG=./configuration.yaml ZIGBEE2MQTT_DATA=./data node ./src/index.js"
   },
   "dependencies": {
