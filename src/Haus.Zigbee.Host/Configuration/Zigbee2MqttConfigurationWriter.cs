@@ -1,6 +1,5 @@
 using System.IO;
 using System.Threading.Tasks;
-using Haus.Zigbee.Host.Options;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Serialization;
 
@@ -24,15 +23,28 @@ namespace Haus.Zigbee.Host.Configuration
 
         public async Task WriteConfigAsync()
         {
-            var configFileDirectory = Path.GetDirectoryName(Options.ConfigFile);
-            if (!Directory.Exists(configFileDirectory))
-            {
-                Directory.CreateDirectory(configFileDirectory);
-            }
-            
+            EnsureConfigDirectoryExists();
+
+            if (ShouldSkipWritingConfigFile())
+                return;
+
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(Options.Config);
             await File.WriteAllTextAsync(Options.ConfigFile, yaml);
+        }
+
+        private void EnsureConfigDirectoryExists()
+        {
+            var configFileDirectory = Path.GetDirectoryName(Options.ConfigFile);
+            if (Directory.Exists(configFileDirectory)) 
+                return;
+            
+            Directory.CreateDirectory(configFileDirectory);
+        }
+
+        private bool ShouldSkipWritingConfigFile()
+        {
+            return !Options.OverwriteConfig && File.Exists(Options.ConfigFile);
         }
     }
 }

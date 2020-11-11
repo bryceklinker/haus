@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Haus.Zigbee.Host.Options;
+using Haus.Zigbee.Host.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

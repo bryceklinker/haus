@@ -1,12 +1,10 @@
-using Haus.Zigbee.Host.Configuration;
-
-namespace Haus.Zigbee.Host.Options
+namespace Haus.Zigbee.Host.Configuration
 {
     public class ZigbeeOptions
     {
+        public bool OverwriteConfig { get; set; } = true;
         public string DataDirectory { get; set; }
         public string ConfigFile { get; set; }
-        
         public Zigbee2MqttConfiguration Config { get; set; }
     }
 }

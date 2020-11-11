@@ -1,6 +1,5 @@
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Node;
-using Haus.Zigbee.Host.Options;
 using Haus.Zigbee.Host.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
