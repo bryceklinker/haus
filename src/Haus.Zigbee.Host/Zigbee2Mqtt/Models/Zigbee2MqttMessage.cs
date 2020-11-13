@@ -4,12 +4,13 @@ using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
 {
-    public class Zigbee2MqttPayload
+    public class Zigbee2MqttMessage
     {
         public string Topic { get; }
         private readonly JObject _root;
         private Zigbee2MqttMeta _meta;
-        
+
+        public string Json => _root.ToString();
         public string Type => _root.Value<string>("type");
         public string Message => _root.Value<string>("message");
         public bool HasMeta => Meta != null;
@@ -25,10 +26,21 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
                     : null;
             }
         }
-        public Zigbee2MqttPayload(string topic, byte[] bytes)
+        
+        public Zigbee2MqttMessage(string topic, byte[] bytes)
+            : this(topic, Encoding.Default.GetString(bytes))
         {
+        }
+
+        public Zigbee2MqttMessage(string topic, string payload)
+            : this(topic, JObject.Parse(payload))
+        {
+        }
+        
+        public Zigbee2MqttMessage(string topic, JObject root)
+        {
+            _root = root;
             Topic = topic;
-            _root = JObject.Parse(Encoding.UTF8.GetString(bytes));
         }
     }
 }

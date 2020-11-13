@@ -1,6 +1,3 @@
-using System.Text.Json;
-using Haus.Core.Models;
-using Haus.Core.Models.Discovery;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
@@ -11,47 +8,28 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
 {
     public interface IZigbeeToHausModelMapper
     {
-        MqttApplicationMessage ToHausEvent(MqttApplicationMessage message);
+        MqttApplicationMessage Map(MqttApplicationMessage message);
     }
 
     public class ZigbeeToHausModelMapper : IZigbeeToHausModelMapper
     {
-        private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
-        private readonly IOptions<HausOptions> _hausOptions;
+        private readonly IMapperFactory _mapperFactory;
 
-        private string EventsTopic => _hausOptions.Value.EventsTopic;
-        
-        public ZigbeeToHausModelMapper(IOptions<ZigbeeOptions> zigbeeOptions, IOptions<HausOptions> hausOptions)
+        public ZigbeeToHausModelMapper(IOptions<HausOptions> hausOptions, IOptions<ZigbeeOptions> zigbeeOptions)
+            : this(new MapperFactory(hausOptions, zigbeeOptions))
         {
-            _zigbeeOptions = zigbeeOptions;
-            _hausOptions = hausOptions;
         }
 
-        public MqttApplicationMessage ToHausEvent(MqttApplicationMessage message)
+        public ZigbeeToHausModelMapper(IMapperFactory mapperFactory)
         {
-            var payload = new Zigbee2MqttPayload(message.Topic, message.Payload);
-            return new MqttApplicationMessage
-            {
-                Topic = EventsTopic,
-                Payload = JsonSerializer.SerializeToUtf8Bytes(ToHausEvent(payload))
-            };
+            _mapperFactory = mapperFactory;
         }
 
-        private HausEvent ToHausEvent(Zigbee2MqttPayload payload)
+        public MqttApplicationMessage Map(MqttApplicationMessage message)
         {
-            return new HausEvent
-            {
-                Type = DeviceDiscoveredModel.Type,
-                Payload = JsonSerializer.Serialize(CreateDeviceDiscovered(payload))
-            };
-        }
-
-        public DeviceDiscoveredModel CreateDeviceDiscovered(Zigbee2MqttPayload payload)
-        {
-            return new DeviceDiscoveredModel
-            {
-                Id = payload.Meta.FriendlyName
-            };
+            var payload = new Zigbee2MqttMessage(message.Topic, message.Payload);
+            var mapper = _mapperFactory.GetMapper(message.Topic);
+            return mapper.Map(payload);
         }
     }
 }

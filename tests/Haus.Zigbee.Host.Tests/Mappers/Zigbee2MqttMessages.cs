@@ -1,5 +1,7 @@
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Haus.Zigbee.Host.Tests.Mappers
 {
@@ -12,7 +14,18 @@ namespace Haus.Zigbee.Host.Tests.Mappers
             bool supported = true,
             string vendor = "")
         {
-            return JsonSerializer.SerializeToUtf8Bytes(new
+            var jObject = InterviewSuccessfulJObject(friendlyName, description, model, supported, vendor);
+            return Encoding.UTF8.GetBytes(jObject.ToString(Formatting.None));
+        }
+
+        public static JObject InterviewSuccessfulJObject(
+            string friendlyName, 
+            string description = "",
+            string model = "",
+            bool supported = true,
+            string vendor = "")
+        {
+            return JObject.FromObject(new
             {
                 type = "pairing",
                 message = "interview_successful",

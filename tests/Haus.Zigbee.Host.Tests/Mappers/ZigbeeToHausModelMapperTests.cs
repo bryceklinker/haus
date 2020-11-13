@@ -1,6 +1,3 @@
-using System.Text.Json;
-using Haus.Core.Models;
-using Haus.Core.Models.Discovery;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
@@ -32,7 +29,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers
             {
                 EventsTopic = HausEventTopic
             });
-            _mapper = new ZigbeeToHausModelMapper(zigbeeOptions, hausOptions);
+            _mapper = new ZigbeeToHausModelMapper(hausOptions, zigbeeOptions);
         }
 
         [Fact]
@@ -44,14 +41,9 @@ namespace Haus.Zigbee.Host.Tests.Mappers
                 Payload = Zigbee2MqttMessages.InterviewSuccessful("this-is-an-id")
             };
 
-            var result = _mapper.ToHausEvent(message);
+            var result = _mapper.Map(message);
 
             Assert.Equal(HausEventTopic, result.Topic);
-            var hausEvent = JsonSerializer.Deserialize<HausEvent>(result.Payload);
-            Assert.Equal(DeviceDiscoveredModel.Type, hausEvent.Type);
-            
-            var hausEventPayload = hausEvent.GetPayload<DeviceDiscoveredModel>();
-            Assert.Equal("this-is-an-id", hausEventPayload.Id);
         }
     }
 }
