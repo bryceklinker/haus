@@ -1,17 +1,17 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Zigbee.Host.Configuration;
-using Haus.Zigbee.Host.Node;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Node;
 using Microsoft.Extensions.Hosting;
 
-namespace Haus.Zigbee.Host.Services
+namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
 {
-    public class ZigBeeWorker : BackgroundService
+    public class NodeZigbeeBackgroundService : BackgroundService
     {
         private readonly INodeZigbeeProcess _zigbeeProcess;
         private readonly IZigbee2MqttConfigurationWriter _zigbee2MqttConfigurationWriter;
 
-        public ZigBeeWorker(INodeZigbeeProcess zigbeeProcess, IZigbee2MqttConfigurationWriter zigbee2MqttConfigurationWriter)
+        public NodeZigbeeBackgroundService(INodeZigbeeProcess zigbeeProcess, IZigbee2MqttConfigurationWriter zigbee2MqttConfigurationWriter)
         {
             _zigbeeProcess = zigbeeProcess;
             _zigbee2MqttConfigurationWriter = zigbee2MqttConfigurationWriter;

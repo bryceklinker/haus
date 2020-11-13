@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node ./Node/js/index.js"
+    "start": "node ./Zigbee2Mqtt/Node/js/index.js"
   },
   "dependencies": {
     "zigbee2mqtt": "1.16.1"

@@ -1,4 +1,4 @@
-namespace Haus.Zigbee.Host.Configuration
+namespace Haus.Zigbee.Host.Zigbee2Mqtt.Configuration
 {
     public class ZigbeeOptions
     {

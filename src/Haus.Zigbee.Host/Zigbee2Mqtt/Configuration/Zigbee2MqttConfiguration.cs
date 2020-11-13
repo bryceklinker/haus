@@ -1,6 +1,6 @@
 using YamlDotNet.Serialization;
 
-namespace Haus.Zigbee.Host.Configuration
+namespace Haus.Zigbee.Host.Zigbee2Mqtt.Configuration
 {
     public class Zigbee2MqttConfiguration
     {

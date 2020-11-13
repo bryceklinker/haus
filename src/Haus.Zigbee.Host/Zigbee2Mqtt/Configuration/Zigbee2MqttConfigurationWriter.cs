@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Serialization;
 
-namespace Haus.Zigbee.Host.Configuration
+namespace Haus.Zigbee.Host.Zigbee2Mqtt.Configuration
 {
     public interface IZigbee2MqttConfigurationWriter
     {

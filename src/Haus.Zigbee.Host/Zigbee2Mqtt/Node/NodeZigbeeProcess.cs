@@ -1,11 +1,11 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Haus.Zigbee.Host.Node
+namespace Haus.Zigbee.Host.Zigbee2Mqtt.Node
 {
     public interface INodeZigbeeProcess : IDisposable
     {

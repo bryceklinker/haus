@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Microsoft.Extensions.Options;
 using Xunit;
 

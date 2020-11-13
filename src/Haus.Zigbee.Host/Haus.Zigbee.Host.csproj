@@ -7,10 +7,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.13" />
     <PackageReference Include="YamlDotNet" Version="8.1.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Haus.Core.Models\Haus.Core.Models.csproj" />
     <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
   </ItemGroup>
 </Project>
