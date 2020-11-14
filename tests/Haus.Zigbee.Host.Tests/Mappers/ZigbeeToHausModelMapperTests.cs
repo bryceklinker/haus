@@ -1,3 +1,7 @@
+using System.Text.Json;
+using Haus.Core.Models;
+using Haus.Core.Models.Sensors;
+using Haus.Core.Models.Sensors.Temperature;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
@@ -43,6 +47,19 @@ namespace Haus.Zigbee.Host.Tests.Mappers
 
             var result = _mapper.Map(message);
 
+            Assert.Equal(HausEventTopic, result.Topic);
+        }
+
+        [Fact]
+        public void WhenFromSensorThenReturnsHausEvent()
+        {
+            var message = new Zigbee2MqttDeviceMessageBuilder(Zigbee2MqttTopic)
+                .WithFriendlyName("some-device-name")
+                .WithIlluminance(4)
+                .BuildMqttMessage();
+
+            var result = _mapper.Map(message);
+            
             Assert.Equal(HausEventTopic, result.Topic);
         }
     }

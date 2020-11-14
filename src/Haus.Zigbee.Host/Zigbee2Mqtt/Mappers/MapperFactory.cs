@@ -1,5 +1,6 @@
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Services;
 using Microsoft.Extensions.Options;
 
@@ -15,6 +16,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
         private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
         private readonly BridgeMessageMapper _bridgeMessageMapper;
         private readonly UnknownMessageMapper _unknownMessageMapper;
+        private readonly DeviceMessageMapper _deviceMessageMapper;
 
         private string ZigbeeTopicName => _zigbeeOptions.Value.Config.Mqtt.BaseTopic;
         
@@ -22,6 +24,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
             : this(
                 new BridgeMessageMapper(hausOptions),
                 new UnknownMessageMapper(hausOptions), 
+                new DeviceMessageMapper(hausOptions), 
                 zigbeeOptions)
         {
         }
@@ -29,15 +32,20 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
         public MapperFactory(
             BridgeMessageMapper bridgeMessageMapper,
             UnknownMessageMapper unknownMessageMapper,
+            DeviceMessageMapper deviceMessageMapper,
             IOptions<ZigbeeOptions> zigbeeOptions)
         {
             _bridgeMessageMapper = bridgeMessageMapper;
             _unknownMessageMapper = unknownMessageMapper;
+            _deviceMessageMapper = deviceMessageMapper;
             _zigbeeOptions = zigbeeOptions;
         }
 
         public IMapper GetMapper(string topic)
         {
+            if (topic.Split('/').Length == 2)
+                return _deviceMessageMapper;
+            
             if (topic.StartsWith($"{ZigbeeTopicName}/bridge"))
                 return _bridgeMessageMapper;
 

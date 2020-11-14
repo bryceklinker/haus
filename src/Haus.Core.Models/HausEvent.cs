@@ -6,10 +6,12 @@ namespace Haus.Core.Models
     {
         public string Type { get; set; }
         public string Payload { get; set; }
-
+        public bool HasPayload => !string.IsNullOrWhiteSpace(Payload);
         public T GetPayload<T>()
         {
-            return JsonSerializer.Deserialize<T>(Payload);
+            return HasPayload
+                ? JsonSerializer.Deserialize<T>(Payload)
+                : default;
         }
     }
 }
