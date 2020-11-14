@@ -13,8 +13,6 @@ namespace Haus.Zigbee.Host
         public static IServiceCollection AddHausZigbee(this IServiceCollection services, IConfiguration config)
         {
             return services
-                .AddTransient<BridgeMessageMapper>()
-                .AddTransient<UnknownMessageMapper>()
                 .AddTransient<IMapperFactory, MapperFactory>()
                 .AddTransient<IZigbeeToHausModelMapper, ZigbeeToHausModelMapper>()
                 .AddTransient<IZigbee2MqttConfigurationWriter, Zigbee2MqttConfigurationWriter>()

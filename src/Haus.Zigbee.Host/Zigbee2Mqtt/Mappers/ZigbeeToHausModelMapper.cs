@@ -16,13 +16,8 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
         private readonly IMapperFactory _mapperFactory;
 
         public ZigbeeToHausModelMapper(IOptions<HausOptions> hausOptions, IOptions<ZigbeeOptions> zigbeeOptions)
-            : this(new MapperFactory(hausOptions, zigbeeOptions))
         {
-        }
-
-        public ZigbeeToHausModelMapper(IMapperFactory mapperFactory)
-        {
-            _mapperFactory = mapperFactory;
+            _mapperFactory = new MapperFactory(hausOptions, zigbeeOptions);
         }
 
         public MqttApplicationMessage Map(MqttApplicationMessage message)

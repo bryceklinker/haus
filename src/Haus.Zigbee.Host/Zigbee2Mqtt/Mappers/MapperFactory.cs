@@ -13,43 +13,26 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
 
     public class MapperFactory : IMapperFactory
     {
+        private readonly IOptions<HausOptions> _hausOptions;
         private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
-        private readonly BridgeMessageMapper _bridgeMessageMapper;
-        private readonly UnknownMessageMapper _unknownMessageMapper;
-        private readonly DeviceMessageMapper _deviceMessageMapper;
 
         private string ZigbeeTopicName => _zigbeeOptions.Value.Config.Mqtt.BaseTopic;
         
         public MapperFactory(IOptions<HausOptions> hausOptions, IOptions<ZigbeeOptions> zigbeeOptions)
-            : this(
-                new BridgeMessageMapper(hausOptions),
-                new UnknownMessageMapper(hausOptions), 
-                new DeviceMessageMapper(hausOptions), 
-                zigbeeOptions)
         {
-        }
-        
-        public MapperFactory(
-            BridgeMessageMapper bridgeMessageMapper,
-            UnknownMessageMapper unknownMessageMapper,
-            DeviceMessageMapper deviceMessageMapper,
-            IOptions<ZigbeeOptions> zigbeeOptions)
-        {
-            _bridgeMessageMapper = bridgeMessageMapper;
-            _unknownMessageMapper = unknownMessageMapper;
-            _deviceMessageMapper = deviceMessageMapper;
+            _hausOptions = hausOptions;
             _zigbeeOptions = zigbeeOptions;
         }
-
+        
         public IMapper GetMapper(string topic)
         {
             if (topic.Split('/').Length == 2)
-                return _deviceMessageMapper;
+                return new DeviceMessageMapper(_hausOptions);
             
             if (topic.StartsWith($"{ZigbeeTopicName}/bridge"))
-                return _bridgeMessageMapper;
+                return new BridgeMessageMapper(_hausOptions);
 
-            return _unknownMessageMapper;
+            return new UnknownMessageMapper(_hausOptions);
         }
     }
 }
