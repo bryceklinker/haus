@@ -1,6 +1,8 @@
+using Haus.Hosting;
+using Haus.Web.Host.Auth;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -8,25 +10,44 @@ namespace Haus.Web.Host
 {
     public class Startup
     {
-        public void ConfigureServices(IServiceCollection services)
+        private const string ClientAppRoot = "./client-app";
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration)
         {
+            _configuration = configuration;
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void ConfigureServices(IServiceCollection services)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            services.AddMvc();
+            services.AddSpaStaticFiles(spa => spa.RootPath = ClientAppRoot);
+            services.AddControllers();
+            services.Configure<AuthOptions>(_configuration.GetSection("Auth"));
+            services.AddCors(opts => opts.AddDefaultPolicy(
+                b => b.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin())
+            );
+        }
 
-            app.UseRouting();
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
+        {
+            app.UseHausRequestLogging()
+                .UseCors()
+                .UseHttpsRedirection()
+                .UseStaticFiles()
+                .UseRouting()
+                .UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            app.UseEndpoints(endpoints =>
+            app.UseSpaStaticFiles();
+            app.UseSpa(spa =>
             {
-                endpoints.MapGet("/", async context =>
+                spa.Options.SourcePath = ClientAppRoot;
+                if (env.IsDevelopment())
                 {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                    spa.UseAngularCliServer("start");
+                }
             });
         }
     }

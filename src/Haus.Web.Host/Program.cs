@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Haus.Hosting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
