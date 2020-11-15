@@ -27,7 +27,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers
         [Fact]
         public void WhenMappedThenTopicIsUnknownTopic()
         {
-            var message = new Zigbee2MqttMessage("", JObject.FromObject(new object()));
+            var message = Zigbee2MqttMessage.FromJObject("", JObject.FromObject(new object()));
             
             var result = _mapper.Map(message);
 
@@ -37,7 +37,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers
         [Fact]
         public void WhenMappedThenZigbeeTopicIsInMessagePayload()
         {
-            var message = new Zigbee2MqttMessage("zigbeetopic", JObject.FromObject(new object()));
+            var message = Zigbee2MqttMessage.FromJObject("zigbeetopic", JObject.FromObject(new object()));
 
             var result = _mapper.Map(message);
 
@@ -48,7 +48,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers
         [Fact]
         public void WhenMapppedThenZigbeePayloadIsInMessagePayload()
         {
-            var message = new Zigbee2MqttMessage("", JObject.FromObject(new
+            var message = Zigbee2MqttMessage.FromJObject("", JObject.FromObject(new
             {
                 Id = "my-id"
             }));

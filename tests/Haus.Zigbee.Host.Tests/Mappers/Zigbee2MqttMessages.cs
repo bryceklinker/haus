@@ -39,5 +39,23 @@ namespace Haus.Zigbee.Host.Tests.Mappers
                 }
             });
         }
+
+        public static byte[] State(string state)
+        {
+            return Encoding.UTF8.GetBytes(state);
+        }
+        
+        public static JObject InterviewStartedJObject()
+        {
+            return JObject.FromObject(new
+            {
+                type = "pairing",
+                message = "interview_started",
+                meta = new
+                {
+                    friendly_name = "friendlyName",
+                }
+            });
+        }
     }
 }

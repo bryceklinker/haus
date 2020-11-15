@@ -1,10 +1,8 @@
-using System.Text.Json;
-using Haus.Core.Models;
-using Haus.Core.Models.Sensors;
-using Haus.Core.Models.Sensors.Temperature;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Factories;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using MQTTnet;
 using Xunit;
@@ -15,6 +13,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers
     {
         private const string Zigbee2MqttTopic = "zigbee2mqtt";
         private const string HausEventTopic = "haus/events";
+        private const string UnknownEventTopic = "haus/unknown";
         private readonly ZigbeeToHausModelMapper _mapper;
 
         public ZigbeeToHausModelMapperTests()
@@ -31,9 +30,11 @@ namespace Haus.Zigbee.Host.Tests.Mappers
             });
             var hausOptions = Options.Create(new HausOptions
             {
-                EventsTopic = HausEventTopic
+                EventsTopic = HausEventTopic,
+                UnknownTopic = UnknownEventTopic
             });
-            _mapper = new ZigbeeToHausModelMapper(hausOptions, zigbeeOptions);
+            
+            _mapper = new ZigbeeToHausModelMapper(hausOptions, zigbeeOptions, new Zigbee2MqttMessageFactory(new NullLogger<Zigbee2MqttMessageFactory>()));
         }
 
         [Fact]
@@ -48,6 +49,20 @@ namespace Haus.Zigbee.Host.Tests.Mappers
             var result = _mapper.Map(message);
 
             Assert.Equal(HausEventTopic, result.Topic);
+        }
+
+        [Fact]
+        public void WhenStateMessageThenReturnsUnknownMessage()
+        {
+            var message = new MqttApplicationMessage
+            {
+                Topic = $"{Zigbee2MqttTopic}/bridge/state",
+                Payload = Zigbee2MqttMessages.State("online")
+            };
+
+            var result = _mapper.Map(message);
+
+            Assert.Equal(UnknownEventTopic, result.Topic);
         }
 
         [Fact]

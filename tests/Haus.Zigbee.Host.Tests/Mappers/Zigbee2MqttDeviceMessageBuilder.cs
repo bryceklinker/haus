@@ -97,7 +97,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers
         {
             try
             {
-                return new Zigbee2MqttMessage($"{_baseTopicName}/{_friendlyName}", _root);
+                return Zigbee2MqttMessage.FromJObject($"{_baseTopicName}/{_friendlyName}", _root);
             }
             finally
             {
