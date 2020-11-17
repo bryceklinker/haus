@@ -1,5 +1,5 @@
 <mat-sidenav-container>
-  <mat-sidenav mode="side" data-testid="nav-drawer" [opened]="isOpen" (openedChange)="handleClosed()">
+  <mat-sidenav mode="side" data-testid="nav-drawer" [opened]="isOpen" (openedChange)="handleClosed($event)">
     <mat-nav-list>
       <a mat-list-item>Diagnostics</a>
     </mat-nav-list>

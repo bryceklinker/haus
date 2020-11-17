@@ -19,4 +19,14 @@ describe('NavDrawerComponent', () => {
 
     expect(drawerClosed.emit).toHaveBeenCalled()
   });
+
+  it('should not notify sidenav closed when opened', () => {
+    const spectator = createComponent({
+      props: {drawerClosed}
+    });
+
+    spectator.triggerEventHandler(MatSidenav, 'openedChange', true);
+
+    expect(drawerClosed.emit).not.toHaveBeenCalled()
+  })
 })

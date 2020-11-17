@@ -10,7 +10,10 @@ export class NavDrawerComponent {
 
   @Output() drawerClosed = new EventEmitter();
 
-  handleClosed() {
+  handleClosed(isOpen: boolean) {
+    if (isOpen)
+      return;
+
     this.drawerClosed.emit();
   }
 }
