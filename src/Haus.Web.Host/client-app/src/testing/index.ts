@@ -1,4 +1,5 @@
+export * from './testing-event-emitter';
 export * from './create-testing-state';
 export * from './testing-store';
 export * from './app-testing.module';
-export * from './render-component';
+export * from './app-component-factory'

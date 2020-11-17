@@ -1,0 +1,22 @@
+import {NavDrawerComponent} from "./nav-drawer.component";
+import {MatSidenav} from "@angular/material/sidenav";
+import {TestingEventEmitter, appComponentFactory} from "../../../../testing";
+
+describe('NavDrawerComponent', () => {
+  let drawerClosed: TestingEventEmitter;
+  const createComponent = appComponentFactory(NavDrawerComponent)
+
+  beforeEach(() => {
+    drawerClosed = new TestingEventEmitter();
+  })
+
+  it('should notify when sidenav closes', () => {
+    const spectator = createComponent({
+      props: {drawerClosed}
+    });
+
+    spectator.triggerEventHandler(MatSidenav, 'openedChange', false);
+
+    expect(drawerClosed.emit).toHaveBeenCalled()
+  });
+})

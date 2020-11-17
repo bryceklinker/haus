@@ -3,17 +3,18 @@ import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {SharedModule} from "../app/shared/shared.module";
 import {RouterTestingModule} from "@angular/router/testing";
-import {SHELL_COMPONENTS} from "../app/shell/components";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
-  declarations: [
-    ...SHELL_COMPONENTS
-  ],
   imports: [
-    SharedModule,
     NoopAnimationsModule,
+    SharedModule,
     HttpClientTestingModule,
-    RouterTestingModule.withRoutes([]),
+    RouterTestingModule.withRoutes([])
+  ],
+  exports: [
+    SharedModule,
+    RouterModule
   ]
 })
 export class AppTestingModule {

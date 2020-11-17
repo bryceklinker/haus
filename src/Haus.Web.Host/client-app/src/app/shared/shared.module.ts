@@ -42,7 +42,6 @@ const MATERIAL_MODULES = [
 ]
 
 @NgModule({
-  declarations: [],
   providers: [
     SettingsService,
   ],

@@ -6,5 +6,13 @@ import {Component} from "@angular/core";
   styleUrls: ['./shell.component.scss']
 })
 export class ShellComponent {
+  isSidenavOpen: boolean = false;
 
+  onMenuClicked() {
+    this.isSidenavOpen = !this.isSidenavOpen;
+  }
+
+  handleDrawerClosed() {
+    this.isSidenavOpen = false;
+  }
 }

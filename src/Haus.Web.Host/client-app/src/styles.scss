@@ -1,4 +1,5 @@
 @import '~@angular/material/theming';
+
 @include mat-core();
 
 $client-app-primary: mat-palette($mat-orange);
@@ -16,5 +17,13 @@ $client-app-theme: mat-light-theme((
 
 @include angular-material-theme($client-app-theme);
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+  display: flex;
+  flex: 1;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

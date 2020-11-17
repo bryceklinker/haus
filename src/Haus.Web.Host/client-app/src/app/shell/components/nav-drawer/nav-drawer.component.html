@@ -1,6 +1,8 @@
 <mat-sidenav-container>
-  <mat-sidenav>
-
+  <mat-sidenav mode="side" data-testid="nav-drawer" [opened]="isOpen" (openedChange)="handleClosed()">
+    <mat-nav-list>
+      <a mat-list-item>Diagnostics</a>
+    </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content>

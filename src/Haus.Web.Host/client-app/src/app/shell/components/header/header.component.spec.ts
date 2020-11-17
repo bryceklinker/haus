@@ -1,16 +1,19 @@
-import {renderComponent} from "../../../../testing";
 import {HeaderComponent} from "./header.component";
-import {TestingEventEmitter} from "../../../../testing/testing-event-emitter";
+import {TestingEventEmitter, appComponentFactory} from "../../../../testing";
+import {byTestId} from "@ngneat/spectator";
 
 describe('HeaderComponent', () => {
-  it('should notify when menu clicked', async () => {
+  const createComponent = appComponentFactory(HeaderComponent)
+
+  it('should notify when menu clicked', () => {
     const menuClick = new TestingEventEmitter();
 
-    const {getByTestId, fireEvent} = await renderComponent(HeaderComponent, {
-      componentProperties: {menuClick}
+    const spectator = createComponent({
+      props: {menuClick}
     });
 
-    await fireEvent.click(getByTestId('menu-btn'));
+    spectator.click(byTestId('menu-btn'));
+
     expect(menuClick.emit).toHaveBeenCalled();
   })
 })

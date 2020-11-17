@@ -12,6 +12,10 @@ const routes: Routes = [
         loadChildren: () => import('./diagnostics/diagnostics.module').then(m => m.DiagnosticsModule)
       }
     ]
+  },
+  {
+    path: '**',
+    redirectTo: '/diagnostics'
   }
 ];
 
