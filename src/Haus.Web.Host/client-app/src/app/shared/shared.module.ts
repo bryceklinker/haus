@@ -19,6 +19,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {HttpClientModule} from "@angular/common/http";
 import {SettingsService} from "./settings";
+import {ThemeService} from "./theming/theme.service";
+import {MatSlideToggle, MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 const MATERIAL_MODULES = [
   MatButtonModule,
@@ -38,12 +40,14 @@ const MATERIAL_MODULES = [
   MatFormFieldModule,
   MatDividerModule,
   MatCheckboxModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatSlideToggleModule,
 ]
 
 @NgModule({
   providers: [
     SettingsService,
+    ThemeService
   ],
   imports: [
     ...MATERIAL_MODULES,

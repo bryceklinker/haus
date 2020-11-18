@@ -7,7 +7,14 @@ $client-app-accent: mat-palette($mat-yellow, A200, A100, A400);
 
 $client-app-warn: mat-palette($mat-red);
 
-$client-app-theme: mat-light-theme((
+$client-dark-theme: mat-dark-theme((
+  color: (
+    primary: $client-app-primary,
+    accent: $client-app-accent,
+    warn: $client-app-warn,
+  )
+));
+$client-light-theme: mat-light-theme((
   color: (
     primary: $client-app-primary,
     accent: $client-app-accent,
@@ -15,7 +22,7 @@ $client-app-theme: mat-light-theme((
   )
 ));
 
-@include angular-material-theme($client-app-theme);
+@include angular-material-theme($client-dark-theme);
 
 html, body {
   height: 100%;
@@ -26,4 +33,12 @@ html, body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.dark-theme {
+  @include angular-material-color($client-dark-theme)
+}
+
+.light-theme {
+  @include angular-material-color($client-light-theme);
 }

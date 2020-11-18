@@ -36,11 +36,9 @@ namespace Haus.Web.Host
             app.UseHausRequestLogging()
                 .UseCors()
                 .UseHttpsRedirection()
-                .UseStaticFiles()
                 .UseRouting()
                 .UseEndpoints(endpoints => { endpoints.MapControllers(); });
-
-            app.UseSpaStaticFiles();
+            
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = ClientAppRoot;
@@ -49,6 +47,8 @@ namespace Haus.Web.Host
                     spa.UseAngularCliServer("start");
                 }
             });
+            app.UseStaticFiles()
+                .UseSpaStaticFiles();
         }
     }
 }

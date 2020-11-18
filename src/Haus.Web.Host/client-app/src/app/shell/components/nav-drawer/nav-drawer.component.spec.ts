@@ -1,6 +1,8 @@
 import {NavDrawerComponent} from "./nav-drawer.component";
 import {MatSidenav} from "@angular/material/sidenav";
 import {TestingEventEmitter, appComponentFactory} from "../../../../testing";
+import {byTestId} from "@ngneat/spectator";
+import {ThemeService} from "../../../shared/theming/theme.service";
 
 describe('NavDrawerComponent', () => {
   let drawerClosed: TestingEventEmitter;

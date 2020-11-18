@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Output} from "@angular/core";
+import {ThemeService} from "../../../shared/theming/theme.service";
 
 @Component({
   selector: 'shell-header',
@@ -8,7 +9,14 @@ import {Component, EventEmitter, Output} from "@angular/core";
 export class HeaderComponent {
   @Output() menuClick = new EventEmitter<void>();
 
+  constructor(private themeService: ThemeService) {
+  }
+
   handleMenuClick() {
     this.menuClick.emit();
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 }

@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {ThemeService} from "../../../shared/theming/theme.service";
 
 @Component({
   selector: 'shell-nav-drawer',
@@ -16,4 +17,6 @@ export class NavDrawerComponent {
 
     this.drawerClosed.emit();
   }
+
+
 }
