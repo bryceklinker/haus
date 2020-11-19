@@ -20,7 +20,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {HttpClientModule} from "@angular/common/http";
 import {SettingsService} from "./settings";
 import {ThemeService} from "./theming/theme.service";
-import {MatSlideToggle, MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 const MATERIAL_MODULES = [
   MatButtonModule,

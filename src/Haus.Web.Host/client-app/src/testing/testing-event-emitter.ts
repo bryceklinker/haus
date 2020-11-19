@@ -1,9 +1,20 @@
 import {EventEmitter} from "@angular/core";
 
-export class TestingEventEmitter extends EventEmitter {
+export class TestingEventEmitter<T = any> extends EventEmitter<T> {
+  private _emittedEvents: Array<T>;
+
+  get emittedEvents(): Array<T> {
+    return this._emittedEvents;
+  }
+
   constructor() {
     super();
+    this._emittedEvents = [];
+    spyOn(this, 'emit').and.callThrough();
+  }
 
-    this.emit = jasmine.createSpy();
+  emit(value: T) {
+    this._emittedEvents.push(value);
+    super.emit(value);
   }
 }

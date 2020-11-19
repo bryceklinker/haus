@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="client-app\src\app\shared\signalr" />
+    <Folder Include="client-app\src\app\diagnostics\reducers" />
   </ItemGroup>
 
   <Target Name="RunBundler" AfterTargets="ComputeFilesToPublish">

@@ -1,36 +1,61 @@
 import {SpectatorOptions, SpectatorServiceOptions} from "@ngneat/spectator";
 import {Action, Store} from "@ngrx/store";
 import {createTestingState} from "./create-testing-state";
-import {AppTestingModule} from "./app-testing.module";
 import {provideMockStore} from "@ngrx/store/testing";
 import {TestingStore} from "./testing-store";
 import {Type} from "@angular/core";
 import {BaseSpectatorOptions} from "@ngneat/spectator/lib/base/options";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {SharedModule} from "../app/shared/shared.module";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
+import {ReplaySubject, Subject} from "rxjs";
+import {provideMockActions} from "@ngrx/effects/testing";
+import {AppState} from "../app/app.state";
+import {Routes} from "@angular/router";
+import {AuthService} from "@auth0/auth0-angular";
+import {createTestingAuthService} from "./testing-auth-service";
+import {SignalREffects} from "ngrx-signalr-core";
+import {EffectsModule} from "@ngrx/effects";
 
-interface BaseOptions extends BaseSpectatorOptions {
-  actions?: Array<Action>;
+export interface BaseOptions extends BaseSpectatorOptions {
+  actions$?: Subject<Action>;
+  state?: AppState;
+  routes?: Routes;
 }
 
-interface ComponentOptions<T> extends SpectatorOptions<T>, BaseOptions {
+export interface ComponentOptions<T> extends SpectatorOptions<T>, BaseOptions {
   props?: Partial<T>;
 }
 
-interface ServiceOptions<T> extends SpectatorServiceOptions<T>, BaseOptions {
+export interface ServiceOptions<T> extends SpectatorServiceOptions<T>, BaseOptions {
 }
 
+
 export function createSpectatorOptions(options: Partial<BaseOptions>): BaseOptions {
-  const initialState = createTestingState(...(options.actions || []));
+  const state = options.state || createTestingState();
+  const actions$ = options.actions$ || new ReplaySubject<Action>();
+  const routes = options.routes || [];
   return {
     ...options,
     imports: [
       ...(options.imports || []),
-      AppTestingModule
+      NoopAnimationsModule,
+      SharedModule,
+      HttpClientTestingModule,
+      RouterTestingModule.withRoutes(routes),
+      EffectsModule.forRoot([SignalREffects])
     ],
     providers: [
       ...(options.providers || []),
-      ...provideMockStore(initialState),
-      {provide: Store, useClass: TestingStore}
-    ]
+      ...provideMockStore({initialState: state}),
+      provideMockActions(() => actions$.asObservable()),
+      {provide: Store, useClass: TestingStore},
+      {provide: AuthService, useFactory: createTestingAuthService}
+    ],
+    state,
+    actions$,
+    routes
   }
 }
 

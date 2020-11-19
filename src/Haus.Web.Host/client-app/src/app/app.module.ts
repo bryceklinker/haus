@@ -13,6 +13,8 @@ import {settingsInitializer} from "./shared/settings";
 import {AuthModule} from "@auth0/auth0-angular";
 import {SHELL_COMPONENTS} from "./shell/components";
 import {ShellComponent} from "./shell/components/shell/shell.component";
+import {signalrReducer} from "ngrx-signalr-core";
+import {AppState} from "./app.state";
 
 @NgModule({
   declarations: [
@@ -23,11 +25,13 @@ import {ShellComponent} from "./shell/components/shell/shell.component";
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
-    StoreModule.forRoot({}, {}),
+    StoreModule.forRoot<AppState>({
+      signalr: signalrReducer
+    }),
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
     EffectsModule.forRoot([]),
     StoreRouterConnectingModule.forRoot(),
-    AuthModule.forRoot()
+    AuthModule.forRoot(),
   ],
   providers: [
     {
