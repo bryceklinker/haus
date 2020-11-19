@@ -1,13 +1,12 @@
-import {createFeatureServiceFactory} from "../../../testing/create-feature-service-factory";
 import {ThemeService} from "./theme.service";
 import {SharedModule} from "../shared.module";
+import {createTestingService} from "../../../testing";
 
 describe('ThemeService', () => {
-  const createService = createFeatureServiceFactory(ThemeService, SharedModule);
   let service: ThemeService;
 
   beforeEach(() => {
-    service = createService().service;
+    service = createTestingService(ThemeService, {imports: [SharedModule]}).service;
   })
 
   it('should default to dark theme', done => {

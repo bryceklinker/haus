@@ -1,33 +1,30 @@
 import {NavDrawerComponent} from "./nav-drawer.component";
 import {MatSidenav} from "@angular/material/sidenav";
-import {TestingEventEmitter, appComponentFactory} from "../../../../testing";
-import {byTestId} from "@ngneat/spectator";
-import {ThemeService} from "../../../shared/theming/theme.service";
+import {renderAppComponent, TestingEventEmitter} from "../../../../testing";
 
 describe('NavDrawerComponent', () => {
   let drawerClosed: TestingEventEmitter;
-  const createComponent = appComponentFactory(NavDrawerComponent)
 
   beforeEach(() => {
     drawerClosed = new TestingEventEmitter();
   })
 
-  it('should notify when sidenav closes', () => {
-    const spectator = createComponent({
-      props: {drawerClosed}
+  it('should notify when sidenav closes', async () => {
+    const {triggerEventHandler} = await renderAppComponent(NavDrawerComponent, {
+      componentProperties: {drawerClosed}
     });
 
-    spectator.triggerEventHandler(MatSidenav, 'openedChange', false);
+    triggerEventHandler(MatSidenav, 'openedChange', false);
 
     expect(drawerClosed.emit).toHaveBeenCalled()
   });
 
-  it('should not notify sidenav closed when opened', () => {
-    const spectator = createComponent({
-      props: {drawerClosed}
+  it('should not notify sidenav closed when opened', async () => {
+    const {triggerEventHandler} = await renderAppComponent(NavDrawerComponent, {
+      componentProperties: {drawerClosed}
     });
 
-    spectator.triggerEventHandler(MatSidenav, 'openedChange', true);
+    triggerEventHandler(MatSidenav, 'openedChange', true);
 
     expect(drawerClosed.emit).not.toHaveBeenCalled()
   })

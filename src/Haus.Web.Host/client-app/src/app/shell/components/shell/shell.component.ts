@@ -23,6 +23,7 @@ export class ShellComponent {
   }
 
   handleDrawerClosed() {
+    console.log('Handling drawer closed');
     this.isSidenavOpen = false;
   }
 }

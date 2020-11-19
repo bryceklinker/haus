@@ -1,17 +1,11 @@
 import {DiagnosticsContainerComponent} from "./diagnostics-container.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
-import {createFeatureComponentFactory} from "../../../../testing/create-feature-component-factory";
-import {signalrConnected} from "ngrx-signalr-core";
-import {DIAGNOSTICS_HUB} from "../../effects/diagnostics-hub";
+import {renderFeatureComponent} from "../../../../testing/render-component";
 
 describe('DiagnosticsContainerComponent', () => {
-  const componentFactory = createFeatureComponentFactory(DiagnosticsContainerComponent, DiagnosticsModule);
-
-  it('should show connection status', () => {
-    const spectator = componentFactory({
-      actions: [signalrConnected(DIAGNOSTICS_HUB)]
+  it('should show connection status', async () => {
+    const {} = await renderFeatureComponent(DiagnosticsContainerComponent, {
+      imports: [DiagnosticsModule]
     });
-
-    expect(spectator.query('connection-status')).toContainText(/[Cc]onnected/i.exec);
   })
 })

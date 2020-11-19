@@ -1,49 +1,37 @@
 import {ShellComponent} from "./shell.component";
 import {NavDrawerComponent} from "../nav-drawer/nav-drawer.component";
-import {byTestId, Spectator} from "@ngneat/spectator";
-import {appComponentFactory} from "../../../../testing";
 import {DARK_THEME_CLASS_NAME} from "../../../shared/theming/theme-palettes";
-import {HeaderComponent} from "../header/header.component";
+import {renderAppComponent, RenderComponentResult} from "../../../../testing";
+import {MatSidenav} from "@angular/material/sidenav";
+import {By} from "@angular/platform-browser";
 
 describe('ShellComponent', () => {
-  const createComponent = appComponentFactory(ShellComponent);
-
   it('should open side nav when menu clicked', async () => {
-    const spectator = createComponent();
+    const result = await renderAppComponent(ShellComponent);
 
-    await clickMenuButton(spectator);
+    await clickMenuButton(result);
 
-    expect(spectator.query(byTestId('nav-drawer'))).toBeVisible()
+    expect(result.getByTestId('nav-drawer').getAttribute('style')).toContain('visible');
   })
 
   it('should close side nav when menu clicked', async () => {
-    const spectator = createComponent();
+    const result = await renderAppComponent(ShellComponent);
 
-    await clickMenuButton(spectator);
-    await clickMenuButton(spectator);
+    await clickMenuButton(result);
+    await clickMenuButton(result);
 
-    expect(spectator.query(byTestId('nav-drawer'))).not.toBeVisible();
+    expect(result.getByTestId('nav-drawer').getAttribute('style')).not.toContain('visible');
   })
 
-  it('should close side nav when side nav closed', async () => {
-    const spectator = createComponent();
+  it('should be dark theme when rendered', async () => {
+    const {container} = await renderAppComponent(ShellComponent);
 
-    await clickMenuButton(spectator);
-    spectator.triggerEventHandler(NavDrawerComponent, 'drawerClosed', null);
-    await spectator.fixture.whenRenderingDone();
-
-    expect(spectator.query(byTestId('nav-drawer'))).not.toBeVisible();
+    expect(container.querySelector('shell-header')).toHaveClass(DARK_THEME_CLASS_NAME);
+    expect(container.querySelector('shell-nav-drawer')).toHaveClass(DARK_THEME_CLASS_NAME);
   })
 
-  it('should be dark theme when rendered', () => {
-    const spectator = createComponent();
-
-    expect(spectator.query('shell-header')).toHaveClass(DARK_THEME_CLASS_NAME);
-    expect(spectator.query('shell-nav-drawer')).toHaveClass(DARK_THEME_CLASS_NAME);
-  })
-
-  async function clickMenuButton(spectator: Spectator<ShellComponent>) {
-    spectator.click(byTestId('menu-btn'));
-    await spectator.fixture.whenRenderingDone();
+  async function clickMenuButton({fireEvent, getByTestId, fixture}: RenderComponentResult<ShellComponent>) {
+    fireEvent.click(getByTestId('menu-btn'));
+    await fixture.whenRenderingDone();
   }
 })

@@ -1,30 +1,29 @@
 import {HeaderComponent} from "./header.component";
-import {TestingEventEmitter, appComponentFactory} from "../../../../testing";
-import {byTestId} from "@ngneat/spectator";
+import {TestingEventEmitter, renderAppComponent} from "../../../../testing";
 import {ThemeService} from "../../../shared/theming/theme.service";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
+import {TestBed} from "@angular/core/testing";
 
 describe('HeaderComponent', () => {
-  const createComponent = appComponentFactory(HeaderComponent)
 
-  it('should notify when menu clicked', () => {
+  it('should notify when menu clicked', async () => {
     const menuClick = new TestingEventEmitter();
 
-    const spectator = createComponent({
-      props: {menuClick}
+    const {fireEvent, getByTestId} = await renderAppComponent(HeaderComponent, {
+      componentProperties:{menuClick}
     });
 
-    spectator.click(byTestId('menu-btn'));
+    fireEvent.click(getByTestId('menu-btn'));
 
     expect(menuClick.emit).toHaveBeenCalled();
   })
 
-  it('should toggle theme when theme toggle clicked', () => {
-    const spectator = createComponent();
-    const themeService = spectator.inject(ThemeService, true);
+  it('should toggle theme when theme toggle clicked', async () => {
+    const {triggerEventHandler} = await renderAppComponent(HeaderComponent);
+    const themeService = TestBed.inject(ThemeService);
     spyOn(themeService, 'toggleTheme').and.callThrough();
 
-    spectator.triggerEventHandler(MatSlideToggle, 'toggleChange', <any>null);
+    triggerEventHandler(MatSlideToggle, 'toggleChange', null);
 
     expect(themeService.toggleTheme).toHaveBeenCalled();
   })

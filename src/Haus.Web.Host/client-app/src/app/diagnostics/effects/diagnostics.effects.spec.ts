@@ -1,4 +1,4 @@
-import {createFeatureTestingEffects, TestingAuthService, TestingHub, initAction, eventually} from "../../../testing";
+import {createTestingEffect,TestingAuthService, TestingHub, initAction, eventually} from "../../../testing";
 import {DiagnosticsEffects} from "./diagnostics.effects";
 import {DiagnosticsModule} from "../diagnostics.module";
 import {Action} from "@ngrx/store";
@@ -7,11 +7,12 @@ import {AuthService} from "@auth0/auth0-angular";
 import {DIAGNOSTICS_HUB} from "./diagnostics-hub";
 import {MqttDiagnosticsMessageModel} from "../models/mqtt-diagnostics-message.model";
 import {DiagnosticsActions} from "../actions";
+import {Subject} from "rxjs";
+import {TestBed} from "@angular/core/testing";
 
 describe('DiagnosticsEffects', () => {
-  const effectsFactory = createFeatureTestingEffects(DiagnosticsEffects, DiagnosticsModule);
   let effects: DiagnosticsEffects;
-  let actions$ = effectsFactory.actions$;
+  let actions$: Subject<Action>;
   let authService: TestingAuthService;
   let testingHub: TestingHub;
   let actionsCollector: Array<Action>;
@@ -21,10 +22,13 @@ describe('DiagnosticsEffects', () => {
   })
 
   beforeEach(() => {
+    const result = createTestingEffect(DiagnosticsEffects, {imports: [DiagnosticsModule]});
+    effects = result.effects;
+    actions$ = result.actions$;
     actionsCollector = [];
-    const spectator = effectsFactory.factory();
-    effects = spectator.service;
-    authService = spectator.inject(AuthService) as TestingAuthService;
+
+    // @ts-ignore
+    authService = TestBed.inject(AuthService) as TestingAuthService;
   })
 
   it('should create hub when initialized', async () => {
