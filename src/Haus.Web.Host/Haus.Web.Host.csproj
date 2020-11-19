@@ -18,10 +18,6 @@
     <_ContentIncludedByDefault Remove="client-app\e2e\tsconfig.json" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="client-app\src\app\diagnostics\reducers" />
-  </ItemGroup>
-
   <Target Name="RunBundler" AfterTargets="ComputeFilesToPublish">
     <Exec Command="yarn install" WorkingDirectory="./client-app" />
     <Exec Command="yarn build" WorkingDirectory="./client-app" />

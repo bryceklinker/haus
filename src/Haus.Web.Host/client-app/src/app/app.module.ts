@@ -13,7 +13,7 @@ import {settingsInitializer} from "./shared/settings";
 import {AuthModule} from "@auth0/auth0-angular";
 import {SHELL_COMPONENTS} from "./shell/components";
 import {ShellComponent} from "./shell/components/shell/shell.component";
-import {signalrReducer} from "ngrx-signalr-core";
+import {SignalREffects, signalrReducer} from "ngrx-signalr-core";
 import {AppState} from "./app.state";
 
 @NgModule({
@@ -29,7 +29,7 @@ import {AppState} from "./app.state";
       signalr: signalrReducer
     }),
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([SignalREffects]),
     StoreRouterConnectingModule.forRoot(),
     AuthModule.forRoot(),
   ],

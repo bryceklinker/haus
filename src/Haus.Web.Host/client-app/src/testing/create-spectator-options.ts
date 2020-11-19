@@ -1,5 +1,5 @@
 import {SpectatorOptions, SpectatorServiceOptions} from "@ngneat/spectator";
-import {Action, Store} from "@ngrx/store";
+import {Action, Store, StoreModule} from "@ngrx/store";
 import {createTestingState} from "./create-testing-state";
 import {provideMockStore} from "@ngrx/store/testing";
 import {TestingStore} from "./testing-store";
@@ -26,15 +26,20 @@ export interface BaseOptions extends BaseSpectatorOptions {
 
 export interface ComponentOptions<T> extends SpectatorOptions<T>, BaseOptions {
   props?: Partial<T>;
+  actions?: Array<Action>;
 }
 
 export interface ServiceOptions<T> extends SpectatorServiceOptions<T>, BaseOptions {
 }
 
 
+export interface CreateComponentOptions<T> {
+  props?: Partial<T>;
+  actions?: Array<Action>;
+}
+
 export function createSpectatorOptions(options: Partial<BaseOptions>): BaseOptions {
-  const state = options.state || createTestingState();
-  const actions$ = options.actions$ || new ReplaySubject<Action>();
+  const {providers, state, actions$} = getTestingProviders(options);
   const routes = options.routes || [];
   return {
     ...options,
@@ -44,14 +49,11 @@ export function createSpectatorOptions(options: Partial<BaseOptions>): BaseOptio
       SharedModule,
       HttpClientTestingModule,
       RouterTestingModule.withRoutes(routes),
-      EffectsModule.forRoot([SignalREffects])
+      EffectsModule.forRoot([SignalREffects]),
+      StoreModule.forRoot({})
     ],
     providers: [
-      ...(options.providers || []),
-      ...provideMockStore({initialState: state}),
-      provideMockActions(() => actions$.asObservable()),
-      {provide: Store, useClass: TestingStore},
-      {provide: AuthService, useFactory: createTestingAuthService}
+      ...providers
     ],
     state,
     actions$,
@@ -85,4 +87,18 @@ export function createComponentOptions<T>(options: ComponentOptions<T>): Compone
     ],
     component: options.component
   }
+}
+
+export function getTestingProviders({actions$ = new ReplaySubject<Action>(), state, providers = []}: { actions$?: Subject<Action>, state?: AppState, providers?: Array<any> }) {
+  return {
+    providers: [
+      ...providers,
+      ...provideMockStore({initialState: state || createTestingState()}),
+      provideMockActions(() => actions$.asObservable()),
+      {provide: Store, useClass: TestingStore},
+      {provide: AuthService, useFactory: createTestingAuthService}
+    ],
+    actions$,
+    state
+  };
 }
