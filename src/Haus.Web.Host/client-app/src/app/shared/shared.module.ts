@@ -21,6 +21,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {SettingsService} from "./settings";
 import {ThemeService} from "./theming/theme.service";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatExpansionModule} from "@angular/material/expansion";
 
 const MATERIAL_MODULES = [
   MatButtonModule,
@@ -42,6 +43,7 @@ const MATERIAL_MODULES = [
   MatCheckboxModule,
   MatDatepickerModule,
   MatSlideToggleModule,
+  MatExpansionModule
 ]
 
 @NgModule({
