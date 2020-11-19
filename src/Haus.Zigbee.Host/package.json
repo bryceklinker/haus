@@ -1,0 +1,12 @@
+{
+  "name": "haus-zigbee-host",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./Zigbee2Mqtt/Node/js/index.js"
+  },
+  "dependencies": {
+    "zigbee2mqtt": "1.16.1"
+  }
+}

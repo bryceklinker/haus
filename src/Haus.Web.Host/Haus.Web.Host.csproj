@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.0" />
+    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.13" />  
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="client-app\e2e\tsconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="client-app\src\app\shared\signalr" />
+  </ItemGroup>
+
+  <Target Name="RunBundler" AfterTargets="ComputeFilesToPublish">
+    <Exec Command="yarn install" WorkingDirectory="./client-app" />
+    <Exec Command="yarn build" WorkingDirectory="./client-app" />
+    <ItemGroup>
+      <DistFiles Include="client-app/build/**" />
+      <ResolvedFiletoPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFiletoPublish>
+    </ItemGroup>
+  </Target>
+
+</Project>

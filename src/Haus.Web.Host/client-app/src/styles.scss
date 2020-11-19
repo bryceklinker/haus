@@ -1,0 +1,40 @@
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+$client-app-primary: mat-palette($mat-orange);
+$client-app-accent: mat-palette($mat-yellow, A200, A100, A400);
+
+$client-app-warn: mat-palette($mat-red);
+
+$client-dark-theme: mat-dark-theme((
+  color: (
+    primary: $client-app-primary,
+    accent: $client-app-accent,
+    warn: $client-app-warn,
+  )
+));
+$client-light-theme: mat-light-theme((
+  color: (
+    primary: $client-app-primary,
+    accent: $client-app-accent,
+    warn: $client-app-warn,
+  )
+));
+
+@include angular-material-theme($client-dark-theme);
+
+html, body {
+  height: 100%;
+  display: flex;
+  flex: 1;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.light-theme {
+  @include angular-material-color($client-light-theme);
+}

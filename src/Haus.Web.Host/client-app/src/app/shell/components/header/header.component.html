@@ -1,0 +1,13 @@
+<header>
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <button mat-icon-button data-testid="menu-btn" (click)="handleMenuClick()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>HAUS</span>
+      <span class="spacer"></span>
+      <mat-slide-toggle data-testid="theme-toggle" (toggleChange)="toggleTheme()"></mat-slide-toggle>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</header>
+
