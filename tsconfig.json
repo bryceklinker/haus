@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.Iterable"
+    ],
+    "declaration": true,
+    "allowJs": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "target": "es5",
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "jsx": "react"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

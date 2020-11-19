@@ -1,0 +1,1 @@
+require('zigbee2mqtt');

@@ -8,7 +8,10 @@ obj/
 dist/
 videos/
 screenshots/
-*.rsa
+settings.json
+zigbee_data/
+build/
+coverage/
 *.user/
 zigbee_data/
 **/*.user
