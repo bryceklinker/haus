@@ -2,6 +2,7 @@ import {HeaderComponent} from "./header.component";
 import {TestingEventEmitter, appComponentFactory} from "../../../../testing";
 import {byTestId} from "@ngneat/spectator";
 import {ThemeService} from "../../../shared/theming/theme.service";
+import {MatSlideToggle} from "@angular/material/slide-toggle";
 
 describe('HeaderComponent', () => {
   const createComponent = appComponentFactory(HeaderComponent)
@@ -18,12 +19,12 @@ describe('HeaderComponent', () => {
     expect(menuClick.emit).toHaveBeenCalled();
   })
 
-  it('should toggle theme when theme toggle clicked', done => {
+  it('should toggle theme when theme toggle clicked', () => {
     const spectator = createComponent();
-    const themeService = spectator.inject(ThemeService);
+    const themeService = spectator.inject(ThemeService, true);
     spyOn(themeService, 'toggleTheme').and.callThrough();
 
-    spectator.click(byTestId('theme-toggle'));
+    spectator.triggerEventHandler(MatSlideToggle, 'toggleChange', <any>null);
 
     expect(themeService.toggleTheme).toHaveBeenCalled();
   })

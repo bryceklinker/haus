@@ -1,4 +1,5 @@
 using Haus.Web.Host.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -17,6 +18,7 @@ namespace Haus.Web.Host.Settings
             _authOptions = authOptions;
         }
 
+        [AllowAnonymous]
         public IActionResult Get()
         {
             return Ok(new ClientSettingsModel

@@ -35,10 +35,6 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-.dark-theme {
-  @include angular-material-color($client-dark-theme)
-}
-
 .light-theme {
   @include angular-material-color($client-light-theme);
 }

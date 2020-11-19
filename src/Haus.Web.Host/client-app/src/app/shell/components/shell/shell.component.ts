@@ -1,4 +1,4 @@
-import {Component, HostBinding, OnDestroy, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {ThemeService} from "../../../shared/theming/theme.service";
 import {Observable, Subscription} from "rxjs";
 
@@ -7,18 +7,11 @@ import {Observable, Subscription} from "rxjs";
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss']
 })
-export class ShellComponent implements OnInit, OnDestroy {
-  private _isDarkTheme: boolean = true;
-  private subscription: Subscription | null = null;
+export class ShellComponent {
   isSidenavOpen: boolean = false;
 
-  @HostBinding("class.dark-theme")
-  get isDarkTheme(): boolean {
-    return this._isDarkTheme;
-  }
-  @HostBinding("class.light-theme")
-  get isLightTheme(): boolean {
-    return !this._isDarkTheme;
+  get themeClass$(): Observable<string> {
+    return this.themeService.themeClass$;
   }
 
   constructor(private themeService: ThemeService) {
@@ -31,15 +24,5 @@ export class ShellComponent implements OnInit, OnDestroy {
 
   handleDrawerClosed() {
     this.isSidenavOpen = false;
-  }
-
-  ngOnDestroy(): void {
-    this.subscription = this.themeService.isDarkTheme$.subscribe(isDarkTheme => {
-      this._isDarkTheme = isDarkTheme;
-    })
-  }
-
-  ngOnInit(): void {
-    this.subscription?.unsubscribe();
   }
 }

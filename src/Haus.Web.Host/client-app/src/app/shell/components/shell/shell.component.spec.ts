@@ -3,6 +3,7 @@ import {NavDrawerComponent} from "../nav-drawer/nav-drawer.component";
 import {byTestId, Spectator} from "@ngneat/spectator";
 import {appComponentFactory} from "../../../../testing";
 import {DARK_THEME_CLASS_NAME} from "../../../shared/theming/theme-palettes";
+import {HeaderComponent} from "../header/header.component";
 
 describe('ShellComponent', () => {
   const createComponent = appComponentFactory(ShellComponent);
@@ -37,7 +38,8 @@ describe('ShellComponent', () => {
   it('should be dark theme when rendered', () => {
     const spectator = createComponent();
 
-    expect(spectator.query(byTestId('shell'))).toHaveClass(DARK_THEME_CLASS_NAME);
+    expect(spectator.query('shell-header')).toHaveClass(DARK_THEME_CLASS_NAME);
+    expect(spectator.query('shell-nav-drawer')).toHaveClass(DARK_THEME_CLASS_NAME);
   })
 
   async function clickMenuButton(spectator: Spectator<ShellComponent>) {

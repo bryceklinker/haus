@@ -4,21 +4,32 @@ import {SharedModule} from "../shared.module";
 
 describe('ThemeService', () => {
   const createService = createFeatureServiceFactory(ThemeService, SharedModule);
+  let service: ThemeService;
 
+  beforeEach(() => {
+    service = createService().service;
+  })
 
   it('should default to dark theme', done => {
-    const spectator = createService();
-    spectator.service.isDarkTheme$.subscribe(isDarkTheme => {
+    service.isDarkTheme$.subscribe(isDarkTheme => {
       expect(isDarkTheme).toEqual(true);
       done();
     })
   })
 
   it('should be in light mode when toggled', done => {
-    const spectator = createService();
-    spectator.service.toggleTheme();
-    spectator.service.isDarkTheme$.subscribe(isDarkTheme => {
+    service.toggleTheme();
+    service.isDarkTheme$.subscribe(isDarkTheme => {
       expect(isDarkTheme).toEqual(false);
+      done();
+    })
+  })
+
+  it('should toggle back to dark mode', done => {
+    service.toggleTheme();
+    service.toggleTheme();
+    service.isDarkTheme$.subscribe(isDarkTheme => {
+      expect(isDarkTheme).toEqual(true);
       done();
     })
   })
