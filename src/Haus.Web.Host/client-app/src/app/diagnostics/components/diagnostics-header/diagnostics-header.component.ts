@@ -6,7 +6,7 @@ import {Component, Input} from "@angular/core";
   styleUrls: ['./diagnostics-header.component.scss']
 })
 export class DiagnosticsHeaderComponent {
-  @Input() isConnected: boolean = false;
+  @Input() isConnected: boolean | null = false;
 
   get status(): string {
     return this.isConnected ? 'connected' : 'disconnected';

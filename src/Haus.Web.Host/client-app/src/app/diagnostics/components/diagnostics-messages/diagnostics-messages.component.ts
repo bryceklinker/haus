@@ -7,5 +7,5 @@ import {MqttDiagnosticsMessageModel} from "../../models/mqtt-diagnostics-message
   styleUrls: ['./diagnostics-messages.component.scss']
 })
 export class DiagnosticsMessagesComponent {
-  @Input() messages: Array<MqttDiagnosticsMessageModel> = [];
+  @Input() messages: Array<MqttDiagnosticsMessageModel> | null = [];
 }

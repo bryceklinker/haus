@@ -1,7 +1,5 @@
 <shell-header [classList]="themeClass$ | async" (menuClick)="onMenuClicked()"></shell-header>
 
 <shell-nav-drawer [classList]="themeClass$ | async" [isOpen]="isSidenavOpen" (drawerClosed)="handleDrawerClosed()">
-  <shell-main-content>
-    <router-outlet></router-outlet>
-  </shell-main-content>
+  <router-outlet></router-outlet>
 </shell-nav-drawer>

@@ -5,7 +5,8 @@ import {DiagnosticsContainerComponent} from "./components/diagnostics-container"
 const routes: Routes = [
   {
     path: '',
-    component: DiagnosticsContainerComponent
+    component: DiagnosticsContainerComponent,
+    pathMatch: 'full'
   }
 ];
 

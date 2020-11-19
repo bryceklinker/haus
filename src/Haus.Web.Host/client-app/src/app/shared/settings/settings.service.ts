@@ -1,23 +1,17 @@
 import {Injectable} from "@angular/core";
 import {SettingsModel} from "./settings.model";
 
+let settingsModel: SettingsModel | null = null;
+
 @Injectable()
 export class SettingsService {
-  private _settings: SettingsModel | null;
-
-  get settings(): SettingsModel {
-    if (this._settings) {
-      return this._settings;
-    }
-
-    throw new Error('Settings was not initialized');
+  static getSettings() {
+    return settingsModel
   }
 
-  constructor() {
-    this._settings = null;
-  }
-
-  init(settings: SettingsModel) {
-    this._settings = settings;
+  static async loadSettings(): Promise<SettingsModel> {
+    console.log('Loading Settings');
+    const response = await fetch('/settings');
+    return settingsModel = await response.json();
   }
 }

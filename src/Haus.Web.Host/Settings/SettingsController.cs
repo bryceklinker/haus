@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Web.Host.Settings
 {
+    [ApiController]
     [Route("settings")]
     public class SettingsController : Controller
     {
@@ -12,6 +13,7 @@ namespace Haus.Web.Host.Settings
 
         private string Domain => _authOptions.Value.Domain;
         private string ClientId => _authOptions.Value.ClientId;
+        private string Audience => _authOptions.Value.Audience;
 
         public SettingsController(IOptions<AuthOptions> authOptions)
         {
@@ -26,7 +28,8 @@ namespace Haus.Web.Host.Settings
                 Auth = new ClientAuthSettingsModel
                 {
                     Domain = Domain,
-                    ClientId = ClientId
+                    ClientId = ClientId,
+                    Audience = Audience
                 }
             });
         }

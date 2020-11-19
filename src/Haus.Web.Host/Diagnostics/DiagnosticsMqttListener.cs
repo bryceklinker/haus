@@ -62,6 +62,7 @@ namespace Haus.Web.Host.Diagnostics
                 Topic = arg.ApplicationMessage.Topic,
                 Payload = GetPayloadFromMqttMessage(arg.ApplicationMessage)
             });
+            _logger.LogInformation("Broadcast mqtt message to clients");
         }
 
         private object GetPayloadFromMqttMessage(MqttApplicationMessage message)
@@ -73,6 +74,7 @@ namespace Haus.Web.Host.Diagnostics
             }
             catch (Exception)
             {
+                _logger.LogInformation("Failed to parse payload", payloadAsString);
                 return payloadAsString;
             }
         }

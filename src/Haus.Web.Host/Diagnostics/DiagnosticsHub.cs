@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Haus.Web.Host.Diagnostics
 {
-    [Authorize]
+    // [Authorize]
     public class DiagnosticsHub : Hub
     {
         public async Task OnMqttMessage(MqttDiagnosticsMessageModel model)

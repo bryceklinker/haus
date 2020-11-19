@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
-import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {INIT} from "@ngrx/store";
+import {Actions, createEffect, ofType, OnInitEffects} from "@ngrx/effects";
+import {Action, INIT} from "@ngrx/store";
 import {map, tap} from "rxjs/operators";
 import {
   createSignalRHub,
@@ -13,14 +13,17 @@ import {DIAGNOSTICS_HUB} from "./diagnostics-hub";
 import {of, merge} from "rxjs";
 import {MqttDiagnosticsMessageModel} from "../models/mqtt-diagnostics-message.model";
 import {DiagnosticsActions} from "../actions";
+import {AuthService} from "@auth0/auth0-angular";
 
 @Injectable()
-export class DiagnosticsEffects {
+export class DiagnosticsEffects implements OnInitEffects {
   init$ = createEffect(() => this.actions$.pipe(
-    ofType(INIT),
+    ofType(DiagnosticsActions.initEffects),
     map(() => createSignalRHub({
       ...DIAGNOSTICS_HUB,
-      options: {}
+      options: {
+        // accessTokenFactory: () => this.auth.getAccessTokenSilently().toPromise()
+      }
     }))
   ));
 
@@ -35,7 +38,12 @@ export class DiagnosticsEffects {
     })
   ))
 
+  // constructor(private actions$: Actions, private auth: AuthService) {
   constructor(private actions$: Actions) {
 
+  }
+
+  ngrxOnInitEffects(): Action {
+    return DiagnosticsActions.initEffects();
   }
 }

@@ -42,22 +42,22 @@ namespace Haus.Web.Host
                 .UseHttpsRedirection()
                 .UseStaticFiles();
 
+            if (!env.IsDevelopment()) app.UseSpaStaticFiles();
+            
             app.UseRouting()
-                .UseAuthentication()
-                .UseAuthorization()
+                // .UseAuthentication()
+                // .UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapHub<DiagnosticsHub>("/hubs/diagnostics");
                     endpoints.MapControllers();
                 });
-
+            
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = ClientAppRoot;
                 if (env.IsDevelopment()) spa.UseAngularCliServer("start");
             });
-
-            app.UseSpaStaticFiles();
         }
     }
 }

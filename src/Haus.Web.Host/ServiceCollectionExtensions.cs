@@ -24,30 +24,31 @@ namespace Haus.Web.Host
         public static IServiceCollection AddAuthenticatedUserRequired(this IServiceCollection services,
             IConfiguration configuration)
         {
-            var authenticatedUserPolicy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-            
-            services.AddAuthentication(opts =>
-            {
-                opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(opts =>
-            {
-                opts.Audience = configuration.GetValue<string>("Auth:Audience");
-                opts.Authority = $"https://{configuration.GetValue<string>("Auth:Domain")}";
-            });
-            return services.AddAuthorization(opts =>
-            {
-                opts.DefaultPolicy = authenticatedUserPolicy;
-                opts.FallbackPolicy = authenticatedUserPolicy;
-            });
+            // var authenticatedUserPolicy = new AuthorizationPolicyBuilder()
+            //     .RequireAuthenticatedUser()
+            //     .Build();
+            //
+            // services.AddAuthentication(opts =>
+            // {
+            //     opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            // }).AddJwtBearer(opts =>
+            // {
+            //     opts.Audience = configuration.GetValue<string>("Auth:Audience");
+            //     opts.Authority = $"https://{configuration.GetValue<string>("Auth:Domain")}";
+            // }).AddCookie();
+            // return services.AddAuthorization(opts =>
+            // {
+            //     opts.DefaultPolicy = authenticatedUserPolicy;
+            // });
+            return services;
         }
 
         public static IServiceCollection AddRestApi(this IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddControllersAsServices();
             return services.AddCors(opts =>
             {
                 opts.AddDefaultPolicy(policy =>
