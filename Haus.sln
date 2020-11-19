@@ -28,6 +28,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Core.Models", "src\Hau
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Web.Host.Tests", "tests\Haus.Web.Host.Tests\Haus.Web.Host.Tests.csproj", "{6B83B5CE-79A3-4608-8D5A-26F0AF7D268C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{34D871CA-FE8F-41D8-9475-D4F93D9200D4}"
+ProjectSection(SolutionItems) = preProject
+	readme.md = readme.md
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
