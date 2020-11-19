@@ -38,3 +38,7 @@ body {
 .light-theme {
   @include angular-material-color($client-light-theme);
 }
+
+.spacer {
+  flex-grow: 1;
+}

@@ -52,7 +52,6 @@ async function renderComponent<T>(component: Type<T>, options: RenderComponentOp
     result.fixture.debugElement.query(By.directive(directive))
       .triggerEventHandler(eventName, eventArg);
   }
-
   return result;
 }
 

@@ -1,0 +1,9 @@
+<mat-card *ngFor="let message of messages" data-testid="diagnostic-message">
+  <mat-card-title>Topic: {{message.topic}}</mat-card-title>
+  <mat-card-content>
+    <mat-card-subtitle>Payload</mat-card-subtitle>
+    <pre>
+      {{message.payload | json}}
+    </pre>
+  </mat-card-content>
+</mat-card>
