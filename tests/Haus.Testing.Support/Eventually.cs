@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Haus.Web.Host.Tests.Support
+namespace Haus.Testing.Support
 {
     public static class Eventually
     {

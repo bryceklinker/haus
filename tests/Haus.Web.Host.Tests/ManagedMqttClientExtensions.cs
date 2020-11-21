@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MQTTnet;
@@ -13,6 +14,21 @@ namespace Haus.Web.Host.Tests
             {
                 Topic = topic,
                 Payload = JsonSerializer.SerializeToUtf8Bytes(payload)
+            });
+        }
+
+        public static async Task SubscribeToAllTopicsAsync(this IManagedMqttClient client, Action<MqttApplicationMessage> handler)
+        {
+            await client.SubscribeToTopicAsync("#", handler);
+        }
+        
+        public static async Task SubscribeToTopicAsync(this IManagedMqttClient client, string topic, Action<MqttApplicationMessage> handler)
+        {
+            await client.SubscribeAsync(topic);
+            client.UseApplicationMessageReceivedHandler(args =>
+            {
+                if (args.ApplicationMessage.Topic == topic || topic == "#") 
+                    handler(args.ApplicationMessage);
             });
         }
     }

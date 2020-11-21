@@ -45,8 +45,8 @@ namespace Haus.Web.Host
             if (!env.IsDevelopment()) app.UseSpaStaticFiles();
             
             app.UseRouting()
-                // .UseAuthentication()
-                // .UseAuthorization()
+                .UseAuthentication()
+                .UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapHub<DiagnosticsHub>("/hubs/diagnostics");

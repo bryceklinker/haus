@@ -1,14 +1,15 @@
 import {render, RenderComponentOptions, RenderResult, fireEvent} from '@testing-library/angular';
 import {Type} from "@angular/core";
 import {Routes} from "@angular/router";
-import {AppState} from "../app/app.state";
-import {TestingStore} from "./testing-store";
-import {Store} from "@ngrx/store";
-import {SharedModule} from "../app/shared/shared.module";
 import {TestBed} from "@angular/core/testing";
+import {Store} from "@ngrx/store";
+import {By} from "@angular/platform-browser";
+
+import {AppState} from "../app/app.state";
+import {SharedModule} from "../app/shared/shared.module";
 import {SHELL_COMPONENTS} from "../app/shell/components";
 import {createTestingModule} from "./create-testing-module";
-import {By} from "@angular/platform-browser";
+import {TestingStore} from "./fakes";
 
 export interface RenderAppComponentOptions<T> extends RenderComponentOptions<T> {
   routes?: Routes;

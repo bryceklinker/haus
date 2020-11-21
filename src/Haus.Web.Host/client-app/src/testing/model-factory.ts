@@ -1,11 +1,12 @@
 import {v4 as uuid} from 'uuid';
-import {MqttDiagnosticsMessageModel} from "../app/diagnostics/models/mqtt-diagnostics-message.model";
+import {DiagnosticsMessageModel} from "../app/diagnostics/models";
 
-function createMqttDiagnosticsMessage(model: Partial<MqttDiagnosticsMessageModel> = {}): MqttDiagnosticsMessageModel {
+function createMqttDiagnosticsMessage(model: Partial<DiagnosticsMessageModel> = {}): DiagnosticsMessageModel {
   return {
     id: model.id || uuid(),
     topic: model.topic || uuid(),
     payload: model.payload || uuid(),
+    timestamp: model.timestamp || new Date().toISOString(),
     replayError: model.replayError,
     isReplaying: model.isReplaying
   };

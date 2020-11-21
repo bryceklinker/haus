@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -18,14 +19,32 @@ namespace Haus.Web.Host.Tests.Support
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var claims = new []
+            return IsAuthenticatedRequest() 
+                ? CreateSuccessResult() 
+                : CreateFailedResult();
+        }
+
+        private static Task<AuthenticateResult> CreateFailedResult()
+        {
+            return Task.FromResult(AuthenticateResult.Fail("You are not authenticated"));
+        }
+
+        private static Task<AuthenticateResult> CreateSuccessResult()
+        {
+            var claims = new[]
             {
-                new Claim("sub", "me"), 
+                new Claim("sub", "me"),
             };
             var identity = new ClaimsIdentity(claims, TestingScheme);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, TestingScheme);
             return Task.FromResult(AuthenticateResult.Success(ticket));
+        }
+
+        private bool IsAuthenticatedRequest()
+        {
+            return Request.Headers.TryGetValue("Authorization", out var value) 
+                   && value.Any(v => v.Contains(TestingScheme));
         }
     }
 }

@@ -4,13 +4,13 @@ import {DiagnosticsModule} from "../diagnostics.module";
 import {Action} from "@ngrx/store";
 import {createHub, createSignalRHub, signalrHubUnstarted} from "ngrx-signalr-core";
 import {DIAGNOSTICS_HUB} from "./diagnostics-hub";
-import {MqttDiagnosticsMessageModel} from "../models/mqtt-diagnostics-message.model";
 import {DiagnosticsActions} from "../actions";
 import {Subject} from "rxjs";
 import {TestBed} from "@angular/core/testing";
 import {HttpTestingController} from "@angular/common/http/testing";
 import {ModelFactory} from "../../../testing/model-factory";
 import {AuthService} from "@auth0/auth0-angular";
+import {DiagnosticsMessageModel} from "../models";
 
 describe('DiagnosticsEffects', () => {
   let effects: DiagnosticsEffects;
@@ -77,7 +77,7 @@ describe('DiagnosticsEffects', () => {
 
     actions$.next(signalrHubUnstarted(DIAGNOSTICS_HUB));
     const model = ModelFactory.createMqttDiagnosticsMessage();
-    testingHub.publish<MqttDiagnosticsMessageModel>('OnMqttMessage', model)
+    testingHub.publish<DiagnosticsMessageModel>('OnMqttMessage', model)
 
     await eventually(() => {
       expect(actionsCollector).toContainEqual(DiagnosticsActions.messageReceived(model));
@@ -89,7 +89,7 @@ describe('DiagnosticsEffects', () => {
 
     actions$.next(DiagnosticsActions.replayMessageRequest(ModelFactory.createMqttDiagnosticsMessage()));
     await eventually(() => {
-      httpController.match('/diagnostics/replay').forEach(r => r.flush(204));
+      httpController.match('/api/diagnostics/replay').forEach(r => r.flush(204));
       expect(actionsCollector).toContainEqual(DiagnosticsActions.replayMessageSuccess());
     })
   })
@@ -100,7 +100,7 @@ describe('DiagnosticsEffects', () => {
     let model = ModelFactory.createMqttDiagnosticsMessage();
     actions$.next(DiagnosticsActions.replayMessageRequest(model));
     await eventually(() => {
-      httpController.match('/diagnostics/replay').forEach(r => r.error(new ErrorEvent('bad things')));
+      httpController.match('/api/diagnostics/replay').forEach(r => r.error(new ErrorEvent('bad things')));
       expect(actionsCollector).toContainEqual({
         type: DiagnosticsActions.replayMessageFailed.type,
         payload: {

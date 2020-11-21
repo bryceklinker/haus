@@ -3,7 +3,8 @@ import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {selectDiagnosticsMessages, selectIsDiagnosticHubConnected} from "../../reducers/diagnostics.reducer";
-import {MqttDiagnosticsMessageModel} from "../../models/mqtt-diagnostics-message.model";
+import {DiagnosticsActions} from "../../actions";
+import {DiagnosticsMessageModel} from "../../models";
 
 @Component({
   selector: 'diagnostics-container',
@@ -12,10 +13,14 @@ import {MqttDiagnosticsMessageModel} from "../../models/mqtt-diagnostics-message
 })
 export class DiagnosticsContainerComponent {
   isDiagnosticsConnected$: Observable<boolean>;
-  diagnosticMessages$: Observable<Array<MqttDiagnosticsMessageModel>>;
+  diagnosticMessages$: Observable<Array<DiagnosticsMessageModel>>;
 
   constructor(private store: Store<AppState>) {
     this.isDiagnosticsConnected$ = store.select(selectIsDiagnosticHubConnected);
     this.diagnosticMessages$ = store.select(selectDiagnosticsMessages);
+  }
+
+  replayMessage($event: DiagnosticsMessageModel) {
+    this.store.dispatch(DiagnosticsActions.replayMessageRequest($event));
   }
 }

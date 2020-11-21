@@ -11,6 +11,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\Haus.Core\Haus.Core.csproj" />
     <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
   </ItemGroup>
 

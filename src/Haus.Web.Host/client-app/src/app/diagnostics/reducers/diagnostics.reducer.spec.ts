@@ -1,5 +1,5 @@
-import {diagnosticsReducer} from "./diagnostics.reducer";
-import {runActionsThroughReducer} from "../../../testing";
+import {diagnosticsReducer, selectDiagnosticsMessages} from "./diagnostics.reducer";
+import {createTestingState, runActionsThroughReducer} from "../../../testing";
 import {DiagnosticsActions} from "../actions";
 import {ModelFactory} from "../../../testing/model-factory";
 
@@ -43,5 +43,21 @@ describe('diagnosticsReducer', () => {
       isReplaying: false,
       replayError: error
     })
+  })
+
+  it('should select messages in most recent event first', () => {
+    const first = ModelFactory.createMqttDiagnosticsMessage({timestamp: '2020-09-13'});
+    const second = ModelFactory.createMqttDiagnosticsMessage({timestamp: '2020-09-12'});
+    const third = ModelFactory.createMqttDiagnosticsMessage({timestamp: '2020-09-11'});
+
+    const appState = createTestingState(
+      DiagnosticsActions.messageReceived(third),
+      DiagnosticsActions.messageReceived(first),
+      DiagnosticsActions.messageReceived(second))
+
+    const ordered = selectDiagnosticsMessages(appState)
+    expect(ordered[0]).toEqual(first);
+    expect(ordered[1]).toEqual(second);
+    expect(ordered[2]).toEqual(third);
   })
 })

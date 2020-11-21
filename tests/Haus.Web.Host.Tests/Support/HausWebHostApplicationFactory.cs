@@ -1,6 +1,9 @@
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Haus.Core.Common;
+using Haus.Testing.Support.Fakes;
 using Haus.Web.Host.Common.Mqtt;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -14,10 +17,17 @@ namespace Haus.Web.Host.Tests.Support
 {
     public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
     {
+        private readonly FakeClock _clock;
+
+        public HausWebHostApplicationFactory()
+        {
+            _clock = new FakeClock();
+        }
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureTestServices(services =>
             {
+                services.AddSingleton<IClock>(_clock);
                 services.AddAuthentication(opts =>
                     {
                         opts.DefaultAuthenticateScheme = TestingAuthenticationHandler.TestingScheme;
@@ -58,6 +68,11 @@ namespace Haus.Web.Host.Tests.Support
             using var scope = Services.CreateScope();
             var creator = scope.ServiceProvider.GetRequiredService<IMqttClientCreator>();
             return await creator.CreateClient();
+        }
+
+        public void SetClockTime(DateTime time)
+        {
+            _clock.SetNow(time);
         }
     }
 }

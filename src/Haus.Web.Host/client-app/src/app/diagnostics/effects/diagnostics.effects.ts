@@ -11,11 +11,11 @@ import {
 } from "ngrx-signalr-core";
 import {DIAGNOSTICS_HUB} from "./diagnostics-hub";
 import {of, merge} from "rxjs";
-import {MqttDiagnosticsMessageModel} from "../models/mqtt-diagnostics-message.model";
 import {DiagnosticsActions} from "../actions";
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "@auth0/auth0-angular";
 import {fromObservableToPromise} from "../../shared/rxjs";
+import {DiagnosticsMessageModel} from "../models";
 
 @Injectable()
 export class DiagnosticsEffects implements OnInitEffects {
@@ -33,7 +33,7 @@ export class DiagnosticsEffects implements OnInitEffects {
     ofType(SIGNALR_HUB_UNSTARTED),
     ofHub(DIAGNOSTICS_HUB),
     mergeMapHubToAction(({hub}) => {
-      const onMessage$ = hub.on<MqttDiagnosticsMessageModel>('OnMqttMessage').pipe(
+      const onMessage$ = hub.on<DiagnosticsMessageModel>('OnMqttMessage').pipe(
         map((model) => DiagnosticsActions.messageReceived(model))
       );
       return merge(onMessage$, of(startSignalRHub(hub)));
@@ -42,7 +42,7 @@ export class DiagnosticsEffects implements OnInitEffects {
 
   replayMessage$ = createEffect(() => this.actions$.pipe(
     ofType(DiagnosticsActions.replayMessageRequest),
-    mergeMap(({payload}) => this.http.post('/diagnostics/replay', payload).pipe(
+    mergeMap(({payload}) => this.http.post('/api/diagnostics/replay', payload).pipe(
       map(() => DiagnosticsActions.replayMessageSuccess()),
       catchError(err => of(DiagnosticsActions.replayMessageFailed(payload, err)))
     ))

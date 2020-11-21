@@ -1,5 +1,5 @@
-import {MqttDiagnosticsMessageModel} from "./models/mqtt-diagnostics-message.model";
+import {DiagnosticsMessageModel} from "./models";
 
 export interface DiagnosticsState {
-  messages: Array<MqttDiagnosticsMessageModel>;
+  messages: Array<DiagnosticsMessageModel>;
 }

@@ -4,6 +4,7 @@ import {createTestingState, renderFeatureComponent} from "../../../../testing";
 import {signalrConnected} from "ngrx-signalr-core";
 import {DIAGNOSTICS_HUB} from "../../effects/diagnostics-hub";
 import {DiagnosticsActions} from "../../actions";
+import {ModelFactory} from "../../../../testing/model-factory";
 
 describe('DiagnosticsContainerComponent', () => {
   it('should show connection status', async () => {
@@ -16,12 +17,25 @@ describe('DiagnosticsContainerComponent', () => {
   })
 
   it('should show messages', async () => {
+    const model = ModelFactory.createMqttDiagnosticsMessage({payload: 'idk'});
     const {container} = await renderFeatureComponent(DiagnosticsContainerComponent, {
       imports: [DiagnosticsModule],
-      state: createTestingState(DiagnosticsActions.messageReceived({topic: 'one', payload: 'idk'}))
+      state: createTestingState(DiagnosticsActions.messageReceived(model))
     });
 
-    expect(container).toHaveTextContent('one')
-    expect(container).toHaveTextContent('idk')
+    expect(container).toHaveTextContent(model.topic);
+    expect(container).toHaveTextContent(model.payload);
+  })
+
+  it('should dispatch replay message request', async () => {
+    const model = ModelFactory.createMqttDiagnosticsMessage();
+    const {getByTestId, fireEvent, store} = await renderFeatureComponent(DiagnosticsContainerComponent, {
+      imports: [DiagnosticsModule],
+      state: createTestingState(DiagnosticsActions.messageReceived(model))
+    })
+
+    fireEvent.click(getByTestId('replay-message-btn'));
+
+    expect(store.actions).toContainEqual(DiagnosticsActions.replayMessageRequest(model));
   })
 })

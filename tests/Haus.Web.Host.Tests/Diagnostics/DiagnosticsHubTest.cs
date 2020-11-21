@@ -1,19 +1,23 @@
 using System;
 using System.Threading.Tasks;
-using Haus.Web.Host.Diagnostics.Models;
+using Haus.Core.Models.Diagnostics;
+using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
 using Microsoft.AspNetCore.SignalR.Client;
 using Xunit;
 
 namespace Haus.Web.Host.Tests.Diagnostics
 {
-    public class DiagnosticsHubTest : IClassFixture<HausWebHostApplicationFactory>
+    [Collection(HausWebHostCollectionFixture.Name)]
+    public class DiagnosticsHubTest
     {
+        private static readonly DateTime CurrentTime = new DateTime(2020, 3, 9, 2, 3, 4);
         private readonly HausWebHostApplicationFactory _factory;
 
         public DiagnosticsHubTest(HausWebHostApplicationFactory factory)
         {
             _factory = factory;
+            _factory.SetClockTime(CurrentTime);
         }
 
         [Fact]
@@ -34,6 +38,7 @@ namespace Haus.Web.Host.Tests.Diagnostics
                 Assert.True(Guid.TryParse(received.Id, out _));
                 Assert.Equal("my-topic", received.Topic);
                 Assert.Equal("this is data", received.Payload.ToString());
+                Assert.Equal(CurrentTime, received.Timestamp);
             });
         }
     }
