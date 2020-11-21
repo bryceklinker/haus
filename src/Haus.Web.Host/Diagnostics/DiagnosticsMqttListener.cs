@@ -59,6 +59,7 @@ namespace Haus.Web.Host.Diagnostics
             var hub = scope.ServiceProvider.GetRequiredService<IHubContext<DiagnosticsHub>>();
             await hub.Clients.All.SendAsync("OnMqttMessage", new MqttDiagnosticsMessageModel
             {
+                Id = Guid.NewGuid().ToString(),
                 Topic = arg.ApplicationMessage.Topic,
                 Payload = GetPayloadFromMqttMessage(arg.ApplicationMessage)
             });

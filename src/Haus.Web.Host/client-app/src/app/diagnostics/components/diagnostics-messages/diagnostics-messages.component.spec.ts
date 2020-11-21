@@ -2,13 +2,14 @@ import {MqttDiagnosticsMessageModel} from "../../models/mqtt-diagnostics-message
 import {renderFeatureComponent} from "../../../../testing";
 import {DiagnosticsMessagesComponent} from "./diagnostics-messages.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
+import {ModelFactory} from "../../../../testing/model-factory";
 
 describe('DiagnosticsMessagesComponent', () => {
   it('should show each message', async () => {
     const messages: Array<MqttDiagnosticsMessageModel> = [
-      {topic: 'one', payload: '123'},
-      {topic: 'one', payload: '123'},
-      {topic: 'one', payload: '123'}
+      ModelFactory.createMqttDiagnosticsMessage(),
+      ModelFactory.createMqttDiagnosticsMessage(),
+      ModelFactory.createMqttDiagnosticsMessage()
     ];
 
     const {queryAllByTestId} = await renderMessages(messages);
@@ -18,7 +19,7 @@ describe('DiagnosticsMessagesComponent', () => {
 
   it('should show message topic', async () => {
     const messages: Array<MqttDiagnosticsMessageModel> = [
-      {topic: 'one', payload: '123'}
+      ModelFactory.createMqttDiagnosticsMessage({topic: 'one'})
     ];
 
     const {getByTestId} = await renderMessages(messages);
@@ -28,7 +29,7 @@ describe('DiagnosticsMessagesComponent', () => {
 
   it('should show message payload', async () => {
     const messages: Array<MqttDiagnosticsMessageModel> = [
-      {topic: 'one', payload: '123'}
+      ModelFactory.createMqttDiagnosticsMessage({payload: '123'})
     ];
 
     const {getByTestId} = await renderMessages(messages);
@@ -38,7 +39,7 @@ describe('DiagnosticsMessagesComponent', () => {
 
   it('should show message payload json', async () => {
     const messages: Array<MqttDiagnosticsMessageModel> = [
-      {topic: 'one', payload: {id: 45, text: 'jack'}}
+      ModelFactory.createMqttDiagnosticsMessage({payload: {id: 45, text: 'jack'}})
     ];
 
     const {getByTestId} = await renderMessages(messages);

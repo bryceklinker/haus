@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Haus.Web.Host.Diagnostics.Models;
 using Haus.Web.Host.Tests.Support;
@@ -30,6 +31,7 @@ namespace Haus.Web.Host.Tests.Diagnostics
             await mqttClient.PublishAsync("my-topic", "this is data");
             await Eventually.Assert(() =>
             {
+                Assert.True(Guid.TryParse(received.Id, out _));
                 Assert.Equal("my-topic", received.Topic);
                 Assert.Equal("this is data", received.Payload.ToString());
             });

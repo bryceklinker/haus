@@ -9,7 +9,28 @@ export const DIAGNOSTICS_FEATURE_KEY = 'diagnostics';
 
 const INITIAL_STATE: DiagnosticsState = { messages: [] };
 const reducer = createReducer(INITIAL_STATE,
-  on(DiagnosticsActions.messageReceived, (state, {payload}) => ({...state, messages: [...state.messages, payload]}))
+  on(DiagnosticsActions.messageReceived, (state, {payload}) => ({...state, messages: [...state.messages, payload]})),
+  on(DiagnosticsActions.replayMessageRequest, (state, {payload}) => ({
+    ...state,
+    messages: [
+      ...state.messages.filter(m => m.id !== payload.id),
+      {
+        ...payload,
+        isReplaying: true
+      }
+    ]
+  })),
+  on(DiagnosticsActions.replayMessageFailed, (state, {payload}) => ({
+    ...state,
+    messages: [
+      ...state.messages.filter(m => m.id !== payload.message.id),
+      {
+        ...payload.message,
+        isReplaying: false,
+        replayError: payload.error
+      }
+    ]
+  }))
 );
 
 export function diagnosticsReducer(state: DiagnosticsState | undefined, action: Action): DiagnosticsState {

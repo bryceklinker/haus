@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType, OnInitEffects} from "@ngrx/effects";
-import {Action, INIT} from "@ngrx/store";
-import {map, tap} from "rxjs/operators";
+import {Action} from "@ngrx/store";
+import {catchError, map, mergeMap, take, tap} from "rxjs/operators";
 import {
   createSignalRHub,
   mergeMapHubToAction,
@@ -13,7 +13,9 @@ import {DIAGNOSTICS_HUB} from "./diagnostics-hub";
 import {of, merge} from "rxjs";
 import {MqttDiagnosticsMessageModel} from "../models/mqtt-diagnostics-message.model";
 import {DiagnosticsActions} from "../actions";
+import {HttpClient} from "@angular/common/http";
 import {AuthService} from "@auth0/auth0-angular";
+import {fromObservableToPromise} from "../../shared/rxjs";
 
 @Injectable()
 export class DiagnosticsEffects implements OnInitEffects {
@@ -22,7 +24,7 @@ export class DiagnosticsEffects implements OnInitEffects {
     map(() => createSignalRHub({
       ...DIAGNOSTICS_HUB,
       options: {
-        // accessTokenFactory: () => this.auth.getAccessTokenSilently().toPromise()
+        accessTokenFactory: () => fromObservableToPromise(this.auth.getAccessTokenSilently())
       }
     }))
   ));
@@ -38,8 +40,14 @@ export class DiagnosticsEffects implements OnInitEffects {
     })
   ))
 
-  // constructor(private actions$: Actions, private auth: AuthService) {
-  constructor(private actions$: Actions) {
+  replayMessage$ = createEffect(() => this.actions$.pipe(
+    ofType(DiagnosticsActions.replayMessageRequest),
+    mergeMap(({payload}) => this.http.post('/diagnostics/replay', payload).pipe(
+      map(() => DiagnosticsActions.replayMessageSuccess()),
+      catchError(err => of(DiagnosticsActions.replayMessageFailed(payload, err)))
+    ))
+  ))
+  constructor(private actions$: Actions, private auth: AuthService, private http: HttpClient) {
 
   }
 

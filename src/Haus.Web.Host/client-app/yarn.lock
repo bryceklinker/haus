@@ -1651,6 +1651,11 @@
   dependencies:
     "@types/jest" "*"
 
+"@types/uuid@8.3.0":
+  version "8.3.0"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@types/uuid/-/@types/uuid-8.3.0.tgz#215c231dff736d5ba92410e6d602050cce7e273f"
+  integrity sha1-IVwjHf9zbVupJBDm1gIFDM5+Jz8=
+
 "@types/webpack-sources@^0.1.5":
   version "0.1.8"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@types/webpack-sources/-/@types/webpack-sources-0.1.8.tgz#078d75410435993ec8a0a2855e88706f3f751f81"

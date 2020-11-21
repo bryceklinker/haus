@@ -29,7 +29,7 @@ import {DiagnosticsModule} from "./diagnostics/diagnostics.module";
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
     EffectsModule.forRoot([SignalREffects]),
     StoreRouterConnectingModule.forRoot(),
-    // AuthModule.forRoot({...(SettingsService.getSettings() || {auth: {domain: '', clientId: ''}}).auth }),
+    AuthModule.forRoot({...(SettingsService.getSettings() || {auth: {domain: '', clientId: ''}}).auth }),
     DiagnosticsModule
   ],
   bootstrap: [ShellComponent]

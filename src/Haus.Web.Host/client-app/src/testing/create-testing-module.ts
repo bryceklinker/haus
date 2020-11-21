@@ -1,5 +1,4 @@
 import {TestModuleMetadata} from "@angular/core/testing";
-import {AppState} from "../app/app.state";
 import {Routes} from "@angular/router";
 import {ReplaySubject, Subject} from "rxjs";
 import {Action, Store, StoreModule} from "@ngrx/store";
@@ -8,13 +7,14 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
 import {EffectsModule} from "@ngrx/effects";
 import {SignalREffects} from "ngrx-signalr-core";
-import {createTestingState} from "./create-testing-state";
 import {provideMockStore} from "@ngrx/store/testing";
 import {provideMockActions} from "@ngrx/effects/testing";
-import {TestingStore} from "./testing-store";
 import {AuthModule, AuthService} from "@auth0/auth0-angular";
-import {TestingAuthService} from "./testing-auth-service";
 import {SpyLocation} from "@angular/common/testing";
+
+import {AppState} from "../app/app.state";
+import {createTestingState} from "./create-testing-state";
+import {TestingStore, TestingAuthService} from "./fakes";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   state?: AppState;

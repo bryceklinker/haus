@@ -1,6 +1,6 @@
 import {enableTesting} from 'ngrx-signalr-core';
 import {IHttpConnectionOptions} from "@microsoft/signalr";
-import {TestingHub} from "./testing-hub";
+import {TestingHub} from "./fakes";
 
 const hubs: Array<TestingHub> = [];
 
