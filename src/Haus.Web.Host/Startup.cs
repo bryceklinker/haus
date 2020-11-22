@@ -40,10 +40,9 @@ namespace Haus.Web.Host
             app.UseHausRequestLogging()
                 .UseCors()
                 .UseHttpsRedirection()
-                .UseStaticFiles();
+                .UseStaticFiles()
+                .UseSpaStaticFiles();
 
-            if (!env.IsDevelopment()) app.UseSpaStaticFiles();
-            
             app.UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()

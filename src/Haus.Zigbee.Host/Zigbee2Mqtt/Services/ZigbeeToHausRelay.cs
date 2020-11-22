@@ -47,6 +47,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             await ZigbeeMqttClient.StopAsync();
+            ZigbeeMqttClient.Dispose();
             await base.StopAsync(cancellationToken);
         }
 
@@ -56,12 +57,6 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
             {
                 await Task.Delay(1000, stoppingToken);
             }
-        }
-
-        public override void Dispose()
-        {
-            ZigbeeMqttClient.Dispose();
-            base.Dispose();
         }
 
         private async Task HandleMqttMessage(MqttApplicationMessageReceivedEventArgs arg)

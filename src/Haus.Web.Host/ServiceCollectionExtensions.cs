@@ -40,7 +40,7 @@ namespace Haus.Web.Host
             {
                 opts.Audience = configuration.GetValue<string>("Auth:Audience");
                 opts.Authority = $"https://{configuration.GetValue<string>("Auth:Domain")}";
-            }).AddCookie();
+            });
             return services.AddAuthorization(opts =>
             {
                 opts.DefaultPolicy = authenticatedUserPolicy;

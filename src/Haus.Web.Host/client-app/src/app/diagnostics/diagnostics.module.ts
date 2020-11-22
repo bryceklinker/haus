@@ -7,6 +7,7 @@ import {StoreModule} from "@ngrx/store";
 import {DIAGNOSTICS_FEATURE_KEY, diagnosticsReducer} from "./reducers/diagnostics.reducer";
 import {SharedModule} from "../shared/shared.module";
 import {DiagnosticsRoutingModule} from "./diagnostics-routing.module";
+import {AuthModule} from "@auth0/auth0-angular";
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import {DiagnosticsRoutingModule} from "./diagnostics-routing.module";
     CommonModule,
     SharedModule,
     DiagnosticsRoutingModule,
+    AuthModule,
     StoreModule.forFeature(DIAGNOSTICS_FEATURE_KEY, diagnosticsReducer),
     EffectsModule.forFeature([DiagnosticsEffects])
   ]

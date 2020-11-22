@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
-import {Actions, createEffect, ofType, OnInitEffects} from "@ngrx/effects";
-import {Action} from "@ngrx/store";
-import {catchError, map, mergeMap, take, tap} from "rxjs/operators";
+import {Actions, createEffect, ofType} from "@ngrx/effects";
+import {catchError, map, mergeMap} from "rxjs/operators";
 import {
   createSignalRHub,
   mergeMapHubToAction,
@@ -18,13 +17,16 @@ import {fromObservableToPromise} from "../../shared/rxjs";
 import {DiagnosticsMessageModel} from "../models";
 
 @Injectable()
-export class DiagnosticsEffects implements OnInitEffects {
+export class DiagnosticsEffects {
   init$ = createEffect(() => this.actions$.pipe(
-    ofType(DiagnosticsActions.initEffects),
+    ofType(DiagnosticsActions.initHub),
     map(() => createSignalRHub({
       ...DIAGNOSTICS_HUB,
       options: {
-        accessTokenFactory: () => fromObservableToPromise(this.auth.getAccessTokenSilently())
+        accessTokenFactory: async () => {
+          const token = await fromObservableToPromise(this.auth.getAccessTokenSilently())
+          return token;
+        }
       }
     }))
   ));
@@ -49,9 +51,5 @@ export class DiagnosticsEffects implements OnInitEffects {
   ))
   constructor(private actions$: Actions, private auth: AuthService, private http: HttpClient) {
 
-  }
-
-  ngrxOnInitEffects(): Action {
-    return DiagnosticsActions.initEffects();
   }
 }

@@ -35,10 +35,10 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices
         private byte[] MapMessageToPayload(Zigbee2MqttMessage message)
         {
             var payload = _sensorChangedMapper.Map(message);
-            return JsonSerializer.SerializeToUtf8Bytes(new HausEvent
+            return JsonSerializer.SerializeToUtf8Bytes(new HausEvent<object>
             {
                 Type = GetHausEventType(payload),
-                Payload = JsonSerializer.Serialize(payload)
+                Payload = payload
             });
         }
 

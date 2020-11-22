@@ -1,5 +1,8 @@
 <mat-sidenav-container>
   <mat-sidenav mode="side" data-testid="nav-drawer" [opened]="isOpen" (openedChange)="handleClosed($event)">
+    <div>
+      <img class="logo" src="assets/logo.png" alt="Logo"/>
+    </div>
     <mat-nav-list>
       <a mat-list-item [routerLink]="'diagnostics'" routerLinkActive="list-item-active">Diagnostics</a>
     </mat-nav-list>

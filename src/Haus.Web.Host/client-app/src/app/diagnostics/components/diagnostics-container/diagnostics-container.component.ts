@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
@@ -11,7 +11,7 @@ import {DiagnosticsMessageModel} from "../../models";
   templateUrl: './diagnostics-container.component.html',
   styleUrls: ['./diagnostics-container.component.scss']
 })
-export class DiagnosticsContainerComponent {
+export class DiagnosticsContainerComponent implements OnInit {
   isDiagnosticsConnected$: Observable<boolean>;
   diagnosticMessages$: Observable<Array<DiagnosticsMessageModel>>;
 
@@ -22,5 +22,9 @@ export class DiagnosticsContainerComponent {
 
   replayMessage($event: DiagnosticsMessageModel) {
     this.store.dispatch(DiagnosticsActions.replayMessageRequest($event));
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(DiagnosticsActions.initHub());
   }
 }

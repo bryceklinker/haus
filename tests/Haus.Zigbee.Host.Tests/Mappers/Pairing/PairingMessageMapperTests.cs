@@ -21,16 +21,6 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Pairing
 
         public PairingMessageMapperTests()
         {
-            var zigbeeOptions = Options.Create(new ZigbeeOptions
-            {
-                Config = new Zigbee2MqttConfiguration
-                {
-                    Mqtt = new MqttConfiguration
-                    {
-                        BaseTopic = Zigbee2MqttTopic
-                    }
-                }
-            });
             var hausOptions = Options.Create(new HausOptions
             {
                 EventsTopic = HausEventTopic,
@@ -64,13 +54,12 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Pairing
                     "Phillips"));
             var result = _mapper.Map(message);
 
-            var hausEvent = JsonSerializer.Deserialize<HausEvent>(result.Payload);
-            var hausEventPayload = hausEvent.GetPayload<DeviceDiscoveredModel>();
+            var hausEvent = JsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
             Assert.Equal(DeviceDiscoveredModel.Type, hausEvent.Type);
-            Assert.Equal("this-is-an-id", hausEventPayload.Id);
-            Assert.Equal("my description", hausEventPayload.Description);
-            Assert.Equal("this is a model", hausEventPayload.Model);
-            Assert.Equal("Phillips", hausEventPayload.Vendor);
+            Assert.Equal("this-is-an-id", hausEvent.Payload.Id);
+            Assert.Equal("my description", hausEvent.Payload.Description);
+            Assert.Equal("this is a model", hausEvent.Payload.Model);
+            Assert.Equal("Phillips", hausEvent.Payload.Vendor);
         }
 
         [Fact]

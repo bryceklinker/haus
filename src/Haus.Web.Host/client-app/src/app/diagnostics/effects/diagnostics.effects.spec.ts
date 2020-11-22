@@ -37,7 +37,7 @@ describe('DiagnosticsEffects', () => {
   it('should create hub when initialized', async () => {
     effects.init$.subscribe((action: Action) => actionsCollector.push(action));
 
-    actions$.next(DiagnosticsActions.initEffects());
+    actions$.next(DiagnosticsActions.initHub());
 
     await eventually(() => {
       expect(actionsCollector).toContainEqual(expect.objectContaining({
@@ -53,7 +53,7 @@ describe('DiagnosticsEffects', () => {
     let createHubAction: ReturnType<typeof createSignalRHub> | null = null;
     effects.init$.subscribe((action: Action) => createHubAction = action.type === createSignalRHub.type ? action as ReturnType<typeof createSignalRHub> : null);
 
-    actions$.next(DiagnosticsActions.initEffects());
+    actions$.next(DiagnosticsActions.initHub());
 
     await eventually(async () => {
       // @ts-ignore

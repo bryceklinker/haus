@@ -1,10 +1,11 @@
 <mat-expansion-panel *ngFor="let message of messages" data-testid="diagnostic-message">
-  <mat-expansion-panel-header>Topic: {{message.topic}}</mat-expansion-panel-header>
-  <mat-toolbar>
-    <mat-toolbar-row>
-      <span class="spacer"></span>
-      <button mat-button data-testid="replay-message-btn" (click)="onReplay(message)" [disabled]="message.isReplaying">Replay</button>
-    </mat-toolbar-row>
-  </mat-toolbar>
-  <pre>{{message.payload | json}}</pre>
+  <mat-expansion-panel-header>
+    <mat-panel-title>Topic: {{message.topic}}</mat-panel-title>
+  </mat-expansion-panel-header>
+  <div>
+    <button mat-button data-testid="replay-message-btn" (click)="onReplay(message)" [disabled]="message.isReplaying">
+      Replay
+    </button>
+    <pre>{{message.payload | json}}</pre>
+  </div>
 </mat-expansion-panel>

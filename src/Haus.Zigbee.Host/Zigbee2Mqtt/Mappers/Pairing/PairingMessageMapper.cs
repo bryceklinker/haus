@@ -25,16 +25,16 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Pairing
             return new MqttApplicationMessage
             {
                 Topic = EventsTopic,
-                Payload = JsonSerializer.SerializeToUtf8Bytes(new HausEvent
+                Payload = JsonSerializer.SerializeToUtf8Bytes(new HausEvent<DeviceDiscoveredModel>
                 {
                     Type = DeviceDiscoveredModel.Type,
-                    Payload = JsonSerializer.Serialize(new DeviceDiscoveredModel
+                    Payload = new DeviceDiscoveredModel
                     {
                         Id = zigbeeMessage.Meta.FriendlyName,
                         Description = zigbeeMessage.Meta.Description,
                         Model = zigbeeMessage.Meta.Model,
                         Vendor = zigbeeMessage.Meta.Vendor
-                    })
+                    }
                 })
             };
         }
