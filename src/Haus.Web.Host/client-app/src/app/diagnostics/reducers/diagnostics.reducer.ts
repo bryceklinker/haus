@@ -11,7 +11,7 @@ export const DIAGNOSTICS_FEATURE_KEY = 'diagnostics';
 const INITIAL_STATE: DiagnosticsState = { messages: [] };
 const reducer = createReducer(INITIAL_STATE,
   on(DiagnosticsActions.messageReceived, (state, {payload}) => ({...state, messages: [...state.messages, payload]})),
-  on(DiagnosticsActions.replayMessageRequest, (state, {payload}) => ({
+  on(DiagnosticsActions.replay.request, (state, {payload}) => ({
     ...state,
     messages: [
       ...state.messages.filter(m => m.id !== payload.id),
@@ -21,7 +21,7 @@ const reducer = createReducer(INITIAL_STATE,
       }
     ]
   })),
-  on(DiagnosticsActions.replayMessageFailed, (state, {payload}) => ({
+  on(DiagnosticsActions.replay.failed, (state, {payload}) => ({
     ...state,
     messages: [
       ...state.messages.filter(m => m.id !== payload.message.id),
@@ -32,7 +32,7 @@ const reducer = createReducer(INITIAL_STATE,
       }
     ]
   })),
-  on(DiagnosticsActions.replayMessageSuccess, (state, {payload}) => ({
+  on(DiagnosticsActions.replay.success, (state, {payload}) => ({
     ...state,
     messages: [
       ...state.messages.filter(m => m.id !== payload.id),

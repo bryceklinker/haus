@@ -34,10 +34,10 @@ export class DiagnosticsEffects {
   ))
 
   replayMessage$ = createEffect(() => this.actions$.pipe(
-    ofType(DiagnosticsActions.replayMessageRequest),
+    ofType(DiagnosticsActions.replay.request),
     mergeMap(({payload}) => this.http.post('/api/diagnostics/replay', payload).pipe(
-      map(() => DiagnosticsActions.replayMessageSuccess(payload)),
-      catchError(err => of(DiagnosticsActions.replayMessageFailed(payload, err)))
+      map(() => DiagnosticsActions.replay.success(payload)),
+      catchError(err => of(DiagnosticsActions.replay.failed(payload, err)))
     ))
   ))
   constructor(private actions$: Actions, private auth: AuthService, private http: HttpClient) {

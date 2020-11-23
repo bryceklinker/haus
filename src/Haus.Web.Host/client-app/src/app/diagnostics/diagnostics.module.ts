@@ -16,10 +16,10 @@ import {AuthModule} from "@auth0/auth0-angular";
   imports: [
     CommonModule,
     SharedModule,
-    DiagnosticsRoutingModule,
     AuthModule,
     StoreModule.forFeature(DIAGNOSTICS_FEATURE_KEY, diagnosticsReducer),
-    EffectsModule.forFeature([DiagnosticsEffects])
+    EffectsModule.forFeature([DiagnosticsEffects]),
+    DiagnosticsRoutingModule
   ]
 })
 export class DiagnosticsModule { }

@@ -88,11 +88,11 @@ describe('DiagnosticsEffects', () => {
     effects.replayMessage$.subscribe((action: Action) => actionsCollector.push(action));
     const model = ModelFactory.createMqttDiagnosticsMessage();
 
-    actions$.next(DiagnosticsActions.replayMessageRequest(model));
+    actions$.next(DiagnosticsActions.replay.request(model));
 
     await eventually(() => {
       httpController.match('/api/diagnostics/replay').forEach(r => r.flush(204));
-      expect(actionsCollector).toContainEqual(DiagnosticsActions.replayMessageSuccess(model));
+      expect(actionsCollector).toContainEqual(DiagnosticsActions.replay.success(model));
     })
   })
 
@@ -100,11 +100,11 @@ describe('DiagnosticsEffects', () => {
     effects.replayMessage$.subscribe((action: Action) => actionsCollector.push(action));
 
     let model = ModelFactory.createMqttDiagnosticsMessage();
-    actions$.next(DiagnosticsActions.replayMessageRequest(model));
+    actions$.next(DiagnosticsActions.replay.request(model));
     await eventually(() => {
       httpController.match('/api/diagnostics/replay').forEach(r => r.error(new ErrorEvent('bad things')));
       expect(actionsCollector).toContainEqual({
-        type: DiagnosticsActions.replayMessageFailed.type,
+        type: DiagnosticsActions.replay.failed.type,
         payload: {
           message: model,
           error: expect.anything()

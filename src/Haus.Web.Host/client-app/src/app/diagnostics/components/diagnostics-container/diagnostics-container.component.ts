@@ -21,7 +21,7 @@ export class DiagnosticsContainerComponent implements OnInit {
   }
 
   replayMessage($event: DiagnosticsMessageModel) {
-    this.store.dispatch(DiagnosticsActions.replayMessageRequest($event));
+    this.store.dispatch(DiagnosticsActions.replay.request($event));
   }
 
   ngOnInit(): void {

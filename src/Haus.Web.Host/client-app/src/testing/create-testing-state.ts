@@ -3,11 +3,15 @@ import {AppState} from "../app/app.state";
 import {signalrReducer} from "ngrx-signalr-core";
 import {initAction} from "./testing-actions";
 import {DIAGNOSTICS_FEATURE_KEY, diagnosticsReducer} from "../app/diagnostics/reducers/diagnostics.reducer";
+import {loadingReducer} from "../app/shared/loading/loading.reducer";
+import {devicesReducer} from "../app/devices/reducers/devices.reducer";
 
 export function createTestingState(...actions: Action[]): AppState {
   const reducer = combineReducers<AppState>({
     signalr: signalrReducer,
-    [DIAGNOSTICS_FEATURE_KEY]: diagnosticsReducer
+    [DIAGNOSTICS_FEATURE_KEY]: diagnosticsReducer,
+    loading: loadingReducer,
+    devices: devicesReducer
   });
   return runActionsThroughReducer(reducer, ...actions);
 }

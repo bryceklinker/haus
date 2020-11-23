@@ -1,5 +1,9 @@
 import {v4 as uuid} from 'uuid';
 import {DiagnosticsMessageModel} from "../app/diagnostics/models";
+import {DeviceModel} from "../app/devices/models";
+import {ListResult} from "../app/shared/models";
+
+let id = 0;
 
 function createMqttDiagnosticsMessage(model: Partial<DiagnosticsMessageModel> = {}): DiagnosticsMessageModel {
   return {
@@ -12,6 +16,23 @@ function createMqttDiagnosticsMessage(model: Partial<DiagnosticsMessageModel> = 
   };
 }
 
+function createDeviceModel(model: Partial<DeviceModel> = {}): DeviceModel {
+  return {
+    id: model.id || ++id,
+    externalId: model.externalId || uuid(),
+    metadata: model.metadata || []
+  }
+}
+
+function createListResult<T>(...items: Array<T>): ListResult<T> {
+  return {
+    items: items,
+    count: items.length
+  }
+}
+
 export const ModelFactory = {
-  createMqttDiagnosticsMessage
+  createMqttDiagnosticsMessage,
+  createDeviceModel,
+  createListResult,
 };

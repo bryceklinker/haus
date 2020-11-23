@@ -2,7 +2,6 @@ import {diagnosticsReducer, selectDiagnosticsMessages} from "./diagnostics.reduc
 import {createTestingState, runActionsThroughReducer} from "../../../testing";
 import {DiagnosticsActions} from "../actions";
 import {ModelFactory} from "../../../testing/model-factory";
-import {run} from "tslint/lib/runner";
 
 describe('diagnosticsReducer', () => {
   it('should return initial state', () => {
@@ -22,7 +21,7 @@ describe('diagnosticsReducer', () => {
     const model = ModelFactory.createMqttDiagnosticsMessage({id: '6'});
     const state = runActionsThroughReducer(diagnosticsReducer,
       DiagnosticsActions.messageReceived(model),
-      DiagnosticsActions.replayMessageRequest(model));
+      DiagnosticsActions.replay.request(model));
 
     expect(state.messages).toContainEqual({
       ...model,
@@ -36,8 +35,8 @@ describe('diagnosticsReducer', () => {
 
     const state = runActionsThroughReducer(diagnosticsReducer,
       DiagnosticsActions.messageReceived(model),
-      DiagnosticsActions.replayMessageRequest(model),
-      DiagnosticsActions.replayMessageFailed(model, error));
+      DiagnosticsActions.replay.request(model),
+      DiagnosticsActions.replay.failed(model, error));
 
     expect(state.messages).toContainEqual({
       ...model,
@@ -51,8 +50,8 @@ describe('diagnosticsReducer', () => {
 
     const state = runActionsThroughReducer(diagnosticsReducer,
       DiagnosticsActions.messageReceived(model),
-      DiagnosticsActions.replayMessageRequest(model),
-      DiagnosticsActions.replayMessageSuccess(model));
+      DiagnosticsActions.replay.request(model),
+      DiagnosticsActions.replay.success(model));
 
     expect(state.messages).toContainEqual({
       ...model,

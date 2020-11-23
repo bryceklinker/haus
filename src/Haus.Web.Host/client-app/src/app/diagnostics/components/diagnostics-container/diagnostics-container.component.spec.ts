@@ -34,7 +34,7 @@ describe('DiagnosticsContainerComponent', () => {
 
     fireEvent.click(getByTestId('replay-message-btn'));
 
-    expect(store.actions).toContainEqual(DiagnosticsActions.replayMessageRequest(model));
+    expect(store.actions).toContainEqual(DiagnosticsActions.replay.request(model));
   })
 
   async function renderContainer(...actions: Array<Action>) {
