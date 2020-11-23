@@ -2,10 +2,14 @@
   <mat-expansion-panel-header>
     <mat-panel-title>Topic: {{message.topic}}</mat-panel-title>
   </mat-expansion-panel-header>
-  <div>
-    <button mat-button data-testid="replay-message-btn" (click)="onReplay(message)" [disabled]="message.isReplaying">
-      Replay
-    </button>
-    <pre>{{message.payload | json}}</pre>
-  </div>
+  <mat-toolbar color="accent">
+    <mat-toolbar-row>
+      <span class="spacer"></span>
+      <button mat-flat-button data-testid="replay-message-btn" (click)="onReplay(message)" [disabled]="message.isReplaying">
+        Replay
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <pre>{{message.payload | json}}</pre>
 </mat-expansion-panel>

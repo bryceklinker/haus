@@ -31,6 +31,16 @@ const reducer = createReducer(INITIAL_STATE,
         replayError: payload.error
       }
     ]
+  })),
+  on(DiagnosticsActions.replayMessageSuccess, (state, {payload}) => ({
+    ...state,
+    messages: [
+      ...state.messages.filter(m => m.id !== payload.id),
+      {
+        ...payload,
+        isReplaying: false
+      }
+    ]
   }))
 );
 

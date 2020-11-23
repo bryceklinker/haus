@@ -2,6 +2,7 @@ import {diagnosticsReducer, selectDiagnosticsMessages} from "./diagnostics.reduc
 import {createTestingState, runActionsThroughReducer} from "../../../testing";
 import {DiagnosticsActions} from "../actions";
 import {ModelFactory} from "../../../testing/model-factory";
+import {run} from "tslint/lib/runner";
 
 describe('diagnosticsReducer', () => {
   it('should return initial state', () => {
@@ -42,6 +43,20 @@ describe('diagnosticsReducer', () => {
       ...model,
       isReplaying: false,
       replayError: error
+    })
+  })
+
+  it('should not be replaying message when replay successful', () => {
+    const model = ModelFactory.createMqttDiagnosticsMessage({id: '6'});
+
+    const state = runActionsThroughReducer(diagnosticsReducer,
+      DiagnosticsActions.messageReceived(model),
+      DiagnosticsActions.replayMessageRequest(model),
+      DiagnosticsActions.replayMessageSuccess(model));
+
+    expect(state.messages).toContainEqual({
+      ...model,
+      isReplaying: false
     })
   })
 

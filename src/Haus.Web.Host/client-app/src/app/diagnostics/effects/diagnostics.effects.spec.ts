@@ -86,11 +86,13 @@ describe('DiagnosticsEffects', () => {
 
   it('should send message to be replayed', async () => {
     effects.replayMessage$.subscribe((action: Action) => actionsCollector.push(action));
+    const model = ModelFactory.createMqttDiagnosticsMessage();
 
-    actions$.next(DiagnosticsActions.replayMessageRequest(ModelFactory.createMqttDiagnosticsMessage()));
+    actions$.next(DiagnosticsActions.replayMessageRequest(model));
+
     await eventually(() => {
       httpController.match('/api/diagnostics/replay').forEach(r => r.flush(204));
-      expect(actionsCollector).toContainEqual(DiagnosticsActions.replayMessageSuccess());
+      expect(actionsCollector).toContainEqual(DiagnosticsActions.replayMessageSuccess(model));
     })
   })
 

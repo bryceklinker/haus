@@ -47,7 +47,6 @@ namespace Haus.Web.Host
             {
                 opts.DefaultPolicy = authenticatedUserPolicy;
             });
-            return services;
         }
 
         public static IServiceCollection AddRestApi(this IServiceCollection services)

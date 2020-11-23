@@ -1,15 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {catchError, map, mergeMap} from "rxjs/operators";
-import {
-  createSignalRHub,
-  mergeMapHubToAction,
-  ofHub,
-  SIGNALR_HUB_UNSTARTED,
-  startSignalRHub
-} from "ngrx-signalr-core";
+import {createSignalRHub, mergeMapHubToAction, ofHub, SIGNALR_HUB_UNSTARTED, startSignalRHub} from "ngrx-signalr-core";
 import {DIAGNOSTICS_HUB} from "./diagnostics-hub";
-import {of, merge} from "rxjs";
+import {merge, of} from "rxjs";
 import {DiagnosticsActions} from "../actions";
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "@auth0/auth0-angular";
@@ -23,10 +17,7 @@ export class DiagnosticsEffects {
     map(() => createSignalRHub({
       ...DIAGNOSTICS_HUB,
       options: {
-        accessTokenFactory: async () => {
-          const token = await fromObservableToPromise(this.auth.getAccessTokenSilently())
-          return token;
-        }
+        accessTokenFactory: async () => await fromObservableToPromise(this.auth.getAccessTokenSilently())
       }
     }))
   ));
@@ -45,7 +36,7 @@ export class DiagnosticsEffects {
   replayMessage$ = createEffect(() => this.actions$.pipe(
     ofType(DiagnosticsActions.replayMessageRequest),
     mergeMap(({payload}) => this.http.post('/api/diagnostics/replay', payload).pipe(
-      map(() => DiagnosticsActions.replayMessageSuccess()),
+      map(() => DiagnosticsActions.replayMessageSuccess(payload)),
       catchError(err => of(DiagnosticsActions.replayMessageFailed(payload, err)))
     ))
   ))

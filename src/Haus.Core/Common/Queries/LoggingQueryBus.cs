@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -20,9 +21,11 @@ namespace Haus.Core.Common.Queries
         {
             try
             {
+                var stopwatch = new Stopwatch();
                 _logger.LogInformation("Executing query", query);
                 var result = await _queryBus.Execute(query, token).ConfigureAwait(false);
-                _logger.LogInformation("Finished executing query", query);
+                stopwatch.Stop();
+                _logger.LogInformation("Finished executing query", new {query, stopwatch.ElapsedMilliseconds});
                 return result;
             }
             catch (Exception e)
