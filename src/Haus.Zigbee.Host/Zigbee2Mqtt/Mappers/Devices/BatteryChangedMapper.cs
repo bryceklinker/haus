@@ -1,5 +1,5 @@
 using Haus.Core.Models;
-using Haus.Core.Models.Sensors.Battery;
+using Haus.Core.Models.Devices.Sensors.Battery;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices

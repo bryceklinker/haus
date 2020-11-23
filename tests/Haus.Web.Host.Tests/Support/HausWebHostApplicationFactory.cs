@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Haus.Core.Common;
+using Haus.Core.Common.Storage;
 using Haus.Testing.Support.Fakes;
 using Haus.Web.Host.Common.Mqtt;
 using Microsoft.AspNetCore.Authentication;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MQTTnet.Extensions.ManagedClient;
 
@@ -23,6 +25,7 @@ namespace Haus.Web.Host.Tests.Support
         {
             _clock = new FakeClock();
         }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureTestServices(services =>
@@ -35,6 +38,7 @@ namespace Haus.Web.Host.Tests.Support
                         opts.DefaultScheme = TestingAuthenticationHandler.TestingScheme;
                     })
                     .AddScheme<AuthenticationSchemeOptions, TestingAuthenticationHandler>(TestingAuthenticationHandler.TestingScheme, opts => { });
+                services.AddDbContext<HausDbContext>(opts => opts.UseInMemoryDatabase("HausDB"));
             });
         }
 
@@ -45,6 +49,12 @@ namespace Haus.Web.Host.Tests.Support
                 new AuthenticationHeaderValue(TestingAuthenticationHandler.TestingScheme);
 
             return client;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            
+            base.Dispose(disposing);
         }
 
         public async Task<HubConnection> CreateHubConnection(string hub)

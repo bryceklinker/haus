@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Haus.Core.Models;
 using Haus.Core.Models.Diagnostics;
 using MQTTnet;
 
@@ -11,7 +12,7 @@ namespace Haus.Web.Host
             return new MqttApplicationMessage
             {
                 Topic = model.Topic,
-                Payload = JsonSerializer.SerializeToUtf8Bytes(model.Payload)
+                Payload = HausJsonSerializer.SerializeToBytes(model.Payload)
             };
         }
     }

@@ -1,10 +1,10 @@
 using System;
 using System.Text;
 using Haus.Core.Diagnostics.Factories;
+using Haus.Core.Models;
 using Haus.Testing.Support.Fakes;
 using Newtonsoft.Json.Linq;
 using Xunit;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Haus.Core.Tests.Diagnostics.Factories
 {
@@ -22,7 +22,7 @@ namespace Haus.Core.Tests.Diagnostics.Factories
         [Fact]
         public void WhenCreatedThenTopicAndPayloadArePopulated()
         {
-            var model = _factory.Create("my-topic", JsonSerializer.SerializeToUtf8Bytes(new {id = 45}));
+            var model = _factory.Create("my-topic", HausJsonSerializer.SerializeToBytes(new {id = 45}));
 
             Assert.Equal("my-topic", model.Topic);
             Assert.Equal(45, JObject.Parse(model.Payload.ToString()).Value<int>("id"));

@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Text.Json;
 using Haus.Core.Common;
+using Haus.Core.Models;
 using Haus.Core.Models.Diagnostics;
 
 namespace Haus.Core.Diagnostics.Factories
@@ -33,15 +34,9 @@ namespace Haus.Core.Diagnostics.Factories
 
         private static object GetPayloadFromBytes(byte[] bytes)
         {
-            var payloadString = Encoding.UTF8.GetString(bytes);
-            try
-            {
-                return JsonSerializer.Deserialize<object>(payloadString);
-            }
-            catch (Exception e)
-            {
-                return payloadString;
-            }
+            return HausJsonSerializer.TryDeserialize(bytes, out object payload) 
+                ? payload 
+                : Encoding.UTF8.GetString(bytes);
         }
     }
 }

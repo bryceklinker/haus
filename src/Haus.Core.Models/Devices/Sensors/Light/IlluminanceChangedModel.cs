@@ -1,4 +1,4 @@
-namespace Haus.Core.Models.Sensors.Light
+namespace Haus.Core.Models.Devices.Sensors.Light
 {
     public class IlluminanceChangedModel
     {

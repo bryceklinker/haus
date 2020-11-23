@@ -1,7 +1,6 @@
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Haus.Zigbee.Host.Tests.Mappers
 {

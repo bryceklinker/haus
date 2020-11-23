@@ -1,4 +1,4 @@
-namespace Haus.Core.Models.Sensors.Temperature
+namespace Haus.Core.Models.Devices.Sensors.Temperature
 {
     public class TemperatureChangedModel
     {

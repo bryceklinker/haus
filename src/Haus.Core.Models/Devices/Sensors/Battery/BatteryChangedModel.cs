@@ -1,4 +1,4 @@
-namespace Haus.Core.Models.Sensors.Battery
+namespace Haus.Core.Models.Devices.Sensors.Battery
 {
     public class BatteryChangedModel
     {

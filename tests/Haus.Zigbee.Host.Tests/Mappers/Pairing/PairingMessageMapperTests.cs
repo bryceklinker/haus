@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Haus.Core.Models;
-using Haus.Core.Models.Discovery;
+using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
@@ -54,7 +54,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Pairing
                     "Phillips"));
             var result = _mapper.Map(message);
 
-            var hausEvent = JsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
+            var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
             Assert.Equal(DeviceDiscoveredModel.Type, hausEvent.Type);
             Assert.Equal("this-is-an-id", hausEvent.Payload.Id);
             Assert.Equal("my description", hausEvent.Payload.Description);
@@ -71,7 +71,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Pairing
 
             var result = _mapper.Map(message);
             
-            var model = JsonSerializer.Deserialize<UnknownModel>(result.Payload);
+            var model = HausJsonSerializer.Deserialize<UnknownModel>(result.Payload);
             Assert.Equal(UnknownTopic, result.Topic);
             Assert.Equal(Zigbee2MqttLogTopic, model.Topic);
         }

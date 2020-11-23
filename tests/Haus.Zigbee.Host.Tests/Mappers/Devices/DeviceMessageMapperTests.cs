@@ -1,10 +1,10 @@
 using System.Text.Json;
 using Haus.Core.Models;
-using Haus.Core.Models.Sensors;
-using Haus.Core.Models.Sensors.Battery;
-using Haus.Core.Models.Sensors.Light;
-using Haus.Core.Models.Sensors.Motion;
-using Haus.Core.Models.Sensors.Temperature;
+using Haus.Core.Models.Devices.Sensors;
+using Haus.Core.Models.Devices.Sensors.Battery;
+using Haus.Core.Models.Devices.Sensors.Light;
+using Haus.Core.Models.Devices.Sensors.Motion;
+using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices;
 using Microsoft.Extensions.Options;
@@ -95,7 +95,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
 
         private static void AssertHausEventTypeIs(string expectedType, MqttApplicationMessage result)
         {
-            var payload = JsonSerializer.Deserialize<HausEvent>(result.Payload);
+            var payload = HausJsonSerializer.Deserialize<HausEvent>(result.Payload);
             Assert.Equal(expectedType, payload.Type);
         }
     }

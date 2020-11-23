@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Haus.Core.Models;
 using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
@@ -39,7 +40,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers
             var message = new Zigbee2MqttMessage("something", "my-payload");
 
             var result = _mapper.Map(message);
-            var model = JsonSerializer.Deserialize<UnknownModel>(result.Payload);
+            var model = HausJsonSerializer.Deserialize<UnknownModel>(result.Payload);
 
             Assert.Equal(UnknownTopicName, result.Topic);
             Assert.Equal("something", model.Topic);

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Haus.Core.Models;
 using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
@@ -28,7 +29,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
             return new MqttApplicationMessage
             {
                 Topic = UnknownTopicName,
-                Payload = JsonSerializer.SerializeToUtf8Bytes(model)
+                Payload = HausJsonSerializer.SerializeToBytes(model)
             };
         }
     }

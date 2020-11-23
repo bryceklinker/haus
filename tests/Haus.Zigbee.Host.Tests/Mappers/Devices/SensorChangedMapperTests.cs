@@ -1,8 +1,8 @@
-using Haus.Core.Models.Sensors;
-using Haus.Core.Models.Sensors.Battery;
-using Haus.Core.Models.Sensors.Light;
-using Haus.Core.Models.Sensors.Motion;
-using Haus.Core.Models.Sensors.Temperature;
+using Haus.Core.Models.Devices.Sensors;
+using Haus.Core.Models.Devices.Sensors.Battery;
+using Haus.Core.Models.Devices.Sensors.Light;
+using Haus.Core.Models.Devices.Sensors.Motion;
+using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices;
 using Xunit;
 

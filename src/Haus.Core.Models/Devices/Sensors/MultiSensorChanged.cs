@@ -1,11 +1,10 @@
-using System;
 using System.Linq;
-using Haus.Core.Models.Sensors.Battery;
-using Haus.Core.Models.Sensors.Light;
-using Haus.Core.Models.Sensors.Motion;
-using Haus.Core.Models.Sensors.Temperature;
+using Haus.Core.Models.Devices.Sensors.Battery;
+using Haus.Core.Models.Devices.Sensors.Light;
+using Haus.Core.Models.Devices.Sensors.Motion;
+using Haus.Core.Models.Devices.Sensors.Temperature;
 
-namespace Haus.Core.Models.Sensors
+namespace Haus.Core.Models.Devices.Sensors
 {
     public class MultiSensorChanged
     {

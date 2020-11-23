@@ -1,11 +1,11 @@
 using System;
 using System.Text.Json;
 using Haus.Core.Models;
-using Haus.Core.Models.Sensors;
-using Haus.Core.Models.Sensors.Battery;
-using Haus.Core.Models.Sensors.Light;
-using Haus.Core.Models.Sensors.Motion;
-using Haus.Core.Models.Sensors.Temperature;
+using Haus.Core.Models.Devices.Sensors;
+using Haus.Core.Models.Devices.Sensors.Battery;
+using Haus.Core.Models.Devices.Sensors.Light;
+using Haus.Core.Models.Devices.Sensors.Motion;
+using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 using Microsoft.Extensions.Options;
@@ -35,7 +35,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices
         private byte[] MapMessageToPayload(Zigbee2MqttMessage message)
         {
             var payload = _sensorChangedMapper.Map(message);
-            return JsonSerializer.SerializeToUtf8Bytes(new HausEvent<object>
+            return HausJsonSerializer.SerializeToBytes(new HausEvent<object>
             {
                 Type = GetHausEventType(payload),
                 Payload = payload

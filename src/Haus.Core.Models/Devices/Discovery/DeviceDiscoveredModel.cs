@@ -1,4 +1,4 @@
-namespace Haus.Core.Models.Discovery
+namespace Haus.Core.Models.Devices.Discovery
 {
     public class DeviceDiscoveredModel
     {
@@ -7,5 +7,14 @@ namespace Haus.Core.Models.Discovery
         public string Model { get; set; }
         public string Vendor { get; set; }
         public string Description { get; set; }
+
+        public HausEvent<DeviceDiscoveredModel> AsHausEvent()
+        {
+            return new HausEvent<DeviceDiscoveredModel>
+            {
+                Type = Type,
+                Payload = this
+            };
+        }
     }
 }

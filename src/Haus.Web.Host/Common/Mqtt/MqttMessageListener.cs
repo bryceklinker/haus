@@ -1,7 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Core.Common.Events;
 using Haus.Core.Diagnostics.Factories;
-using Haus.Web.Host.Common.Mqtt;
+using Haus.Web.Host.Diagnostics;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,24 +11,21 @@ using MQTTnet;
 using MQTTnet.Client.Connecting;
 using MQTTnet.Extensions.ManagedClient;
 
-namespace Haus.Web.Host.Diagnostics
+namespace Haus.Web.Host.Common.Mqtt
 {
-    public class DiagnosticsMqttListener : BackgroundService
+    public class MqttMessageListener : BackgroundService
     {
         private readonly IMqttClientCreator _mqttClientCreator;
-        private readonly IMqttDiagnosticsMessageFactory _messageFactory;
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly ILogger<DiagnosticsMqttListener> _logger;
+        private readonly ILogger<MqttMessageListener> _logger;
 
-        public DiagnosticsMqttListener(IMqttClientCreator mqttClientCreator,
+        public MqttMessageListener(IMqttClientCreator mqttClientCreator,
             IServiceScopeFactory scopeFactory,
-            IMqttDiagnosticsMessageFactory messageFactory,
-            ILogger<DiagnosticsMqttListener> logger)
+            ILogger<MqttMessageListener> logger)
         {
             _mqttClientCreator = mqttClientCreator;
             _scopeFactory = scopeFactory;
             _logger = logger;
-            _messageFactory = messageFactory;
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
@@ -55,11 +53,30 @@ namespace Haus.Web.Host.Diagnostics
         private async Task OnMessageReceived(MqttApplicationMessageReceivedEventArgs arg)
         {
             _logger.LogInformation("Received mqtt message");
-            using var scope = _scopeFactory.CreateScope();
-            var hub = scope.ServiceProvider.GetRequiredService<IHubContext<DiagnosticsHub>>();
-            var model = _messageFactory.Create(arg.ApplicationMessage.Topic, arg.ApplicationMessage.Payload);
-            await hub.Clients.All.SendAsync("OnMqttMessage", model);
+            await RouteMqttMessage(arg.ApplicationMessage);
+            await PublishToDiagnosticsAsync(arg.ApplicationMessage);
             _logger.LogInformation("Broadcast mqtt message to clients");
+        }
+
+        private async Task RouteMqttMessage(MqttApplicationMessage message)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var eventFactory = scope.GetService<IRoutableEventFactory>();
+            var @event = eventFactory.Create(message.Payload);
+            if (@event == null)
+                return;
+
+            var eventBus = scope.GetService<IEventBus>();
+            await eventBus.PublishAsync(@event, CancellationToken.None);
+        }
+
+        private async Task PublishToDiagnosticsAsync(MqttApplicationMessage message)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var hub = scope.GetService<IHubContext<DiagnosticsHub>>();
+            var messageFactory = scope.GetService<IMqttDiagnosticsMessageFactory>();
+            var model = messageFactory.Create(message.Topic, message.Payload);
+            await hub.Clients.All.SendAsync("OnMqttMessage", model);
         }
     }
 }

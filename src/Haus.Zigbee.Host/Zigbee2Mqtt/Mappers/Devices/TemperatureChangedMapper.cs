@@ -1,5 +1,5 @@
 using Haus.Core.Models;
-using Haus.Core.Models.Sensors.Temperature;
+using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices

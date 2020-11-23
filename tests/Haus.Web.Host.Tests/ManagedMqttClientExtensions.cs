@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Haus.Core.Models;
 using MQTTnet;
 using MQTTnet.Extensions.ManagedClient;
 
@@ -13,7 +14,7 @@ namespace Haus.Web.Host.Tests
             await client.PublishAsync(new MqttApplicationMessage
             {
                 Topic = topic,
-                Payload = JsonSerializer.SerializeToUtf8Bytes(payload)
+                Payload = HausJsonSerializer.SerializeToBytes(payload)
             });
         }
 

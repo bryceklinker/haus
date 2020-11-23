@@ -1,4 +1,4 @@
-namespace Haus.Core.Models.Sensors.Motion
+namespace Haus.Core.Models.Devices.Sensors.Motion
 {
     public class OccupancyChangedModel
     {
