@@ -25,3 +25,9 @@ jobs:
 
       - name: Run Build Script
         run: ./scripts/build.sh
+
+      - name: Publish Haus
+        uses: actions/upload-artifact@v2
+        with:
+          name: Haus
+          path: ./publish
