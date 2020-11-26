@@ -24,7 +24,7 @@ namespace Haus.Web.Host.Diagnostics
             var hub = scope.GetService<IHubContext<DiagnosticsHub>>();
             var messageFactory = scope.GetService<IMqttDiagnosticsMessageFactory>();
             var model = messageFactory.Create(message.Topic, message.Payload);
-            await hub.Clients.All.SendAsync("OnMqttMessage", model);
+            await hub.BroadcastAsync("OnMqttMessage", model);
         }
     }
 }

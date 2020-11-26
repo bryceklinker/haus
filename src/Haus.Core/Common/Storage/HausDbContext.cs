@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,12 @@ namespace Haus.Core.Common.Storage
             where T : class
         {
             return await Set<T>().SingleOrDefaultAsync(expression).ConfigureAwait(false);
+        }
+
+        public async Task<TEntity> FindByIdAsync<TEntity>(object id, CancellationToken token = default) 
+            where TEntity : class
+        {
+            return await FindAsync<TEntity>(new[] {id}, token).ConfigureAwait(false);
         }
     }
 }

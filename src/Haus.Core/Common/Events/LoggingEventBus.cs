@@ -1,29 +1,33 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Core.Common.Events
 {
-    public class LoggingEventBus : IEventBus
+    internal class LoggingEventBus : LoggingBus, IEventBus
     {
         private readonly IEventBus _eventBus;
-        private readonly ILogger<LoggingEventBus> _logger;
 
-        public LoggingEventBus(IEventBus eventBus, ILogger<LoggingEventBus> logger)
+        protected override string BeginMessage => "Publishing event";
+        protected override string FinishedMessage => "Finished publishing event";
+        protected override string ErrorMessage => "Error publishing event";
+
+        public LoggingEventBus(IEventBus eventBus, ILogger<LoggingEventBus> logger) 
+            : base(logger)
         {
             _eventBus = eventBus;
-            _logger = logger;
         }
 
         public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken token = default) where TEvent : IEvent
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            _logger.LogInformation("Publishing event", @event);
-            await _eventBus.PublishAsync(@event, token).ConfigureAwait(false);
-            stopwatch.Stop();
-            _logger.LogInformation("Finished publishing event", new {@event, stopwatch.ElapsedMilliseconds});
+            await ExecuteWithLoggingAsync(@event, async () =>
+                {
+                    await _eventBus.PublishAsync(@event, token).ConfigureAwait(false);
+                    return Unit.Value;
+                }, token)
+                .ConfigureAwait(false);
         }
     }
 }

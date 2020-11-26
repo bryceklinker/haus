@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;

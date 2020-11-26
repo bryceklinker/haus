@@ -1,5 +1,5 @@
-using System;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Xunit;
 
@@ -17,6 +17,26 @@ namespace Haus.Core.Tests.Devices.Entities
             Assert.Equal("this-id", entity.ExternalId);
         }
 
+        [Fact]
+        public void WhenCreatedFromDeviceDiscoveredThenNameIsSetToExternalId()
+        {
+            var model = new DeviceDiscoveredModel { Id = "this-id" };
+
+            var entity = DeviceEntity.FromDiscoveredDevice(model);
+
+            Assert.Equal("this-id", entity.Name);
+        }
+
+        [Fact]
+        public void WhenCreatedFromDeviceDiscoveredWithModelThenNameIsSetToModel()
+        {
+            var model = new DeviceDiscoveredModel { Id = "this-id", Model = "GCL-LED-Strip"};
+
+            var entity = DeviceEntity.FromDiscoveredDevice(model);
+
+            Assert.Equal("GCL-LED-Strip", entity.Name);
+        }
+        
         [Fact]
         public void WhenCreatedFromDeviceDiscoveredThenModelIsInMetadata()
         {
@@ -48,24 +68,6 @@ namespace Haus.Core.Tests.Devices.Entities
 
             Assert.Single(entity.Metadata);
             AssertHasMetadata("Description", "new hotness", entity);
-        }
-
-        [Fact]
-        public void WhenMappedToDeviceModelThenDeviceModelIsPopulatedFromEntity()
-        {
-            var entity = new DeviceEntity
-            {
-                Id = 54,
-                ExternalId = $"{Guid.NewGuid()}"
-            };
-            entity.AddOrUpdateMetadata("one", "three");
-
-            var model = DeviceEntity.ToModel().Compile().Invoke(entity);
-
-            Assert.Equal(54, model.Id);
-            Assert.Equal(entity.ExternalId, model.ExternalId);
-            Assert.Equal("one", model.Metadata[0].Key);
-            Assert.Equal("three", model.Metadata[0].Value);
         }
 
         [Fact]
@@ -114,7 +116,39 @@ namespace Haus.Core.Tests.Devices.Entities
             AssertHasMetadata("Model", "boom", entity);
         }
 
-        private void AssertHasMetadata(string key, string value, DeviceEntity entity)
+        [Fact]
+        public void WhenDeviceIsUpdatedFromModelThenDeviceMatchesModel()
+        {
+            var model = new DeviceModel { Name = "Somename", ExternalId = "dont-use-this"};
+            var entity = new DeviceEntity();
+
+            entity.UpdateFromModel(model);
+
+            Assert.Equal("Somename", entity.Name);
+        }
+
+        [Fact]
+        public void WhenDeviceIsUpdatedFromModelThenMetadataForDeviceIsUpdated()
+        {
+            var model = new DeviceModel
+            {
+                Metadata = new []
+                {
+                    new DeviceMetadataModel("one", "three"),
+                    new DeviceMetadataModel("three", "two"), 
+                }
+            };
+            var entity = new DeviceEntity();
+            entity.AddOrUpdateMetadata("one", "two");
+
+            entity.UpdateFromModel(model);
+
+            Assert.Equal(2, entity.Metadata.Count);
+            Assert.Contains(entity.Metadata, m => m.Key == "one" && m.Value == "three");
+            Assert.Contains(entity.Metadata, m => m.Key == "three" && m.Value == "two");
+        }
+
+        private static void AssertHasMetadata(string key, string value, DeviceEntity entity)
         {
             Assert.Contains(entity.Metadata, meta => meta.Key == key && meta.Value == value);
         }

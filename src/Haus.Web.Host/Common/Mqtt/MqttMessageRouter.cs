@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,8 +30,8 @@ namespace Haus.Web.Host.Common.Mqtt
             if (@event == null)
                 return;
 
-            var eventBus = scope.GetService<IEventBus>();
-            await eventBus.PublishAsync(@event, CancellationToken.None);
+            var hausBus = scope.GetService<IHausBus>();
+            await hausBus.PublishAsync(@event, CancellationToken.None);
         }
     }
 }

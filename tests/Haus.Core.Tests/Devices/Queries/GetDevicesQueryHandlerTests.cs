@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Devices.Queries;
@@ -10,12 +11,12 @@ namespace Haus.Core.Tests.Devices.Queries
     public class GetDevicesQueryHandlerTests
     {
         private readonly HausDbContext _context;
-        private readonly GetDevicesQueryHandler _handler;
+        private readonly IHausBus _hausBus;
 
         public GetDevicesQueryHandlerTests()
         {
             _context = HausDbContextFactory.Create();
-            _handler = new GetDevicesQueryHandler(_context);
+            _hausBus = HausBusFactory.Create(_context);
         }
         
         [Fact]
@@ -25,7 +26,7 @@ namespace Haus.Core.Tests.Devices.Queries
             _context.AddDevice("two");
             _context.AddDevice("three");
 
-            var result = await _handler.Handle(new GetDevicesQuery());
+            var result = await _hausBus.ExecuteQueryAsync(new GetDevicesQuery());
 
             Assert.Equal(3, result.Count);
             Assert.Contains(result.Items, i => i.ExternalId == "one");

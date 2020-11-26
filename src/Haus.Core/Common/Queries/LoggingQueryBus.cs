@@ -6,33 +6,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Haus.Core.Common.Queries
 {
-    public class LoggingQueryBus : IQueryBus
+    internal class LoggingQueryBus : LoggingBus, IQueryBus
     {
         private readonly IQueryBus _queryBus;
-        private readonly ILogger<LoggingQueryBus> _logger;
+
+        protected override string BeginMessage => "Executing query";
+        protected override string FinishedMessage => "Finished executing query";
+        protected override string ErrorMessage => "Error executing query";
 
         public LoggingQueryBus(IQueryBus queryBus, ILogger<LoggingQueryBus> logger)
+            : base(logger)
         {
             _queryBus = queryBus;
-            _logger = logger;
         }
 
-        public async Task<TResult> Execute<TResult>(IQuery<TResult> query, CancellationToken token = default)
+        public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default)
         {
-            try
-            {
-                var stopwatch = new Stopwatch();
-                _logger.LogInformation("Executing query", query);
-                var result = await _queryBus.Execute(query, token).ConfigureAwait(false);
-                stopwatch.Stop();
-                _logger.LogInformation("Finished executing query", new {query, stopwatch.ElapsedMilliseconds});
-                return result;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Failed to execute query", query);
-                throw;
-            }
+            return await ExecuteWithLoggingAsync(query, () => _queryBus.ExecuteAsync(query, token), token)
+                .ConfigureAwait(false);
         }
     }
 }

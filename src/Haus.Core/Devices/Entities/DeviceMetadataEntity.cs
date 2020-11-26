@@ -13,12 +13,7 @@ namespace Haus.Core.Devices.Entities
         public string Key { get; set; }
         public string Value { get; set; }
 
-        public DeviceMetadataEntity()
-        {
-            
-        }
-
-        public DeviceMetadataEntity(string key, string value)
+        public DeviceMetadataEntity(string key = null, string value = null)
         {
             Key = key;
             Value = value;
@@ -27,15 +22,6 @@ namespace Haus.Core.Devices.Entities
         public void Update(string value)
         {
             Value = value;
-        }
-
-        public static Expression<Func<DeviceMetadataEntity, DeviceMetadataModel>> ToModel()
-        {
-            return e => new DeviceMetadataModel
-            {
-                Key = e.Key,
-                Value = e.Value
-            };
         }
     }
 

@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
@@ -13,12 +14,12 @@ namespace Haus.Core.Tests.Devices.Events
     public class DeviceDiscoveredEventHandlerTest
     {
         private readonly HausDbContext _context;
-        private readonly DeviceDiscoveredEventHandler _handler;
+        private readonly IHausBus _hausBus;
 
         public DeviceDiscoveredEventHandlerTest()
         {
             _context = HausDbContextFactory.Create();
-            _handler = new DeviceDiscoveredEventHandler(_context);
+            _hausBus = HausBusFactory.Create(_context);
         }
 
         [Fact]
@@ -29,7 +30,7 @@ namespace Haus.Core.Tests.Devices.Events
                 Id = "This is my external id"
             }.AsHausEvent());
 
-            await _handler.Handle(@event);
+            await _hausBus.PublishAsync(@event);
 
             Assert.Single(_context.Set<DeviceEntity>());
         }
@@ -44,7 +45,7 @@ namespace Haus.Core.Tests.Devices.Events
                 Id = "three",
                 Model = "Help"
             }.AsHausEvent());
-            await _handler.Handle(@event);
+            await _hausBus.PublishAsync(@event);
 
             Assert.Single(_context.Set<DeviceEntity>());
             

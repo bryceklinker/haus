@@ -6,7 +6,7 @@ namespace Haus.Core.Common.Queries
 {
     public interface IQueryBus
     {
-        Task<TResult> Execute<TResult>(IQuery<TResult> query, CancellationToken token = default);
+        Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default);
     }
     
     public class QueryBus : IQueryBus
@@ -18,7 +18,7 @@ namespace Haus.Core.Common.Queries
             _mediator = mediator;
         }
 
-        public async Task<TResult> Execute<TResult>(IQuery<TResult> query, CancellationToken token = default)
+        public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default)
         {
             return await _mediator.Send(query, token).ConfigureAwait(false);
         }

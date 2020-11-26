@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Haus.Core.Common;
 using Haus.Core.Common.Queries;
 using Haus.Core.Devices.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -11,17 +12,17 @@ namespace Haus.Web.Host.Devices
     [Route("api/devices")]
     public class DevicesController : Controller
     {
-        private readonly IQueryBus _queryBus;
+        private readonly IHausBus _hausBus;
 
-        public DevicesController(IQueryBus queryBus)
+        public DevicesController(IHausBus hausBus)
         {
-            _queryBus = queryBus;
+            _hausBus = hausBus;
         }
 
         [HttpGet("")]
         public async Task<IActionResult> Get()
         {
-            var result = await _queryBus.Execute(new GetDevicesQuery());
+            var result = await _hausBus.ExecuteQueryAsync(new GetDevicesQuery());
             return Ok(result);
         }
     }
