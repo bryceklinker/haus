@@ -29,7 +29,6 @@ function dotnet_publish() {
     --runtime "linux-x64" \
     -p:PublishTrimmed=true \
     -p:PublishSingleFile=true \
-    -p:PublishReadyToRun=true \
     --self-contained true
     
   dotnet publish "${PROJECT_PATH}" \
@@ -38,7 +37,6 @@ function dotnet_publish() {
     --runtime "osx-x64" \
     -p:PublishTrimmed=true \
     -p:PublishSingleFile=true \
-    -p:PublishReadyToRun=true \
     --self-contained true
     
   dotnet publish "${PROJECT_PATH}" \
@@ -47,7 +45,6 @@ function dotnet_publish() {
     --runtime "win-x64" \
     -p:PublishTrimmed=true \
     -p:PublishSingleFile=true \
-    -p:PublishReadyToRun=true \
     --self-contained true
 }
 
