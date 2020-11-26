@@ -21,8 +21,8 @@ namespace Haus.Core.Devices.Commands
             Model = model;
         }
     }
-    
-    public class UpdateDeviceCommandHandler : AsyncRequestHandler<UpdateDeviceCommand>, ICommandHandler<UpdateDeviceCommand>
+
+    internal class UpdateDeviceCommandHandler : AsyncRequestHandler<UpdateDeviceCommand>, ICommandHandler<UpdateDeviceCommand>
     {
         private readonly HausDbContext _context;
         private readonly IValidator<DeviceModel> _validator;

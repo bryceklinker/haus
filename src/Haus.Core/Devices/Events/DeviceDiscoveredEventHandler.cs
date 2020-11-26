@@ -7,7 +7,7 @@ using Haus.Core.Models.Devices.Discovery;
 
 namespace Haus.Core.Devices.Events
 {
-    public class DeviceDiscoveredEventHandler : IEventHandler<RoutableEvent<DeviceDiscoveredModel>>
+    internal class DeviceDiscoveredEventHandler : IEventHandler<RoutableEvent<DeviceDiscoveredModel>>
     {
         private readonly HausDbContext _context;
 

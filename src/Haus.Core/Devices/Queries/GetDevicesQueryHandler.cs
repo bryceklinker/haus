@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -13,10 +14,17 @@ namespace Haus.Core.Devices.Queries
 {
     public class GetDevicesQuery : IQuery<ListResult<DeviceModel>>
     {
+        public string ExternalId { get; }
+
+        public bool HasExternalId => !string.IsNullOrWhiteSpace(ExternalId);
         
+        public GetDevicesQuery(string externalId = null)
+        {
+            ExternalId = externalId;
+        }
     }
-    
-    public class GetDevicesQueryHandler : IQueryHandler<GetDevicesQuery, ListResult<DeviceModel>>
+
+    internal class GetDevicesQueryHandler : IQueryHandler<GetDevicesQuery, ListResult<DeviceModel>>
     {
         private readonly HausDbContext _context;
         private readonly IMapper _mapper;
@@ -29,7 +37,12 @@ namespace Haus.Core.Devices.Queries
 
         public async Task<ListResult<DeviceModel>> Handle(GetDevicesQuery request, CancellationToken cancellationToken = default)
         {
-            return await _context.Set<DeviceEntity>()
+            var query = _context.Set<DeviceEntity>().AsQueryable();
+
+            if (request.HasExternalId) 
+                query = query.Where(d => d.ExternalId == request.ExternalId);
+            
+            return await query
                 .ProjectTo<DeviceModel>(_mapper.ConfigurationProvider)
                 .ToListResultAsync()
                 .ConfigureAwait(false);
