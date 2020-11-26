@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentValidation;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Commands;

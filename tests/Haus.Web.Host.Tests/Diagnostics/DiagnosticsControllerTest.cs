@@ -33,7 +33,7 @@ namespace Haus.Web.Host.Tests.Diagnostics
                 Topic = "my-topic"
             };
             var client = _factory.CreateAuthenticatedClient();
-            await client.PostAsJsonAsync("/api/diagnostics/replay", model);
+            await client.ReplayDiagnosticsMessageAsync(model);
 
             await Eventually.Assert(() =>
             {

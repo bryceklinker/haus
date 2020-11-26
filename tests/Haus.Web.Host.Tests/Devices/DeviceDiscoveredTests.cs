@@ -1,8 +1,5 @@
 using System.Net;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Haus.Core.Models.Common;
-using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
@@ -35,7 +32,7 @@ namespace Haus.Web.Host.Tests.Devices
             await Eventually.AssertAsync(async () =>
             {
                 var client = _factory.CreateAuthenticatedClient();
-                var list = await client.GetFromJsonAsync<ListResult<DeviceModel>>("/api/devices");
+                var list = await client.GetDevicesAsync();
                 Assert.Contains(list.Items, model => model.ExternalId == "my-new-id");
             });
         }

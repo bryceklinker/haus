@@ -38,14 +38,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{2BED73DF-2C16-420D-9C79-8538151F9F9E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{6DBF77B5-7356-4FBC-8AC8-7B89BBAD8E4B}"
-ProjectSection(SolutionItems) = preProject
-	.github\workflows\main.yaml = .github\workflows\main.yaml
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\main.yaml = .github\workflows\main.yaml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A43D2365-6284-4B46-86B8-2A3483F72564}"
-ProjectSection(SolutionItems) = preProject
-	scripts\build.sh = scripts\build.sh
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		scripts\build.sh = scripts\build.sh
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Api.Client", "src\Haus.Api.Client\Haus.Api.Client.csproj", "{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -168,6 +170,18 @@ Global
 		{5107B897-F5A1-41AD-B979-7EA538D91B69}.Release|x64.Build.0 = Release|Any CPU
 		{5107B897-F5A1-41AD-B979-7EA538D91B69}.Release|x86.ActiveCfg = Release|Any CPU
 		{5107B897-F5A1-41AD-B979-7EA538D91B69}.Release|x86.Build.0 = Release|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Debug|x64.Build.0 = Debug|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Debug|x86.Build.0 = Debug|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Release|x64.ActiveCfg = Release|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Release|x64.Build.0 = Release|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Release|x86.ActiveCfg = Release|Any CPU
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E0793E28-ACBC-45CB-B1AF-1AD4889FAEA6} = {E548574D-38E9-4208-97A3-33BF6F2EC43D}
@@ -180,5 +194,6 @@ Global
 		{6B83B5CE-79A3-4608-8D5A-26F0AF7D268C} = {74319CCE-D734-4495-BA3A-2500488064B0}
 		{5107B897-F5A1-41AD-B979-7EA538D91B69} = {74319CCE-D734-4495-BA3A-2500488064B0}
 		{6DBF77B5-7356-4FBC-8AC8-7B89BBAD8E4B} = {2BED73DF-2C16-420D-9C79-8538151F9F9E}
+		{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E} = {E548574D-38E9-4208-97A3-33BF6F2EC43D}
 	EndGlobalSection
 EndGlobal

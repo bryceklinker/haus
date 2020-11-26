@@ -1,14 +1,8 @@
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
-using Polly;
 using Xunit;
 
 namespace Haus.Web.Host.Tests.Devices
@@ -27,7 +21,7 @@ namespace Haus.Web.Host.Tests.Devices
         public async Task WhenADeviceIsUpdatedThenUpdatedDeviceIsAvailableFromTheApi()
         {
             var mqttClient = await _factory.GetMqttClient();
-            var httpClient = _factory.CreateAuthenticatedClient();
+            var hausClient = _factory.CreateAuthenticatedClient();
             await mqttClient.PublishAsync("haus/events", new DeviceDiscoveredModel
             {
                 Id = "hello"
@@ -35,15 +29,15 @@ namespace Haus.Web.Host.Tests.Devices
 
             await Eventually.AssertAsync(async () =>
             {
-                var result = await httpClient.GetFromJsonAsync<ListResult<DeviceModel>>("/api/devices?externalId=hello");
+                var result = await hausClient.GetDevicesAsync("hello");
                 var device = result.Items[0];
-                await httpClient.PutAsJsonAsync($"/api/devices/{device.Id}", new DeviceModel
+                await hausClient.UpdateDeviceAsync(device.Id, new DeviceModel
                 {
                     Name = "some-name"
                 });
 
-                var response = await httpClient.GetAsync($"/api/devices/{device.Id}");
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                var updated = await hausClient.GetDeviceAsync(device.Id);
+                Assert.Equal("some-name", updated.Name);
             });
         }
     }

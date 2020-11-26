@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Haus.Api.Client;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Testing.Support.Fakes;
@@ -41,13 +42,13 @@ namespace Haus.Web.Host.Tests.Support
             });
         }
 
-        public HttpClient CreateAuthenticatedClient()
+        public IHausApiClient CreateAuthenticatedClient()
         {
             var client = CreateClient();
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue(TestingAuthenticationHandler.TestingScheme);
 
-            return client;
+            return new HausApiClient(client);
         }
 
         public async Task<HubConnection> CreateHubConnection(string hub)
