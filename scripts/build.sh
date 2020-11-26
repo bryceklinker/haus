@@ -3,7 +3,6 @@ set -ex
 
 CONFIGURATION=${CONFIGURATION:-'Release'}
 PUBLISH_DIRECTORY=${PUBLISH_DIRECTORY:-'./publish'}
-PUBLISH_RUNTIME=${PUBLISH_RUNTIME:-'linux-x64'}
 
 FRONT_END_DIRECTORY="./src/Haus.Web.Host/client-app"
 WEB_HOST_PROJECT="./src/Haus.Web.Host/Haus.Web.Host.csproj"
@@ -24,7 +23,32 @@ function run_tests() {
 function dotnet_publish() {
   PROJECT_PATH=$1
   OUTPUT_PATH=$2
-  dotnet publish "${PROJECT_PATH}" --output "${OUTPUT_PATH}" --configuration "${CONFIGURATION}" --runtime "${PUBLISH_RUNTIME}" -p:PublishSingleFile=true --self-contained true
+  dotnet publish "${PROJECT_PATH}" \
+    --output "${OUTPUT_PATH}/linux-x64" \
+    --configuration "${CONFIGURATION}" \
+    --runtime "linux-x64" \
+    -p:PublishTrimmed=true \
+    -p:PublishSingleFile=true \
+    -p:PublishReadyToRun=true \
+    --self-contained true
+    
+  dotnet publish "${PROJECT_PATH}" \
+    --output "${OUTPUT_PATH}/osx-x64" \
+    --configuration "${CONFIGURATION}" \
+    --runtime "osx-x64" \
+    -p:PublishTrimmed=true \
+    -p:PublishSingleFile=true \
+    -p:PublishReadyToRun=true \
+    --self-contained true
+    
+  dotnet publish "${PROJECT_PATH}" \
+    --output "${OUTPUT_PATH}/win-x64" \
+    --configuration "${CONFIGURATION}" \
+    --runtime "win-x64" \
+    -p:PublishTrimmed=true \
+    -p:PublishSingleFile=true \
+    -p:PublishReadyToRun=true \
+    --self-contained true
 }
 
 function publish_app() {
