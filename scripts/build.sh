@@ -21,9 +21,15 @@ function run_tests() {
   popd || exit
 }
 
+function dotnet_publish() {
+  PROJECT_PATH=$1
+  OUTPUT_PATH=$2
+  dotnet publish "${PROJECT_PATH}" --output "${OUTPUT_PATH}" --configuration "${CONFIGURATION}" --runtime "${PUBLISH_RUNTIME}" -p:PublishSingleFile=true --self-contained true
+}
+
 function publish_app() {
-  dotnet publish $WEB_HOST_PROJECT --output "${PUBLISH_DIRECTORY}/web_host" --configuration "${CONFIGURATION}" --runtime "${PUBLISH_RUNTIME}"
-  dotnet publish $ZIGBEE_HOST_PROJECT --output "${PUBLISH_DIRECTORY}/zigbee_host" --configuration "${CONFIGURATION}" --runtime "${PUBLISH_RUNTIME}"
+  dotnet_publish $WEB_HOST_PROJECT "${PUBLISH_DIRECTORY}/web_host"
+  dotnet_publish $ZIGBEE_HOST_PROJECT "${PUBLISH_DIRECTORY}/zigbee_host"
 }
 
 function main() {
