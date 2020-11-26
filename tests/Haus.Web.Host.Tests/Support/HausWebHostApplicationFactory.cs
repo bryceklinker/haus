@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using MQTTnet.Extensions.ManagedClient;
 
 namespace Haus.Web.Host.Tests.Support
 {
@@ -51,12 +50,6 @@ namespace Haus.Web.Host.Tests.Support
             return client;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            
-            base.Dispose(disposing);
-        }
-
         public async Task<HubConnection> CreateHubConnection(string hub)
         {
             CreateClient();
@@ -73,10 +66,10 @@ namespace Haus.Web.Host.Tests.Support
             return connection;
         }
 
-        public async Task<IManagedMqttClient> GetMqttClient()
+        public async Task<IHausMqttClient> GetMqttClient()
         {
             using var scope = Services.CreateScope();
-            var creator = scope.ServiceProvider.GetRequiredService<IMqttClientCreator>();
+            var creator = scope.ServiceProvider.GetRequiredService<IHausMqttClientFactory>();
             return await creator.CreateClient();
         }
 

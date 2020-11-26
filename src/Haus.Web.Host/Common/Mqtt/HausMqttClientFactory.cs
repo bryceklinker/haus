@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Diagnostics;
@@ -8,35 +9,38 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Haus.Web.Host.Common.Mqtt
 {
-    public interface IMqttClientCreator : IAsyncDisposable
+    public interface IHausMqttClientFactory : IAsyncDisposable
     {
-        Task<IManagedMqttClient> CreateClient();
+        Task<IHausMqttClient> CreateClient();
     }
 
-    public class MqttClientCreator : IMqttClientCreator
+    public class HausMqttClientFactory : IHausMqttClientFactory
     {
         private readonly IOptions<MqttOptions> _options;
+        private readonly IMqttFactory _mqttFactory;
         private readonly IMqttNetLogger _logger;
-        private readonly Lazy<Task<IManagedMqttClient>> _clientInitializer;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly Lazy<Task<IHausMqttClient>> _clientInitializer;
 
         private string MqttServer => _options.Value.Server;
         
-        public MqttClientCreator(IOptions<MqttOptions> options, IMqttNetLogger logger)
+        public HausMqttClientFactory(IOptions<MqttOptions> options, IMqttFactory mqttFactory, IMqttNetLogger logger, ILoggerFactory loggerFactory)
         {
             _options = options;
+            _mqttFactory = mqttFactory;
             _logger = logger;
-            _clientInitializer = new Lazy<Task<IManagedMqttClient>>(CreateMqttClient);
+            _loggerFactory = loggerFactory;
+            _clientInitializer = new Lazy<Task<IHausMqttClient>>(CreateMqttClient);
         }
 
-        public async Task<IManagedMqttClient> CreateClient()
+        public async Task<IHausMqttClient> CreateClient()
         {
             return await _clientInitializer.Value;
         }
 
-        private async Task<IManagedMqttClient> CreateMqttClient()
+        private async Task<IHausMqttClient> CreateMqttClient()
         {
-            var factory = new MqttFactory(_logger);
-            var client = factory.CreateManagedMqttClient(_logger);
+            var client = _mqttFactory.CreateManagedMqttClient(_logger);
             var options = new ManagedMqttClientOptionsBuilder()
                 .WithClientOptions(opts =>
                 {
@@ -44,7 +48,7 @@ namespace Haus.Web.Host.Common.Mqtt
                 })
                 .Build();
             await client.StartAsync(options);
-            return client;
+            return new HausMqttClient(client, _loggerFactory);
         }
         
         public async ValueTask DisposeAsync()
@@ -53,7 +57,6 @@ namespace Haus.Web.Host.Common.Mqtt
                 return;
 
             var client = await _clientInitializer.Value;
-            // await client.StopAsync();
             client.Dispose();
         }
     }

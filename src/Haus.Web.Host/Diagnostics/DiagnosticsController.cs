@@ -12,17 +12,17 @@ namespace Haus.Web.Host.Diagnostics
     [Route("api/diagnostics")]
     public class DiagnosticsController : Controller
     {
-        private readonly IMqttClientCreator _mqttClientCreator;
+        private readonly IHausMqttClientFactory _hausMqttClientFactory;
 
-        public DiagnosticsController(IMqttClientCreator mqttClientCreator)
+        public DiagnosticsController(IHausMqttClientFactory hausMqttClientFactory)
         {
-            _mqttClientCreator = mqttClientCreator;
+            _hausMqttClientFactory = hausMqttClientFactory;
         }
 
         [HttpPost("replay")]
         public async Task<IActionResult> Replay([FromBody] MqttDiagnosticsMessageModel model)
         {
-            var client = await _mqttClientCreator.CreateClient();
+            var client = await _hausMqttClientFactory.CreateClient();
             await client.PublishAsync(model.ToMqttMessage());
             return NoContent();
         }

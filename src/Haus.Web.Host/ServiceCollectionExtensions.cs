@@ -1,11 +1,13 @@
 using Haus.Core;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.Mqtt;
+using Haus.Web.Host.Diagnostics;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MQTTnet;
 using MQTTnet.Diagnostics;
 
 namespace Haus.Web.Host
@@ -21,9 +23,11 @@ namespace Haus.Web.Host
                 })
                 .Configure<AuthOptions>(configuration.GetSection("Auth"))
                 .Configure<MqttOptions>(configuration.GetSection("Mqtt"))
+                .AddTransient<IMqttFactory, MqttFactory>()
                 .AddTransient<IMqttNetLogger, MqttLogger>()
-                .AddSingleton<IMqttClientCreator, MqttClientCreator>()
-                .AddHostedService<MqttMessageListener>();
+                .AddSingleton<IHausMqttClientFactory, HausMqttClientFactory>()
+                .AddHostedService<MqttMessageRouter>()
+                .AddHostedService<DiagnosticsMqttListener>();
         }
 
         public static IServiceCollection AddAuthenticatedUserRequired(this IServiceCollection services,
