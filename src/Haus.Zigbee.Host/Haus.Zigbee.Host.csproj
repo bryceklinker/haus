@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>dotnet-Haus.Zigbee.Host-03453D10-ABD1-497E-A81F-8DC972B46FCA</UserSecretsId>
+    <OutputType>Exe</OutputType>
+    <PublishTrimmed>True</PublishTrimmed>
+    <TrimMode>Link</TrimMode>
   </PropertyGroup>
 
   <ItemGroup>

@@ -18,8 +18,6 @@ namespace Haus.Web.Host.Tests.Support
 {
     public class FakeMqttClient : IManagedMqttClient, IMqttClient
     {
-        private bool _isConnected;
-
         public bool IsDisposed { get; private set; }
         public bool IsStarted { get; private set; }
         public IMqttApplicationMessageReceivedHandler ApplicationMessageReceivedHandler { get; set; }

@@ -35,6 +35,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{34D871CA-F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Testing.Support", "tests\Haus.Testing.Support\Haus.Testing.Support.csproj", "{5107B897-F5A1-41AD-B979-7EA538D91B69}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{2BED73DF-2C16-420D-9C79-8538151F9F9E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{6DBF77B5-7356-4FBC-8AC8-7B89BBAD8E4B}"
+ProjectSection(SolutionItems) = preProject
+	.github\workflows\main.yaml = .github\workflows\main.yaml
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A43D2365-6284-4B46-86B8-2A3483F72564}"
+ProjectSection(SolutionItems) = preProject
+	scripts\build.sh = scripts\build.sh
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,5 +179,6 @@ Global
 		{9A0154E7-9874-4BD4-BEB5-8DB9FD1851E1} = {E548574D-38E9-4208-97A3-33BF6F2EC43D}
 		{6B83B5CE-79A3-4608-8D5A-26F0AF7D268C} = {74319CCE-D734-4495-BA3A-2500488064B0}
 		{5107B897-F5A1-41AD-B979-7EA538D91B69} = {74319CCE-D734-4495-BA3A-2500488064B0}
+		{6DBF77B5-7356-4FBC-8AC8-7B89BBAD8E4B} = {2BED73DF-2C16-420D-9C79-8538151F9F9E}
 	EndGlobalSection
 EndGlobal

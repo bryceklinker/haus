@@ -1,0 +1,27 @@
+name: Main
+on: [push]
+jobs:
+  continuous_integration:
+    name: Continuous Integration
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Clone
+        uses: actions/checkout@v2
+      
+      - name: Install .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.14.x'
+
+      - name: Start MQTT Server
+        uses: namoshek/mosquitto-github-action@v0.1.0
+        with:
+          version: '1.6'
+
+      - name: Run Build Script
+        run: ./scripts/build.sh
