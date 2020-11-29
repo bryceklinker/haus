@@ -1,4 +1,5 @@
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Mappers;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
 using Microsoft.Extensions.Options;
@@ -23,7 +24,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers
                     }
                 }
             });
-            _mapperFactory = new MapperFactory(Options.Create(new HausOptions()), zigbeeOptions);
+            _mapperFactory = new MapperFactory(Options.Create(new HausOptions()), zigbeeOptions, new DeviceTypeResolver());
         }
 
         [Fact]

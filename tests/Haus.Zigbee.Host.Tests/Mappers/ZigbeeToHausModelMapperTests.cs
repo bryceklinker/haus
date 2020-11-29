@@ -1,4 +1,5 @@
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Factories;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
@@ -40,11 +41,12 @@ namespace Haus.Zigbee.Host.Tests.Mappers
         [Fact]
         public void WhenInterviewSuccessfulMessageThenReturnsDeviceDiscovered()
         {
-            var message = new MqttApplicationMessage
-            {
-                Topic = $"{Zigbee2MqttTopic}/bridge/log",
-                Payload = Zigbee2MqttMessages.InterviewSuccessful("this-is-an-id")
-            };
+            var message = new Zigbee2MqttMessageBuilder()
+                .WithLogTopic()
+                .WithInterviewSuccessful()
+                .WithPairingType()
+                .WithMeta(meta => meta.WithFriendlyName("this-is-an-id"))
+                .BuildMqttMessage();
 
             var result = _mapper.Map(message);
 
@@ -54,11 +56,10 @@ namespace Haus.Zigbee.Host.Tests.Mappers
         [Fact]
         public void WhenStateMessageThenReturnsUnknownMessage()
         {
-            var message = new MqttApplicationMessage
-            {
-                Topic = $"{Zigbee2MqttTopic}/bridge/state",
-                Payload = Zigbee2MqttMessages.State("online")
-            };
+            var message = new Zigbee2MqttMessageBuilder()
+                .WithStateTopic()
+                .WithState("online")
+                .BuildMqttMessage();
 
             var result = _mapper.Map(message);
 
@@ -68,8 +69,8 @@ namespace Haus.Zigbee.Host.Tests.Mappers
         [Fact]
         public void WhenFromSensorThenReturnsHausEvent()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder(Zigbee2MqttTopic)
-                .WithFriendlyName("some-device-name")
+            var message = new Zigbee2MqttMessageBuilder(Zigbee2MqttTopic)
+                .WithDeviceTopic("some-device-name")
                 .WithIlluminance(4)
                 .BuildMqttMessage();
 

@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Mappers;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Pairing;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 using Microsoft.Extensions.Options;
@@ -14,9 +15,9 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
         private readonly PairingMessageMapper _pairingMessageMapper;
         private readonly UnknownMessageMapper _unknownMessageMapper;
 
-        public BridgeMessageMapper(IOptions<HausOptions> hausOptions)
+        public BridgeMessageMapper(IOptions<HausOptions> hausOptions, IDeviceTypeResolver deviceTypeResolver)
         {
-            _pairingMessageMapper = new PairingMessageMapper(hausOptions);
+            _pairingMessageMapper = new PairingMessageMapper(hausOptions, deviceTypeResolver);
             _unknownMessageMapper = new UnknownMessageMapper(hausOptions);
         }
 

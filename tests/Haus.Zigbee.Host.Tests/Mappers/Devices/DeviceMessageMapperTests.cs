@@ -6,6 +6,7 @@ using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices;
 using Microsoft.Extensions.Options;
 using MQTTnet;
@@ -29,7 +30,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenFromMultiSensorThenEventIsMultiSensorChanged()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder()
+            var message = new Zigbee2MqttMessageBuilder()
                 .WithIlluminance(34)
                 .WithOccupancy(true)
                 .WithTemperature(42)
@@ -44,9 +45,9 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenFromTemperatureSensorThenEventIsTemperatureChanged()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder()
+            var message = new Zigbee2MqttMessageBuilder()
                 .WithTemperature(54)
-                .WithFriendlyName("my-device-id")
+                .WithDeviceTopic("my-device-id")
                 .BuildZigbee2MqttMessage();
 
             var result = _mapper.Map(message);
@@ -57,9 +58,9 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenFromLightSensorThenEventIsIlluminanceChanged()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder()
+            var message = new Zigbee2MqttMessageBuilder()
                 .WithIlluminance(3)
-                .WithFriendlyName("the-id")
+                .WithDeviceTopic("the-id")
                 .BuildZigbee2MqttMessage();
 
             var result = _mapper.Map(message);
@@ -70,9 +71,9 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenFromMotionSensorThenEventIsOccupancyChanged()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder()
+            var message = new Zigbee2MqttMessageBuilder()
                 .WithOccupancy(true)
-                .WithFriendlyName("idk")
+                .WithDeviceTopic("idk")
                 .BuildZigbee2MqttMessage();
 
             var result = _mapper.Map(message);
@@ -83,9 +84,9 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenFromBatterySensorThenEventIsBatteryChangedEvent()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder()
+            var message = new Zigbee2MqttMessageBuilder()
                 .WithBatteryLevel(54)
-                .WithFriendlyName("one")
+                .WithDeviceTopic("one")
                 .BuildZigbee2MqttMessage();
 
             var result = _mapper.Map(message);

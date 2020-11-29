@@ -1,3 +1,4 @@
+using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices;
 using Xunit;
 
@@ -15,8 +16,8 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenIlluminanceChangedThenReturnsPopulatedIlluminanceChanged()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder()
-                .WithFriendlyName("1231")
+            var message = new Zigbee2MqttMessageBuilder()
+                .WithDeviceTopic("1231")
                 .WithIlluminance(65)
                 .WithIlluminanceLux(12)
                 .BuildZigbee2MqttMessage();
@@ -31,7 +32,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenIlluminanceNotReportedThenReturnsNull()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder().BuildZigbee2MqttMessage();
+            var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
 
             Assert.Null(_mapper.Map(message));
         }

@@ -1,9 +1,10 @@
-using System.Text.Json;
 using Haus.Core.Models;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
+using Haus.Zigbee.Host.Mappers;
+using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Pairing;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 using Microsoft.Extensions.Options;
@@ -26,15 +27,18 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Pairing
                 EventsTopic = HausEventTopic,
                 UnknownTopic = UnknownTopic
             });
-            _mapper = new PairingMessageMapper(hausOptions);
+            _mapper = new PairingMessageMapper(hausOptions, new DeviceTypeResolver());
         }
 
         [Fact]
         public void WhenInterviewSuccessfulReceivedThenReturnsHausEvent()
         {
-            var message = Zigbee2MqttMessage.FromJObject(
-                Zigbee2MqttLogTopic,
-                Zigbee2MqttMessages.InterviewSuccessfulJObject("idk"));
+            var message = new Zigbee2MqttMessageBuilder()
+                .WithLogTopic()
+                .WithInterviewSuccessful()
+                .WithPairingType()
+                .WithMeta(meta => meta.WithFriendlyName("idk"))
+                .BuildZigbee2MqttMessage();
 
             var result = _mapper.Map(message);
 
@@ -44,14 +48,17 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Pairing
         [Fact]
         public void WhenInterviewSuccessfulMappedThenReturnsDeviceDiscoveredMessage()
         {
-            var message = Zigbee2MqttMessage.FromJObject(
-                Zigbee2MqttLogTopic,
-                Zigbee2MqttMessages.InterviewSuccessfulJObject(
-                    "this-is-an-id",
-                    "my description",
-                    "this is a model",
-                    true,
-                    "Phillips"));
+            var message = new Zigbee2MqttMessageBuilder()
+                .WithInterviewSuccessful()
+                .WithPairingType()
+                .WithLogTopic()
+                .WithMeta(meta => meta.WithFriendlyName("this-is-an-id")
+                    .WithDescription("my description")
+                    .WithModel("this is a model")
+                    .WithSupported(true)
+                    .WithVendor("Phillips")
+                )
+                .BuildZigbee2MqttMessage();
             var result = _mapper.Map(message);
 
             var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
@@ -60,14 +67,18 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Pairing
             Assert.Equal("my description", hausEvent.Payload.Description);
             Assert.Equal("this is a model", hausEvent.Payload.Model);
             Assert.Equal("Phillips", hausEvent.Payload.Vendor);
+            Assert.Equal(DeviceType.Unknown, hausEvent.Payload.DeviceType);
         }
 
         [Fact]
         public void WhenInterviewStartedThenReturnsUnknownEvent()
         {
-            var message = Zigbee2MqttMessage.FromJObject(
-                Zigbee2MqttLogTopic,
-                Zigbee2MqttMessages.InterviewStartedJObject());
+            var message = new Zigbee2MqttMessageBuilder()
+                .WithInterviewStarted()
+                .WithPairingType()
+                .WithLogTopic()
+                .WithMeta(meta => meta.WithFriendlyName("friendlyName"))
+                .BuildZigbee2MqttMessage();
 
             var result = _mapper.Map(message);
             

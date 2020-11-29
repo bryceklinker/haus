@@ -1,6 +1,7 @@
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Mappers;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 using Microsoft.Extensions.Options;
 using MQTTnet;
@@ -43,7 +44,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Pairing
         private readonly DeviceDiscoveredMapper _deviceDiscoveredMapper;
         private readonly UnknownMessageMapper _unknownMessageMapper;
 
-        public PairingMessageMapper(IOptions<HausOptions> hausOptions)
+        public PairingMessageMapper(IOptions<HausOptions> hausOptions, IDeviceTypeResolver deviceTypeResolver)
         {
             _deviceDiscoveredMapper = new DeviceDiscoveredMapper(hausOptions);
             _unknownMessageMapper = new UnknownMessageMapper(hausOptions);

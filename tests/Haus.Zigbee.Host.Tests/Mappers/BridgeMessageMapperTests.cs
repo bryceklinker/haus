@@ -1,7 +1,8 @@
-using System.Text.Json;
 using Haus.Core.Models;
 using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Mappers;
+using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 using Microsoft.Extensions.Options;
@@ -22,13 +23,18 @@ namespace Haus.Zigbee.Host.Tests.Mappers
                 EventsTopic = EventsTopicName,
                 UnknownTopic = UnknownTopicName
             });
-            _mapper = new BridgeMessageMapper(options);
+            _mapper = new BridgeMessageMapper(options, new DeviceTypeResolver());
         }
 
         [Fact]
         public void WhenInterviewSuccessfulThenReturnsEventsTopic()
         {
-            var message = Zigbee2MqttMessage.FromJObject("", Zigbee2MqttMessages.InterviewSuccessfulJObject(""));
+            var message = new Zigbee2MqttMessageBuilder()
+                .WithPairingType()
+                .WithMeta(meta => meta.WithFriendlyName(""))
+                .WithInterviewSuccessful()
+                .BuildZigbee2MqttMessage();
+            
             var result = _mapper.Map(message);
 
             Assert.Equal(EventsTopicName, result.Topic);

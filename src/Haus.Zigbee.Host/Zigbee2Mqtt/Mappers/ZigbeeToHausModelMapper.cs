@@ -1,4 +1,5 @@
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Mappers;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Factories;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
@@ -23,7 +24,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
             IZigbee2MqttMessageFactory zigbee2MqttMessageFactory)
         {
             _zigbee2MqttMessageFactory = zigbee2MqttMessageFactory;
-            _mapperFactory = new MapperFactory(hausOptions, zigbeeOptions);
+            _mapperFactory = new MapperFactory(hausOptions, zigbeeOptions, new DeviceTypeResolver());
         }
 
         public MqttApplicationMessage Map(MqttApplicationMessage message)

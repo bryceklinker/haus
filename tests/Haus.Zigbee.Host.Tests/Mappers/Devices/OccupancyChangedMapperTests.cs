@@ -1,3 +1,4 @@
+using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices;
 using Xunit;
 
@@ -15,8 +16,8 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenOccupancyChangedThenReturnsPopulatedOccupancyChanged()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder()
-                .WithFriendlyName("motions")
+            var message = new Zigbee2MqttMessageBuilder()
+                .WithDeviceTopic("motions")
                 .WithOccupancy(true)
                 .WithOccupancyTimeout(123)
                 .WithMotionSensitivity("low")
@@ -33,7 +34,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenOccupancyNotReportedThenReturnsNull()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder().BuildZigbee2MqttMessage();
+            var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
 
             Assert.Null(_mapper.Map(message));
         }

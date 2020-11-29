@@ -1,3 +1,4 @@
+using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices;
 using Xunit;
 
@@ -15,9 +16,9 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenBatteryChangedThenReturnsPopulatedBatteryChanged()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder()
+            var message = new Zigbee2MqttMessageBuilder()
                 .WithBatteryLevel(43)
-                .WithFriendlyName("my-device-id")
+                .WithDeviceTopic("my-device-id")
                 .BuildZigbee2MqttMessage();
 
             var model = _mapper.Map(message);
@@ -29,7 +30,7 @@ namespace Haus.Zigbee.Host.Tests.Mappers.Devices
         [Fact]
         public void WhenBatteryLevelNotReportedThenReturnsNull()
         {
-            var message = new Zigbee2MqttDeviceMessageBuilder().BuildZigbee2MqttMessage();
+            var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
 
             Assert.Null(_mapper.Map(message));
         }
