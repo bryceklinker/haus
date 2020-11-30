@@ -1,3 +1,4 @@
+using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Tests.Support
@@ -36,7 +37,7 @@ namespace Haus.Zigbee.Host.Tests.Support
             return this;
         }
 
-        public JToken Build()
+        public JToken BuildJToken()
         {
             try
             {
@@ -46,6 +47,11 @@ namespace Haus.Zigbee.Host.Tests.Support
             {
                 _meta = new JObject();
             }
+        }
+
+        public Zigbee2MqttMeta BuildMeta()
+        {
+            return new Zigbee2MqttMeta(BuildJToken());
         }
     }
 }

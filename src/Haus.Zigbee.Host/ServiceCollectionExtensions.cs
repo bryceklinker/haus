@@ -1,5 +1,4 @@
 using Haus.Zigbee.Host.Configuration;
-using Haus.Zigbee.Host.Zigbee2Mqtt;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Factories;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;

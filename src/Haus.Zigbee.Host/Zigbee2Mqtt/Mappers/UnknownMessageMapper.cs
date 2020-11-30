@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Haus.Core.Models;
 using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
@@ -10,11 +9,11 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
 {
     public class UnknownMessageMapper : IMapper
     {
-        private readonly IOptions<HausOptions> _options;
+        private readonly IOptionsMonitor<HausOptions> _options;
 
-        private string UnknownTopicName => _options.Value.UnknownTopic;
+        private string UnknownTopicName => _options.CurrentValue.UnknownTopic;
         
-        public UnknownMessageMapper(IOptions<HausOptions> options)
+        public UnknownMessageMapper(IOptionsMonitor<HausOptions> options)
         {
             _options = options;
         }

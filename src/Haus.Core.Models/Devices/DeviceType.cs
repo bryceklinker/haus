@@ -8,10 +8,10 @@ namespace Haus.Core.Models.Devices
     public enum DeviceType
     {
         Unknown = 0,
-        BatterySensor = 1,
-        Light = 2,
-        LightSensor = 3,
+        Light = 1,
+        LightSensor = 2,
         MotionSensor = 4,
-        TemperatureSensor = 5
+        TemperatureSensor = 8,
+        Switch = 16
     }
 }

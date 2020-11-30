@@ -1,0 +1,5382 @@
+[
+  {
+    "Vendor": "AduroSmart",
+    "Model": "81809/81813",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "AduroSmart",
+    "Model": "81825",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Airam",
+    "Model": "4713407",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Airam",
+    "Model": "AIRAM-CTR.U",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Airam",
+    "Model": "CTR.UBX",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Airam",
+    "Model": "4713406",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ajax Online",
+    "Model": "Aj_Zigbee_Led_Strip",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Anchor",
+    "Model": "67200BL",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1GUZBCX5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1GUZB5/30",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1GUZBRGBW",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1GSZ9RGBW",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1ZBRC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1ZBPIRS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1ZBPIAB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1ZBDWS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1ZB2WDM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1ZBPIA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "AXIS",
+    "Model": "GR-ZB01-W",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bandi",
+    "Model": "BDS03G1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Belkin",
+    "Model": "F7C033",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Binthen",
+    "Model": "BCM100D",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Binthen",
+    "Model": "CV01A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bitron",
+    "Model": "AV2010/34",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bitron",
+    "Model": "AV2010/22",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bitron",
+    "Model": "AV2010/22A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bitron",
+    "Model": "AV2010/25",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bitron",
+    "Model": "AV2010/32",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bitron",
+    "Model": "AV2010/21A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bitron",
+    "Model": "AV2010/24A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bitron",
+    "Model": "902010/24",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Blaupunkt",
+    "Model": "SCM-S1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Blaupunkt",
+    "Model": "PSM-S1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "BlitzWolf",
+    "Model": "BW-IS3",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "BlitzWolf",
+    "Model": "BW-SHP13",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "BlitzWolf",
+    "Model": "BW-IS2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bosch",
+    "Model": "RADON TriTech ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Bosch",
+    "Model": "ISW-ZPR1-WP13",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "BTicino",
+    "Model": "K4003C/L4003C/N4003C/NT4003C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Busch-Jaeger",
+    "Model": "6717-84",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Busch-Jaeger",
+    "Model": "6735/6736/6737",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Calex",
+    "Model": "421786",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Calex",
+    "Model": "421792",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "4256251-RZHAC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "4257050-ZHAC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "4257050-RZHAC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "3323-G",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "3420-G",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "3157100",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "4200-C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CentraLite",
+    "Model": "3400-D",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "PSS-23ZBS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "SCM-5ZBS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "PSM-29ZBSR",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "RS-23ZBS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Commercial Electric",
+    "Model": "53170161",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CR Smart Home",
+    "Model": "TS0202",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CR Smart Home",
+    "Model": "TS0203",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CR Smart Home",
+    "Model": "TS0204",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CR Smart Home",
+    "Model": "TS0205",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CR Smart Home",
+    "Model": "TS0111",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CR Smart Home",
+    "Model": "TS0207",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CR Smart Home",
+    "Model": "TS0218",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CR Smart Home",
+    "Model": "TS0001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CREE",
+    "Model": "B00TN589ZG",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "CC2530.ROUTER",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "ptvo.switch",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "DNCKATSD001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "DNCKATSW001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "DNCKATSW002",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "DNCKATSW003",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "DNCKATSW004",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "ZigUP",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "ZWallRemote0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "CY-LIGHTING",
+    "Model": "DM A60F",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Danalock",
+    "Model": "V3-BTZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "databyte.ch",
+    "Model": "DTB190502A1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "databyte.ch",
+    "Model": "ED2004-012",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-C140-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-B530-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-B540-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-B430-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-S140-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-S240-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-S340-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-S140R-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-S240R-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-S340R-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-S150-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-S250-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-S350-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "PM-C150-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "SPLZB-132",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "EMIZB-132",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "SMSZB-120",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "MOSZB-130",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "WISZB-120",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "MOSZB-140",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "HMSZB-110",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Digi",
+    "Model": "XBee",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_R4_5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_KEYPAD20",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_magnet",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_rspm",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_FreePad",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_Geiger",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_R8_8",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_RT",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_Flower",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dresden Elektronik",
+    "Model": "Mega23M12",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dresden Elektronik",
+    "Model": "XVV-Mega23M12",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EchoStar",
+    "Model": "SAGE206612",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoDim",
+    "Model": "Eco-Dim.07",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoDim",
+    "Model": "ED-10011",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoDim",
+    "Model": "ED-10012",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ecolink",
+    "Model": "4655BC0-R",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoSmart",
+    "Model": "A9A19A60WESDZ02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoSmart",
+    "Model": "A9BR3065WESDZ02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoSmart",
+    "Model": "D1821",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoSmart",
+    "Model": "D1531",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoSmart",
+    "Model": "D1532",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoSmart",
+    "Model": "D1542",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoSmart",
+    "Model": "D1533",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoSmart",
+    "Model": "D1523",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "eCozy",
+    "Model": "1TST-EU",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EDP",
+    "Model": "PLUG EDP RE:DY",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EDP",
+    "Model": "SWITCH EDP RE:DY",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ELKO",
+    "Model": "316GLEDRF",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Enbrighten",
+    "Model": "43076",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Enbrighten",
+    "Model": "43080",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Enbrighten",
+    "Model": "43102",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Enbrighten",
+    "Model": "43100",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Enbrighten",
+    "Model": "43084",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Enbrighten",
+    "Model": "43090",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EnOcean",
+    "Model": "EWSxZG",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Envilar",
+    "Model": "ZG102-BOX-UNIDIM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Essentials",
+    "Model": "120112",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ETOP",
+    "Model": "HT-08",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ETOP",
+    "Model": "HT-10",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Eurotronic",
+    "Model": "SPZB0001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "eWeLink",
+    "Model": "SA-003-Zigbee",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "eWeLink",
+    "Model": "RHK06",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "eWeLink",
+    "Model": "RHK07",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "eWeLink",
+    "Model": "RHK08",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "eWeLink",
+    "Model": "RHK09",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "eZEX",
+    "Model": "ECW-100-A03",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "TZSW22FW-L4",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SEB01ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SBM01ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "STH01ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SSA01ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SCA01ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SGA01ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SWA01ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SDM01ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SFS01ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SLS301ZB_2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SLS301ZB_3",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Feibit",
+    "Model": "SSS401ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ferguson",
+    "Model": "TH-T_V14",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GE",
+    "Model": "PSB19-SW27",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GE",
+    "Model": "22670",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GE",
+    "Model": "PQC19-DY01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GE",
+    "Model": "45852GE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GE",
+    "Model": "45853GE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GE",
+    "Model": "45856GE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GE",
+    "Model": "45857GE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GE",
+    "Model": "PTAPT-WH02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gewiss",
+    "Model": "GWA1521",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gewiss",
+    "Model": "GWA1522",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gewiss",
+    "Model": "GWA1531",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gira",
+    "Model": "2430-100",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gira",
+    "Model": "2435-10",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-006",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-006S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-007-1ID",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-007-2ID",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-S-004ZS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-007S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-008-2ID",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-008-1ID",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-008S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-009",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-MC-001",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-S-004Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-S-007Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-S-007ZS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-S-008Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-B-001Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-B-001ZS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-G-001Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-G-007Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-B-007Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-B-007ZS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-B-008Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-B-008ZS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-003Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-004Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-004ZS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-005Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-005ZS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-S-003Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-S-005Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GD-CZ-006",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-FL-004TZ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-FL-004TZS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-FL-005TZ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-FL-006TZ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-FL-006TZS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-W-001Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-003ZS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GMY Smart Bulb",
+    "Model": "B07KG5KF5R",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GreenPower",
+    "Model": "GreenPower_On_Off_Switch",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GreenPower",
+    "Model": "GreenPower_7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GS",
+    "Model": "BDHM8E27W70-I1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hampton Bay",
+    "Model": "99432",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hampton Bay",
+    "Model": "54668161",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1CA-M",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS3MS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2SK",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2SK_nxp",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1SA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS3SA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS3CG",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1CG-M",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1CG_M",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1DS/HS3DS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HEIMAN-M1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1DS-E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS3DS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1WL/HS3WL",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1-WL-E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1WL-N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1RC-N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1CA-E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2WD-E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "SOHM-I1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "SWHM-I1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "SMHM-I1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1HT",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1HT-N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "SKHMP30-I1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2ESK-E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "SGMHM-I1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "STHM-I1H",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1EB/HS1EB-E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2SS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1CG-E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1VS-N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2AQ-EM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2IRC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2SW1A/HS2SW1A-N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2SW2A/HS2SW2A-N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2SW3A/HS2SW3A-N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS2CM-N-DC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hej",
+    "Model": "GLSK3ZB-1711",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hej",
+    "Model": "GLSK3ZB-1712",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hej",
+    "Model": "GLSK3ZB-1713",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hej",
+    "Model": "GLSK6ZB-1714",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hej",
+    "Model": "GLSK6ZB-1715",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hej",
+    "Model": "GLSK6ZB-1716",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HiHome",
+    "Model": "WZB-TRVL",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "MOT003",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "DWS003",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "HALIGHTDIMWWE27",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "HALIGHTDIMWWE14",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "HALIGHTDIMWWB22",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "HV-GSCXZB229B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "1613V",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "HV-GSCXZB269",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "HV-GSCXZB279_HV-GSCXZB229",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "HV-GUCXZB5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "UK7004240",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "SLR1b",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "SLR2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "WPT1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "SLT2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "SLT3",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "SLT3B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "SLB2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Honyar",
+    "Model": "U86K31ND6",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HORNBACH",
+    "Model": "10011725",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HORNBACH",
+    "Model": "10011722",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iCasa",
+    "Model": "ICZB-IW11D",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iCasa",
+    "Model": "ICZB-IW11SW",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iCasa",
+    "Model": "ICZB-KPD14S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iCasa",
+    "Model": "ICZB-KPD18S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iCasa",
+    "Model": "ICZB-RM11S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iCasa",
+    "Model": "ICZB-B1FC60/B3FC64/B2FC95/B2FC125",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iCasa",
+    "Model": "ICZB-R11D",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iCasa",
+    "Model": "ICZB-R12D",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iHORN",
+    "Model": "LH-32ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iHORN",
+    "Model": "LH-992ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iHORN",
+    "Model": "LH-990ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iHORN",
+    "Model": "HO-09ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iHORN",
+    "Model": "LH-990F",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1545G12",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "T2011",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1546G12",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1623G12",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1537R6/LED1739R5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1650R5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1536G5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1903C5/LED1835C6",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1837R5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1842G3",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1733G7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1622G12",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1624G9",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1649C5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1732G11",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1836G9",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1736G9",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "T1820",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "ICTC-G-1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "ICPSHC24-10EU-IL-1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "ICPSHC24-30EU-IL-1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "L1527",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "L1529",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "L1528",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "L1531",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1603/E1702",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1524/E1810",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1743",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1744",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1525/E1745",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1746",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1757",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1926",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1766",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "T1828",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "T1829",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1738G7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.10",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.201",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.010",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.012",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.202",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.557",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.040",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.344",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ilux",
+    "Model": "900008-WW",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07005B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07004D",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07008L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07046L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07045L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07048L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07703L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07115L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07047L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "FL 140 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "FL 130 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "FL 120 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "BF 263",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 185 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "BY 185 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 250 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 265",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RF 265",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 278 T",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 285 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "BY 285 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 165",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 162",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 175 W",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 178 T",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "BY 178 T",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RS 122",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RS 125",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RS 225",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RS 128 T",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RS 228 T",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RS 229 T",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RS 230 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 145",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 245",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 248 T",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 148 T",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RF 261",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RF 263",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RF 264",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "BY 165",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "PL 110",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "ST 110",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "UC 110",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "DL 110 N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "DL 110 W",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "SL 110 N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "SL 110 M",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "SL 110 W",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "AE 260",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "AE 280 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "SP 120",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "SP 220",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "SP 222",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "SP 224",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "OFL 120 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "OFL 140 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "OSL 130 C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "BE 220",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Insta",
+    "Model": "InstaRemote",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iris",
+    "Model": "3210-L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iris",
+    "Model": "3326-L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iris",
+    "Model": "3320-L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iris",
+    "Model": "3460-L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iris",
+    "Model": "iL07_1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iris",
+    "Model": "27087-03",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "JAVIS",
+    "Model": "JS-SLK2-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "JIAWEN",
+    "Model": "K2RGBW01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Jung",
+    "Model": "ZLLCD5004M",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Jung",
+    "Model": "ZLLLS5004M",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Jung",
+    "Model": "ZLLA5004M",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Jung",
+    "Model": "ZLLHS4",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Keen Home",
+    "Model": "SV01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Keen Home",
+    "Model": "SV02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "KMPCIL",
+    "Model": "KMPCIL_RES005",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Konke",
+    "Model": "2AJZ4KPKEY",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Konke",
+    "Model": "2AJZ4KPBS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Konke",
+    "Model": "2AJZ4KPFT",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Konke",
+    "Model": "2AJZ4KPDR",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Konke",
+    "Model": "LH07321",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ksentry Electronics",
+    "Model": "KS-SM001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Kwikset",
+    "Model": "66492-001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Kwikset",
+    "Model": "99140-002",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Kwikset",
+    "Model": "99100-045",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Kwikset",
+    "Model": "99100-006",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Larkkey",
+    "Model": "ZSTY-SM-1DMZG-EU",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Larkkey",
+    "Model": "ZSTY-SM-1SRZG-EU",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LED Trading",
+    "Model": "HK-LN-DIM-A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "4058075181472",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "4058075208414",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "4058075208339",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "ZM350STW1TCF",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "M350STW1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "A806S-Q1G",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "A806S-Q1R",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "ZA806SQ1TCF",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "6ARCZABZH",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "6xy-M350ST-W1Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "5AA-SS-ZA-H0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LEELKI",
+    "Model": "WP33-EU",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "067776",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "067773",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "067774",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "067694",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "067771",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "067775",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "064888",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "064873",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "412015",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "752189",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LeTV",
+    "Model": "LeTV.8KEY",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leviton",
+    "Model": "DL15S-1BZ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leviton",
+    "Model": "RC-2000WH",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LifeControl",
+    "Model": "MCLH-07",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LifeControl",
+    "Model": "MCLH-04",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LifeControl",
+    "Model": "MCLH-02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LifeControl",
+    "Model": "MCLH-03",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LifeControl",
+    "Model": "MCLH-05",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LifeControl",
+    "Model": "MCLH-08",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZL1000100-CCT-US-V1A02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZL1000400-CCT-EU-2-V1A02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZL1000701-27-EU-V1A02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZL1000700-22-EU-V1A02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZS1100400-IN-V1A02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZS110050078",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZS232000178",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZS190000118",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LivingWise",
+    "Model": "LVS-ZB500D",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LivingWise",
+    "Model": "LVS-ZB15S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LivingWise",
+    "Model": "LVS-SM10ZW",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LivingWise",
+    "Model": "LVS-SN10ZW_SN11",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LivingWise",
+    "Model": "LVS-ZB15R",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LivingWise",
+    "Model": "LVS-SC7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Livolo",
+    "Model": "TI0001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Livolo",
+    "Model": "TI0001-switch",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Livolo",
+    "Model": "TI0001-socket",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "11830304",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "X711A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "X712A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "X713A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "QS-Zigbee-D02-TRIAC-LN",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "QS-Zigbee-D02-TRIAC-2C-LN",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "4000116784070",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "QS-Zigbee-S04-2C-LN",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "TS0041",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "TS0042",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "TS0043",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "TS0044",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "X701",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "X702",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "QS-Zigbee-S05-L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LoraTap",
+    "Model": "RR400ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LoraTap",
+    "Model": "SC400",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LoraTap",
+    "Model": "SS600ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lupus",
+    "Model": "12031",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lupus",
+    "Model": "LS12128",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lupus",
+    "Model": "12050",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lupus",
+    "Model": "12126",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lupus",
+    "Model": "12127",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lutron",
+    "Model": "LZL4BWHL01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lutron",
+    "Model": "Z3-1BRL",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M-ELEC",
+    "Model": "ML-ST-D200",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Meazon",
+    "Model": "MEAZON_BIZY_PLUG",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Meazon",
+    "Model": "MEAZON_DINRAIL",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "ZK-EU-2U",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "BHT-002-GCLZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "WS-EUB1-ZG",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "HY369RT",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "MS-104Z-1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404023",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404000/404005/404012",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404006/404008/404004",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "44435",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404028",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "MLI-404011",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404021",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404037",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404031",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512700",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512704",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "1402755",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512703",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512721",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512702",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512706",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "3802964",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nanoleaf",
+    "Model": "NL08-0800",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Neo",
+    "Model": "NAS-AB02B0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "NET2GRID",
+    "Model": "N2G-SP",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Netvox",
+    "Model": "Z809A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Niko",
+    "Model": "170-33505",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Niko",
+    "Model": "91004",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ninja Blocks",
+    "Model": "Z809AF",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Niviss",
+    "Model": "PS-ZIGBEE-SMART-CONTROLER-1CH-DIMMABLE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nordtronic",
+    "Model": "98425031",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nordtronic",
+    "Model": "98423051",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Norklmes",
+    "Model": "MKS-CM-W5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "LXN59-1S7LX1.0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "LXN59-2S7LX1.0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-1S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-02S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-045",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "LXZB-02A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-43",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-043",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-44",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-04D / HGZB-4D-UK",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-042",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-42",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-20A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-41",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "MG-AUWS01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "XY12S-15",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-01A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-02A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-42-UK / HGZB-41 / HGZB-41-UK",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-06A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-20-UK",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-DLC4-N12B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-14A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-13A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "3A12S-15",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "NUE-ZBFLB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nyce",
+    "Model": "NCZ-3011-HA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nyce",
+    "Model": "NCZ-3043-HA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nyce",
+    "Model": "NCZ-3041-HA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Nyce",
+    "Model": "NCZ-3045-HA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Orvibo",
+    "Model": "RL804CZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "CR11S8UZ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "T18W3Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "SM10ZW",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "RL804QZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "ST20",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "ST21",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "T30W3Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "T21W2Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "T21W1Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "W40CZ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "R11W2Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "R20W2Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "SN10ZW",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "SW21",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "SE21",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "AM25",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "73699",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4058075816718",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4058075816732",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AA69697",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC10787",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC03645",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC03642",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC08560",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC10786-DIM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC03647",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AA70155",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AA68199",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4058075148338",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AB32840",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4058075816794",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC03641",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4052899926158",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AB401130055",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AB3257001NJ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC10691",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4052899926110",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4058075036185",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4058075036147",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4058075047853",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC0363900NJ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4052899926127",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AB35996",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC08559",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC08562",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC01353010G",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC03648",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC0251100NJ/AC0251700NJ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4058075816459",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "ST8AU-CON",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "595UGR22",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Oujiabao",
+    "Model": "CR701-YZ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OWON",
+    "Model": "WSP404",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "100.462.31",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "NLG-CCT light",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "NLG-TW light",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "NLG-RGBW light ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "NLG-RGBW light",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "NLG-RGB-TW light",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "100.425.90",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "100.110.51",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "100.075.74",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "100.001.96",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "50043",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "50044/50045",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "500.47",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "50049",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "50064",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "371000001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "371000002",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "798.15",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "500.48",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "93999",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "500.67",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "PEQ",
+    "Model": "3300-P",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4034031P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5110131H5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002335001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3306431P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1746130P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1745630P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5900131C5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "7299760PH",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090331P9",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "7146060PH",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022411",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002039801",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002277501",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290023349",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "7602031P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696167991",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696170557",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1744130P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1743830P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1743130P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090531P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929001953101",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022268",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718699688820",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "548727",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "433714",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290011370",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696153062",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718699673147",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290018215",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022169",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090631P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696449691",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290018195",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "LWG004",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718699688882",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "7299355PH",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "915005106701",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290018187B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718699703424",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022890",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022166",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290012573A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002294203",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290002579A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696485880",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "915005733701",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "464800",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696695203",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022944",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290020399",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696598283",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929001953301",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290019534",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290011998B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022167",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022267",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696548738",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "915005587401",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3402831P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3435011P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4503848C5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5996411U5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090130P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3261030P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3261030P6",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3261031P6",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3261048P6",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4098430P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3261331P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4096730U7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3216131P5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3216131P6",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3216331P5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3216331P6",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3216431P5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4033930P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4023330P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290011370B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "046677476816",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "7199960PH",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002376101",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1742930P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1743030P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1743230P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1746430P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "7099930PH",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4080248P9",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4080148P9",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5062131P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5062148P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5062231P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5062248P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5062331P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5062348P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5062431P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5062448P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5045148P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5055148P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5055131P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "324131092621",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718699693985",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290012607",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290019758",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002240401",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "046677552343",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718699689308",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022408",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290024426",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "7099860PH",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3216231P5",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696170625",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "17436/30/P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "17435/30/P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1746330P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1741830P7",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022891",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002241201",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "046677551780",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3115331PH",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "7121131PU",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5041131P9",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "7531609",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696743133",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Piri",
+    "Model": "HSIO18008",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Plugwise",
+    "Model": "160-01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Qmotion",
+    "Model": "QZR-ZIG2400",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Qmotion",
+    "Model": "HDM40PV620",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "RGB Genie",
+    "Model": "ZGRC-KEY-013",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-004-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-003-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-014-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-007-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-008-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-010-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Salus Controls",
+    "Model": "SPE600",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Salus Controls",
+    "Model": "SP600",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Salus Controls",
+    "Model": "SR600",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Samotech",
+    "Model": "SM308",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Samotech",
+    "Model": "SM309",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Samotech",
+    "Model": "SM301Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Samotech",
+    "Model": "SM311",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Saswell",
+    "Model": "SEA801-Zigbee",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Saswell",
+    "Model": "SEA802-Zigbee",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schlage",
+    "Model": "BE468",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "WV704R0A0902",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "U202DST600ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "U201DST600ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "U201SRY2KWZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "U202SRY2KWZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "MEG5113-0300/MEG5165-0000",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schwaiger",
+    "Model": "ZHS-15",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Securifi",
+    "Model": "PP-WHT-US",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Securifi",
+    "Model": "B01M7Y8BP9",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E12-N1E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E11-G13",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E11-G23/E11-G33",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E11-N13/E11-N13A/E11-N14/E11-N14A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "Z01-CIA19NAE26",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "Z01-A19NAE26",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "Z01-A60EAE27",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E11-N1EA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E11-U2E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E11-U3E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E1F-N5E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E12-N14",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E1ACA4ABE38A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E1D-G73WNA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E1C-NB6",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E1E-G7F",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sercomm",
+    "Model": "SZ-ESW01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sercomm",
+    "Model": "SZ-ESW01-AU",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sercomm",
+    "Model": "XHS2-SE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sercomm",
+    "Model": "SZ-DWS04",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sercomm",
+    "Model": "AL-PIR02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Shenzhen Homa",
+    "Model": "HLD812-Z-SC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Shenzhen Homa",
+    "Model": "HLD503-Z-CT",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Shenzhen Homa",
+    "Model": "HLC610-Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Shenzhen Homa",
+    "Model": "HLC821-Z-SC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Shenzhen Homa",
+    "Model": "HLC614-ZLL",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Shenzhen Homa",
+    "Model": "HLC833-Z-SC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SHOJZJ",
+    "Model": "378RT",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinope",
+    "Model": "TH1123ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinope",
+    "Model": "TH1124ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinope",
+    "Model": "TH1300ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinope",
+    "Model": "TH1400ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinope",
+    "Model": "TH1500ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinope",
+    "Model": "SW2500ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinope",
+    "Model": "SP2600ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinope",
+    "Model": "DM2500ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinope",
+    "Model": "WL4200",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Siterwell",
+    "Model": "GS361A-H04",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Smart Home Pty",
+    "Model": "HGZB-07A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Smart Home Pty",
+    "Model": "HGZB-20-DE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Smart9",
+    "Model": "S9ZGBRC01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Smart9",
+    "Model": "S9TSZGB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Smartenit",
+    "Model": "4040B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Smartenit",
+    "Model": "ZBHT-1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "STSS-MULT-001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "STSS-IRM-001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "STS-PRS-251",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "STSS-PRES-001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "3325-S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "3321-S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "F-APP-UK-V2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "GP-WOU019BBDWG",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "IM6001-OTP05",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "STS-OUT-US-2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "IM6001-MTP01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "STS-IRM-251",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "STS-IRM-250",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "3305-S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "3300-S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "F-MLT-US-2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "IM6001-MPP01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "3310-S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "3315-S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "WTR-UK-V2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "IM6001-WLP01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "STS-WTR-250",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "3315-G",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "IM6001-BTP01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "SZ-SRN12N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "GP-LBU019BBAWU",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Somgoms",
+    "Model": "ZSTY-SM-11ZG-US-W",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Somgoms",
+    "Model": "ZSTY-SM-1CTZG-US-W",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Somgoms",
+    "Model": "ZSTY-SM-1DMZG-US-W",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Somgoms",
+    "Model": "ZSQB-SMB-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SONOFF",
+    "Model": "BASICZBR3",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SONOFF",
+    "Model": "S31ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SONOFF",
+    "Model": "SNZB-04",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SONOFF",
+    "Model": "SNZB-01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SONOFF",
+    "Model": "SNZB-02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SONOFF",
+    "Model": "SNZB-03",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Stelpro",
+    "Model": "ST218",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Stelpro",
+    "Model": "STZB402",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Stelpro",
+    "Model": "SMT402",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Stelpro",
+    "Model": "SMT402AD",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG9001T4-DIM-EU",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "ZG192910-4",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "ZG9101SAC-HP",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "ZG9101SAC-HP-Switch",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "ZG2835RAC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "ZG2835",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG9001K8-DIM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG9001K4-DIM2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Swann",
+    "Model": "SWO-KEF1PA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Swann",
+    "Model": "SWO-WDS1PA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Swann",
+    "Model": "SWO-MOS1PA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "73743",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "73742",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "73741",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "73740",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "73739",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "73693",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "73773",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "74283",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "74696",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "72922-A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "71831",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "74282",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "LTFY004",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "74580",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "72569",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "72567",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "75541",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "484719",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TCI",
+    "Model": "676-00301024955Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TCI",
+    "Model": "151570",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TERNCY",
+    "Model": "TERNCY-DC01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TERNCY",
+    "Model": "TERNCY-PP01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TERNCY",
+    "Model": "TERNCY-SD01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Third Reality",
+    "Model": "3RSS008Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Third Reality",
+    "Model": "3RSS007Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Third Reality",
+    "Model": "3RSL011Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Third Reality",
+    "Model": "3RSL012Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Titan Products",
+    "Model": "TPZRCO2HT-Z3",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Trust",
+    "Model": "ZWLD-100",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Trust",
+    "Model": "ZYCT-202",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Trust",
+    "Model": "ZLED-2709",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Trust",
+    "Model": "ZLED-TUNE9",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Trust",
+    "Model": "ZPIR-8000",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Trust",
+    "Model": "ZCTS-808",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Tuya",
+    "Model": "TS0207_repeater",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Tuya",
+    "Model": "DT82LEMA-1.2N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_dimmer",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_curtain_switch",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS011F",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS130F",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_switch",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_switch_2_gang",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_switch_3_gang",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0215A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TYZS1L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0502A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0505A_led",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0505A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0201",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0041",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0042",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0043",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0044",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0002",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_curtain",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_roller_blind",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_thermostat",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0121_switch",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0121_plug",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "mcdj3aq",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "SNTZ007",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "RH3040",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0115",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TT001ZAV20",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0011",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0012",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0013",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "gq8b1uv",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "U86KCJ-ZP",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "SNTZ009",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0004",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "U86KWF-ZPSJ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "D3-DPWK-TY",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "E220-KR4N0Z0-HA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0216",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "HY08WE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TUYATEC",
+    "Model": "GDKES-01TZXD",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TUYATEC",
+    "Model": "GDKES-02TZXD",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TUYATEC",
+    "Model": "GDKES-03TZXD",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ubisys",
+    "Model": "S1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ubisys",
+    "Model": "S2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ubisys",
+    "Model": "D1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ubisys",
+    "Model": "J1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ubisys",
+    "Model": "C4",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Universal Electronics Inc",
+    "Model": "XHS2-UE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "UseeLink",
+    "Model": "SM-SO306E/K/M",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Viessmann",
+    "Model": "ZK03840",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Vimar",
+    "Model": "14592.0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Visonic",
+    "Model": "MP-841",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Visonic",
+    "Model": "MCT-370 SMA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Visonic",
+    "Model": "MCT-350 SMA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Visonic",
+    "Model": "MCT-340 E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Visonic",
+    "Model": "MCT-340 SMA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Vrey",
+    "Model": "VR-X712U-0013",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Wally",
+    "Model": "U02I007C.01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Waxman",
+    "Model": "8840100H",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Weiser",
+    "Model": "9GED18000-009",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Weiser",
+    "Model": "9GED21500-005",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNLDP12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "XDD12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "XDD13LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG01LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG03LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG06LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG02LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WS-USC01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WS-USC02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WS-USC03",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WS-USC04",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG04LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG03LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG07LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG21LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG22LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG25LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG26LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG23LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG24LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WSDCGQ01LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WSDCGQ11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WSDCGQ12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "RTCGQ01LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "RTCGQ11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "MCCGQ01LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "MCCGQ11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "SJCGQ11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "SJCGQ12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "MFKZQ01LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNCZ02LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNCZ03LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNCZ04LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNCZ12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "SP-EUC01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBCZ11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "JTYJ-GD-01LM/BW",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "JTQJ-BF-01LM/BW",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "A6121",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "DJT11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "DJT12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNCLDJ11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNCLDJ12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "LLKZMK11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNMS12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNMS13LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNMS11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXCJKG11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXCJKG12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXCJKG13LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "GZCGQ01LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNTGMK11LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "HLQDQ01LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "SSM-U01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YRD426NRSC",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YRD226HA2619",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YRD256HA20BP",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YMF40/YDM4109\u002B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YRD210-HA-605",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YRL-220L",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YRD226/246 TSDB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YRD220/YRD221",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YRD246HA20BP",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "YPHIX",
+    "Model": "50208695",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "YSRSAI",
+    "Model": "YSR-MINI-01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "YSRSAI",
+    "Model": "ZB-CT01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yushun",
+    "Model": "YS-MT750",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "LXZB-12A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "HGZB-DLC4-N15B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "ZM-CSW032-D",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "ZM-L03E-Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "ZM-CSW002-D_switch",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "ZM79E-DT",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "M515EGB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "ZM25TQ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "ZW-EU-01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "ZW-EU-02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zen",
+    "Model": "Zen-01-W",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zipato",
+    "Model": "rgbw2.zbee27",
+    "DeviceType": "Unknown"
+  }
+]

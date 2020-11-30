@@ -1,5 +1,4 @@
 using System;
-using System.Text.Json;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Battery;
@@ -17,7 +16,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.Devices
     {
         private readonly SensorChangedMapper _sensorChangedMapper;
         
-        public DeviceMessageMapper(IOptions<HausOptions> options)
+        public DeviceMessageMapper(IOptionsMonitor<HausOptions> options)
             : base(options)
         {
             _sensorChangedMapper = new SensorChangedMapper();

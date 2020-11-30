@@ -130,7 +130,7 @@ namespace Haus.Zigbee.Host.Tests.Support
         {
             var builder = new Zigbee2MqttMetaBuilder();
             configureMeta(builder);
-            _root.Add("meta", builder.Build());
+            _root.Add("meta", builder.BuildJToken());
             return this;
         }
 

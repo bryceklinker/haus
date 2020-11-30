@@ -7,11 +7,11 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
 {
     public abstract class MapperBase : IMapper
     {
-        private readonly IOptions<HausOptions> _hausOptions;
+        private readonly IOptionsMonitor<HausOptions> _hausOptions;
 
-        protected string EventTopicName => _hausOptions.Value.EventsTopic;
+        protected string EventTopicName => _hausOptions.CurrentValue.EventsTopic;
         
-        protected MapperBase(IOptions<HausOptions> hausOptions)
+        protected MapperBase(IOptionsMonitor<HausOptions> hausOptions)
         {
             _hausOptions = hausOptions;
         }

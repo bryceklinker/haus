@@ -1,8 +1,6 @@
 using Haus.Zigbee.Host.Configuration;
-using Haus.Zigbee.Host.Mappers;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Factories;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 using Microsoft.Extensions.Options;
 using MQTTnet;
 
@@ -19,12 +17,12 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
         private readonly IMapperFactory _mapperFactory;
 
         public ZigbeeToHausModelMapper(
-            IOptions<HausOptions> hausOptions, 
+            IOptionsMonitor<HausOptions> hausOptions, 
             IOptions<ZigbeeOptions> zigbeeOptions,
             IZigbee2MqttMessageFactory zigbee2MqttMessageFactory)
         {
             _zigbee2MqttMessageFactory = zigbee2MqttMessageFactory;
-            _mapperFactory = new MapperFactory(hausOptions, zigbeeOptions, new DeviceTypeResolver());
+            _mapperFactory = new MapperFactory(hausOptions, zigbeeOptions);
         }
 
         public MqttApplicationMessage Map(MqttApplicationMessage message)
