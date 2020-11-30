@@ -15,4 +15,13 @@
     <ProjectReference Include="..\Haus.Core.Models\Haus.Core.Models.csproj" />
     <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Zigbee2Mqtt\Resolvers\DefaultDeviceTypeOptions.json" />
+    <EmbeddedResource Include="Zigbee2Mqtt\Resolvers\DefaultDeviceTypeOptions.json">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

@@ -20,7 +20,7 @@ namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions
         {
             var html = new SupportedDevicesPageHtmlBuilder()
                 .WithVendor(vendor =>
-                    vendor.WithName("Phillips")
+                    vendor.WithName("Philips")
                         .WithDevice(device =>
                             device.WithModel("SomeModel")
                         )
@@ -30,7 +30,7 @@ namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions
             var options = _parser.Parse(html).ToArray();
 
             Assert.Single(options);
-            DeviceTypeOptionsAssert.AssertContains("Phillips", "SomeModel", options);
+            DeviceTypeOptionsAssert.AssertContains("Philips", "SomeModel", options);
         }
 
         [Fact]

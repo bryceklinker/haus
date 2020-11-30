@@ -30,7 +30,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Resolvers
         {
             var meta = new Zigbee2MqttMetaBuilder()
                 .WithModel("929002335001")
-                .WithVendor("Phillips")
+                .WithVendor("Philips")
                 .BuildMeta();
 
             Assert.Equal(DeviceType.Light, _resolver.Resolve(meta));
@@ -41,7 +41,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Resolvers
         {
             var meta = new Zigbee2MqttMetaBuilder()
                 .WithModel("9290012607")
-                .WithVendor("Phillips")
+                .WithVendor("Philips")
                 .BuildMeta();
 
             var deviceType = _resolver.Resolve(meta);

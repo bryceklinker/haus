@@ -67,14 +67,14 @@ namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions
         {
             var merged = _merger.Merge(new[]
             {
-                new DeviceTypeOptions("Phillips", "idk"),
+                new DeviceTypeOptions("Philips", "idk"),
             }, new[]
             {
                 new DeviceTypeOptions("ABC", "three"),
             }).ToArray();
 
             Assert.Equal("ABC", merged[0].Vendor);
-            Assert.Equal("Phillips", merged[1].Vendor);
+            Assert.Equal("Philips", merged[1].Vendor);
         }
     }
 }

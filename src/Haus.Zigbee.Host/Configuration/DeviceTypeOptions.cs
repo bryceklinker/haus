@@ -18,7 +18,7 @@ namespace Haus.Zigbee.Host.Configuration
 
         public bool Matches(Zigbee2MqttMeta meta)
         {
-            return Matches(meta.Model, meta.Vendor);
+            return Matches(meta.Vendor, meta.Model);
         }
 
         public bool Matches(DeviceTypeOptions options)

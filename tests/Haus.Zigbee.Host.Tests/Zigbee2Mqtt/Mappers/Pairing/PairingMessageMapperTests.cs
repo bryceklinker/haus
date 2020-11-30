@@ -56,7 +56,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.Pairing
                     .WithDescription("my description")
                     .WithModel("this is a model")
                     .WithSupported(true)
-                    .WithVendor("Phillips")
+                    .WithVendor("Philips")
                 )
                 .BuildZigbee2MqttMessage();
             var result = _mapper.Map(message);
@@ -66,7 +66,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.Pairing
             Assert.Equal("this-is-an-id", hausEvent.Payload.Id);
             Assert.Equal("my description", hausEvent.Payload.Description);
             Assert.Equal("this is a model", hausEvent.Payload.Model);
-            Assert.Equal("Phillips", hausEvent.Payload.Vendor);
+            Assert.Equal("Philips", hausEvent.Payload.Vendor);
             Assert.Equal(DeviceType.Unknown, hausEvent.Payload.DeviceType);
         }
 
@@ -81,7 +81,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.Pairing
                     .WithDescription("my description")
                     .WithModel("929002335001")
                     .WithSupported(true)
-                    .WithVendor("Phillips")
+                    .WithVendor("Philips")
                 )
                 .BuildZigbee2MqttMessage();
 
