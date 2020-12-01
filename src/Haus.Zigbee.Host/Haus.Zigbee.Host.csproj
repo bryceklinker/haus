@@ -18,7 +18,10 @@
 
   <ItemGroup>
     <Content Remove="Zigbee2Mqtt\Resolvers\DefaultDeviceTypeOptions.json" />
-    <EmbeddedResource Include="Zigbee2Mqtt\Resolvers\DefaultDeviceTypeOptions.json">
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Zigbee2Mqtt\Mappers\ToHaus\Resolvers\DefaultDeviceTypeOptions.json">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

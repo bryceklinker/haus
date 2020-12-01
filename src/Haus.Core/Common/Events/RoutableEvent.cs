@@ -1,4 +1,4 @@
-using Haus.Core.Models;
+using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Common.Events
 {

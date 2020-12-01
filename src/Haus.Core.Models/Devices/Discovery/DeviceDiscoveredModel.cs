@@ -1,3 +1,5 @@
+using Haus.Core.Models.ExternalMessages;
+
 namespace Haus.Core.Models.Devices.Discovery
 {
     public class DeviceDiscoveredModel
@@ -12,11 +14,7 @@ namespace Haus.Core.Models.Devices.Discovery
 
         public HausEvent<DeviceDiscoveredModel> AsHausEvent()
         {
-            return new HausEvent<DeviceDiscoveredModel>
-            {
-                Type = Type,
-                Payload = this
-            };
+            return new HausEvent<DeviceDiscoveredModel>(Type, this);
         }
     }
 }

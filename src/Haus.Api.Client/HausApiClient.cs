@@ -13,6 +13,7 @@ namespace Haus.Api.Client
         Task<DeviceModel> GetDeviceAsync(long id);
         Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null);
         Task UpdateDeviceAsync(long deviceId, DeviceModel model);
+        Task StartDiscovery();
         Task ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model);
     }
 
@@ -30,6 +31,14 @@ namespace Haus.Api.Client
             var url = $"/api/devices/{id}";
             return await _httpClient.GetFromJsonAsync<DeviceModel>(url)
                 .ConfigureAwait(false);
+        }
+
+        public async Task StartDiscovery()
+        {
+            var url = $"/api/devices/start-discovery";
+            var response = await _httpClient.PostAsync(url, new StringContent(""))
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)

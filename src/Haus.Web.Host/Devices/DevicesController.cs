@@ -37,5 +37,11 @@ namespace Haus.Web.Host.Devices
         {
             return await CommandAsync(new UpdateDeviceCommand(id, model));
         }
+
+        [HttpPost("start-discovery")]
+        public async Task<IActionResult> StartDiscovery()
+        {
+            return await CommandAsync(new StartDiscoveryCommand());
+        }
     }
 }

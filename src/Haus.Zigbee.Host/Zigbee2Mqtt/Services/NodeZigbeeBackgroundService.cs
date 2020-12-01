@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Node;
 using Microsoft.Extensions.Hosting;
 
@@ -11,16 +11,16 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
     {
         private readonly INodeZigbeeProcess _zigbeeProcess;
         private readonly IZigbee2MqttConfigurationWriter _zigbee2MqttConfigurationWriter;
-        private readonly IZigbeeToHausModelMapper _zigbeeToHausModelMapper;
+        private readonly IZigbeeToHausMapper _zigbeeToHausMapper;
 
         public NodeZigbeeBackgroundService(
             INodeZigbeeProcess zigbeeProcess, 
             IZigbee2MqttConfigurationWriter zigbee2MqttConfigurationWriter,
-            IZigbeeToHausModelMapper zigbeeToHausModelMapper)
+            IZigbeeToHausMapper zigbeeToHausMapper)
         {
             _zigbeeProcess = zigbeeProcess;
             _zigbee2MqttConfigurationWriter = zigbee2MqttConfigurationWriter;
-            _zigbeeToHausModelMapper = zigbeeToHausModelMapper;
+            _zigbeeToHausMapper = zigbeeToHausMapper;
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)

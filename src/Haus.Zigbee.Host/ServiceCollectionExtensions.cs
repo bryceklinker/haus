@@ -1,7 +1,7 @@
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Factories;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Node;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Services;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +17,7 @@ namespace Haus.Zigbee.Host
             return services
                 .AddSingleton<IMqttFactory>(p => new MqttFactory())
                 .AddTransient<IMapperFactory, MapperFactory>()
-                .AddTransient<IZigbeeToHausModelMapper, ZigbeeToHausModelMapper>()
+                .AddTransient<IZigbeeToHausMapper, ZigbeeToHausMapper>()
                 .AddTransient<IZigbee2MqttMessageFactory, Zigbee2MqttMessageFactory>()
                 .AddTransient<IZigbee2MqttConfigurationWriter, Zigbee2MqttConfigurationWriter>()
                 .Configure<ZigbeeOptions>(config.GetSection("ZigBee"))

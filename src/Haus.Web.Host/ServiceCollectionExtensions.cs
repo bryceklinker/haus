@@ -2,6 +2,7 @@ using Haus.Core;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.Mqtt;
 using Haus.Web.Host.Diagnostics;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,7 @@ namespace Haus.Web.Host
                 .AddTransient<IMqttFactory, MqttFactory>()
                 .AddTransient<IMqttNetLogger, MqttLogger>()
                 .AddSingleton<IHausMqttClientFactory, HausMqttClientFactory>()
+                .AddMediatR(typeof(ServiceCollectionExtensions).Assembly)
                 .AddHostedService<MqttMessageRouter>()
                 .AddHostedService<DiagnosticsMqttListener>();
         }

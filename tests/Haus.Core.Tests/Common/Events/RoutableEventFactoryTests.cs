@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Haus.Core.Common.Events;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Discovery;

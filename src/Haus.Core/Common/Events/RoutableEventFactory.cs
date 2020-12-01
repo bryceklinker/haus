@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Common.Events
 {

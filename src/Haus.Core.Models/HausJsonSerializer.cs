@@ -23,6 +23,16 @@ namespace Haus.Core.Models
             return JsonSerializer.Deserialize<T>(bytes);
         }
 
+        public static T Deserialize<T>(string json)
+        {
+            return JsonSerializer.Deserialize<T>(json);
+        }
+
+        public static string Serialize(object value, JsonSerializerOptions options = null)
+        {
+            return JsonSerializer.Serialize(value, options);
+        }
+        
         public static byte[] SerializeToBytes(object value)
         {
             return JsonSerializer.SerializeToUtf8Bytes(value);

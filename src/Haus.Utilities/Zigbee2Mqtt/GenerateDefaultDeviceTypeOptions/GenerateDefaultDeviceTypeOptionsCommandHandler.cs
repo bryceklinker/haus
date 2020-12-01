@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Core.Models;
 using Haus.Utilities.Common.Cli;
 using Haus.Zigbee.Host.Configuration;
 using MediatR;
@@ -69,13 +70,13 @@ namespace Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions
                 return Array.Empty<DeviceTypeOptions>();
             }
             var defaultsJson = await File.ReadAllTextAsync(DefaultDeviceTypeOptionsPath);
-            return JsonSerializer.Deserialize<DeviceTypeOptions[]>(defaultsJson);
+            return  HausJsonSerializer.Deserialize<DeviceTypeOptions[]>(defaultsJson);
         }
 
         private async Task WriteDefaultsOptions(IEnumerable<DeviceTypeOptions> options)
         {
             _logger.LogInformation("Writing defaults to {filePath}", DefaultDeviceTypeOptionsPath);
-            var json = JsonSerializer.Serialize(options, new JsonSerializerOptions
+            var json = HausJsonSerializer.Serialize(options, new JsonSerializerOptions
             {
                 WriteIndented = true
             });
