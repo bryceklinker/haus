@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Haus.Web.Host.Tests.Support
 {
@@ -31,6 +32,13 @@ namespace Haus.Web.Host.Tests.Support
             builder.ConfigureTestServices(services =>
             {
                 services.AddSingleton<IClock>(_clock);
+                services.AddHausApiClient(opts =>
+                    {
+                        opts.BaseUrl = Server.BaseAddress.ToString();
+                    })
+                    .RemoveAll(typeof(IHttpClientFactory))
+                    .AddSingleton<IHttpClientFactory>(new FakeHttpClientFactory(this));
+                
                 services.AddAuthentication(opts =>
                     {
                         opts.DefaultAuthenticateScheme = TestingAuthenticationHandler.TestingScheme;
@@ -44,11 +52,7 @@ namespace Haus.Web.Host.Tests.Support
 
         public IHausApiClient CreateAuthenticatedClient()
         {
-            var client = CreateClient();
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue(TestingAuthenticationHandler.TestingScheme);
-
-            return new HausApiClient(client);
+            return Services.GetRequiredService<IHausApiClient>();
         }
 
         public async Task<HubConnection> CreateHubConnection(string hub)

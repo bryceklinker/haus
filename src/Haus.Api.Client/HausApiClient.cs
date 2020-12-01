@@ -1,68 +1,51 @@
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
-using System.Web;
+using Haus.Api.Client.Devices;
+using Haus.Api.Client.Diagnostics;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Diagnostics;
 
 namespace Haus.Api.Client
 {
-    public interface IHausApiClient
+    public interface IHausApiClient : IDeviceApiClient
     {
-        Task<DeviceModel> GetDeviceAsync(long id);
-        Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null);
-        Task UpdateDeviceAsync(long deviceId, DeviceModel model);
-        Task StartDiscovery();
         Task ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model);
     }
 
     public class HausApiClient : IHausApiClient
     {
-        private readonly HttpClient _httpClient;
+        private readonly IHausApiClientFactory _factory;
+        private IDeviceApiClient DeviceApiClient => _factory.CreateDeviceClient();
+        private IDiagnosticsApiClient DiagnosticsApiClient => _factory.CreateDiagnosticsClient();
 
-        public HausApiClient(HttpClient httpClient)
+        public HausApiClient(IHausApiClientFactory factory)
         {
-            _httpClient = httpClient;
+            _factory = factory;
         }
 
-        public async Task<DeviceModel> GetDeviceAsync(long id)
+        public Task<DeviceModel> GetDeviceAsync(long id)
         {
-            var url = $"/api/devices/{id}";
-            return await _httpClient.GetFromJsonAsync<DeviceModel>(url)
-                .ConfigureAwait(false);
+            return DeviceApiClient.GetDeviceAsync(id);
         }
 
-        public async Task StartDiscovery()
+        public Task StartDiscovery()
         {
-            var url = $"/api/devices/start-discovery";
-            var response = await _httpClient.PostAsync(url, new StringContent(""))
-                .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
+            return DeviceApiClient.StartDiscovery();
         }
 
-        public async Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
+        public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
         {
-            var url = "/api/devices";
-            if (!string.IsNullOrWhiteSpace(externalId))
-                url += $"?{nameof(externalId)}={HttpUtility.UrlEncode(externalId)}";
-
-            return await _httpClient.GetFromJsonAsync<ListResult<DeviceModel>>(url)
-                .ConfigureAwait(false);
+            return DeviceApiClient.GetDevicesAsync(externalId);
         }
 
-        public async Task UpdateDeviceAsync(long deviceId, DeviceModel model)
+        public Task UpdateDeviceAsync(long deviceId, DeviceModel model)
         {
-            var url = $"/api/devices/{deviceId}";
-            await _httpClient.PutAsJsonAsync(url, model)
-                .ConfigureAwait(false);
+            return DeviceApiClient.UpdateDeviceAsync(deviceId, model);
         }
 
-        public async Task ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
+        public Task ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
         {
-            const string url = "/api/diagnostics/replay";
-            await _httpClient.PostAsJsonAsync(url, model)
-                .ConfigureAwait(false);
+            return DiagnosticsApiClient.ReplayDiagnosticsMessageAsync(model);
         }
     }
 }

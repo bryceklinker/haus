@@ -1,5 +1,7 @@
 using System;
 using System.Net.Http;
+using Haus.Api.Client.Devices;
+using Haus.Api.Client.Diagnostics;
 using Haus.Api.Client.Options;
 using Microsoft.Extensions.Options;
 
@@ -8,6 +10,8 @@ namespace Haus.Api.Client
     public interface IHausApiClientFactory
     {
         IHausApiClient Create();
+        IDeviceApiClient CreateDeviceClient();
+        IDiagnosticsApiClient CreateDiagnosticsClient();
     }
 
     public class HausApiClientFactory : IHausApiClientFactory
@@ -23,9 +27,17 @@ namespace Haus.Api.Client
 
         public IHausApiClient Create()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_options.Value.BaseUrl);
-            return new HausApiClient(httpClient);
+            return new HausApiClient(this);
+        }
+
+        public IDeviceApiClient CreateDeviceClient()
+        {
+            return new DevicesApiClient(_httpClientFactory.CreateClient(), _options);
+        }
+
+        public IDiagnosticsApiClient CreateDiagnosticsClient()
+        {
+            return new DiagnosticsApiClient(_httpClientFactory.CreateClient(), _options);
         }
     }
 }

@@ -1,8 +1,6 @@
 using System;
-using System.Net.Http;
 using Haus.Api.Client.Options;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client
 {
@@ -14,12 +12,10 @@ namespace Haus.Api.Client
                 .Configure(configureSettings);
             
             return services.AddHttpClient()
-                .AddTransient<IHausApiClientFactory>(p =>
-                {
-                    var httpClientFactory = p.GetRequiredService<IHttpClientFactory>();
-                    var options = p.GetRequiredService<IOptions<HausApiClientSettings>>();
-                    return new HausApiClientFactory(httpClientFactory, options);
-                });
+                .AddSingleton<IHausApiClientFactory, HausApiClientFactory>()
+                .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDeviceClient())
+                .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDiagnosticsClient())
+                .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().Create());
         }
     }
 }
