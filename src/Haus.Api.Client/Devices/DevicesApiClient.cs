@@ -14,6 +14,7 @@ namespace Haus.Api.Client.Devices
         Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null);
         Task UpdateDeviceAsync(long deviceId, DeviceModel model);
         Task StartDiscovery();
+        Task StopDiscovery();
     }
     
     public class DevicesApiClient : ApiClient, IDeviceApiClient 
@@ -44,6 +45,13 @@ namespace Haus.Api.Client.Devices
         public async Task StartDiscovery()
         {
             var response = await PostEmptyContentAsync("devices/start-discovery")
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task StopDiscovery()
+        {
+            var response = await PostEmptyContentAsync("devices/stop-discovery")
                 .ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
         }

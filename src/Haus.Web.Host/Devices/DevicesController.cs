@@ -21,27 +21,33 @@ namespace Haus.Web.Host.Devices
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get([FromQuery] string externalId = null)
+        public Task<IActionResult> Get([FromQuery] string externalId = null)
         {
-            return await QueryAsync(new GetDevicesQuery(externalId));
+            return QueryAsync(new GetDevicesQuery(externalId));
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] long id)
+        public Task<IActionResult> GetById([FromRoute] long id)
         {
-            return await QueryAsync(new GetDeviceByIdQuery(id));
+            return QueryAsync(new GetDeviceByIdQuery(id));
         }
         
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] long id, [FromBody] DeviceModel model)
+        public Task<IActionResult> Update([FromRoute] long id, [FromBody] DeviceModel model)
         {
-            return await CommandAsync(new UpdateDeviceCommand(id, model));
+            return CommandAsync(new UpdateDeviceCommand(id, model));
         }
 
         [HttpPost("start-discovery")]
-        public async Task<IActionResult> StartDiscovery()
+        public Task<IActionResult> StartDiscovery()
         {
-            return await CommandAsync(new StartDiscoveryCommand());
+            return CommandAsync(new StartDiscoveryCommand());
+        }
+
+        [HttpPost("stop-discovery")]
+        public Task<IActionResult> StopDiscovery()
+        {
+            return CommandAsync(new StopDiscoveryCommand());
         }
     }
 }

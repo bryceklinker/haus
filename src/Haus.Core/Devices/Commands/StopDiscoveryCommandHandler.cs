@@ -8,23 +8,22 @@ using MediatR;
 
 namespace Haus.Core.Devices.Commands
 {
-    public class StartDiscoveryCommand : ICommand
+    public class StopDiscoveryCommand : ICommand
     {
-        
     }
-    
-    public class StartDiscoveryCommandHandler : AsyncRequestHandler<StartDiscoveryCommand>, ICommandHandler<StartDiscoveryCommand>
+
+    public class StopDiscoveryCommandHandler : AsyncRequestHandler<StopDiscoveryCommand>, ICommandHandler<StopDiscoveryCommand>
     {
         private readonly IHausBus _hausBus;
 
-        public StartDiscoveryCommandHandler(IHausBus hausBus)
+        public StopDiscoveryCommandHandler(IHausBus hausBus)
         {
             _hausBus = hausBus;
         }
 
-        protected override Task Handle(StartDiscoveryCommand request, CancellationToken cancellationToken)
+        protected override Task Handle(StopDiscoveryCommand request, CancellationToken cancellationToken)
         {
-            var model = new StartDiscoveryModel();
+            var model = new StopDiscoveryModel();
             return _hausBus.PublishAsync(new RoutableCommand(model.AsHausCommand()), cancellationToken);
         }
     }

@@ -60,6 +60,22 @@ namespace Haus.Web.Host.Tests.Devices
             });
         }
 
+        [Fact]
+        public async Task WhenDiscoveryStoppedThenStopDiscoveryCommandIsPublished()
+        {
+            var mqttClient = await _factory.GetMqttClient();
+
+            HausCommand<StopDiscoveryModel> hausCommand = null;
+            await mqttClient.SubscribeToTopicAsync("haus/commands", msg => HausJsonSerializer.TryDeserialize(msg.Payload, out hausCommand));
+
+            await _hausClient.StopDiscovery();
+
+            await Eventually.Assert(() =>
+            {
+                Assert.Equal(StopDiscoveryModel.Type, hausCommand.Type);
+            });
+        }
+
         private async Task PublishToMqtt(string topic, object payload)
         {
             var mqttClient = await _factory.GetMqttClient();

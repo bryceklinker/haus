@@ -7,9 +7,8 @@ using Haus.Core.Models.Diagnostics;
 
 namespace Haus.Api.Client
 {
-    public interface IHausApiClient : IDeviceApiClient
+    public interface IHausApiClient : IDeviceApiClient, IDiagnosticsApiClient
     {
-        Task ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model);
     }
 
     public class HausApiClient : IHausApiClient
@@ -31,6 +30,11 @@ namespace Haus.Api.Client
         public Task StartDiscovery()
         {
             return DeviceApiClient.StartDiscovery();
+        }
+
+        public Task StopDiscovery()
+        {
+            return DeviceApiClient.StopDiscovery();
         }
 
         public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
