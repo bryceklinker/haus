@@ -16,3 +16,5 @@ coverage/
 zigbee_data/
 **/*.user
 publish/
+coverage.*
+coveragereport/

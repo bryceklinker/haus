@@ -53,6 +53,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Utilities", "src\Haus.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Utilities.Tests", "tests\Haus.Utilities.Tests\Haus.Utilities.Tests.csproj", "{8C25B610-D0D7-49BE-A67E-B2A6B521008B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dependencies", "dependencies", "{84850197-27A6-4181-BEDD-D2AC9240D169}"
+ProjectSection(SolutionItems) = preProject
+	dependencies\tests.xml = dependencies\tests.xml
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{E9A6A742-520C-4D22-BE65-853B85B71509}"
+ProjectSection(SolutionItems) = preProject
+	.config\dotnet-tools.json = .config\dotnet-tools.json
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
