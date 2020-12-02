@@ -5,7 +5,7 @@ WORKING_DIRECTORY=$(pwd)
 CONFIGURATION=${CONFIGURATION:-'Release'}
 PUBLISH_DIRECTORY="${WORKING_DIRECTORY}/publish"
 COVERAGE_FILE_PATH="${WORKING_DIRECTORY}/coverage.json"
-COBERTURA_FILE_PATH="${WORKING_DIRECTORY}/coverage.cobertura.xml"
+REPORT_COVERAGE_FILE_PATH="${WORKING_DIRECTORY}/coverage.cobertura.xml"
 IS_RELEASE=${IS_RELEASE:-false}
 
 FRONT_END_DIRECTORY="${WORKING_DIRECTORY}/src/Haus.Web.Host/client-app"
@@ -36,7 +36,7 @@ function run_tests() {
   run_dotnet_test "Haus.Zigbee.Host.Tests"
   
   dotnet reportgenerator \
-    "-reports:${COBERTURA_FILE_PATH}" \
+    "-reports:${REPORT_COVERAGE_FILE_PATH}" \
     "-targetdir:coveragereport" \
     "-reporttypes:Html"
     

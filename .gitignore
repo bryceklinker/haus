@@ -18,3 +18,4 @@ zigbee_data/
 publish/
 coverage.*
 coveragereport/
+.DS_Store
