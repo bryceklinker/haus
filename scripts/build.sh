@@ -24,7 +24,8 @@ function run_dotnet_test() {
     --targetargs "test ${PROJECT_PATH} --no-build" \
     --merge-with "${COVERAGE_FILE_PATH}" \
     --format cobertura \
-    --format json
+    --format json \
+    --exclude "[Haus.Testing.*]*"
 }
 
 function run_tests() {
