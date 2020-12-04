@@ -26,18 +26,20 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee
         public MqttApplicationMessage Map(MqttApplicationMessage message)
         {
             var command = HausJsonSerializer.Deserialize<HausCommand>(message.Payload);
-            if (command.Type == StartDiscoveryModel.Type)
-                return CreatePermitJoinMessage();
-            
-            return null;
+            return command.Type switch
+            {
+                StartDiscoveryModel.Type => CreatePermitJoinMessage(true),
+                StopDiscoveryModel.Type => CreatePermitJoinMessage(false),
+                _ => null
+            };
         }
 
-        private MqttApplicationMessage CreatePermitJoinMessage()
+        private MqttApplicationMessage CreatePermitJoinMessage(bool permitJoin)
         {
             return new MqttApplicationMessage
             {
                 Topic = $"{Zigbee2MqttBaseTopic}/bridge/config/permit_join",
-                Payload = Encoding.UTF8.GetBytes("true")
+                Payload = Encoding.UTF8.GetBytes(permitJoin.ToString().ToLowerInvariant())
             };
         }
     }

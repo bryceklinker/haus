@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client.Devices
 {
-    public interface IDeviceApiClient
+    public interface IDeviceApiClient : IApiClient
     {
         Task<DeviceModel> GetDeviceAsync(long id);
         Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null);

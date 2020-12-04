@@ -7,13 +7,18 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client.Common
 {
-    public abstract class ApiClient
+    public interface IApiClient
+    {
+        string BaseUrl { get; }    
+    }
+    
+    public abstract class ApiClient : IApiClient
     {
         private const string ApiPath = "api";
         private readonly HttpClient _httpClient;
         private readonly IOptions<HausApiClientSettings> _options;
 
-        private string BaseUrl => _options.Value.BaseUrl;
+        public string BaseUrl => UrlUtility.Join(null, _options.Value.BaseUrl, ApiPath);
         
         protected ApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
         {
@@ -47,7 +52,7 @@ namespace Haus.Api.Client.Common
 
         private string GetFullUrl(string path, QueryParameters parameters)
         {
-            return UrlUtility.Join(parameters, BaseUrl, ApiPath, path);
+            return UrlUtility.Join(parameters, BaseUrl, path);
         }
     }
 }

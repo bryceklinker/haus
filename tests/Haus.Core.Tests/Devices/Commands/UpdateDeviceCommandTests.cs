@@ -21,6 +21,14 @@ namespace Haus.Core.Tests.Devices.Commands
         }
 
         [Fact]
+        public void WhenUpdateDeviceCommandCreatedThenModelIdIsSynchronizedWithCommandId()
+        {
+            var command = new UpdateDeviceCommand(43, new DeviceModel());
+
+            Assert.Equal(43, command.Model.Id);
+        }
+        
+        [Fact]
         public async Task WhenUpdateDeviceCommandExecutedThenDeviceIsUpdatedInDatabase()
         {
             var original = _context.AddDevice();

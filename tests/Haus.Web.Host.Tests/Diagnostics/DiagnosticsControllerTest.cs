@@ -45,8 +45,8 @@ namespace Haus.Web.Host.Tests.Diagnostics
         [Fact]
         public async Task WhenUnauthenticatedClientReplaysMessageThenRespondsWithUnauthorized()
         {
-            var client = _factory.CreateClient();
-            var response = await client.PostAsJsonAsync("/api/diagnostics/replay", new object());
+            var client = _factory.CreateUnauthenticatedClient();
+            var response = await client.ReplayDiagnosticsMessageAsync(new MqttDiagnosticsMessageModel());
 
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }

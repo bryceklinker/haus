@@ -12,7 +12,7 @@ namespace Haus.Core.Devices.Commands
     {
     }
 
-    public class StopDiscoveryCommandHandler : AsyncRequestHandler<StopDiscoveryCommand>, ICommandHandler<StopDiscoveryCommand>
+    internal class StopDiscoveryCommandHandler : AsyncRequestHandler<StopDiscoveryCommand>, ICommandHandler<StopDiscoveryCommand>
     {
         private readonly IHausBus _hausBus;
 

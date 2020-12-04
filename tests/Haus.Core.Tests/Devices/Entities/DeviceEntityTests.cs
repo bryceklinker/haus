@@ -8,13 +8,24 @@ namespace Haus.Core.Tests.Devices.Entities
     public class DeviceEntityTest
     {
         [Fact]
-        public void WhenCreatedFromDeviceDiscoveredThenExternalIdIsSetToDiscoveredId()
+        public void WhenCreatedFromDeviceDiscoveredThenEntityIsPopulatedFromDiscoveredDevice()
         {
-            var model = new DeviceDiscoveredModel { Id = "this-id" };
+            var model = new DeviceDiscoveredModel
+            {
+                Id = "this-id",
+                Description = "idk",
+                Vendor = "Vendy",
+                Model = "some model",
+                DeviceType = DeviceType.Light
+            };
 
             var entity = DeviceEntity.FromDiscoveredDevice(model);
 
             Assert.Equal("this-id", entity.ExternalId);
+            Assert.Equal(DeviceType.Light, entity.DeviceType);
+            AssertHasMetadata("Description", "idk", entity);
+            AssertHasMetadata("Vendor", "Vendy", entity);
+            AssertHasMetadata("Model", "some model", entity);
         }
 
         [Fact]
@@ -36,40 +47,18 @@ namespace Haus.Core.Tests.Devices.Entities
 
             Assert.Equal("GCL-LED-Strip", entity.Name);
         }
+
+        [Fact]
+        public void WhenUpdatedFromDiscoveredDeviceThenDeviceTypeIsUpdated()
+        {
+            var model = new DeviceDiscoveredModel {DeviceType = DeviceType.MotionSensor};
+            
+            var entity = new DeviceEntity();
+            entity.UpdateFromDiscoveredDevice(model);
+
+            Assert.Equal(DeviceType.MotionSensor, entity.DeviceType);
+        }
         
-        [Fact]
-        public void WhenCreatedFromDeviceDiscoveredThenModelIsInMetadata()
-        {
-            var model = new DeviceDiscoveredModel { Model = "this model" };
-
-            var entity = DeviceEntity.FromDiscoveredDevice(model);
-
-            Assert.Single(entity.Metadata);
-            AssertHasMetadata("Model", "this model", entity);
-        }
-
-        [Fact]
-        public void WhenCreatedFromDeviceDiscoveredThenVendorIsInMetadata()
-        {
-            var model = new DeviceDiscoveredModel { Vendor = "whoops" };
-
-            var entity = DeviceEntity.FromDiscoveredDevice(model);
-
-            Assert.Single(entity.Metadata);
-            AssertHasMetadata("Vendor", "whoops", entity);
-        }
-
-        [Fact]
-        public void WhenCreatedFromDeviceDiscoveredThenDescriptionIsInMetadata()
-        {
-            var model = new DeviceDiscoveredModel { Description = "new hotness" };
-
-            var entity = DeviceEntity.FromDiscoveredDevice(model);
-
-            Assert.Single(entity.Metadata);
-            AssertHasMetadata("Description", "new hotness", entity);
-        }
-
         [Fact]
         public void WhenUpdatedFromDiscoveredDeviceThenModelMetadataIsAdded()
         {
@@ -119,12 +108,18 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenDeviceIsUpdatedFromModelThenDeviceMatchesModel()
         {
-            var model = new DeviceModel { Name = "Somename", ExternalId = "dont-use-this"};
+            var model = new DeviceModel
+            {
+                Name = "Somename", 
+                ExternalId = "dont-use-this",
+                DeviceType = DeviceType.LightSensor
+            };
             var entity = new DeviceEntity();
 
             entity.UpdateFromModel(model);
 
             Assert.Equal("Somename", entity.Name);
+            Assert.Equal(DeviceType.LightSensor, entity.DeviceType);
         }
 
         [Fact]

@@ -1,22 +1,20 @@
+using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace Haus.Web.Host.Tests.Support
 {
     public class FakeHttpClientFactory : IHttpClientFactory
     {
-        private readonly HausWebHostApplicationFactory _factory;
+        private readonly Func<HttpClient> _creator;
 
-        public FakeHttpClientFactory(HausWebHostApplicationFactory factory)
+        public FakeHttpClientFactory(Func<HttpClient> creator)
         {
-            _factory = factory;
+            _creator = creator;
         }
 
         public HttpClient CreateClient(string name)
         {
-            var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestingAuthenticationHandler.TestingScheme);
-            return client;
+            return _creator();
         }
     }
 }

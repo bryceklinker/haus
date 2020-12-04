@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Haus.Api.Client;
+using Haus.Api.Client.Options;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Testing.Support.Fakes;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Haus.Web.Host.Tests.Support
 {
@@ -37,7 +39,7 @@ namespace Haus.Web.Host.Tests.Support
                         opts.BaseUrl = Server.BaseAddress.ToString();
                     })
                     .RemoveAll(typeof(IHttpClientFactory))
-                    .AddSingleton<IHttpClientFactory>(new FakeHttpClientFactory(this));
+                    .AddSingleton<IHttpClientFactory>(new FakeHttpClientFactory(CreateHttpClientWithAuth));
                 
                 services.AddAuthentication(opts =>
                     {
@@ -53,6 +55,13 @@ namespace Haus.Web.Host.Tests.Support
         public IHausApiClient CreateAuthenticatedClient()
         {
             return Services.GetRequiredService<IHausApiClient>();
+        }
+
+        public IHausApiClient CreateUnauthenticatedClient()
+        {
+            var factory = new FakeHttpClientFactory(CreateClient);
+            var options = Services.GetRequiredService<IOptions<HausApiClientSettings>>();
+            return new HausApiClientFactory(factory, options).Create();
         }
 
         public async Task<HubConnection> CreateHubConnection(string hub)
@@ -81,6 +90,13 @@ namespace Haus.Web.Host.Tests.Support
         public void SetClockTime(DateTime time)
         {
             _clock.SetNow(time);
+        }
+
+        private HttpClient CreateHttpClientWithAuth()
+        {
+            var client = CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestingAuthenticationHandler.TestingScheme);
+            return client;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Haus.Api.Client
                 .AddSingleton<IHausApiClientFactory, HausApiClientFactory>()
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDeviceClient())
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDiagnosticsClient())
+                .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateRoomsClient())
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().Create());
         }
     }

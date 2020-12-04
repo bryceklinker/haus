@@ -1,11 +1,15 @@
+using System;
 using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Common.Commands;
 using Haus.Core.Common.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Haus.Web.Host.Common.Mvc
 {
+    [Authorize]
+    [ApiController]
     public abstract class HausBusController : Controller
     {
         private readonly IHausBus _hausBus;
@@ -34,6 +38,13 @@ namespace Haus.Web.Host.Common.Mvc
                 return NoContent();
 
             return Ok(result);
+        }
+
+        protected async Task<IActionResult> CreateCommandAsync<TResult>(ICommand<TResult> command, string routeName, Func<TResult, object> createRouteValues)
+        {
+            var result = await _hausBus.ExecuteCommandAsync(command).ConfigureAwait(false);
+            var routeValues = createRouteValues(result);
+            return CreatedAtRoute(routeName, routeValues, result);
         }
         
         protected IActionResult OkOrNotFound<T>(T model)

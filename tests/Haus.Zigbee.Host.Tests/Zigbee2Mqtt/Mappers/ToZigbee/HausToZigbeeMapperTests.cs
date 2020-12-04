@@ -29,7 +29,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
         }
         
         [Fact]
-        public void WhenStartDiscoveryCommandReceivedThenReturnsPermitJoinMessage()
+        public void WhenStartDiscoveryCommandReceivedThenReturnsPermitJoinTrueMessage()
         {
             var original = new StartDiscoveryModel()
                 .AsHausCommand()
@@ -39,6 +39,19 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
 
             Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
             Assert.Equal("true", Encoding.UTF8.GetString(result.Payload));
+        }
+
+        [Fact]
+        public void WhenStopDiscoveryCommandReceivedThenReturnsPermitJoinFalseMessage()
+        {
+            var original = new StopDiscoveryModel()
+                .AsHausCommand()
+                .ToMqttMessage("haus/commands");
+
+            var result = _mapper.Map(original);
+
+            Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
+            Assert.Equal("false", Encoding.UTF8.GetString(result.Payload));
         }
     }
 }

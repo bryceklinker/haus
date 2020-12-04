@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Testing.Support;
@@ -40,11 +41,11 @@ namespace Haus.Web.Host.Tests.Devices
         [Fact]
         public async Task WhenUnauthorizedThenReturnsUnauthorized()
         {
-            var client = _factory.CreateClient();
-
-            var response = await client.GetAsync("/api/devices");
+            var client = _factory.CreateUnauthenticatedClient(); 
             
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            var exception = await Assert.ThrowsAsync<HttpRequestException>(() => client.GetDevicesAsync());
+            
+            Assert.Equal(HttpStatusCode.Unauthorized, exception.StatusCode);
         }
     }
 }

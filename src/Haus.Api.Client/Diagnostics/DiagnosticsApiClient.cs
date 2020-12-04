@@ -7,9 +7,9 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client.Diagnostics
 {
-    public interface IDiagnosticsApiClient
+    public interface IDiagnosticsApiClient : IApiClient
     {
-        Task ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model);
+        Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model);
     }
     
     public class DiagnosticsApiClient : ApiClient, IDiagnosticsApiClient
@@ -19,7 +19,7 @@ namespace Haus.Api.Client.Diagnostics
         {
         }
 
-        public Task ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
+        public Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
         {
             return PostAsJsonAsync("diagnostics/replay", model);
         }

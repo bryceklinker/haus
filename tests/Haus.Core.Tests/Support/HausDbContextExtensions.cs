@@ -1,6 +1,7 @@
 using System;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Rooms.Entities;
 
 namespace Haus.Core.Tests.Support
 {
@@ -14,9 +15,25 @@ namespace Haus.Core.Tests.Support
                 ExternalId = externalId ?? $"{Guid.NewGuid()}",
             };
             configure?.Invoke(device);
-            context.Add(device);
-            context.SaveChanges();
+            context.AddAndSave(device);
             return device;
+        }
+
+        public static RoomEntity AddRoom(this HausDbContext context, string name = null, Action<RoomEntity> configure = null)
+        {
+            var room = new RoomEntity
+            {
+                Name = name ?? $"{Guid.NewGuid()}"
+            };
+            configure?.Invoke(room);
+            context.AddAndSave(room);
+            return room;
+        }
+
+        private static void AddAndSave<T>(this HausDbContext context, T entity)
+        {
+            context.Add(entity);
+            context.SaveChanges();
         }
     }
 }

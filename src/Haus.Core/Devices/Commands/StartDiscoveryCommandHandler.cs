@@ -12,8 +12,8 @@ namespace Haus.Core.Devices.Commands
     {
         
     }
-    
-    public class StartDiscoveryCommandHandler : AsyncRequestHandler<StartDiscoveryCommand>, ICommandHandler<StartDiscoveryCommand>
+
+    internal class StartDiscoveryCommandHandler : AsyncRequestHandler<StartDiscoveryCommand>, ICommandHandler<StartDiscoveryCommand>
     {
         private readonly IHausBus _hausBus;
 

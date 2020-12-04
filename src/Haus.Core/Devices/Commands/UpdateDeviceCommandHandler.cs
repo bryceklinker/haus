@@ -10,15 +10,11 @@ using MediatR;
 
 namespace Haus.Core.Devices.Commands
 {
-    public class UpdateDeviceCommand : ICommand
+    public class UpdateDeviceCommand : UpdateEntityCommand<DeviceModel>
     {
-        public long Id { get; }
-        public DeviceModel Model { get; }
-
         public UpdateDeviceCommand(long id, DeviceModel model)
+            : base(id, model)
         {
-            Id = id;
-            Model = model;
         }
     }
 
@@ -35,11 +31,12 @@ namespace Haus.Core.Devices.Commands
 
         protected override async Task Handle(UpdateDeviceCommand request, CancellationToken cancellationToken)
         {
+            await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken);
+            
             var device = await _context.FindByIdAsync<DeviceEntity>(request.Id, cancellationToken);
             if (device == null)
                 throw new EntityNotFoundException<DeviceEntity>(request.Id);
-
-            await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken);
+            
             device.UpdateFromModel(request.Model);
             await _context.SaveChangesAsync(cancellationToken);
         }

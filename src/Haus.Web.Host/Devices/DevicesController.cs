@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Haus.Core.Common;
-using Haus.Core.Common.Queries;
 using Haus.Core.Devices.Commands;
 using Haus.Core.Devices.Queries;
 using Haus.Core.Models.Devices;
@@ -10,8 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Haus.Web.Host.Devices
 {
-    [Authorize]
-    [ApiController]
     [Route("api/devices")]
     public class DevicesController : HausBusController
     {

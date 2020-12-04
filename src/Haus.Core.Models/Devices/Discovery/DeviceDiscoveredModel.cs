@@ -9,7 +9,6 @@ namespace Haus.Core.Models.Devices.Discovery
         public string Model { get; set; }
         public string Vendor { get; set; }
         public string Description { get; set; }
-        
         public DeviceType DeviceType { get; set; }
 
         public HausEvent<DeviceDiscoveredModel> AsHausEvent()
