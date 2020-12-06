@@ -32,10 +32,13 @@ namespace Haus.Core.Rooms.Commands
 
         public async Task<RoomModel> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
         {
-            await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken);
+            await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
+                .ConfigureAwait(false)
+                ;
             var room = RoomEntity.CreateFromModel(request.Model);
             _context.Add(room);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken)
+                .ConfigureAwait(false);
             return _mapper.Map<RoomModel>(room);
         }
     }

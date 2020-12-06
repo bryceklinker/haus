@@ -25,10 +25,10 @@ namespace Haus.Web.Host.Tests.Devices
         [Fact]
         public async Task WhenADeviceIsUpdatedThenUpdatedDeviceIsAvailableFromTheApi()
         {
-            await PublishToMqtt("haus/events", new DeviceDiscoveredModel
+            await _factory.PublishHausEventAsync(new DeviceDiscoveredModel
             {
                 Id = "hello"
-            }.AsHausEvent());
+            });
 
             await Eventually.AssertAsync(async () =>
             {
@@ -54,7 +54,7 @@ namespace Haus.Web.Host.Tests.Devices
 
             await _hausClient.StartDiscovery();
 
-            await Eventually.Assert(() =>
+            Eventually.Assert(() =>
             {
                 Assert.Equal(StartDiscoveryModel.Type, hausCommand.Type);
             });
@@ -70,16 +70,10 @@ namespace Haus.Web.Host.Tests.Devices
 
             await _hausClient.StopDiscovery();
 
-            await Eventually.Assert(() =>
+            Eventually.Assert(() =>
             {
                 Assert.Equal(StopDiscoveryModel.Type, hausCommand.Type);
             });
-        }
-
-        private async Task PublishToMqtt(string topic, object payload)
-        {
-            var mqttClient = await _factory.GetMqttClient();
-            await mqttClient.PublishAsync(topic, payload);
         }
     }
 }

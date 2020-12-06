@@ -35,10 +35,11 @@ namespace Haus.Core.Devices.Queries
 
         public async Task<DeviceModel> Handle(GetDeviceByIdQuery request, CancellationToken cancellationToken = default)
         {
-            return await _context.Set<DeviceEntity>()
+            return await _context.GetAllReadOnly<DeviceEntity>()
                 .Where(d => d.Id == request.Id)
                 .ProjectTo<DeviceModel>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync(cancellationToken);
+                .SingleOrDefaultAsync(cancellationToken)
+                .ConfigureAwait(false);
         }
     }
 }

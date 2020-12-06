@@ -61,6 +61,11 @@ namespace Haus.Api.Client
             return DiagnosticsApiClient.ReplayDiagnosticsMessageAsync(model);
         }
 
+        public Task<ListResult<DeviceModel>> GetDevicesInRoomAsync(long roomId)
+        {
+            return RoomsApiClient.GetDevicesInRoomAsync(roomId);
+        }
+
         public Task<HttpResponseMessage> CreateRoomAsync(RoomModel model)
         {
             return RoomsApiClient.CreateRoomAsync(model);
@@ -79,6 +84,11 @@ namespace Haus.Api.Client
         public Task<HttpResponseMessage> UpdateRoomAsync(long id, RoomModel model)
         {
             return RoomsApiClient.UpdateRoomAsync(id, model);
+        }
+
+        public Task<HttpResponseMessage> AddDevicesToRoomAsync(long roomId, params long[] deviceIds)
+        {
+            return RoomsApiClient.AddDevicesToRoomAsync(roomId, deviceIds);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Haus.Core.Rooms.Queries
 
         public async Task<ListResult<RoomModel>> Handle(GetRoomsQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Set<RoomEntity>()
+            return await _context.GetAllReadOnly<RoomEntity>()
                 .ProjectTo<RoomModel>(_mapper.ConfigurationProvider)
                 .ToListResultAsync(cancellationToken)
                 .ConfigureAwait(false);

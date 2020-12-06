@@ -31,14 +31,17 @@ namespace Haus.Core.Devices.Commands
 
         protected override async Task Handle(UpdateDeviceCommand request, CancellationToken cancellationToken)
         {
-            await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken);
-            
-            var device = await _context.FindByIdAsync<DeviceEntity>(request.Id, cancellationToken);
+            await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
+                .ConfigureAwait(false);
+
+            var device = await _context.FindByIdAsync<DeviceEntity>(request.Id, cancellationToken)
+                .ConfigureAwait(false);
             if (device == null)
                 throw new EntityNotFoundException<DeviceEntity>(request.Id);
             
             device.UpdateFromModel(request.Model);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken)
+                .ConfigureAwait(false);
         }
     }
 }

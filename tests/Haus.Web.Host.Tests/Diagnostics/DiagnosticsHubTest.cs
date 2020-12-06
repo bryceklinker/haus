@@ -33,7 +33,7 @@ namespace Haus.Web.Host.Tests.Diagnostics
             });
 
             await mqttClient.PublishAsync("my-topic", "this is data");
-            await Eventually.Assert(() =>
+            Eventually.Assert(() =>
             {
                 Assert.True(Guid.TryParse(received.Id, out _));
                 Assert.Equal("my-topic", received.Topic);

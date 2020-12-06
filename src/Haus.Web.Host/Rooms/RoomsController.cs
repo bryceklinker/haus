@@ -38,5 +38,17 @@ namespace Haus.Web.Host.Rooms
         {
             return CommandAsync(new UpdateRoomCommand(id, model));
         }
+
+        [HttpPost("{id}/add-devices")]
+        public Task<IActionResult> AddDevicesToRoom([FromRoute] long id, [FromBody] long[] deviceIds)
+        {
+            return CommandAsync(new AddDevicesToRoomCommand(id, deviceIds));
+        }
+
+        [HttpGet("{id}/devices")]
+        public Task<IActionResult> GetDevicesInRoom([FromRoute] long id)
+        {
+            return QueryAsync(new GetDevicesInRoomQuery(id));
+        }
     }
 }

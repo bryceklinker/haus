@@ -6,6 +6,8 @@ using Haus.Api.Client;
 using Haus.Api.Client.Options;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
+using Haus.Core.Models.Common;
+using Haus.Core.Models.ExternalMessages;
 using Haus.Testing.Support.Fakes;
 using Haus.Web.Host.Common.Mqtt;
 using Microsoft.AspNetCore.Authentication;
@@ -82,11 +84,16 @@ namespace Haus.Web.Host.Tests.Support
 
         public async Task<IHausMqttClient> GetMqttClient()
         {
-            using var scope = Services.CreateScope();
-            var creator = scope.ServiceProvider.GetRequiredService<IHausMqttClientFactory>();
+            var creator = Services.GetRequiredService<IHausMqttClientFactory>();
             return await creator.CreateClient();
         }
 
+        public async Task PublishHausEventAsync<T>(IHausEventConverter<T> converter)
+        {
+            var client = await GetMqttClient();
+            await client.PublishAsync("haus/events", converter.AsHausEvent());
+        }
+        
         public void SetClockTime(DateTime time)
         {
             _clock.SetNow(time);

@@ -8,7 +8,7 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Haus.Web.Host.Common.Mqtt
 {
-    public interface IHausMqttClient : IDisposable
+    public interface IHausMqttClient : IAsyncDisposable
     {
         Task<IHausMqttSubscription> SubscribeAsync(string topic, Func<MqttApplicationMessage, Task> handler);
         Task PublishAsync(MqttApplicationMessage message);
@@ -43,12 +43,13 @@ namespace Haus.Web.Host.Common.Mqtt
             await _mqttClient.PublishAsync(message);
         }
 
-        public void Dispose()
+        public ValueTask DisposeAsync()
         {
             _mqttClient.Dispose();
             GC.SuppressFinalize(this);
+            return ValueTask.CompletedTask;
         }
-        
+
         private async Task SetupMqttListenerAsync()
         {
             await _mqttClient.SubscribeAsync(AllTopicsFilter);

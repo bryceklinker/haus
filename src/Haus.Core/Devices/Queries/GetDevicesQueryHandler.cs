@@ -37,14 +37,14 @@ namespace Haus.Core.Devices.Queries
 
         public async Task<ListResult<DeviceModel>> Handle(GetDevicesQuery request, CancellationToken cancellationToken = default)
         {
-            var query = _context.Set<DeviceEntity>().AsQueryable();
+            var query = _context.GetAllReadOnly<DeviceEntity>();
 
             if (request.HasExternalId) 
                 query = query.Where(d => d.ExternalId == request.ExternalId);
             
             return await query
                 .ProjectTo<DeviceModel>(_mapper.ConfigurationProvider)
-                .ToListResultAsync()
+                .ToListResultAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
         }
     }

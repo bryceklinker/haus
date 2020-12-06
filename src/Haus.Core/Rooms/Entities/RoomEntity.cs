@@ -29,6 +29,11 @@ namespace Haus.Core.Rooms.Entities
             device.AssignToRoom(this);
         }
 
+        public void AddDevices(IEnumerable<DeviceEntity> devices)
+        {
+            foreach (var device in devices) AddDevice(device);
+        }
+
         public void RemoveDevice(DeviceEntity device)
         {
             Devices.Remove(device);

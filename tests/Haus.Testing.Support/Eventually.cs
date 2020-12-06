@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Polly;
 
 namespace Haus.Testing.Support
 {
@@ -8,52 +9,18 @@ namespace Haus.Testing.Support
         private const int DefaultTimeout = 5000;
         private const int DefaultDelay = 100;
 
-        public static async Task Assert(Action assertion, int timeout = DefaultTimeout, int delay = DefaultDelay)
+        public static void Assert(Action assertion, int timeout = DefaultTimeout, int delay = DefaultDelay)
         {
-            Exception assertionException = null;
-            var endTime = DateTime.UtcNow.AddMilliseconds(timeout);
-            while (endTime >= DateTime.UtcNow)
-            {
-                try
-                {
-                    assertion();
-                    return;
-                }
-                catch (Exception exception)
-                {
-                    assertionException = exception;
-                    await Task.Delay(delay);
-                }
-            }
-
-            if (assertionException == null)
-                return;
-
-            throw assertionException;
+            Policy.Handle<Exception>()
+                .WaitAndRetry(DelayGenerator.Generate(timeout, delay))
+                .Execute(assertion);
         }
         
         public static async Task AssertAsync(Func<Task> assertion, int timeout = DefaultTimeout, int delay = DefaultDelay)
         {
-            Exception assertionException = null;
-            var endTime = DateTime.UtcNow.AddMilliseconds(timeout);
-            while (endTime >= DateTime.UtcNow)
-            {
-                try
-                {
-                    await assertion();
-                    return;
-                }
-                catch (Exception exception)
-                {
-                    assertionException = exception;
-                    await Task.Delay(delay);
-                }
-            }
-
-            if (assertionException == null)
-                return;
-
-            throw assertionException;
+            await Policy.Handle<Exception>()
+                .WaitAndRetryAsync(DelayGenerator.Generate(timeout, delay))
+                .ExecuteAsync(assertion);
         }
     }
 }

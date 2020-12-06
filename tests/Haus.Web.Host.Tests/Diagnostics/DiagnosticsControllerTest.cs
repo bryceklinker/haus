@@ -35,7 +35,7 @@ namespace Haus.Web.Host.Tests.Diagnostics
             var client = _factory.CreateAuthenticatedClient();
             await client.ReplayDiagnosticsMessageAsync(model);
 
-            await Eventually.Assert(() =>
+            Eventually.Assert(() =>
             {
                 Assert.Equal("my-topic", received.Topic);
                 Assert.Equal(65, JObject.Parse(received.ConvertPayloadToString()).Value<int>("id"));

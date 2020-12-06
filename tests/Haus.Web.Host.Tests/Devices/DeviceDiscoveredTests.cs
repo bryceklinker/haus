@@ -21,14 +21,13 @@ namespace Haus.Web.Host.Tests.Devices
         [Fact]
         public async Task WhenDeviceDiscoveredEventReceivedThenDeviceIsAvailableFromTheApi()
         {
-            var mqttClient = await _factory.GetMqttClient();
-            await mqttClient.PublishAsync("haus/events", new DeviceDiscoveredModel
+            await _factory.PublishHausEventAsync(new DeviceDiscoveredModel
             {
                 Id = "my-new-id",
                 Description = "I don't know",
                 Model = "new hotness",
                 Vendor = "Klinker"
-            }.AsHausEvent());
+            });
             
             await Eventually.AssertAsync(async () =>
             {

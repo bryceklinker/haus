@@ -57,7 +57,7 @@ namespace Haus.Web.Host.Common.Mqtt
                 return;
 
             var client = await _clientInitializer.Value;
-            client.Dispose();
+            await client.DisposeAsync();
         }
     }
 }
