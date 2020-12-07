@@ -10,8 +10,8 @@ namespace Haus.Core.Devices.Entities
     {
         public long Id { get; set; }
         public DeviceEntity Device { get; set; }
-        public string Key { get; set; }
-        public string Value { get; set; }
+        public string? Key { get; set; }
+        public string? Value { get; set; }
 
         public DeviceMetadataEntity(string key = null, string value = null)
         {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Haus.Core.Common;
 using Haus.Core.Common.Entities;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
@@ -18,7 +19,8 @@ namespace Haus.Core.Devices.Entities
         public ICollection<DeviceMetadataEntity> Metadata { get; set; } = new List<DeviceMetadataEntity>();
 
         public RoomEntity Room { get; set; }
-        
+        public Lighting Lighting { get; set; }
+
         public void AddOrUpdateMetadata(string key, string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -68,6 +70,11 @@ namespace Haus.Core.Devices.Entities
         {
             Room = null;
         }
+
+        public void ChangeLighting(Lighting lighting)
+        {
+            Lighting = lighting;
+        }
     }
 
     public class DeviceEntityConfiguration : IEntityTypeConfiguration<DeviceEntity>
@@ -78,6 +85,8 @@ namespace Haus.Core.Devices.Entities
             builder.Property(d => d.Name).IsRequired();
             builder.Property(d => d.ExternalId).IsRequired();
             builder.Property(d => d.DeviceType).IsRequired().HasConversion<string>();
+
+            builder.OwnsOne(d => d.Lighting, Lighting.Configure);
             
             builder.HasMany(d => d.Metadata)
                 .WithOne(m => m.Device);
