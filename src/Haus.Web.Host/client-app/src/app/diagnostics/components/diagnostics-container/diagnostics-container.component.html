@@ -1,2 +1,9 @@
-<diagnostics-header [isConnected]="isDiagnosticsConnected$ | async"></diagnostics-header>
-<diagnostics-messages [messages]="diagnosticMessages$ | async" (replayMessage)="replayMessage($event)"></diagnostics-messages>
+<diagnostics-header [isConnected]="isDiagnosticsConnected$ | async"
+                    [allowDiscovery]="allowDiscovery$ | async"
+                    (startDiscovery)="onStartDiscovery()"
+                    (stopDiscovery)="onStopDiscovery()"
+>
+
+</diagnostics-header>
+<diagnostics-messages [messages]="diagnosticMessages$ | async"
+                      (replayMessage)="replayMessage($event)"></diagnostics-messages>

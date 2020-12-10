@@ -34,10 +34,8 @@ namespace Haus.Core.Rooms.Commands
             await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
                 .ConfigureAwait(false);
                
-            var room = await _context.FindByIdAsync<RoomEntity>(request.Id, cancellationToken)
+            var room = await _context.FindByIdOrThrowAsync<RoomEntity>(request.Id, cancellationToken)
                 .ConfigureAwait(false);
-            if (room == null)
-                throw new EntityNotFoundException<RoomEntity>(request.Id);
             
             room.UpdateFromModel(request.Model);
             await _context.SaveChangesAsync(cancellationToken)

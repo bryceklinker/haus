@@ -8,17 +8,11 @@ namespace Haus.Core.Common
 {
     internal abstract class LoggingBus
     {
-        private readonly ILogger _logger;
-
-        protected abstract string BeginMessage { get; }
-
-        protected abstract string FinishedMessage { get; }
-
-        protected abstract string ErrorMessage { get; }
+        protected ILogger Logger { get; }
 
         protected LoggingBus(ILogger logger)
         {
-            _logger = logger;
+            Logger = logger;
         }
         
         protected async Task<TOutput> ExecuteWithLoggingAsync<TInput, TOutput>(TInput input, Func<Task<TOutput>> executor, CancellationToken token = default)
@@ -27,17 +21,23 @@ namespace Haus.Core.Common
             stopwatch.Start();
             try
             {
+                LogStarted(input);
                 var output = await executor.Invoke().ConfigureAwait(false);
                 stopwatch.Stop();
-                _logger.LogInformation(FinishedMessage, new {input, stopwatch.ElapsedMilliseconds});
+                LogFinished(input, stopwatch.ElapsedMilliseconds);
                 return output;
             }
             catch (Exception e)
             {
                 stopwatch.Stop();
-                _logger.LogError(ErrorMessage, new {input, e, stopwatch.ElapsedMilliseconds});
+                LogError(input, e, stopwatch.ElapsedMilliseconds);
+                LogError(input, e, stopwatch.ElapsedMilliseconds);
                 throw;
             }
         }
+        
+        protected abstract void LogFinished<TInput>(TInput input, long elapsedMilliseconds);
+        protected abstract void LogError<TInput>(TInput input, Exception exception, long elapsedMilliseconds);
+        protected abstract void LogStarted<TInput>(TInput input);
     }
 }

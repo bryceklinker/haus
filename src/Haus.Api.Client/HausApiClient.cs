@@ -46,6 +46,21 @@ namespace Haus.Api.Client
             return DeviceApiClient.StopDiscovery();
         }
 
+        public Task<HttpResponseMessage> ChangeDeviceLighting(long deviceId, LightingModel model)
+        {
+            return DeviceApiClient.ChangeDeviceLighting(deviceId, model);
+        }
+
+        public Task<HttpResponseMessage> TurnLightOff(long deviceId)
+        {
+            return DeviceApiClient.TurnLightOff(deviceId);
+        }
+
+        public Task<HttpResponseMessage> TurnLightOn(long deviceId)
+        {
+            return DeviceApiClient.TurnLightOn(deviceId);
+        }
+
         public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
         {
             return DeviceApiClient.GetDevicesAsync(externalId);
@@ -89,6 +104,21 @@ namespace Haus.Api.Client
         public Task<HttpResponseMessage> AddDevicesToRoomAsync(long roomId, params long[] deviceIds)
         {
             return RoomsApiClient.AddDevicesToRoomAsync(roomId, deviceIds);
+        }
+
+        public Task<HttpResponseMessage> ChangeRoomLighting(long roomId, LightingModel model)
+        {
+            return RoomsApiClient.ChangeRoomLighting(roomId, model);
+        }
+
+        public Task<HttpResponseMessage> TurnRoomOn(long roomId)
+        {
+            return RoomsApiClient.TurnRoomOn(roomId);
+        }
+
+        public Task<HttpResponseMessage> TurnRoomOff(long roomId)
+        {
+            return RoomsApiClient.TurnRoomOff(roomId);
         }
     }
 }

@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Haus.Core.Common;
-using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.ExternalMessages;
@@ -44,8 +43,7 @@ namespace Haus.Core.Tests.Rooms.Commands
 
             await _hausBus.ExecuteCommandAsync(new ChangeRoomLightingCommand(room.Id, lighting));
 
-            var routableCommand = _hausBus.GetPublishedEvents<RoutableCommand>().Single();
-            var hausCommand = (HausCommand<RoomLightingChanged>) routableCommand.HausCommand;
+            var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
             Assert.Equal(room.Id, hausCommand.Payload.Room.Id);
             Assert.Equal(LightingState.On, hausCommand.Payload.Lighting.State);
         }

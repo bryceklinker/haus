@@ -1,8 +1,13 @@
 using System.Text;
+using Haus.Core.Models;
+using Haus.Core.Models.Common;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
@@ -52,6 +57,21 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
 
             Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
             Assert.Equal("false", Encoding.UTF8.GetString(result.Payload));
+        }
+
+        [Fact]
+        public void WhenDeviceLightingCommandReceivedThenReturnsSetDeviceMessage()
+        {
+            var original =
+                new DeviceLightingChangedEvent(new DeviceModel {ExternalId = "my-ext-id"}, new LightingModel{State = LightingState.Off})
+                    .AsHausCommand()
+                    .ToMqttMessage("haus/commands");
+
+            var result = _mapper.Map(original);
+
+            var payload = JObject.Parse(Encoding.UTF8.GetString(result.Payload));
+            Assert.Equal($"{Zigbee2MqttBaseTopic}/my-ext-id/set", result.Topic);
+            Assert.Equal("OFF", payload.Value<string>("state"));
         }
     }
 }

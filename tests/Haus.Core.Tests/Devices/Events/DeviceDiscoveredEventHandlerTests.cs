@@ -25,10 +25,10 @@ namespace Haus.Core.Tests.Devices.Events
         [Fact]
         public async Task WhenDeviceDiscoveredEventHandledThenAddsDeviceToDatabase()
         {
-            var @event = new RoutableEvent<DeviceDiscoveredModel>(new DeviceDiscoveredModel
+            var @event = RoutableEvent.FromEvent(new DeviceDiscoveredModel
             {
                 Id = "This is my external id"
-            }.AsHausEvent());
+            });
 
             await _hausBus.PublishAsync(@event);
 
@@ -40,11 +40,11 @@ namespace Haus.Core.Tests.Devices.Events
         {
             _context.AddDevice("three");
             
-            var @event = new RoutableEvent<DeviceDiscoveredModel>(new DeviceDiscoveredModel
+            var @event = RoutableEvent.FromEvent(new DeviceDiscoveredModel
             {
                 Id = "three",
                 Model = "Help"
-            }.AsHausEvent());
+            });
             await _hausBus.PublishAsync(@event);
 
             Assert.Single(_context.Set<DeviceEntity>());

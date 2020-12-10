@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,11 +10,7 @@ namespace Haus.Core.Common.Events
     internal class LoggingEventBus : LoggingBus, IEventBus
     {
         private readonly IEventBus _eventBus;
-
-        protected override string BeginMessage => "Publishing event";
-        protected override string FinishedMessage => "Finished publishing event";
-        protected override string ErrorMessage => "Error publishing event";
-
+        
         public LoggingEventBus(IEventBus eventBus, ILogger<LoggingEventBus> logger) 
             : base(logger)
         {
@@ -28,6 +25,21 @@ namespace Haus.Core.Common.Events
                     return Unit.Value;
                 }, token)
                 .ConfigureAwait(false);
+        }
+        
+        protected override void LogFinished<TInput>(TInput input, long elapsedMilliseconds)
+        {
+            Logger.LogInformation("Finished publishing {Event} in {ElapsedTime}ms", input, elapsedMilliseconds);
+        }
+
+        protected override void LogError<TInput>(TInput input, Exception exception, long elapsedMilliseconds)
+        {
+            Logger.LogError("Event {Event} failed to publish after {ElapsedTime}ms: {Exception}", input, exception, elapsedMilliseconds);
+        }
+
+        protected override void LogStarted<TInput>(TInput input)
+        {
+            Logger.LogInformation("Starting to publish event {Event}", input);
         }
     }
 }

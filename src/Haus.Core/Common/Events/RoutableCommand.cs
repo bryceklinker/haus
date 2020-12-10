@@ -1,3 +1,4 @@
+using Haus.Core.Models.Common;
 using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Common.Events
@@ -9,6 +10,12 @@ namespace Haus.Core.Common.Events
         public RoutableCommand(HausCommand hausCommand)
         {
             HausCommand = hausCommand;
+        }
+
+        public static RoutableCommand FromEvent<T>(T command)
+            where T : IHausCommandCreator<T>
+        {
+            return new RoutableCommand(command.AsHausCommand());
         }
     }
 }

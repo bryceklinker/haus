@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Devices.Commands;
 using Haus.Core.Devices.Queries;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Web.Host.Common.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +29,25 @@ namespace Haus.Web.Host.Devices
         {
             return QueryAsync(new GetDeviceByIdQuery(id));
         }
-        
+
+        [HttpPost("{id}/lighting")]
+        public Task<IActionResult> ChangeLighting([FromRoute] long id, [FromBody] LightingModel model)
+        {
+            return CommandAsync(new ChangeDeviceLightingCommand(id, model));
+        }
+
+        [HttpPost("{id}/turn-off")]
+        public Task<IActionResult> TurnOff([FromRoute] long id)
+        {
+            return CommandAsync(new TurnDeviceOffCommand(id));
+        }
+
+        [HttpPost("{id}/turn-on")]
+        public Task<IActionResult> TurnOn([FromRoute] long id)
+        {
+            return CommandAsync(new TurnDeviceOnCommand(id));
+        }
+
         [HttpPut("{id}")]
         public Task<IActionResult> Update([FromRoute] long id, [FromBody] DeviceModel model)
         {

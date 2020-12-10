@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
 using Haus.Core.Common;
+using Haus.Core.Common.DomainEvents;
 using Haus.Core.Common.Entities;
-using Haus.Core.Common.Events;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Rooms;
-using Haus.Core.Models.Rooms.Events;
+using Haus.Core.Rooms.DomainEvents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,9 +16,9 @@ namespace Haus.Core.Rooms.Entities
     public class RoomEntity : Entity
     {
         public string Name { get; set; } = string.Empty;
-        public Lighting Lighting { get; set; } = new Lighting();
+        public Lighting Lighting { get; set; } = Lighting.Default.Copy();
         public ICollection<DeviceEntity> Devices { get; set; } = new List<DeviceEntity>();
-        public IEnumerable<DeviceEntity> Lights => Devices.Where(d => d.DeviceType == DeviceType.Light);
+        public IEnumerable<DeviceEntity> Lights => Devices.Where(d => d.IsLight);
 
         public static RoomEntity CreateFromModel(RoomModel model)
         {
@@ -32,18 +30,20 @@ namespace Haus.Core.Rooms.Entities
             Name = roomModel.Name;
         }
 
-        public void AddDevice(DeviceEntity device)
+        public void AddDevice(DeviceEntity device, IDomainEventBus domainEventBus)
         {
             if (Devices.Any(d => d.Id == device.Id))
                 return;
 
             Devices.Add(device);
             device.AssignToRoom(this);
+            if (device.IsLight) device.ChangeLighting(Lighting, domainEventBus);
         }
 
-        public void AddDevices(IEnumerable<DeviceEntity> devices)
+        public void AddDevices(IEnumerable<DeviceEntity> devices, IDomainEventBus domainEventBus)
         {
-            foreach (var device in devices) AddDevice(device);
+            foreach (var device in devices)
+                AddDevice(device, domainEventBus);
         }
 
         public void RemoveDevice(DeviceEntity device)
@@ -52,11 +52,27 @@ namespace Haus.Core.Rooms.Entities
             device.UnAssignRoom();
         }
 
-        public void ChangeLighting(Lighting lighting)
+        public void ChangeLighting(Lighting lighting, IDomainEventBus domainEventBus)
         {
             Lighting = lighting;
             foreach (var light in Lights)
-                light.ChangeLighting(Lighting);
+                light.ChangeLighting(Lighting, domainEventBus);
+
+            domainEventBus.Enqueue(new RoomLightingChangedDomainEvent(this, lighting));
+        }
+
+        public void TurnOff(IDomainEventBus domainEventBus)
+        {
+            var lightingCopy = Lighting.Copy();
+            lightingCopy.State = LightingState.Off;
+            ChangeLighting(lightingCopy, domainEventBus);
+        }
+
+        public void TurnOn(IDomainEventBus domainEventBus)
+        {
+            var lightingCopy = Lighting.Copy();
+            lightingCopy.State = LightingState.On;
+            ChangeLighting(lightingCopy, domainEventBus);
         }
     }
 
@@ -69,6 +85,7 @@ namespace Haus.Core.Rooms.Entities
 
             builder.OwnsOne(r => r.Lighting, Lighting.Configure);
 
+            builder.Ignore(r => r.Lights);
             builder.HasMany(r => r.Devices)
                 .WithOne(d => d.Room);
         }

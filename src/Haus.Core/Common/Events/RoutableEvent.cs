@@ -1,9 +1,15 @@
+using Haus.Core.Models.Common;
 using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Common.Events
 {
     public class RoutableEvent : IEvent
     {
+        public static RoutableEvent<T> FromEvent<T>(T @event)
+            where T : IHausEventCreator<T>
+        {
+            return new RoutableEvent<T>(@event.AsHausEvent());
+        }
     }
 
     public class RoutableEvent<T> : RoutableEvent

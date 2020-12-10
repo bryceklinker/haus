@@ -5,6 +5,7 @@ import {AppState} from "../../app.state";
 import {selectHubStatus} from "ngrx-signalr-core";
 import {DIAGNOSTICS_HUB} from "../effects/diagnostics-hub";
 import {DiagnosticsMessageModel} from "../models";
+import {selectDevicesAllowDiscovery} from "../../devices/reducers/devices.reducer";
 
 export const DIAGNOSTICS_FEATURE_KEY = 'diagnostics';
 
@@ -52,6 +53,7 @@ const selectDiagnosticsState = createFeatureSelector<DiagnosticsState>(DIAGNOSTI
 export const selectDiagnosticsMessages = createSelector(selectDiagnosticsState, s => [...s.messages].sort(sortMessagesDescending));
 export const selectDiagnosticsHubState = (state:AppState) => selectHubStatus(state, DIAGNOSTICS_HUB);
 export const selectIsDiagnosticHubConnected = createSelector(selectDiagnosticsHubState, s => s.state === 'connected');
+export const selectDiagnosticsAllowDiscovery = selectDevicesAllowDiscovery;
 
 function sortMessagesDescending(one: DiagnosticsMessageModel, two: DiagnosticsMessageModel): number {
   return Date.parse(two.timestamp) - Date.parse(one.timestamp);

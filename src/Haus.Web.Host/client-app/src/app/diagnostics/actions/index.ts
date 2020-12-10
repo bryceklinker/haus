@@ -1,6 +1,7 @@
 import {createAction} from "@ngrx/store";
 import {DiagnosticsMessageModel} from "../models";
 import {createAsyncAction} from "../../shared/actions";
+import {DevicesActions} from "../../devices/actions";
 
 export const DiagnosticsActions = {
   initHub: createAction('[Diagnostics] Init Effects'),
@@ -9,5 +10,7 @@ export const DiagnosticsActions = {
     (message: DiagnosticsMessageModel) => ({payload: message}),
     (message: DiagnosticsMessageModel) => ({payload: message}),
     (message: DiagnosticsMessageModel, error: any) => ({payload: {message, error}})
-  )
+  ),
+  startDiscovery: DevicesActions.startDiscovery,
+  stopDiscovery: DevicesActions.stopDiscovery
 }

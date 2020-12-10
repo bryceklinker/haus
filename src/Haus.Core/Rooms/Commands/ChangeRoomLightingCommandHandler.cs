@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Haus.Core.Common;
 using Haus.Core.Common.Commands;
+using Haus.Core.Common.DomainEvents;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Common;
@@ -28,28 +28,22 @@ namespace Haus.Core.Rooms.Commands
     internal class ChangeRoomLightingCommandHandler : AsyncRequestHandler<ChangeRoomLightingCommand>, ICommandHandler<ChangeRoomLightingCommand>
     {
         private readonly HausDbContext _context;
-        private readonly IHausBus _hausBus;
-        private readonly IMapper _mapper;
+        private readonly IDomainEventBus _domainEventBus;
 
-        public ChangeRoomLightingCommandHandler(HausDbContext context, IMapper mapper, IHausBus hausBus)
+        public ChangeRoomLightingCommandHandler(HausDbContext context, IDomainEventBus domainEventBus)
         {
             _context = context;
-            _mapper = mapper;
-            _hausBus = hausBus;
+            _domainEventBus = domainEventBus;
         }
 
         protected override async Task Handle(ChangeRoomLightingCommand request, CancellationToken cancellationToken)
         {
-            var room = await _context.FindByIdAsync<RoomEntity>(request.RoomId, cancellationToken);
-            if (room == null)
-                throw new EntityNotFoundException<RoomEntity>(request.RoomId);
-            
+            var room = await _context.FindByIdOrThrowAsync<RoomEntity>(request.RoomId, cancellationToken);
             var lighting = Lighting.FromModel(request.Lighting);
-            room.ChangeLighting(lighting);
+            room.ChangeLighting(lighting, _domainEventBus);
             await _context.SaveChangesAsync(cancellationToken);
-
-            var @event = new RoomLightingChanged(_mapper.Map<RoomModel>(room), request.Lighting);
-            await _hausBus.PublishAsync(new RoutableCommand(@event.AsHausCommand()), cancellationToken);
+            
+            await _domainEventBus.FlushAsync(cancellationToken);
         }
     }
 }

@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 
 @Component({
   selector: 'diagnostics-header',
@@ -7,6 +7,9 @@ import {Component, Input} from "@angular/core";
 })
 export class DiagnosticsHeaderComponent {
   @Input() isConnected: boolean | null = false;
+  @Input() allowDiscovery: boolean | null = false;
+  @Output() stopDiscovery = new EventEmitter<void>();
+  @Output() startDiscovery = new EventEmitter<void>();
 
   get status(): string {
     return this.isConnected ? 'connected' : 'disconnected';
@@ -14,5 +17,21 @@ export class DiagnosticsHeaderComponent {
 
   get icon(): string {
     return this.isConnected ? 'sync' : 'sync_disabled';
+  }
+
+  get canStartDiscovery(): boolean {
+    return !!this.allowDiscovery;
+  }
+
+  get canStopDiscovery(): boolean {
+    return !this.allowDiscovery;
+  }
+
+  onStartDiscovery(): void {
+    this.startDiscovery.emit();
+  }
+
+  onStopDiscovery(): void {
+    this.stopDiscovery.emit();
   }
 }

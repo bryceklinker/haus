@@ -1,12 +1,14 @@
 using System.Linq;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices.Sensors.Battery;
 using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Devices.Sensors.Temperature;
+using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Models.Devices.Sensors
 {
-    public class MultiSensorChanged
+    public class MultiSensorChanged : IHausEventCreator<MultiSensorChanged>
     {
         public const string Type = "multi_sensor_changed";
         
@@ -35,6 +37,11 @@ namespace Haus.Core.Models.Devices.Sensors
                 return IlluminanceChanged;
 
             return BatteryChanged;
+        }
+
+        public HausEvent<MultiSensorChanged> AsHausEvent()
+        {
+            return new HausEvent<MultiSensorChanged>(Type, this);
         }
     }
 }

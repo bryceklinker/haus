@@ -1,16 +1,18 @@
 using System;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Models.Devices;
 using Haus.Core.Rooms.Entities;
 
 namespace Haus.Core.Tests.Support
 {
     public static class HausDbContextExtensions
     {
-        public static DeviceEntity AddDevice(this HausDbContext context, string externalId = null, string name = null, Action<DeviceEntity> configure = null)
+        public static DeviceEntity AddDevice(this HausDbContext context, string externalId = null, string name = null, DeviceType deviceType = DeviceType.Unknown, Action<DeviceEntity> configure = null)
         {
             var device = new DeviceEntity
             {
+                DeviceType = deviceType,
                 Name = name ?? $"{Guid.NewGuid()}",
                 ExternalId = externalId ?? $"{Guid.NewGuid()}",
             };

@@ -4,8 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Common.Commands;
+using Haus.Core.Common.DomainEvents;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Queries;
+using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Tests.Support
 {
@@ -44,6 +46,17 @@ namespace Haus.Core.Tests.Support
             return _actualBus.PublishAsync(@event, token);
         }
 
+        public void Enqueue(IDomainEvent domainEvent)
+        {
+            _messages.Add(domainEvent);
+            _actualBus.Enqueue(domainEvent);
+        }
+
+        public Task FlushAsync(CancellationToken token = default)
+        {
+            return _actualBus.FlushAsync(token);
+        }
+
         public IEnumerable<T> GetExecutedCommands<T>()
             where T : ICommand
         {
@@ -67,5 +80,19 @@ namespace Haus.Core.Tests.Support
         {
             return _messages.OfType<TEvent>();
         }
+
+        public IEnumerable<HausCommand<T>> GetPublishedHausCommands<T>()
+        {
+            return _messages.OfType<RoutableCommand>()
+                .Select(r => r.HausCommand)
+                .OfType<HausCommand<T>>();
+        }
+
+        public IEnumerable<TDomainEvent> GetQueuedDomainEvents<TDomainEvent>()
+            where TDomainEvent : IDomainEvent
+        {
+            return _messages.OfType<TDomainEvent>();
+        }
+        
     }
 }

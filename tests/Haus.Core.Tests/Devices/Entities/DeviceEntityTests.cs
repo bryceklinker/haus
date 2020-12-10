@@ -1,6 +1,12 @@
+using System;
+using Haus.Core.Common;
+using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Tests.Support;
+using System.Linq;
+using Haus.Core.Models.Common;
 using Xunit;
 
 namespace Haus.Core.Tests.Devices.Entities
@@ -141,6 +147,50 @@ namespace Haus.Core.Tests.Devices.Entities
             Assert.Equal(2, entity.Metadata.Count);
             Assert.Contains(entity.Metadata, m => m.Key == "one" && m.Value == "three");
             Assert.Contains(entity.Metadata, m => m.Key == "three" && m.Value == "two");
+        }
+
+        [Fact]
+        public void WhenDeviceLightingChangedThenDeviceLightingChangedEventQueued()
+        {
+            var domainEventBus = new FakeDomainEventBus();
+            var light = new DeviceEntity{DeviceType = DeviceType.Light};
+            var lighting = new Lighting {Brightness = 12};
+
+            light.ChangeLighting(lighting, domainEventBus);
+
+            Assert.Single(domainEventBus.GetEvents.OfType<DeviceLightingChangedDomainEvent>());
+        }
+
+        [Fact]
+        public void WhenDeviceIsTurnedOffThenDeviceLightingStateIsSetToOff()
+        {
+            var light = new DeviceEntity{DeviceType = DeviceType.Light};
+            light.ChangeLighting(new Lighting{State = LightingState.On, Brightness = 6}, new FakeDomainEventBus());
+
+            light.TurnOff(new FakeDomainEventBus());
+
+            Assert.Equal(LightingState.Off, light.Lighting.State);
+            Assert.Equal(6, light.Lighting.Brightness);
+        }
+
+        [Fact]
+        public void WhenDeviceIsTurnedOnThenDeviceLightingStateIsSetToOn()
+        {
+            var light = new DeviceEntity{DeviceType = DeviceType.Light};
+            light.ChangeLighting(new Lighting{State = LightingState.Off, Brightness = 6}, new FakeDomainEventBus());
+
+            light.TurnOn(new FakeDomainEventBus());
+
+            Assert.Equal(LightingState.On, light.Lighting.State);
+            Assert.Equal(6, light.Lighting.Brightness);
+        }
+        
+        [Fact]
+        public void WhenDeviceIsNotALightThenChangeLightingThrowsInvalidOperation()
+        {
+            var device = new DeviceEntity();
+            
+            Assert.Throws<InvalidOperationException>(() => device.ChangeLighting(new Lighting(), new FakeDomainEventBus()));
         }
 
         private static void AssertHasMetadata(string key, string value, DeviceEntity entity)

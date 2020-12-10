@@ -24,7 +24,7 @@ namespace Haus.Core.Devices.Commands
         protected override Task Handle(StopDiscoveryCommand request, CancellationToken cancellationToken)
         {
             var model = new StopDiscoveryModel();
-            return _hausBus.PublishAsync(new RoutableCommand(model.AsHausCommand()), cancellationToken);
+            return _hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken);
         }
     }
 }

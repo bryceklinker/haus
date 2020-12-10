@@ -34,10 +34,8 @@ namespace Haus.Core.Devices.Commands
             await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
                 .ConfigureAwait(false);
 
-            var device = await _context.FindByIdAsync<DeviceEntity>(request.Id, cancellationToken)
+            var device = await _context.FindByIdOrThrowAsync<DeviceEntity>(request.Id, cancellationToken)
                 .ConfigureAwait(false);
-            if (device == null)
-                throw new EntityNotFoundException<DeviceEntity>(request.Id);
             
             device.UpdateFromModel(request.Model);
             await _context.SaveChangesAsync(cancellationToken)

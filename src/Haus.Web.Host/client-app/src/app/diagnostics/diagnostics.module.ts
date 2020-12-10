@@ -8,6 +8,7 @@ import {DIAGNOSTICS_FEATURE_KEY, diagnosticsReducer} from "./reducers/diagnostic
 import {SharedModule} from "../shared/shared.module";
 import {DiagnosticsRoutingModule} from "./diagnostics-routing.module";
 import {AuthModule} from "@auth0/auth0-angular";
+import {DevicesModule} from "../devices/devices.module";
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import {AuthModule} from "@auth0/auth0-angular";
     AuthModule,
     StoreModule.forFeature(DIAGNOSTICS_FEATURE_KEY, diagnosticsReducer),
     EffectsModule.forFeature([DiagnosticsEffects]),
+    DevicesModule,
     DiagnosticsRoutingModule
   ]
 })

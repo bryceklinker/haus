@@ -11,8 +11,13 @@ namespace Haus.Zigbee.Host.Tests
             return new MqttApplicationMessage
             {
                 Topic = topic,
-                Payload = HausJsonSerializer.SerializeToBytes(command)
+                Payload = command.ToBytes()
             };
+        }
+
+        public static byte[] ToBytes(this HausCommand command)
+        {
+            return HausJsonSerializer.SerializeToBytes(command);
         }
     }
 }

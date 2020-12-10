@@ -3,7 +3,7 @@ using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Models.Devices.Discovery
 {
-    public class DeviceDiscoveredModel : IHausEventConverter<DeviceDiscoveredModel>
+    public class DeviceDiscoveredModel : IHausEventCreator<DeviceDiscoveredModel>
     {
         public const string Type = "device_discovered";
         public string Id { get; set; }

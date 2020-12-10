@@ -7,6 +7,7 @@ import {EffectsModule} from "@ngrx/effects";
 import {DEVICES_FEATURE_KEY, devicesReducer} from "./reducers/devices.reducer";
 import {DEVICES_COMPONENTS} from "./components";
 import {LoadDevicesEffects} from "./effects/load-devices.effects";
+import {DiscoveryEffects} from "./effects/discovery.effects";
 
 @NgModule({
   declarations: [
@@ -17,7 +18,7 @@ import {LoadDevicesEffects} from "./effects/load-devices.effects";
     SharedModule,
     AuthModule,
     StoreModule.forFeature(DEVICES_FEATURE_KEY, devicesReducer),
-    EffectsModule.forFeature([LoadDevicesEffects]),
+    EffectsModule.forFeature([LoadDevicesEffects, DiscoveryEffects]),
   ]
 })
 export class DevicesModule {

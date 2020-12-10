@@ -3,8 +3,10 @@ using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Rooms;
+using Haus.Core.Rooms.DomainEvents;
 using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
+using System.Linq;
 using Xunit;
 
 namespace Haus.Core.Tests.Rooms.Entities
@@ -17,10 +19,23 @@ namespace Haus.Core.Tests.Rooms.Entities
             var device = new DeviceEntity();
 
             var room = new RoomEntity();
-            room.AddDevice(device);
+            room.AddDevice(device, new FakeDomainEventBus());
 
             Assert.Contains(device, room.Devices);
             Assert.Equal(room, device.Room);
+        }
+
+        [Fact]
+        public void WhenLightDeviceIsAddedToRoomThenLightingForDeviceIsSetToRoomLighting()
+        {
+            var room = new RoomEntity();
+            var roomLighting = new Lighting{Brightness = 65};
+            room.ChangeLighting(roomLighting, new FakeDomainEventBus());
+            
+            var light = new DeviceEntity{DeviceType = DeviceType.Light};
+            room.AddDevice(light, new FakeDomainEventBus());
+
+            Assert.Equal(roomLighting, light.Lighting);
         }
 
         [Fact]
@@ -36,9 +51,9 @@ namespace Haus.Core.Tests.Rooms.Entities
         public void WhenDeviceRemovedFromRoomThenDeviceIsMissingFromDevices()
         {
             var device = new DeviceEntity();
-            
+
             var room = new RoomEntity();
-            room.AddDevice(device);
+            room.AddDevice(device, new FakeDomainEventBus());
             room.RemoveDevice(device);
 
             Assert.DoesNotContain(device, room.Devices);
@@ -48,15 +63,23 @@ namespace Haus.Core.Tests.Rooms.Entities
         [Fact]
         public void WhenDeviceIsAlreadyInRoomThenAddingDeviceAgainDoesNothing()
         {
-            var device = new DeviceEntity{Id = 65};
+            var device = new DeviceEntity {Id = 65};
             var room = new RoomEntity();
-            room.AddDevice(device);
+            room.AddDevice(device, new FakeDomainEventBus());
 
-            room.AddDevice(device);
+            room.AddDevice(device, new FakeDomainEventBus());
 
             Assert.Single(room.Devices);
         }
 
+        [Fact]
+        public void WhenCreatedThenLightingIsDefaulted()
+        {
+            var room = new RoomEntity();
+
+            Assert.Equal(Lighting.Default, room.Lighting);
+        }
+        
         [Fact]
         public void WhenCreatedFromModelThenRoomIsPopulatedFromTheModel()
         {
@@ -72,8 +95,8 @@ namespace Haus.Core.Tests.Rooms.Entities
         {
             var room = new RoomEntity();
 
-            var lighting = new Lighting { State = LightingState.On };
-            room.ChangeLighting(lighting);
+            var lighting = new Lighting {State = LightingState.On};
+            room.ChangeLighting(lighting, new FakeDomainEventBus());
 
             Assert.Equal(lighting, room.Lighting);
         }
@@ -81,14 +104,52 @@ namespace Haus.Core.Tests.Rooms.Entities
         [Fact]
         public void WhenLightingIsChangedThenEachLightDeviceLightingIsChanged()
         {
-            var light = new DeviceEntity{DeviceType = DeviceType.Light};
+            var light = new DeviceEntity {DeviceType = DeviceType.Light};
             var room = new RoomEntity();
-            room.AddDevice(light);
-            
-            var lighting = new Lighting{State = LightingState.On};
-            room.ChangeLighting(lighting);
-            
+            room.AddDevice(light, new FakeDomainEventBus());
+
+            var lighting = new Lighting {State = LightingState.On};
+            room.ChangeLighting(lighting, new FakeDomainEventBus());
+
             Assert.Equal(lighting, light.Lighting);
+        }
+
+        [Fact]
+        public void WhenLightingIsChangedThenRoomLightingChangedEventIsQueued()
+        {
+            var domainEventBus = new FakeDomainEventBus();
+            var room = new RoomEntity();
+            
+            var lighting = new Lighting();
+            room.ChangeLighting(lighting, domainEventBus);
+
+            Assert.Single(domainEventBus.GetEvents.OfType<RoomLightingChangedDomainEvent>());
+        }
+
+        [Fact]
+        public void WhenRoomIsTurnedOffThenLightingStateIsSetToOff()
+        {
+            var fakeDomainEventBus = new FakeDomainEventBus();
+            var room = new RoomEntity();
+            room.ChangeLighting(new Lighting{State = LightingState.On, Brightness = 54}, fakeDomainEventBus);
+
+            room.TurnOff(fakeDomainEventBus);
+
+            Assert.Equal(LightingState.Off, room.Lighting.State);
+            Assert.Equal(54, room.Lighting.Brightness);
+        }
+
+        [Fact]
+        public void WhenRoomIsTurnedOnThenLightingStateIsSetToOn()
+        {
+            var fakeDomainEventBus = new FakeDomainEventBus();
+            var room = new RoomEntity();
+            room.ChangeLighting(new Lighting{State = LightingState.Off, Brightness = 54}, fakeDomainEventBus);
+
+            room.TurnOn(fakeDomainEventBus);
+
+            Assert.Equal(LightingState.On, room.Lighting.State);
+            Assert.Equal(54, room.Lighting.Brightness);
         }
     }
 }

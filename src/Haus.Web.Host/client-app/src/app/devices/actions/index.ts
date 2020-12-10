@@ -9,4 +9,18 @@ export const DevicesActions = {
     (devices: ListResult<DeviceModel>) => ({payload: devices}),
     (err: any) => ({payload: err})
   ),
+
+  startDiscovery: createAsyncAction(
+    '[Devices] Start Discovery',
+    () => ({id: 'ignore'}),
+    () => ({id: 'ignore'}),
+    (err: any) => ({payload: err})
+  ),
+
+  stopDiscovery: createAsyncAction(
+    '[Devices] Stop Discovery',
+    () => ({id: 'ignore'}),
+    () => ({id: 'ignore'}),
+    (err: any) => ({payload: err})
+  )
 }

@@ -1,5 +1,6 @@
 import {DeviceModel} from "./models";
 
 export interface DevicesState {
-  [id: number]: DeviceModel;
+  devices: {[id: number]: DeviceModel;}
+  allowDiscovery: boolean;
 }

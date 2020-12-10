@@ -17,8 +17,25 @@ describe('devicesReducer', () => {
     const state = runActionsThroughReducer(devicesReducer,
       DevicesActions.load.success(result));
 
-    expect(state[5]).toEqual(deviceOne);
-    expect(state[2]).toEqual(deviceTwo);
-    expect(state[8]).toEqual(deviceThree);
+    expect(state.devices[5]).toEqual(deviceOne);
+    expect(state.devices[2]).toEqual(deviceTwo);
+    expect(state.devices[8]).toEqual(deviceThree);
+  })
+
+  it('should allow discovery when start discovery is successful', () => {
+    const state = runActionsThroughReducer(devicesReducer,
+      DevicesActions.startDiscovery.success()
+    );
+
+    expect(state.allowDiscovery).toEqual(true);
+  })
+
+  it('should disallow discovery when stop discovery is successful', () => {
+    const state = runActionsThroughReducer(devicesReducer,
+      DevicesActions.startDiscovery.success(),
+      DevicesActions.stopDiscovery.success()
+    );
+
+    expect(state.allowDiscovery).toEqual(false);
   })
 })

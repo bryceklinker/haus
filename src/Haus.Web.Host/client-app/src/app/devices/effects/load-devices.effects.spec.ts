@@ -1,11 +1,12 @@
 import {LoadDevicesEffects} from "./load-devices.effects";
 import {Subject} from "rxjs";
 import {Action} from "@ngrx/store";
+import {HttpTestingController} from "@angular/common/http/testing";
+import {TestBed} from "@angular/core/testing";
+
 import {createTestingEffect, eventually} from "../../../testing";
 import {DevicesModule} from "../devices.module";
 import {DevicesActions} from "../actions";
-import {HttpTestingController} from "@angular/common/http/testing";
-import {TestBed} from "@angular/core/testing";
 import {ModelFactory} from "../../../testing/model-factory";
 
 describe('LoadDevicesEffects', () => {

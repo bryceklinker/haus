@@ -1,4 +1,10 @@
 <mat-toolbar>
+  <button mat-button (click)="onStartDiscovery()" [disabled]="canStartDiscovery" data-testid="start-discovery-btn">
+    Start Discovery
+  </button>
+  <button mat-button (click)="onStopDiscovery()" [disabled]="canStopDiscovery" data-testid="stop-discovery-btn">
+    Stop Discovery
+  </button>
   <span class="spacer"></span>
   <mat-icon data-testid="connection-icon">
     {{icon}}

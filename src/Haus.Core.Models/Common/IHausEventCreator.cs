@@ -2,7 +2,7 @@ using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Models.Common
 {
-    public interface IHausEventConverter<T>
+    public interface IHausEventCreator<T>
     {
         HausEvent<T> AsHausEvent();
     }

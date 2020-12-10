@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Haus.Core.Common;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Queries;
@@ -49,6 +50,24 @@ namespace Haus.Web.Host.Rooms
         public Task<IActionResult> GetDevicesInRoom([FromRoute] long id)
         {
             return QueryAsync(new GetDevicesInRoomQuery(id));
+        }
+
+        [HttpPost("{id}/lighting")]
+        public Task<IActionResult> ChangeLighting([FromRoute] long id, [FromBody] LightingModel model)
+        {
+            return CommandAsync(new ChangeRoomLightingCommand(id, model));
+        }
+
+        [HttpPost("{id}/turn-off")]
+        public Task<IActionResult> TurnOff([FromRoute] long id)
+        {
+            return CommandAsync(new TurnRoomOffCommand(id));
+        }
+        
+        [HttpPost("{id}/turn-on")]
+        public Task<IActionResult> TurnOn([FromRoute] long id)
+        {
+            return CommandAsync(new TurnRoomOnCommand(id));
         }
     }
 }

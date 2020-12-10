@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Common;
+using Haus.Core.Common.DomainEvents;
 using Haus.Core.Common.Entities;
+using Haus.Core.Devices.DomainEvents;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Rooms.Entities;
@@ -14,12 +18,14 @@ namespace Haus.Core.Devices.Entities
     {
         public string ExternalId { get; set; }
         public string Name { get; set; }
-        public DeviceType DeviceType { get; set; }
+        public DeviceType DeviceType { get; set; } = DeviceType.Unknown;
         
         public ICollection<DeviceMetadataEntity> Metadata { get; set; } = new List<DeviceMetadataEntity>();
 
-        public RoomEntity Room { get; set; }
-        public Lighting Lighting { get; set; }
+        public RoomEntity Room { get; set; } = null;
+        public Lighting Lighting { get; set; } = Lighting.Default.Copy();
+
+        public bool IsLight => DeviceType == DeviceType.Light;
 
         public void AddOrUpdateMetadata(string key, string value)
         {
@@ -71,9 +77,27 @@ namespace Haus.Core.Devices.Entities
             Room = null;
         }
 
-        public void ChangeLighting(Lighting lighting)
+        public void ChangeLighting(Lighting lighting, IDomainEventBus domainEventBus)
         {
+            if (!IsLight)
+                throw new InvalidOperationException($"Device with id {Id} is not a light.");
+            
             Lighting = lighting;
+            domainEventBus.Enqueue(new DeviceLightingChangedDomainEvent(this, lighting));
+        }
+
+        public void TurnOff(IDomainEventBus domainEventBus)
+        {
+            var lightingCopy = Lighting.Copy();
+            lightingCopy.State = LightingState.Off;
+            ChangeLighting(lightingCopy, domainEventBus);
+        }
+
+        public void TurnOn(IDomainEventBus domainEventBus)
+        {
+            var lightingCopy = Lighting.Copy();
+            lightingCopy.State = LightingState.On;
+            ChangeLighting(lightingCopy, domainEventBus);
         }
     }
 
@@ -86,6 +110,8 @@ namespace Haus.Core.Devices.Entities
             builder.Property(d => d.ExternalId).IsRequired();
             builder.Property(d => d.DeviceType).IsRequired().HasConversion<string>();
 
+            builder.Ignore(d => d.IsLight);
+            
             builder.OwnsOne(d => d.Lighting, Lighting.Configure);
             
             builder.HasMany(d => d.Metadata)

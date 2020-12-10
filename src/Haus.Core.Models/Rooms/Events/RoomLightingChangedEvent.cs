@@ -3,21 +3,21 @@ using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Models.Rooms.Events
 {
-    public class RoomLightingChanged : IHausCommandCreator<RoomLightingChanged>
+    public class RoomLightingChangedEvent : IHausCommandCreator<RoomLightingChangedEvent>
     {
         public const string Type = "room_lighting_changed";
         public RoomModel Room { get; }
         public LightingModel Lighting { get; }
 
-        public RoomLightingChanged(RoomModel room, LightingModel lighting)
+        public RoomLightingChangedEvent(RoomModel room, LightingModel lighting)
         {
             Room = room;
             Lighting = lighting;
         }
 
-        public HausCommand<RoomLightingChanged> AsHausCommand()
+        public HausCommand<RoomLightingChangedEvent> AsHausCommand()
         {
-            return new HausCommand<RoomLightingChanged>(Type, this);
+            return new HausCommand<RoomLightingChangedEvent>(Type, this);
         }
     }
 }

@@ -1,9 +1,11 @@
 using System;
 using Haus.Core.Common;
 using Haus.Core.Common.Commands;
+using Haus.Core.Common.DomainEvents;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Queries;
 using Haus.Core.Common.Storage;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -30,7 +32,8 @@ namespace Haus.Core.Tests.Support
                 var commandBus = p.GetRequiredService<ICommandBus>();
                 var eventBus = p.GetRequiredService<IEventBus>();
                 var queryBus = p.GetRequiredService<IQueryBus>();
-                return new CapturingHausBus(new HausBus(commandBus, queryBus, eventBus));
+                var domainEventBus = p.GetRequiredService<IDomainEventBus>();
+                return new CapturingHausBus(new HausBus(commandBus, queryBus, eventBus, domainEventBus));
             });
 
             return (CapturingHausBus) services.BuildServiceProvider()

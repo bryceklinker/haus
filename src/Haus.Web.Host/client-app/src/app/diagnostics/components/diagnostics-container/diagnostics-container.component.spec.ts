@@ -37,6 +37,22 @@ describe('DiagnosticsContainerComponent', () => {
     expect(store.actions).toContainEqual(DiagnosticsActions.replay.request(model));
   })
 
+  it('should dispatch start discovery when start discovery triggered', async () => {
+    const {getByTestId, fireEvent, store} = await renderContainer();
+
+    fireEvent.click(getByTestId('start-discovery-btn'));
+
+    expect(store.actions).toContainEqual(DiagnosticsActions.startDiscovery.request());
+  })
+
+  it('should dispatch stop discovery when stop discovery triggered', async () => {
+    const {getByTestId, fireEvent, store} = await renderContainer();
+
+    fireEvent.click(getByTestId('stop-discovery-btn'));
+
+    expect(store.actions).toContainEqual(DiagnosticsActions.stopDiscovery.request());
+  })
+
   async function renderContainer(...actions: Array<Action>) {
     return await renderFeatureComponent(DiagnosticsContainerComponent, {
       imports: [DiagnosticsModule],

@@ -22,9 +22,9 @@ namespace Haus.Core.Tests.Rooms.Queries
         public async Task WhenGettingDevicesInRoomThenReturnsAllDevicesInRoom()
         {
             var room = _context.AddRoom("hello");
-            room.AddDevice(_context.AddDevice("one"));
-            room.AddDevice(_context.AddDevice("two"));
-            room.AddDevice(_context.AddDevice("three"));
+            room.AddDevice(_context.AddDevice("one"), new FakeDomainEventBus());
+            room.AddDevice(_context.AddDevice("two"), new FakeDomainEventBus());
+            room.AddDevice(_context.AddDevice("three"), new FakeDomainEventBus());
             await _context.SaveChangesAsync();
             
             var result = await _hausBus.ExecuteQueryAsync(new GetDevicesInRoomQuery(room.Id));
@@ -47,7 +47,7 @@ namespace Haus.Core.Tests.Rooms.Queries
         public async Task WhenDevicesAreNotAssignedToARoomThenExcludesUnassignedDevices()
         {
             var room = _context.AddRoom("hello");
-            room.AddDevice(_context.AddDevice("one"));
+            room.AddDevice(_context.AddDevice("one"), new FakeDomainEventBus());
             _context.AddDevice("unassigned");
             await _context.SaveChangesAsync();
 

@@ -1,12 +1,12 @@
-using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Haus.Api.Client;
-using Haus.Core.Models.Devices;
-using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models;
+using Haus.Core.Models.Common;
+using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;
+using Haus.Core.Models.Rooms.Events;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
 using Xunit;
@@ -60,12 +60,59 @@ namespace Haus.Web.Host.Tests.Rooms
         public async Task WhenDeviceAddedToRoomThenRoomHasDevice()
         {
             var room = await CreateRoomAsync("room with devices");
-            var device = await WaitForDeviceToBeDiscovered("one");
+            var device = await _factory.WaitForDeviceToBeDiscovered();
             await _apiClient.AddDevicesToRoomAsync(room.Id, device.Id);
 
             var result = await _apiClient.GetDevicesInRoomAsync(room.Id);
             Assert.Equal(1, result.Count);
             Assert.Single(result.Items);
+        }
+
+        [Fact]
+        public async Task WhenRoomLightingIsSetThenRoomLightingEventPublishedToMqtt()
+        {
+            HausCommand<RoomLightingChangedEvent> hausCommand = null;
+            await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(msg => hausCommand = msg);
+            
+            var room = await CreateRoomAsync("room");
+            await _apiClient.ChangeRoomLighting(room.Id, new LightingModel {State = LightingState.On});
+            
+            Eventually.Assert(() =>
+            {
+                Assert.Equal(RoomLightingChangedEvent.Type, hausCommand.Type);
+            });
+        }
+
+        [Fact]
+        public async Task WhenRoomIsTurnedOffThenRoomLightingEventPublishedWithStateOff()
+        {
+            HausCommand<RoomLightingChangedEvent> hausCommand = null;
+            await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(msg => hausCommand = msg);
+            
+            var room = await CreateRoomAsync("turn-off");
+            await _apiClient.TurnRoomOff(room.Id);
+            
+            Eventually.Assert(() =>
+            {
+                Assert.Equal(RoomLightingChangedEvent.Type, hausCommand.Type);
+                Assert.Equal(LightingState.Off, hausCommand.Payload.Lighting.State);
+            });
+        }
+        
+        [Fact]
+        public async Task WhenRoomIsTurnedOnThenRoomLightingEventPublishedWithStateOn()
+        {
+            HausCommand<RoomLightingChangedEvent> hausCommand = null;
+            await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(msg => hausCommand = msg);
+            
+            var room = await CreateRoomAsync("turn-on");
+            await _apiClient.TurnRoomOn(room.Id);
+            
+            Eventually.Assert(() =>
+            {
+                Assert.Equal(RoomLightingChangedEvent.Type, hausCommand.Type);
+                Assert.Equal(LightingState.On, hausCommand.Payload.Lighting.State);
+            });
         }
 
         [Fact]
@@ -82,17 +129,6 @@ namespace Haus.Web.Host.Tests.Rooms
         {
             var createResponse = await _apiClient.CreateRoomAsync(new RoomModel {Name = name});
             return await createResponse.Content.ReadFromJsonAsync<RoomModel>();
-        }
-
-        private async Task<DeviceModel> WaitForDeviceToBeDiscovered(string deviceName)
-        {
-            var externalId = $"{Guid.NewGuid()}";
-            await _factory.PublishHausEventAsync(new DeviceDiscoveredModel { Id = externalId });
-            return await WaitFor.ResultAsync(async () =>
-            {
-                var devices = await _apiClient.GetDevicesAsync(externalId);
-                return devices.Items.Single();
-            });
         }
     }
 }

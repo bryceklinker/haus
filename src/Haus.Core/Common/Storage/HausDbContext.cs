@@ -73,6 +73,16 @@ namespace Haus.Core.Common.Storage
                 .ConfigureAwait(false);
         }
 
+        public async Task<TEntity> FindByIdOrThrowAsync<TEntity>(long id, CancellationToken token = default)
+            where TEntity : class, IEntity
+        {
+            var entity = await FindByIdAsync<TEntity>(id, token).ConfigureAwait(false);
+            if (entity == null)
+                throw new EntityNotFoundException<TEntity>(id);
+
+            return entity;
+        }
+
         public async Task<TEntity[]> FindAllById<TEntity>(long[] ids, CancellationToken token = default)
             where TEntity : class, IEntity
         {
