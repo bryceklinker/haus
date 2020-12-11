@@ -1,4 +1,5 @@
 export * from './eventually';
+export * from './model-factory';
 export * from './testing-actions';
 export * from './fakes';
 export * from './create-testing-state';

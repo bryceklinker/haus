@@ -42,3 +42,12 @@ body {
 .spacer {
   flex-grow: 1;
 }
+
+.master-detail-container {
+  flex: 1;
+  flex-direction: column;
+
+  :first-child {
+    max-width: 150em;
+  }
+}

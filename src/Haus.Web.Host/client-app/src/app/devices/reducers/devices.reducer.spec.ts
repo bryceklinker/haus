@@ -1,7 +1,6 @@
-import {runActionsThroughReducer} from "../../../testing";
+import {runActionsThroughReducer, ModelFactory} from "../../../testing";
 import {devicesReducer} from "./devices.reducer";
 import {DevicesActions} from "../actions";
-import {ModelFactory} from "../../../testing/model-factory";
 
 describe('devicesReducer', () => {
   it('should add device to hash of devices', () => {

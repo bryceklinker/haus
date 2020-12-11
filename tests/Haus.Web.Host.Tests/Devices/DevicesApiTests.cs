@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Haus.Api.Client;
-using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
@@ -94,11 +93,8 @@ namespace Haus.Web.Host.Tests.Devices
         [Fact]
         public async Task WhenDiscoveryIsStartedThenStartDiscoveryCommandIsPublished()
         {
-            var mqttClient = await _factory.GetMqttClient();
-
             HausCommand<StartDiscoveryModel> hausCommand = null;
-            await mqttClient.SubscribeToTopicAsync("haus/commands",
-                msg => HausJsonSerializer.TryDeserialize(msg.Payload, out hausCommand));
+            await _factory.SubscribeToHausCommandsAsync<StartDiscoveryModel>(cmd => hausCommand = cmd);
 
             await _hausClient.StartDiscovery();
 
@@ -108,11 +104,8 @@ namespace Haus.Web.Host.Tests.Devices
         [Fact]
         public async Task WhenDiscoveryStoppedThenStopDiscoveryCommandIsPublished()
         {
-            var mqttClient = await _factory.GetMqttClient();
-
             HausCommand<StopDiscoveryModel> hausCommand = null;
-            await mqttClient.SubscribeToTopicAsync("haus/commands",
-                msg => HausJsonSerializer.TryDeserialize(msg.Payload, out hausCommand));
+            await _factory.SubscribeToHausCommandsAsync<StopDiscoveryModel>(cmd => hausCommand = cmd);
 
             await _hausClient.StopDiscovery();
 

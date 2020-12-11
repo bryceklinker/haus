@@ -19,8 +19,10 @@ function createMqttDiagnosticsMessage(model: Partial<DiagnosticsMessageModel> = 
 function createDeviceModel(model: Partial<DeviceModel> = {}): DeviceModel {
   return {
     id: model.id || ++id,
+    name: model.name || uuid(),
     externalId: model.externalId || uuid(),
-    metadata: model.metadata || []
+    metadata: model.metadata || [],
+    deviceType: model.deviceType || ['Unknown']
   }
 }
 

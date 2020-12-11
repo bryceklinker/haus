@@ -22,5 +22,19 @@ export const DevicesActions = {
     () => ({id: 'ignore'}),
     () => ({id: 'ignore'}),
     (err: any) => ({payload: err})
+  ),
+
+  turnOn: createAsyncAction(
+    '[Devices] Turn Device On',
+    (deviceId: number) => ({payload: deviceId}),
+    (deviceId: number) => ({payload: deviceId}),
+    (deviceId: number, err: any) => ({payload: {deviceId, err}})
+  ),
+
+  turnOff: createAsyncAction(
+    '[Devices] Turn Device Off',
+    (deviceId: number) => ({payload: deviceId}),
+    (deviceId: number) => ({payload: deviceId}),
+    (deviceId: number, err: any) => ({payload: {deviceId, err}})
   )
 }

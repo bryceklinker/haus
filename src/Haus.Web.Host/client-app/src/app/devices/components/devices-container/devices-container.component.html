@@ -1,0 +1,8 @@
+<div class="master-detail-container">
+  <devices-list [devices]="devices$ | async"
+  (deviceSelected)="onDeviceSelected($event)">
+
+  </devices-list>
+  <router-outlet></router-outlet>
+</div>
+

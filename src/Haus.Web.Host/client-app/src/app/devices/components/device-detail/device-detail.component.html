@@ -1,0 +1,24 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{name}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput [value]="name" data-testid="device-name-field" [disabled]="canEdit"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>External Id</mat-label>
+      <input matInput [value]="externalId" data-testid="device-external-id-field" [disabled]="canEdit" />
+    </mat-form-field>
+
+    <h3 class="mat-display-3">Metadata</h3>
+    <mat-list>
+      <mat-list-item *ngFor="let meta of metadata" data-testid="device-metadata">
+        <p>{{meta.key}}</p>
+        <span class="spacer"></span>
+        <p>{{meta.value}}</p>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Haus.Api.Client.Options;
+using Haus.Core.Models;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client.Common

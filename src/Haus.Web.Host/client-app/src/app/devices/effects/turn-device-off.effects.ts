@@ -6,12 +6,12 @@ import {of} from "rxjs";
 import {HausApiClient} from "../../shared/rest-api/haus-api-client";
 
 @Injectable()
-export class LoadDevicesEffects {
-  load$ = createEffect(() => this.actions$.pipe(
-    ofType(DevicesActions.load.request),
-    mergeMap(() => this.hausApi.getDevices().pipe(
-      map(result => DevicesActions.load.success(result)),
-      catchError(err => of(DevicesActions.load.failed(err)))
+export class TurnDeviceOffEffects {
+  turnOff$ = createEffect(() => this.actions$.pipe(
+    ofType(DevicesActions.turnOff.request),
+    mergeMap(({payload}) => this.hausApi.turnDeviceOff(payload).pipe(
+      map(() => DevicesActions.turnOff.success(payload)),
+      catchError(err => of(DevicesActions.turnOff.failed(payload, err)))
     ))
   ))
 
