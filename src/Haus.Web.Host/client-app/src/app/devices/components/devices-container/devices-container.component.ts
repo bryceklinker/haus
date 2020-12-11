@@ -5,7 +5,6 @@ import {DevicesActions} from "../../actions";
 import {Observable} from "rxjs";
 import {DeviceModel} from "../../models";
 import {selectDevices} from "../../reducers/devices.reducer";
-import {RouterActions} from "../../../shared/routing/actions";
 
 @Component({
   selector: 'devices-container',
@@ -21,9 +20,5 @@ export class DevicesContainerComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(DevicesActions.load.request());
-  }
-
-  onDeviceSelected(deviceId: number) {
-    this.store.dispatch(RouterActions.navigate(`/devices/${deviceId}`));
   }
 }

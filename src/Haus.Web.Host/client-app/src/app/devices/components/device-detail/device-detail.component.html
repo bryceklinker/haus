@@ -9,7 +9,11 @@
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>External Id</mat-label>
-      <input matInput [value]="externalId" data-testid="device-external-id-field" [disabled]="canEdit" />
+      <input matInput [value]="externalId" data-testid="device-external-id-field" disabled/>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Device Type</mat-label>
+      <input matInput [value]="type" data-testid="device-type-field" disabled/>
     </mat-form-field>
 
     <h3 class="mat-display-3">Metadata</h3>

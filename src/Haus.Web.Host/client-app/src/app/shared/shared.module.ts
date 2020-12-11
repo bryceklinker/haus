@@ -18,14 +18,12 @@ import {MatDividerModule} from "@angular/material/divider";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {HttpClientModule} from "@angular/common/http";
-import {EffectsModule} from "@ngrx/effects";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatExpansionModule} from "@angular/material/expansion";
 
 import {SettingsService} from "./settings";
 import {ThemeService} from "./theming/theme.service";
 import {HausApiClient} from "./rest-api/haus-api-client";
-import {RouterEffects} from "./routing/effects/router.effects";
 
 const MATERIAL_MODULES = [
   MatButtonModule,
@@ -58,8 +56,7 @@ const MATERIAL_MODULES = [
   ],
   imports: [
     ...MATERIAL_MODULES,
-    HttpClientModule,
-    EffectsModule.forFeature([RouterEffects])
+    HttpClientModule
   ],
   exports: [
     ...MATERIAL_MODULES

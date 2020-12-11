@@ -1,6 +1,6 @@
 import {render, RenderComponentOptions, RenderResult, fireEvent} from '@testing-library/angular';
 import {Type} from "@angular/core";
-import {Routes} from "@angular/router";
+import {Router, Routes} from "@angular/router";
 import {TestBed} from "@angular/core/testing";
 import {Store} from "@ngrx/store";
 import {By} from "@angular/platform-browser";
@@ -24,6 +24,7 @@ export interface RenderComponentResult<T> extends RenderResult<T> {
   store: TestingStore<AppState>;
   fireEvent: typeof fireEvent,
   triggerEventHandler: <TDirective>(directive: Type<TDirective>, eventName: string, eventArg?: any) => void;
+  router: Router;
 }
 
 export async function renderAppComponent<T>(component: Type<T>, options?: RenderAppComponentOptions<T>): Promise<RenderComponentResult<T>> {
@@ -47,6 +48,7 @@ async function renderComponent<T>(component: Type<T>, options: RenderComponentOp
     ...options,
     excludeComponentDeclaration: true,
   });
+  result.router = TestBed.inject(Router);
   result.store = <TestingStore<AppState>>TestBed.inject(Store);
   result.fireEvent = fireEvent;
   result.triggerEventHandler = <TDirective>(directive: Type<TDirective>, eventName: string, eventArg?: any) => {

@@ -1,5 +1,7 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {DeviceModel} from "../../models";
+import {DevicesModule} from "../../devices.module";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'devices-list',
@@ -7,10 +9,13 @@ import {DeviceModel} from "../../models";
   styleUrls: ['./devices-list.component.scss']
 })
 export class DevicesListComponent {
-  @Input() devices: Array<DeviceModel> = [];
+  @Input() devices: Array<DeviceModel> | null = [];
   @Output() deviceSelected = new EventEmitter<number>();
 
-  onDeviceSelected(device: DeviceModel) {
-    this.deviceSelected.emit(device.id);
+  constructor(private router: Router) {
+  }
+
+  async onDeviceSelected(device: DeviceModel) {
+    await this.router.navigate(['devices', device.id]);
   }
 }

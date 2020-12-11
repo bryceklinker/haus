@@ -1,7 +1,9 @@
-<mat-list>
-  <mat-list-item *ngFor="let device of devices"
-                 data-testid="device-item"
-                 (click)="onDeviceSelected(device)">
-
-  </mat-list-item>
-</mat-list>
+<h3 class="mat-display-3">Devices</h3>
+<mat-nav-list>
+  <a *ngFor="let device of devices"
+     data-testid="device-item"
+     (click)="onDeviceSelected(device)"
+     mat-list-item>
+    {{device.name}}
+  </a>
+</mat-nav-list>

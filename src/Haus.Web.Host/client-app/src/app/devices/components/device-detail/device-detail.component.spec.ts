@@ -5,12 +5,15 @@ import {DevicesModule} from "../../devices.module";
 
 describe('DeviceDetailComponent', () => {
   it('should show device information', async () => {
-    const device = ModelFactory.createDeviceModel();
+    const device = ModelFactory.createDeviceModel({
+      deviceType: 'LightSensor, MotionSensor, TemperatureSensor'
+    });
 
     const {getByTestId} = await renderDeviceDetail(device);
 
     expect(getByTestId('device-name-field')).toHaveValue(device.name);
     expect(getByTestId('device-external-id-field')).toHaveValue(device.externalId);
+    expect(getByTestId('device-type-field')).toHaveValue('LightSensor, MotionSensor, TemperatureSensor');
   })
 
   it('should show not available when no device provided', async () => {
@@ -18,6 +21,15 @@ describe('DeviceDetailComponent', () => {
 
     expect(getByTestId('device-name-field')).toHaveValue('N/A');
     expect(getByTestId('device-external-id-field')).toHaveValue('N/A');
+  })
+
+  it('should keep readonly data inputs disabled', async () => {
+    const device = ModelFactory.createDeviceModel();
+
+    const {getByTestId} = await renderDeviceDetail(device);
+
+    expect(getByTestId('device-external-id-field')).toBeDisabled();
+    expect(getByTestId('device-type-field')).toBeDisabled();
   })
 
   it('should be readonly when no device provided', async () => {

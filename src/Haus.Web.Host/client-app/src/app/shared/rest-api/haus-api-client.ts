@@ -5,7 +5,6 @@ import {Observable} from "rxjs";
 
 import {ListResult} from "../models";
 import {DeviceModel} from "../../devices/models";
-import {DeviceModelFactory} from "./factories/device-model.factory";
 
 @Injectable()
 export class HausApiClient {
@@ -13,12 +12,7 @@ export class HausApiClient {
   }
 
   getDevices(): Observable<ListResult<DeviceModel>> {
-    return this.http.get<ListResult<DeviceModel>>('/api/devices').pipe(
-      map(r => ({
-        ...r,
-        items: r.items.map(i => DeviceModelFactory.create(i))
-      }))
-    );
+    return this.http.get<ListResult<DeviceModel>>('/api/devices');
   }
 
   turnDeviceOff(deviceId: number): Observable<void> {

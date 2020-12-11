@@ -10,7 +10,6 @@ export class SettingsService {
   }
 
   static async loadSettings(): Promise<SettingsModel> {
-    console.log('Loading Settings');
     const response = await fetch('/settings');
     return settingsModel = await response.json();
   }

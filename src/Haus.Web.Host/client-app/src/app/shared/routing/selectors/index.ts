@@ -1,15 +1,9 @@
-import {createFeatureSelector} from "@ngrx/store";
-import {getSelectors, RouterReducerState} from "@ngrx/router-store";
-import {RouterState} from "../../../app.state";
+import {createFeatureSelector, createSelector} from "@ngrx/store";
+import {RouterReducerState} from "@ngrx/router-store";
+import {RouterUrlState} from "../router-url.state";
 
-const selectRouterState = createFeatureSelector<RouterReducerState<RouterState>>('router');
-export const {
-  selectRouteParam,
-  selectCurrentRoute,
-  selectFragment,
-  selectQueryParam,
-  selectRouteData,
-  selectQueryParams,
-  selectRouteParams,
-  selectUrl
-} = getSelectors(selectRouterState);
+const selectRouterState = createFeatureSelector<RouterReducerState<RouterUrlState>>('router');
+export const selectRouteParam = (paramName: string) => createSelector(
+  selectRouterState,
+  (state: RouterReducerState<RouterUrlState>) => state.state.params[paramName]
+)

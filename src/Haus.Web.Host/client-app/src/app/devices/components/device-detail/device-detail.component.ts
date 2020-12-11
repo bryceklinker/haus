@@ -17,6 +17,10 @@ export class DeviceDetailComponent {
     return this.device ? this.device.externalId : 'N/A';
   }
 
+  get type(): string {
+    return this.device ? this.device.deviceType : 'N/A';
+  }
+
   get metadata(): Array<DeviceMetadataModel> {
     return this.device && this.device.metadata ? this.device.metadata : [];
   }

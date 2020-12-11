@@ -1,5 +1,5 @@
 import {Action, createFeatureSelector, createReducer, createSelector, on} from "@ngrx/store";
-import { selectRouteParam} from '../../shared/routing';
+import {selectRouteParam} from '../../shared/routing';
 import {DevicesState} from "../devices.state";
 import {DevicesActions} from "../actions";
 
@@ -32,11 +32,7 @@ export const selectDevicesAllowDiscovery = createSelector(selectDevicesState, s 
 export const selectDeviceById = createSelector(
   selectDevicesById,
   selectRouteParam('deviceId'),
-  (devicesById, deviceId: string | undefined) => isDeviceIdAvailable(deviceId) ? devicesById[Number(deviceId)] : null
+  (devicesById, deviceId) => {
+    return deviceId ? devicesById[deviceId] : null
+  }
 )
-
-function isDeviceIdAvailable(deviceId: string | undefined): boolean {
-  return !!deviceId
-    && Number.isInteger(Number(deviceId))
-}
-

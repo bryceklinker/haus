@@ -1,5 +1,5 @@
 import {TestModuleMetadata} from "@angular/core/testing";
-import {Router, Routes} from "@angular/router";
+import {Routes} from "@angular/router";
 import {ReplaySubject, Subject} from "rxjs";
 import {Action, Store, StoreModule} from "@ngrx/store";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
@@ -14,7 +14,8 @@ import {SpyLocation} from "@angular/common/testing";
 
 import {AppState} from "../app/app.state";
 import {createTestingState} from "./create-testing-state";
-import {TestingStore, TestingAuthService, TestingRouter} from "./fakes";
+import {TestingStore, TestingAuthService} from "./fakes";
+import {routerReducer, StoreRouterConnectingModule} from "@ngrx/router-store";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   state?: AppState;
@@ -46,6 +47,7 @@ export function getTestingImports(routes: Routes) {
     RouterTestingModule.withRoutes(routes),
     EffectsModule.forRoot([SignalREffects]),
     StoreModule.forRoot({}),
+    StoreRouterConnectingModule.forRoot(),
     AuthModule.forRoot()
   ];
 }
@@ -56,7 +58,6 @@ export function getTestingProviders(state: AppState, actions$: Subject<Action>) 
     provideMockActions(() => actions$),
     {provide: Store, useClass: TestingStore},
     {provide: Location, useFactory: () => new SpyLocation()},
-    {provide: AuthService, useClass: TestingAuthService},
-    {provide: Router, useClass: TestingRouter}
+    {provide: AuthService, useClass: TestingAuthService}
   ]
 }
