@@ -10,6 +10,7 @@ export class DiagnosticsHeaderComponent {
   @Input() allowDiscovery: boolean | null = false;
   @Output() stopDiscovery = new EventEmitter<void>();
   @Output() startDiscovery = new EventEmitter<void>();
+  @Output() syncDiscovery = new EventEmitter<void>();
 
   get status(): string {
     return this.isConnected ? 'connected' : 'disconnected';
@@ -33,5 +34,9 @@ export class DiagnosticsHeaderComponent {
 
   onStopDiscovery(): void {
     this.stopDiscovery.emit();
+  }
+
+  onSyncDiscovery(): void {
+    this.syncDiscovery.emit();
   }
 }

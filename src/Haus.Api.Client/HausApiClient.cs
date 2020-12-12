@@ -46,6 +46,11 @@ namespace Haus.Api.Client
             return DeviceApiClient.StopDiscovery();
         }
 
+        public Task<HttpResponseMessage> SyncDevicesAsync()
+        {
+            return DeviceApiClient.SyncDevicesAsync();
+        }
+
         public Task<HttpResponseMessage> ChangeDeviceLighting(long deviceId, LightingModel model)
         {
             return DeviceApiClient.ChangeDeviceLighting(deviceId, model);

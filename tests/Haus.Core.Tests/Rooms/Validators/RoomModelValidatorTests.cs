@@ -4,6 +4,7 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.Validators;
 using Haus.Core.Tests.Support;
+using Haus.Testing.Support;
 using Xunit;
 
 namespace Haus.Core.Tests.Rooms.Validators

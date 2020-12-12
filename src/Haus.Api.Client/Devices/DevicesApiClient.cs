@@ -15,6 +15,7 @@ namespace Haus.Api.Client.Devices
         Task UpdateDeviceAsync(long deviceId, DeviceModel model);
         Task StartDiscovery();
         Task StopDiscovery();
+        Task<HttpResponseMessage> SyncDevicesAsync();
         Task<HttpResponseMessage> ChangeDeviceLighting(long deviceId, LightingModel model);
         Task<HttpResponseMessage> TurnLightOff(long deviceId);
         Task<HttpResponseMessage> TurnLightOn(long deviceId);
@@ -43,6 +44,11 @@ namespace Haus.Api.Client.Devices
         public Task UpdateDeviceAsync(long deviceId, DeviceModel model)
         {
             return PutAsJsonAsync($"devices/{deviceId}", model);
+        }
+
+        public Task<HttpResponseMessage> SyncDevicesAsync()
+        {
+            return PostEmptyContentAsync("devices/sync-discovery");
         }
 
         public Task<HttpResponseMessage> ChangeDeviceLighting(long deviceId, LightingModel model)

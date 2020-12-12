@@ -4,6 +4,7 @@ using Haus.Core.Common.Events;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Tests.Support;
+using Haus.Testing.Support;
 using Xunit;
 
 namespace Haus.Core.Tests.Devices.Events

@@ -27,7 +27,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories
             return new Zigbee2MqttMessage(message.Topic, payloadAsString, CreateJObjectFromPayload(payloadAsString));
         }
 
-        private JObject CreateJObjectFromPayload(string payload)
+        private JToken CreateJObjectFromPayload(string payload)
         {
             try
             {

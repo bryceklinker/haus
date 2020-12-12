@@ -13,9 +13,8 @@ import {AuthModule, AuthService} from "@auth0/auth0-angular";
 import {SpyLocation} from "@angular/common/testing";
 
 import {AppState} from "../app/app.state";
-import {createTestingState} from "./create-testing-state";
+import {createAppState} from "./create-app-state";
 import {TestingStore, TestingAuthService} from "./fakes";
-import {routerReducer, StoreRouterConnectingModule} from "@ngrx/router-store";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   state?: AppState;
@@ -23,7 +22,7 @@ export interface TestModuleOptions extends TestModuleMetadata {
   actions$?: Subject<Action>
 }
 
-export function createTestingModule({routes = [], state = createTestingState(), actions$ = new ReplaySubject<Action>(), ...rest}: TestModuleOptions = {}) {
+export function createTestingModule({routes = [], state = createAppState(), actions$ = new ReplaySubject<Action>(), ...rest}: TestModuleOptions = {}) {
   return {
     ...rest,
     imports: [
@@ -47,7 +46,6 @@ export function getTestingImports(routes: Routes) {
     RouterTestingModule.withRoutes(routes),
     EffectsModule.forRoot([SignalREffects]),
     StoreModule.forRoot({}),
-    StoreRouterConnectingModule.forRoot(),
     AuthModule.forRoot()
   ];
 }

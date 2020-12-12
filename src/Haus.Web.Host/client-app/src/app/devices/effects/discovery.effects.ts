@@ -24,6 +24,14 @@ export class DiscoveryEffects {
     ))
   ))
 
+  sync$ = createEffect(() => this.actions$.pipe(
+    ofType(DevicesActions.syncDiscovery.request),
+    mergeMap(() => this.hausApi.syncDiscovery().pipe(
+      map(() => DevicesActions.syncDiscovery.success()),
+      catchError(err => of(DevicesActions.syncDiscovery.failed(err)))
+    ))
+  ))
+
   constructor(private actions$: Actions, private hausApi: HausApiClient) {
   }
 }

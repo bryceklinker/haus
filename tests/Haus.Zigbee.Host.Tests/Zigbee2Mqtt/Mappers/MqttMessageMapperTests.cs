@@ -1,12 +1,12 @@
+using System.Linq;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MQTTnet;
 using Xunit;
@@ -22,28 +22,17 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers
 
         public MqttMessageTranslatorTests()
         {
-            var zigbeeOptions = Options.Create(new ZigbeeOptions
-            {
-                Config = new Zigbee2MqttConfiguration
-                {
-                    Mqtt = new MqttConfiguration
-                    {
-                        BaseTopic = Zigbee2MqttBaseTopic
-                    }
-                }
-            });
+            var config = ConfigurationFactory.CreateConfig(
+                zigbeeBaseTopic:Zigbee2MqttBaseTopic,
+                hausEventsTopic: HausEventsTopic,
+                hausCommandsTopic: HausCommandsTopic);
+            var provider = ServiceProviderFactory.Create(config);
 
-            var hausOptions = new OptionsMonitorFake<HausOptions>(new HausOptions
-            {
-                EventsTopic = HausEventsTopic,
-                CommandsTopic = HausCommandsTopic
-            });
-
-            var toHausModelMapper = new ZigbeeToHausMapper(
-                hausOptions,
-                zigbeeOptions,
-                new Zigbee2MqttMessageFactory(new NullLogger<Zigbee2MqttMessageFactory>()));
-            var toZigbeeMapper = new HausToZigbeeMapper(zigbeeOptions);
+            var toHausModelMapper = provider.GetRequiredService<IZigbeeToHausMapper>();
+            var toZigbeeMapper = provider.GetRequiredService<IHausToZigbeeMapper>();
+            var hausOptions = provider.GetRequiredService<IOptionsMonitor<HausOptions>>();
+            var zigbeeOptions = provider.GetRequiredService<IOptions<ZigbeeOptions>>();
+            
             _mapper = new MqttMessageMapper(hausOptions, zigbeeOptions, toHausModelMapper, toZigbeeMapper);
         }
 
@@ -57,7 +46,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers
                 .WithMeta(meta => meta.WithFriendlyName("idk"))
                 .BuildMqttMessage();
             
-            var result = _mapper.Map(message);
+            var result = _mapper.Map(message).Single();
             
             Assert.Equal(HausEventsTopic, result.Topic);
         }
@@ -67,7 +56,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers
         {
             var message = new StartDiscoveryModel().AsHausCommand().ToMqttMessage(HausCommandsTopic);
 
-            var result = _mapper.Map(message);
+            var result = _mapper.Map(message).Single();
 
             Assert.StartsWith(Zigbee2MqttBaseTopic, result.Topic);
         }
@@ -79,7 +68,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers
 
             var result = _mapper.Map(message);
             
-            Assert.Null(result);;
+            Assert.Empty(result);;
         }
     }
 }

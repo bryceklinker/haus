@@ -1,17 +1,17 @@
-using System;
-using System.Text;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
 {
     public class Zigbee2MqttMessage
     {
-        private readonly JObject _root;
+        private readonly JToken _root;
         private Zigbee2MqttMeta _meta;
         public string Topic { get; }
         public string Raw { get; }
 
+        public JObject RootObject => _root as JObject;
+        public JArray RootArray => _root as JArray;
+        
         public bool IsJson => _root != null;
         public string Json => Raw;
         public string Type => SafeGetValue<string>("type");
@@ -27,17 +27,17 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
         public bool? Occupancy => SafeGetValue<bool?>("occupancy");
         public int? OccupancyTimeout => SafeGetValue<int?>("occupancy_timeout");
         public double? Temperature => SafeGetValue<double?>("temperature");
-
-        public Zigbee2MqttMessage(string topic, string raw = null, JObject root = null)
+        
+        public Zigbee2MqttMessage(string topic, string raw = null, JToken root = null)
         {
             _root = root;
             Topic = topic;
             Raw = raw;
         }
 
-        public static Zigbee2MqttMessage FromJObject(string topic, JObject jObject)
+        public static Zigbee2MqttMessage FromJToken(string topic, JToken jToken)
         {
-            return new Zigbee2MqttMessage(topic, jObject.ToString(), jObject);
+            return new Zigbee2MqttMessage(topic, jToken.ToString(), jToken);
         }
         
         public string GetFriendlyNameFromTopic()
@@ -47,10 +47,10 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
 
         private T SafeGetValue<T>(string propertyName)
         {
-            if (_root == null)
+            if (RootObject == null)
                 return default;
-            
-            return _root.TryGetValue(propertyName, out var token) 
+
+            return RootObject.TryGetValue(propertyName, out var token) 
                 ? token.ToObject<T>() 
                 : default;
         }
@@ -63,8 +63,8 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
             if (_meta != null)
                 return _meta;
 
-            return _root.TryGetValue("meta", out _) 
-                ? _meta = new Zigbee2MqttMeta(_root.GetValue("meta")) 
+            return RootObject.TryGetValue("meta", out _) 
+                ? _meta = new Zigbee2MqttMeta(RootObject.GetValue("meta")) 
                 : null;
         }
     }

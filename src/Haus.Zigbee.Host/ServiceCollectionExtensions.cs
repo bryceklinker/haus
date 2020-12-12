@@ -2,7 +2,9 @@ using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Resolvers;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Node;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Services;
@@ -18,17 +20,34 @@ namespace Haus.Zigbee.Host
         {
             return services
                 .AddSingleton<IMqttFactory>(p => new MqttFactory())
-                .AddTransient<IMapperFactory, MapperFactory>()
                 .AddTransient<IMqttMessageMapper, MqttMessageMapper>()
-                .AddTransient<IHausToZigbeeMapper, HausToZigbeeMapper>()
-                .AddTransient<IZigbeeToHausMapper, ZigbeeToHausMapper>()
-                .AddTransient<IZigbee2MqttMessageFactory, Zigbee2MqttMessageFactory>()
+                .AddTransient<IDeviceTypeResolver, DeviceTypeResolver>()
+                .AddHausToZigbeeMappers()
+                .AddZigbeeToHausMappers()
                 .AddTransient<IZigbee2MqttConfigurationWriter, Zigbee2MqttConfigurationWriter>()
                 .Configure<ZigbeeOptions>(config.GetSection("ZigBee"))
                 .Configure<HausOptions>(config.GetSection("Haus"))
                 .AddSingleton<INodeZigbeeProcess, NodeZigbeeProcess>()
                 .AddHostedService<NodeZigbeeBackgroundService>()
                 .AddHostedService<ZigbeeToHausRelay>();
+        }
+
+        private static IServiceCollection AddHausToZigbeeMappers(this IServiceCollection services)
+        {
+            return services
+                .AddTransient<IToZigbeeMapper, HausDiscoveryToZigbeeMapper>()
+                .AddTransient<IToZigbeeMapper, HausLightingToZigbeeMapper>()
+                .AddTransient<IHausToZigbeeMapper, HausToZigbeeMapper>();
+        }
+
+        private static IServiceCollection AddZigbeeToHausMappers(this IServiceCollection services)
+        {
+            return services
+                .AddTransient<IToHausMapper, DeviceEventMapper>()
+                .AddTransient<IToHausMapper, InterviewSuccessfulMapper>()
+                .AddTransient<IUnknownMessageMapper, UnknownMessageMapper>()
+                .AddTransient<IZigbeeToHausMapper, ZigbeeToHausMapper>()
+                .AddTransient<IZigbee2MqttMessageFactory, Zigbee2MqttMessageFactory>();
         }
     }
 }

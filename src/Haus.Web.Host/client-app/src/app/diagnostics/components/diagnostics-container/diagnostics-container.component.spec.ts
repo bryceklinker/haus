@@ -1,6 +1,6 @@
 import {DiagnosticsContainerComponent} from "./diagnostics-container.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
-import {createTestingState, renderFeatureComponent} from "../../../../testing";
+import {createAppState, renderFeatureComponent} from "../../../../testing";
 import {signalrConnected} from "ngrx-signalr-core";
 import {DIAGNOSTICS_HUB} from "../../effects/diagnostics-hub";
 import {DiagnosticsActions} from "../../actions";
@@ -53,10 +53,18 @@ describe('DiagnosticsContainerComponent', () => {
     expect(store.actions).toContainEqual(DiagnosticsActions.stopDiscovery.request());
   })
 
+  it('should dispatch sync discovery when sync discovery triggered', async () => {
+    const {getByTestId, fireEvent, store} = await renderContainer();
+
+    fireEvent.click(getByTestId('sync-discovery-btn'));
+
+    expect(store.actions).toContainEqual(DiagnosticsActions.syncDiscovery.request());
+  })
+
   async function renderContainer(...actions: Array<Action>) {
     return await renderFeatureComponent(DiagnosticsContainerComponent, {
       imports: [DiagnosticsModule],
-      state: createTestingState(...actions)
+      state: createAppState(...actions)
     })
   }
 })

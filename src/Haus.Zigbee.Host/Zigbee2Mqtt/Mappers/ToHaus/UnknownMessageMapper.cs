@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Haus.Core.Models;
 using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
@@ -7,7 +8,12 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
 {
-    public class UnknownMessageMapper : IMapper
+    public interface IUnknownMessageMapper : IToHausMapper
+    {
+        
+    }
+    
+    public class UnknownMessageMapper : IUnknownMessageMapper
     {
         private readonly IOptionsMonitor<HausOptions> _options;
 
@@ -18,14 +24,19 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
             _options = options;
         }
 
-        public MqttApplicationMessage Map(Zigbee2MqttMessage message)
+        public bool IsSupported(Zigbee2MqttMessage message)
+        {
+            return false;
+        }
+
+        public IEnumerable<MqttApplicationMessage> Map(Zigbee2MqttMessage message)
         {
             var model = new UnknownModel
             {
                 Topic = message.Topic,
                 Payload = message.Json
             };
-            return new MqttApplicationMessage
+            yield return new MqttApplicationMessage
             {
                 Topic = UnknownTopicName,
                 Payload = HausJsonSerializer.SerializeToBytes(model)

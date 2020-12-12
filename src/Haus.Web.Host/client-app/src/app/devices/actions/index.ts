@@ -24,6 +24,13 @@ export const DevicesActions = {
     (err: any) => ({payload: err})
   ),
 
+  syncDiscovery: createAsyncAction(
+    '[Devices] Sync Discovery',
+    () => ({id: 'ignore'}),
+    () => ({id: 'ignore'}),
+    (err: any) => ({payload: err})
+  ),
+
   turnOn: createAsyncAction(
     '[Devices] Turn Device On',
     (deviceId: number) => ({payload: deviceId}),

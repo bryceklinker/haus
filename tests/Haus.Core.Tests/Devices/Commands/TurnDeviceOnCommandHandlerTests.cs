@@ -8,6 +8,7 @@ using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Tests.Support;
+using Haus.Testing.Support;
 using Xunit;
 
 namespace Haus.Core.Tests.Devices.Commands

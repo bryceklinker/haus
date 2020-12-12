@@ -37,7 +37,7 @@ namespace Haus.Web.Host.Tests.Support
         {
             _clock = new FakeClock();
         }
-
+        
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureTestServices(services =>

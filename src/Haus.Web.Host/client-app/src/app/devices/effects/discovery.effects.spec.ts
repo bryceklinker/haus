@@ -69,4 +69,28 @@ describe('DiscoveryEffects', () => {
       }))
     })
   })
+
+  it('should sync discovery on the api', async () => {
+    effects.sync$.subscribe((action: Action) => actionsCollector.push(action));
+
+    actions$.next(DevicesActions.syncDiscovery.request());
+
+    await eventually(() => {
+      httpController.match('/api/devices/sync-discovery').forEach(r => r.flush(204));
+      expect(actionsCollector).toContainEqual(DevicesActions.syncDiscovery.success());
+    })
+  })
+
+  it('should notify that syncing discovery failed', async () => {
+    effects.sync$.subscribe((action: Action) => actionsCollector.push(action));
+
+    actions$.next(DevicesActions.syncDiscovery.request());
+
+    await eventually(() => {
+      httpController.match('/api/devices/sync-discovery').forEach(r => r.error(new ErrorEvent('broken')));
+      expect(actionsCollector).toContainEqual(expect.objectContaining({
+        type: DevicesActions.syncDiscovery.failed.type
+      }))
+    })
+  })
 })

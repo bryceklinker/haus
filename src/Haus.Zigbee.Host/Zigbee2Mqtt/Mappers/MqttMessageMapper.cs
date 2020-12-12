@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
@@ -9,7 +11,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
 {
     public interface IMqttMessageMapper
     {
-        MqttApplicationMessage Map(MqttApplicationMessage original);
+        MqttApplicationMessage[] Map(MqttApplicationMessage original);
     }
 
     public class MqttMessageMapper : IMqttMessageMapper
@@ -33,15 +35,15 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
             _hausToZigbeeMapper = hausToZigbeeMapper;
         }
 
-        public MqttApplicationMessage Map(MqttApplicationMessage original)
+        public MqttApplicationMessage[] Map(MqttApplicationMessage original)
         {
             if (original.Topic.StartsWith(Zigbee2MqttBaseTopic))
-                return _zigbeeToHausMapper.Map(original);
+                return _zigbeeToHausMapper.Map(original).ToArray();
 
             if (original.Topic == HausCommandsTopic)
                 return _hausToZigbeeMapper.Map(original);
 
-            return null;
+            return Array.Empty<MqttApplicationMessage>();
         }
     }
 }

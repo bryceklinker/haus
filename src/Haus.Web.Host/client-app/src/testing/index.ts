@@ -2,7 +2,7 @@ export * from './eventually';
 export * from './model-factory';
 export * from './testing-actions';
 export * from './fakes';
-export * from './create-testing-state';
+export * from './create-app-state';
 export * from './setup-signalr-testing';
 export * from './create-testing-module';
 export * from './create-testing-effect';

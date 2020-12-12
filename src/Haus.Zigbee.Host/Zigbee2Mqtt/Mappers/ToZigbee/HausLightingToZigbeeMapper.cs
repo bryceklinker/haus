@@ -1,17 +1,44 @@
 using System.Collections.Generic;
 using Haus.Core.Models;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Devices;
+using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.ExternalMessages;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
+using Microsoft.Extensions.Options;
+using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee
 {
-    public interface IHausLightingToZigbeeMapper
+    public class HausLightingToZigbeeMapper : IToZigbeeMapper
     {
-        byte[] Map(LightingModel lighting);
-    }
+        private readonly IOptions<ZigbeeOptions> _options;
 
-    public class HausLightingToZigbeeMapper : IHausLightingToZigbeeMapper
-    {
-        public byte[] Map(LightingModel lighting)
+        private string ZigbeeBaseTopic => _options.Value.Config.Mqtt.BaseTopic;
+
+        public HausLightingToZigbeeMapper(IOptions<ZigbeeOptions> options)
+        {
+            _options = options;
+        }
+        
+        public bool IsSupported(string type)
+        {
+            return type == DeviceLightingChangedEvent.Type;
+        }
+
+        public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
+        {
+            var command = HausJsonSerializer.Deserialize<HausCommand<DeviceLightingChangedEvent>>(message.Payload);
+            var device = command.Payload.Device;
+            yield return new MqttApplicationMessage
+            {
+                Topic = $"{ZigbeeBaseTopic}/{device.ExternalId}/set",
+                Payload = CreateLightingPayload(command.Payload.Lighting)
+            };
+
+        }
+
+        private static byte[] CreateLightingPayload(LightingModel lighting)
         {
             return HausJsonSerializer.SerializeToBytes(new
             {

@@ -13,8 +13,6 @@ export class SimpleRouterSerializer implements RouterStateSerializer<RouterUrlSt
       root: {queryParams}
     } = routerState;
     const {params} = route;
-
     return {url, params, queryParams};
   }
-
 }

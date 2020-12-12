@@ -20,7 +20,6 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
         private readonly IMqttMessageMapper _mqttMessageMapper;
 
         private string ZigbeeMqttServerUrl => _zigbeeOptions.Value.Config.Mqtt.Server;
-        private string ZigbeeBaseTopic => _zigbeeOptions.Value.Config.Mqtt.BaseTopic;
         private IManagedMqttClient MqttClient { get; set; }
 
         public ZigbeeToHausRelay(
@@ -65,9 +64,13 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
             if (messageToSend == null)
                 return;
 
-            _logger.LogInformation($"Sending message to {messageToSend.Topic}...");
-            await MqttClient.PublishAsync(messageToSend);
-            _logger.LogInformation($"Sent message to {messageToSend.Topic}.");
+            foreach (var message in messageToSend)
+            {
+                _logger.LogInformation($"Sending message to {message.Topic}...");
+                await MqttClient.PublishAsync(message).ConfigureAwait(false);
+                _logger.LogInformation($"Sent message to {message.Topic}.");    
+            }
+            
         }
 
         private static IManagedMqttClientOptions CreateMqttOptions(string mqttServerUrl)

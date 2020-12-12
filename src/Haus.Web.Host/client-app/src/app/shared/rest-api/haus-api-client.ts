@@ -31,6 +31,10 @@ export class HausApiClient {
     return this.postEmpty('/api/devices/stop-discovery');
   }
 
+  syncDiscovery(): Observable<void> {
+    return this.postEmpty('/api/devices/sync-discovery');
+  }
+
   postEmpty(path: string): Observable<void> {
     return this.http.post(path, null).pipe(map(() => {}));
   }

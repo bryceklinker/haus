@@ -1,4 +1,7 @@
 <mat-toolbar>
+  <button mat-button (click)="onSyncDiscovery()" data-testid="sync-discovery-btn">
+    Sync Discovery
+  </button>
   <button mat-button (click)="onStartDiscovery()" [disabled]="canStartDiscovery" data-testid="start-discovery-btn">
     Start Discovery
   </button>

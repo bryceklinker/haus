@@ -9,6 +9,7 @@ using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
+using Haus.Testing.Support;
 using Xunit;
 
 namespace Haus.Core.Tests.Devices.Events

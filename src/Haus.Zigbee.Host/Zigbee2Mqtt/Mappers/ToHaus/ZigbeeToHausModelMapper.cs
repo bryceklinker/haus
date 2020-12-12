@@ -1,34 +1,43 @@
-using Haus.Zigbee.Host.Configuration;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
+using System.Collections.Generic;
+using System.Linq;
+using Haus.Core.Models;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories;
-using Microsoft.Extensions.Options;
 using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
 {
     public interface IZigbeeToHausMapper
     {
-        MqttApplicationMessage Map(MqttApplicationMessage message);
+        IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message);
     }
 
     public class ZigbeeToHausMapper : IZigbeeToHausMapper
     {
         private readonly IZigbee2MqttMessageFactory _zigbee2MqttMessageFactory;
-        private readonly IMapperFactory _mapperFactory;
+        private readonly IEnumerable<IToHausMapper> _mappers;
+        private readonly IUnknownMessageMapper _unknownMessageMapper;
 
-        public ZigbeeToHausMapper(IOptionsMonitor<HausOptions> hausOptions,
-            IOptions<ZigbeeOptions> zigbeeOptions,
-            IZigbee2MqttMessageFactory zigbee2MqttMessageFactory)
+        public ZigbeeToHausMapper(
+            IZigbee2MqttMessageFactory zigbee2MqttMessageFactory,
+            IEnumerable<IToHausMapper> mappers, 
+            IUnknownMessageMapper unknownMessageMapper)
         {
             _zigbee2MqttMessageFactory = zigbee2MqttMessageFactory;
-            _mapperFactory = new MapperFactory(hausOptions, zigbeeOptions);
+            _mappers = mappers;
+            _unknownMessageMapper = unknownMessageMapper;
         }
 
-        public MqttApplicationMessage Map(MqttApplicationMessage message)
+        public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
         {
-            var payload = _zigbee2MqttMessageFactory.Create(message);
-            var mapper = _mapperFactory.GetMapper(message.Topic);
-            return mapper.Map(payload);
+            var zigbee2MqttMessage = _zigbee2MqttMessageFactory.Create(message);
+
+            var messages = _mappers.Where(m => m.IsSupported(zigbee2MqttMessage))
+                .SelectMany(m => m.Map(zigbee2MqttMessage))
+                .ToArray();
+
+            return messages.IsEmpty() 
+                ? _unknownMessageMapper.Map(zigbee2MqttMessage)
+                : messages;
         }
     }
 }

@@ -8,13 +8,16 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Resolvers
 {
     public class DeviceTypeResolverTests
     {
-        private readonly OptionsMonitorFake<HausOptions> _optionsMonitor;
         private readonly DeviceTypeResolver _resolver;
 
         public DeviceTypeResolverTests()
         {
-            _optionsMonitor = new OptionsMonitorFake<HausOptions>(new HausOptions());
-            _resolver = new DeviceTypeResolver(_optionsMonitor);
+            var options = OptionsFactory.CreateHausOptions();
+            options.Value.DeviceTypeOptions = new[]
+            {
+                new DeviceTypeOptions("Old", "Klinker", DeviceType.Light)
+            };
+            _resolver = new DeviceTypeResolver(options);
         }
 
         [Fact]
@@ -51,16 +54,18 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Resolvers
         }
 
         [Fact]
+        public void WhenVendorAndModelAreProvidedThenReturnsDeviceTypeWithMatchingVendorAndModel()
+        {
+            var deviceType = _resolver.Resolve("Philips", "9290012607");
+            
+            Assert.True(deviceType.HasFlag(DeviceType.LightSensor));
+            Assert.True(deviceType.HasFlag(DeviceType.MotionSensor));
+            Assert.True(deviceType.HasFlag(DeviceType.TemperatureSensor));
+        }
+
+        [Fact]
         public void WhenMetadataIsInOptionsThenReturnsDeviceTypeFromOptions()
         {
-            _optionsMonitor.TriggerChange(new HausOptions
-            {
-                DeviceTypeOptions = new []
-                {
-                    new DeviceTypeOptions(vendor: "Old", model: "Klinker", deviceType: DeviceType.Light) 
-                }
-            });
-            
             var meta = new Zigbee2MqttMetaBuilder()
                 .WithModel("Klinker")
                 .WithVendor("Old")

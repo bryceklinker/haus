@@ -22,7 +22,7 @@ function createDeviceModel(model: Partial<DeviceModel> = {}): DeviceModel {
     name: model.name || uuid(),
     externalId: model.externalId || uuid(),
     metadata: model.metadata || [],
-    deviceType: model.deviceType || ['Unknown']
+    deviceType: model.deviceType || 'Unknown'
   }
 }
 

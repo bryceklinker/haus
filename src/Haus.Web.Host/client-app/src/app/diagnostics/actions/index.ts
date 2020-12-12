@@ -12,5 +12,6 @@ export const DiagnosticsActions = {
     (message: DiagnosticsMessageModel, error: any) => ({payload: {message, error}})
   ),
   startDiscovery: DevicesActions.startDiscovery,
-  stopDiscovery: DevicesActions.stopDiscovery
+  stopDiscovery: DevicesActions.stopDiscovery,
+  syncDiscovery: DevicesActions.syncDiscovery,
 }

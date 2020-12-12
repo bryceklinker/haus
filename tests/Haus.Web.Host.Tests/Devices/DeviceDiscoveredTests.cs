@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.ExternalMessages;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
 using Xunit;
@@ -38,6 +39,21 @@ namespace Haus.Web.Host.Tests.Devices
                 var list = await client.GetDevicesAsync();
                 Assert.Contains(list.Items, model => model.ExternalId == "my-new-id");
                 Assert.Contains(list.Items, model => model.DeviceType == deviceType);
+            });
+        }
+
+        [Fact]
+        public async Task WhenExternalDevicesAreSyncedThenSyncExternalDevicesIsPublished()
+        {
+            HausCommand<SyncDiscoveryModel> command = null;
+            await _factory.SubscribeToHausCommandsAsync<SyncDiscoveryModel>(cmd => command = cmd);
+
+            var client = _factory.CreateAuthenticatedClient();
+            await client.SyncDevicesAsync();
+
+            Eventually.Assert(() =>
+            {
+                Assert.Equal(SyncDiscoveryModel.Type, command.Type);
             });
         }
 

@@ -8,6 +8,7 @@ using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
+using Haus.Testing.Support;
 using Xunit;
 
 namespace Haus.Core.Tests.Rooms.Commands

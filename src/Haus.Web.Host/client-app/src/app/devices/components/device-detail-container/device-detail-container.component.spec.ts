@@ -1,5 +1,5 @@
 import {Action} from "@ngrx/store";
-import {createTestingState, ModelFactory, renderFeatureComponent, TestingActions} from "../../../../testing";
+import {createAppState, ModelFactory, renderFeatureComponent, TestingActions} from "../../../../testing";
 import {DeviceDetailContainerComponent} from "./device-detail-container.component";
 import {DevicesModule} from "../../devices.module";
 import {DevicesActions} from "../../actions";
@@ -22,7 +22,7 @@ describe('DeviceDetailContainerComponent', () => {
   function renderDetailContainer(...actions: Action[]) {
     return renderFeatureComponent(DeviceDetailContainerComponent, {
       imports: [DevicesModule],
-      state: createTestingState(...actions),
+      state: createAppState(...actions),
       routes: [
         {path: 'devices/:deviceId', component: DeviceDetailContainerComponent}
       ]

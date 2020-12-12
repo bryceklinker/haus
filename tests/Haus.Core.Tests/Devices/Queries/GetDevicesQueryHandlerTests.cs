@@ -4,6 +4,7 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Devices.Queries;
 using Haus.Core.Tests.Support;
+using Haus.Testing.Support;
 using Xunit;
 
 namespace Haus.Core.Tests.Devices.Queries

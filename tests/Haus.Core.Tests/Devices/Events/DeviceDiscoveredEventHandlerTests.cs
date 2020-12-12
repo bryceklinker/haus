@@ -7,6 +7,7 @@ using Haus.Core.Devices.Entities;
 using Haus.Core.Devices.Events;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Tests.Support;
+using Haus.Testing.Support;
 using Xunit;
 
 namespace Haus.Core.Tests.Devices.Events

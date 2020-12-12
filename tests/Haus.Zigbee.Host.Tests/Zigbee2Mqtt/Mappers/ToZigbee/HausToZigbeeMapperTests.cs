@@ -1,12 +1,14 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
+using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -19,18 +21,11 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
 
         public HausToZigbeeMapperTests()
         {
-            var zigbeeOptions = Options.Create(new ZigbeeOptions
-            {
-                Config = new Zigbee2MqttConfiguration
-                {
-                    Mqtt = new MqttConfiguration
-                    {
-                        BaseTopic = Zigbee2MqttBaseTopic
-                    }
-                }
-            });
+            var config = ConfigurationFactory.CreateConfig(Zigbee2MqttBaseTopic);
+            var mappers = ServiceProviderFactory.Create(config)
+                .GetServices<IToZigbeeMapper>();
             
-            _mapper = new HausToZigbeeMapper(zigbeeOptions);
+            _mapper = new HausToZigbeeMapper(mappers);
         }
         
         [Fact]
@@ -40,7 +35,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
                 .AsHausCommand()
                 .ToMqttMessage("haus/commands");
 
-            var result = _mapper.Map(original);
+            var result = _mapper.Map(original).Single();
 
             Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
             Assert.Equal("true", Encoding.UTF8.GetString(result.Payload));
@@ -53,10 +48,23 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
                 .AsHausCommand()
                 .ToMqttMessage("haus/commands");
 
-            var result = _mapper.Map(original);
+            var result = _mapper.Map(original).Single();
 
             Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
             Assert.Equal("false", Encoding.UTF8.GetString(result.Payload));
+        }
+
+        [Fact]
+        public void WhenSyncDevicesCommandReceivedThenReturnsZigbeeGetDevices()
+        {
+            var original = new SyncDiscoveryModel()
+                .AsHausCommand()
+                .ToMqttMessage("haus/commands");
+
+            var result = _mapper.Map(original).Single();
+
+            Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/devices/get", result.Topic);
+            Assert.Empty(result.Payload);
         }
 
         [Fact]
@@ -67,7 +75,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
                     .AsHausCommand()
                     .ToMqttMessage("haus/commands");
 
-            var result = _mapper.Map(original);
+            var result = _mapper.Map(original).Single();
 
             var payload = JObject.Parse(Encoding.UTF8.GetString(result.Payload));
             Assert.Equal($"{Zigbee2MqttBaseTopic}/my-ext-id/set", result.Topic);

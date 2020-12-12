@@ -14,25 +14,31 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Resolvers
     public interface IDeviceTypeResolver
     {
         DeviceType Resolve(Zigbee2MqttMeta metadata);
+        DeviceType Resolve(string vendor, string model);
     }
     
     public class DeviceTypeResolver : IDeviceTypeResolver
     {
-        private readonly IOptionsMonitor<HausOptions> _optionsMonitor;
+        private readonly IOptions<HausOptions> _options;
         private static readonly Lazy<DeviceTypeOptions[]> DefaultDeviceTypeOptions = new Lazy<DeviceTypeOptions[]>(LoadDefaultDeviceTypeOptions);
 
-        private IEnumerable<DeviceTypeOptions> DeviceTypeOptions => _optionsMonitor.CurrentValue.DeviceTypeOptions;
+        private IEnumerable<DeviceTypeOptions> DeviceTypeOptions => _options.Value.DeviceTypeOptions;
         
-        public DeviceTypeResolver(IOptionsMonitor<HausOptions> optionsMonitor)
+        public DeviceTypeResolver(IOptions<HausOptions> options)
         {
-            _optionsMonitor = optionsMonitor;
+            _options = options;
         }
 
         private static IEnumerable<DeviceTypeOptions> DefaultOptions => DefaultDeviceTypeOptions.Value;
         
         public DeviceType Resolve(Zigbee2MqttMeta metadata)
         {
-            var match = GetDeviceTypeFromOptions(metadata) ?? GetDeviceTypeFromDefaults(metadata);   
+            return Resolve(metadata.Vendor, metadata.Model);
+        }
+
+        public DeviceType Resolve(string vendor, string model)
+        {
+            var match = GetDeviceTypeFromOptions(vendor, model) ?? GetDeviceTypeFromDefaults(vendor, model);   
             return match?.DeviceType ?? DeviceType.Unknown;
         }
 
@@ -44,22 +50,23 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Resolvers
             return HausJsonSerializer.Deserialize<DeviceTypeOptions[]>(reader.ReadToEnd());
         }
 
-        private DeviceTypeOptions GetDeviceTypeFromOptions(Zigbee2MqttMeta metadata)
+        private DeviceTypeOptions GetDeviceTypeFromOptions(string vendor, string model)
         {
-            return GetDeviceTypeOptionsFromSet(metadata, DeviceTypeOptions);
+            return GetDeviceTypeOptionsFromSet(vendor, model, DeviceTypeOptions);
         }
 
-        private static DeviceTypeOptions GetDeviceTypeFromDefaults(Zigbee2MqttMeta metadata)
+        private static DeviceTypeOptions GetDeviceTypeFromDefaults(string vendor, string model)
         {
-            return GetDeviceTypeOptionsFromSet(metadata, DefaultOptions);
+            return GetDeviceTypeOptionsFromSet(vendor, model, DefaultOptions);
         }
 
         private static DeviceTypeOptions GetDeviceTypeOptionsFromSet(
-            Zigbee2MqttMeta meta,
+            string vendor,
+            string model,
             IEnumerable<DeviceTypeOptions> set)
         {
             return set
-                .FirstOrDefault(d => d.Matches(meta));
+                .FirstOrDefault(d => d.Matches(vendor, model));
         }
     }
 }

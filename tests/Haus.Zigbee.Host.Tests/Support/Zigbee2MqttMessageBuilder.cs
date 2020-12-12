@@ -10,18 +10,21 @@ namespace Haus.Zigbee.Host.Tests.Support
     {
         private const string StateTopicPath = "bridge/state";
         private const string LogTopicPath = "bridge/log";
+        private const string ConfigPath = "bridge/config";
+        private static readonly string GetDevicesPath = $"{ConfigPath}/devices";
         private const string InterviewSuccessful = "interview_successful";
-        private const string InterviewStarted = "interview_started";
         private const string PairingType = "pairing";
         private readonly string _baseTopicName;
         private string _topicPath;
         private string _state;
-        private JObject _root;
+        private JObject _rootObject;
+        private JArray _rootArray;
 
-        public Zigbee2MqttMessageBuilder(string baseTopicName = "zigbee2mqtt")
+        public Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOptions.BaseTopic)
         {
             _baseTopicName = baseTopicName;
-            _root = new JObject();
+            _rootObject = new JObject();
+            _rootArray = new JArray();
         }
 
         public Zigbee2MqttMessageBuilder WithStateTopic()
@@ -31,18 +34,13 @@ namespace Haus.Zigbee.Host.Tests.Support
         
         public Zigbee2MqttMessageBuilder WithType(string type)
         {
-            _root.Add("type", type);
+            _rootObject.Add("type", type);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithInterviewSuccessful()
         {
             return WithMessage(InterviewSuccessful);
-        }
-
-        public Zigbee2MqttMessageBuilder WithInterviewStarted()
-        {
-            return WithMessage(InterviewStarted);
         }
 
         public Zigbee2MqttMessageBuilder WithPairingType()
@@ -52,7 +50,7 @@ namespace Haus.Zigbee.Host.Tests.Support
         
         public Zigbee2MqttMessageBuilder WithMessage(string message)
         {
-            _root.Add("message", message);
+            _rootObject.Add("message", message);
             return this;
         }
         
@@ -74,49 +72,49 @@ namespace Haus.Zigbee.Host.Tests.Support
         
         public Zigbee2MqttMessageBuilder WithOccupancy(bool value)
         {
-            _root.Add("occupancy", value);
+            _rootObject.Add("occupancy", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithOccupancyTimeout(int value)
         {
-            _root.Add("occupancy_timeout", value);
+            _rootObject.Add("occupancy_timeout", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithMotionSensitivity(string value)
         {
-            _root.Add("motion_sensitivity", value);
+            _rootObject.Add("motion_sensitivity", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithTemperature(double value)
         {
-            _root.Add("temperature", value);
+            _rootObject.Add("temperature", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithBatteryLevel(int value)
         {
-            _root.Add("battery", value);
+            _rootObject.Add("battery", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithIlluminance(int value)
         {
-            _root.Add("illuminance", value);
+            _rootObject.Add("illuminance", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithIlluminanceLux(int value)
         {
-            _root.Add("illuminance_lux", value);
+            _rootObject.Add("illuminance_lux", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithLinkQuality(int value)
         {
-            _root.Add("linkquality", value);
+            _rootObject.Add("linkquality", value);
             return this;
         }
 
@@ -125,20 +123,33 @@ namespace Haus.Zigbee.Host.Tests.Support
             _state = state;
             return this;
         }
+
+        public Zigbee2MqttMessageBuilder WithDevice(Action<JObject> configureDevice = null)
+        {
+            var device = new JObject();
+            configureDevice?.Invoke(device);
+            _rootArray.Add(device);
+            return this;
+        }
         
         public Zigbee2MqttMessageBuilder WithMeta(Action<Zigbee2MqttMetaBuilder> configureMeta)
         {
             var builder = new Zigbee2MqttMetaBuilder();
             configureMeta(builder);
-            _root.Add("meta", builder.BuildJToken());
+            _rootObject.Add("meta", builder.BuildJToken());
             return this;
+        }
+
+        public Zigbee2MqttMessageBuilder WithGetDevicesTopic()
+        {
+            return WithTopicPath($"{ConfigPath}/devices");
         }
 
         public MqttApplicationMessage BuildMqttMessage()
         {
             try
             {
-                var payloadAsString = _topicPath == StateTopicPath ? _state : _root.ToString();
+                var payloadAsString = GetRootMessageAsJson();
                 return new MqttApplicationMessage
                 {
                     Topic = $"{_baseTopicName}/{_topicPath}",
@@ -147,7 +158,7 @@ namespace Haus.Zigbee.Host.Tests.Support
             }
             finally
             {
-                _root = new JObject();
+                _rootObject = new JObject();
             }
         }
 
@@ -155,12 +166,23 @@ namespace Haus.Zigbee.Host.Tests.Support
         {
             try
             {
-                return Zigbee2MqttMessage.FromJObject($"{_baseTopicName}/{_topicPath}", _root);
+                return Zigbee2MqttMessage.FromJToken($"{_baseTopicName}/{_topicPath}", JToken.Parse(GetRootMessageAsJson()));
             }
             finally
             {
-                _root = new JObject();
+                _rootObject = new JObject();
             }
+        }
+
+        private string GetRootMessageAsJson()
+        {
+            if (_topicPath == StateTopicPath)
+                return _state;
+
+            if (_topicPath == GetDevicesPath)
+                return _rootArray.ToString();
+
+            return _rootObject.ToString();
         }
     }
 }

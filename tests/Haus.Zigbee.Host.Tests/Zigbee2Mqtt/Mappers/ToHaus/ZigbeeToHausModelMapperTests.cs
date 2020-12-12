@@ -1,43 +1,27 @@
-using Haus.Zigbee.Host.Configuration;
+using System.Linq;
 using Haus.Zigbee.Host.Tests.Support;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
 {
     public class ZigbeeToHausModelMapperTests
     {
-        private const string Zigbee2MqttTopic = "zigbee2mqtt";
-        private const string HausEventTopic = "haus/events";
-        private const string UnknownEventTopic = "haus/unknown";
+        private const string HausEventTopic = ConfigurationFactory.DefaultHausEventsTopic;
+        private const string UnknownEventTopic = ConfigurationFactory.DefaultHausUnknownTopic;
         private readonly ZigbeeToHausMapper _mapper;
 
         public ZigbeeToHausModelMapperTests()
         {
-            var zigbeeOptions = Options.Create(new ZigbeeOptions
-            {
-                Config = new Zigbee2MqttConfiguration
-                {
-                    Mqtt = new MqttConfiguration
-                    {
-                        BaseTopic = Zigbee2MqttTopic
-                    }
-                }
-            });
-            var hausOptions = new OptionsMonitorFake<HausOptions>(new HausOptions
-            {
-                EventsTopic = HausEventTopic,
-                UnknownTopic = UnknownEventTopic
-            });
-
-            _mapper = new ZigbeeToHausMapper(
-                hausOptions, 
-                zigbeeOptions,
-                new Zigbee2MqttMessageFactory(new NullLogger<Zigbee2MqttMessageFactory>()));
+            var provider = ServiceProviderFactory.Create();
+            var mappers = provider.GetServices<IToHausMapper>();
+            var factory = provider.GetRequiredService<IZigbee2MqttMessageFactory>();
+            var unknownMapper = provider.GetRequiredService<IUnknownMessageMapper>();
+            
+            _mapper = new ZigbeeToHausMapper(factory, mappers, unknownMapper);
         }
 
         [Fact]
@@ -50,7 +34,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
                 .WithMeta(meta => meta.WithFriendlyName("this-is-an-id"))
                 .BuildMqttMessage();
 
-            var result = _mapper.Map(message);
+            var result = _mapper.Map(message).Single();
 
             Assert.Equal(HausEventTopic, result.Topic);
         }
@@ -63,7 +47,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
                 .WithState("online")
                 .BuildMqttMessage();
 
-            var result = _mapper.Map(message);
+            var result = _mapper.Map(message).Single();
 
             Assert.Equal(UnknownEventTopic, result.Topic);
         }
@@ -71,12 +55,12 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
         [Fact]
         public void WhenFromSensorThenReturnsHausEvent()
         {
-            var message = new Zigbee2MqttMessageBuilder(Zigbee2MqttTopic)
+            var message = new Zigbee2MqttMessageBuilder()
                 .WithDeviceTopic("some-device-name")
                 .WithIlluminance(4)
                 .BuildMqttMessage();
 
-            var result = _mapper.Map(message);
+            var result = _mapper.Map(message).Single();
 
             Assert.Equal(HausEventTopic, result.Topic);
         }

@@ -1,5 +1,5 @@
 import {diagnosticsReducer, selectDiagnosticsMessages} from "./diagnostics.reducer";
-import {createTestingState, runActionsThroughReducer} from "../../../testing";
+import {createAppState, runActionsThroughReducer} from "../../../testing";
 import {DiagnosticsActions} from "../actions";
 import {ModelFactory} from "../../../testing/model-factory";
 
@@ -64,7 +64,7 @@ describe('diagnosticsReducer', () => {
     const second = ModelFactory.createMqttDiagnosticsMessage({timestamp: '2020-09-12'});
     const third = ModelFactory.createMqttDiagnosticsMessage({timestamp: '2020-09-11'});
 
-    const appState = createTestingState(
+    const appState = createAppState(
       DiagnosticsActions.messageReceived(third),
       DiagnosticsActions.messageReceived(first),
       DiagnosticsActions.messageReceived(second))

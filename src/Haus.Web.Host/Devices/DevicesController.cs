@@ -5,7 +5,6 @@ using Haus.Core.Devices.Queries;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Web.Host.Common.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Haus.Web.Host.Devices
@@ -64,6 +63,12 @@ namespace Haus.Web.Host.Devices
         public Task<IActionResult> StopDiscovery()
         {
             return CommandAsync(new StopDiscoveryCommand());
+        }
+
+        [HttpPost("sync-discovery")]
+        public Task<IActionResult> Sync()
+        {
+            return CommandAsync(new SyncDiscoveryCommand());
         }
     }
 }

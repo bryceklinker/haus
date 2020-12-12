@@ -1,3 +1,4 @@
+using System.Linq;
 using Haus.Core.Models;
 using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
@@ -24,11 +25,17 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
         }
 
         [Fact]
+        public void WhenIsSupportedThenAlwaysReturnsFalse()
+        {
+            Assert.False(_mapper.IsSupported(Zigbee2MqttMessage.FromJToken("", JObject.FromObject(new object()))));
+        }
+        
+        [Fact]
         public void WhenMappedThenTopicIsUnknownTopic()
         {
-            var message = Zigbee2MqttMessage.FromJObject("", JObject.FromObject(new object()));
+            var message = Zigbee2MqttMessage.FromJToken("", JObject.FromObject(new object()));
             
-            var result = _mapper.Map(message);
+            var result = _mapper.Map(message).Single();
 
             Assert.Equal(UnknownTopicName, result.Topic);
         }
@@ -36,9 +43,9 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
         [Fact]
         public void WhenMappedThenZigbeeTopicIsInMessagePayload()
         {
-            var message = Zigbee2MqttMessage.FromJObject("zigbeetopic", JObject.FromObject(new object()));
+            var message = Zigbee2MqttMessage.FromJToken("zigbeetopic", JObject.FromObject(new object()));
 
-            var result = _mapper.Map(message);
+            var result = _mapper.Map(message).Single();
 
             var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.Payload);
             Assert.Equal("zigbeetopic", payload.Topic);
@@ -47,12 +54,12 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
         [Fact]
         public void WhenMappedThenZigbeePayloadIsInMessagePayload()
         {
-            var message = Zigbee2MqttMessage.FromJObject("", JObject.FromObject(new
+            var message = Zigbee2MqttMessage.FromJToken("", JObject.FromObject(new
             {
                 Id = "my-id"
             }));
             
-            var result = _mapper.Map(message);
+            var result = _mapper.Map(message).Single();
 
             var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.Payload);
             Assert.Equal("my-id", JObject.Parse(payload.Payload).Value<string>("Id"));

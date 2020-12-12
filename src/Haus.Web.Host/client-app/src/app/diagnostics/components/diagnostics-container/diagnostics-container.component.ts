@@ -38,6 +38,10 @@ export class DiagnosticsContainerComponent implements OnInit {
     this.store.dispatch(DiagnosticsActions.stopDiscovery.request());
   }
 
+  onSyncDiscovery() {
+    this.store.dispatch(DiagnosticsActions.syncDiscovery.request());
+  }
+
   ngOnInit(): void {
     this.store.dispatch(DiagnosticsActions.initHub());
   }
