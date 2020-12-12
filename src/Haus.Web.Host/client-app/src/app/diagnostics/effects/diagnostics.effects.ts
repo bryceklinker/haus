@@ -1,7 +1,14 @@
 import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {catchError, map, mergeMap} from "rxjs/operators";
-import {createSignalRHub, mergeMapHubToAction, ofHub, SIGNALR_HUB_UNSTARTED, startSignalRHub, } from "ngrx-signalr-core";
+import {
+  createSignalRHub,
+  mergeMapHubToAction,
+  ofHub,
+  SIGNALR_HUB_UNSTARTED,
+  startSignalRHub,
+  stopSignalRHub,
+} from "ngrx-signalr-core";
 import {DIAGNOSTICS_HUB} from "./diagnostics-hub";
 import {merge, of} from "rxjs";
 import {DiagnosticsActions} from "../actions";
@@ -21,6 +28,11 @@ export class DiagnosticsEffects {
       }
     }))
   ));
+
+  stop$ = createEffect(() => this.actions$.pipe(
+    ofType(DiagnosticsActions.disconnectHub),
+    map(() => stopSignalRHub(DIAGNOSTICS_HUB))
+  ))
 
   start$ = createEffect(() => this.actions$.pipe(
     ofType(SIGNALR_HUB_UNSTARTED),

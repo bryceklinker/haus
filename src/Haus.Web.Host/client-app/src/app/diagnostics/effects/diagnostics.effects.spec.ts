@@ -1,15 +1,15 @@
-import {createTestingEffect, TestingHub, eventually, TestingAuthService} from "../../../testing";
-import {DiagnosticsEffects} from "./diagnostics.effects";
-import {DiagnosticsModule} from "../diagnostics.module";
-import {Action} from "@ngrx/store";
-import {createHub, createSignalRHub, signalrHubUnstarted} from "ngrx-signalr-core";
-import {DIAGNOSTICS_HUB} from "./diagnostics-hub";
-import {DiagnosticsActions} from "../actions";
 import {Subject} from "rxjs";
 import {TestBed} from "@angular/core/testing";
 import {HttpTestingController} from "@angular/common/http/testing";
-import {ModelFactory} from "../../../testing/model-factory";
+import {createHub, createSignalRHub, signalrHubUnstarted, stopSignalRHub} from "ngrx-signalr-core";
+
 import {AuthService} from "@auth0/auth0-angular";
+import {createTestingEffect, TestingHub, eventually, TestingAuthService, ModelFactory} from "../../../testing";
+import {DiagnosticsEffects} from "./diagnostics.effects";
+import {DiagnosticsModule} from "../diagnostics.module";
+import {Action} from "@ngrx/store";
+import {DIAGNOSTICS_HUB} from "./diagnostics-hub";
+import {DiagnosticsActions} from "../actions";
 import {DiagnosticsMessageModel} from "../models";
 
 describe('DiagnosticsEffects', () => {
@@ -110,6 +110,16 @@ describe('DiagnosticsEffects', () => {
           error: expect.anything()
         }
       });
+    })
+  })
+
+  it('should notify to stop signalr hub', async () => {
+    effects.stop$.subscribe((action: Action) => actionsCollector.push(action));
+
+    actions$.next(DiagnosticsActions.disconnectHub());
+
+    await eventually(() => {
+      expect(actionsCollector).toContainEqual(stopSignalRHub(DIAGNOSTICS_HUB));
     })
   })
 })
