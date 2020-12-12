@@ -61,6 +61,14 @@ describe('DiagnosticsContainerComponent', () => {
     expect(store.actions).toContainEqual(DiagnosticsActions.syncDiscovery.request());
   })
 
+  it('should dispatch disconnect from hub', async () => {
+    const {fixture, store} = await renderContainer();
+
+    fixture.componentInstance.ngOnDestroy();
+
+    expect(store.actions).toContainEqual(DiagnosticsActions.disconnectHub());
+  })
+
   async function renderContainer(...actions: Array<Action>) {
     return await renderFeatureComponent(DiagnosticsContainerComponent, {
       imports: [DiagnosticsModule],

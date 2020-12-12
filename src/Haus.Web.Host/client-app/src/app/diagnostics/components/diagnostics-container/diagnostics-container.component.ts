@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, OnDestroy} from "@angular/core";
 import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
@@ -15,7 +15,7 @@ import {DiagnosticsMessageModel} from "../../models";
   templateUrl: './diagnostics-container.component.html',
   styleUrls: ['./diagnostics-container.component.scss']
 })
-export class DiagnosticsContainerComponent implements OnInit {
+export class DiagnosticsContainerComponent implements OnInit, OnDestroy {
   isDiagnosticsConnected$: Observable<boolean>;
   diagnosticMessages$: Observable<Array<DiagnosticsMessageModel>>;
   allowDiscovery$: Observable<boolean>;
@@ -44,5 +44,9 @@ export class DiagnosticsContainerComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(DiagnosticsActions.initHub());
+  }
+
+  ngOnDestroy(): void {
+    this.store.dispatch(DiagnosticsActions.disconnectHub());
   }
 }

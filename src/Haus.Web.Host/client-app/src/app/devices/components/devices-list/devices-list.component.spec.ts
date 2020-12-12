@@ -18,18 +18,6 @@ describe('DevicesListComponent', () => {
     expect(container).toHaveTextContent(devices[2].name);
   })
 
-  it('should navigate to device when device selected', async () => {
-    const devices = [
-      ModelFactory.createDeviceModel({id: 12})
-    ];
-
-    const {getByTestId, fireEvent, router} = await renderDevicesList({devices});
-    spyOn(router, 'navigate').and.callThrough();
-    fireEvent.click(getByTestId('device-item'));
-
-    expect(router.navigate).toHaveBeenCalledWith(['devices', 12]);
-  })
-
   function renderDevicesList({devices = []}: Partial<DevicesListComponent> = {}) {
     return renderFeatureComponent(DevicesListComponent, {
       imports: [DevicesModule],

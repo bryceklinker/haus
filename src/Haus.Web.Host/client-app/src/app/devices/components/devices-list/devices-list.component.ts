@@ -14,8 +14,4 @@ export class DevicesListComponent {
 
   constructor(private router: Router) {
   }
-
-  async onDeviceSelected(device: DeviceModel) {
-    await this.router.navigateByUrl(`/devices/${device.id}`);
-  }
 }

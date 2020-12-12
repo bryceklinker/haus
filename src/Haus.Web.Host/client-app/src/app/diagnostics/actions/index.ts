@@ -5,6 +5,7 @@ import {DevicesActions} from "../../devices/actions";
 
 export const DiagnosticsActions = {
   initHub: createAction('[Diagnostics] Init Effects'),
+  disconnectHub: createAction('[Diagnostics] Disconnect Hub'),
   messageReceived: createAction('[Diagnostics] Message Received', (message: DiagnosticsMessageModel) => ({payload: message})),
   replay: createAsyncAction('[Diagnostics] Replay Message',
     (message: DiagnosticsMessageModel) => ({payload: message}),
