@@ -1,3 +1,4 @@
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
@@ -9,8 +10,8 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
         public string Topic { get; }
         public string Raw { get; }
 
-        public JObject RootObject => _root as JObject;
-        public JArray RootArray => _root as JArray;
+        public JObject PayloadObject => _root as JObject;
+        public JArray PayloadArray => _root as JArray;
         
         public bool IsJson => _root != null;
         public string Json => Raw;
@@ -47,10 +48,10 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
 
         private T SafeGetValue<T>(string propertyName)
         {
-            if (RootObject == null)
+            if (PayloadObject == null)
                 return default;
 
-            return RootObject.TryGetValue(propertyName, out var token) 
+            return PayloadObject.TryGetValue(propertyName, out var token) 
                 ? token.ToObject<T>() 
                 : default;
         }
@@ -63,8 +64,8 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
             if (_meta != null)
                 return _meta;
 
-            return RootObject.TryGetValue("meta", out _) 
-                ? _meta = new Zigbee2MqttMeta(RootObject.GetValue("meta")) 
+            return PayloadObject.TryGetValue("meta", out _) 
+                ? _meta = new Zigbee2MqttMeta(JObject.Parse(PayloadObject.GetValue("meta").ToString())) 
                 : null;
         }
     }

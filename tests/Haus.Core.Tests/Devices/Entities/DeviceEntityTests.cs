@@ -19,17 +19,18 @@ namespace Haus.Core.Tests.Devices.Entities
             var model = new DeviceDiscoveredModel
             {
                 Id = "this-id",
-                Description = "idk",
-                Vendor = "Vendy",
-                Model = "some model",
-                DeviceType = DeviceType.Light
+                DeviceType = DeviceType.Light,
+                Metadata = new []
+                {
+                    new DeviceMetadataModel("Model", "some model"),
+                    new DeviceMetadataModel("Vendor", "Vendy"), 
+                }
             };
 
             var entity = DeviceEntity.FromDiscoveredDevice(model);
 
             Assert.Equal("this-id", entity.ExternalId);
             Assert.Equal(DeviceType.Light, entity.DeviceType);
-            AssertHasMetadata("Description", "idk", entity);
             AssertHasMetadata("Vendor", "Vendy", entity);
             AssertHasMetadata("Model", "some model", entity);
         }
@@ -42,16 +43,6 @@ namespace Haus.Core.Tests.Devices.Entities
             var entity = DeviceEntity.FromDiscoveredDevice(model);
 
             Assert.Equal("this-id", entity.Name);
-        }
-
-        [Fact]
-        public void WhenCreatedFromDeviceDiscoveredWithModelThenNameIsSetToModel()
-        {
-            var model = new DeviceDiscoveredModel { Id = "this-id", Model = "GCL-LED-Strip"};
-
-            var entity = DeviceEntity.FromDiscoveredDevice(model);
-
-            Assert.Equal("GCL-LED-Strip", entity.Name);
         }
 
         [Fact]
@@ -68,7 +59,13 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenUpdatedFromDiscoveredDeviceThenModelMetadataIsAdded()
         {
-            var model = new DeviceDiscoveredModel { Model = "boom" };
+            var model = new DeviceDiscoveredModel
+            {
+                Metadata = new []
+                {
+                    new DeviceMetadataModel("Model", "boom"),
+                }
+            };
             var entity = new DeviceEntity();
             
             entity.UpdateFromDiscoveredDevice(model);
@@ -77,31 +74,15 @@ namespace Haus.Core.Tests.Devices.Entities
         }
 
         [Fact]
-        public void WhenUpdatedFromDiscoveredDeviceThenVendorMetadataIsAdded()
-        {
-            var model = new DeviceDiscoveredModel { Vendor = "vendy" };
-            var entity = new DeviceEntity();
-            
-            entity.UpdateFromDiscoveredDevice(model);
-
-            AssertHasMetadata("Vendor", "vendy", entity);
-        }
-        
-        [Fact]
-        public void WhenUpdatedFromDiscoveredDeviceThenDescriptionMetadataIsAdded()
-        {
-            var model = new DeviceDiscoveredModel { Description = "yep" };
-            var entity = new DeviceEntity();
-            
-            entity.UpdateFromDiscoveredDevice(model);
-
-            AssertHasMetadata("Description", "yep", entity);
-        }
-
-        [Fact]
         public void WhenDeviceHasModelAndUpdatedFromDiscoveredDeviceThenModelMetadataIsUpdated()
         {
-            var model = new DeviceDiscoveredModel { Model = "boom" };
+            var model = new DeviceDiscoveredModel
+            {
+                Metadata = new []
+                {
+                    new DeviceMetadataModel("Model", "boom"),
+                }
+            };
             var entity = new DeviceEntity();
             entity.AddOrUpdateMetadata("Model", "old");
 

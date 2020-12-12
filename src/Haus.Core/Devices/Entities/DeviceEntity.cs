@@ -22,10 +22,41 @@ namespace Haus.Core.Devices.Entities
         
         public ICollection<DeviceMetadataEntity> Metadata { get; set; } = new List<DeviceMetadataEntity>();
 
-        public RoomEntity Room { get; set; } = null;
+        public RoomEntity Room { get; set; }
         public Lighting Lighting { get; set; } = Lighting.Default.Copy();
 
         public bool IsLight => DeviceType == DeviceType.Light;
+
+        public static DeviceEntity FromDiscoveredDevice(DeviceDiscoveredModel model)
+        {
+            var entity = new DeviceEntity
+            {
+                ExternalId = model.Id,
+                DeviceType = model.DeviceType,
+                Name = model.Id
+            };
+            entity.UpdateFromDiscoveredDevice(model);
+            return entity;
+        }
+
+        public void UpdateFromDiscoveredDevice(DeviceDiscoveredModel model)
+        {
+            DeviceType = model.DeviceType;
+            AddOrUpdateMetadata(model.Metadata);
+        }
+
+        public void UpdateFromModel(DeviceModel model)
+        {
+            Name = model.Name;
+            DeviceType = model.DeviceType;
+            AddOrUpdateMetadata(model.Metadata);
+        }
+
+        private void AddOrUpdateMetadata(IEnumerable<DeviceMetadataModel> models)
+        {
+            foreach (var model in models)
+                AddOrUpdateMetadata(model.Key, model.Value);
+        }
 
         public void AddOrUpdateMetadata(string key, string value)
         {
@@ -37,34 +68,6 @@ namespace Haus.Core.Devices.Entities
                 existing.Update(value);
             else
                 Metadata.Add(new DeviceMetadataEntity(key, value));
-        }
-        
-        public static DeviceEntity FromDiscoveredDevice(DeviceDiscoveredModel model)
-        {
-            var entity = new DeviceEntity
-            {
-                ExternalId = model.Id,
-                DeviceType = model.DeviceType,
-                Name = string.IsNullOrWhiteSpace(model.Model) ? model.Id : model.Model
-            };
-            entity.UpdateFromDiscoveredDevice(model);
-            return entity;
-        }
-
-        public void UpdateFromDiscoveredDevice(DeviceDiscoveredModel model)
-        {
-            DeviceType = model.DeviceType;
-            AddOrUpdateMetadata(nameof(model.Model), model.Model);    
-            AddOrUpdateMetadata(nameof(model.Vendor), model.Vendor);    
-            AddOrUpdateMetadata(nameof(model.Description), model.Description);
-        }
-
-        public void UpdateFromModel(DeviceModel model)
-        {
-            Name = model.Name;
-            DeviceType = model.DeviceType;
-            foreach (var metadataModel in model.Metadata)
-                AddOrUpdateMetadata(metadataModel.Key, metadataModel.Value);
         }
 
         public void AssignToRoom(RoomEntity room)

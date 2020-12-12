@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Models;
@@ -15,21 +14,13 @@ using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
 {
-    public class GetDevicesMapper : IToHausMapper
+    public class DevicesMapper : IToHausMapper
     {
-        private static readonly string[] KnownMetadata =
-        {
-            "friendly_name",
-            "vendor",
-            "model",
-            "description"
-        };
-
         private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
         private readonly IOptions<HausOptions> _hausOptions;
         private readonly IDeviceTypeResolver _deviceTypeResolver;
 
-        public GetDevicesMapper(
+        public DevicesMapper(
             IOptions<ZigbeeOptions> zigbeeOptions,
             IOptions<HausOptions> hausOptions,
             IDeviceTypeResolver deviceTypeResolver)
@@ -46,7 +37,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
 
         public IEnumerable<MqttApplicationMessage> Map(Zigbee2MqttMessage message)
         {
-            return message.RootArray
+            return message.PayloadArray
                 .Cast<JObject>()
                 .Select(item => new MqttApplicationMessage
                 {
@@ -62,9 +53,6 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
             return new DeviceDiscoveredModel
             {
                 Id = jToken.Value<string>("friendly_name"),
-                Description = jToken.Value<string>("description"),
-                Model = model,
-                Vendor = vendor,
                 DeviceType = _deviceTypeResolver.Resolve(vendor, model),
                 Metadata = CreateDeviceMetadata(jToken)
             }.AsHausEvent();
@@ -72,13 +60,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
 
         private static DeviceMetadataModel[] CreateDeviceMetadata(JObject jObject)
         {
-            return jObject.Properties()
-                .Where(prop => KnownMetadata.Missing(prop.Name))
-                .Select(prop => new DeviceMetadataModel
-                {
-                    Key = prop.Name,
-                    Value = prop.Value.ToString()
-                })
+            return jObject.ToDeviceMetadata()
                 .ToArray();
         }
     }

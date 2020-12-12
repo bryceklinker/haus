@@ -11,20 +11,20 @@ namespace Haus.Zigbee.Host.Tests.Support
         private const string StateTopicPath = "bridge/state";
         private const string LogTopicPath = "bridge/log";
         private const string ConfigPath = "bridge/config";
-        private static readonly string GetDevicesPath = $"{ConfigPath}/devices";
+        private static readonly string DevicesTopicPath = $"{ConfigPath}/devices";
         private const string InterviewSuccessful = "interview_successful";
         private const string PairingType = "pairing";
         private readonly string _baseTopicName;
         private string _topicPath;
         private string _state;
-        private JObject _rootObject;
-        private JArray _rootArray;
+        private JObject _payloadObject;
+        private JArray _payloadArray;
 
         public Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOptions.BaseTopic)
         {
             _baseTopicName = baseTopicName;
-            _rootObject = new JObject();
-            _rootArray = new JArray();
+            _payloadObject = new JObject();
+            _payloadArray = new JArray();
         }
 
         public Zigbee2MqttMessageBuilder WithStateTopic()
@@ -34,7 +34,7 @@ namespace Haus.Zigbee.Host.Tests.Support
         
         public Zigbee2MqttMessageBuilder WithType(string type)
         {
-            _rootObject.Add("type", type);
+            _payloadObject.Add("type", type);
             return this;
         }
 
@@ -47,10 +47,10 @@ namespace Haus.Zigbee.Host.Tests.Support
         {
             return WithType(PairingType);
         }
-        
+
         public Zigbee2MqttMessageBuilder WithMessage(string message)
         {
-            _rootObject.Add("message", message);
+            _payloadObject.Add("message", message);
             return this;
         }
         
@@ -72,49 +72,49 @@ namespace Haus.Zigbee.Host.Tests.Support
         
         public Zigbee2MqttMessageBuilder WithOccupancy(bool value)
         {
-            _rootObject.Add("occupancy", value);
+            _payloadObject.Add("occupancy", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithOccupancyTimeout(int value)
         {
-            _rootObject.Add("occupancy_timeout", value);
+            _payloadObject.Add("occupancy_timeout", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithMotionSensitivity(string value)
         {
-            _rootObject.Add("motion_sensitivity", value);
+            _payloadObject.Add("motion_sensitivity", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithTemperature(double value)
         {
-            _rootObject.Add("temperature", value);
+            _payloadObject.Add("temperature", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithBatteryLevel(int value)
         {
-            _rootObject.Add("battery", value);
+            _payloadObject.Add("battery", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithIlluminance(int value)
         {
-            _rootObject.Add("illuminance", value);
+            _payloadObject.Add("illuminance", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithIlluminanceLux(int value)
         {
-            _rootObject.Add("illuminance_lux", value);
+            _payloadObject.Add("illuminance_lux", value);
             return this;
         }
 
         public Zigbee2MqttMessageBuilder WithLinkQuality(int value)
         {
-            _rootObject.Add("linkquality", value);
+            _payloadObject.Add("linkquality", value);
             return this;
         }
 
@@ -124,11 +124,11 @@ namespace Haus.Zigbee.Host.Tests.Support
             return this;
         }
 
-        public Zigbee2MqttMessageBuilder WithDevice(Action<JObject> configureDevice = null)
+        public Zigbee2MqttMessageBuilder WithDeviceInPayload(Action<JObject> configureDevice = null)
         {
             var device = new JObject();
             configureDevice?.Invoke(device);
-            _rootArray.Add(device);
+            _payloadArray.Add(device);
             return this;
         }
         
@@ -136,13 +136,13 @@ namespace Haus.Zigbee.Host.Tests.Support
         {
             var builder = new Zigbee2MqttMetaBuilder();
             configureMeta(builder);
-            _rootObject.Add("meta", builder.BuildJToken());
+            _payloadObject.Add("meta", builder.BuildJToken());
             return this;
         }
 
-        public Zigbee2MqttMessageBuilder WithGetDevicesTopic()
+        public Zigbee2MqttMessageBuilder WithDevicesTopic()
         {
-            return WithTopicPath($"{ConfigPath}/devices");
+            return WithTopicPath(DevicesTopicPath);
         }
 
         public MqttApplicationMessage BuildMqttMessage()
@@ -158,7 +158,8 @@ namespace Haus.Zigbee.Host.Tests.Support
             }
             finally
             {
-                _rootObject = new JObject();
+                _payloadObject = new JObject();
+                _payloadArray = new JArray();
             }
         }
 
@@ -170,7 +171,8 @@ namespace Haus.Zigbee.Host.Tests.Support
             }
             finally
             {
-                _rootObject = new JObject();
+                _payloadObject = new JObject();
+                _payloadArray = new JArray();
             }
         }
 
@@ -179,10 +181,10 @@ namespace Haus.Zigbee.Host.Tests.Support
             if (_topicPath == StateTopicPath)
                 return _state;
 
-            if (_topicPath == GetDevicesPath)
-                return _rootArray.ToString();
+            if (_topicPath == DevicesTopicPath)
+                return _payloadArray.ToString();
 
-            return _rootObject.ToString();
+            return _payloadObject.ToString();
         }
     }
 }

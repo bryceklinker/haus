@@ -6,7 +6,6 @@ import {DeviceDetailContainerComponent} from "./components/device-detail-contain
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
     component: DevicesContainerComponent,
     children: [
       {path: ':deviceId', component: DeviceDetailContainerComponent}

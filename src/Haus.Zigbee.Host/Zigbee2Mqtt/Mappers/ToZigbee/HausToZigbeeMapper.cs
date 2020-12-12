@@ -8,7 +8,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee
 {
     public interface IHausToZigbeeMapper
     {
-        MqttApplicationMessage[] Map(MqttApplicationMessage message);
+        IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message);
     }
     
     public class HausToZigbeeMapper : IHausToZigbeeMapper
@@ -20,12 +20,11 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee
             _mappers = mappers;
         }
 
-        public MqttApplicationMessage[] Map(MqttApplicationMessage message)
+        public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
         {
             var command = HausJsonSerializer.Deserialize<HausCommand>(message.Payload);
             return _mappers.Where(m => m.IsSupported(command.Type))
-                .SelectMany(m => m.Map(message))
-                .ToArray();
+                .SelectMany(m => m.Map(message));
         }
     }
 }

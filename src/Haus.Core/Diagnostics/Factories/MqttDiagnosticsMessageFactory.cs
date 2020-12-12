@@ -34,6 +34,9 @@ namespace Haus.Core.Diagnostics.Factories
 
         private static object GetPayloadFromBytes(byte[] bytes)
         {
+            if (bytes == null)
+                return null;
+
             return HausJsonSerializer.TryDeserialize(bytes, out object payload) 
                 ? payload 
                 : Encoding.UTF8.GetString(bytes);

@@ -44,10 +44,12 @@ body {
 }
 
 .master-detail-container {
+  display: flex;
   flex: 1;
-  flex-direction: column;
+  flex-direction: row;
 
-  :first-child {
-    max-width: 150em;
+  > :first-child {
+    max-width: 150rem;
+    margin-right: 5rem;
   }
 }

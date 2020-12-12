@@ -27,10 +27,7 @@ namespace Haus.Web.Host.Tests.Devices
             await _factory.PublishHausEventAsync(new DeviceDiscoveredModel
             {
                 Id = "my-new-id",
-                Description = "I don't know",
-                Model = "new hotness",
-                Vendor = "Klinker",
-                DeviceType = deviceType
+                DeviceType = deviceType,
             });
             
             await Eventually.AssertAsync(async () =>

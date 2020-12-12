@@ -31,7 +31,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories
         {
             try
             {
-                return JObject.Parse(payload);
+                return JToken.Parse(payload);
             }
             catch (Exception)
             {

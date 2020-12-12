@@ -16,6 +16,6 @@ export class DevicesListComponent {
   }
 
   async onDeviceSelected(device: DeviceModel) {
-    await this.router.navigate(['devices', device.id]);
+    await this.router.navigateByUrl(`/devices/${device.id}`);
   }
 }

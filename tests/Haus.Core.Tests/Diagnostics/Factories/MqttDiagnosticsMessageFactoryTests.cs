@@ -20,6 +20,24 @@ namespace Haus.Core.Tests.Diagnostics.Factories
         }
 
         [Fact]
+        public void WhenCreatedWithNullBytesThenReturnsNullPayload()
+        {
+            var model = _factory.Create("something", null);
+
+            Assert.Equal("something", model.Topic);
+            Assert.Null(model.Payload);
+        }
+
+        [Fact]
+        public void WhenCreatedWithEmptyPayloadThenReturnsEmptyPayload()
+        {
+            var model = _factory.Create("something", Array.Empty<byte>());
+
+            Assert.Equal("something", model.Topic);
+            Assert.Equal(string.Empty, model.Payload);
+        }
+        
+        [Fact]
         public void WhenCreatedThenTopicAndPayloadArePopulated()
         {
             var model = _factory.Create("my-topic", HausJsonSerializer.SerializeToBytes(new {id = 45}));

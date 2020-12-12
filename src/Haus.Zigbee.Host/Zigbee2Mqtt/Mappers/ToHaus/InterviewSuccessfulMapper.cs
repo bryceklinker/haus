@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using Haus.Core.Models;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Zigbee.Host.Configuration;
@@ -46,10 +48,8 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
                     Payload = new DeviceDiscoveredModel
                     {
                         Id = zigbeeMessage.Meta.FriendlyName,
-                        Description = zigbeeMessage.Meta.Description,
-                        Model = zigbeeMessage.Meta.Model,
-                        Vendor = zigbeeMessage.Meta.Vendor,
-                        DeviceType = _deviceTypeResolver.Resolve(zigbeeMessage.Meta)
+                        DeviceType = _deviceTypeResolver.Resolve(zigbeeMessage.Meta),
+                        Metadata = zigbeeMessage.Meta.Root.ToDeviceMetadata().ToArray()
                     }
                 })
             };

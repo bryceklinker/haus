@@ -12,41 +12,41 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
 {
     public class GetDevicesMapperTests
     {
-        private readonly GetDevicesMapper _mapper;
+        private readonly DevicesMapper _mapper;
 
         public GetDevicesMapperTests()
         {
             var zigbeeOptions = OptionsFactory.CreateZigbeeOptions();
             var hausOptions = OptionsFactory.CreateHausOptions();
-            _mapper = new GetDevicesMapper(zigbeeOptions, hausOptions, new DeviceTypeResolver(hausOptions));
+            _mapper = new DevicesMapper(zigbeeOptions, hausOptions, new DeviceTypeResolver(hausOptions));
         }
 
         [Fact]
-        public void WhenTopicIsGetDevicesThenIsSupported()
+        public void WhenTopicIsConfigDevicesThenIsSupported()
         {
             var message = new Zigbee2MqttMessageBuilder()
-                .WithGetDevicesTopic()
+                .WithDevicesTopic()
                 .BuildZigbee2MqttMessage();
             
             Assert.True(_mapper.IsSupported(message));
         }
 
         [Fact]
-        public void WhenTopicIsNotGetDevicesThenUnsupported()
+        public void WhenTopicIsNotConfigDevicesThenUnsupported()
         {
             var message = new Zigbee2MqttMessageBuilder()
-                .WithLogTopic()
+                .WithTopicPath("idk")
                 .BuildZigbee2MqttMessage();
 
             Assert.False(_mapper.IsSupported(message));
         }
-
+        
         [Fact]
         public void WhenOneDeviceIsInGetDevicesMessageThenReturnsOneDeviceDiscoveredMessage()
         {
             var message = new Zigbee2MqttMessageBuilder()
-                .WithGetDevicesTopic()
-                .WithDevice(device =>
+                .WithDevicesTopic()
+                .WithDeviceInPayload(device =>
                 {
                     device.Add("friendly_name", "boom");
                 })
@@ -62,8 +62,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
         public void WhenOneDeviceIsInGetDeviceMessagesThen()
         {
             var message = new Zigbee2MqttMessageBuilder()
-                .WithGetDevicesTopic()
-                .WithDevice(device =>
+                .WithDevicesTopic()
+                .WithDeviceInPayload(device =>
                 {
                     device.Add("friendly_name", "hello");
                     device.Add("description", "my desc");
@@ -78,10 +78,10 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
             var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
             Assert.Equal(DeviceDiscoveredModel.Type, @event.Type);
             Assert.Equal("hello", @event.Payload.Id);
-            Assert.Equal("65", @event.Payload.Model);
-            Assert.Equal("76", @event.Payload.Vendor);
-            Assert.Equal("my desc", @event.Payload.Description);
             Assert.Equal(DeviceType.Unknown, @event.Payload.DeviceType);
+            Assert.Contains(@event.Payload.Metadata, m => m.Key == "model" && m.Value == "65");
+            Assert.Contains(@event.Payload.Metadata, m => m.Key == "vendor" && m.Value == "76");
+            Assert.Contains(@event.Payload.Metadata, m => m.Key == "description" && m.Value == "my desc");
             Assert.Contains(@event.Payload.Metadata, meta => meta.Key == "powerSource" && meta.Value == "Battery");
         }
 
@@ -89,8 +89,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
         public void WhenDeviceIsMappedThenDeviceTypeIsResolved()
         {
             var message = new Zigbee2MqttMessageBuilder()
-                .WithGetDevicesTopic()
-                .WithDevice(device =>
+                .WithDevicesTopic()
+                .WithDeviceInPayload(device =>
                 {
                     device.Add("model", "929002335001");
                     device.Add("vendor", "Philips");
@@ -107,10 +107,10 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
         public void WhenMultipleDevicesAreInMessageThenReturnsMultipleDiscoveredEvents()
         {
             var message = new Zigbee2MqttMessageBuilder()
-                .WithGetDevicesTopic()
-                .WithDevice()
-                .WithDevice()
-                .WithDevice()
+                .WithDevicesTopic()
+                .WithDeviceInPayload()
+                .WithDeviceInPayload()
+                .WithDeviceInPayload()
                 .BuildZigbee2MqttMessage();
 
             var result = _mapper.Map(message);

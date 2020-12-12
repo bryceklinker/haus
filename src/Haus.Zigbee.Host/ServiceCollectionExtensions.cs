@@ -35,6 +35,7 @@ namespace Haus.Zigbee.Host
         private static IServiceCollection AddHausToZigbeeMappers(this IServiceCollection services)
         {
             return services
+                
                 .AddTransient<IToZigbeeMapper, HausDiscoveryToZigbeeMapper>()
                 .AddTransient<IToZigbeeMapper, HausLightingToZigbeeMapper>()
                 .AddTransient<IHausToZigbeeMapper, HausToZigbeeMapper>();
@@ -43,6 +44,7 @@ namespace Haus.Zigbee.Host
         private static IServiceCollection AddZigbeeToHausMappers(this IServiceCollection services)
         {
             return services
+                .AddTransient<IToHausMapper, DevicesMapper>()
                 .AddTransient<IToHausMapper, DeviceEventMapper>()
                 .AddTransient<IToHausMapper, InterviewSuccessfulMapper>()
                 .AddTransient<IUnknownMessageMapper, UnknownMessageMapper>()

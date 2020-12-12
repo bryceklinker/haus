@@ -41,7 +41,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers
                 return _zigbeeToHausMapper.Map(original).ToArray();
 
             if (original.Topic == HausCommandsTopic)
-                return _hausToZigbeeMapper.Map(original);
+                return _hausToZigbeeMapper.Map(original).ToArray();
 
             return Array.Empty<MqttApplicationMessage>();
         }

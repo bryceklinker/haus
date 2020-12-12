@@ -5,6 +5,7 @@ using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Devices.Events;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Tests.Support;
 using Haus.Testing.Support;
@@ -44,15 +45,17 @@ namespace Haus.Core.Tests.Devices.Events
             var @event = RoutableEvent.FromEvent(new DeviceDiscoveredModel
             {
                 Id = "three",
-                Model = "Help"
+                Metadata = new []
+                {
+                    new DeviceMetadataModel("Model", "Help"), 
+                }
             });
             await _hausBus.PublishAsync(@event);
 
             Assert.Single(_context.Set<DeviceEntity>());
             
             var deviceEntity = _context.Set<DeviceEntity>().Single();
-            Assert.Equal("Model", deviceEntity.Metadata.First().Key);
-            Assert.Equal("Help", deviceEntity.Metadata.First().Value);
+            Assert.Contains(deviceEntity.Metadata, m => m.Key == "Model" && m.Value == "Help");
         }
     }
 }

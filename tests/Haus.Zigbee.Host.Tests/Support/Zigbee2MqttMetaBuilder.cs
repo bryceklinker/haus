@@ -37,7 +37,7 @@ namespace Haus.Zigbee.Host.Tests.Support
             return this;
         }
 
-        public JToken BuildJToken()
+        public JObject BuildJToken()
         {
             try
             {

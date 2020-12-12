@@ -103,9 +103,9 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
             var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
             Assert.Equal(DeviceDiscoveredModel.Type, hausEvent.Type);
             Assert.Equal("this-is-an-id", hausEvent.Payload.Id);
-            Assert.Equal("my description", hausEvent.Payload.Description);
-            Assert.Equal("this is a model", hausEvent.Payload.Model);
-            Assert.Equal("Philips", hausEvent.Payload.Vendor);
+            Assert.Contains(hausEvent.Payload.Metadata, m => m.Key == "description" && m.Value == "my description");
+            Assert.Contains(hausEvent.Payload.Metadata, m => m.Key == "model" && m.Value == "this is a model");
+            Assert.Contains(hausEvent.Payload.Metadata, m => m.Key == "vendor" && m.Value == "Philips");
             Assert.Equal(DeviceType.Unknown, hausEvent.Payload.DeviceType);
         }
 
