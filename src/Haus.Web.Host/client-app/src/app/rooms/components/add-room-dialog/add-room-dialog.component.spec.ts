@@ -9,7 +9,7 @@ describe('AddRoomDialogComponent', () => {
 
     userEvent.type(getByTestId('room-name-field'), 'three');
     detectChanges();
-    
+
     userEvent.click(getByTestId('save-room-btn'));
 
     expect(store.actions).toContainEntityAction(TestingActions.addOne(ENTITY_NAMES.Room, {name: 'three'}))

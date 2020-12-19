@@ -4,19 +4,18 @@ import {EffectsModule} from '@ngrx/effects';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {routerReducer, StoreRouterConnectingModule} from '@ngrx/router-store';
 import {AuthHttpInterceptor, AuthModule} from "@auth0/auth0-angular";
+import {CommonModule} from "@angular/common";
+import {DefaultDataServiceFactory, EntityDataModule, HttpUrlGenerator} from "@ngrx/data";
+import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {SignalREffects, signalrReducer} from "ngrx-signalr-core";
 
 import {AppRoutingModule} from './app-routing.module';
 import {environment} from '../environments/environment';
 import {SharedModule} from "./shared/shared.module";
 import {SHELL_COMPONENTS} from "./shell/components";
-import {DiagnosticsModule} from "./diagnostics/diagnostics.module";
-import {CommonModule} from "@angular/common";
 import {SimpleRouterSerializer} from "./shared/routing";
 import {AppState} from "./app.state";
-import {DefaultDataServiceFactory, EntityDataModule} from "@ngrx/data";
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
-import {HausDataServiceFactory} from "./shared/services/haus-data.service";
+import {HausDataServiceFactory, HausHttpUrlGeneratorService} from "./shared/services";
 import {ENTITY_METADATA} from "./entity-metadata";
 
 @NgModule({
@@ -37,8 +36,7 @@ import {ENTITY_METADATA} from "./entity-metadata";
     }),
     AuthModule,
     EntityDataModule.forRoot(ENTITY_METADATA),
-    SharedModule,
-    DiagnosticsModule
+    SharedModule
   ],
   providers: [
     {
@@ -46,7 +44,8 @@ import {ENTITY_METADATA} from "./entity-metadata";
       useClass: AuthHttpInterceptor,
       multi: true,
     },
-    {provide: DefaultDataServiceFactory, useClass: HausDataServiceFactory}
+    {provide: DefaultDataServiceFactory, useClass: HausDataServiceFactory},
+    {provide: HttpUrlGenerator, useClass: HausHttpUrlGeneratorService}
   ]
 })
 export class AppModule {
