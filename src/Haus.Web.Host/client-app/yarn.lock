@@ -1367,31 +1367,45 @@
     node-fetch "^2.6.0"
     ws "^6.0.0"
 
-"@ngrx/effects@10.1.0":
-  version "10.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/effects/-/@ngrx/effects-10.1.0.tgz#14efeb684e1e4a005a40357812c1fdd3aabb8489"
-  integrity sha1-FO/raE4eSgBaQDV4EsH906q7hIk=
+"@ngrx/data@10.1.1":
+  version "10.1.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/data/-/@ngrx/data-10.1.1.tgz#22aa4aa470c6987f1c449b9064f680f0dabd5c83"
+  integrity sha1-IqpKpHDGmH8cRJuQZPaA8Nq9XIM=
   dependencies:
     tslib "^2.0.0"
 
-"@ngrx/router-store@10.1.0":
-  version "10.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/router-store/-/@ngrx/router-store-10.1.0.tgz#e90a6e5279f0cc16de665ffdad67decd4052c416"
-  integrity sha1-6QpuUnnwzBbeZl/9rWfezUBSxBY=
+"@ngrx/effects@10.1.1":
+  version "10.1.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/effects/-/@ngrx/effects-10.1.1.tgz#cc6011b6b77c2c63f500a0dda547cfbaca0103c5"
+  integrity sha1-zGARtrd8LGP1AKDdpUfPusoBA8U=
   dependencies:
     tslib "^2.0.0"
 
-"@ngrx/store-devtools@10.1.0":
-  version "10.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store-devtools/-/@ngrx/store-devtools-10.1.0.tgz#bb0b90efe1840e0d4142dbeb4f5338d36bf1fdee"
-  integrity sha1-uwuQ7+GEDg1BQtvrT1M402vx/e4=
+"@ngrx/entity@10.1.1":
+  version "10.1.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/entity/-/@ngrx/entity-10.1.1.tgz#281470d85fd27b1221e2506f42c3a50f09c81afc"
+  integrity sha1-KBRw2F/SexIh4lBvQsOlDwnIGvw=
   dependencies:
     tslib "^2.0.0"
 
-"@ngrx/store@10.1.0":
-  version "10.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store/-/@ngrx/store-10.1.0.tgz#379aa38543fffd3e41ca8622434a171fe70ed6f8"
-  integrity sha1-N5qjhUP//T5ByoYiQ0oXH+cO1vg=
+"@ngrx/router-store@10.1.1":
+  version "10.1.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/router-store/-/@ngrx/router-store-10.1.1.tgz#595ead9ddd51421246a83224cd620cd2c74a4377"
+  integrity sha1-WV6tnd1RQhJGqDIkzWIM0sdKQ3c=
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/store-devtools@10.1.1":
+  version "10.1.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store-devtools/-/@ngrx/store-devtools-10.1.1.tgz#5c00ba554c90d7e975234a6dafc9082be0752f2e"
+  integrity sha1-XAC6VUyQ1+l1I0ptr8kIK+B1Ly4=
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/store@10.1.1":
+  version "10.1.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store/-/@ngrx/store-10.1.1.tgz#9df7193992aa2378c863ee8cecfc4de922efd9d6"
+  integrity sha1-nfcZOZKqI3jIY+6M7PxN6SLv2dY=
   dependencies:
     tslib "^2.0.0"
 

@@ -2,6 +2,7 @@ import {v4 as uuid} from 'uuid';
 import {DiagnosticsMessageModel} from "../app/diagnostics/models";
 import {DeviceModel} from "../app/devices/models";
 import {ListResult} from "../app/shared/models";
+import {RoomModel} from "../app/rooms/models/room.model";
 
 let id = 0;
 
@@ -33,8 +34,16 @@ function createListResult<T>(...items: Array<T>): ListResult<T> {
   }
 }
 
+function createRoomModel(model: Partial<RoomModel> = {}): RoomModel {
+  return {
+    id: model.id || ++id,
+    name: model.name || uuid()
+  };
+}
+
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
+  createRoomModel,
   createListResult,
 };

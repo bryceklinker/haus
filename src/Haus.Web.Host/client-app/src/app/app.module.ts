@@ -12,9 +12,12 @@ import {SharedModule} from "./shared/shared.module";
 import {SHELL_COMPONENTS} from "./shell/components";
 import {DiagnosticsModule} from "./diagnostics/diagnostics.module";
 import {CommonModule} from "@angular/common";
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {SimpleRouterSerializer} from "./shared/routing";
 import {AppState} from "./app.state";
+import {DefaultDataServiceFactory, EntityDataModule} from "@ngrx/data";
+import {HTTP_INTERCEPTORS} from "@angular/common/http";
+import {HausDataServiceFactory} from "./shared/services/haus-data.service";
+import {ENTITY_METADATA} from "./entity-metadata";
 
 @NgModule({
   declarations: [
@@ -23,7 +26,6 @@ import {AppState} from "./app.state";
   imports: [
     CommonModule,
     AppRoutingModule,
-    SharedModule,
     StoreModule.forRoot<Partial<AppState>>({
       signalr: signalrReducer,
       router: routerReducer
@@ -34,6 +36,8 @@ import {AppState} from "./app.state";
       serializer: SimpleRouterSerializer
     }),
     AuthModule,
+    EntityDataModule.forRoot(ENTITY_METADATA),
+    SharedModule,
     DiagnosticsModule
   ],
   providers: [
@@ -41,7 +45,8 @@ import {AppState} from "./app.state";
       provide: HTTP_INTERCEPTORS,
       useClass: AuthHttpInterceptor,
       multi: true,
-    }
+    },
+    {provide: DefaultDataServiceFactory, useClass: HausDataServiceFactory}
   ]
 })
 export class AppModule {

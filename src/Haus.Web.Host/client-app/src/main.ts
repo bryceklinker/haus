@@ -25,7 +25,8 @@ SettingsService.loadSettings()
           redirectUri: window.location.origin,
           httpInterceptor: {
             allowedList: [
-              '/api/*'
+              '/api/*',
+              'api/*'
             ]
           }
         })

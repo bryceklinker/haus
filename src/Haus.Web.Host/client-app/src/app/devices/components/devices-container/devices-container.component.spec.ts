@@ -1,6 +1,6 @@
 import {Action} from "@ngrx/store";
 
-import {createAppState, renderFeatureComponent, ModelFactory} from "../../../../testing";
+import {renderFeatureComponent, ModelFactory} from "../../../../testing";
 import {DevicesModule} from "../../devices.module";
 import {DevicesContainerComponent} from "./devices-container.component";
 import {DevicesActions} from "../../actions";
@@ -26,7 +26,7 @@ describe('DevicesContainer', () => {
   async function renderContainer(...actions: Action[]) {
     return await renderFeatureComponent(DevicesContainerComponent, {
       imports: [DevicesModule],
-      state: createAppState(...actions)
+      actions: [...actions]
     });
   }
 })

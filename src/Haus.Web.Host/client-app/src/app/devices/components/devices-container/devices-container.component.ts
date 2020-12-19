@@ -12,7 +12,7 @@ import {selectDevices} from "../../reducers/devices.reducer";
   styleUrls: ['./devices-container.component.scss']
 })
 export class DevicesContainerComponent implements OnInit {
-  devices$: Observable<DeviceModel[]>;
+  devices$: Observable<DeviceModel[]> | null = null;
 
   constructor(private store: Store<AppState>) {
     this.devices$ = store.select(selectDevices);

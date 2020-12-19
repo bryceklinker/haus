@@ -27,4 +27,8 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="zigbee_data\state.json" />
+  </ItemGroup>
 </Project>

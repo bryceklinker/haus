@@ -1,0 +1,26 @@
+import {ModelFactory, renderFeatureComponent, TestingActions} from "../../../../testing";
+import {RoomsContainerComponent} from "./rooms-container.component";
+import {RoomsModule} from "../../rooms.module";
+import {ENTITY_NAMES} from "../../../entity-metadata";
+import {Action} from "@ngrx/store";
+
+describe('RoomsContainerComponent', () => {
+  it('should show each room in list', async () => {
+    const queryAllAction = TestingActions.createQueryAllSuccess(ENTITY_NAMES.Room, [
+      ModelFactory.createRoomModel(),
+      ModelFactory.createRoomModel(),
+      ModelFactory.createRoomModel()
+    ])
+
+    const {queryAllByTestId} = await renderContainer(queryAllAction);
+
+    expect(queryAllByTestId('room-item')).toHaveLength(3);
+  })
+
+  function renderContainer(...actions: Action[]){
+    return renderFeatureComponent(RoomsContainerComponent, {
+      imports: [RoomsModule],
+      actions: [...actions]
+    })
+  }
+})

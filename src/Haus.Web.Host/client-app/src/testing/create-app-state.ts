@@ -8,18 +8,18 @@ import {DIAGNOSTICS_FEATURE_KEY, diagnosticsReducer} from "../app/diagnostics/re
 import {loadingReducer} from "../app/shared/loading/loading.reducer";
 import {DEVICES_FEATURE_KEY, devicesReducer} from "../app/devices/reducers/devices.reducer";
 
-export function createAppState(...actions: Action[]): AppState {
-  const reducer = combineReducers<AppState>({
-    signalr: signalrReducer,
-    loading: loadingReducer,
-    router: routerReducer,
-    [DIAGNOSTICS_FEATURE_KEY]: diagnosticsReducer,
-    [DEVICES_FEATURE_KEY]: devicesReducer
-  });
+export const rootReducer = combineReducers<AppState>({
+  signalr: signalrReducer,
+  loading: loadingReducer,
+  router: routerReducer,
+  [DIAGNOSTICS_FEATURE_KEY]: diagnosticsReducer,
+  [DEVICES_FEATURE_KEY]: devicesReducer
+})
 
+export function createAppState(...actions: Action[]): AppState {
   const nonRouterActions = actions.filter(a => a.type !== TestingActions.setRouterState.type);
   const routerActions = actions.filter(a => a.type === TestingActions.setRouterState.type);
-  const state = runActionsThroughReducer(reducer, ...nonRouterActions);
+  const state = runActionsThroughReducer(rootReducer, ...nonRouterActions);
   return routerActions.reduce((state, action) => generateRouterState(state, <any>action), state)
 }
 

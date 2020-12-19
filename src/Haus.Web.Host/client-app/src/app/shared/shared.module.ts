@@ -17,13 +17,16 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatExpansionModule} from "@angular/material/expansion";
 
 import {SettingsService} from "./settings";
 import {ThemeService} from "./theming/theme.service";
 import {HausApiClient} from "./rest-api/haus-api-client";
+import {DefaultDataService, DefaultDataServiceFactory, EntityDataModule} from "@ngrx/data";
+import {HausDataService, HausDataServiceFactory} from "./services/haus-data.service";
+import {AuthHttpInterceptor, AuthModule} from "@auth0/auth0-angular";
 
 const MATERIAL_MODULES = [
   MatButtonModule,
@@ -59,7 +62,8 @@ const MATERIAL_MODULES = [
     HttpClientModule
   ],
   exports: [
-    ...MATERIAL_MODULES
+    ...MATERIAL_MODULES,
+    HttpClientModule
   ]
 })
 export class SharedModule {

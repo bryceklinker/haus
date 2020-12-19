@@ -3,19 +3,20 @@ import {FunctionIsNotAllowed} from "@ngrx/store/src/models";
 import {Inject, Injectable} from "@angular/core";
 import {MockState, MockStore} from "@ngrx/store/testing";
 
-@Injectable()
-export class TestingStore<TState> extends MockStore<TState> {
+@Injectable({
+  providedIn: 'root'
+})
+export class TestingStore<TState> extends Store<TState> {
   private _actions: Array<Action>;
 
   get actions(): Array<Action> {
     return this._actions;
   }
 
-  constructor(state$: MockState<TState>,
+  constructor(state$: StateObservable,
               actionsObserver: ActionsSubject,
-              reducerManager: ReducerManager,
-              @Inject(INITIAL_STATE) initialState: TState) {
-    super(state$, actionsObserver, reducerManager, initialState, []);
+              reducerManager: ReducerManager) {
+    super(state$, actionsObserver, reducerManager);
     this._actions = [];
   }
 

@@ -2,7 +2,7 @@ import {render, RenderComponentOptions, RenderResult, fireEvent} from '@testing-
 import {Type} from "@angular/core";
 import {Router, Routes} from "@angular/router";
 import {TestBed} from "@angular/core/testing";
-import {Store} from "@ngrx/store";
+import {Action, Store} from "@ngrx/store";
 import {By} from "@angular/platform-browser";
 
 import {AppState} from "../app/app.state";
@@ -10,10 +10,11 @@ import {SharedModule} from "../app/shared/shared.module";
 import {SHELL_COMPONENTS} from "../app/shell/components";
 import {createTestingModule} from "./create-testing-module";
 import {TestingStore} from "./fakes";
+import {TestingActions} from "./testing-actions";
 
 export interface RenderAppComponentOptions<T> extends RenderComponentOptions<T> {
   routes?: Routes;
-  state?: AppState;
+  actions?: Action[];
 }
 
 export interface RenderFeatureComponentOptions<T> extends RenderAppComponentOptions<T> {
@@ -43,18 +44,32 @@ export async function renderFeatureComponent<T>(component: Type<T>, options: Ren
   return await renderComponent(component, featureOptions);
 }
 
-async function renderComponent<T>(component: Type<T>, options: RenderComponentOptions<T>): Promise<RenderComponentResult<T>> {
-  const result = <RenderComponentResult<T>>await render(component, {
+async function renderComponent<T>(component: Type<T>, options: RenderAppComponentOptions<T>): Promise<RenderComponentResult<T>> {
+  const result = await render(component, {
     ...options,
     excludeComponentDeclaration: true,
   });
-  result.router = TestBed.inject(Router);
-  result.store = <TestingStore<AppState>>TestBed.inject(Store);
-  result.fireEvent = fireEvent;
-  result.triggerEventHandler = <TDirective>(directive: Type<TDirective>, eventName: string, eventArg?: any) => {
-    result.fixture.debugElement.query(By.directive(directive))
-      .triggerEventHandler(eventName, eventArg);
-  }
-  return result;
+  dispatchActions(options.actions)
+  result.fixture.detectChanges();
+  return {
+    ...result,
+    triggerEventHandler: createEventTriggerHandler(result),
+    store: <TestingStore<AppState>>TestBed.inject(Store),
+    fireEvent,
+    router: TestBed.inject(Router)
+  };
 }
 
+function dispatchActions(actions: Action[] = []) {
+  const store = TestBed.inject(Store);
+  store.dispatch(TestingActions.initAction());
+  for (let action of actions) {
+    store.dispatch(action);
+  }
+}
+
+function createEventTriggerHandler<TComponent, TDirective>({fixture}: RenderResult<TComponent>) {
+  return <TDirective>(directive: Type<TDirective>, eventName: string, eventArg?: any) => {
+      fixture.debugElement.query(By.directive(directive)).triggerEventHandler(eventName, eventArg);
+  }
+}

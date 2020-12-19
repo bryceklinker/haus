@@ -1,10 +1,9 @@
 import {DiagnosticsContainerComponent} from "./diagnostics-container.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
-import {createAppState, renderFeatureComponent} from "../../../../testing";
+import {renderFeatureComponent, ModelFactory} from "../../../../testing";
 import {signalrConnected} from "ngrx-signalr-core";
 import {DIAGNOSTICS_HUB} from "../../effects/diagnostics-hub";
 import {DiagnosticsActions} from "../../actions";
-import {ModelFactory} from "../../../../testing/model-factory";
 import {Action} from "@ngrx/store";
 
 describe('DiagnosticsContainerComponent', () => {
@@ -72,7 +71,7 @@ describe('DiagnosticsContainerComponent', () => {
   async function renderContainer(...actions: Array<Action>) {
     return await renderFeatureComponent(DiagnosticsContainerComponent, {
       imports: [DiagnosticsModule],
-      state: createAppState(...actions)
+      actions: [...actions]
     })
   }
 })
