@@ -15,9 +15,10 @@ export class RoomsContainerComponent implements OnInit{
 
   constructor(private factory: EntityCollectionServiceFactory) {
     this.service = factory.create<RoomModel>(ENTITY_NAMES.Room);
+    this.rooms$ = this.service.entities$;
   }
 
   ngOnInit(): void {
-    this.rooms$ = this.service.entities$;
+    this.service.getAll();
   }
 }

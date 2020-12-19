@@ -7,7 +7,7 @@ import {DeviceMetadataModel, DeviceModel} from "../../models";
   styleUrls: ['./device-detail.component.scss']
 })
 export class DeviceDetailComponent {
-  @Input() device: DeviceModel | null = null;
+  @Input() device: DeviceModel | null | undefined = null;
 
   get name(): string {
     return this.device ? this.device.name : 'N/A';
