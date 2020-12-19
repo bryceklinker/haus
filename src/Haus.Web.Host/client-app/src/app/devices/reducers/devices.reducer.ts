@@ -2,21 +2,17 @@ import {Action, createFeatureSelector, createReducer, createSelector, on} from "
 import {selectRouteParam} from '../../shared/routing';
 import {DevicesState} from "../devices.state";
 import {DevicesActions} from "../actions";
+import {EntitySelectorsFactory} from "@ngrx/data";
+import {DeviceModel} from "../models";
+import {ENTITY_NAMES} from "../../entity-metadata";
 
 export const DEVICES_FEATURE_KEY = 'devices';
 
 const INITIAL_STATE: DevicesState = {
-  devices: {},
   allowDiscovery: false
 };
 
 const reducer = createReducer(INITIAL_STATE,
-  on(DevicesActions.load.success, (state, {payload}) => ({
-    ...state,
-    devices: {
-      ...payload.items.reduce((s, model) => ({...s, [model.id]: model}), state.devices)
-    }
-  })),
   on(DevicesActions.startDiscovery.success, (state) => ({...state, allowDiscovery: true})),
   on(DevicesActions.stopDiscovery.success, (state) => ({...state, allowDiscovery: false}))
 );
@@ -25,10 +21,11 @@ export function devicesReducer(state: DevicesState | undefined, action: Action):
   return reducer(state, action);
 }
 
+const deviceSelectors = new EntitySelectorsFactory().create<DeviceModel>(ENTITY_NAMES.Device);
+
 const selectDevicesState = createFeatureSelector<DevicesState>(DEVICES_FEATURE_KEY);
-export const selectDevicesById = createSelector(selectDevicesState, s => s.devices);
-export const selectDevices = createSelector(selectDevicesState, s => Object.keys(s.devices).map(key => s.devices[Number(key)]))
 export const selectDevicesAllowDiscovery = createSelector(selectDevicesState, s => s.allowDiscovery);
+export const selectDevicesById = deviceSelectors.selectEntityMap
 export const selectDeviceById = createSelector(
   selectDevicesById,
   selectRouteParam('deviceId'),

@@ -1,10 +1,8 @@
 import {Component, OnInit} from "@angular/core";
-import {AppState} from "../../../app.state";
-import {Store} from "@ngrx/store";
-import {DevicesActions} from "../../actions";
 import {Observable} from "rxjs";
 import {DeviceModel} from "../../models";
-import {selectDevices} from "../../reducers/devices.reducer";
+import {EntityCollectionService, EntityCollectionServiceFactory} from "@ngrx/data";
+import {ENTITY_NAMES} from "../../../entity-metadata";
 
 @Component({
   selector: 'devices-container',
@@ -12,13 +10,15 @@ import {selectDevices} from "../../reducers/devices.reducer";
   styleUrls: ['./devices-container.component.scss']
 })
 export class DevicesContainerComponent implements OnInit {
+  private readonly service: EntityCollectionService<DeviceModel>;
   devices$: Observable<DeviceModel[]> | null = null;
 
-  constructor(private store: Store<AppState>) {
-    this.devices$ = store.select(selectDevices);
+  constructor(private factory: EntityCollectionServiceFactory) {
+    this.service = factory.create<DeviceModel>(ENTITY_NAMES.Device);
+    this.devices$ = this.service.entities$;
   }
 
   ngOnInit(): void {
-    this.store.dispatch(DevicesActions.load.request());
+    this.service.getAll();
   }
 }

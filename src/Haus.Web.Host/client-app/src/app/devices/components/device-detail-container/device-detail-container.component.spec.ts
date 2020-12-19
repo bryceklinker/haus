@@ -2,18 +2,18 @@ import {Action} from "@ngrx/store";
 import {ModelFactory, renderFeatureComponent, TestingActions} from "../../../../testing";
 import {DeviceDetailContainerComponent} from "./device-detail-container.component";
 import {DevicesModule} from "../../devices.module";
-import {DevicesActions} from "../../actions";
+import {ENTITY_NAMES} from "../../../entity-metadata";
 
 describe('DeviceDetailContainerComponent', () => {
   it('should show device currently selected', async () => {
-    const devicesResult = ModelFactory.createListResult(
+    const devices = [
       ModelFactory.createDeviceModel({id: 99}),
       ModelFactory.createDeviceModel({id: 54, name: 'bobo'}),
       ModelFactory.createDeviceModel({id: 33})
-    )
+    ]
     const {container} = await renderDetailContainer(
       TestingActions.setRouterState({url: '/devices/54', params: {deviceId: '54'}}),
-      DevicesActions.load.success(devicesResult)
+      TestingActions.createQueryAllSuccess(ENTITY_NAMES.Device, devices)
     );
 
     expect(container).toHaveTextContent('bobo');

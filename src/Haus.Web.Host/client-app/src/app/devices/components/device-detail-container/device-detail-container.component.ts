@@ -1,8 +1,9 @@
 import {Component} from "@angular/core";
-import {DeviceModel} from "../../models";
 import {Observable} from "rxjs";
-import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
+
+import {DeviceModel} from "../../models";
+import {AppState} from "../../../app.state";
 import {selectDeviceById} from "../../reducers/devices.reducer";
 
 @Component({
@@ -11,9 +12,9 @@ import {selectDeviceById} from "../../reducers/devices.reducer";
   styleUrls: ['./device-detail-container.component.scss']
 })
 export class DeviceDetailContainerComponent {
-  selectedDevice$: Observable<DeviceModel | null>;
+  selectedDevice$: Observable<DeviceModel | undefined | null>;
 
   constructor(private store: Store<AppState>) {
-    this.selectedDevice$ = store.select(selectDeviceById);
+    this.selectedDevice$ = this.store.select(selectDeviceById);
   }
 }

@@ -71,7 +71,7 @@ describe('DiagnosticsContainerComponent', () => {
   async function renderContainer(...actions: Array<Action>) {
     return await renderFeatureComponent(DiagnosticsContainerComponent, {
       imports: [DiagnosticsModule],
-      actions: [...actions]
+      actions
     })
   }
 })

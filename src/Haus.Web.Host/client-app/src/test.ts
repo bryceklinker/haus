@@ -1,5 +1,6 @@
 import 'jest-preset-angular';
 import '@testing-library/jest-dom';
+import './testing/action-expectations';
 import {setupSignalrTestingHub} from "./testing";
 
 beforeAll(() => {
