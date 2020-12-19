@@ -1,1 +1,8 @@
-<rooms-list [rooms]="rooms$ | async"></rooms-list>
+<div class="master-detail-container">
+  <rooms-list [rooms]="rooms$ | async"
+  (addRoom)="onAddRoom()">
+
+  </rooms-list>
+  <router-outlet></router-outlet>
+</div>
+

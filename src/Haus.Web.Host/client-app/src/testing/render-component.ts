@@ -4,6 +4,7 @@ import {Router, Routes} from "@angular/router";
 import {TestBed} from "@angular/core/testing";
 import {Action, Store} from "@ngrx/store";
 import {By} from "@angular/platform-browser";
+import userEvent from '@testing-library/user-event';
 
 import {AppState} from "../app/app.state";
 import {SharedModule} from "../app/shared/shared.module";
@@ -11,6 +12,8 @@ import {SHELL_COMPONENTS} from "../app/shell/components";
 import {createTestingModule} from "./create-testing-module";
 import {TestingStore} from "./fakes";
 import {TestingActions} from "./testing-actions";
+import {MatDialog} from "@angular/material/dialog";
+import {TestingMatDialog} from "./fakes/testing-mat-dialog";
 
 export interface RenderAppComponentOptions<T> extends RenderComponentOptions<T> {
   routes?: Routes;
@@ -26,6 +29,8 @@ export interface RenderComponentResult<T> extends RenderResult<T> {
   fireEvent: typeof fireEvent,
   triggerEventHandler: <TDirective>(directive: Type<TDirective>, eventName: string, eventArg?: any) => void;
   router: Router;
+  matDialog: TestingMatDialog,
+  userEvent: typeof userEvent
 }
 
 export async function renderAppComponent<T>(component: Type<T>, options?: RenderAppComponentOptions<T>): Promise<RenderComponentResult<T>> {
@@ -56,7 +61,9 @@ async function renderComponent<T>(component: Type<T>, options: RenderAppComponen
     triggerEventHandler: createEventTriggerHandler(result),
     store: <TestingStore<AppState>>TestBed.inject(Store),
     fireEvent,
-    router: TestBed.inject(Router)
+    router: TestBed.inject(Router),
+    matDialog: TestBed.inject(MatDialog),
+    userEvent: userEvent
   };
 }
 

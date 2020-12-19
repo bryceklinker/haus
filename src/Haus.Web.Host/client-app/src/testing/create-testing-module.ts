@@ -17,6 +17,8 @@ import {ENTITY_METADATA} from "../app/entity-metadata";
 import {appReducerMap} from "../app/app-reducer-map";
 import {AppState} from "../app/app.state";
 import {TestingActions} from "./testing-actions";
+import {MatDialog} from "@angular/material/dialog";
+import {TestingMatDialog} from "./fakes/testing-mat-dialog";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   routes?: Routes;
@@ -63,7 +65,8 @@ export function getTestingProviders(actions$: Subject<Action>) {
     provideMockActions(() => actions$),
     {provide: Store, useClass: TestingStore},
     {provide: Location, useFactory: () => new SpyLocation()},
-    {provide: AuthService, useClass: TestingAuthService}
+    {provide: AuthService, useClass: TestingAuthService},
+    {provide: MatDialog, useClass: TestingMatDialog}
   ]
 }
 

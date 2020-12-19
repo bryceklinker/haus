@@ -2,4 +2,7 @@
   <a mat-list-item *ngFor="let room of rooms" data-testid="room-item">
     {{room.name}}
   </a>
+  <button mat-fab (click)="onAddRoom()" data-testid="add-room-btn">
+    <mat-icon>plus</mat-icon>
+  </button>
 </mat-list>

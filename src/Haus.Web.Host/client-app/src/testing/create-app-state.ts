@@ -25,18 +25,7 @@ export function createAppState(...actions: Action[]): AppState {
 
 export function runActionsThroughReducer<TState>(reducer: ActionReducer<TState>, ...actions: Action[]): TState {
   const initialState = reducer(undefined, TestingActions.initAction());
-  return actions.reduce((state, action) => {
-    if (action.type === TestingActions.setRouterState.type) {
-      return {
-        ...state,
-        router: {
-          ...(<any>state).router,
-          ...(<ReturnType<typeof TestingActions.setRouterState>>action).payload
-        }
-      }
-    }
-    return reducer(state, action)
-  }, initialState);
+  return actions.reduce((state, action) => reducer(state, action), initialState);
 }
 
 function generateRouterState(appState: AppState, action: ReturnType<typeof TestingActions.setRouterState>) {

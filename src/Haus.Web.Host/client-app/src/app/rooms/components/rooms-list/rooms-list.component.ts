@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, Output, EventEmitter} from "@angular/core";
 import {RoomModel} from "../../models/room.model";
 
 @Component({
@@ -8,4 +8,9 @@ import {RoomModel} from "../../models/room.model";
 })
 export class RoomsListComponent {
   @Input() rooms: Array<RoomModel> | null = [];
+  @Output() addRoom = new EventEmitter<void>();
+
+  onAddRoom(): void {
+    this.addRoom.emit();
+  }
 }

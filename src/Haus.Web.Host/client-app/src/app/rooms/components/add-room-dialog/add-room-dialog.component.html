@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Add Room</h1>
+<div mat-dialog-content >
+  <form [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput  formControlName="name" data-testid="room-name-field">
+    </mat-form-field>
+  </form>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSave()" data-testid="save-room-btn" [disabled]="form.invalid">
+    Save
+  </button>
+</div>

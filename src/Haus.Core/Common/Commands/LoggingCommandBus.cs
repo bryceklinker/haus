@@ -42,7 +42,7 @@ namespace Haus.Core.Common.Commands
 
         protected override void LogStarted<TInput>(TInput input)
         {
-            Logger.LogInformation("Starting to execute command {Command}ms", input);
+            Logger.LogInformation("Starting to execute command {Command}", input);
         }
     }
 }

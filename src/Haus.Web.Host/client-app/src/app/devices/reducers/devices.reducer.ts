@@ -1,8 +1,9 @@
 import {Action, createFeatureSelector, createReducer, createSelector, on} from "@ngrx/store";
+import {EntitySelectorsFactory} from "@ngrx/data";
+
 import {selectRouteParam} from '../../shared/routing';
 import {DevicesState} from "../devices.state";
 import {DevicesActions} from "../actions";
-import {EntitySelectorsFactory} from "@ngrx/data";
 import {DeviceModel} from "../models";
 import {ENTITY_NAMES} from "../../entity-metadata";
 
@@ -25,9 +26,8 @@ const deviceSelectors = new EntitySelectorsFactory().create<DeviceModel>(ENTITY_
 
 const selectDevicesState = createFeatureSelector<DevicesState>(DEVICES_FEATURE_KEY);
 export const selectDevicesAllowDiscovery = createSelector(selectDevicesState, s => s.allowDiscovery);
-export const selectDevicesById = deviceSelectors.selectEntityMap
 export const selectDeviceById = createSelector(
-  selectDevicesById,
+  deviceSelectors.selectEntityMap,
   selectRouteParam('deviceId'),
   (devicesById, deviceId) => {
     return deviceId ? devicesById[deviceId] : null
