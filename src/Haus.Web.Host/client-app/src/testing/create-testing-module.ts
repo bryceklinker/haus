@@ -61,7 +61,6 @@ export function getTestingImports(routes: Routes, actions: Action[]) {
 
 export function getTestingProviders(actions$: Subject<Action>) {
   return [
-    // provideMockActions(() => actions$),
     {provide: Store, useClass: TestingStore},
     {provide: Location, useFactory: () => new SpyLocation()},
     {provide: AuthService, useClass: TestingAuthService},

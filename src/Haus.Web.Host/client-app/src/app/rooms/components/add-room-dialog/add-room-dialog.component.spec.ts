@@ -4,27 +4,17 @@ import {RoomsModule} from "../../rooms.module";
 import {ENTITY_NAMES} from "../../../entity-metadata";
 
 describe('AddRoomDialogComponent', () => {
-  it('should add room when dialog is submitted', async () => {
-    const {getByTestId, userEvent, store, detectChanges} = await renderDialog();
-
-    userEvent.type(getByTestId('room-name-field'), 'three');
-    detectChanges();
-
-    userEvent.click(getByTestId('save-room-btn'));
-
-    expect(store.actions).toContainEntityAction(TestingActions.addOne(ENTITY_NAMES.Room, {name: 'three'}))
-  })
-
   it('should close dialog when adding room succeeds', async () => {
     TestingServer.setupPost('/api/rooms', {id: 1, name: 'three'});
 
-    const {getByTestId, userEvent, detectChanges, matDialogRef} = await renderDialog();
+    const {getByTestId, userEvent, detectChanges, matDialogRef, store} = await renderDialog();
     userEvent.type(getByTestId('room-name-field'), 'three');
     detectChanges();
     userEvent.click(getByTestId('save-room-btn'));
 
     await eventually(() => {
       expect(matDialogRef.close).toHaveBeenCalledWith();
+      expect(store.actions).toContainEntityAction(TestingActions.addOne(ENTITY_NAMES.Room, {name: 'three'}))
     })
   })
 
@@ -41,6 +31,8 @@ describe('AddRoomDialogComponent', () => {
 
     expect(matDialogRef.close).toHaveBeenCalledWith();
   })
+
+
 
   function renderDialog() {
     return renderFeatureComponent(AddRoomDialogComponent, {

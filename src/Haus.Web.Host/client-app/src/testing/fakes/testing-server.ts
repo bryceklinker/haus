@@ -10,6 +10,12 @@ function createDefaultServer() {
         ctx.status(200)
       )
     }),
+    rest.post('/api/rooms', (req, res, ctx) => {
+      return res(
+        ctx.json(ModelFactory.createRoomModel()),
+        ctx.status(204)
+      )
+    }),
     rest.get('/api/devices', (req, res, ctx) => {
       return res(
         ctx.json(ModelFactory.createListResult()),
