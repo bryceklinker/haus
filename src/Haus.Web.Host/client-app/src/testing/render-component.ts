@@ -12,8 +12,9 @@ import {SHELL_COMPONENTS} from "../app/shell/components";
 import {createTestingModule} from "./create-testing-module";
 import {TestingStore} from "./fakes";
 import {TestingActions} from "./testing-actions";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {TestingMatDialog} from "./fakes/testing-mat-dialog";
+import {TestingMatDialogRef} from "./fakes/testing-mat-dialog-ref";
 
 export interface RenderAppComponentOptions<T> extends RenderComponentOptions<T> {
   routes?: Routes;
@@ -30,6 +31,7 @@ export interface RenderComponentResult<T> extends RenderResult<T> {
   triggerEventHandler: <TDirective>(directive: Type<TDirective>, eventName: string, eventArg?: any) => void;
   router: Router;
   matDialog: TestingMatDialog,
+  matDialogRef: TestingMatDialogRef,
   userEvent: typeof userEvent
 }
 
@@ -62,7 +64,8 @@ async function renderComponent<T>(component: Type<T>, options: RenderAppComponen
     store: <TestingStore<AppState>>TestBed.inject(Store),
     fireEvent,
     router: TestBed.inject(Router),
-    matDialog: TestBed.inject(MatDialog),
+    matDialog: <TestingMatDialog>TestBed.inject(MatDialog),
+    matDialogRef: <TestingMatDialogRef>TestBed.inject(MatDialogRef),
     userEvent: userEvent
   };
 }

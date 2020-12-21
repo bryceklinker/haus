@@ -1,5 +1,5 @@
 import {Subject} from "rxjs";
-import {Action} from "@ngrx/store";
+import {Action, ActionsSubject} from "@ngrx/store";
 import {Type} from "@angular/core";
 import {createTestingModule, TestModuleOptions} from "./create-testing-module";
 import {TestBed} from "@angular/core/testing";
@@ -14,6 +14,6 @@ export function createTestingEffect<T>(effects: Type<T>, options: TestModuleOpti
     TestBed.configureTestingModule(effectsOptions);
     return {
         effects: TestBed.inject(effects),
-        actions$: effectsOptions.actions$
+        actions$: TestBed.inject(ActionsSubject)
     }
 }

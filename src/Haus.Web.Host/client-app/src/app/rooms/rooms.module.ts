@@ -5,7 +5,6 @@ import {CommonModule} from "@angular/common";
 import {SharedModule} from "../shared/shared.module";
 import {RoomsRoutingModule} from "./rooms-routing.module";
 import {ROOMS_COMPONENTS} from "./components";
-import {EntityDefinitionService} from "@ngrx/data";
 
 @NgModule({
   imports: [
@@ -19,9 +18,4 @@ import {EntityDefinitionService} from "@ngrx/data";
   ]
 })
 export class RoomsModule {
-  constructor(private eds: EntityDefinitionService) {
-    eds.registerMetadata({
-      entityName: 'Room'
-    })
-  }
 }

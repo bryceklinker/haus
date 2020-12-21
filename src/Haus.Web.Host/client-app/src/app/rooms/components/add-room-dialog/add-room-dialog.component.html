@@ -9,6 +9,9 @@
 
 </div>
 <div mat-dialog-actions>
+  <button mat-button (click)="onCancel()" data-testid="cancel-room-btn">
+    Cancel
+  </button>
   <button mat-button (click)="onSave()" data-testid="save-room-btn" [disabled]="form.invalid">
     Save
   </button>

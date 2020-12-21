@@ -43,9 +43,7 @@ import {ENTITY_METADATA} from "./entity-metadata";
       provide: HTTP_INTERCEPTORS,
       useClass: AuthHttpInterceptor,
       multi: true,
-    },
-    {provide: DefaultDataServiceFactory, useClass: HausDataServiceFactory},
-    {provide: HttpUrlGenerator, useClass: HausHttpUrlGeneratorService}
+    }
   ]
 })
 export class AppModule {

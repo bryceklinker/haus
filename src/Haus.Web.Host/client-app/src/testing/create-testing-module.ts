@@ -3,7 +3,6 @@ import {Routes} from "@angular/router";
 import {ReplaySubject, Subject} from "rxjs";
 import {Action, combineReducers, Store, StoreModule} from "@ngrx/store";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
-import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
 import {EffectsModule} from "@ngrx/effects";
 import {SignalREffects} from "ngrx-signalr-core";
@@ -11,14 +10,15 @@ import {provideMockActions} from "@ngrx/effects/testing";
 import {AuthModule, AuthService} from "@auth0/auth0-angular";
 import {SpyLocation} from "@angular/common/testing";
 import {EntityDataModule} from "@ngrx/data";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 
 import {TestingStore, TestingAuthService} from "./fakes";
 import {ENTITY_METADATA} from "../app/entity-metadata";
-import {appReducerMap} from "../app/app-reducer-map";
 import {AppState} from "../app/app.state";
+import {appReducerMap} from "../app/app-reducer-map";
 import {TestingActions} from "./testing-actions";
-import {MatDialog} from "@angular/material/dialog";
 import {TestingMatDialog} from "./fakes/testing-mat-dialog";
+import {TestingMatDialogRef} from "./fakes/testing-mat-dialog-ref";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   routes?: Routes;
@@ -51,7 +51,6 @@ export function createTestingModule({
 export function getTestingImports(routes: Routes, actions: Action[]) {
   return [
     NoopAnimationsModule,
-    HttpClientTestingModule,
     RouterTestingModule.withRoutes(routes),
     EffectsModule.forRoot([SignalREffects]),
     StoreModule.forRoot(appReducerMap, {initialState: createAppStateIfSetRouterActionProvided(actions)}),
@@ -62,11 +61,12 @@ export function getTestingImports(routes: Routes, actions: Action[]) {
 
 export function getTestingProviders(actions$: Subject<Action>) {
   return [
-    provideMockActions(() => actions$),
+    // provideMockActions(() => actions$),
     {provide: Store, useClass: TestingStore},
     {provide: Location, useFactory: () => new SpyLocation()},
     {provide: AuthService, useClass: TestingAuthService},
-    {provide: MatDialog, useClass: TestingMatDialog}
+    {provide: MatDialog, useClass: TestingMatDialog},
+    {provide: MatDialogRef, useClass: TestingMatDialogRef}
   ]
 }
 

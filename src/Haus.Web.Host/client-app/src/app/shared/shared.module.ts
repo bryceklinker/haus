@@ -25,6 +25,8 @@ import {SettingsService} from "./settings";
 import {ThemeService} from "./theming/theme.service";
 import {HausApiClient} from "./rest-api/haus-api-client";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {DefaultDataServiceFactory, HttpUrlGenerator} from "@ngrx/data";
+import {HausDataServiceFactory, HausHttpUrlGeneratorService} from "./services";
 
 const MATERIAL_MODULES = [
   MatButtonModule,
@@ -53,7 +55,9 @@ const MATERIAL_MODULES = [
   providers: [
     SettingsService,
     ThemeService,
-    HausApiClient
+    HausApiClient,
+    {provide: DefaultDataServiceFactory, useClass: HausDataServiceFactory},
+    {provide: HttpUrlGenerator, useClass: HausHttpUrlGeneratorService}
   ],
   imports: [
     ...MATERIAL_MODULES,

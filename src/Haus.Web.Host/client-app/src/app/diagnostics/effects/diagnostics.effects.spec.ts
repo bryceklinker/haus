@@ -4,7 +4,14 @@ import {HttpTestingController} from "@angular/common/http/testing";
 import {createHub, createSignalRHub, signalrHubUnstarted, stopSignalRHub} from "ngrx-signalr-core";
 
 import {AuthService} from "@auth0/auth0-angular";
-import {createTestingEffect, TestingHub, eventually, TestingAuthService, ModelFactory} from "../../../testing";
+import {
+  createTestingEffect,
+  TestingHub,
+  eventually,
+  TestingAuthService,
+  ModelFactory,
+  TestingServer
+} from "../../../testing";
 import {DiagnosticsEffects} from "./diagnostics.effects";
 import {DiagnosticsModule} from "../diagnostics.module";
 import {Action} from "@ngrx/store";
@@ -17,7 +24,6 @@ describe('DiagnosticsEffects', () => {
   let actions$: Subject<Action>;
   let testingHub: TestingHub;
   let actionsCollector: Array<Action>;
-  let httpController: HttpTestingController;
   let authService: TestingAuthService;
 
   beforeAll(() => {
@@ -30,7 +36,6 @@ describe('DiagnosticsEffects', () => {
     actions$ = result.actions$;
     actionsCollector = [];
 
-    httpController = TestBed.inject(HttpTestingController);
     authService = TestBed.inject(AuthService) as TestingAuthService;
   })
 
@@ -85,24 +90,24 @@ describe('DiagnosticsEffects', () => {
   })
 
   it('should send message to be replayed', async () => {
+    TestingServer.setupPost('/api/diagnostics/replay', null, 204);
     effects.replayMessage$.subscribe((action: Action) => actionsCollector.push(action));
     const model = ModelFactory.createMqttDiagnosticsMessage();
 
     actions$.next(DiagnosticsActions.replay.request(model));
 
     await eventually(() => {
-      httpController.match('/api/diagnostics/replay').forEach(r => r.flush(204));
       expect(actionsCollector).toContainEqual(DiagnosticsActions.replay.success(model));
     })
   })
 
   it('should notify that replaying message failed', async () => {
+    TestingServer.setupPost('/api/diagnostics/replay', null, 500);
     effects.replayMessage$.subscribe((action: Action) => actionsCollector.push(action));
 
     let model = ModelFactory.createMqttDiagnosticsMessage();
     actions$.next(DiagnosticsActions.replay.request(model));
     await eventually(() => {
-      httpController.match('/api/diagnostics/replay').forEach(r => r.error(new ErrorEvent('bad things')));
       expect(actionsCollector).toContainEqual({
         type: DiagnosticsActions.replay.failed.type,
         payload: {

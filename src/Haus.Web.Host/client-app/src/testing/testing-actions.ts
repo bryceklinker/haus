@@ -6,9 +6,9 @@ const initAction = createAction(INIT);
 const setRouterState = createAction('[Testing] Set Router State', (state: Partial<RouterUrlState>) => ({payload: state}))
 
 const actionFactory = new EntityActionFactory();
-const createQueryAllSuccess = (entityName: string, data?: any) => actionFactory.create(entityName, EntityOp.QUERY_ALL_SUCCESS, data);
-const createQueryAll = (entityName: string, data?: any) => actionFactory.create(entityName, EntityOp.QUERY_ALL, data || null);
-const addOne = (entityName: string, data?: any) => actionFactory.create(entityName, EntityOp.SAVE_ADD_ONE, data || null);
+const createQueryAllSuccess = (entityName: string, data?: any) => actionFactory.create(entityName, EntityOp.QUERY_ALL_SUCCESS, data, {skip: true});
+const createQueryAll = (entityName: string, data?: any) => actionFactory.create(entityName, EntityOp.QUERY_ALL, data || null, {skip: true});
+const addOne = (entityName: string, data?: any) => actionFactory.create(entityName, EntityOp.SAVE_ADD_ONE, data || null, {skip: true});
 export const TestingActions = {
   initAction,
   setRouterState,

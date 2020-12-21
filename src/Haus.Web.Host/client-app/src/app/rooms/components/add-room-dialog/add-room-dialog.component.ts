@@ -3,6 +3,7 @@ import {EntityCollectionService, EntityCollectionServiceFactory} from "@ngrx/dat
 import {RoomModel} from "../../models/room.model";
 import {ENTITY_NAMES} from "../../../entity-metadata";
 import {FormBuilder, Validators} from "@angular/forms";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'add-room-dialog',
@@ -15,12 +16,19 @@ export class AddRoomDialogComponent {
     name: ['', Validators.required]
   });
 
-  constructor(private factory: EntityCollectionServiceFactory) {
+  constructor(private factory: EntityCollectionServiceFactory,
+              private matDialogRef: MatDialogRef<AddRoomDialogComponent>) {
     this.service = factory.create(ENTITY_NAMES.Room);
   }
 
   onSave() {
+    this.service.add(this.form.getRawValue())
+      .subscribe(() => {
+        this.matDialogRef.close()
+      });
+  }
 
-    this.service.add(this.form.getRawValue());
+  onCancel() {
+    this.matDialogRef.close();
   }
 }
