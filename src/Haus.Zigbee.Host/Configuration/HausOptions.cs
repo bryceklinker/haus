@@ -1,15 +1,11 @@
 using System;
 using Haus.Core.Models.Devices;
+using Haus.Mqtt.Client.Settings;
 
 namespace Haus.Zigbee.Host.Configuration
 {
-    public class HausOptions
+    public class HausOptions : HausMqttSettings
     {
-        public string Server { get; set; }
-        public string EventsTopic { get; set; }
-        public string CommandsTopic { get; set; }
-        public string UnknownTopic { get; set; }
-
         public DeviceTypeOptions[] DeviceTypeOptions { get; set; } = Array.Empty<DeviceTypeOptions>();
     }
 }

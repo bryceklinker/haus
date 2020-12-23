@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using Haus.Web.Host.Common.Mqtt;
+using Haus.Mqtt.Client.Subscriptions;
 using MQTTnet;
 using Xunit;
 
-namespace Haus.Web.Host.Tests.Common.Mqtt
+namespace Haus.Mqtt.Client.Tests
 {
     public class HausMqttSubscriptionTest
     {

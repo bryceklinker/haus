@@ -14,7 +14,7 @@ using MQTTnet.Client.Subscribing;
 using MQTTnet.Client.Unsubscribing;
 using MQTTnet.Extensions.ManagedClient;
 
-namespace Haus.Web.Host.Tests.Support
+namespace Haus.Testing.Support.Fakes
 {
     public class FakeMqttClient : IManagedMqttClient, IMqttClient
     {

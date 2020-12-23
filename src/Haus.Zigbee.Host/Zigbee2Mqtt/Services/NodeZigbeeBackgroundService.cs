@@ -11,16 +11,13 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
     {
         private readonly INodeZigbeeProcess _zigbeeProcess;
         private readonly IZigbee2MqttConfigurationWriter _zigbee2MqttConfigurationWriter;
-        private readonly IZigbeeToHausMapper _zigbeeToHausMapper;
 
         public NodeZigbeeBackgroundService(
             INodeZigbeeProcess zigbeeProcess, 
-            IZigbee2MqttConfigurationWriter zigbee2MqttConfigurationWriter,
-            IZigbeeToHausMapper zigbeeToHausMapper)
+            IZigbee2MqttConfigurationWriter zigbee2MqttConfigurationWriter)
         {
             _zigbeeProcess = zigbeeProcess;
             _zigbee2MqttConfigurationWriter = zigbee2MqttConfigurationWriter;
-            _zigbeeToHausMapper = zigbeeToHausMapper;
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)

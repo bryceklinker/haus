@@ -3,7 +3,7 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using MQTTnet.Diagnostics;
 
-namespace Haus.Web.Host.Common.Mqtt
+namespace Haus.Mqtt.Client.Logging
 {
     public class MqttLogger : IMqttNetLogger
     {

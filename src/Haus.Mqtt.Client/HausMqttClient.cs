@@ -2,11 +2,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
+using Haus.Mqtt.Client.Subscriptions;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Extensions.ManagedClient;
 
-namespace Haus.Web.Host.Common.Mqtt
+namespace Haus.Mqtt.Client
 {
     public interface IHausMqttClient : IAsyncDisposable
     {

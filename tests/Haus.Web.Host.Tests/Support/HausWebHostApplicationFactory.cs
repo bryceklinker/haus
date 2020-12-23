@@ -14,6 +14,7 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;
+using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
 using Haus.Web.Host.Common.Mqtt;

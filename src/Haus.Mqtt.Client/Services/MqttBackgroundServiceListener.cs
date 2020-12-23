@@ -2,25 +2,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using MQTTnet;
 
-namespace Haus.Web.Host.Common.Mqtt
+namespace Haus.Mqtt.Client.Services
 {
     public abstract class MqttBackgroundServiceListener : BackgroundService
     {
         private readonly IHausMqttClientFactory _hausMqttClientFactory;
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly ILogger _logger;
 
-        public MqttBackgroundServiceListener(
+        protected MqttBackgroundServiceListener(
             IHausMqttClientFactory hausMqttClientFactory,
-            IServiceScopeFactory scopeFactory,
-            ILogger logger)
+            IServiceScopeFactory scopeFactory)
         {
             _hausMqttClientFactory = hausMqttClientFactory;
             _scopeFactory = scopeFactory;
-            _logger = logger;
         }
         
         public override async Task StartAsync(CancellationToken cancellationToken)

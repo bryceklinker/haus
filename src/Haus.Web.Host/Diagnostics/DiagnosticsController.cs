@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Haus.Core.Models.Diagnostics;
+using Haus.Mqtt.Client;
 using Haus.Web.Host.Common.Mqtt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,6 @@
 using Haus.Core;
+using Haus.Mqtt.Client;
+using Haus.Mqtt.Client.Settings;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.Mqtt;
 using Haus.Web.Host.Devices;
@@ -24,10 +26,8 @@ namespace Haus.Web.Host
                     opts.UseInMemoryDatabase("Haus");
                 })
                 .Configure<AuthOptions>(configuration.GetSection("Auth"))
-                .Configure<MqttOptions>(configuration.GetSection("Mqtt"))
-                .AddTransient<IMqttFactory, MqttFactory>()
-                .AddTransient<IMqttNetLogger, MqttLogger>()
-                .AddSingleton<IHausMqttClientFactory, HausMqttClientFactory>()
+                .Configure<HausMqttSettings>(configuration.GetSection("Mqtt"))
+                .AddHausMqtt()
                 .AddMediatR(typeof(ServiceCollectionExtensions).Assembly)
                 .AddHostedService<MqttMessageRouter>()
                 .AddHostedService<SyncDevicesBackgroundService>()

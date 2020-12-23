@@ -2,6 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Common.Events;
+using Haus.Mqtt.Client;
+using Haus.Mqtt.Client.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
@@ -13,7 +15,7 @@ namespace Haus.Web.Host.Common.Mqtt
         public MqttMessageRouter(IHausMqttClientFactory hausMqttClientFactory,
             IServiceScopeFactory scopeFactory,
             ILogger<MqttMessageRouter> logger)
-            : base(hausMqttClientFactory, scopeFactory, logger)
+            : base(hausMqttClientFactory, scopeFactory)
         {
         }
         

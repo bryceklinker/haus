@@ -2,6 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Events;
 using Haus.Core.Models;
+using Haus.Mqtt.Client;
+using Haus.Mqtt.Client.Settings;
 using Microsoft.Extensions.Options;
 using MQTTnet;
 
@@ -9,12 +11,12 @@ namespace Haus.Web.Host.Common.Mqtt
 {
     public class RoutableCommandHandler : IEventHandler<RoutableCommand>
     {
-        private readonly IOptions<MqttOptions> _mqttOptions;
+        private readonly IOptions<HausMqttSettings> _mqttOptions;
         private readonly IHausMqttClientFactory _clientFactory;
 
         private string CommandsTopic => _mqttOptions.Value.CommandsTopic;
         
-        public RoutableCommandHandler(IOptions<MqttOptions> mqttOptions, IHausMqttClientFactory clientFactory)
+        public RoutableCommandHandler(IOptions<HausMqttSettings> mqttOptions, IHausMqttClientFactory clientFactory)
         {
             _mqttOptions = mqttOptions;
             _clientFactory = clientFactory;

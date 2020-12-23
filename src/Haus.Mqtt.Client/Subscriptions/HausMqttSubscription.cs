@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using MQTTnet;
 
-namespace Haus.Web.Host.Common.Mqtt
+namespace Haus.Mqtt.Client.Subscriptions
 {
     public interface IHausMqttSubscription
     {

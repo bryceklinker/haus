@@ -1,34 +1,27 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
+using Haus.Mqtt.Client;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers;
+using Haus.Zigbee.Host.Zigbee2Mqtt.Mqtt;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using MQTTnet;
-using MQTTnet.Extensions;
-using MQTTnet.Extensions.ManagedClient;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
 {
     public class ZigbeeToHausRelay : BackgroundService
     {
-        private readonly IMqttFactory _mqttFactory;
+        private readonly IMqttClientFactory _mqttFactory;
         private readonly ILogger<ZigbeeToHausRelay> _logger;
-        private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
         private readonly IMqttMessageMapper _mqttMessageMapper;
-
-        private string ZigbeeMqttServerUrl => _zigbeeOptions.Value.Config.Mqtt.Server;
-        private IManagedMqttClient MqttClient { get; set; }
-
-        public ZigbeeToHausRelay(
-            IOptions<ZigbeeOptions> zigbeeOptions,
-            IMqttMessageMapper mqttMessageMapper,
-            IMqttFactory mqttFactory,
+        
+        private IHausMqttClient ZigbeeMqttClient { get; set; }
+        private IHausMqttClient HausMqttClient { get; set; }
+        
+        public ZigbeeToHausRelay(IMqttMessageMapper mqttMessageMapper,
+            IMqttClientFactory mqttFactory,
             ILogger<ZigbeeToHausRelay> logger)
         {
-            _zigbeeOptions = zigbeeOptions;
             _mqttMessageMapper = mqttMessageMapper;
             _mqttFactory = mqttFactory;
             _logger = logger;
@@ -36,17 +29,18 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
 
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
-            MqttClient = _mqttFactory.CreateManagedMqttClient();
-            await MqttClient.StartAsync(CreateMqttOptions(ZigbeeMqttServerUrl));
-            await MqttClient.SubscribeAsync("#");
-            MqttClient.UseApplicationMessageReceivedHandler(HandleMqttMessage);
+            ZigbeeMqttClient = await _mqttFactory.CreateZigbeeClient();
+            await ZigbeeMqttClient.SubscribeAsync("#", ZigbeeMessageHandler);
+            
+            HausMqttClient = await _mqttFactory.CreateHausClient();
+            await HausMqttClient.SubscribeAsync("#", HausMessageHandler);
             await base.StartAsync(cancellationToken);
         }
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            await MqttClient.StopAsync();
-            MqttClient.Dispose();
+            await HausMqttClient.DisposeAsync();
+            await ZigbeeMqttClient.DisposeAsync();
             await base.StopAsync(cancellationToken);
         }
 
@@ -58,27 +52,28 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
             }
         }
 
-        private async Task HandleMqttMessage(MqttApplicationMessageReceivedEventArgs arg)
+        private async Task HausMessageHandler(MqttApplicationMessage arg)
         {
-            var messageToSend = _mqttMessageMapper.Map(arg.ApplicationMessage);
+            await HandleMqttMessage(arg, ZigbeeMqttClient);
+        }
+
+        private async Task ZigbeeMessageHandler(MqttApplicationMessage arg)
+        {
+            await HandleMqttMessage(arg, HausMqttClient);
+        }
+
+        private async Task HandleMqttMessage(MqttApplicationMessage mqttMessage, IHausMqttClient targetMqtt)
+        {
+            var messageToSend = _mqttMessageMapper.Map(mqttMessage);
             if (messageToSend == null)
                 return;
 
             foreach (var message in messageToSend)
             {
                 _logger.LogInformation($"Sending message to {message.Topic}...");
-                await MqttClient.PublishAsync(message).ConfigureAwait(false);
+                await targetMqtt.PublishAsync(message).ConfigureAwait(false);
                 _logger.LogInformation($"Sent message to {message.Topic}.");    
             }
-            
-        }
-
-        private static IManagedMqttClientOptions CreateMqttOptions(string mqttServerUrl)
-        {
-            return new ManagedMqttClientOptionsBuilder()
-                .WithAutoReconnect()
-                .WithClientOptions(b => b.WithConnectionUri(new Uri(mqttServerUrl)))
-                .Build();
         }
     }
 }

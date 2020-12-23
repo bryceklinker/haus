@@ -8,12 +8,13 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.1" />
     <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.13" />
-    <PackageReference Include="YamlDotNet" Version="8.1.2" />
+    <PackageReference Include="YamlDotNet" Version="9.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Haus.Core.Models\Haus.Core.Models.csproj" />
     <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
+    <ProjectReference Include="..\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

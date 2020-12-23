@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Haus.Web.Host.Common.Mqtt;
-using Haus.Web.Host.Tests.Support;
+using Haus.Testing.Support.Fakes;
 using Microsoft.Extensions.Logging.Abstractions;
 using MQTTnet;
 using MQTTnet.Client;
 using Xunit;
 
-namespace Haus.Web.Host.Tests.Common.Mqtt
+namespace Haus.Mqtt.Client.Tests
 {
     public class HausMqttClientTest
     {

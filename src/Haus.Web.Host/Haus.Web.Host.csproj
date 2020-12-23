@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Haus.Core\Haus.Core.csproj" />
     <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
+    <ProjectReference Include="..\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj" />
   </ItemGroup>
 
   <Target Name="RunBundler" AfterTargets="ComputeFilesToPublish">

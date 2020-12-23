@@ -2,6 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Haus.Core.Models;
+using Haus.Mqtt.Client;
 using Haus.Web.Host.Common.Mqtt;
 using MQTTnet;
 using MQTTnet.Extensions.ManagedClient;
