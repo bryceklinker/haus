@@ -11,7 +11,7 @@ import {DiagnosticsModule} from "../../diagnostics.module";
 import {DiagnosticsRootComponent} from "./diagnostics-root.component";
 import {KNOWN_HUB_NAMES} from "../../../shared/signalr";
 import userEvent from "@testing-library/user-event";
-import {use} from "msw/lib/types/utils/handlers/requestHandlerUtils";
+import {HttpMethod} from "../../../shared/rest-api";
 
 describe('DiagnosticsRootComponent', () => {
   let hubConnection: TestingSignalrHubConnectionService;
@@ -56,7 +56,7 @@ describe('DiagnosticsRootComponent', () => {
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/start-discovery');
-      expect(TestingServer.lastRequest.method).toEqual('POST');
+      expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
     })
   })
 
@@ -68,7 +68,7 @@ describe('DiagnosticsRootComponent', () => {
       userEvent.click(screen.getByTestId('stop-discovery-btn'));
 
       expect(TestingServer.lastRequest.url).toContain('/api/devices/stop-discovery');
-      expect(TestingServer.lastRequest.method).toEqual('POST');
+      expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
     })
   })
 
@@ -77,7 +77,23 @@ describe('DiagnosticsRootComponent', () => {
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/sync-discovery');
-      expect(TestingServer.lastRequest.method).toEqual('POST');
+      expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
+    })
+  })
+
+  it('should replay message when message is replayed', async () => {
+    const messageToReplay = ModelFactory.createMqttDiagnosticsMessage();
+    const {signalrConnectionFactory, detectChanges} = await renderRoot();
+    const hub = signalrConnectionFactory.getTestingHub(KNOWN_HUB_NAMES.diagnostics);
+    hub.triggerMqttMessage(messageToReplay);
+
+    userEvent.click(screen.getByTestId('replay-message-btn'));
+    
+    await eventually(() => {
+      detectChanges();
+      expect(TestingServer.lastRequest.url).toEqual('/api/diagnostics/replay');
+      expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
+      expect(TestingServer.lastRequest.body).toEqual(messageToReplay);
     })
   })
 

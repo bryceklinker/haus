@@ -1,19 +1,22 @@
-import {BehaviorSubject, Observable} from "rxjs";
-import {map} from "rxjs/operators";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {map, takeUntil} from "rxjs/operators";
+import {OnDestroy} from "@angular/core";
 
 import {ListResult} from "../models";
 import {subscribeOnce} from "../observable-extensions";
 
 export type EntitySet<T> = {[id: string]: T};
-export class EntityService<T> {
+export class EntityService<T> implements OnDestroy {
+  private readonly unsubscribe$ = new Subject();
   private readonly entitiesSubject = new BehaviorSubject<EntitySet<T>>({});
-
   private get entitiesById(): EntitySet<T> {
     return this.entitiesSubject.getValue();
   }
 
   public get entitiesById$(): Observable<EntitySet<T>> {
-    return this.entitiesSubject.asObservable();
+    return this.entitiesSubject.asObservable().pipe(
+      takeUntil(this.unsubscribe$)
+    );
   }
 
   public get entitiesArray$(): Observable<Array<T>> {
@@ -38,6 +41,10 @@ export class EntityService<T> {
       this.entitiesSubject.next(this.addOrUpdateEntity(result, this.entitiesById));
       return result;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
   }
 
   protected convertSetToArray(entities: EntitySet<T>): Array<T> {

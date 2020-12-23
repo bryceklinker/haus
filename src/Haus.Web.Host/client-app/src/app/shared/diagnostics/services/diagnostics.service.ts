@@ -1,21 +1,22 @@
-import {Injectable} from "@angular/core";
-import {BehaviorSubject, Observable, of} from "rxjs";
+import {Injectable, OnDestroy} from "@angular/core";
+import {BehaviorSubject, Observable, of, Subject} from "rxjs";
+import {map, takeUntil} from "rxjs/operators";
 
 import {SortDirection} from "../../sort-array-by";
 import {HubStatus} from "../../models";
 import {KNOWN_HUB_NAMES, SignalrService, SignalrServiceFactory} from "../../signalr";
 import {HausApiClient, SortingEntityService} from "../../rest-api";
 import {DiagnosticsMessageModel} from "../models";
-import {map} from "rxjs/operators";
 import {subscribeOnce} from "../../observable-extensions";
 
 @Injectable({
   providedIn: 'root'
 })
-export class DiagnosticsService {
+export class DiagnosticsService implements OnDestroy{
   private readonly signalrService: SignalrService;
   private readonly entityService: SortingEntityService<DiagnosticsMessageModel>;
-  private readonly _allowDiscoverySubject = new BehaviorSubject<boolean>(false);
+  private readonly allowDiscoverySubject = new BehaviorSubject<boolean>(false);
+  private readonly unsubscribe$ = new Subject();
 
   get status$(): Observable<HubStatus> {
     return this.signalrService.status$;
@@ -23,12 +24,15 @@ export class DiagnosticsService {
 
   get isConnected$(): Observable<boolean> {
     return this.status$.pipe(
-      map(status => status === HubStatus.Connected)
+      map(status => status === HubStatus.Connected),
+      takeUntil(this.unsubscribe$)
     );
   }
 
   get allowDiscovery$(): Observable<boolean> {
-    return this._allowDiscoverySubject.asObservable();
+    return this.allowDiscoverySubject.asObservable().pipe(
+      takeUntil(this.unsubscribe$)
+    );
   }
 
   get messages$(): Observable<DiagnosticsMessageModel[]> {
@@ -57,14 +61,18 @@ export class DiagnosticsService {
   }
 
   startDiscovery() {
-    return subscribeOnce(this.api.startDiscovery(), () => this._allowDiscoverySubject.next(true));
+    return subscribeOnce(this.api.startDiscovery(), () => this.allowDiscoverySubject.next(true));
   }
 
   stopDiscovery() {
-    return subscribeOnce(this.api.stopDiscovery(), () => this._allowDiscoverySubject.next(false));
+    return subscribeOnce(this.api.stopDiscovery(), () => this.allowDiscoverySubject.next(false));
   }
 
   syncDiscovery() {
     return subscribeOnce(this.api.syncDiscovery());
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.complete();
   }
 }

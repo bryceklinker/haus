@@ -11,6 +11,7 @@ import {TestingMatDialog} from "./fakes/testing-mat-dialog";
 import {TestingMatDialogRef} from "./fakes/testing-mat-dialog-ref";
 import {SignalrHubConnectionFactory} from "../app/shared/signalr";
 import {TestingActivatedRoute} from "./fakes/testing-activated-route";
+import {HttpClientModule} from "@angular/common/http";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   routes?: Routes;
@@ -36,6 +37,7 @@ export function createTestingModule({
 
 export function getTestingImports(routes: Routes) {
   return [
+    HttpClientModule,
     NoopAnimationsModule,
     RouterTestingModule.withRoutes(routes),
     AuthModule.forRoot(),

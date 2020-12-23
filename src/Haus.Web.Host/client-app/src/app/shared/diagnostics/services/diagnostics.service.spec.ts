@@ -9,6 +9,8 @@ import {TestBed} from "@angular/core/testing";
 import {HubStatus} from "../../models";
 import {SignalrHubConnectionFactory} from "../../signalr";
 import {DiagnosticsMessageModel} from "../models";
+import {HttpStatusCodes} from "../../rest-api/http-status-codes";
+import {HttpMethod} from "../../rest-api";
 
 describe('DiagnosticsService', () => {
   let status: HubStatus;
@@ -69,14 +71,14 @@ describe('DiagnosticsService', () => {
   })
 
   it('should post message to rest api when message is replayed', async () => {
-    TestingServer.setupPost('/api/diagnostics/replay', null, 204);
+    TestingServer.setupPost('/api/diagnostics/replay', null, {status: HttpStatusCodes.NoContent});
 
     const model = ModelFactory.createMqttDiagnosticsMessage();
     service.replayMessage(model);
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/diagnostics/replay');
-      expect(TestingServer.lastRequest.method).toEqual('POST');
+      expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
       expect(TestingServer.lastRequest.body).toEqual(model);
     })
   })
@@ -99,17 +101,17 @@ describe('DiagnosticsService', () => {
   })
 
   it('should start discovery on rest api', async () => {
-    TestingServer.setupPost('/api/devices/start-discovery', null, 204);
+    TestingServer.setupPost('/api/devices/start-discovery', null, {status: HttpStatusCodes.NoContent});
     service.startDiscovery();
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/start-discovery');
-      expect(TestingServer.lastRequest.method).toEqual('POST');
+      expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
     })
   })
 
   it('should stop discovery on rest api', async () => {
-    TestingServer.setupPost('/api/devices/stop-discovery', null, 204);
+    TestingServer.setupPost('/api/devices/stop-discovery', null, {status: HttpStatusCodes.NoContent});
     service.stopDiscovery();
 
     await eventually(() => {
@@ -119,8 +121,8 @@ describe('DiagnosticsService', () => {
   })
 
   it('should notify when discovery allowed changes', async () => {
-    TestingServer.setupPost('/api/devices/stop-discovery', null, 204);
-    TestingServer.setupPost('/api/devices/start-discovery', null, 204);
+    TestingServer.setupPost('/api/devices/stop-discovery', null, {status: HttpStatusCodes.NoContent});
+    TestingServer.setupPost('/api/devices/start-discovery', null, {status: HttpStatusCodes.NoContent});
 
     service.startDiscovery();
     await eventually(() => {
@@ -134,12 +136,12 @@ describe('DiagnosticsService', () => {
   })
 
   it('should sync discovery on rest api', async () => {
-    TestingServer.setupPost('/api/devices/sync-discovery', null, 204);
+    TestingServer.setupPost('/api/devices/sync-discovery', null, {status: HttpStatusCodes.NoContent});
     service.syncDiscovery();
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/sync-discovery');
-      expect(TestingServer.lastRequest.method).toEqual('POST');
+      expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
     })
   })
 })

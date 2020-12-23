@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Injectable, OnDestroy} from "@angular/core";
 import {Observable} from "rxjs";
 import {RoomModel} from "../models";
 import {HausApiClient, SortingEntityService} from "../../rest-api";
@@ -6,7 +6,7 @@ import {HausApiClient, SortingEntityService} from "../../rest-api";
 @Injectable({
   providedIn: 'root'
 })
-export class RoomsService {
+export class RoomsService implements OnDestroy{
   private readonly _entityService = new SortingEntityService<RoomModel>(r => r.name);
 
   get rooms$(): Observable<RoomModel[]> {
@@ -26,5 +26,9 @@ export class RoomsService {
 
   add(room: RoomModel): Observable<RoomModel> {
     return this._entityService.executeAdd(() => this.api.addRoom(room));
+  }
+
+  ngOnDestroy(): void {
+    this._entityService.ngOnDestroy();
   }
 }

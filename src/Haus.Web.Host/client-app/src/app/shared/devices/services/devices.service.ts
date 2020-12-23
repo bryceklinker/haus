@@ -1,28 +1,32 @@
-import {Injectable} from "@angular/core";
-import {Observable} from "rxjs";
+import {Injectable, OnDestroy} from "@angular/core";
+import {Observable, Subject} from "rxjs";
+import {ActivatedRoute} from "@angular/router";
+import {map, takeUntil, withLatestFrom} from "rxjs/operators";
+
 import {DeviceModel} from "../models";
 import {HausApiClient, SortingEntityService} from "../../rest-api";
 import {subscribeOnce} from "../../observable-extensions";
-import {ActivatedRoute} from "@angular/router";
-import {map, withLatestFrom} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
 })
-export class DevicesService {
-  private readonly _entityService = new SortingEntityService<DeviceModel>(d => d.name);
+export class DevicesService implements OnDestroy {
+  private readonly entityService = new SortingEntityService<DeviceModel>(d => d.name);
+  private readonly unsubscribe$ = new Subject();
 
   get devices$(): Observable<DeviceModel[]> {
-    return this._entityService.entitiesArray$;
+    return this.entityService.entitiesArray$;
   }
 
   get selectedDevice$(): Observable<DeviceModel | null> {
-    return this._entityService.entitiesById$.pipe(
+    return this.entityService.entitiesById$.pipe(
       withLatestFrom(this.route.paramMap),
       map(([devicesById, paramMap]) => {
         const deviceId = paramMap.has('deviceId') ? paramMap.get('deviceId') : null;
         return deviceId ? devicesById[deviceId] : null;
-    }))
+      }),
+      takeUntil(this.unsubscribe$)
+    )
   }
 
   constructor(private readonly api: HausApiClient,
@@ -30,7 +34,7 @@ export class DevicesService {
   }
 
   getAll() {
-    return this._entityService.executeGetAll(() => this.api.getDevices());
+    return this.entityService.executeGetAll(() => this.api.getDevices());
   }
 
   turnOff(deviceId: number): Observable<void> {
@@ -39,5 +43,9 @@ export class DevicesService {
 
   turnOn(deviceId: number): Observable<void> {
     return subscribeOnce(this.api.turnDeviceOn(deviceId));
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
   }
 }

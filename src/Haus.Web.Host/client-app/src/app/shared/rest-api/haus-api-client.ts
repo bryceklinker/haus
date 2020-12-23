@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {catchError, map, tap} from "rxjs/operators";
+import {map, tap} from "rxjs/operators";
 import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
 
@@ -8,13 +8,11 @@ import {ListResult} from "../models";
 import {RoomModel} from "../rooms";
 import {DeviceModel} from "../devices";
 import {DiagnosticsMessageModel} from "../diagnostics";
+import {HttpMethod} from "./http-method";
 
-enum HttpMethod {
-  GET = 'GET',
-  POST = 'POST'
-}
-
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class HausApiClient {
   private readonly _inflightRequests = new BehaviorSubject<Array<string>>([]);
 

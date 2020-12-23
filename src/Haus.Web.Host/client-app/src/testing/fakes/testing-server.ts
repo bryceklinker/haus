@@ -2,6 +2,7 @@ import {setupServer} from 'msw/node';
 import {MockedRequest, rest} from 'msw';
 import {Mask} from "msw/lib/types/setupWorker/glossary";
 import {ModelFactory} from "../model-factory";
+import {HttpStatusCodes} from "../../app/shared/rest-api/http-status-codes";
 
 type Request = { url: string, method: string, body: any }
 let requests: Array<Request> = [];
@@ -20,7 +21,7 @@ function captureRequest(req: MockedRequest) {
   requests.push(request);
 }
 
-function setupGet(url: Mask, result: any, {status = 200, delay = 0} = {}) {
+function setupGet(url: Mask, result: any, {status = HttpStatusCodes.OK, delay = 0} = {}) {
   server.use(
     rest.get(url, (req, res, ctx) => {
       captureRequest(req);
@@ -33,7 +34,7 @@ function setupGet(url: Mask, result: any, {status = 200, delay = 0} = {}) {
   )
 }
 
-function setupPost(url: Mask, data: any, {status = 201, delay = 0} = {}) {
+function setupPost(url: Mask, data: any, {status = HttpStatusCodes.Created, delay = 0} = {}) {
   server.use(
     rest.post(url, (req, res, ctx) => {
       captureRequest(req);
@@ -57,20 +58,20 @@ function reset() {
 
 function setupRoomsEndpoints() {
   setupGet('/api/rooms', ModelFactory.createListResult());
-  setupPost('/api/rooms', ModelFactory.createRoomModel());
+  setupPost('/api/rooms', ModelFactory.createRoomModel(), {status: HttpStatusCodes.Created});
 }
 
 function setupDevicesEndpoints() {
   setupGet('/api/devices', ModelFactory.createListResult());
-  setupPost('/api/devices/start-discovery', null, {status: 204});
-  setupPost('/api/devices/stop-discovery', null, {status: 204});
-  setupPost('/api/devices/sync-discovery', null, {status: 204});
-  setupPost(/\/api\/devices\/*\/turn-off/, null, {status: 204});
-  setupPost(/\/api\/devices\/*\/turn-on/, null, {status: 204});
+  setupPost('/api/devices/start-discovery', null, {status: HttpStatusCodes.NoContent});
+  setupPost('/api/devices/stop-discovery', null, {status: HttpStatusCodes.NoContent});
+  setupPost('/api/devices/sync-discovery', null, {status: HttpStatusCodes.NoContent});
+  setupPost(/\/api\/devices\/*\/turn-off/, null, {status: HttpStatusCodes.NoContent});
+  setupPost(/\/api\/devices\/*\/turn-on/, null, {status: HttpStatusCodes.NoContent});
 }
 
 function setupDiagnosticEndpoints() {
-  setupPost('/api/diagnostics/replay', null, {status: 204});
+  setupPost('/api/diagnostics/replay', null, {status: HttpStatusCodes.NoContent});
 }
 
 function setupDefaultApiEndpoints() {

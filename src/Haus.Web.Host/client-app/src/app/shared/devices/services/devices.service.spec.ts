@@ -5,6 +5,8 @@ import {DevicesService} from "./devices.service";
 import {DeviceModel} from "../models";
 import {SharedModule} from "../../shared.module";
 import {createTestingService, eventually, ModelFactory, TestingServer, TestingActivatedRoute} from "../../../../testing";
+import {HttpMethod} from "../../rest-api";
+import {HttpStatusCodes} from "../../rest-api/http-status-codes";
 
 describe('DevicesService', () => {
   let activatedRoute: TestingActivatedRoute;
@@ -64,24 +66,24 @@ describe('DevicesService', () => {
   })
 
   it('should turn off device using api', async () => {
-    TestingServer.setupPost('/api/devices/6/turn-off', null, {status: 204});
+    TestingServer.setupPost('/api/devices/6/turn-off', null, {status: HttpStatusCodes.NoContent});
 
     service.turnOff(6);
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/6/turn-off');
-      expect(TestingServer.lastRequest.method).toEqual('POST');
+      expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
     })
   })
 
   it('should turn on device using api', async () => {
-    TestingServer.setupPost('/api/devices/7/turn-on', null, {status: 204});
+    TestingServer.setupPost('/api/devices/7/turn-on', null, {status: HttpStatusCodes.NoContent});
 
     service.turnOn(7);
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/7/turn-on');
-      expect(TestingServer.lastRequest.method).toEqual('POST');
+      expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
     })
   })
 

@@ -8,6 +8,7 @@ import {AuthModule} from "@auth0/auth0-angular";
 import {ShellComponent} from "./app/shell/components/shell/shell.component";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {BrowserModule} from "@angular/platform-browser";
+import {HttpClientModule} from "@angular/common/http";
 
 if (environment.production) {
   enableProdMode();
@@ -17,9 +18,10 @@ SettingsService.loadSettings()
   .then(settings => {
     @NgModule({
       imports: [
-        BrowserModule,
         AppModule,
+        BrowserModule,
         BrowserAnimationsModule,
+        HttpClientModule,
         AuthModule.forRoot({
           ...settings.auth,
           redirectUri: window.location.origin,

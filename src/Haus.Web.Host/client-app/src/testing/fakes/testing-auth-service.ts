@@ -29,7 +29,11 @@ export class TestingAuthService extends AuthService {
   accessToken$: Observable<string>
 
   constructor() {
-    super(<any>{isAuthenticated: jest.fn().mockReturnValue(of(false))}, <any>{path: jest.fn().mockReturnValue('')}, <any>{navigateByUrl: jest.fn()});
+    super(
+      <any>{isAuthenticated: jest.fn().mockReturnValue(of(false))},
+      <any>{get: jest.fn().mockReturnValue({})},
+      <any>{path: jest.fn().mockReturnValue('')},
+      <any>{navigateByUrl: jest.fn()});
     this.isLoading$ = this.properties.pipe(map(p => p.isLoading));
     this.isAuthenticated$ = this.properties.pipe(map(p => p.isAuthenticated));
     this.accessToken$ = <any>this.properties.pipe(

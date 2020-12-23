@@ -2,6 +2,7 @@ import {screen} from "@testing-library/dom";
 import {eventually, ModelFactory, renderFeatureComponent, TestingServer} from "../../../../testing";
 import {DevicesRootComponent} from "./devices-root.component";
 import {DevicesModule} from "../../devices.module";
+import {HttpMethod} from "../../../shared/rest-api";
 
 describe('DevicesRootComponent', () => {
   it('should get all devices when rendered', async () => {
@@ -10,7 +11,7 @@ describe('DevicesRootComponent', () => {
     await renderRoot();
 
     expect(TestingServer.lastRequest.url).toContain('/api/devices');
-    expect(TestingServer.lastRequest.method).toEqual('GET');
+    expect(TestingServer.lastRequest.method).toEqual(HttpMethod.GET);
   })
 
   it('should show all devices', async () => {

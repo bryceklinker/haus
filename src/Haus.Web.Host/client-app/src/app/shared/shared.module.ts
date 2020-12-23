@@ -17,7 +17,6 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import {HttpClientModule} from "@angular/common/http";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {CommonModule} from "@angular/common";
@@ -68,13 +67,11 @@ const MATERIAL_MODULES = [
   imports: [
     ...MATERIAL_MODULES,
     CommonModule,
-    HttpClientModule,
     FormsModule,
     ReactiveFormsModule
   ],
   exports: [
     ...MATERIAL_MODULES,
-    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     ...SHARED_COMPONENTS

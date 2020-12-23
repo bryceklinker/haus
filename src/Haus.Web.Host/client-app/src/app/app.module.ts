@@ -1,11 +1,11 @@
 import {NgModule} from '@angular/core';
 import {AuthHttpInterceptor, AuthModule} from "@auth0/auth0-angular";
 import {CommonModule} from "@angular/common";
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 
 import {AppRoutingModule} from './app-routing.module';
 import {SharedModule} from "./shared/shared.module";
 import {SHELL_COMPONENTS} from "./shell/components";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
