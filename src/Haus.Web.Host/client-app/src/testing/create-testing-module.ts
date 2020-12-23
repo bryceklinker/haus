@@ -40,7 +40,7 @@ export function getTestingImports(routes: Routes) {
     HttpClientModule,
     NoopAnimationsModule,
     RouterTestingModule.withRoutes(routes),
-    AuthModule.forRoot(),
+    AuthModule,
   ];
 }
 

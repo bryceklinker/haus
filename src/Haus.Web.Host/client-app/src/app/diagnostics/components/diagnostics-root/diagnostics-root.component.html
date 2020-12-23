@@ -5,4 +5,7 @@
                     (syncDiscovery)="onSyncDiscovery()">
 
 </diagnostics-header>
-<diagnostics-messages [messages]="messages$ | async"></diagnostics-messages>
+<diagnostics-messages [messages]="messages$ | async"
+                      (replayMessage)="onReplayMessage($event)">
+
+</diagnostics-messages>

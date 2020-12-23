@@ -6,18 +6,16 @@ export class TestingParamMap implements ParamMap {
             .filter(key => this.set.hasOwnProperty(key));
     }
 
-    constructor(private readonly set: { [name: string]: Array<string> }) {
+    constructor(private readonly set: { [name: string]: string }) {
 
     }
 
     get(name: string): string | null {
-        const values = this.getAll(name);
-        const firstValue = values[0];
-        return firstValue || null;
+        return this.set[name];
     }
 
     getAll(name: string): string[] {
-        return this.set[name] || [];
+        return [this.set[name]];
     }
 
     has(name: string): boolean {

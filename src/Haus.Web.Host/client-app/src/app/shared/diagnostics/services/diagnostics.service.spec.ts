@@ -31,7 +31,7 @@ describe('DiagnosticsService', () => {
   })
 
   it('should be connecting when connection is started', async () => {
-    service.start();
+    service.start().subscribe();
 
     await eventually(() => {
       expect(status).toEqual(HubStatus.Connecting);
@@ -39,7 +39,7 @@ describe('DiagnosticsService', () => {
   })
 
   it('should be connected when connection finishes starting', async () => {
-    service.start();
+    service.start().subscribe();
     testingConnection.triggerStart();
 
     await eventually(() => {
@@ -48,10 +48,10 @@ describe('DiagnosticsService', () => {
   })
 
   it('should be disconnected when connection is stopped', async () => {
-    service.start();
+    service.start().subscribe();
     testingConnection.triggerStart();
 
-    service.stop();
+    service.stop().subscribe();
     testingConnection.triggerStop();
 
     await eventually(() => {
@@ -62,7 +62,7 @@ describe('DiagnosticsService', () => {
   it('should subscribe to mqtt messages', async () => {
     const expected = ModelFactory.createMqttDiagnosticsMessage();
 
-    service.start();
+    service.start().subscribe();
     testingConnection.triggerMessage('OnMqttMessage', expected);
 
     await eventually(() => {
@@ -74,7 +74,7 @@ describe('DiagnosticsService', () => {
     TestingServer.setupPost('/api/diagnostics/replay', null, {status: HttpStatusCodes.NoContent});
 
     const model = ModelFactory.createMqttDiagnosticsMessage();
-    service.replayMessage(model);
+    service.replayMessage(model).subscribe();
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/diagnostics/replay');
@@ -88,7 +88,7 @@ describe('DiagnosticsService', () => {
     const first = ModelFactory.createMqttDiagnosticsMessage({timestamp: '2020-09-23T00:00:03'});
     const second = ModelFactory.createMqttDiagnosticsMessage({timestamp: '2020-09-23T00:00:02'});
 
-    service.start();
+    service.start().subscribe();
     testingConnection.triggerMessage('OnMqttMessage', third);
     testingConnection.triggerMessage('OnMqttMessage', first);
     testingConnection.triggerMessage('OnMqttMessage', second);
@@ -102,7 +102,7 @@ describe('DiagnosticsService', () => {
 
   it('should start discovery on rest api', async () => {
     TestingServer.setupPost('/api/devices/start-discovery', null, {status: HttpStatusCodes.NoContent});
-    service.startDiscovery();
+    service.startDiscovery().subscribe();
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/start-discovery');
@@ -112,7 +112,7 @@ describe('DiagnosticsService', () => {
 
   it('should stop discovery on rest api', async () => {
     TestingServer.setupPost('/api/devices/stop-discovery', null, {status: HttpStatusCodes.NoContent});
-    service.stopDiscovery();
+    service.stopDiscovery().subscribe();
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/stop-discovery');
@@ -124,12 +124,12 @@ describe('DiagnosticsService', () => {
     TestingServer.setupPost('/api/devices/stop-discovery', null, {status: HttpStatusCodes.NoContent});
     TestingServer.setupPost('/api/devices/start-discovery', null, {status: HttpStatusCodes.NoContent});
 
-    service.startDiscovery();
+    service.startDiscovery().subscribe();
     await eventually(() => {
       expect(allowDiscovery).toEqual(true);
     });
 
-    service.stopDiscovery();
+    service.stopDiscovery().subscribe();
     await eventually(() => {
       expect(allowDiscovery).toEqual(false);
     })
@@ -137,11 +137,15 @@ describe('DiagnosticsService', () => {
 
   it('should sync discovery on rest api', async () => {
     TestingServer.setupPost('/api/devices/sync-discovery', null, {status: HttpStatusCodes.NoContent});
-    service.syncDiscovery();
+    service.syncDiscovery().subscribe();
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/sync-discovery');
       expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
     })
+  })
+
+  afterEach(() => {
+    service.ngOnDestroy();
   })
 })

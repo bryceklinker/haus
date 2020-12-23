@@ -1,18 +1,32 @@
+import {TestBed} from "@angular/core/testing";
+import {ActivatedRoute} from "@angular/router";
+
 import {RoomsService} from "./rooms.service";
-import {createTestingService, eventually, ModelFactory, TestingServer} from "../../../../testing";
+import {
+  createTestingService,
+  eventually,
+  ModelFactory,
+  TestingActivatedRoute,
+  TestingServer
+} from "../../../../testing";
 import {SharedModule} from "../../shared.module";
 import {RoomModel} from "../models";
 
 describe('RoomsService', () => {
+  let activatedRoute: TestingActivatedRoute;
   let service: RoomsService;
   let rooms: Array<RoomModel> | null;
+  let selectedRoom: RoomModel | null;
 
   beforeEach(() => {
     const result = createTestingService(RoomsService, {imports: [SharedModule]});
     service = result.service;
+    activatedRoute = <TestingActivatedRoute>TestBed.inject(ActivatedRoute);
 
     rooms = null;
+    selectedRoom = null;
     service.rooms$.subscribe(r => rooms = r);
+    service.selectedRoom$.subscribe(r => selectedRoom = r);
   })
 
   it('should have empty rooms', async () => {
@@ -29,7 +43,7 @@ describe('RoomsService', () => {
     );
     TestingServer.setupGet('/api/rooms', expected);
 
-    service.getAll();
+    service.getAll().subscribe();
 
     await eventually(() => {
       expect(rooms).toContainEqual(expected.items[0]);
@@ -74,7 +88,7 @@ describe('RoomsService', () => {
     const expected = ModelFactory.createRoomModel();
     TestingServer.setupPost('/api/rooms', expected);
 
-    service.add(expected);
+    service.add(expected).subscribe();
 
     await eventually(() => {
       expect(rooms).toContainEqual(expected);
@@ -109,8 +123,34 @@ describe('RoomsService', () => {
     let isLoading = false;
     service.isLoading$.subscribe(l => isLoading = l);
 
-    service.add(ModelFactory.createRoomModel());
+    service.add(ModelFactory.createRoomModel()).subscribe();
 
     expect(isLoading).toEqual(true);
+  })
+
+  it('should have null selected room', async () => {
+    TestingServer.setupRoomsEndpoints();
+
+    service.getAll();
+
+    await eventually(() => {
+      expect(selectedRoom).toBeNull();
+    })
+  })
+
+  it('should notify that selected room changed when route changes', async () => {
+    const room = ModelFactory.createRoomModel();
+    TestingServer.setupGet('/api/rooms', ModelFactory.createListResult(room));
+
+    service.getAll().subscribe();
+    activatedRoute.triggerParamsChange({'roomId': `${room.id}`});
+
+    await eventually(() => {
+      expect(selectedRoom).toEqual(room);
+    })
+  })
+
+  afterEach(() => {
+    service.ngOnDestroy();
   })
 })

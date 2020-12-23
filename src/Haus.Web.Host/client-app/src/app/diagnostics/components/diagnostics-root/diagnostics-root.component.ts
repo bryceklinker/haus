@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {DiagnosticsMessageModel, DiagnosticsService} from "../../../shared/diagnostics";
 import {Observable} from "rxjs";
+import {DestroyableSubject} from "../../../shared/destroyable-subject";
 
 @Component({
   selector: 'diagnostics-root',
@@ -8,6 +9,8 @@ import {Observable} from "rxjs";
   styleUrls: ['./diagnostics-root.component.scss']
 })
 export class DiagnosticsRootComponent implements OnInit, OnDestroy {
+  private readonly destroyable = new DestroyableSubject();
+
   get messages$(): Observable<DiagnosticsMessageModel[]> {
     return this.service.messages$;
   }
@@ -24,22 +27,27 @@ export class DiagnosticsRootComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.service.start();
+    this.destroyable.register(this.service.start()).subscribe();
   }
 
   ngOnDestroy(): void {
-    this.service.stop();
+    this.destroyable.register(this.service.stop()).subscribe();
+    this.destroyable.destroy();
   }
 
   onStartDiscovery() {
-    this.service.startDiscovery();
+    this.destroyable.register(this.service.startDiscovery()).subscribe();
   }
 
   onStopDiscovery() {
-    this.service.stopDiscovery();
+    this.destroyable.register(this.service.stopDiscovery()).subscribe();
   }
 
   onSyncDiscovery() {
-    this.service.syncDiscovery();
+    this.destroyable.register(this.service.syncDiscovery()).subscribe();
+  }
+
+  onReplayMessage($event: DiagnosticsMessageModel) {
+    this.destroyable.register(this.service.replayMessage($event)).subscribe();
   }
 }

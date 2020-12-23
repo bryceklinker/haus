@@ -1,13 +1,13 @@
 import {Injectable, OnDestroy} from "@angular/core";
-import {BehaviorSubject, Observable, of, Subject} from "rxjs";
-import {map, takeUntil} from "rxjs/operators";
+import {BehaviorSubject, Observable, of} from "rxjs";
+import {map, takeUntil, tap} from "rxjs/operators";
 
 import {SortDirection} from "../../sort-array-by";
 import {HubStatus} from "../../models";
 import {KNOWN_HUB_NAMES, SignalrService, SignalrServiceFactory} from "../../signalr";
 import {HausApiClient, SortingEntityService} from "../../rest-api";
 import {DiagnosticsMessageModel} from "../models";
-import {subscribeOnce} from "../../observable-extensions";
+import {DestroyableSubject} from "../../destroyable-subject";
 
 @Injectable({
   providedIn: 'root'
@@ -16,27 +16,24 @@ export class DiagnosticsService implements OnDestroy{
   private readonly signalrService: SignalrService;
   private readonly entityService: SortingEntityService<DiagnosticsMessageModel>;
   private readonly allowDiscoverySubject = new BehaviorSubject<boolean>(false);
-  private readonly unsubscribe$ = new Subject();
+  private readonly destroyable = new DestroyableSubject();
 
   get status$(): Observable<HubStatus> {
-    return this.signalrService.status$;
+    return this.destroyable.register(this.signalrService.status$);
   }
 
   get isConnected$(): Observable<boolean> {
-    return this.status$.pipe(
-      map(status => status === HubStatus.Connected),
-      takeUntil(this.unsubscribe$)
-    );
+    return this.destroyable.register(this.status$.pipe(
+      map(status => status === HubStatus.Connected)
+    ));
   }
 
   get allowDiscovery$(): Observable<boolean> {
-    return this.allowDiscoverySubject.asObservable().pipe(
-      takeUntil(this.unsubscribe$)
-    );
+    return this.destroyable.register(this.allowDiscoverySubject);
   }
 
   get messages$(): Observable<DiagnosticsMessageModel[]> {
-    return this.entityService.entitiesArray$;
+    return this.destroyable.register(this.entityService.entitiesArray$);
   }
 
   constructor(private readonly signalrServiceFactory: SignalrServiceFactory,
@@ -47,32 +44,37 @@ export class DiagnosticsService implements OnDestroy{
 
   start(): Observable<void> {
     this.signalrService.on('OnMqttMessage', (msg: DiagnosticsMessageModel) => {
-      this.entityService.executeAdd(() => of(msg))
+      this.destroyable.register(this.entityService.executeAdd(() => of(msg))).subscribe();
     });
-    return this.signalrService.start();
+    return this.destroyable.register(this.signalrService.start());
   }
 
   stop(): Observable<void> {
-    return this.signalrService.stop();
+    return this.destroyable.register(this.signalrService.stop());
   }
 
   replayMessage(model: DiagnosticsMessageModel): Observable<void> {
-    return subscribeOnce(this.api.replayMessage(model));
+    return this.destroyable.register(this.api.replayMessage(model));
   }
 
   startDiscovery() {
-    return subscribeOnce(this.api.startDiscovery(), () => this.allowDiscoverySubject.next(true));
+    return this.destroyable.register(this.api.startDiscovery().pipe(
+      tap(() => this.allowDiscoverySubject.next(true)),
+    ));
   }
 
   stopDiscovery() {
-    return subscribeOnce(this.api.stopDiscovery(), () => this.allowDiscoverySubject.next(false));
+    return this.destroyable.register(this.api.stopDiscovery().pipe(
+      tap(() => this.allowDiscoverySubject.next(false)),
+    ));
   }
 
   syncDiscovery() {
-    return subscribeOnce(this.api.syncDiscovery());
+    return this.destroyable.register(this.api.syncDiscovery());
   }
 
   ngOnDestroy(): void {
-    this.unsubscribe$.complete();
+    this.signalrService.destroy();
+    this.destroyable.destroy();
   }
 }

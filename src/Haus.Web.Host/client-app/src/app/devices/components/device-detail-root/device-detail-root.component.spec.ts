@@ -1,21 +1,37 @@
 import {screen} from "@testing-library/dom";
-import {eventually, ModelFactory, renderFeatureComponent, TestingServer} from "../../../../testing";
+import {
+  eventually,
+  ModelFactory,
+  renderFeatureComponent,
+  TestingActivatedRoute,
+  TestingServer
+} from "../../../../testing";
 import {DeviceDetailRootComponent} from "./device-detail-root.component";
 import {DevicesModule} from "../../devices.module";
-import {TestBed} from "@angular/core/testing";
-import {DevicesService} from "../../../shared/devices";
+import {ComponentFixture, TestBed} from "@angular/core/testing";
+import {DeviceModel, DevicesService} from "../../../shared/devices";
 
 describe('DeviceDetailRootComponent', () => {
-  it('should device detail when rendered', async () => {
-    const device = ModelFactory.createDeviceModel();
+  let device: DeviceModel;
+  let activatedRoute: TestingActivatedRoute;
+  let fixture: ComponentFixture<DeviceDetailRootComponent>;
+
+  beforeEach(async () => {
+    device = ModelFactory.createDeviceModel();
     TestingServer.setupGet('/api/devices', ModelFactory.createListResult(device));
 
-    const {activatedRoute, detectChanges} = await renderRoot();
-    TestBed.inject(DevicesService).getAll();
+    const result = await renderRoot();
+    TestBed.inject(DevicesService).getAll().subscribe();
+
+    activatedRoute = result.activatedRoute;
+    fixture = result.fixture;
+  })
+
+  it('should device detail when rendered', async () => {
     activatedRoute.triggerParamsChange({deviceId: `${device.id}`});
 
     await eventually(() => {
-      detectChanges();
+      fixture.detectChanges();
       expect(screen.getByTestId('device-detail')).toHaveTextContent(device.name);
     })
   })

@@ -2,13 +2,18 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {HubStatus} from "../models";
 import {SignalrHubConnection} from "./signalr-hub.connection";
 import {SignalrHubConnectionFactory} from "./signalr-hub-connection-factory.service";
+import {takeUntil, tap} from "rxjs/operators";
+import {DestroyableSubject} from "../destroyable-subject";
 
 export class SignalrService {
+  private readonly _unsubscribe$ = new DestroyableSubject();
   private readonly _status = new BehaviorSubject<HubStatus>(HubStatus.Disconnected);
   private _connection: SignalrHubConnection | null = null;
 
   get status$(): Observable<HubStatus> {
-    return this._status.asObservable();
+    return this._status.asObservable().pipe(
+      takeUntil(this._unsubscribe$)
+    );
   }
 
   private get connection(): SignalrHubConnection {
@@ -28,13 +33,15 @@ export class SignalrService {
     return this.executeAndUpdateStatus(() => this.connection.stop(), HubStatus.Disconnected);
   }
 
+  destroy(): void {
+    this._unsubscribe$.destroy();
+  }
+
   private executeAndUpdateStatus(func: () => Observable<void>, status: HubStatus): Observable<void> {
-    const obs$ = func();
-    const subscription = obs$.subscribe(() => {
-      this.updateStatus(status);
-      subscription.unsubscribe();
-    })
-    return obs$;
+    return func().pipe(
+      tap(() => this.updateStatus(status)),
+      takeUntil(this._unsubscribe$)
+    )
   }
 
   private updateStatus(status: HubStatus) {

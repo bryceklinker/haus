@@ -1,8 +1,15 @@
+<h3 class="mat-display-3">
+  Rooms
+</h3>
 <mat-list>
-  <a mat-list-item *ngFor="let room of rooms" data-testid="room-item">
+  <a *ngFor="let room of rooms"
+     data-testid="room-item"
+     routerLink="{{room.id}}"
+     [routerLinkActive]="'active'"
+     mat-list-item>
     {{room.name}}
   </a>
   <button mat-fab (click)="onAddRoom()" data-testid="add-room-btn">
-    <mat-icon>plus</mat-icon>
+    <mat-icon>add</mat-icon>
   </button>
 </mat-list>

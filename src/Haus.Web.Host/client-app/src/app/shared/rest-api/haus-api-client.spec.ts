@@ -1,7 +1,6 @@
 import {HausApiClient} from "./haus-api-client";
 import {createTestingService, eventually, ModelFactory, TestingServer} from "../../../testing";
 import {SharedModule} from "../shared.module";
-import {subscribeOnce} from "../observable-extensions";
 
 describe('HausApiClient', () => {
   let api: HausApiClient;
@@ -17,7 +16,7 @@ describe('HausApiClient', () => {
   it('should be loading while getting data', async () => {
       TestingServer.setupGet('/api/rooms', ModelFactory.createListResult(), {delay: 3000});
 
-      subscribeOnce(api.getRooms());
+      api.getRooms().subscribe();
 
       await eventually(() => {
         expect(isLoading).toEqual(true);
@@ -29,9 +28,9 @@ describe('HausApiClient', () => {
     TestingServer.setupGet('/api/devices', ModelFactory.createListResult(), {delay: 200});
     TestingServer.setupPost('/api/rooms', ModelFactory.createRoomModel());
 
-    subscribeOnce(api.getRooms());
-    subscribeOnce(api.getDevices());
-    subscribeOnce(api.addRoom(ModelFactory.createRoomModel()));
+    api.getRooms().subscribe();
+    api.getDevices().subscribe();
+    api.addRoom(ModelFactory.createRoomModel()).subscribe();
 
     expect(isLoading).toEqual(true);
   })
@@ -41,9 +40,9 @@ describe('HausApiClient', () => {
     TestingServer.setupGet('/api/devices', ModelFactory.createListResult(), {delay: 200});
     TestingServer.setupPost('/api/rooms', ModelFactory.createRoomModel(), {delay: 300});
 
-    subscribeOnce(api.getRooms());
-    subscribeOnce(api.getDevices());
-    subscribeOnce(api.addRoom(ModelFactory.createRoomModel()));
+    api.getRooms().subscribe();
+    api.getDevices().subscribe();
+    api.addRoom(ModelFactory.createRoomModel()).subscribe();
 
     expect(api.inflightRequests).toHaveLength(3);
     await eventually(() => {

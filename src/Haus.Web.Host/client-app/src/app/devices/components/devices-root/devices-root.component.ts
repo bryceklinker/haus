@@ -1,13 +1,16 @@
-import {Component, OnInit} from "@angular/core";
-import {Observable} from "rxjs";
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Observable, Subject} from "rxjs";
 import {DeviceModel, DevicesService} from "../../../shared/devices";
+import {takeUntil} from "rxjs/operators";
+import {DestroyableSubject} from "../../../shared/destroyable-subject";
 
 @Component({
   selector: 'devices-root',
   templateUrl: './devices-root.component.html',
   styleUrls: ['./devices-root.component.scss']
 })
-export class DevicesRootComponent implements OnInit {
+export class DevicesRootComponent implements OnInit, OnDestroy {
+  private readonly _unsubscribe$ = new DestroyableSubject();
   devices$: Observable<DeviceModel[]>;
 
   constructor(private service: DevicesService) {
@@ -15,6 +18,10 @@ export class DevicesRootComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.service.getAll();
+    this._unsubscribe$.register(this.service.getAll()).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this._unsubscribe$.destroy();
   }
 }

@@ -40,7 +40,7 @@ describe('DevicesService', () => {
     )
     TestingServer.setupGet('/api/devices', expected);
 
-    service.getAll();
+    service.getAll().subscribe();
 
     await eventually(() => {
       expect(devices).toContainEqual(expected.items[0]);
@@ -55,7 +55,7 @@ describe('DevicesService', () => {
     const first = ModelFactory.createDeviceModel({name: 'A'});
     TestingServer.setupGet('/api/devices', ModelFactory.createListResult(second, third, first));
 
-    service.getAll();
+    service.getAll().subscribe();
 
     await eventually(() => {
       if (devices === null) throw new Error('Devices is still null');
@@ -68,7 +68,7 @@ describe('DevicesService', () => {
   it('should turn off device using api', async () => {
     TestingServer.setupPost('/api/devices/6/turn-off', null, {status: HttpStatusCodes.NoContent});
 
-    service.turnOff(6);
+    service.turnOff(6).subscribe();
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/6/turn-off');
@@ -79,7 +79,7 @@ describe('DevicesService', () => {
   it('should turn on device using api', async () => {
     TestingServer.setupPost('/api/devices/7/turn-on', null, {status: HttpStatusCodes.NoContent});
 
-    service.turnOn(7);
+    service.turnOn(7).subscribe();
 
     await eventually(() => {
       expect(TestingServer.lastRequest.url).toContain('/api/devices/7/turn-on');
@@ -88,7 +88,7 @@ describe('DevicesService', () => {
   })
 
   it('should have null selected device', async () => {
-    service.getAll();
+    service.getAll().subscribe();
 
     await eventually(() => {
       expect(selectedDevice).toBeNull();
@@ -99,7 +99,7 @@ describe('DevicesService', () => {
     const device = ModelFactory.createDeviceModel();
     TestingServer.setupGet('/api/devices', ModelFactory.createListResult(device));
 
-    service.getAll();
+    service.getAll().subscribe();
     activatedRoute.triggerParamsChange({'deviceId': `${device.id}`});
 
     await eventually(() => {

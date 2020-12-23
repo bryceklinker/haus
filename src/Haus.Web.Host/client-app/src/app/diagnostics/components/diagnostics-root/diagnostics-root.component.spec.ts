@@ -1,15 +1,15 @@
-import {ComponentFixture} from "@angular/core/testing";
+import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {screen} from '@testing-library/dom'
 
 import {
   eventually,
   ModelFactory,
-  renderFeatureComponent, TestingServer,
+  renderFeatureComponent, TestingServer, TestingSignalrConnectionServiceFactory,
   TestingSignalrHubConnectionService
 } from "../../../../testing";
 import {DiagnosticsModule} from "../../diagnostics.module";
 import {DiagnosticsRootComponent} from "./diagnostics-root.component";
-import {KNOWN_HUB_NAMES} from "../../../shared/signalr";
+import {KNOWN_HUB_NAMES, SignalrHubConnectionFactory} from "../../../shared/signalr";
 import userEvent from "@testing-library/user-event";
 import {HttpMethod} from "../../../shared/rest-api";
 
@@ -83,15 +83,15 @@ describe('DiagnosticsRootComponent', () => {
 
   it('should replay message when message is replayed', async () => {
     const messageToReplay = ModelFactory.createMqttDiagnosticsMessage();
-    const {signalrConnectionFactory, detectChanges} = await renderRoot();
-    const hub = signalrConnectionFactory.getTestingHub(KNOWN_HUB_NAMES.diagnostics);
-    hub.triggerMqttMessage(messageToReplay);
+    TestingServer.setupPost('/api/diagnostics/replay', messageToReplay);
+    hubConnection.triggerMqttMessage(messageToReplay);
+    fixture.detectChanges();
 
     userEvent.click(screen.getByTestId('replay-message-btn'));
-    
+
     await eventually(() => {
-      detectChanges();
-      expect(TestingServer.lastRequest.url).toEqual('/api/diagnostics/replay');
+      fixture.detectChanges();
+      expect(TestingServer.lastRequest.url).toContain('/api/diagnostics/replay');
       expect(TestingServer.lastRequest.method).toEqual(HttpMethod.POST);
       expect(TestingServer.lastRequest.body).toEqual(messageToReplay);
     })
