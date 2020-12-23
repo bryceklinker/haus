@@ -1,11 +1,11 @@
 import {RouterModule, Routes} from "@angular/router";
 import {NgModule} from "@angular/core";
-import {DiagnosticsContainerComponent} from "./components/diagnostics-container";
+import {DiagnosticsRootComponent} from "./components/diagnostics-root/diagnostics-root.component";
 
 const routes: Routes = [
   {
     path: '',
-    component: DiagnosticsContainerComponent,
+    component: DiagnosticsRootComponent,
     pathMatch: 'full'
   }
 ];

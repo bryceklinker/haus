@@ -1,7 +1,5 @@
-import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {DeviceModel} from "../../models";
-import {DevicesModule} from "../../devices.module";
-import {Router} from "@angular/router";
+import {Component, Input} from "@angular/core";
+import {DeviceModel} from "../../../shared/devices";
 
 @Component({
   selector: 'devices-list',
@@ -10,8 +8,4 @@ import {Router} from "@angular/router";
 })
 export class DevicesListComponent {
   @Input() devices: Array<DeviceModel> | null = [];
-  @Output() deviceSelected = new EventEmitter<number>();
-
-  constructor(private router: Router) {
-  }
 }

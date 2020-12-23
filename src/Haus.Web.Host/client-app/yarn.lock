@@ -1367,48 +1367,6 @@
     node-fetch "^2.6.0"
     ws "^6.0.0"
 
-"@ngrx/data@10.1.1":
-  version "10.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/data/-/@ngrx/data-10.1.1.tgz#22aa4aa470c6987f1c449b9064f680f0dabd5c83"
-  integrity sha1-IqpKpHDGmH8cRJuQZPaA8Nq9XIM=
-  dependencies:
-    tslib "^2.0.0"
-
-"@ngrx/effects@10.1.1":
-  version "10.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/effects/-/@ngrx/effects-10.1.1.tgz#cc6011b6b77c2c63f500a0dda547cfbaca0103c5"
-  integrity sha1-zGARtrd8LGP1AKDdpUfPusoBA8U=
-  dependencies:
-    tslib "^2.0.0"
-
-"@ngrx/entity@10.1.1":
-  version "10.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/entity/-/@ngrx/entity-10.1.1.tgz#281470d85fd27b1221e2506f42c3a50f09c81afc"
-  integrity sha1-KBRw2F/SexIh4lBvQsOlDwnIGvw=
-  dependencies:
-    tslib "^2.0.0"
-
-"@ngrx/router-store@10.1.1":
-  version "10.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/router-store/-/@ngrx/router-store-10.1.1.tgz#595ead9ddd51421246a83224cd620cd2c74a4377"
-  integrity sha1-WV6tnd1RQhJGqDIkzWIM0sdKQ3c=
-  dependencies:
-    tslib "^2.0.0"
-
-"@ngrx/store-devtools@10.1.1":
-  version "10.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store-devtools/-/@ngrx/store-devtools-10.1.1.tgz#5c00ba554c90d7e975234a6dafc9082be0752f2e"
-  integrity sha1-XAC6VUyQ1+l1I0ptr8kIK+B1Ly4=
-  dependencies:
-    tslib "^2.0.0"
-
-"@ngrx/store@10.1.1":
-  version "10.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store/-/@ngrx/store-10.1.1.tgz#9df7193992aa2378c863ee8cecfc4de922efd9d6"
-  integrity sha1-nfcZOZKqI3jIY+6M7PxN6SLv2dY=
-  dependencies:
-    tslib "^2.0.0"
-
 "@ngtools/webpack@11.0.1":
   version "11.0.1"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngtools/webpack/-/@ngtools/webpack-11.0.1.tgz#029aaff16d76fbfdf06422dde4c83f3b79c34215"
@@ -6652,13 +6610,6 @@ next-tick@~1.0.0:
   version "1.0.0"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
-
-ngrx-signalr-core@8.4.0:
-  version "8.4.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/ngrx-signalr-core/-/ngrx-signalr-core-8.4.0.tgz#ab84372fd9fd89c7ce68363fe228c09be9049f34"
-  integrity sha1-q4Q3L9n9icfOaDY/4ijAm+kEnzQ=
-  dependencies:
-    tslib "^1.9.0"
 
 nice-try@^1.0.4:
   version "1.0.5"

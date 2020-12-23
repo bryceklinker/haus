@@ -20,13 +20,16 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {HttpClientModule} from "@angular/common/http";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatExpansionModule} from "@angular/material/expansion";
+import {CommonModule} from "@angular/common";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {SettingsService} from "./settings";
 import {ThemeService} from "./theming/theme.service";
-import {HausApiClient} from "./rest-api/haus-api-client";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {DefaultDataServiceFactory, HttpUrlGenerator} from "@ngrx/data";
-import {HausDataServiceFactory, HausHttpUrlGeneratorService} from "./services";
+import {HausApiClient} from "./rest-api";
+import {SHARED_COMPONENTS} from "./components";
+import {DevicesService} from "./devices";
+import {RoomsService} from "./rooms";
+import {SignalrHubConnectionFactory, SignalrServiceFactory} from "./signalr";
 
 const MATERIAL_MODULES = [
   MatButtonModule,
@@ -51,16 +54,20 @@ const MATERIAL_MODULES = [
   MatExpansionModule
 ]
 
+
 @NgModule({
   providers: [
     SettingsService,
     ThemeService,
     HausApiClient,
-    {provide: DefaultDataServiceFactory, useClass: HausDataServiceFactory},
-    {provide: HttpUrlGenerator, useClass: HausHttpUrlGeneratorService}
+    DevicesService,
+    RoomsService,
+    SignalrServiceFactory,
+    SignalrHubConnectionFactory
   ],
   imports: [
     ...MATERIAL_MODULES,
+    CommonModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule
@@ -69,7 +76,11 @@ const MATERIAL_MODULES = [
     ...MATERIAL_MODULES,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ...SHARED_COMPONENTS
+  ],
+  declarations: [
+    ...SHARED_COMPONENTS
   ]
 })
 export class SharedModule {

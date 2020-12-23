@@ -1,10 +1,10 @@
-import {Component, OnDestroy} from "@angular/core";
-import {EntityCollectionService, EntityCollectionServiceFactory} from "@ngrx/data";
-import {RoomModel} from "../../models/room.model";
-import {ENTITY_NAMES} from "../../../entity-metadata";
+import {Component} from "@angular/core";
 import {FormBuilder, Validators} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import {UnsubscribingComponent} from "../../../shared/components/unsubscribing.component";
+import {RoomsService} from "../../../shared/rooms";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'add-room-dialog',
@@ -12,22 +12,27 @@ import {UnsubscribingComponent} from "../../../shared/components/unsubscribing.c
   styleUrls: ['./add-room-dialog.component.scss']
 })
 export class AddRoomDialogComponent extends UnsubscribingComponent {
-  private readonly service: EntityCollectionService<RoomModel>
+  get isLoading$():Observable<boolean> {
+      return this.service.isLoading$;
+  }
+
+  get isNotLoading$(): Observable<boolean> {
+    return this.isLoading$.pipe(
+      map(isLoading => !isLoading)
+    )
+  }
+
   form = new FormBuilder().group({
     name: ['', Validators.required]
   });
 
-  constructor(private factory: EntityCollectionServiceFactory,
-              private matDialogRef: MatDialogRef<AddRoomDialogComponent>) {
+  constructor(private matDialogRef: MatDialogRef<AddRoomDialogComponent>,
+              private service: RoomsService) {
     super();
-
-    this.service = factory.create(ENTITY_NAMES.Room);
   }
 
   onSave() {
-    this.safeSubscribe(this.service.add(this.form.getRawValue()), () => {
-      this.matDialogRef.close()
-    });
+    this.safeSubscribe(this.service.add(this.form.getRawValue()), () => this.matDialogRef.close());
   }
 
   onCancel() {

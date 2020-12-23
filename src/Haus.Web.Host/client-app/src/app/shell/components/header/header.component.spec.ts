@@ -1,19 +1,22 @@
+import {TestBed} from "@angular/core/testing";
+import {MatSlideToggle} from "@angular/material/slide-toggle";
+import userEvent from "@testing-library/user-event";
+import {screen} from '@testing-library/dom';
+
 import {HeaderComponent} from "./header.component";
 import {TestingEventEmitter, renderAppComponent} from "../../../../testing";
 import {ThemeService} from "../../../shared/theming/theme.service";
-import {MatSlideToggle} from "@angular/material/slide-toggle";
-import {TestBed} from "@angular/core/testing";
 
 describe('HeaderComponent', () => {
 
   it('should notify when menu clicked', async () => {
     const menuClick = new TestingEventEmitter();
 
-    const {fireEvent, getByTestId} = await renderAppComponent(HeaderComponent, {
+    await renderAppComponent(HeaderComponent, {
       componentProperties:{menuClick}
     });
 
-    fireEvent.click(getByTestId('menu-btn'));
+    userEvent.click(screen.getByTestId('menu-btn'));
 
     expect(menuClick.emit).toHaveBeenCalled();
   })

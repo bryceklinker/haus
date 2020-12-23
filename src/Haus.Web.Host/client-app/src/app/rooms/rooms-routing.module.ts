@@ -1,11 +1,14 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {RoomsContainerComponent} from "./components/rooms-container/rooms-container.component";
+import {RoomsRootComponent} from "./components/rooms-root/rooms-root.component";
 
 const routes: Routes = [
   {
     path: '',
-    component: RoomsContainerComponent
+    component: RoomsRootComponent,
+    children: [
+      // {path: ':roomId', component: RoomDetailContainerComponent}
+    ]
   }
 ]
 

@@ -27,7 +27,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Node
             _logger = logger;
             _process = new Process
             {
-                StartInfo = CreateStartInfo(Options)
+                StartInfo = CreateStartInfo(Options),
             };
             _process.OutputDataReceived += OnOutputReceived;
             _process.ErrorDataReceived += OnErrorReceived;
@@ -68,7 +68,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Node
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
-                Arguments = "run start"
+                Arguments = "run start",
             };
             startInfo.Environment["ZIGBEE2MQTT_CONFIG"] = Path.GetFullPath(options.ConfigFile);
             startInfo.Environment["ZIGBEE2MQTT_DATA"] = Path.GetFullPath(options.DataDirectory);

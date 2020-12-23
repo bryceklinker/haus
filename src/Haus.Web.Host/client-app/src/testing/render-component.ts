@@ -1,24 +1,21 @@
-import {render, RenderComponentOptions, RenderResult, fireEvent} from '@testing-library/angular';
+import {render, RenderComponentOptions, RenderResult} from '@testing-library/angular';
 import {Type} from "@angular/core";
-import {Router, Routes} from "@angular/router";
+import {ActivatedRoute, Router, Routes} from "@angular/router";
 import {TestBed} from "@angular/core/testing";
-import {Action, Store} from "@ngrx/store";
 import {By} from "@angular/platform-browser";
-import userEvent from '@testing-library/user-event';
 
-import {AppState} from "../app/app.state";
 import {SharedModule} from "../app/shared/shared.module";
 import {SHELL_COMPONENTS} from "../app/shell/components";
 import {createTestingModule} from "./create-testing-module";
-import {TestingStore} from "./fakes";
-import {TestingActions} from "./testing-actions";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {TestingMatDialog} from "./fakes/testing-mat-dialog";
 import {TestingMatDialogRef} from "./fakes/testing-mat-dialog-ref";
+import {TestingSignalrConnectionServiceFactory} from "./fakes";
+import {SignalrHubConnectionFactory} from "../app/shared/signalr/signalr-hub-connection-factory.service";
+import {TestingActivatedRoute} from "./fakes/testing-activated-route";
 
 export interface RenderAppComponentOptions<T> extends RenderComponentOptions<T> {
   routes?: Routes;
-  actions?: Action[];
 }
 
 export interface RenderFeatureComponentOptions<T> extends RenderAppComponentOptions<T> {
@@ -26,20 +23,20 @@ export interface RenderFeatureComponentOptions<T> extends RenderAppComponentOpti
 }
 
 export interface RenderComponentResult<T> extends RenderResult<T> {
-  store: TestingStore<AppState>;
-  fireEvent: typeof fireEvent,
   triggerEventHandler: <TDirective>(directive: Type<TDirective>, eventName: string, eventArg?: any) => void;
   router: Router;
-  matDialog: TestingMatDialog,
-  matDialogRef: TestingMatDialogRef,
-  userEvent: typeof userEvent
+  matDialog: TestingMatDialog;
+  matDialogRef: TestingMatDialogRef;
+  signalrConnectionFactory: TestingSignalrConnectionServiceFactory;
+  activatedRoute: TestingActivatedRoute;
 }
 
 export async function renderAppComponent<T>(component: Type<T>, options?: RenderAppComponentOptions<T>): Promise<RenderComponentResult<T>> {
   const appOptions = createTestingModule({
     ...options,
-    imports: [SharedModule],
+    imports: [...(options?.imports || []), SharedModule],
     declarations: [
+      (options?.declarations || []),
       ...SHELL_COMPONENTS
     ]
   });
@@ -54,28 +51,18 @@ export async function renderFeatureComponent<T>(component: Type<T>, options: Ren
 async function renderComponent<T>(component: Type<T>, options: RenderAppComponentOptions<T>): Promise<RenderComponentResult<T>> {
   const result = await render(component, {
     ...options,
-    excludeComponentDeclaration: true,
+    excludeComponentDeclaration: true
   });
-  dispatchActions(options.actions)
   result.fixture.detectChanges();
   return {
     ...result,
     triggerEventHandler: createEventTriggerHandler(result),
-    store: <TestingStore<AppState>>TestBed.inject(Store),
-    fireEvent,
     router: TestBed.inject(Router),
     matDialog: <TestingMatDialog>TestBed.inject(MatDialog),
     matDialogRef: <TestingMatDialogRef>TestBed.inject(MatDialogRef),
-    userEvent: userEvent
+    signalrConnectionFactory: <TestingSignalrConnectionServiceFactory>TestBed.inject(SignalrHubConnectionFactory),
+    activatedRoute: <TestingActivatedRoute>TestBed.inject(ActivatedRoute)
   };
-}
-
-function dispatchActions(actions: Action[] = []) {
-  const store = TestBed.inject(Store);
-  store.dispatch(TestingActions.initAction());
-  for (let action of actions) {
-    store.dispatch(action);
-  }
 }
 
 function createEventTriggerHandler<TComponent, TDirective>({fixture}: RenderResult<TComponent>) {

@@ -1,8 +1,8 @@
 import {v4 as uuid} from 'uuid';
-import {DiagnosticsMessageModel} from "../app/diagnostics/models";
-import {DeviceModel} from "../app/devices/models";
 import {ListResult} from "../app/shared/models";
-import {RoomModel} from "../app/rooms/models/room.model";
+import {DiagnosticsMessageModel} from "../app/shared/diagnostics";
+import {DeviceModel} from "../app/shared/devices";
+import {RoomModel} from "../app/shared/rooms";
 
 let id = 0;
 

@@ -1,0 +1,8 @@
+<diagnostics-header [isConnected]="isConnected$ | async"
+                    [allowDiscovery]="allowDiscovery$ | async"
+                    (startDiscovery)="onStartDiscovery()"
+                    (stopDiscovery)="onStopDiscovery()"
+                    (syncDiscovery)="onSyncDiscovery()">
+
+</diagnostics-header>
+<diagnostics-messages [messages]="messages$ | async"></diagnostics-messages>

@@ -1,16 +1,14 @@
 import 'jest-preset-angular';
 import '@testing-library/jest-dom';
-import './testing/action-expectations';
-import {setupSignalrTestingHub} from "./testing";
-import {TestingServer} from "./testing/fakes/testing-server";
+import {TestingServer} from "./testing";
 
 beforeAll(() => {
-  setupSignalrTestingHub();
   TestingServer.start();
 });
 
 beforeEach(() => {
   TestingServer.reset();
+  TestingServer.setupDefaultApiEndpoints();
 })
 
 afterAll(() => {

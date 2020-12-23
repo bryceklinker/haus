@@ -1,14 +1,13 @@
 import {RouterModule, Routes} from "@angular/router";
 import {NgModule} from "@angular/core";
-import {DevicesContainerComponent} from "./components/devices-container/devices-container.component";
-import {DeviceDetailContainerComponent} from "./components/device-detail-container/device-detail-container.component";
+import {DevicesRootComponent} from "./components/devices-root/devices-root.component";
 
 const routes: Routes = [
   {
     path: '',
-    component: DevicesContainerComponent,
+    component: DevicesRootComponent,
     children: [
-      {path: ':deviceId', component: DeviceDetailContainerComponent}
+      // {path: ':deviceId', component: DeviceDetailContainerComponent}
     ]
   }
 ];

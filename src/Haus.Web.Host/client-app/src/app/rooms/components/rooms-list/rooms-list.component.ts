@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter} from "@angular/core";
-import {RoomModel} from "../../models/room.model";
+import {RoomModel} from "../../../shared/rooms";
 
 @Component({
   selector: 'rooms-list',

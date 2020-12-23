@@ -1,9 +1,10 @@
-import {DiagnosticsMessageModel} from "../../models";
-import {renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
+import {EventEmitter} from "@angular/core";
+import {screen} from "@testing-library/dom";
+import userEvent from "@testing-library/user-event";
+import {renderFeatureComponent, TestingEventEmitter, ModelFactory} from "../../../../testing";
 import {DiagnosticsMessagesComponent} from "./diagnostics-messages.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
-import {ModelFactory} from "../../../../testing/model-factory";
-import {EventEmitter} from "@angular/core";
+import {DiagnosticsMessageModel} from "../../../shared/diagnostics";
 
 describe('DiagnosticsMessagesComponent', () => {
   it('should show each message', async () => {
@@ -13,9 +14,9 @@ describe('DiagnosticsMessagesComponent', () => {
       ModelFactory.createMqttDiagnosticsMessage()
     ];
 
-    const {queryAllByTestId} = await renderMessages(messages);
+    await renderMessages(messages);
 
-    expect(queryAllByTestId('diagnostic-message')).toHaveLength(3);
+    expect(screen.queryAllByTestId('diagnostic-message')).toHaveLength(3);
   })
 
   it('should show message topic', async () => {
@@ -23,9 +24,9 @@ describe('DiagnosticsMessagesComponent', () => {
       ModelFactory.createMqttDiagnosticsMessage({topic: 'one'})
     ];
 
-    const {getByTestId} = await renderMessages(messages);
+    await renderMessages(messages);
 
-    expect(getByTestId('diagnostic-message')).toHaveTextContent('one');
+    expect(screen.getByTestId('diagnostic-message')).toHaveTextContent('one');
   })
 
   it('should show message payload', async () => {
@@ -33,9 +34,9 @@ describe('DiagnosticsMessagesComponent', () => {
       ModelFactory.createMqttDiagnosticsMessage({payload: '123'})
     ];
 
-    const {getByTestId} = await renderMessages(messages);
+    await renderMessages(messages);
 
-    expect(getByTestId('diagnostic-message')).toHaveTextContent('123');
+    expect(screen.getByTestId('diagnostic-message')).toHaveTextContent('123');
   })
 
   it('should show message payload json', async () => {
@@ -43,19 +44,19 @@ describe('DiagnosticsMessagesComponent', () => {
       ModelFactory.createMqttDiagnosticsMessage({payload: {id: 45, text: 'jack'}})
     ];
 
-    const {getByTestId} = await renderMessages(messages);
+    await renderMessages(messages);
 
-    expect(getByTestId('diagnostic-message')).toHaveTextContent('45')
-    expect(getByTestId('diagnostic-message')).toHaveTextContent('jack')
+    expect(screen.getByTestId('diagnostic-message')).toHaveTextContent('45')
+    expect(screen.getByTestId('diagnostic-message')).toHaveTextContent('jack')
   })
 
   it('should trigger replay message when message is replayed', async () => {
     const model = ModelFactory.createMqttDiagnosticsMessage();
     const replayMessageEmitter = new TestingEventEmitter<DiagnosticsMessageModel>();
 
-    const {getByTestId, fireEvent} = await renderMessages([model], replayMessageEmitter);
+    await renderMessages([model], replayMessageEmitter);
 
-    fireEvent.click(getByTestId('replay-message-btn'));
+    userEvent.click(screen.getByTestId('replay-message-btn'));
 
     expect(replayMessageEmitter.emit).toHaveBeenCalledWith(model);
   })
@@ -63,9 +64,9 @@ describe('DiagnosticsMessagesComponent', () => {
   it('should disable replay button when message is being replayed', async () => {
     const model = ModelFactory.createMqttDiagnosticsMessage({isReplaying: true});
 
-    const {getByTestId} = await renderMessages([model]);
+    await renderMessages([model]);
 
-    expect(getByTestId('replay-message-btn')).toBeDisabled();
+    expect(screen.getByTestId('replay-message-btn')).toBeDisabled();
   })
 
   async function renderMessages(messages: Array<DiagnosticsMessageModel>, replayMessage?: EventEmitter<DiagnosticsMessageModel>) {

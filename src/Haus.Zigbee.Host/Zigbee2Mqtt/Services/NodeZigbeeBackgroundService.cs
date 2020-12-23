@@ -25,14 +25,15 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
 
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
-            await _zigbee2MqttConfigurationWriter.WriteConfigAsync();
-            _zigbeeProcess.Start();
+            
             
             await base.StartAsync(cancellationToken);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await _zigbee2MqttConfigurationWriter.WriteConfigAsync();
+            _zigbeeProcess.Start();
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(1000, stoppingToken);

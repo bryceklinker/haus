@@ -1,7 +1,8 @@
-import {DeviceModel} from "../../models";
+import {screen} from "@testing-library/dom";
 import {ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DeviceDetailComponent} from "./device-detail.component";
 import {DevicesModule} from "../../devices.module";
+import {DeviceModel} from "../../../shared/devices";
 
 describe('DeviceDetailComponent', () => {
   it('should show device information', async () => {
@@ -9,34 +10,34 @@ describe('DeviceDetailComponent', () => {
       deviceType: 'LightSensor, MotionSensor, TemperatureSensor'
     });
 
-    const {getByTestId} = await renderDeviceDetail(device);
+    await renderDeviceDetail(device);
 
-    expect(getByTestId('device-name-field')).toHaveValue(device.name);
-    expect(getByTestId('device-external-id-field')).toHaveValue(device.externalId);
-    expect(getByTestId('device-type-field')).toHaveValue('LightSensor, MotionSensor, TemperatureSensor');
+    expect(screen.getByTestId('device-name-field')).toHaveValue(device.name);
+    expect(screen.getByTestId('device-external-id-field')).toHaveValue(device.externalId);
+    expect(screen.getByTestId('device-type-field')).toHaveValue('LightSensor, MotionSensor, TemperatureSensor');
   })
 
   it('should show not available when no device provided', async () => {
-    const {getByTestId} = await renderDeviceDetail();
+    await renderDeviceDetail();
 
-    expect(getByTestId('device-name-field')).toHaveValue('N/A');
-    expect(getByTestId('device-external-id-field')).toHaveValue('N/A');
+    expect(screen.getByTestId('device-name-field')).toHaveValue('N/A');
+    expect(screen.getByTestId('device-external-id-field')).toHaveValue('N/A');
   })
 
   it('should keep readonly data inputs disabled', async () => {
     const device = ModelFactory.createDeviceModel();
 
-    const {getByTestId} = await renderDeviceDetail(device);
+    await renderDeviceDetail(device);
 
-    expect(getByTestId('device-external-id-field')).toBeDisabled();
-    expect(getByTestId('device-type-field')).toBeDisabled();
+    expect(screen.getByTestId('device-external-id-field')).toBeDisabled();
+    expect(screen.getByTestId('device-type-field')).toBeDisabled();
   })
 
   it('should be readonly when no device provided', async () => {
-    const {getByTestId} = await renderDeviceDetail();
+    await renderDeviceDetail();
 
-    expect(getByTestId('device-name-field')).toBeDisabled();
-    expect(getByTestId('device-external-id-field')).toBeDisabled();
+    expect(screen.getByTestId('device-name-field')).toBeDisabled();
+    expect(screen.getByTestId('device-external-id-field')).toBeDisabled();
   })
 
   it('should show device metadata', async () => {
@@ -47,9 +48,9 @@ describe('DeviceDetailComponent', () => {
       ]
     });
 
-    const {queryAllByTestId, container} = await renderDeviceDetail(device);
+    const {container} = await renderDeviceDetail(device);
 
-    expect(queryAllByTestId('device-metadata')).toHaveLength(2);
+    expect(screen.queryAllByTestId('device-metadata')).toHaveLength(2);
     expect(container).toHaveTextContent('Philips');
     expect(container).toHaveTextContent('2342');
   })
