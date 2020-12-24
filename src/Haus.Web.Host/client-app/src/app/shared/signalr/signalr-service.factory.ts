@@ -8,6 +8,12 @@ export class SignalrServiceFactory {
   }
 
   create(hubName: string): SignalrService {
-    return new SignalrService(hubName, this.connectionFactory);
+    const connection = this.connectionFactory.create(hubName);
+    return new SignalrService(connection);
+  }
+
+  createFromUrl(url: string): SignalrService {
+    const connection = this.connectionFactory.createFromUrl(url);
+    return new SignalrService(connection);
   }
 }

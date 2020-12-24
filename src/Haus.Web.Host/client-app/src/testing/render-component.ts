@@ -10,9 +10,10 @@ import {createTestingModule} from "./create-testing-module";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {TestingMatDialog} from "./fakes/testing-mat-dialog";
 import {TestingMatDialogRef} from "./fakes/testing-mat-dialog-ref";
-import {TestingSignalrConnectionServiceFactory} from "./fakes";
+import {TestingSettingsService, TestingSignalrConnectionServiceFactory} from "./fakes";
 import {SignalrHubConnectionFactory} from "../app/shared/signalr/signalr-hub-connection-factory.service";
 import {TestingActivatedRoute} from "./fakes/testing-activated-route";
+import {SettingsService} from "../app/shared/settings";
 
 export interface RenderAppComponentOptions<T> extends RenderComponentOptions<T> {
   routes?: Routes;
@@ -29,6 +30,7 @@ export interface RenderComponentResult<T> extends RenderResult<T> {
   matDialogRef: TestingMatDialogRef;
   signalrConnectionFactory: TestingSignalrConnectionServiceFactory;
   activatedRoute: TestingActivatedRoute;
+  settingsService: TestingSettingsService;
 }
 
 export async function renderAppComponent<T>(component: Type<T>, options?: RenderAppComponentOptions<T>): Promise<RenderComponentResult<T>> {
@@ -61,7 +63,8 @@ async function renderComponent<T>(component: Type<T>, options: RenderAppComponen
     matDialog: <TestingMatDialog>TestBed.inject(MatDialog),
     matDialogRef: <TestingMatDialogRef>TestBed.inject(MatDialogRef),
     signalrConnectionFactory: <TestingSignalrConnectionServiceFactory>TestBed.inject(SignalrHubConnectionFactory),
-    activatedRoute: <TestingActivatedRoute>TestBed.inject(ActivatedRoute)
+    activatedRoute: <TestingActivatedRoute>TestBed.inject(ActivatedRoute),
+    settingsService: <TestingSettingsService>TestBed.inject(SettingsService)
   };
 }
 

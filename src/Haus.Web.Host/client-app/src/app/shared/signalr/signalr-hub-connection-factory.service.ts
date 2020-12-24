@@ -19,4 +19,12 @@ export class SignalrHubConnectionFactory {
       .build();
     return new SignalrHubConnection(connection);
   }
+
+  createFromUrl(url: string): SignalrHubConnection {
+    const connection = new HubConnectionBuilder()
+      .withUrl(url)
+      .configureLogging(LogLevel.Information)
+      .build();
+    return new SignalrHubConnection(connection);
+  }
 }

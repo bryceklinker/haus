@@ -6,12 +6,13 @@ import {AuthModule, AuthService} from "@auth0/auth0-angular";
 import {SpyLocation} from "@angular/common/testing";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 
-import {TestingAuthService, TestingSignalrConnectionServiceFactory} from "./fakes";
+import {TestingAuthService, TestingSettingsService, TestingSignalrConnectionServiceFactory} from "./fakes";
 import {TestingMatDialog} from "./fakes/testing-mat-dialog";
 import {TestingMatDialogRef} from "./fakes/testing-mat-dialog-ref";
 import {SignalrHubConnectionFactory} from "../app/shared/signalr";
 import {TestingActivatedRoute} from "./fakes/testing-activated-route";
 import {HttpClientModule} from "@angular/common/http";
+import {SettingsService} from "../app/shared/settings";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   routes?: Routes;
@@ -51,6 +52,7 @@ export function getTestingProviders() {
     {provide: MatDialog, useClass: TestingMatDialog},
     {provide: MatDialogRef, useClass: TestingMatDialogRef},
     {provide: SignalrHubConnectionFactory, useClass: TestingSignalrConnectionServiceFactory},
-    {provide: ActivatedRoute, useClass: TestingActivatedRoute}
+    {provide: ActivatedRoute, useClass: TestingActivatedRoute},
+    {provide: SettingsService, useClass: TestingSettingsService}
   ]
 }

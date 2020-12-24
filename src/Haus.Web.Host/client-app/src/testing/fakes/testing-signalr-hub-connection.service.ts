@@ -1,4 +1,4 @@
-import {SignalrHubConnection} from "../../app/shared/signalr/signalr-hub.connection";
+import {SignalrHubConnection} from "../../app/shared/signalr";
 import {Subject} from "rxjs";
 import {HubConnectionState} from "@microsoft/signalr";
 import {tap} from "rxjs/operators";

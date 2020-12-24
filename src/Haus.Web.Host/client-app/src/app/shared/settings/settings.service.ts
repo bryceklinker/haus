@@ -9,6 +9,13 @@ export class SettingsService {
     return settingsModel
   }
 
+  get settings(): SettingsModel {
+    if (!settingsModel) {
+      throw new Error('Settings have not been set the app will not work correctly with out settings')
+    }
+    return settingsModel;
+  }
+
   static async loadSettings(): Promise<SettingsModel> {
     const response = await fetch('/settings');
     return settingsModel = await response.json();

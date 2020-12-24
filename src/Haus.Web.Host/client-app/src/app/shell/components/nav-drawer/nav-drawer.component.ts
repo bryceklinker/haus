@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {ThemeService} from "../../../shared/theming/theme.service";
+import {getAvailableRoutes} from "../../../app-routes";
 
 @Component({
   selector: 'shell-nav-drawer',
@@ -11,12 +11,16 @@ export class NavDrawerComponent {
 
   @Output() drawerClosed = new EventEmitter();
 
+  get availableRoutes(): {name: string, path: string}[] {
+    return getAvailableRoutes()[0]
+      .children
+      .map(r => ({name: r.name, path: r.path}));
+  }
+
   handleClosed(isOpen: boolean) {
     if (isOpen)
       return;
 
     this.drawerClosed.emit();
   }
-
-
 }

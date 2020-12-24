@@ -8,7 +8,6 @@ import {DestroyableSubject} from "../destroyable-subject";
 export class SignalrService {
   private readonly _unsubscribe$ = new DestroyableSubject();
   private readonly _status = new BehaviorSubject<HubStatus>(HubStatus.Disconnected);
-  private _connection: SignalrHubConnection | null = null;
 
   get status$(): Observable<HubStatus> {
     return this._status.asObservable().pipe(
@@ -16,12 +15,7 @@ export class SignalrService {
     );
   }
 
-  private get connection(): SignalrHubConnection {
-    return this._connection || (this._connection = this.signalrConnectionFactory.create(this.hubName));
-  }
-
-  constructor(public readonly hubName: string,
-              private readonly signalrConnectionFactory: SignalrHubConnectionFactory) {
+  constructor(private readonly connection: SignalrHubConnection) {
   }
 
   start(): Observable<void> {

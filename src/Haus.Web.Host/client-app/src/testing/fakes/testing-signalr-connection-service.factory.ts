@@ -9,6 +9,10 @@ export class TestingSignalrConnectionServiceFactory extends SignalrHubConnection
     return this.getTestingHub(hubName);
   }
 
+  createFromUrl(url: string): SignalrHubConnection {
+    return this.getTestingHub(url);
+  }
+
   getTestingHub(hubName: string): TestingSignalrHubConnectionService {
     return this._connections.hasOwnProperty(hubName)
       ? this._connections[hubName]
