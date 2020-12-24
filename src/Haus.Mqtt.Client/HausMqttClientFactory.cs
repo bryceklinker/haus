@@ -56,7 +56,7 @@ namespace Haus.Mqtt.Client
                 })
                 .Build();
             await client.StartAsync(options).ConfigureAwait(false);
-            return new HausMqttClient(client, _loggerFactory);
+            return new HausMqttClient(client, _options);
         }
         
         public async ValueTask DisposeAsync()

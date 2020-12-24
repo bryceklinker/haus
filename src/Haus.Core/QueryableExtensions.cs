@@ -12,7 +12,7 @@ namespace Haus.Core
             this IQueryable<T> source,
             CancellationToken cancellationToken = default)
         {
-            return new ListResult<T>(await source.ToArrayAsync(cancellationToken).ConfigureAwait(false));
+            return new(await source.ToArrayAsync(cancellationToken).ConfigureAwait(false));
         }
     }
 }

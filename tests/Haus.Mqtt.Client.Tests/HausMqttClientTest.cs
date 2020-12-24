@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Haus.Mqtt.Client.Settings;
 using Haus.Testing.Support.Fakes;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using Xunit;
@@ -16,7 +17,8 @@ namespace Haus.Mqtt.Client.Tests
         public HausMqttClientTest()
         {
             _fakeMqttClient = new FakeMqttClient();
-            _client = new HausMqttClient(_fakeMqttClient, new NullLoggerFactory());
+            var options = Options.Create(new HausMqttSettings());
+            _client = new HausMqttClient(_fakeMqttClient, options);
         }
 
         [Fact]

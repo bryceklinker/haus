@@ -9,4 +9,8 @@
     <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.13" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Haus.Core.Models\Haus.Core.Models.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-namespace Haus.Mqtt.Client
+namespace Haus.Core.Models.Common
 {
     public static class DefaultHausMqttTopics
     {

@@ -4,25 +4,24 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
-using Haus.Core.Models.ExternalMessages;
-using Haus.Device.Simulator.Test.Support;
+using Haus.Device.Simulator.Tests.Support;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Device.Simulator.Test.Devices
+namespace Haus.Device.Simulator.Tests.Devices
 {
-    [Collection(DeviceSimulatorCollectionFixture.Name)]
-    public class LightsApiTests
+    public class DevicesApiTests 
     {
         private readonly DeviceSimulatorWebApplication _factory;
         private readonly HttpClient _client;
         private readonly List<DeviceDiscoveredModel> _devicesDiscovered;
 
-        public LightsApiTests(DeviceSimulatorWebApplication factory)
+        public DevicesApiTests()
         {
-            _factory = factory;
+            _factory = new DeviceSimulatorWebApplication();
             _client = _factory.CreateClient();
             _devicesDiscovered = new List<DeviceDiscoveredModel>();
         }
@@ -45,6 +44,7 @@ namespace Haus.Device.Simulator.Test.Devices
         {
             await SubscribeToDeviceDiscoveredEvents();
 
+            await _client.PostAsync("/api/devices/clear", new StringContent(string.Empty));
             await _client.PostAsJsonAsync("/api/devices", new DeviceModel
             {
                 DeviceType = DeviceType.MotionSensor | DeviceType.LightSensor | DeviceType.TemperatureSensor
@@ -63,6 +63,19 @@ namespace Haus.Device.Simulator.Test.Devices
             var deviceTypes = await _client.GetFromJsonAsync<string[]>("/api/deviceTypes");
 
             Assert.Contains(Enum.GetNames(typeof(DeviceType)), deviceTypeName => deviceTypes.Contains(deviceTypeName));
+        }
+
+        [Fact]
+        public async Task WhenDevicesAreClearedThenDevicesIsEmpty()
+        {
+            await _client.PostAsJsonAsync("/api/devices", new DeviceModel {DeviceType = DeviceType.Light});
+            await _client.PostAsJsonAsync("/api/devices", new DeviceModel {DeviceType = DeviceType.Light});
+            await _client.PostAsJsonAsync("/api/devices", new DeviceModel {DeviceType = DeviceType.Light});
+            await _client.PostAsync("/api/devices/clear", new StringContent(string.Empty));
+
+            var devices = await _client.GetFromJsonAsync<ListResult<DeviceModel>>("/api/devices");
+            Assert.Empty(devices.Items);
+            Assert.Equal(0, devices.Count);
         }
         
         private async Task SubscribeToDeviceDiscoveredEvents()

@@ -65,7 +65,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{E9A6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Device.Simulator", "src\Haus.Device.Simulator\Haus.Device.Simulator.csproj", "{E5DCB1A4-3846-4B0A-B76B-67E40CC51ECA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Device.Simulator.Test", "tests\Haus.Device.Simulator.Test\Haus.Device.Simulator.Test.csproj", "{651F9009-0218-41F9-AB0C-8FE736609BCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Device.Simulator.Tests", "tests\Haus.Device.Simulator.Tests\Haus.Device.Simulator.Tests.csproj", "{651F9009-0218-41F9-AB0C-8FE736609BCD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Mqtt.Client", "src\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj", "{BF8CE4D6-06CC-4110-AFAA-0B66470C567B}"
 EndProject

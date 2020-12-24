@@ -122,19 +122,13 @@ namespace Haus.Web.Host.Tests.Support
         public async Task SubscribeToHausCommandsAsync<T>(Action<HausCommand<T>> handler)
         {
             var mqttClient = await GetMqttClient();
-            await mqttClient.SubscribeToTopicAsync("haus/commands", msg =>
-            {
-                if (HausJsonSerializer.TryDeserialize(msg.Payload, out HausCommand<T> command))
-                {
-                    handler.Invoke(command);
-                }
-            });
+            await mqttClient.SubscribeToHausCommandsAsync(handler);
         }
 
         public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator)
         {
             var client = await GetMqttClient();
-            await client.PublishAsync("haus/events", creator.AsHausEvent());
+            await client.PublishHausEventAsync(creator);
         }
 
         public async Task<DeviceModel> WaitForDeviceToBeDiscovered(

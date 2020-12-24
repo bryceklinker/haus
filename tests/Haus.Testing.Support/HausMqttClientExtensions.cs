@@ -1,36 +1,40 @@
 using System;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Haus.Core.Models;
+using Haus.Core.Models.Common;
+using Haus.Core.Models.ExternalMessages;
 using Haus.Mqtt.Client;
-using Haus.Web.Host.Common.Mqtt;
 using MQTTnet;
-using MQTTnet.Extensions.ManagedClient;
 
-namespace Haus.Web.Host.Tests
+namespace Haus.Testing.Support
 {
     public static class HausMqttClientExtensions
     {
-        public static async Task PublishAsync(this IHausMqttClient client, string topic, object payload)
+        public static async Task SubscribeToHausEventsAsync<T>(
+            this IHausMqttClient client, 
+            Action<HausEvent<T>> handler, 
+            string topicName = DefaultHausMqttTopics.EventsTopic)
         {
-            await client.PublishAsync(new MqttApplicationMessage
+            await client.SubscribeAsync(topicName, msg =>
             {
-                Topic = topic,
-                Payload = HausJsonSerializer.SerializeToBytes(payload)
+                if (HausJsonSerializer.TryDeserialize(msg.Payload, out HausEvent<T> command))
+                {
+                    handler.Invoke(command);
+                }
             });
         }
 
-        public static async Task SubscribeToAllTopicsAsync(this IHausMqttClient client, Action<MqttApplicationMessage> handler)
+        public static async Task SubscribeToHausCommandsAsync<T>(
+            this IHausMqttClient client, 
+            Action<HausCommand<T>> handler,
+            string topicName = DefaultHausMqttTopics.CommandsTopic)
         {
-            await client.SubscribeToTopicAsync("#", handler);
-        }
-        
-        public static async Task SubscribeToTopicAsync(this IHausMqttClient client, string topic, Action<MqttApplicationMessage> handler)
-        {
-            await client.SubscribeAsync(topic, msg =>
+            await client.SubscribeAsync(topicName, msg =>
             {
-                handler.Invoke(msg);
-                return Task.CompletedTask;
+                if (HausJsonSerializer.TryDeserialize(msg.Payload, out HausCommand<T> command))
+                {
+                    handler.Invoke(command);
+                }
             });
         }
     }

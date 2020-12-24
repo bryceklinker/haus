@@ -9,6 +9,7 @@ REPORT_COVERAGE_FILE_PATH="${WORKING_DIRECTORY}/coverage.cobertura.xml"
 IS_RELEASE=${IS_RELEASE:-false}
 
 FRONT_END_DIRECTORY="${WORKING_DIRECTORY}/src/Haus.Web.Host/client-app"
+DEVICE_SIMULATOR_FRONT_END_DIRECTORY="${WORKING_DIRECTORY}/src/Haus.Device.Simulator/client-app"
 WEB_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Web.Host/Haus.Web.Host.csproj"
 ZIGBEE_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Zigbee.Host/Haus.Zigbee.Host.csproj"
 
@@ -35,6 +36,7 @@ function run_tests() {
   run_dotnet_test "Haus.Utilities.Tests"
   run_dotnet_test "Haus.Web.Host.Tests"
   run_dotnet_test "Haus.Zigbee.Host.Tests"
+  run_dotnet_test "Haus.Device.Simulator.Tests"
   
   dotnet reportgenerator \
     "-reports:${REPORT_COVERAGE_FILE_PATH}" \
@@ -42,6 +44,11 @@ function run_tests() {
     "-reporttypes:Html"
     
   pushd "${FRONT_END_DIRECTORY}" || exit
+    yarn install
+    yarn test
+  popd || exit
+  
+  pushd "${DEVICE_SIMULATOR_FRONT_END_DIRECTORY}" || exit
     yarn install
     yarn test
   popd || exit

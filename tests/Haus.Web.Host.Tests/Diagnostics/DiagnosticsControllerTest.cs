@@ -25,7 +25,7 @@ namespace Haus.Web.Host.Tests.Diagnostics
         {
             var mqtt = await _factory.GetMqttClient();
             MqttApplicationMessage received = null;
-            await mqtt.SubscribeToTopicAsync("my-topic", msg => received = msg);
+            await mqtt.SubscribeAsync("my-topic", msg => received = msg);
                 
             var model = new MqttDiagnosticsMessageModel
             {

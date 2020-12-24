@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.ExternalMessages;
 
@@ -13,7 +14,11 @@ namespace Haus.Core.Models.Devices.Discovery
         
         public HausEvent<DeviceDiscoveredModel> AsHausEvent()
         {
-            return new HausEvent<DeviceDiscoveredModel>(Type, this);
+            return new(Type, this);
         }
+
+        public string GetMetadataValue(string key) => 
+            Metadata.FirstOrDefault(m => m.Key == key)
+            ?.Value;
     }
 }

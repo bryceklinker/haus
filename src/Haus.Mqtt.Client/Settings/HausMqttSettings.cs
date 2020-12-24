@@ -1,3 +1,5 @@
+using Haus.Core.Models.Common;
+
 namespace Haus.Mqtt.Client.Settings
 {
     public class HausMqttSettings
