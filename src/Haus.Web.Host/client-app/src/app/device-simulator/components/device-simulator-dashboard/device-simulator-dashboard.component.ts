@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, Output} from "@angular/core";
 
 import {DeviceModel} from "../../../shared/devices";
 
@@ -8,5 +8,5 @@ import {DeviceModel} from "../../../shared/devices";
   styleUrls: ['./device-simulator-dashboard.component.scss']
 })
 export class DeviceSimulatorDashboardComponent {
-  @Input() devices: DeviceModel[] = [];
+  @Input() devices: DeviceModel[] | null = [];
 }

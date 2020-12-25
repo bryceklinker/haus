@@ -7,14 +7,15 @@ import {getAvailableRoutes} from "../../../app-routes";
   styleUrls: ['./nav-drawer.component.scss']
 })
 export class NavDrawerComponent {
+  readonly availableRoutes: Array<{name: string, path: string}>;
   @Input() isOpen: boolean = false;
 
   @Output() drawerClosed = new EventEmitter();
 
-  get availableRoutes(): {name: string, path: string}[] {
-    return getAvailableRoutes()[0]
+  constructor() {
+    this.availableRoutes = getAvailableRoutes()[0]
       .children
-      .map(r => ({name: r.name, path: r.path}));
+      .map(r => ({name: r.name, path: r.path}))
   }
 
   handleClosed(isOpen: boolean) {

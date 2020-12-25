@@ -1,5 +1,5 @@
-import {Observable, ReplaySubject, Subject} from "rxjs";
-import {shareReplay, switchMap, take} from "rxjs/operators";
+import {Observable, ReplaySubject} from "rxjs";
+import {take} from "rxjs/operators";
 
 export function subscribeOnce<T>(obs$: Observable<T>, handler: (value: T) => void = (() => {}), errorHandler: (err: any) => void = (() => {})): Observable<T> {
   const subject = new ReplaySubject<T>(1);

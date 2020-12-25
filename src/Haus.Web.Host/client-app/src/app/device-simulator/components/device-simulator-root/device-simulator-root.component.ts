@@ -24,7 +24,7 @@ export class DeviceSimulatorRootComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.destroyable.register(this.service.start());
+    this.destroyable.register(this.service.start()).subscribe();
   }
 
   ngOnDestroy(): void {

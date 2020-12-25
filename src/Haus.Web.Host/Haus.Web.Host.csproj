@@ -15,6 +15,10 @@
     <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
     <ProjectReference Include="..\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="client-app\src\app\shared\auth" />
+  </ItemGroup>
 
   <Target Name="RunBundler" AfterTargets="ComputeFilesToPublish">
     <Exec Command="yarn install" WorkingDirectory="./client-app" />

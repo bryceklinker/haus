@@ -23,17 +23,14 @@ export function getAvailableRoutes() {
           name: 'Rooms',
           path: 'rooms',
           loadChildren: () => import('./rooms/rooms.module').then(m => m.RoomsModule)
+        },
+        {
+          name: 'Device Simulator',
+          path: 'device-simulator',
+          loadChildren: () => import('./device-simulator/device-simulator.module').then(m => m.DeviceSimulatorModule)
         }
       ]
     }
   ];
-
-  if (SettingsService.getSettings()?.deviceSimulator.isEnabled) {
-    routes[0].children?.push({
-      name: 'Device Simulator',
-      path: 'device-simulator',
-      loadChildren: () => import('./device-simulator/device-simulator.module').then(m => m.DeviceSimulatorModule)
-    })
-  }
   return routes;
 }

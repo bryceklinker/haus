@@ -73,6 +73,15 @@ describe('DeviceSimulatorService', () => {
   })
 
   it('should get device types from simulator', async () => {
+    const expected = ModelFactory.createListResult('Light', 'LightSensor');
+    TestingServer.setupGet('https://localhost:5005/api/deviceTypes', expected);
 
+    let types: string[] = [];
+    service.deviceTypes$.subscribe(t => types = t);
+
+    service.getDeviceTypes().subscribe();
+    await eventually(() => {
+      expect(types).toEqual(expected.items);
+    })
   })
 })

@@ -1,4 +1,5 @@
-import {Component} from "@angular/core";
+import {Component, Input} from "@angular/core";
+import {DeviceMetadataModel, DeviceModel} from "../../../shared/devices";
 
 @Component({
   selector: 'simulated-device',
@@ -6,5 +7,17 @@ import {Component} from "@angular/core";
   styleUrls: ['./simulated-device.component.scss']
 })
 export class SimulatedDeviceComponent{
+  @Input() device: DeviceModel | null = null;
 
+  get externalId(): string {
+    return this.device ? this.device.externalId : 'N/A';
+  }
+
+  get deviceType(): string {
+    return this.device ? this.device.deviceType : 'Unknown'
+  }
+
+  get metadata(): Array<DeviceMetadataModel> {
+    return this.device ? this.device.metadata : [];
+  }
 }

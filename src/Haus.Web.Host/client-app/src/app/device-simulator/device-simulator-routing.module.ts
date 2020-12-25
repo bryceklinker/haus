@@ -1,11 +1,16 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {DeviceSimulatorRootComponent} from "./components";
+import {DeviceSimulatorRootComponent, AddSimulatedDeviceComponent} from "./components";
 
 const routes: Routes = [
+
+  {
+    path: 'add-simulated-device',
+    component: AddSimulatedDeviceComponent
+  },
   {
     path: '',
-    component: DeviceSimulatorRootComponent
+    component: DeviceSimulatorRootComponent,
   }
 ];
 
