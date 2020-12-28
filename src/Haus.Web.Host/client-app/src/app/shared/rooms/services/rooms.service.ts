@@ -14,12 +14,12 @@ const ROOM_ID_ROUTE_PARAM = 'roomId';
 })
 export class RoomsService implements OnInit, OnDestroy {
   private readonly _entityService = new SortingEntityService<RoomModel>(r => r.name);
-  private readonly _devicesByRoomSubject = new BehaviorSubject<{[roomId: string]: Array<DeviceModel>}>({});
+  private readonly devicesByRoomSubject = new BehaviorSubject<{[roomId: string]: Array<DeviceModel>}>({});
   private readonly destroyable = new DestroyableSubject();
 
   get selectedRoomId$() : Observable<string> {
     return this.destroyable.register(this.route.paramMap.pipe(
-      map(paramMap =>  paramMap.has(ROOM_ID_ROUTE_PARAM) ? paramMap.get(ROOM_ID_ROUTE_PARAM) as string : ''),
+      map(paramMap =>  paramMap.get(ROOM_ID_ROUTE_PARAM) || ''),
       filter(roomId => roomId !== '')
     ));
   }
@@ -31,18 +31,14 @@ export class RoomsService implements OnInit, OnDestroy {
   get selectedRoom$(): Observable<RoomModel | null> {
     return this.destroyable.register(this._entityService.entitiesById$.pipe(
       withLatestFrom(this.selectedRoomId$),
-      map(([roomsById, roomId]) => {
-        return roomId ? roomsById[roomId] : null;
-      }),
+      map(([roomsById, roomId]) => roomId ? roomsById[roomId] : null),
     ));
   }
 
   get selectedRoomDevices$(): Observable<Array<DeviceModel>> {
-    return this.destroyable.register(this._devicesByRoomSubject.asObservable().pipe(
+    return this.destroyable.register(this.devicesByRoomSubject.asObservable().pipe(
       withLatestFrom(this.selectedRoomId$),
-      map(([devicesByRoomId, roomId]) => {
-        return roomId ? devicesByRoomId[roomId] : [];
-      })
+      map(([devicesByRoomId, roomId]) => roomId ? devicesByRoomId[roomId] : [])
     ))
   }
 
@@ -74,8 +70,8 @@ export class RoomsService implements OnInit, OnDestroy {
   private onRoomChanged(roomId: string) {
     this.destroyable.register(this.api.getDevicesInRoom(roomId).pipe(
       map(result => result.items),
-      tap(devices => this._devicesByRoomSubject.next({
-        ...this._devicesByRoomSubject.getValue(),
+      tap(devices => this.devicesByRoomSubject.next({
+        ...this.devicesByRoomSubject.getValue(),
         [roomId]: devices
       }))
     )).subscribe();

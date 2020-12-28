@@ -95,7 +95,7 @@ describe('DevicesService', () => {
 
   it('should have null selected device', async () => {
     setupGetAllDevices();
-    
+
     service.getAll().subscribe();
 
     await eventually(() => {

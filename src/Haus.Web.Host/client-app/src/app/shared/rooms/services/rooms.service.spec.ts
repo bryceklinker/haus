@@ -26,9 +26,13 @@ describe('RoomsService', () => {
 
     rooms = null;
     selectedRoom = null;
+    selectedRoomDevices = null;
     service.rooms$.subscribe(r => rooms = r);
     service.selectedRoom$.subscribe(r => selectedRoom = r);
-    service.selectedRoomDevices$.subscribe(r => selectedRoomDevices = r);
+    service.selectedRoomDevices$.subscribe(r => {
+      console.log('DEVICES', r);
+      selectedRoomDevices = r;
+    })
   })
 
   it('should have empty rooms', async () => {

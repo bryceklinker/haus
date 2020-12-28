@@ -29,9 +29,7 @@ export class DevicesService implements OnDestroy {
   get selectedDevice$(): Observable<DeviceModel | null> {
     return this.destroyable.register(this.entityService.entitiesById$.pipe(
       withLatestFrom(this.selectedDeviceId$),
-      map(([devicesById, deviceId]) => {
-        return deviceId ? devicesById[deviceId] : null;
-      })
+      map(([devicesById, deviceId]) => deviceId ? devicesById[deviceId] : null)
     ));
   }
 

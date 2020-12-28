@@ -16,7 +16,7 @@ export function setupAddRoom(result: RoomModel = ModelFactory.createRoomModel(),
 }
 
 export function setupGetDevicesForRoom(roomId: string | number, devices: Array<DeviceModel> = [], options?: RequestOptions) {
-  setupHttpGet(`${BASE_URL}/${roomId}/devices`, devices, options);
+  setupHttpGet(`${BASE_URL}/${roomId}/devices`, ModelFactory.createListResult(...devices), options);
 }
 
 export function setupAllRoomsApis() {
