@@ -10,8 +10,6 @@ import {DevicesService} from "./devices";
 import {RoomsService} from "./rooms";
 import {SignalrHubConnectionFactory, SignalrServiceFactory} from "./signalr";
 import {MaterialModule} from "./material.module";
-import {FeaturesService} from "./features";
-import {FeatureGuard} from "./features/guards/feature.guard";
 
 @NgModule({
   providers: [
@@ -21,9 +19,7 @@ import {FeatureGuard} from "./features/guards/feature.guard";
     DevicesService,
     RoomsService,
     SignalrServiceFactory,
-    SignalrHubConnectionFactory,
-    FeaturesService,
-    FeatureGuard
+    SignalrHubConnectionFactory
   ],
   imports: [
     MaterialModule,

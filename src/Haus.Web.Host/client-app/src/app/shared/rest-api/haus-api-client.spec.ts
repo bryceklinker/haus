@@ -1,5 +1,5 @@
 import {HausApiClient} from "./haus-api-client";
-import {createTestingService, eventually, ModelFactory, TestingServer} from "../../../testing";
+import {createFeatureTestingService, eventually, ModelFactory, TestingServer} from "../../../testing";
 import {SharedModule} from "../shared.module";
 
 describe('HausApiClient', () => {
@@ -7,7 +7,7 @@ describe('HausApiClient', () => {
   let isLoading: boolean;
 
   beforeEach(() => {
-    const result = createTestingService(HausApiClient, {imports: [SharedModule]});
+    const result = createFeatureTestingService(HausApiClient, {imports: [SharedModule]});
 
     api = result.service;
     api.isLoading$.subscribe(l => isLoading = l);

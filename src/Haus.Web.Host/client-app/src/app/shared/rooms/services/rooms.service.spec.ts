@@ -3,7 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 
 import {RoomsService} from "./rooms.service";
 import {
-  createTestingService,
+  createFeatureTestingService,
   eventually,
   ModelFactory,
   TestingActivatedRoute,
@@ -19,7 +19,7 @@ describe('RoomsService', () => {
   let selectedRoom: RoomModel | null;
 
   beforeEach(() => {
-    const result = createTestingService(RoomsService, {imports: [SharedModule]});
+    const result = createFeatureTestingService(RoomsService, {imports: [SharedModule]});
     service = result.service;
     activatedRoute = <TestingActivatedRoute>TestBed.inject(ActivatedRoute);
 

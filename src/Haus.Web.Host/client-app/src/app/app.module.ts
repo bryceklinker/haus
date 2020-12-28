@@ -10,6 +10,7 @@ import {SettingsService} from "./shared/settings";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ShellComponent} from "./shell/components/shell/shell.component";
+import {SHELL_PROVIDERS} from "./shell/services";
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {ShellComponent} from "./shell/components/shell/shell.component";
       provide: HTTP_INTERCEPTORS,
       useClass: AuthHttpInterceptor,
       multi: true,
-    }
+    },
+    ...SHELL_PROVIDERS
   ]
 })
 export class AppModule {

@@ -1,6 +1,6 @@
 import {DiagnosticsService} from "./diagnostics.service";
 import {
-  createTestingService, eventually, ModelFactory, TestingServer,
+  createFeatureTestingService, eventually, ModelFactory, TestingServer,
   TestingSignalrConnectionServiceFactory,
   TestingSignalrHubConnectionService
 } from "../../../../testing";
@@ -20,7 +20,7 @@ describe('DiagnosticsService', () => {
   let testingConnection: TestingSignalrHubConnectionService;
 
   beforeEach(() => {
-    const result = createTestingService(DiagnosticsService, {imports: [SharedModule]});
+    const result = createFeatureTestingService(DiagnosticsService, {imports: [SharedModule]});
     const testingConnectionFactory  = TestBed.inject(SignalrHubConnectionFactory) as TestingSignalrConnectionServiceFactory;
     testingConnection = testingConnectionFactory.getTestingHub('diagnostics');
 

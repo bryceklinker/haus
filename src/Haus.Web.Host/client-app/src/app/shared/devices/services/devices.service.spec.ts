@@ -4,7 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {DevicesService} from "./devices.service";
 import {DeviceModel} from "../models";
 import {SharedModule} from "../../shared.module";
-import {createTestingService, eventually, ModelFactory, TestingServer, TestingActivatedRoute} from "../../../../testing";
+import {createFeatureTestingService, eventually, ModelFactory, TestingServer, TestingActivatedRoute} from "../../../../testing";
 import {HttpMethod} from "../../rest-api";
 import {HttpStatusCodes} from "../../rest-api/http-status-codes";
 
@@ -15,7 +15,7 @@ describe('DevicesService', () => {
   let selectedDevice: DeviceModel | null;
 
   beforeEach(() => {
-    const result = createTestingService(DevicesService, {imports: [SharedModule]});
+    const result = createFeatureTestingService(DevicesService, {imports: [SharedModule]});
 
     service = result.service;
     activatedRoute = <TestingActivatedRoute>TestBed.inject(ActivatedRoute);

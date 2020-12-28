@@ -13,6 +13,10 @@ import {SignalrHubConnectionFactory} from "../app/shared/signalr";
 import {TestingActivatedRoute} from "./fakes/testing-activated-route";
 import {HttpClientModule} from "@angular/common/http";
 import {SettingsService} from "../app/shared/settings";
+import {SHELL_PROVIDERS} from "../app/shell/services";
+import {SHELL_COMPONENTS} from "../app/shell/components";
+import {CommonModule} from "@angular/common";
+import {SharedModule} from "../app/shared/shared.module";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   routes?: Routes;
@@ -34,6 +38,30 @@ export function createTestingModule({
     ],
     routes
   }
+}
+
+export function createAppTestingModule({
+                                         imports = [],
+                                         providers = [],
+                                         declarations = [],
+                                         ...rest
+                                       }: TestModuleOptions = {}) {
+  return createTestingModule({
+    ...rest,
+    imports: [
+      CommonModule,
+      SharedModule,
+      ...imports,
+    ],
+    providers: [
+      ...SHELL_PROVIDERS,
+      ...providers,
+    ],
+    declarations: [
+      ...SHELL_COMPONENTS,
+      ...declarations
+    ]
+  });
 }
 
 export function getTestingImports(routes: Routes) {

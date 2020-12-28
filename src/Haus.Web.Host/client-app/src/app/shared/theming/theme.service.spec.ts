@@ -1,12 +1,12 @@
 import {ThemeService} from "./theme.service";
 import {SharedModule} from "../shared.module";
-import {createTestingService} from "../../../testing";
+import {createFeatureTestingService} from "../../../testing";
 
 describe('ThemeService', () => {
   let service: ThemeService;
 
   beforeEach(() => {
-    service = createTestingService(ThemeService, {imports: [SharedModule]}).service;
+    service = createFeatureTestingService(ThemeService, {imports: [SharedModule]}).service;
   })
 
   it('should default to dark theme', done => {
