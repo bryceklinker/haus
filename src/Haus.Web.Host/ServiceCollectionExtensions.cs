@@ -4,7 +4,6 @@ using Haus.Mqtt.Client.Settings;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.Mqtt;
 using Haus.Web.Host.Devices;
-using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,8 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MQTTnet;
-using MQTTnet.Diagnostics;
 
 namespace Haus.Web.Host
 {
@@ -28,7 +25,6 @@ namespace Haus.Web.Host
                 })
                 .Configure<AuthOptions>(configuration.GetSection("Auth"))
                 .Configure<HausMqttSettings>(configuration.GetSection("Mqtt"))
-                .Configure<DeviceSimulatorOptions>(configuration.GetSection("DeviceSimulator"))
                 .AddHausMqtt()
                 .AddMediatR(typeof(ServiceCollectionExtensions).Assembly)
                 .AddHostedService<MqttMessageRouter>()

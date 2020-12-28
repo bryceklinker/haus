@@ -1,7 +1,9 @@
 using System;
 using System.Net.Http;
 using Haus.Api.Client.Devices;
+using Haus.Api.Client.DeviceSimulator;
 using Haus.Api.Client.Diagnostics;
+using Haus.Api.Client.Features;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
 using Microsoft.Extensions.Options;
@@ -14,6 +16,8 @@ namespace Haus.Api.Client
         IDeviceApiClient CreateDeviceClient();
         IDiagnosticsApiClient CreateDiagnosticsClient();
         IRoomsApiClient CreateRoomsClient();
+        IFeaturesApiClient CreateFeaturesClient();
+        IDeviceSimulatorApiClient CreateDeviceSimulatorClient();
     }
 
     public class HausApiClientFactory : IHausApiClientFactory
@@ -45,6 +49,16 @@ namespace Haus.Api.Client
         public IRoomsApiClient CreateRoomsClient()
         {
             return new RoomsApiClient(_httpClientFactory.CreateClient(), _options);
+        }
+
+        public IFeaturesApiClient CreateFeaturesClient()
+        {
+            return new FeaturesApiClient(_httpClientFactory.CreateClient(), _options);
+        }
+
+        public IDeviceSimulatorApiClient CreateDeviceSimulatorClient()
+        {
+            return new DeviceSimulatorApiClient(_httpClientFactory.CreateClient(), _options);
         }
     }
 }

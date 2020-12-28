@@ -2,18 +2,26 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Haus.Api.Client.Common;
 using Haus.Api.Client.Devices;
+using Haus.Api.Client.DeviceSimulator;
 using Haus.Api.Client.Diagnostics;
+using Haus.Api.Client.Features;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Diagnostics;
+using Haus.Core.Models.Features;
 using Haus.Core.Models.Rooms;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client
 {
-    public interface IHausApiClient : IDeviceApiClient, IDiagnosticsApiClient, IRoomsApiClient
+    public interface IHausApiClient : 
+        IDeviceApiClient, 
+        IDiagnosticsApiClient, 
+        IRoomsApiClient, 
+        IFeaturesApiClient,
+        IDeviceSimulatorApiClient
     {
         
     }
@@ -24,6 +32,8 @@ namespace Haus.Api.Client
         private IDeviceApiClient DeviceApiClient => _factory.CreateDeviceClient();
         private IDiagnosticsApiClient DiagnosticsApiClient => _factory.CreateDiagnosticsClient();
         private IRoomsApiClient RoomsApiClient => _factory.CreateRoomsClient();
+        private IFeaturesApiClient FeaturesApiClient => _factory.CreateFeaturesClient();
+        private IDeviceSimulatorApiClient DeviceSimulatorClient => _factory.CreateDeviceSimulatorClient();
         
         public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
             : base(httpClient, options)
@@ -64,6 +74,11 @@ namespace Haus.Api.Client
         public Task<HttpResponseMessage> TurnLightOn(long deviceId)
         {
             return DeviceApiClient.TurnLightOn(deviceId);
+        }
+
+        public Task<ListResult<DeviceType>> GetDeviceTypes()
+        {
+            return DeviceApiClient.GetDeviceTypes();
         }
 
         public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
@@ -124,6 +139,21 @@ namespace Haus.Api.Client
         public Task<HttpResponseMessage> TurnRoomOff(long roomId)
         {
             return RoomsApiClient.TurnRoomOff(roomId);
+        }
+
+        public Task<ListResult<FeatureName>> GetEnabledFeatures()
+        {
+            return FeaturesApiClient.GetEnabledFeatures();
+        }
+
+        public Task<HttpResponseMessage> ClearDevices()
+        {
+            return DeviceSimulatorClient.ClearDevices();
+        }
+
+        public Task<ListResult<DeviceModel>> GetSimulatedDevices()
+        {
+            return DeviceSimulatorClient.GetSimulatedDevices();
         }
     }
 }

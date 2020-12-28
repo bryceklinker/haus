@@ -1,2 +1,2 @@
-export * from './feature-names';
-export * from './features.service';
+export * from './feature-name';
+export * from './services/features.service';

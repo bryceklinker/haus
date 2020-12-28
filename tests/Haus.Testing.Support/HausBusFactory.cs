@@ -7,6 +7,7 @@ using Haus.Core.Common.Events;
 using Haus.Core.Common.Queries;
 using Haus.Core.Common.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -14,17 +15,17 @@ namespace Haus.Testing.Support
 {
     public static class HausBusFactory
     {
-        public static IHausBus Create(HausDbContext context = null)
+        public static IHausBus Create(HausDbContext context = null, Action<IServiceCollection> configureServices = null)
         {
-            var services = CreateServicesCollection(context);
+            var services = CreateServicesCollection(context, configureServices);
 
             return services.BuildServiceProvider()
                 .GetRequiredService<IHausBus>();
         }
 
-        public static CapturingHausBus CreateCapturingBus(HausDbContext context = null)
+        public static CapturingHausBus CreateCapturingBus(HausDbContext context = null, Action<IServiceCollection> configureServices = null)
         {
-            var services = CreateServicesCollection(context);
+            var services = CreateServicesCollection(context, configureServices);
 
             services.RemoveAll<IHausBus>();
             services.AddSingleton<IHausBus>(p =>
@@ -40,7 +41,7 @@ namespace Haus.Testing.Support
                 .GetRequiredService<IHausBus>();
         }
 
-        private static IServiceCollection CreateServicesCollection(HausDbContext context)
+        private static IServiceCollection CreateServicesCollection(HausDbContext context, Action<IServiceCollection> configureServices = null)
         {
             var services = new ServiceCollection()
                 .AddHausCore(opts => opts.UseInMemoryDatabase($"{Guid.NewGuid()}"))
@@ -52,6 +53,7 @@ namespace Haus.Testing.Support
                 services.AddSingleton(context);
             }
 
+            configureServices?.Invoke(services);
             return services;
         }
     }

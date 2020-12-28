@@ -1,3 +1,3 @@
-export enum FeatureNames {
+export enum FeatureName {
   DeviceSimulator = 'Device Simulator'
 }

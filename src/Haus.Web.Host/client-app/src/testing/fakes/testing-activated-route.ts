@@ -1,14 +1,10 @@
 import {ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params} from "@angular/router";
 import {Injectable, OnDestroy} from "@angular/core";
 import {BehaviorSubject, Observable, of} from "rxjs";
-import {distinctUntilChanged, map, shareReplay} from "rxjs/operators";
+import {map} from "rxjs/operators";
 
 import {TestingParamMap} from "./testing-param-map";
 import {DestroyableSubject} from "../../app/shared/destroyable-subject";
-
-class TestingActivatedRouteSnapshot extends ActivatedRouteSnapshot {
-
-}
 
 @Injectable()
 export class TestingActivatedRoute extends ActivatedRoute implements OnDestroy{

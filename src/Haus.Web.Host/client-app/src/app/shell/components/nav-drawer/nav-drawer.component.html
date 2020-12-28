@@ -4,7 +4,7 @@
       <img class="logo" src="assets/logo.png" alt="Logo"/>
     </div>
     <mat-nav-list>
-      <a *ngFor="let route of availableRoutes"
+      <a *ngFor="let route of links$ | async"
          mat-list-item
           [routerLink]="route.path"
          routerLinkActive="active">

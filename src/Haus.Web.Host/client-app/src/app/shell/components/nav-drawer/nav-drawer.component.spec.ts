@@ -1,12 +1,14 @@
 import {NavDrawerComponent} from "./nav-drawer.component";
 import {MatSidenav} from "@angular/material/sidenav";
-import {renderAppComponent, TestingEventEmitter} from "../../../../testing";
-import {SettingsService} from "../../../shared/settings";
+import {eventually, ModelFactory, renderAppComponent, TestingEventEmitter, TestingServer} from "../../../../testing";
+import {FeatureName} from "../../../shared/features";
 
 describe('NavDrawerComponent', () => {
   let drawerClosed: TestingEventEmitter;
 
   beforeEach(() => {
+    TestingServer.setupGet('/api/features', ModelFactory.createListResult());
+
     drawerClosed = new TestingEventEmitter();
   })
 
@@ -31,13 +33,6 @@ describe('NavDrawerComponent', () => {
   })
 
   it('should show available routes only', async () => {
-    spyOn(SettingsService, 'getSettings').and.returnValue({
-      auth: {},
-      deviceSimulator: {
-        isEnabled: false
-      }
-    })
-
     const {container} = await renderAppComponent(NavDrawerComponent);
 
     expect(container).toHaveTextContent('Diagnostics');
@@ -46,16 +41,14 @@ describe('NavDrawerComponent', () => {
     expect(container).not.toHaveTextContent('Device Simulator');
   })
 
-  it('should show device simulator route when available', async () => {
-    spyOn(SettingsService, 'getSettings').and.returnValue({
-      auth: {},
-      deviceSimulator: {
-        isEnabled: true
-      }
+  it('should hide routes for features that are not enabled', async () => {
+    TestingServer.setupGet('/api/features', ModelFactory.createListResult(FeatureName.DeviceSimulator));
+
+    const {container, detectChanges} = await renderAppComponent(NavDrawerComponent);
+
+    await eventually(() => {
+      detectChanges();
+      expect(container).toHaveTextContent('Device Simulator');
     })
-
-    const {container} = await renderAppComponent(NavDrawerComponent);
-
-    expect(container).toHaveTextContent('Device Simulator');
   })
 })
