@@ -3,6 +3,16 @@
     <mat-card-title>{{name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
+    <div>
+      <h4 class="mat-subheader">Room Devices</h4>
+      <mat-list>
+        <a *ngFor="let device of devices"
+           mat-list-item
+           data-testid="room-device-item"
+           [routerLink]="['devices', device.id]">
 
+        </a>
+      </mat-list>
+    </div>
   </mat-card-content>
 </mat-card>

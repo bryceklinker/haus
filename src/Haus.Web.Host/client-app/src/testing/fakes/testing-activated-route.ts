@@ -27,7 +27,7 @@ export class TestingActivatedRoute extends ActivatedRoute implements OnDestroy{
     this.snapshot = new ActivatedRouteSnapshot();
   }
 
-  triggerParamsChange(params: { [key: string]: string }) {
+  triggerParamsChange(params: { [key: string]: string | null }) {
     this._paramsSubject.next(params);
   }
 

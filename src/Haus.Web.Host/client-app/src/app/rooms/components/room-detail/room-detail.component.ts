@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {RoomModel} from "../../../shared/rooms";
+import {DeviceModel} from "../../../shared/devices";
 
 
 @Component({
@@ -9,6 +10,7 @@ import {RoomModel} from "../../../shared/rooms";
 })
 export class RoomDetailComponent {
   @Input() room: RoomModel | null = null;
+  @Input() devices: Array<DeviceModel> = [];
 
   get name(): string {
     return this.room ? this.room.name : 'N/A';
