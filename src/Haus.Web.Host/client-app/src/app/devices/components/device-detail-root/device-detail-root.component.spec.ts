@@ -4,7 +4,7 @@ import {
   ModelFactory,
   renderFeatureComponent,
   TestingActivatedRoute,
-  TestingServer
+  setupGetAllDevices
 } from "../../../../testing";
 import {DeviceDetailRootComponent} from "./device-detail-root.component";
 import {DevicesModule} from "../../devices.module";
@@ -18,7 +18,7 @@ describe('DeviceDetailRootComponent', () => {
 
   beforeEach(async () => {
     device = ModelFactory.createDeviceModel();
-    TestingServer.setupGet('/api/devices', ModelFactory.createListResult(device));
+    setupGetAllDevices([device]);
 
     const result = await renderRoot();
     TestBed.inject(DevicesService).getAll().subscribe();

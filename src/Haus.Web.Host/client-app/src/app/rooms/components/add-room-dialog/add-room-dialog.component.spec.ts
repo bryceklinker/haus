@@ -1,12 +1,12 @@
 import {screen} from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import {eventually, ModelFactory, renderFeatureComponent, TestingServer} from "../../../../testing";
+import {eventually, ModelFactory, renderFeatureComponent, setupAddRoom, TestingServer} from "../../../../testing";
 import {AddRoomDialogComponent} from "./add-room-dialog.component";
 import {RoomsModule} from "../../rooms.module";
 
 describe('AddRoomDialogComponent', () => {
   it('should close dialog when adding room succeeds', async () => {
-    TestingServer.setupPost('/api/rooms', {id: 1, name: 'three'});
+    setupAddRoom({id: 1, name: 'three'});
 
     const {matDialogRef} = await renderAndSaveRoom('three');
 
@@ -30,7 +30,7 @@ describe('AddRoomDialogComponent', () => {
   })
 
   it('should show loading when saving room takes a while', async () => {
-    TestingServer.setupPost('/api/rooms', ModelFactory.createRoomModel(), {delay: 1000});
+    setupAddRoom(ModelFactory.createRoomModel(), {delay: 1000});
 
     const {detectChanges} = await renderAndSaveRoom('something');
 

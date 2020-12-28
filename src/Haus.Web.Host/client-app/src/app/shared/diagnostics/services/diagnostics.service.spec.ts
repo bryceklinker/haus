@@ -1,6 +1,11 @@
 import {DiagnosticsService} from "./diagnostics.service";
 import {
-  createFeatureTestingService, eventually, ModelFactory, TestingServer,
+  createFeatureTestingService,
+  eventually,
+  ModelFactory,
+  setupDevicesStartDiscovery, setupDevicesStopDiscovery, setupDevicesSyncDiscovery,
+  setupDiagnosticsReplay,
+  TestingServer,
   TestingSignalrConnectionServiceFactory,
   TestingSignalrHubConnectionService
 } from "../../../../testing";
@@ -9,7 +14,6 @@ import {TestBed} from "@angular/core/testing";
 import {HubStatus} from "../../models";
 import {SignalrHubConnectionFactory} from "../../signalr";
 import {DiagnosticsMessageModel} from "../models";
-import {HttpStatusCodes} from "../../rest-api/http-status-codes";
 import {HttpMethod} from "../../rest-api";
 
 describe('DiagnosticsService', () => {
@@ -71,7 +75,7 @@ describe('DiagnosticsService', () => {
   })
 
   it('should post message to rest api when message is replayed', async () => {
-    TestingServer.setupPost('/api/diagnostics/replay', null, {status: HttpStatusCodes.NoContent});
+    setupDiagnosticsReplay();
 
     const model = ModelFactory.createMqttDiagnosticsMessage();
     service.replayMessage(model).subscribe();
@@ -101,7 +105,8 @@ describe('DiagnosticsService', () => {
   })
 
   it('should start discovery on rest api', async () => {
-    TestingServer.setupPost('/api/devices/start-discovery', null, {status: HttpStatusCodes.NoContent});
+    setupDevicesStartDiscovery();
+
     service.startDiscovery().subscribe();
 
     await eventually(() => {
@@ -111,7 +116,8 @@ describe('DiagnosticsService', () => {
   })
 
   it('should stop discovery on rest api', async () => {
-    TestingServer.setupPost('/api/devices/stop-discovery', null, {status: HttpStatusCodes.NoContent});
+    setupDevicesStopDiscovery();
+
     service.stopDiscovery().subscribe();
 
     await eventually(() => {
@@ -121,8 +127,8 @@ describe('DiagnosticsService', () => {
   })
 
   it('should notify when discovery allowed changes', async () => {
-    TestingServer.setupPost('/api/devices/stop-discovery', null, {status: HttpStatusCodes.NoContent});
-    TestingServer.setupPost('/api/devices/start-discovery', null, {status: HttpStatusCodes.NoContent});
+    setupDevicesStopDiscovery();
+    setupDevicesStartDiscovery();
 
     service.startDiscovery().subscribe();
     await eventually(() => {
@@ -136,7 +142,7 @@ describe('DiagnosticsService', () => {
   })
 
   it('should sync discovery on rest api', async () => {
-    TestingServer.setupPost('/api/devices/sync-discovery', null, {status: HttpStatusCodes.NoContent});
+    setupDevicesSyncDiscovery();
     service.syncDiscovery().subscribe();
 
     await eventually(() => {

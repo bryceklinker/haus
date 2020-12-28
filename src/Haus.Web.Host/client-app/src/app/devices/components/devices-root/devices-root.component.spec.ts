@@ -1,12 +1,13 @@
 import {screen} from "@testing-library/dom";
-import {eventually, ModelFactory, renderFeatureComponent, TestingServer} from "../../../../testing";
+import {eventually, ModelFactory, renderFeatureComponent, setupGetAllDevices, TestingServer} from "../../../../testing";
 import {DevicesRootComponent} from "./devices-root.component";
 import {DevicesModule} from "../../devices.module";
 import {HttpMethod} from "../../../shared/rest-api";
+import {setupAllDevicesApis} from "../../../../testing";
 
 describe('DevicesRootComponent', () => {
   it('should get all devices when rendered', async () => {
-    TestingServer.setupDevicesEndpoints()
+    setupAllDevicesApis();
 
     await renderRoot();
 
@@ -15,12 +16,12 @@ describe('DevicesRootComponent', () => {
   })
 
   it('should show all devices', async () => {
-    const devices = ModelFactory.createListResult(
+    const devices = [
       ModelFactory.createDeviceModel(),
       ModelFactory.createDeviceModel(),
       ModelFactory.createDeviceModel()
-    );
-    TestingServer.setupGet('/api/devices', devices);
+    ];
+    setupGetAllDevices(devices);
 
     const {detectChanges} = await renderRoot();
 

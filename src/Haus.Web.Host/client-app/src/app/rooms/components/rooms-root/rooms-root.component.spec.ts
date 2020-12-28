@@ -1,6 +1,13 @@
 import {screen} from "@testing-library/dom";
 
-import {eventually, ModelFactory, renderFeatureComponent, TestingServer} from "../../../../testing";
+import {
+  eventually,
+  ModelFactory,
+  renderFeatureComponent,
+  setupAllRoomsApis,
+  setupGetAllRooms,
+  TestingServer
+} from "../../../../testing";
 import {RoomsModule} from "../../rooms.module";
 import {RoomsRootComponent} from "./rooms-root.component";
 import userEvent from "@testing-library/user-event";
@@ -8,12 +15,12 @@ import {AddRoomDialogComponent} from "../add-room-dialog/add-room-dialog.compone
 
 describe('RoomsRootComponent', () => {
   it('should get rooms when rendered', async () => {
-    const rooms = ModelFactory.createListResult(
+    const rooms = [
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel()
-    );
-    TestingServer.setupGet('/api/rooms', rooms);
+    ];
+    setupGetAllRooms(rooms);
 
     const {detectChanges} = await renderRoot();
 
@@ -24,7 +31,7 @@ describe('RoomsRootComponent', () => {
   })
 
   it('should open add dialog when add room clicked', async () => {
-    TestingServer.setupRoomsEndpoints();
+    setupAllRoomsApis();
 
     const {matDialog} = await renderRoot();
 

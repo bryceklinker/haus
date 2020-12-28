@@ -4,9 +4,15 @@ import {ActivatedRoute} from "@angular/router";
 import {DevicesService} from "./devices.service";
 import {DeviceModel} from "../models";
 import {SharedModule} from "../../shared.module";
-import {createFeatureTestingService, eventually, ModelFactory, TestingServer, TestingActivatedRoute} from "../../../../testing";
+import {
+  createFeatureTestingService,
+  eventually,
+  ModelFactory,
+  TestingServer,
+  TestingActivatedRoute,
+  setupGetAllDevices, setupDeviceTurnOff, setupDeviceTurnOn
+} from "../../../../testing";
 import {HttpMethod} from "../../rest-api";
-import {HttpStatusCodes} from "../../rest-api/http-status-codes";
 
 describe('DevicesService', () => {
   let activatedRoute: TestingActivatedRoute;
@@ -33,19 +39,19 @@ describe('DevicesService', () => {
   })
 
   it('should notify when devices are loaded', async () => {
-    const expected = ModelFactory.createListResult(
+    const expected = [
       ModelFactory.createDeviceModel(),
       ModelFactory.createDeviceModel(),
       ModelFactory.createDeviceModel()
-    )
-    TestingServer.setupGet('/api/devices', expected);
+    ];
+    setupGetAllDevices(expected);
 
     service.getAll().subscribe();
 
     await eventually(() => {
-      expect(devices).toContainEqual(expected.items[0]);
-      expect(devices).toContainEqual(expected.items[1]);
-      expect(devices).toContainEqual(expected.items[2]);
+      expect(devices).toContainEqual(expected[0]);
+      expect(devices).toContainEqual(expected[1]);
+      expect(devices).toContainEqual(expected[2]);
     })
   })
 
@@ -53,7 +59,7 @@ describe('DevicesService', () => {
     const second = ModelFactory.createDeviceModel({name: 'B'});
     const third = ModelFactory.createDeviceModel({name: 'C'});
     const first = ModelFactory.createDeviceModel({name: 'A'});
-    TestingServer.setupGet('/api/devices', ModelFactory.createListResult(second, third, first));
+    setupGetAllDevices([second, third, first]);
 
     service.getAll().subscribe();
 
@@ -66,7 +72,7 @@ describe('DevicesService', () => {
   })
 
   it('should turn off device using api', async () => {
-    TestingServer.setupPost('/api/devices/6/turn-off', null, {status: HttpStatusCodes.NoContent});
+    setupDeviceTurnOff(6);
 
     service.turnOff(6).subscribe();
 
@@ -77,7 +83,7 @@ describe('DevicesService', () => {
   })
 
   it('should turn on device using api', async () => {
-    TestingServer.setupPost('/api/devices/7/turn-on', null, {status: HttpStatusCodes.NoContent});
+    setupDeviceTurnOn(7);
 
     service.turnOn(7).subscribe();
 
@@ -88,6 +94,8 @@ describe('DevicesService', () => {
   })
 
   it('should have null selected device', async () => {
+    setupGetAllDevices();
+    
     service.getAll().subscribe();
 
     await eventually(() => {
@@ -97,7 +105,7 @@ describe('DevicesService', () => {
 
   it('should notify that selected device changed when route changes', async () => {
     const device = ModelFactory.createDeviceModel();
-    TestingServer.setupGet('/api/devices', ModelFactory.createListResult(device));
+    setupGetAllDevices([device]);
 
     service.getAll().subscribe();
     activatedRoute.triggerParamsChange({'deviceId': `${device.id}`});

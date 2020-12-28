@@ -1,5 +1,12 @@
 import {HausApiClient} from "./haus-api-client";
-import {createFeatureTestingService, eventually, ModelFactory, TestingServer} from "../../../testing";
+import {
+  createFeatureTestingService,
+  eventually,
+  ModelFactory,
+  setupAddRoom,
+  setupGetAllDevices,
+  setupGetAllRooms
+} from "../../../testing";
 import {SharedModule} from "../shared.module";
 
 describe('HausApiClient', () => {
@@ -14,19 +21,19 @@ describe('HausApiClient', () => {
   })
 
   it('should be loading while getting data', async () => {
-      TestingServer.setupGet('/api/rooms', ModelFactory.createListResult(), {delay: 3000});
+    setupGetAllRooms([], {delay: 3000});
 
-      api.getRooms().subscribe();
+    api.getRooms().subscribe();
 
-      await eventually(() => {
-        expect(isLoading).toEqual(true);
-      })
+    await eventually(() => {
+      expect(isLoading).toEqual(true);
+    })
   })
 
   it('should be loading while requests are inflight', async () => {
-    TestingServer.setupGet('/api/rooms', ModelFactory.createListResult());
-    TestingServer.setupGet('/api/devices', ModelFactory.createListResult(), {delay: 200});
-    TestingServer.setupPost('/api/rooms', ModelFactory.createRoomModel());
+    setupGetAllRooms([]);
+    setupGetAllDevices([], {delay: 200});
+    setupAddRoom();
 
     api.getRooms().subscribe();
     api.getDevices().subscribe();
@@ -36,9 +43,9 @@ describe('HausApiClient', () => {
   })
 
   it('should be loading until all requests finish', async () => {
-    TestingServer.setupGet('/api/rooms', ModelFactory.createListResult(), {delay: 100});
-    TestingServer.setupGet('/api/devices', ModelFactory.createListResult(), {delay: 200});
-    TestingServer.setupPost('/api/rooms', ModelFactory.createRoomModel(), {delay: 300});
+    setupGetAllRooms([], {delay: 100});
+    setupGetAllDevices([], {delay: 200});
+    setupAddRoom(ModelFactory.createRoomModel(), {delay: 300});
 
     api.getRooms().subscribe();
     api.getDevices().subscribe();

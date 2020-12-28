@@ -4,7 +4,6 @@ import {renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {DiagnosticsHeaderComponent} from "./diagnostics-header.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
 import {EventEmitter} from "@angular/core";
-import {use} from "msw/lib/types/utils/handlers/requestHandlerUtils";
 
 describe('DiagnosticsHeaderComponent', () => {
   it('should show connected when connected', async () => {

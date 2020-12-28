@@ -8,7 +8,6 @@ beforeAll(() => {
 
 beforeEach(() => {
   TestingServer.reset();
-  TestingServer.setupDefaultApiEndpoints();
 })
 
 afterAll(() => {

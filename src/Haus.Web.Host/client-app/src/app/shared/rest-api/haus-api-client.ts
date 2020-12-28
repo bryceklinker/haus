@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {map, takeUntil, tap} from "rxjs/operators";
+import {map, tap} from "rxjs/operators";
 import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
 
@@ -60,6 +60,10 @@ export class HausApiClient implements OnDestroy {
 
   addRoom(room: RoomModel): Observable<RoomModel> {
     return this.execute<RoomModel>(HttpMethod.POST, '/api/rooms', room);
+  }
+
+  getDevicesInRoom(roomId: string): Observable<ListResult<DeviceModel>> {
+    return this.execute<ListResult<DeviceModel>>(HttpMethod.GET, `/api/rooms/${roomId}/devices`)
   }
 
   replayMessage(message: DiagnosticsMessageModel): Observable<void> {

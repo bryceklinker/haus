@@ -20,7 +20,13 @@ export function createAppTestingService<T>(service: Type<T>): TestServiceResult<
 }
 
 function createServiceResult<T>(service: Type<T>): TestServiceResult<T> {
+  const instance = TestBed.inject(service);
+  // @ts-ignore
+  if (instance.ngOnInit) {
+    // @ts-ignore
+    instance.ngOnInit();
+  }
   return {
-    service: TestBed.inject(service)
+    service: instance
   }
 }

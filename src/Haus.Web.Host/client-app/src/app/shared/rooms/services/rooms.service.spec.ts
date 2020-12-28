@@ -5,18 +5,19 @@ import {RoomsService} from "./rooms.service";
 import {
   createFeatureTestingService,
   eventually,
-  ModelFactory,
-  TestingActivatedRoute,
-  TestingServer
+  ModelFactory, setupAddRoom, setupAllRoomsApis, setupGetAllRooms, setupGetDevicesForRoom,
+  TestingActivatedRoute
 } from "../../../../testing";
 import {SharedModule} from "../../shared.module";
 import {RoomModel} from "../models";
+import {DeviceModel} from "../../devices";
 
 describe('RoomsService', () => {
   let activatedRoute: TestingActivatedRoute;
   let service: RoomsService;
   let rooms: Array<RoomModel> | null;
   let selectedRoom: RoomModel | null;
+  let selectedRoomDevices: Array<DeviceModel> | null;
 
   beforeEach(() => {
     const result = createFeatureTestingService(RoomsService, {imports: [SharedModule]});
@@ -27,6 +28,7 @@ describe('RoomsService', () => {
     selectedRoom = null;
     service.rooms$.subscribe(r => rooms = r);
     service.selectedRoom$.subscribe(r => selectedRoom = r);
+    service.selectedRoomDevices$.subscribe(r => selectedRoomDevices = r);
   })
 
   it('should have empty rooms', async () => {
@@ -36,43 +38,43 @@ describe('RoomsService', () => {
   })
 
   it('should notify when rooms are loaded', async () => {
-    const expected = ModelFactory.createListResult(
+    const expected = [
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
-    );
-    TestingServer.setupGet('/api/rooms', expected);
+    ];
+    setupGetAllRooms(expected);
 
     service.getAll().subscribe();
 
     await eventually(() => {
-      expect(rooms).toContainEqual(expected.items[0]);
-      expect(rooms).toContainEqual(expected.items[1]);
-      expect(rooms).toContainEqual(expected.items[2]);
+      expect(rooms).toContainEqual(expected[0]);
+      expect(rooms).toContainEqual(expected[1]);
+      expect(rooms).toContainEqual(expected[2]);
     })
   })
 
   it('should return rooms to get all caller', async () => {
-    const expected = ModelFactory.createListResult(
+    const expected = [
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
-    );
-    TestingServer.setupGet('/api/rooms', expected);
+    ];
+    setupGetAllRooms(expected);
 
     let actual: RoomModel[]
     service.getAll().subscribe(r => actual = r);
 
     await eventually(() => {
-      expect(actual).toContainEqual(expected.items[0]);
-      expect(actual).toContainEqual(expected.items[1]);
-      expect(actual).toContainEqual(expected.items[2]);
+      expect(actual).toContainEqual(expected[0]);
+      expect(actual).toContainEqual(expected[1]);
+      expect(actual).toContainEqual(expected[2]);
     })
   })
 
   it('should return room after room is created', async () => {
     const expected = ModelFactory.createRoomModel();
-    TestingServer.setupPost('/api/rooms', expected);
+    setupAddRoom(expected);
 
     const roomToAdd = ModelFactory.createRoomModel({name: expected.name});
 
@@ -86,7 +88,7 @@ describe('RoomsService', () => {
 
   it('should notify rooms subscribers when room is added', async () => {
     const expected = ModelFactory.createRoomModel();
-    TestingServer.setupPost('/api/rooms', expected);
+    setupAddRoom(expected);
 
     service.add(expected).subscribe();
 
@@ -99,7 +101,7 @@ describe('RoomsService', () => {
     const second = ModelFactory.createRoomModel({name: 'B'});
     const third = ModelFactory.createRoomModel({name: 'C'});
     const first = ModelFactory.createRoomModel({name: 'A'});
-    TestingServer.setupGet('/api/rooms', ModelFactory.createListResult(second, third, first));
+    setupGetAllRooms([second, third, first]);
 
     let actual: RoomModel[] = [];
     service.getAll().subscribe(r => actual = r);
@@ -119,7 +121,7 @@ describe('RoomsService', () => {
   })
 
   it('should be loading while adding room', async () => {
-    TestingServer.setupPost('/api/rooms', ModelFactory.createRoomModel(), {delay: 500});
+    setupAddRoom(ModelFactory.createRoomModel(), {delay: 500});
     let isLoading = false;
     service.isLoading$.subscribe(l => isLoading = l);
 
@@ -129,7 +131,7 @@ describe('RoomsService', () => {
   })
 
   it('should have null selected room', async () => {
-    TestingServer.setupRoomsEndpoints();
+    setupAllRoomsApis();
 
     service.getAll();
 
@@ -140,13 +142,30 @@ describe('RoomsService', () => {
 
   it('should notify that selected room changed when route changes', async () => {
     const room = ModelFactory.createRoomModel();
-    TestingServer.setupGet('/api/rooms', ModelFactory.createListResult(room));
+    setupGetAllRooms([room]);
+    setupGetDevicesForRoom(room.id);
 
     service.getAll().subscribe();
     activatedRoute.triggerParamsChange({'roomId': `${room.id}`});
 
     await eventually(() => {
       expect(selectedRoom).toEqual(room);
+    })
+  })
+
+  it('should get devices for room when selected', async () => {
+    const room = ModelFactory.createRoomModel();
+    setupGetAllRooms([room]);
+    setupGetDevicesForRoom(room.id, [
+      ModelFactory.createDeviceModel(),
+      ModelFactory.createDeviceModel(),
+    ])
+
+    service.getAll().subscribe();
+    activatedRoute.triggerParamsChange({'roomId': `${room.id}`});
+
+    await eventually(() => {
+      expect(selectedRoomDevices).toHaveLength(2);
     })
   })
 

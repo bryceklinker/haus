@@ -1,17 +1,28 @@
-import {Injectable, OnDestroy} from "@angular/core";
-import {Observable} from "rxjs";
+import {Injectable, OnDestroy, OnInit} from "@angular/core";
+import {BehaviorSubject, Observable} from "rxjs";
+import {filter, map, tap, withLatestFrom} from "rxjs/operators";
+import {ActivatedRoute} from "@angular/router";
+
 import {RoomModel} from "../models";
 import {HausApiClient, SortingEntityService} from "../../rest-api";
-import {map, takeUntil, withLatestFrom} from "rxjs/operators";
-import {ActivatedRoute} from "@angular/router";
 import {DestroyableSubject} from "../../destroyable-subject";
+import {DeviceModel} from "../../devices";
 
+const ROOM_ID_ROUTE_PARAM = 'roomId';
 @Injectable({
   providedIn: 'root'
 })
-export class RoomsService implements OnDestroy {
+export class RoomsService implements OnInit, OnDestroy {
   private readonly _entityService = new SortingEntityService<RoomModel>(r => r.name);
+  private readonly _devicesByRoomSubject = new BehaviorSubject<{[roomId: string]: Array<DeviceModel>}>({});
   private readonly destroyable = new DestroyableSubject();
+
+  get selectedRoomId$() : Observable<string> {
+    return this.destroyable.register(this.route.paramMap.pipe(
+      map(paramMap =>  paramMap.has(ROOM_ID_ROUTE_PARAM) ? paramMap.get(ROOM_ID_ROUTE_PARAM) as string : ''),
+      filter(roomId => roomId !== '')
+    ));
+  }
 
   get rooms$(): Observable<RoomModel[]> {
     return this.destroyable.register(this._entityService.entitiesArray$);
@@ -19,12 +30,20 @@ export class RoomsService implements OnDestroy {
 
   get selectedRoom$(): Observable<RoomModel | null> {
     return this.destroyable.register(this._entityService.entitiesById$.pipe(
-      withLatestFrom(this.route.paramMap),
-      map(([roomsById, paramMap]) => {
-        const roomId = paramMap.has('roomId') ? paramMap.get('roomId') : null;
+      withLatestFrom(this.selectedRoomId$),
+      map(([roomsById, roomId]) => {
         return roomId ? roomsById[roomId] : null;
       }),
     ));
+  }
+
+  get selectedRoomDevices$(): Observable<Array<DeviceModel>> {
+    return this.destroyable.register(this._devicesByRoomSubject.asObservable().pipe(
+      withLatestFrom(this.selectedRoomId$),
+      map(([devicesByRoomId, roomId]) => {
+        return roomId ? devicesByRoomId[roomId] : [];
+      })
+    ))
   }
 
   get isLoading$(): Observable<boolean> {
@@ -46,5 +65,19 @@ export class RoomsService implements OnDestroy {
   ngOnDestroy(): void {
     this._entityService.destroy();
     this.destroyable.destroy();
+  }
+
+  ngOnInit(): void {
+    this.destroyable.register(this.selectedRoomId$).subscribe(roomId => this.onRoomChanged(roomId))
+  }
+
+  private onRoomChanged(roomId: string) {
+    this.destroyable.register(this.api.getDevicesInRoom(roomId).pipe(
+      map(result => result.items),
+      tap(devices => this._devicesByRoomSubject.next({
+        ...this._devicesByRoomSubject.getValue(),
+        [roomId]: devices
+      }))
+    )).subscribe();
   }
 }

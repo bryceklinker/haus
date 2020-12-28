@@ -4,12 +4,15 @@ import {screen} from '@testing-library/dom'
 import {
   eventually,
   ModelFactory,
-  renderFeatureComponent, TestingServer, TestingSignalrConnectionServiceFactory,
+  renderFeatureComponent,
+  setupDevicesStartDiscovery, setupDevicesStopDiscovery, setupDevicesSyncDiscovery,
+  setupDiagnosticsReplay,
+  TestingServer,
   TestingSignalrHubConnectionService
 } from "../../../../testing";
 import {DiagnosticsModule} from "../../diagnostics.module";
 import {DiagnosticsRootComponent} from "./diagnostics-root.component";
-import {KNOWN_HUB_NAMES, SignalrHubConnectionFactory} from "../../../shared/signalr";
+import {KNOWN_HUB_NAMES} from "../../../shared/signalr";
 import userEvent from "@testing-library/user-event";
 import {HttpMethod} from "../../../shared/rest-api";
 
@@ -52,6 +55,8 @@ describe('DiagnosticsRootComponent', () => {
   })
 
   it('should start discovery', async () => {
+    setupDevicesStartDiscovery();
+
     userEvent.click(screen.getByTestId('start-discovery-btn'));
 
     await eventually(() => {
@@ -61,6 +66,9 @@ describe('DiagnosticsRootComponent', () => {
   })
 
   it('should stop discovery', async () => {
+    setupDevicesStopDiscovery();
+    setupDevicesStartDiscovery();
+
     userEvent.click(screen.getByTestId('start-discovery-btn'));
 
     await eventually(() => {
@@ -73,6 +81,8 @@ describe('DiagnosticsRootComponent', () => {
   })
 
   it('should sync discovery', async () => {
+    setupDevicesSyncDiscovery();
+
     userEvent.click(screen.getByTestId('sync-discovery-btn'));
 
     await eventually(() => {
@@ -83,7 +93,8 @@ describe('DiagnosticsRootComponent', () => {
 
   it('should replay message when message is replayed', async () => {
     const messageToReplay = ModelFactory.createMqttDiagnosticsMessage();
-    TestingServer.setupPost('/api/diagnostics/replay', messageToReplay);
+    setupDiagnosticsReplay();
+
     hubConnection.triggerMqttMessage(messageToReplay);
     fixture.detectChanges();
 
