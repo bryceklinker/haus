@@ -1,12 +1,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Core.Common.DomainEvents;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Rooms.Entities;
+using Haus.Cqrs.DomainEvents;
+using Haus.Cqrs.Events;
 using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Core.Devices.Events

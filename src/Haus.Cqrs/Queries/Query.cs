@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Haus.Core.Common.Queries
+namespace Haus.Cqrs.Queries
 {
     public interface IQuery<out TResult> : IRequest<TResult>
     {

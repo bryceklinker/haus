@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Common.Commands;
 using Haus.Core.Common.Queries;
+using Haus.Cqrs;
+using Haus.Cqrs.Commands;
+using Haus.Cqrs.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

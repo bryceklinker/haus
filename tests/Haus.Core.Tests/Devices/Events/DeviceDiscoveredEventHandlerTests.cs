@@ -8,6 +8,7 @@ using Haus.Core.Devices.Events;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Tests.Support;
+using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 

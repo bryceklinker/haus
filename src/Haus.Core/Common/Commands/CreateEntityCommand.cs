@@ -1,3 +1,5 @@
+using Haus.Cqrs.Commands;
+
 namespace Haus.Core.Common.Commands
 {
     public abstract class CreateEntityCommand<TModel> : ICommand<TModel>

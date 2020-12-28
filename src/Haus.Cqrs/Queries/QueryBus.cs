@@ -2,14 +2,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace Haus.Core.Common.Queries
+namespace Haus.Cqrs.Queries
 {
     public interface IQueryBus
     {
         Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default);
     }
-    
-    public class QueryBus : IQueryBus
+
+    internal class QueryBus : IQueryBus
     {
         private readonly IMediator _mediator;
 

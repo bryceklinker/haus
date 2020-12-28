@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Events;
 using Haus.Core.Models;
+using Haus.Cqrs.Events;
 using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Settings;
 using Microsoft.Extensions.Options;

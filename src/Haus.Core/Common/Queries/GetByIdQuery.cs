@@ -1,3 +1,5 @@
+using Haus.Cqrs.Queries;
+
 namespace Haus.Core.Common.Queries
 {
     public class GetByIdQuery<T> : IQuery<T>

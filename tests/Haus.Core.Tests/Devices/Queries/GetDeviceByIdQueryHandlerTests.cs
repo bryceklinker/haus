@@ -3,6 +3,7 @@ using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Queries;
 using Haus.Core.Tests.Support;
+using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 

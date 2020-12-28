@@ -3,11 +3,11 @@ using AutoMapper;
 using FluentValidation;
 using Haus.Core.Common;
 using Haus.Core.Common.Commands;
-using Haus.Core.Common.DomainEvents;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Queries;
 using Haus.Core.Common.Storage;
 using Haus.Core.Diagnostics.Factories;
+using Haus.Cqrs;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,13 +23,8 @@ namespace Haus.Core
             return services.AddSingleton<IClock, Clock>()
                 .AddAutoMapper(coreAssembly)
                 .AddDbContext<HausDbContext>(configureDb)
-                .AddMediatR(coreAssembly)
                 .AddValidatorsFromAssembly(coreAssembly)
-                .AddTransient<IEventBus>(p => new LoggingEventBus(new EventBus(p.GetRequiredService<IMediator>()), p.GetRequiredService<ILogger<LoggingEventBus>>()))
-                .AddTransient<IQueryBus>(p => new LoggingQueryBus(new QueryBus(p.GetRequiredService<IMediator>()), p.GetRequiredService<ILogger<LoggingQueryBus>>()))
-                .AddTransient<ICommandBus>(p => new LoggingCommandBus(new CommandBus(p.GetRequiredService<IMediator>()), p.GetRequiredService<ILogger<LoggingCommandBus>>()))
-                .AddTransient<IDomainEventBus>(p => new LoggingDomainEventBus(new DomainEventBus(p.GetRequiredService<IMediator>()), p.GetRequiredService<ILogger<LoggingDomainEventBus>>()))
-                .AddTransient<IHausBus, HausBus>()
+                .AddHausCqrs(coreAssembly)
                 .AddTransient<IRoutableEventFactory, RoutableEventFactory>()
                 .AddTransient<IMqttDiagnosticsMessageFactory, MqttDiagnosticsMessageFactory>();
         }

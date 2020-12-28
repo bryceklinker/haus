@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Haus.Core.Common
+namespace Haus.Cqrs
 {
     internal abstract class LoggingBus
     {

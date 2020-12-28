@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Devices.Commands;
+using Haus.Cqrs;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

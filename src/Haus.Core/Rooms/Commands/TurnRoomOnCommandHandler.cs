@@ -1,9 +1,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Commands;
-using Haus.Core.Common.DomainEvents;
 using Haus.Core.Common.Storage;
 using Haus.Core.Rooms.Entities;
+using Haus.Cqrs.Commands;
+using Haus.Cqrs.DomainEvents;
 using MediatR;
 
 namespace Haus.Core.Rooms.Commands

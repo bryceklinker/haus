@@ -6,6 +6,7 @@ using Haus.Core.Devices.Entities;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
+using Haus.Cqrs;
 using Haus.Testing.Support;
 using Microsoft.EntityFrameworkCore;
 using Xunit;

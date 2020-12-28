@@ -1,11 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Haus.Core.Common.Events
+namespace Haus.Cqrs.Events
 {
     internal class LoggingEventBus : LoggingBus, IEventBus
     {

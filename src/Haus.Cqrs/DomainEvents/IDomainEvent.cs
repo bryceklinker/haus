@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Haus.Core.Common.DomainEvents
+namespace Haus.Cqrs.DomainEvents
 {
     public interface IDomainEvent : INotification
     {

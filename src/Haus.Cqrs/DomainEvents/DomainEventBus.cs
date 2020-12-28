@@ -3,15 +3,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace Haus.Core.Common.DomainEvents
+namespace Haus.Cqrs.DomainEvents
 {
     public interface IDomainEventBus
     {
         void Enqueue(IDomainEvent domainEvent);
         Task FlushAsync(CancellationToken token = default);
     }
-    
-    public class DomainEventBus : IDomainEventBus
+
+    internal class DomainEventBus : IDomainEventBus
     {
         private readonly ConcurrentQueue<IDomainEvent> _events;
         private readonly IMediator _mediator;

@@ -5,6 +5,7 @@ using Haus.Core.Devices.Commands;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Devices;
 using Haus.Core.Tests.Support;
+using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 

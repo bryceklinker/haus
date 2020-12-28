@@ -4,6 +4,7 @@ using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Cqrs.Events;
 
 namespace Haus.Core.Devices.Events
 {

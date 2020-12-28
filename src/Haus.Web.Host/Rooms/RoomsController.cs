@@ -4,6 +4,7 @@ using Haus.Core.Models.Common;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Queries;
+using Haus.Cqrs;
 using Haus.Web.Host.Common.Mvc;
 using Microsoft.AspNetCore.Mvc;
 

@@ -2,15 +2,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace Haus.Core.Common.Events
+namespace Haus.Cqrs.Events
 {
     public interface IEventBus
     {
         Task PublishAsync<TEvent>(TEvent @event, CancellationToken token = default)
             where TEvent : IEvent;
     }
-    
-    public class EventBus : IEventBus
+
+    internal class EventBus : IEventBus
     {
         private readonly IMediator _mediator;
 

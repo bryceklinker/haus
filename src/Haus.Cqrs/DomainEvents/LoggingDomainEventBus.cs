@@ -2,9 +2,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Haus.Core.Common.DomainEvents
+namespace Haus.Cqrs.DomainEvents
 {
-    public class LoggingDomainEventBus : IDomainEventBus
+    internal class LoggingDomainEventBus : IDomainEventBus
     {
         private readonly IDomainEventBus _domainEventBus;
         private readonly ILogger<LoggingDomainEventBus> _logger;

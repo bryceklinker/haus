@@ -2,15 +2,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace Haus.Core.Common.Commands
+namespace Haus.Cqrs.Commands
 {
     public interface ICommandBus
     {
         Task ExecuteAsync(ICommand command, CancellationToken token = default);
         Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, CancellationToken token = default);
     }
-    
-    public class CommandBus : ICommandBus
+
+    internal class CommandBus : ICommandBus
     {
         private readonly IMediator _mediator;
 

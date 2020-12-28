@@ -7,6 +7,7 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.Entities;
+using Haus.Cqrs.Queries;
 
 namespace Haus.Core.Rooms.Queries
 {

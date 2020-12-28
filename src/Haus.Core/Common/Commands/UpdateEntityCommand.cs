@@ -1,4 +1,5 @@
 using Haus.Core.Models.Common;
+using Haus.Cqrs.Commands;
 
 namespace Haus.Core.Common.Commands
 {

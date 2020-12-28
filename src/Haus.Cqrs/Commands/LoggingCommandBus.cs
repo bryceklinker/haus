@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Haus.Core.Common.Commands
+namespace Haus.Cqrs.Commands
 {
     internal class LoggingCommandBus : LoggingBus, ICommandBus
     {

@@ -6,6 +6,7 @@ using Haus.Core.Common.Commands;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Devices;
+using Haus.Cqrs.Commands;
 using MediatR;
 
 namespace Haus.Core.Devices.Commands

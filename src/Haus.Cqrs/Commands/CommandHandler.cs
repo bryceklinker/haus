@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Haus.Core.Common.Commands
+namespace Haus.Cqrs.Commands
 {
     public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand>
         where TCommand : ICommand

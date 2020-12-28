@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Haus.Core.Common.Events
+namespace Haus.Cqrs.Events
 {
     public interface IEvent : INotification
     {

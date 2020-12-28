@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Common;
-using Haus.Core.Common.DomainEvents;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Rooms.Entities;
+using Haus.Cqrs.DomainEvents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

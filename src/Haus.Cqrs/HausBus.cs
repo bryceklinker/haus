@@ -1,11 +1,11 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Core.Common.Commands;
-using Haus.Core.Common.DomainEvents;
-using Haus.Core.Common.Events;
-using Haus.Core.Common.Queries;
+using Haus.Cqrs.Commands;
+using Haus.Cqrs.DomainEvents;
+using Haus.Cqrs.Events;
+using Haus.Cqrs.Queries;
 
-namespace Haus.Core.Common
+namespace Haus.Cqrs
 {
     public interface IHausBus : IDomainEventBus
     {
@@ -14,8 +14,8 @@ namespace Haus.Core.Common
         Task<TResult> ExecuteQueryAsync<TResult>(IQuery<TResult> query, CancellationToken token = default);
         Task PublishAsync(IEvent @event, CancellationToken token = default);
     }
-    
-    public class HausBus : IHausBus
+
+    internal class HausBus : IHausBus
     {
         private readonly ICommandBus _commandBus;
         private readonly IQueryBus _queryBus;

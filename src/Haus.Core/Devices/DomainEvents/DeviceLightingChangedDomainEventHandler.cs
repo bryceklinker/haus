@@ -2,12 +2,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Haus.Core.Common;
-using Haus.Core.Common.DomainEvents;
 using Haus.Core.Common.Events;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
+using Haus.Cqrs;
+using Haus.Cqrs.DomainEvents;
 
 namespace Haus.Core.Devices.DomainEvents
 {

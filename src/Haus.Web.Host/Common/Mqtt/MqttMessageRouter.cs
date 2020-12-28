@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Common.Events;
+using Haus.Cqrs;
 using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Services;
 using Microsoft.Extensions.DependencyInjection;

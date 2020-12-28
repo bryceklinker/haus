@@ -9,6 +9,7 @@ using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Rooms.Entities;
+using Haus.Cqrs.Queries;
 
 namespace Haus.Core.Rooms.Queries
 {

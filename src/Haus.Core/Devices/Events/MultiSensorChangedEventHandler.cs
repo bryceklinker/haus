@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Models.Devices.Sensors;
+using Haus.Cqrs;
+using Haus.Cqrs.Events;
 
 namespace Haus.Core.Devices.Events
 {

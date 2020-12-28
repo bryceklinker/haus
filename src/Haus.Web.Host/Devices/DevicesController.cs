@@ -4,6 +4,7 @@ using Haus.Core.Devices.Commands;
 using Haus.Core.Devices.Queries;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
+using Haus.Cqrs;
 using Haus.Web.Host.Common.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
