@@ -8,7 +8,8 @@ namespace Haus.Core.Devices
     {
         public DevicesMappingProfile()
         {
-            CreateMap<DeviceEntity, DeviceModel>();
+            CreateMap<DeviceEntity, DeviceModel>()
+                .ForMember(model => model.RoomId, member => member.MapFrom(d => d.Room == null ? default(long?) : d.Room.Id));
             CreateMap<DeviceMetadataEntity, DeviceMetadataModel>();
         }
     }
