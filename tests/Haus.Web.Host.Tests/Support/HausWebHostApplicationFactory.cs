@@ -125,6 +125,12 @@ namespace Haus.Web.Host.Tests.Support
             await mqttClient.SubscribeToHausCommandsAsync(handler);
         }
 
+        public async Task SubscribeToHausEventsAsync<T>(Action<HausEvent<T>> handler)
+        {
+            var mqttClient = await GetMqttClient();
+            await mqttClient.SubscribeToHausEventsAsync(handler);
+        }
+
         public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator)
         {
             var client = await GetMqttClient();

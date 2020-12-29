@@ -4,7 +4,6 @@ using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Services;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using MQTTnet;
 
 namespace Haus.Web.Host.Diagnostics
@@ -13,8 +12,7 @@ namespace Haus.Web.Host.Diagnostics
     {
         public DiagnosticsMqttListener(
             IHausMqttClientFactory hausMqttClientFactory,
-            IServiceScopeFactory scopeFactory, 
-            ILogger<DiagnosticsMqttListener> logger) 
+            IServiceScopeFactory scopeFactory) 
             : base(hausMqttClientFactory, scopeFactory)
         {
         }

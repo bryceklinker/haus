@@ -1,17 +1,13 @@
-using System;
-using System.Linq.Expressions;
-using Haus.Core.Models.Devices;
+using Haus.Core.Common.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Haus.Core.Devices.Entities
 {
-    public class DeviceMetadataEntity
+    public class DeviceMetadataEntity : Metadata
     {
         public long Id { get; set; }
         public DeviceEntity Device { get; set; }
-        public string Key { get; set; }
-        public string Value { get; set; }
 
         public DeviceMetadataEntity(string key = null, string value = null)
         {

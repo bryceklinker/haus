@@ -10,7 +10,7 @@ namespace Haus.Core.Models.Devices.Discovery
         public const string Type = "device_discovered";
         public string Id { get; set; }
         public DeviceType DeviceType { get; set; } = DeviceType.Unknown;
-        public DeviceMetadataModel[] Metadata { get; set; } = Array.Empty<DeviceMetadataModel>();
+        public MetadataModel[] Metadata { get; set; } = Array.Empty<MetadataModel>();
         
         public HausEvent<DeviceDiscoveredModel> AsHausEvent()
         {

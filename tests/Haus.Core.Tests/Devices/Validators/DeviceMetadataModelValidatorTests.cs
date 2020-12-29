@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.TestHelper;
 using Haus.Core.Devices.Validators;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Xunit;
 
@@ -9,7 +10,7 @@ namespace Haus.Core.Tests.Devices.Validators
 {
     public class DeviceMetadataModelValidatorTests
     {
-        private readonly IValidator<DeviceMetadataModel> _validator;
+        private readonly IValidator<MetadataModel> _validator;
 
         public DeviceMetadataModelValidatorTests()
         {
@@ -19,35 +20,35 @@ namespace Haus.Core.Tests.Devices.Validators
         [Fact]
         public async Task WhenMetadataHasNullKeyThenReturnsInvalid()
         {
-            var result = await _validator.TestValidateAsync(new DeviceMetadataModel(null, "something"));
+            var result = await _validator.TestValidateAsync(new MetadataModel(null, "something"));
             Assert.False(result.IsValid);
         }
         
         [Fact]
         public async Task WhenMetadataHasEmptyKeyThenReturnsInvalid()
         {
-            var result = await _validator.TestValidateAsync(new DeviceMetadataModel(string.Empty, "something"));
+            var result = await _validator.TestValidateAsync(new MetadataModel(string.Empty, "something"));
             Assert.False(result.IsValid);
         }
 
         [Fact]
         public async Task WhenMetadataValueIsNullThenReturnsInvalid()
         {
-            var result = await _validator.TestValidateAsync(new DeviceMetadataModel("something", null));
+            var result = await _validator.TestValidateAsync(new MetadataModel("something", null));
             Assert.False(result.IsValid);
         }
 
         [Fact]
         public async Task WhenMetadataValueIsEmptyThenReturnsInvalid()
         {
-            var result = await _validator.TestValidateAsync(new DeviceMetadataModel("something", string.Empty));
+            var result = await _validator.TestValidateAsync(new MetadataModel("something", string.Empty));
             Assert.False(result.IsValid);
         }
 
         [Fact]
         public async Task WhenMetadataKeyAndValueIsFilledInThenReturnsValid()
         {
-            var result = await _validator.TestValidateAsync(new DeviceMetadataModel("something", "idk"));
+            var result = await _validator.TestValidateAsync(new MetadataModel("something", "idk"));
             Assert.True(result.IsValid);
         }
     }

@@ -10,6 +10,6 @@ namespace Haus.Core.Models.Devices
         public string ExternalId { get; set; }
         public string Name { get; set; }
         public DeviceType DeviceType { get; set; }
-        public DeviceMetadataModel[] Metadata { get; set; } = Array.Empty<DeviceMetadataModel>();
+        public MetadataModel[] Metadata { get; set; } = Array.Empty<MetadataModel>();
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Models;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.ExternalMessages;
@@ -58,7 +59,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
             }.AsHausEvent();
         }
 
-        private static DeviceMetadataModel[] CreateDeviceMetadata(JObject jObject)
+        private static MetadataModel[] CreateDeviceMetadata(JObject jObject)
         {
             return jObject.ToDeviceMetadata()
                 .ToArray();

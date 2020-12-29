@@ -6,6 +6,7 @@ using Haus.Core.Common.Commands;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Queries;
 using Haus.Core.Common.Storage;
+using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Diagnostics.Factories;
 using Haus.Cqrs;
 using MediatR;
@@ -25,6 +26,8 @@ namespace Haus.Core
                 .AddDbContext<HausDbContext>(configureDb)
                 .AddValidatorsFromAssembly(coreAssembly)
                 .AddHausCqrs(coreAssembly)
+                .AddTransient(p => p.GetRequiredService<IDeviceSimulatorStore>().Current)
+                .AddSingleton<IDeviceSimulatorStore, DeviceSimulatorStore>()
                 .AddTransient<IRoutableEventFactory, RoutableEventFactory>()
                 .AddTransient<IMqttDiagnosticsMessageFactory, MqttDiagnosticsMessageFactory>();
         }

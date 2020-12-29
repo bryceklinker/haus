@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Haus.Testing.Support.Fakes
 {
     public class FakeMqttClient : IManagedMqttClient, IMqttClient
     {
+        private readonly List<MqttApplicationMessage> _publishedMessages = new List<MqttApplicationMessage>();
         public bool IsDisposed { get; private set; }
         public bool IsStarted { get; private set; }
         public IMqttApplicationMessageReceivedHandler ApplicationMessageReceivedHandler { get; set; }
@@ -66,11 +68,7 @@ namespace Haus.Testing.Support.Fakes
         public IApplicationMessageSkippedHandler ApplicationMessageSkippedHandler { get; set; }
         public IConnectingFailedHandler ConnectingFailedHandler { get; set; }
         public ISynchronizingSubscriptionsFailedHandler SynchronizingSubscriptionsFailedHandler { get; set; }
-
-        public FakeMqttClient()
-        {
-            
-        }
+        public MqttApplicationMessage[] PublishedMessages => _publishedMessages.ToArray();
         
         public async Task<MqttClientPublishResult> PublishAsync(MqttApplicationMessage applicationMessage, CancellationToken cancellationToken)
         {

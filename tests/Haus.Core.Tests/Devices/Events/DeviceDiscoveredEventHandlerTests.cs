@@ -5,6 +5,7 @@ using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Devices.Events;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Tests.Support;
@@ -48,7 +49,7 @@ namespace Haus.Core.Tests.Devices.Events
                 Id = "three",
                 Metadata = new []
                 {
-                    new DeviceMetadataModel("Model", "Help"), 
+                    new MetadataModel("Model", "Help"), 
                 }
             });
             await _hausBus.PublishAsync(@event);

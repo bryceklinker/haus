@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Models;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Newtonsoft.Json.Linq;
 
@@ -12,11 +13,11 @@ namespace Haus.Zigbee.Host
         {
             "friendly_name"
         };
-        public static IEnumerable<DeviceMetadataModel> ToDeviceMetadata(this JObject jObject)
+        public static IEnumerable<MetadataModel> ToDeviceMetadata(this JObject jObject)
         {
             return jObject.Properties()
                 .Where(prop => KnownMetadata.Missing(prop.Name))
-                .Select(prop => new DeviceMetadataModel
+                .Select(prop => new MetadataModel
                 {
                     Key = prop.Name,
                     Value = prop.Value.ToString()

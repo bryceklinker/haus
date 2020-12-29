@@ -22,8 +22,8 @@ namespace Haus.Core.Tests.Devices.Entities
                 DeviceType = DeviceType.Light,
                 Metadata = new []
                 {
-                    new DeviceMetadataModel("Model", "some model"),
-                    new DeviceMetadataModel("Vendor", "Vendy"), 
+                    new MetadataModel("Model", "some model"),
+                    new MetadataModel("Vendor", "Vendy"), 
                 }
             };
 
@@ -63,7 +63,7 @@ namespace Haus.Core.Tests.Devices.Entities
             {
                 Metadata = new []
                 {
-                    new DeviceMetadataModel("Model", "boom"),
+                    new MetadataModel("Model", "boom"),
                 }
             };
             var entity = new DeviceEntity();
@@ -80,7 +80,7 @@ namespace Haus.Core.Tests.Devices.Entities
             {
                 Metadata = new []
                 {
-                    new DeviceMetadataModel("Model", "boom"),
+                    new MetadataModel("Model", "boom"),
                 }
             };
             var entity = new DeviceEntity();
@@ -116,8 +116,8 @@ namespace Haus.Core.Tests.Devices.Entities
             {
                 Metadata = new []
                 {
-                    new DeviceMetadataModel("one", "three"),
-                    new DeviceMetadataModel("three", "two"), 
+                    new MetadataModel("one", "three"),
+                    new MetadataModel("three", "two"), 
                 }
             };
             var entity = new DeviceEntity();

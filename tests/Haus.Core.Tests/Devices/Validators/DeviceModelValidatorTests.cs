@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.TestHelper;
 using Haus.Core.Devices.Validators;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Xunit;
 
@@ -36,7 +37,7 @@ namespace Haus.Core.Tests.Devices.Validators
             var model = new DeviceModel
             {
                 Name = "one",
-                Metadata = new [] { new DeviceMetadataModel(null, null) }
+                Metadata = new [] { new MetadataModel(null, null) }
             };
             var result = await _validator.TestValidateAsync(model);
             

@@ -52,7 +52,7 @@ namespace Haus.Core.Devices.Entities
             AddOrUpdateMetadata(model.Metadata);
         }
 
-        private void AddOrUpdateMetadata(IEnumerable<DeviceMetadataModel> models)
+        private void AddOrUpdateMetadata(IEnumerable<MetadataModel> models)
         {
             foreach (var model in models)
                 AddOrUpdateMetadata(model.Key, model.Value);

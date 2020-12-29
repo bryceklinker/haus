@@ -9,7 +9,7 @@ namespace Haus.Core.Common.Events
         public static RoutableEvent<T> FromEvent<T>(T @event)
             where T : IHausEventCreator<T>
         {
-            return new RoutableEvent<T>(@event.AsHausEvent());
+            return new(@event.AsHausEvent());
         }
     }
 

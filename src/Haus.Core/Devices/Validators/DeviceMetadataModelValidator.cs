@@ -1,9 +1,10 @@
 using FluentValidation;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 
 namespace Haus.Core.Devices.Validators
 {
-    public class DeviceMetadataModelValidator : AbstractValidator<DeviceMetadataModel>
+    public class DeviceMetadataModelValidator : AbstractValidator<MetadataModel>
     {
         public DeviceMetadataModelValidator()
         {

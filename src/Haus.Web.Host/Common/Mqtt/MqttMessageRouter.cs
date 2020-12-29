@@ -6,7 +6,6 @@ using Haus.Cqrs;
 using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using MQTTnet;
 
 namespace Haus.Web.Host.Common.Mqtt
@@ -14,8 +13,7 @@ namespace Haus.Web.Host.Common.Mqtt
     public class MqttMessageRouter : MqttBackgroundServiceListener
     {
         public MqttMessageRouter(IHausMqttClientFactory hausMqttClientFactory,
-            IServiceScopeFactory scopeFactory,
-            ILogger<MqttMessageRouter> logger)
+            IServiceScopeFactory scopeFactory)
             : base(hausMqttClientFactory, scopeFactory)
         {
         }
