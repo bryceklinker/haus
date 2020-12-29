@@ -28,12 +28,3 @@ export function setupDeviceTurnOff(deviceId: string | number, options?: RequestO
 export function setupDeviceTurnOn(deviceId: string | number, options?: RequestOptions) {
   setupHttpPost(`${BASE_URL}/${deviceId}/turn-on`, null, options);
 }
-
-export function setupAllDevicesApis() {
-  setupGetAllDevices();
-  setupDevicesStartDiscovery();
-  setupDevicesStopDiscovery();
-  setupDevicesSyncDiscovery();
-  setupDeviceTurnOff('*');
-  setupDeviceTurnOn('*');
-}
