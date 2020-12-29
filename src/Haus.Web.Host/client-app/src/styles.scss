@@ -53,13 +53,4 @@ body {
   font-size:48px !important;
 }
 
-.master-detail-container {
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-
-  > :first-child {
-    max-width: 150rem;
-    margin-right: 5rem;
-  }
-}
+@import './app/shared/styles/master-detail';

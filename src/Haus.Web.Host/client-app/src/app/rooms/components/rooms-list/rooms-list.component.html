@@ -1,7 +1,7 @@
 <h3 class="mat-display-3">
   Rooms
 </h3>
-<mat-list>
+<mat-nav-list>
   <a *ngFor="let room of rooms"
      data-testid="room-item"
      routerLink="{{room.id}}"
@@ -12,4 +12,4 @@
   <button mat-fab (click)="onAddRoom()" data-testid="add-room-btn">
     <mat-icon>add</mat-icon>
   </button>
-</mat-list>
+</mat-nav-list>
