@@ -3,7 +3,6 @@ import {ListResult} from "../app/shared/models";
 import {DiagnosticsMessageModel} from "../app/shared/diagnostics";
 import {DeviceModel} from "../app/shared/devices";
 import {RoomModel} from "../app/shared/rooms";
-import {DeviceSimulatorStateModel} from "../app/device-simulator/models";
 
 let id = 0;
 
@@ -24,7 +23,8 @@ function createDeviceModel(model: Partial<DeviceModel> = {}): DeviceModel {
     name: model.name || uuid(),
     externalId: model.externalId || uuid(),
     metadata: model.metadata || [],
-    deviceType: model.deviceType || 'Unknown'
+    deviceType: model.deviceType || 'Unknown',
+    roomId: model.roomId || undefined
   }
 }
 
@@ -42,25 +42,9 @@ function createRoomModel(model: Partial<RoomModel> = {}): RoomModel {
   };
 }
 
-function createDeviceSimulatorState(model: Partial<DeviceSimulatorStateModel> = {}): DeviceSimulatorStateModel {
-  const deviceOne = createDeviceModel();
-  const deviceTwo = createDeviceModel();
-  const deviceThree = createDeviceModel();
-
-  return {
-    devices: model.devices ?? [deviceOne, deviceTwo, deviceThree],
-    devicesById: model.devicesById ?? {
-      [deviceOne.externalId]: deviceOne,
-      [deviceTwo.externalId]: deviceTwo,
-      [deviceThree.externalId]: deviceThree
-    }
-  }
-}
-
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
   createRoomModel,
-  createListResult,
-  createDeviceSimulatorState
+  createListResult
 };

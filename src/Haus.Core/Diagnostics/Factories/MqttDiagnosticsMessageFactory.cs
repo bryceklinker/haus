@@ -23,7 +23,7 @@ namespace Haus.Core.Diagnostics.Factories
 
         public MqttDiagnosticsMessageModel Create(string topic, byte[] payload)
         {
-            return new MqttDiagnosticsMessageModel
+            return new()
             {
                 Id = $"{Guid.NewGuid()}",
                 Timestamp = _clock.LocalNow,

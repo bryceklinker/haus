@@ -1,50 +1,46 @@
 import {screen} from "@testing-library/dom";
 
 import {
-  eventually,
   ModelFactory,
   renderFeatureComponent,
-  setupAllRoomsApis,
-  setupGetAllRooms,
-  TestingServer
 } from "../../../../testing";
 import {RoomsModule} from "../../rooms.module";
 import {RoomsRootComponent} from "./rooms-root.component";
 import userEvent from "@testing-library/user-event";
-import {AddRoomDialogComponent} from "../add-room-dialog/add-room-dialog.component";
+import {Action} from "@ngrx/store";
+import {RoomsActions} from "../../state";
 
 describe('RoomsRootComponent', () => {
-  it('should get rooms when rendered', async () => {
+  it('should load rooms when rendered', async () => {
+    const {store} = await renderRoot();
+
+    expect(store.dispatchedActions).toContainEqual(RoomsActions.loadRooms.request());
+  })
+
+  it('should show rooms when rendered', async () => {
     const rooms = [
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel()
     ];
-    setupGetAllRooms(rooms);
 
-    const {detectChanges} = await renderRoot();
+    await renderRoot(RoomsActions.loadRooms.success(ModelFactory.createListResult(...rooms)));
 
-    await eventually(() => {
-      detectChanges();
-      expect(screen.queryAllByTestId('room-item')).toHaveLength(3);
-    })
+    expect(screen.queryAllByTestId('room-item')).toHaveLength(3);
   })
 
   it('should open add dialog when add room clicked', async () => {
-    setupAllRoomsApis();
-
-    const {matDialog} = await renderRoot();
+    const {store} = await renderRoot();
 
     userEvent.click(screen.getByTestId('add-room-btn'));
 
-    await eventually(() => {
-      expect(matDialog.open).toHaveBeenCalledWith(AddRoomDialogComponent);
-    })
+    expect(store.dispatchedActions).toContainEqual(RoomsActions.addRoom.begin());
   })
 
-  function renderRoot() {
+  function renderRoot(...actions: Array<Action>) {
     return renderFeatureComponent(RoomsRootComponent, {
-      imports: [RoomsModule]
+      imports: [RoomsModule],
+      actions: actions
     })
   }
 })

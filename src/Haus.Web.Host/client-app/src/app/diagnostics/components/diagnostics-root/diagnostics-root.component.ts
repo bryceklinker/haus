@@ -1,7 +1,14 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {DiagnosticsMessageModel, DiagnosticsService} from "../../../shared/diagnostics";
+import {DiagnosticsMessageModel} from "../../../shared/diagnostics";
 import {Observable} from "rxjs";
-import {DestroyableSubject} from "../../../shared/destroyable-subject";
+import {AppState} from "../../../app.state";
+import {Store} from "@ngrx/store";
+import {
+  DiagnosticsActions,
+  selectAllDiagnosticMessages,
+  selectAllowDiagnosticsDiscovery,
+  selectIsDiagnosticsConnected
+} from "../../state";
 
 @Component({
   selector: 'diagnostics-root',
@@ -9,45 +16,37 @@ import {DestroyableSubject} from "../../../shared/destroyable-subject";
   styleUrls: ['./diagnostics-root.component.scss']
 })
 export class DiagnosticsRootComponent implements OnInit, OnDestroy {
-  private readonly destroyable = new DestroyableSubject();
+  messages$: Observable<DiagnosticsMessageModel[]>;
+  isConnected$: Observable<boolean>;
+  allowDiscovery$: Observable<boolean>;
 
-  get messages$(): Observable<DiagnosticsMessageModel[]> {
-    return this.service.messages$;
-  }
-
-  get isConnected$(): Observable<boolean> {
-    return this.service.isConnected$;
-  }
-
-  get allowDiscovery$(): Observable<boolean> {
-    return this.service.allowDiscovery$;
-  }
-
-  constructor(private readonly service: DiagnosticsService) {
+  constructor(private readonly store: Store<AppState>) {
+    this.messages$ = this.store.select(selectAllDiagnosticMessages);
+    this.isConnected$ = this.store.select(selectIsDiagnosticsConnected);
+    this.allowDiscovery$ = this.store.select(selectAllowDiagnosticsDiscovery);
   }
 
   ngOnInit(): void {
-    this.destroyable.register(this.service.start()).subscribe();
+    this.store.dispatch(DiagnosticsActions.start());
   }
 
   ngOnDestroy(): void {
-    this.destroyable.register(this.service.stop()).subscribe();
-    this.destroyable.destroy();
+    this.store.dispatch(DiagnosticsActions.stop());
   }
 
   onStartDiscovery() {
-    this.destroyable.register(this.service.startDiscovery()).subscribe();
+    this.store.dispatch(DiagnosticsActions.startDiscovery.request());
   }
 
   onStopDiscovery() {
-    this.destroyable.register(this.service.stopDiscovery()).subscribe();
+    this.store.dispatch(DiagnosticsActions.stopDiscovery.request());
   }
 
   onSyncDiscovery() {
-    this.destroyable.register(this.service.syncDiscovery()).subscribe();
+    this.store.dispatch(DiagnosticsActions.syncDiscovery.request());
   }
 
   onReplayMessage($event: DiagnosticsMessageModel) {
-    this.destroyable.register(this.service.replayMessage($event)).subscribe();
+    this.store.dispatch(DiagnosticsActions.replayMessage.request($event));
   }
 }

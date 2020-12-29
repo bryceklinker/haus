@@ -5,7 +5,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
 
 import {ListResult} from "../models";
-import {RoomModel} from "../rooms";
+import {CreateRoomModel, RoomModel} from "../rooms";
 import {DeviceModel} from "../devices";
 import {DiagnosticsMessageModel} from "../diagnostics";
 import {HttpMethod} from "./http-method";
@@ -58,7 +58,7 @@ export class HausApiClient implements OnDestroy {
     return this.execute<ListResult<RoomModel>>(HttpMethod.GET, '/api/rooms');
   }
 
-  addRoom(room: RoomModel): Observable<RoomModel> {
+  addRoom(room: CreateRoomModel): Observable<RoomModel> {
     return this.execute<RoomModel>(HttpMethod.POST, '/api/rooms', room);
   }
 

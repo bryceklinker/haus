@@ -1,22 +1,24 @@
-import {Component, OnDestroy} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {FormBuilder, Validators} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import {Observable} from "rxjs";
-import {map, takeUntil} from "rxjs/operators";
-import {RoomsService} from "../../../shared/rooms";
+import {map} from "rxjs/operators";
+import {ofType} from "@ngrx/effects";
+import {ActionsSubject, Store} from "@ngrx/store";
+
 import {DestroyableSubject} from "../../../shared/destroyable-subject";
+import {AppState} from "../../../app.state";
+import {RoomsActions} from "../../state";
+import {selectIsLoading} from "../../../shared/loading/loading.reducer";
 
 @Component({
   selector: 'add-room-dialog',
   templateUrl: './add-room-dialog.component.html',
   styleUrls: ['./add-room-dialog.component.scss']
 })
-export class AddRoomDialogComponent implements OnDestroy {
-  private readonly destroyable = new DestroyableSubject();
-
-  get isLoading$(): Observable<boolean> {
-    return this.service.isLoading$;
-  }
+export class AddRoomDialogComponent implements OnInit, OnDestroy {
+  private readonly destroyable: DestroyableSubject;
+  isLoading$: Observable<boolean>;
 
   get isNotLoading$(): Observable<boolean> {
     return this.isLoading$.pipe(
@@ -29,17 +31,25 @@ export class AddRoomDialogComponent implements OnDestroy {
   });
 
   constructor(private matDialogRef: MatDialogRef<AddRoomDialogComponent>,
-              private service: RoomsService) {
+              private store: Store<AppState>,
+              private actionsSubject: ActionsSubject) {
+    this.destroyable = new DestroyableSubject();
+    this.isLoading$ = this.store.select(selectIsLoading(RoomsActions.addRoom.request));
   }
 
   onSave() {
     const room = this.form.getRawValue();
-    this.destroyable.register(this.service.add(room))
-      .subscribe(() => this.matDialogRef.close());
+    this.store.dispatch(RoomsActions.addRoom.request(room));
   }
 
   onCancel() {
+    this.store.dispatch(RoomsActions.addRoom.cancel());
     this.matDialogRef.close();
+  }
+
+  ngOnInit(): void {
+    this.destroyable.register(this.actionsSubject.pipe(ofType(RoomsActions.addRoom.success)))
+      .subscribe(() => this.matDialogRef.close());
   }
 
   ngOnDestroy(): void {

@@ -3,42 +3,31 @@ import {
   eventually,
   ModelFactory,
   renderFeatureComponent,
-  TestingActivatedRoute,
-  setupGetAllDevices
 } from "../../../../testing";
 import {DeviceDetailRootComponent} from "./device-detail-root.component";
 import {DevicesModule} from "../../devices.module";
-import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {DeviceModel, DevicesService} from "../../../shared/devices";
+import {Action} from "@ngrx/store";
+import {DevicesActions} from "../../state";
 
 describe('DeviceDetailRootComponent', () => {
-  let device: DeviceModel;
-  let activatedRoute: TestingActivatedRoute;
-  let fixture: ComponentFixture<DeviceDetailRootComponent>;
-
-  beforeEach(async () => {
-    device = ModelFactory.createDeviceModel();
-    setupGetAllDevices([device]);
-
-    const result = await renderRoot();
-    TestBed.inject(DevicesService).getAll().subscribe();
-
-    activatedRoute = result.activatedRoute;
-    fixture = result.fixture;
-  })
 
   it('should device detail when rendered', async () => {
+    const device = ModelFactory.createDeviceModel();
+    const actions = DevicesActions.loadDevices.success(ModelFactory.createListResult(device));
+
+    const {activatedRoute, detectChanges} = await renderRoot(actions);
     activatedRoute.triggerParamsChange({deviceId: `${device.id}`});
 
     await eventually(() => {
-      fixture.detectChanges();
+      detectChanges();
       expect(screen.getByTestId('device-detail')).toHaveTextContent(device.name);
     })
   })
 
-  function renderRoot() {
+  function renderRoot(...actions: Action[]) {
     return renderFeatureComponent(DeviceDetailRootComponent, {
-      imports: [DevicesModule]
+      imports: [DevicesModule],
+      actions: actions
     })
   }
 })

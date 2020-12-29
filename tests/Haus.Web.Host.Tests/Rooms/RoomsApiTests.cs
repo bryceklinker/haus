@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Haus.Api.Client;
 using Haus.Core.Models;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Models.Rooms.Events;

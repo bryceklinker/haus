@@ -1,6 +1,11 @@
 import {Component} from "@angular/core";
-import {DeviceModel, DevicesService} from "../../../shared/devices";
+import {DeviceModel} from "../../../shared/devices";
 import {Observable} from "rxjs";
+import {AppState} from "../../../app.state";
+import {Store} from "@ngrx/store";
+import {selectDeviceById} from "../../state";
+import {ActivatedRoute} from "@angular/router";
+import {map, mergeMap} from "rxjs/operators";
 
 @Component({
   selector: 'device-detail-root',
@@ -8,9 +13,12 @@ import {Observable} from "rxjs";
   styleUrls: ['./device-detail-root.component.scss']
 })
 export class DeviceDetailRootComponent {
-  selectedDevice$: Observable<DeviceModel | null>;
+  selectedDevice$: Observable<DeviceModel | undefined | null>;
 
-  constructor(private service: DevicesService) {
-    this.selectedDevice$ = service.selectedDevice$;
+  constructor(private store: Store<AppState>, private route: ActivatedRoute) {
+    this.selectedDevice$ = this.route.paramMap.pipe(
+      map(paramMap => paramMap.get('deviceId') || ''),
+      mergeMap(deviceId => this.store.select(selectDeviceById(deviceId)))
+    )
   }
 }

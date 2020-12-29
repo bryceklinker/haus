@@ -17,7 +17,7 @@ export function sortArrayBy<T>(items: T[], property: (item: T) => Sortable, dire
   return [...items].sort(createComparer(property, direction));
 }
 
-function createComparer<T>(property: (item: T) => any, sortDirection = SortDirection.Ascending): (a: T, b: T) => number {
+export function createComparer<T>(property: (item: T) => any, sortDirection = SortDirection.Ascending): (a: T, b: T) => number {
   return (a: T, b: T) => {
     const propA = property(a);
     const propB = property(b);

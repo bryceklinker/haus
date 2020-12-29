@@ -13,7 +13,7 @@ import {SharedModule} from "../shared/shared.module";
     AuthModule,
     CommonModule,
     SharedModule,
-    DevicesRoutingModule,
+    DevicesRoutingModule
   ],
   exports: [
     SharedModule

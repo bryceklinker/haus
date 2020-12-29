@@ -1367,6 +1367,27 @@
     node-fetch "^2.6.0"
     ws "^6.0.0"
 
+"@ngrx/effects@10.1.2":
+  version "10.1.2"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/effects/-/@ngrx/effects-10.1.2.tgz#f1c9daa2e3e13aeb6af272cb52f6dff73d364d68"
+  integrity sha1-8cnaouPhOutq8nLLUvbf9z02TWg=
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/entity@10.1.2":
+  version "10.1.2"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/entity/-/@ngrx/entity-10.1.2.tgz#17c93af662de3083a6914af7400182f75924d61f"
+  integrity sha1-F8k69mLeMIOmkUr3QAGC91kk1h8=
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/store@10.1.2":
+  version "10.1.2"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store/-/@ngrx/store-10.1.2.tgz#a41aee81ea7b7e4a9f927be560e6024830211efb"
+  integrity sha1-pBrugep7fkqfknvlYOYCSDAhHvs=
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngtools/webpack@11.0.5":
   version "11.0.5"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngtools/webpack/-/@ngtools/webpack-11.0.5.tgz#9d1abb9f9a5e72c014b5ed3e0c2cefe2a4175b30"

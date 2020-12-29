@@ -5,9 +5,12 @@ import {SHELL_PROVIDERS} from "../app/shell/services";
 import {SHELL_COMPONENTS} from "../app/shell/components";
 import {SharedModule} from "../app/shared/shared.module";
 import {CommonModule} from "@angular/common";
+import {ActionsSubject} from "@ngrx/store";
+import {TestingActionsSubject} from "./fakes";
 
 export interface TestServiceResult<T> {
-  service: T
+  service: T,
+  actionsSubject: TestingActionsSubject,
 }
 export function createFeatureTestingService<T>(service: Type<T>, options: TestModuleOptions): TestServiceResult<T> {
   TestBed.configureTestingModule(createTestingModule(options))
@@ -27,6 +30,7 @@ function createServiceResult<T>(service: Type<T>): TestServiceResult<T> {
     instance.ngOnInit();
   }
   return {
-    service: instance
+    service: instance,
+    actionsSubject: TestBed.inject(ActionsSubject) as TestingActionsSubject
   }
 }

@@ -3,7 +3,7 @@ import {Subject} from "rxjs";
 import {HubConnectionState} from "@microsoft/signalr";
 import {tap} from "rxjs/operators";
 
-export class TestingSignalrHubConnectionService extends SignalrHubConnection {
+export class TestingSignalrHubConnection extends SignalrHubConnection {
     private _startSubject = new Subject<void>();
     private _stopSubject = new Subject<void>();
     private _handlers: { [methodName: string]: Subject<any> } = {};

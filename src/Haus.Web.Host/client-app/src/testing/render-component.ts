@@ -8,16 +8,25 @@ import {createAppTestingModule, createTestingModule} from "./create-testing-modu
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {TestingMatDialog} from "./fakes/testing-mat-dialog";
 import {TestingMatDialogRef} from "./fakes/testing-mat-dialog-ref";
-import {TestingSettingsService, TestingSignalrConnectionServiceFactory, TestingActivatedRoute} from "./fakes";
+import {
+  TestingSettingsService,
+  TestingSignalrHubConnectionFactory,
+  TestingActivatedRoute,
+  TestingActionsSubject
+} from "./fakes";
 import {SignalrHubConnectionFactory} from "../app/shared/signalr";
 import {SettingsService} from "../app/shared/settings";
+import {Action, ActionsSubject, Store} from "@ngrx/store";
+import {TestingStore} from "./fakes/testing-store";
+import {AppState} from "../app/app.state";
 
 export interface RenderAppComponentOptions<T> extends RenderComponentOptions<T> {
   routes?: Routes;
+  actions?: Action[];
 }
 
 export interface RenderFeatureComponentOptions<T> extends RenderAppComponentOptions<T> {
-  imports: Array<any>
+  imports: Array<any>;
 }
 
 export interface RenderComponentResult<T> extends RenderResult<T> {
@@ -25,9 +34,11 @@ export interface RenderComponentResult<T> extends RenderResult<T> {
   router: Router;
   matDialog: TestingMatDialog;
   matDialogRef: TestingMatDialogRef;
-  signalrConnectionFactory: TestingSignalrConnectionServiceFactory;
+  signalrConnectionFactory: TestingSignalrHubConnectionFactory;
   activatedRoute: TestingActivatedRoute;
   settingsService: TestingSettingsService;
+  actionsSubject: TestingActionsSubject;
+  store: TestingStore<AppState>;
 }
 
 export async function renderAppComponent<T>(component: Type<T>, options?: RenderAppComponentOptions<T>): Promise<RenderComponentResult<T>> {
@@ -50,11 +61,13 @@ async function renderComponent<T>(component: Type<T>, options: RenderAppComponen
     ...result,
     triggerEventHandler: createEventTriggerHandler(result),
     router: TestBed.inject(Router),
-    matDialog: <TestingMatDialog>TestBed.inject(MatDialog),
-    matDialogRef: <TestingMatDialogRef>TestBed.inject(MatDialogRef),
-    signalrConnectionFactory: <TestingSignalrConnectionServiceFactory>TestBed.inject(SignalrHubConnectionFactory),
-    activatedRoute: <TestingActivatedRoute>TestBed.inject(ActivatedRoute),
-    settingsService: <TestingSettingsService>TestBed.inject(SettingsService)
+    matDialog: TestBed.inject(MatDialog) as TestingMatDialog,
+    matDialogRef: TestBed.inject(MatDialogRef) as TestingMatDialogRef,
+    signalrConnectionFactory: TestBed.inject(SignalrHubConnectionFactory) as TestingSignalrHubConnectionFactory,
+    activatedRoute: TestBed.inject(ActivatedRoute) as TestingActivatedRoute,
+    settingsService: TestBed.inject(SettingsService) as TestingSettingsService,
+    actionsSubject: TestBed.inject(ActionsSubject) as TestingActionsSubject,
+    store: TestBed.inject(Store) as TestingStore<AppState>
   };
 }
 

@@ -1,18 +1,15 @@
 import {screen} from "@testing-library/dom";
-import {eventually, ModelFactory, renderFeatureComponent, setupGetAllDevices, TestingServer} from "../../../../testing";
+import {eventually, ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DevicesRootComponent} from "./devices-root.component";
 import {DevicesModule} from "../../devices.module";
-import {HttpMethod} from "../../../shared/rest-api";
-import {setupAllDevicesApis} from "../../../../testing";
+import {DevicesActions} from "../../state";
+import {Action} from "@ngrx/store";
 
 describe('DevicesRootComponent', () => {
   it('should get all devices when rendered', async () => {
-    setupAllDevicesApis();
+    const { store } = await renderRoot();
 
-    await renderRoot();
-
-    expect(TestingServer.lastRequest.url).toContain('/api/devices');
-    expect(TestingServer.lastRequest.method).toEqual(HttpMethod.GET);
+    expect(store.dispatchedActions).toContainEqual(DevicesActions.loadDevices.request());
   })
 
   it('should show all devices', async () => {
@@ -21,19 +18,18 @@ describe('DevicesRootComponent', () => {
       ModelFactory.createDeviceModel(),
       ModelFactory.createDeviceModel()
     ];
-    setupGetAllDevices(devices);
 
-    const {detectChanges} = await renderRoot();
+    await renderRoot(
+      DevicesActions.loadDevices.success(ModelFactory.createListResult(...devices))
+    );
 
-    await eventually(() => {
-      detectChanges();
-      expect(screen.queryAllByTestId('device-item')).toHaveLength(3);
-    });
+    expect(screen.queryAllByTestId('device-item')).toHaveLength(3);
   })
 
-  function renderRoot() {
+  function renderRoot(...actions: Array<Action>) {
     return renderFeatureComponent(DevicesRootComponent, {
-      imports: [DevicesModule]
+      imports: [DevicesModule],
+      actions: actions
     })
   }
 })

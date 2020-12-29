@@ -1,8 +1,13 @@
 import {Component} from "@angular/core";
-import {RoomModel, RoomsService} from "../../../shared/rooms";
+import {RoomModel} from "../../../shared/rooms";
 import {Observable} from "rxjs";
 import {DeviceModel} from "../../../shared/devices";
-import {tap} from "rxjs/operators";
+import {AppState} from "../../../app.state";
+import {Store} from "@ngrx/store";
+import {selectRoomById} from "../../state";
+import {ActivatedRoute} from "@angular/router";
+import {map, mergeMap} from "rxjs/operators";
+import {selectAllDevicesByRoomId} from "../../../devices/state";
 
 @Component({
   selector: 'room-detail-root',
@@ -10,14 +15,20 @@ import {tap} from "rxjs/operators";
   styleUrls: ['./room-detail-root.component.scss']
 })
 export class RoomDetailRootComponent {
-  get room$(): Observable<RoomModel | null> {
-    return this.service.selectedRoom$;
-  }
+  room$: Observable<RoomModel | undefined | null>;
 
-  get devices$(): Observable<Array<DeviceModel>> {
-    return this.service.selectedRoomDevices$;
-  }
+  devices$: Observable<Array<DeviceModel>>;
 
-  constructor(private readonly service: RoomsService) {
+  constructor(private readonly store: Store<AppState>,
+              private readonly route: ActivatedRoute) {
+    const roomId$ = this.route.paramMap.pipe(
+      map(paramMap => paramMap.get('roomId') || '')
+    );
+    this.room$ = roomId$.pipe(
+      mergeMap(roomId => this.store.select(selectRoomById(roomId)))
+    )
+    this.devices$ = roomId$.pipe(
+      mergeMap(roomId => this.store.select(selectAllDevicesByRoomId(roomId)))
+    )
   }
 }

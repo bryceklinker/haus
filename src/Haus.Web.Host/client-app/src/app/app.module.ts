@@ -1,14 +1,14 @@
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {AuthClientConfig, AuthHttpInterceptor, AuthModule} from "@auth0/auth0-angular";
 import {CommonModule} from "@angular/common";
+import {BrowserModule} from "@angular/platform-browser";
+import {HTTP_INTERCEPTORS, HttpBackend, HttpClientModule} from "@angular/common/http";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 import {AppRoutingModule} from './app-routing.module';
 import {SharedModule} from "./shared/shared.module";
 import {SHELL_COMPONENTS} from "./shell/components";
-import {HTTP_INTERCEPTORS, HttpBackend, HttpClientModule} from "@angular/common/http";
 import {SettingsService} from "./shared/settings";
-import {BrowserModule} from "@angular/platform-browser";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ShellComponent} from "./shell/components/shell/shell.component";
 import {SHELL_PROVIDERS} from "./shell/services";
 

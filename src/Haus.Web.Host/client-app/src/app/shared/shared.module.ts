@@ -6,18 +6,21 @@ import {SettingsService} from "./settings";
 import {ThemeService} from "./theming/theme.service";
 import {HausApiClient} from "./rest-api";
 import {SHARED_COMPONENTS} from "./components";
-import {DevicesService} from "./devices";
-import {RoomsService} from "./rooms";
 import {SignalrHubConnectionFactory, SignalrServiceFactory} from "./signalr";
 import {MaterialModule} from "./material.module";
+import {StoreModule} from "@ngrx/store";
+import {AppState} from "../app.state";
+import {EffectsModule} from "@ngrx/effects";
+import {DevicesEffects} from "../devices/effects/devices.effects";
+import {sharedReducerMap} from "./shared-reducer-map";
+import {DiagnosticsEffects} from "../diagnostics/effects/diagnostics.effects";
+import {RoomsEffects} from "../rooms/effects/rooms.effects";
 
 @NgModule({
   providers: [
     SettingsService,
     ThemeService,
     HausApiClient,
-    DevicesService,
-    RoomsService,
     SignalrServiceFactory,
     SignalrHubConnectionFactory
   ],
@@ -25,7 +28,13 @@ import {MaterialModule} from "./material.module";
     MaterialModule,
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forRoot<AppState>(sharedReducerMap),
+    EffectsModule.forRoot([
+      DevicesEffects,
+      DiagnosticsEffects,
+      RoomsEffects
+    ])
   ],
   exports: [
     MaterialModule,
