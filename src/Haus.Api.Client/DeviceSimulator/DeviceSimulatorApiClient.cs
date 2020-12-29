@@ -9,7 +9,8 @@ namespace Haus.Api.Client.DeviceSimulator
 {
     public interface IDeviceSimulatorApiClient
     {
-        Task<HttpResponseMessage> AddSimulatedDevice(CreateSimulatedDeviceModel model);
+        Task<HttpResponseMessage> AddSimulatedDeviceAsync(CreateSimulatedDeviceModel model);
+        Task<HttpResponseMessage> ResetDeviceSimulatorAsync();
     }
     
     public class DeviceSimulatorApiClient : ApiClient, IDeviceSimulatorApiClient
@@ -19,9 +20,14 @@ namespace Haus.Api.Client.DeviceSimulator
         {
         }
 
-        public Task<HttpResponseMessage> AddSimulatedDevice(CreateSimulatedDeviceModel model)
+        public Task<HttpResponseMessage> AddSimulatedDeviceAsync(CreateSimulatedDeviceModel model)
         {
             return PostAsJsonAsync("device-simulator/devices", model);
+        }
+
+        public Task<HttpResponseMessage> ResetDeviceSimulatorAsync()
+        {
+            return PostEmptyContentAsync("device-simulator/reset");
         }
     }
 }

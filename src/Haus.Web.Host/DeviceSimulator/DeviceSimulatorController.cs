@@ -19,6 +19,12 @@ namespace Haus.Web.Host.DeviceSimulator
         public Task<IActionResult> AddDevice([FromBody] CreateSimulatedDeviceModel model)
         {
             return CommandAsync(new CreateSimulatedDeviceCommand(model));
-        } 
+        }
+
+        [HttpPost("reset")]
+        public Task<IActionResult> Reset()
+        {
+            return CommandAsync(new ResetDeviceSimulatorCommand());
+        }
     }
 }

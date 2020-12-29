@@ -17,9 +17,9 @@ namespace Haus.Api.Client.Rooms
         Task<HttpResponseMessage> CreateRoomAsync(RoomModel model);
         Task<HttpResponseMessage> UpdateRoomAsync(long id, RoomModel model);
         Task<HttpResponseMessage> AddDevicesToRoomAsync(long roomId, params long[] deviceIds);
-        Task<HttpResponseMessage> ChangeRoomLighting(long roomId, LightingModel model);
-        Task<HttpResponseMessage> TurnRoomOn(long roomId);
-        Task<HttpResponseMessage> TurnRoomOff(long roomId);
+        Task<HttpResponseMessage> ChangeRoomLightingAsync(long roomId, LightingModel model);
+        Task<HttpResponseMessage> TurnRoomOnAsync(long roomId);
+        Task<HttpResponseMessage> TurnRoomOffAsync(long roomId);
     }
     
     public class RoomsApiClient : ApiClient, IRoomsApiClient
@@ -59,17 +59,17 @@ namespace Haus.Api.Client.Rooms
             return PostAsJsonAsync($"rooms/{roomId}/add-devices", deviceIds);
         }
 
-        public Task<HttpResponseMessage> ChangeRoomLighting(long roomId, LightingModel model)
+        public Task<HttpResponseMessage> ChangeRoomLightingAsync(long roomId, LightingModel model)
         {
             return PostAsJsonAsync($"rooms/{roomId}/lighting", model);
         }
 
-        public Task<HttpResponseMessage> TurnRoomOn(long roomId)
+        public Task<HttpResponseMessage> TurnRoomOnAsync(long roomId)
         {
             return PostEmptyContentAsync($"rooms/{roomId}/turn-on");
         }
 
-        public Task<HttpResponseMessage> TurnRoomOff(long roomId)
+        public Task<HttpResponseMessage> TurnRoomOffAsync(long roomId)
         {
             return PostEmptyContentAsync($"rooms/{roomId}/turn-off");
         }

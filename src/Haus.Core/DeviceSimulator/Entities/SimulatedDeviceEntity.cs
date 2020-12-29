@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Haus.Core.Common.Entities;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
@@ -20,11 +21,11 @@ namespace Haus.Core.DeviceSimulator.Entities
         public DeviceType DeviceType { get; }
         public ImmutableArray<Metadata> Metadata { get; }
 
-        private SimulatedDeviceEntity(string id, DeviceType deviceType, IEnumerable<Metadata> metadata = null)
+        public SimulatedDeviceEntity(string id, DeviceType deviceType, ImmutableArray<Metadata> metadata)
         {
             Id = id;
             DeviceType = deviceType;
-            Metadata = (metadata ?? Enumerable.Empty<Metadata>()).ToImmutableArray();
+            Metadata = metadata;
         }
 
         public static SimulatedDeviceEntity Create(CreateSimulatedDeviceModel model)

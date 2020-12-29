@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using Haus.Core.DeviceSimulator.Entities;
 
 namespace Haus.Core.DeviceSimulator.State
@@ -9,23 +6,29 @@ namespace Haus.Core.DeviceSimulator.State
     public interface IDeviceSimulatorState
     {
         ImmutableArray<SimulatedDeviceEntity> Devices { get; }
-        DeviceSimulatorState AddSimulatedDevice(SimulatedDeviceEntity entity);
+        IDeviceSimulatorState AddSimulatedDevice(SimulatedDeviceEntity entity);
+        IDeviceSimulatorState Reset();
     }
 
     public record DeviceSimulatorState : IDeviceSimulatorState
     {
-        public static readonly DeviceSimulatorState Initial = new();
+        public static readonly DeviceSimulatorState Initial = new(ImmutableArray<SimulatedDeviceEntity>.Empty);
 
         public ImmutableArray<SimulatedDeviceEntity> Devices { get; }
 
-        private DeviceSimulatorState(IEnumerable<SimulatedDeviceEntity> devices = null)
+        public DeviceSimulatorState(ImmutableArray<SimulatedDeviceEntity> devices)
         {
-            Devices = (devices ?? Enumerable.Empty<SimulatedDeviceEntity>()).ToImmutableArray();
+            Devices = devices;
         }
-        
-        public DeviceSimulatorState AddSimulatedDevice(SimulatedDeviceEntity entity)
+
+        public IDeviceSimulatorState Reset()
         {
-            return new(Devices.Add(entity));
+            return Initial;
+        }
+
+        public IDeviceSimulatorState AddSimulatedDevice(SimulatedDeviceEntity entity)
+        {
+            return new DeviceSimulatorState(Devices.Add(entity));
         }
     }
 }

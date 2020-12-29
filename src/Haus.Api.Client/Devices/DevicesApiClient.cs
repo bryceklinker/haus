@@ -13,12 +13,12 @@ namespace Haus.Api.Client.Devices
         Task<DeviceModel> GetDeviceAsync(long id);
         Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null);
         Task UpdateDeviceAsync(long deviceId, DeviceModel model);
-        Task StartDiscovery();
-        Task StopDiscovery();
+        Task StartDiscoveryAsync();
+        Task StopDiscoveryAsync();
         Task<HttpResponseMessage> SyncDevicesAsync();
-        Task<HttpResponseMessage> ChangeDeviceLighting(long deviceId, LightingModel model);
-        Task<HttpResponseMessage> TurnLightOff(long deviceId);
-        Task<HttpResponseMessage> TurnLightOn(long deviceId);
+        Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model);
+        Task<HttpResponseMessage> TurnLightOffAsync(long deviceId);
+        Task<HttpResponseMessage> TurnLightOnAsync(long deviceId);
     }
     
     public class DevicesApiClient : ApiClient, IDeviceApiClient 
@@ -51,29 +51,29 @@ namespace Haus.Api.Client.Devices
             return PostEmptyContentAsync("devices/sync-discovery");
         }
 
-        public Task<HttpResponseMessage> ChangeDeviceLighting(long deviceId, LightingModel model)
+        public Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model)
         {
             return PostAsJsonAsync($"devices/{deviceId}/lighting", model);
         }
 
-        public Task<HttpResponseMessage> TurnLightOff(long deviceId)
+        public Task<HttpResponseMessage> TurnLightOffAsync(long deviceId)
         {
             return PostEmptyContentAsync($"devices/{deviceId}/turn-off");
         }
         
-        public Task<HttpResponseMessage> TurnLightOn(long deviceId)
+        public Task<HttpResponseMessage> TurnLightOnAsync(long deviceId)
         {
             return PostEmptyContentAsync($"devices/{deviceId}/turn-on");
         }
 
-        public async Task StartDiscovery()
+        public async Task StartDiscoveryAsync()
         {
             var response = await PostEmptyContentAsync("devices/start-discovery")
                 .ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task StopDiscovery()
+        public async Task StopDiscoveryAsync()
         {
             var response = await PostEmptyContentAsync("devices/stop-discovery")
                 .ConfigureAwait(false);

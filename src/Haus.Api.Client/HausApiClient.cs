@@ -43,14 +43,14 @@ namespace Haus.Api.Client
             return DeviceApiClient.GetDeviceAsync(id);
         }
 
-        public Task StartDiscovery()
+        public Task StartDiscoveryAsync()
         {
-            return DeviceApiClient.StartDiscovery();
+            return DeviceApiClient.StartDiscoveryAsync();
         }
 
-        public Task StopDiscovery()
+        public Task StopDiscoveryAsync()
         {
-            return DeviceApiClient.StopDiscovery();
+            return DeviceApiClient.StopDiscoveryAsync();
         }
 
         public Task<HttpResponseMessage> SyncDevicesAsync()
@@ -58,19 +58,19 @@ namespace Haus.Api.Client
             return DeviceApiClient.SyncDevicesAsync();
         }
 
-        public Task<HttpResponseMessage> ChangeDeviceLighting(long deviceId, LightingModel model)
+        public Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model)
         {
-            return DeviceApiClient.ChangeDeviceLighting(deviceId, model);
+            return DeviceApiClient.ChangeDeviceLightingAsync(deviceId, model);
         }
 
-        public Task<HttpResponseMessage> TurnLightOff(long deviceId)
+        public Task<HttpResponseMessage> TurnLightOffAsync(long deviceId)
         {
-            return DeviceApiClient.TurnLightOff(deviceId);
+            return DeviceApiClient.TurnLightOffAsync(deviceId);
         }
 
-        public Task<HttpResponseMessage> TurnLightOn(long deviceId)
+        public Task<HttpResponseMessage> TurnLightOnAsync(long deviceId)
         {
-            return DeviceApiClient.TurnLightOn(deviceId);
+            return DeviceApiClient.TurnLightOnAsync(deviceId);
         }
 
         public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
@@ -118,24 +118,29 @@ namespace Haus.Api.Client
             return RoomsApiClient.AddDevicesToRoomAsync(roomId, deviceIds);
         }
 
-        public Task<HttpResponseMessage> ChangeRoomLighting(long roomId, LightingModel model)
+        public Task<HttpResponseMessage> ChangeRoomLightingAsync(long roomId, LightingModel model)
         {
-            return RoomsApiClient.ChangeRoomLighting(roomId, model);
+            return RoomsApiClient.ChangeRoomLightingAsync(roomId, model);
         }
 
-        public Task<HttpResponseMessage> TurnRoomOn(long roomId)
+        public Task<HttpResponseMessage> TurnRoomOnAsync(long roomId)
         {
-            return RoomsApiClient.TurnRoomOn(roomId);
+            return RoomsApiClient.TurnRoomOnAsync(roomId);
         }
 
-        public Task<HttpResponseMessage> TurnRoomOff(long roomId)
+        public Task<HttpResponseMessage> TurnRoomOffAsync(long roomId)
         {
-            return RoomsApiClient.TurnRoomOff(roomId);
+            return RoomsApiClient.TurnRoomOffAsync(roomId);
         }
 
-        public Task<HttpResponseMessage> AddSimulatedDevice(CreateSimulatedDeviceModel model)
+        public Task<HttpResponseMessage> AddSimulatedDeviceAsync(CreateSimulatedDeviceModel model)
         {
-            return DeviceSimulatorApiClient.AddSimulatedDevice(model);
+            return DeviceSimulatorApiClient.AddSimulatedDeviceAsync(model);
+        }
+
+        public Task<HttpResponseMessage> ResetDeviceSimulatorAsync()
+        {
+            return DeviceSimulatorApiClient.ResetDeviceSimulatorAsync();
         }
     }
 }

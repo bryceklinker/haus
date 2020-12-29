@@ -76,7 +76,7 @@ namespace Haus.Web.Host.Tests.Rooms
             await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(msg => hausCommand = msg);
             
             var room = await CreateRoomAsync("room");
-            await _apiClient.ChangeRoomLighting(room.Id, new LightingModel {State = LightingState.On});
+            await _apiClient.ChangeRoomLightingAsync(room.Id, new LightingModel {State = LightingState.On});
             
             Eventually.Assert(() =>
             {
@@ -91,7 +91,7 @@ namespace Haus.Web.Host.Tests.Rooms
             await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(msg => hausCommand = msg);
             
             var room = await CreateRoomAsync("turn-off");
-            await _apiClient.TurnRoomOff(room.Id);
+            await _apiClient.TurnRoomOffAsync(room.Id);
             
             Eventually.Assert(() =>
             {
@@ -107,7 +107,7 @@ namespace Haus.Web.Host.Tests.Rooms
             await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(msg => hausCommand = msg);
             
             var room = await CreateRoomAsync("turn-on");
-            await _apiClient.TurnRoomOn(room.Id);
+            await _apiClient.TurnRoomOnAsync(room.Id);
             
             Eventually.Assert(() =>
             {

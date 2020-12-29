@@ -17,5 +17,17 @@ namespace Haus.Core.Tests.DeviceSimulator.State
 
             state.Devices.Should().Contain(entity);
         }
+
+        [Fact]
+        public void WhenResetThenReturnsInitialState()
+        {
+            var entity = SimulatedDeviceEntity.Create(new CreateSimulatedDeviceModel());
+
+            var state = DeviceSimulatorState.Initial
+                .AddSimulatedDevice(entity)
+                .Reset();
+
+            state.Should().Be(DeviceSimulatorState.Initial);
+        }
     }
 }

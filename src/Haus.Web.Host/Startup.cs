@@ -1,6 +1,7 @@
 using Haus.Hosting;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.Mqtt;
+using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -49,6 +50,7 @@ namespace Haus.Web.Host
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapHub<DiagnosticsHub>("/hubs/diagnostics");
+                    endpoints.MapHub<DeviceSimulatorHub>("/hubs/device-simulator");
                     endpoints.MapControllers();
                 });
             

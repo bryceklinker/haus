@@ -52,7 +52,7 @@ namespace Haus.Web.Host.Tests.Devices
             await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(msg => hausCommand = msg);
             
             var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
-            await _hausClient.ChangeDeviceLighting(device.Id, new LightingModel {Brightness = 5});
+            await _hausClient.ChangeDeviceLightingAsync(device.Id, new LightingModel {Brightness = 5});
             
             Eventually.Assert(() =>
             {
@@ -67,7 +67,7 @@ namespace Haus.Web.Host.Tests.Devices
             await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(msg => published = msg);
 
             var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
-            await _hausClient.TurnLightOff(device.Id);
+            await _hausClient.TurnLightOffAsync(device.Id);
             
             Eventually.Assert(() =>
             {
@@ -82,7 +82,7 @@ namespace Haus.Web.Host.Tests.Devices
             await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(msg => published = msg);
 
             var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
-            await _hausClient.TurnLightOn(device.Id);
+            await _hausClient.TurnLightOnAsync(device.Id);
             
             Eventually.Assert(() =>
             {
@@ -96,7 +96,7 @@ namespace Haus.Web.Host.Tests.Devices
             HausCommand<StartDiscoveryModel> hausCommand = null;
             await _factory.SubscribeToHausCommandsAsync<StartDiscoveryModel>(cmd => hausCommand = cmd);
 
-            await _hausClient.StartDiscovery();
+            await _hausClient.StartDiscoveryAsync();
 
             Eventually.Assert(() => { Assert.Equal(StartDiscoveryModel.Type, hausCommand.Type); });
         }
@@ -107,7 +107,7 @@ namespace Haus.Web.Host.Tests.Devices
             HausCommand<StopDiscoveryModel> hausCommand = null;
             await _factory.SubscribeToHausCommandsAsync<StopDiscoveryModel>(cmd => hausCommand = cmd);
 
-            await _hausClient.StopDiscovery();
+            await _hausClient.StopDiscoveryAsync();
 
             Eventually.Assert(() => { Assert.Equal(StopDiscoveryModel.Type, hausCommand.Type); });
         }
