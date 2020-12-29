@@ -1,4 +1,4 @@
-import {DeviceModel} from "../../../app/shared/devices";
+import {DeviceModel} from "../../../app/devices/models";
 import {RequestOptions} from "./request-options";
 import {setupHttpGet, setupHttpPost} from "./setup-http";
 import {ModelFactory} from "../../model-factory";
