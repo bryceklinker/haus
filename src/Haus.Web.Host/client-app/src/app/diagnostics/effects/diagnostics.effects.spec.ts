@@ -44,6 +44,7 @@ describe('DiagnosticsEffects', () => {
 
   it('should notify when message received', async () => {
     const expected = ModelFactory.createMqttDiagnosticsMessage();
+    actions$.next(DiagnosticsActions.start());
 
     await eventually(() => {
       signalrHub.triggerMqttMessage(expected);

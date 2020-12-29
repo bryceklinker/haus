@@ -1,6 +1,6 @@
-import {Injectable} from "@angular/core";
-import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {ActionsSubject, Store} from "@ngrx/store";
+import {Injectable, OnInit} from "@angular/core";
+import {Actions, createEffect, ofType, OnInitEffects} from "@ngrx/effects";
+import {Action, ActionsSubject, Store} from "@ngrx/store";
 import {map, mergeMap} from "rxjs/operators";
 
 import {KNOWN_HUB_NAMES, SignalrService, SignalrServiceFactory} from "../../shared/signalr";
@@ -10,7 +10,11 @@ import {HausApiClient} from "../../shared/rest-api";
 
 @Injectable()
 export class DiagnosticsEffects {
-  private readonly hub: SignalrService;
+  private service: SignalrService | null = null;
+
+  private get hub(): SignalrService {
+    return this.service || (this.service = this.initializeHub());
+  }
 
   start$ = createEffect(() => this.actions$.pipe(
     ofType(DiagnosticsActions.start),
@@ -37,9 +41,13 @@ export class DiagnosticsEffects {
               private readonly signalrServiceFactory: SignalrServiceFactory,
               private readonly actionsSubject: ActionsSubject,
               private readonly api: HausApiClient) {
-    this.hub = this.signalrServiceFactory.create(KNOWN_HUB_NAMES.diagnostics);
-    this.hub.on<DiagnosticsMessageModel>('OnMqttMessage', msg => {
+  }
+
+  initializeHub(): SignalrService {
+    const service = this.signalrServiceFactory.create(KNOWN_HUB_NAMES.diagnostics);
+    service.on<DiagnosticsMessageModel>('OnMqttMessage', msg => {
       this.actionsSubject.next(DiagnosticsActions.messageReceived(msg))
     });
+    return service;
   }
 }

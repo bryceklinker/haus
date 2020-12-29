@@ -1,7 +1,6 @@
 import {BehaviorSubject, Observable} from "rxjs";
 import {HubStatus} from "../models";
 import {SignalrHubConnection} from "./signalr-hub.connection";
-import {SignalrHubConnectionFactory} from "./signalr-hub-connection-factory.service";
 import {takeUntil, tap} from "rxjs/operators";
 import {DestroyableSubject} from "../destroyable-subject";
 

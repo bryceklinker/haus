@@ -11,6 +11,11 @@ import {SHELL_COMPONENTS} from "./shell/components";
 import {SettingsService} from "./shared/settings";
 import {ShellComponent} from "./shell/components/shell/shell.component";
 import {SHELL_PROVIDERS} from "./shell/services";
+import {StoreModule} from "@ngrx/store";
+import {AppState} from "./app.state";
+import {EffectsModule} from "@ngrx/effects";
+import {appReducerMap} from "./app-reducer-map";
+import {APP_EFFECTS} from "./app-effects";
 
 @NgModule({
   declarations: [
@@ -23,7 +28,9 @@ import {SHELL_PROVIDERS} from "./shell/services";
     AppRoutingModule,
     AuthModule.forRoot(),
     HttpClientModule,
-    SharedModule
+    SharedModule,
+    StoreModule.forRoot<AppState>(appReducerMap),
+    EffectsModule.forRoot(APP_EFFECTS)
   ],
   bootstrap: [ShellComponent],
   providers: [

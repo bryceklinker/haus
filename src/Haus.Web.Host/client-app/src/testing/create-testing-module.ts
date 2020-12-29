@@ -22,10 +22,13 @@ import {SHELL_PROVIDERS} from "../app/shell/services";
 import {SHELL_COMPONENTS} from "../app/shell/components";
 import {CommonModule} from "@angular/common";
 import {SharedModule} from "../app/shared/shared.module";
-import {Action, ActionsSubject, INITIAL_STATE, Store, StoreModule} from "@ngrx/store";
+import {Action, ActionsSubject, Store, StoreModule} from "@ngrx/store";
 import {EffectsModule} from "@ngrx/effects";
 import {generateAppStateFromActions} from "./app-state-generator";
 import {TestingStore} from "./fakes/testing-store";
+import {appReducerMap} from "../app/app-reducer-map";
+import {AppState} from "../app/app.state";
+import {APP_EFFECTS} from "../app/app-effects";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   routes?: Routes;
@@ -40,11 +43,11 @@ export function createTestingModule({
   return {
     ...rest,
     imports: [
-      ...getTestingImports(routes),
+      ...getTestingImports(routes, actions),
       ...(rest.imports || [])
     ],
     providers: [
-      ...getTestingProviders(actions),
+      ...getTestingProviders(),
       ...(rest.providers || [])
     ],
     routes
@@ -75,16 +78,19 @@ export function createAppTestingModule({
   });
 }
 
-export function getTestingImports(routes: Routes) {
+export function getTestingImports(routes: Routes, actions: Action[]) {
+  const initialState = actions.length > 0 ? generateAppStateFromActions(...actions) : undefined
   return [
     HttpClientModule,
     NoopAnimationsModule,
     RouterTestingModule.withRoutes(routes),
+    StoreModule.forRoot<AppState>(appReducerMap, {initialState}),
+    EffectsModule.forRoot(APP_EFFECTS),
     AuthModule
   ];
 }
 
-export function getTestingProviders(actions: Action[]) {
+export function getTestingProviders() {
   return [
     {provide: Location, useFactory: () => new SpyLocation()},
     {provide: AuthService, useClass: TestingAuthService},
@@ -94,7 +100,6 @@ export function getTestingProviders(actions: Action[]) {
     {provide: ActivatedRoute, useClass: TestingActivatedRoute},
     {provide: SettingsService, useClass: TestingSettingsService},
     {provide: ActionsSubject, useClass: TestingActionsSubject},
-    {provide: INITIAL_STATE, useValue: generateAppStateFromActions(...actions)},
     {provide: Store, useClass: TestingStore}
   ]
 }

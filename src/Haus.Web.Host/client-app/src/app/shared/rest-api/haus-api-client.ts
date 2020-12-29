@@ -5,9 +5,9 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
 
 import {ListResult} from "../models";
-import {CreateRoomModel, RoomModel} from "../rooms";
-import {DeviceModel} from "../devices";
-import {DiagnosticsMessageModel} from "../diagnostics";
+import {CreateRoomModel, RoomModel} from "../../rooms/models";
+import {DeviceModel} from "../../devices/models";
+import {DiagnosticsMessageModel} from "../../diagnostics/models";
 import {HttpMethod} from "./http-method";
 import {DestroyableSubject} from "../destroyable-subject";
 

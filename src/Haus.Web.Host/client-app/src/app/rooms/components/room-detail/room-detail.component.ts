@@ -9,8 +9,8 @@ import {DeviceModel} from "../../../devices/models";
   styleUrls: ['./room-detail.component.scss']
 })
 export class RoomDetailComponent {
-  @Input() room: RoomModel | null = null;
-  @Input() devices: Array<DeviceModel> = [];
+  @Input() room: RoomModel | undefined | null = null;
+  @Input() devices: Array<DeviceModel> | undefined | null = [];
 
   get name(): string {
     return this.room ? this.room.name : 'N/A';

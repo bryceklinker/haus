@@ -1,9 +1,9 @@
 import {Action, ActionReducer, combineReducers} from "@ngrx/store";
 import {AppState} from "../app/app.state";
-import {sharedReducerMap} from "../app/shared/shared-reducer-map";
+import {appReducerMap} from "../app/app-reducer-map";
 
 export function generateAppStateFromActions(...actions: Action[]): AppState {
-  return generateStateFromActions(combineReducers(sharedReducerMap), ...actions);
+  return generateStateFromActions(combineReducers(appReducerMap), ...actions);
 }
 
 export function generateStateFromActions<TState>(reducer: ActionReducer<TState>, ...actions: Action[]): TState {
