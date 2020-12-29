@@ -7,6 +7,9 @@ import {
   TestingActionsSubject
 } from "../../../testing";
 import {RoomsActions} from "../state";
+import {TestBed} from "@angular/core/testing";
+import {MatDialogRef} from "@angular/material/dialog";
+import {TestingMatDialogRef} from "../../../testing/fakes/testing-mat-dialog-ref";
 
 describe('RoomsEffects', () => {
   let actions$: TestingActionsSubject;

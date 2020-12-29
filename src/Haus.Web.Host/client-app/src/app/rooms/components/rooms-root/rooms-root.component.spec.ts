@@ -9,6 +9,7 @@ import {RoomsRootComponent} from "./rooms-root.component";
 import userEvent from "@testing-library/user-event";
 import {Action} from "@ngrx/store";
 import {RoomsActions} from "../../state";
+import {AddRoomDialogComponent} from "../add-room-dialog/add-room-dialog.component";
 
 describe('RoomsRootComponent', () => {
   it('should load rooms when rendered', async () => {
@@ -30,11 +31,11 @@ describe('RoomsRootComponent', () => {
   })
 
   it('should open add dialog when add room clicked', async () => {
-    const {store} = await renderRoot();
+    const {store, matDialog} = await renderRoot();
 
     userEvent.click(screen.getByTestId('add-room-btn'));
 
-    expect(store.dispatchedActions).toContainEqual(RoomsActions.addRoom.begin());
+    expect(matDialog.open).toHaveBeenCalledWith(AddRoomDialogComponent);
   })
 
   function renderRoot(...actions: Array<Action>) {

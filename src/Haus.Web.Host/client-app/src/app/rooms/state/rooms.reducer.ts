@@ -11,13 +11,9 @@ const adapter = createEntityAdapter<RoomModel>({
   sortComparer: createComparer(r => r.name)
 })
 
-const initialState: RoomsState = adapter.getInitialState({
-  isAdding: false
-});
+const initialState: RoomsState = adapter.getInitialState();
 const reducer = createReducer(initialState,
   on(RoomsActions.loadRooms.success, (state, {payload}) => adapter.upsertMany(payload, state)),
-  on(RoomsActions.addRoom.begin, (state) => ({...state, isAdding: true})),
-  on(RoomsActions.addRoom.cancel, (state) => ({...state, isAdding: false})),
   on(RoomsActions.addRoom.success, (state, {payload}) => ({...adapter.upsertOne(payload, state), isAdding: false})),
 );
 

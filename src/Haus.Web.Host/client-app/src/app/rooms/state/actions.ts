@@ -11,14 +11,10 @@ export const RoomsActions = {
     (err: any) => ({payload: err})
   ),
 
-  addRoom: {
-    begin: createAction('[Rooms] Add Room Begin'),
-    cancel: createAction('[Rooms] Add Room Cancel'),
-    ...createAsyncActionSet(
-      '[Rooms] Add Room',
-      (room: CreateRoomModel) => ({payload: room}),
-      (room: RoomModel) => ({payload: room}),
-      (err: any) => ({payload: err})
-    )
-  }
+  addRoom: createAsyncActionSet(
+    '[Rooms] Add Room',
+    (room: CreateRoomModel) => ({payload: room}),
+    (room: RoomModel) => ({payload: room}),
+    (err: any) => ({payload: err})
+  )
 }

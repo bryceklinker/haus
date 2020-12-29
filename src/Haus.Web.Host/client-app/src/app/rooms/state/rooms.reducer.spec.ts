@@ -24,38 +24,4 @@ describe('roomsReducer', () => {
 
     expect(state.entities[room.id]).toEqual(room);
   })
-
-  it('should be adding room', () => {
-    const state = generateStateFromActions(roomsReducer, RoomsActions.addRoom.begin());
-
-    expect(state.isAdding).toEqual(true);
-  })
-
-  it('should not be adding room when add room cancelled', () => {
-    const state = generateStateFromActions(roomsReducer,
-      RoomsActions.addRoom.begin(),
-      RoomsActions.addRoom.cancel()
-    );
-
-    expect(state.isAdding).toEqual(false);
-  })
-
-  it('should not be adding room when add room successful', () => {
-    const state = generateStateFromActions(roomsReducer,
-      RoomsActions.addRoom.begin(),
-      RoomsActions.addRoom.success(ModelFactory.createRoomModel())
-    );
-
-    expect(state.isAdding).toEqual(false);
-  });
-
-  it('should add room to entities when add room successful', () => {
-    const room = ModelFactory.createRoomModel();
-    const state = generateStateFromActions(roomsReducer,
-      RoomsActions.addRoom.begin(),
-      RoomsActions.addRoom.success(room)
-    );
-
-    expect(state.entities[room.id]).toEqual(room);
-  })
 })
