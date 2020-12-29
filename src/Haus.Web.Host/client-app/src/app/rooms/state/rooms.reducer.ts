@@ -1,5 +1,5 @@
 import {createEntityAdapter} from "@ngrx/entity";
-import {RoomModel} from "../../shared/rooms";
+import {RoomModel} from "../models";
 import {createComparer} from "../../shared/sort-array-by";
 import {Action, createReducer, createSelector, on} from "@ngrx/store";
 import {RoomsState} from "./rooms.state";

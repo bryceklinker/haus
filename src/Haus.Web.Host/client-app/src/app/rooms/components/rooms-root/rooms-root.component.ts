@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {Observable} from "rxjs";
 
-import {RoomModel} from "../../../shared/rooms";
+import {RoomModel} from "../../models";
 import {AppState} from "../../../app.state";
 import {RoomsActions, selectAllRooms} from "../../state";
 import {Store} from "@ngrx/store";

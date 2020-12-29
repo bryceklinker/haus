@@ -1,6 +1,6 @@
 import {screen} from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import {eventually, ModelFactory, renderFeatureComponent, setupAddRoom} from "../../../../testing";
+import {eventually, ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {AddRoomDialogComponent} from "./add-room-dialog.component";
 import {RoomsModule} from "../../rooms.module";
 import {Action} from "@ngrx/store";
@@ -49,7 +49,7 @@ describe('AddRoomDialogComponent', () => {
 
   async function renderAndSaveRoom(roomName: string) {
     const result = await renderDialog(RoomsActions.addRoom.begin());
-    userEvent.type(screen.getByTestId('room-name-field'), 'three');
+    userEvent.type(screen.getByTestId('room-name-field'), roomName);
     result.detectChanges();
     userEvent.click(screen.getByTestId('save-room-btn'));
     return result;

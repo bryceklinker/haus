@@ -1,6 +1,6 @@
 import {createEntityAdapter} from "@ngrx/entity";
 import {Action, createReducer, createSelector, on} from "@ngrx/store";
-import {DeviceModel} from "../../shared/devices";
+import {DeviceModel} from "../models";
 import {createComparer} from "../../shared/sort-array-by";
 import {DevicesState} from "./devices.state";
 import {DevicesActions} from "./actions";

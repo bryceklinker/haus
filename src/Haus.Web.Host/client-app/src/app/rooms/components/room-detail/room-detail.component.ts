@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {RoomModel} from "../../../shared/rooms";
-import {DeviceModel} from "../../../shared/devices";
+import {RoomModel} from "../../models";
+import {DeviceModel} from "../../../devices/models";
 
 
 @Component({

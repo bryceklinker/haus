@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {DiagnosticsMessageModel} from "../../../shared/diagnostics";
+import {DiagnosticsMessageModel} from "../../models";
 import {Observable} from "rxjs";
 import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";

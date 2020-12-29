@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {DiagnosticsMessageModel} from "../../../shared/diagnostics";
+import {DiagnosticsMessageModel} from "../../models";
 
 
 @Component({

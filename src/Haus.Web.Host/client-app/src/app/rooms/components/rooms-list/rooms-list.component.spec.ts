@@ -1,4 +1,3 @@
-import {RoomModel} from "../../../shared/rooms";
 import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {RoomsListComponent} from "./rooms-list.component";
 import {RoomsModule} from "../../rooms.module";

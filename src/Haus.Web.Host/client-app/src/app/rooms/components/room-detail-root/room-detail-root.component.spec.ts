@@ -6,7 +6,7 @@ import {
 } from "../../../../testing";
 import {RoomDetailRootComponent} from "./room-detail-root.component";
 import {RoomsModule} from "../../rooms.module";
-import {RoomModel} from "../../../shared/rooms";
+import {RoomModel} from "../../models";
 import {screen} from "@testing-library/dom";
 import {Action} from "@ngrx/store";
 import {RoomsActions} from "../../state";

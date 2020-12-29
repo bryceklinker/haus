@@ -1,5 +1,5 @@
 import {EntityState} from "@ngrx/entity";
-import {DiagnosticsMessageModel} from "../../shared/diagnostics";
+import {DiagnosticsMessageModel} from "../models";
 
 export interface DiagnosticsState extends EntityState<DiagnosticsMessageModel> {
   isConnected: boolean;

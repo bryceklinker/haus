@@ -1,5 +1,5 @@
 import {createEntityAdapter} from "@ngrx/entity";
-import {DiagnosticsMessageModel} from "../../shared/diagnostics";
+import {DiagnosticsMessageModel} from "../models";
 import {createComparer, SortDirection} from "../../shared/sort-array-by";
 import {DiagnosticsState} from "./diagnostics.state";
 import {Action, createReducer, createSelector, on} from "@ngrx/store";

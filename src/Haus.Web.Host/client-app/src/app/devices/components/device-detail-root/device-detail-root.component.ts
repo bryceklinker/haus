@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {DeviceModel} from "../../../shared/devices";
+import {DeviceModel} from "../../models";
 import {Observable} from "rxjs";
 import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";

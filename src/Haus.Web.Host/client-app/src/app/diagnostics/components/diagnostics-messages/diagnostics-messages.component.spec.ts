@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import {renderFeatureComponent, TestingEventEmitter, ModelFactory} from "../../../../testing";
 import {DiagnosticsMessagesComponent} from "./diagnostics-messages.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
-import {DiagnosticsMessageModel} from "../../../shared/diagnostics";
+import {DiagnosticsMessageModel} from "../../models";
 
 describe('DiagnosticsMessagesComponent', () => {
   it('should show each message', async () => {

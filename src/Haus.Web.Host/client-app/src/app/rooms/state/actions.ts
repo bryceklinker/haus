@@ -1,6 +1,6 @@
 import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
 import {ListResult} from "../../shared/models";
-import {CreateRoomModel, RoomModel} from "../../shared/rooms";
+import {CreateRoomModel, RoomModel} from "../models";
 import {createAction} from "@ngrx/store";
 
 export const RoomsActions = {

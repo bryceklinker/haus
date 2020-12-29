@@ -5,8 +5,7 @@ import {map, mergeMap} from "rxjs/operators";
 
 import {KNOWN_HUB_NAMES, SignalrService, SignalrServiceFactory} from "../../shared/signalr";
 import {DiagnosticsActions} from "../state";
-import {AppState} from "../../app.state";
-import {DiagnosticsMessageModel} from "../../shared/diagnostics";
+import {DiagnosticsMessageModel} from "../models";
 import {HausApiClient} from "../../shared/rest-api";
 
 @Injectable()

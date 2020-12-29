@@ -2,7 +2,7 @@ import {screen} from "@testing-library/dom";
 import {ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DeviceDetailComponent} from "./device-detail.component";
 import {DevicesModule} from "../../devices.module";
-import {DeviceModel} from "../../../shared/devices";
+import {DeviceModel} from "../../models";
 
 describe('DeviceDetailComponent', () => {
   it('should show device information', async () => {

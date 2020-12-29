@@ -1,5 +1,5 @@
 import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
-import {DeviceModel} from "../../shared/devices";
+import {DeviceModel} from "../models";
 import {ListResult} from "../../shared/models";
 
 export const DevicesActions = {

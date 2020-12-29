@@ -1,5 +1,5 @@
 import {createAction} from "@ngrx/store";
-import {DiagnosticsMessageModel} from "../../shared/diagnostics";
+import {DiagnosticsMessageModel} from "../models";
 import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
 import {DevicesActions} from "../../devices/state";
 
