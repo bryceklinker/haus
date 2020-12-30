@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {HausApiClient} from "../../shared/rest-api";
 import {RoomsActions} from "../state";
-import {map, mergeMap} from "rxjs/operators";
+import {debounceTime, map, mergeMap} from "rxjs/operators";
 
 @Injectable()
 export class RoomsEffects {
@@ -22,6 +22,7 @@ export class RoomsEffects {
 
   changeLighting$ = createEffect(() => this.actions$.pipe(
     ofType(RoomsActions.changeRoomLighting.request),
+    debounceTime(200),
     mergeMap(({payload}) => this.api.changeRoomLighting(payload.roomId, payload.lighting).pipe(
       map(() => RoomsActions.changeRoomLighting.success(payload))
     ))
