@@ -13,36 +13,44 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <h4 class="mat-display-4">Metadata</h4>
-      <mat-list>
-        <mat-list-item *ngFor="let metaGroup of metadataGroups">
-          <mat-form-field appearance="fill">
-            <mat-label>Key</mat-label>
-            <input matInput [formControl]="metaGroup.get('key')" data-testid="metadata-key-input">
-          </mat-form-field>
-          <span class="spacer"></span>
-          <mat-form-field appearance="fill">
-            <mat-label>Value</mat-label>
-            <input matInput [formControl]="metaGroup.get('value')" data-testid="metadata-value-input">
-          </mat-form-field>
-        </mat-list-item>
-        <button mat-icon-button
-                mat-fab
-                data-testid="add-metadata-btn"
+      <div>
+
+      </div>
+      <h4 class="mat-display-1">
+        Metadata
+        <span class="spacer"></span>
+        <button mat-icon-button data-testid="add-metadata-btn"
+                color="accent"
+                tabindex="-1"
                 (click)="onAddMetadata()">
           <mat-icon>add</mat-icon>
         </button>
-      </mat-list>
+      </h4>
+      <div class="metadata-list">
+        <mat-list-item *ngFor="let metaGroup of metadataGroups">
+          <mat-form-field appearance="fill">
+            <mat-label>Key</mat-label>
+            <input matInput [formControl]="getFormControl(metaGroup, 'key')" data-testid="metadata-key-input">
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Value</mat-label>
+            <input matInput [formControl]="getFormControl(metaGroup, 'value')" data-testid="metadata-value-input">
+          </mat-form-field>
+        </mat-list-item>
+      </div>
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button data-testid="save-simulated-device-btn"
-            (click)="onSave()">
-      Save
-    </button>
+    <span class="spacer"></span>
     <button mat-button data-testid="cancel-simulated-device-btn"
             (click)="onCancel()">
       Cancel
+    </button>
+    <button mat-raised-button data-testid="save-simulated-device-btn"
+            color="primary"
+            (click)="onSave()"
+            [disabled]="form.invalid">
+      Save
     </button>
   </mat-card-actions>
 </mat-card>

@@ -6,12 +6,12 @@ import {screen} from "@testing-library/dom";
 describe('SimulatedDeviceWidgetComponent', () => {
 
   it('should show device information', async () => {
-    const simulatedDevice = ModelFactory.createSimulatedDevice();
+    const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: 'LightSensor'});
 
     const {container} = await renderWidget({simulatedDevice});
 
     expect(container).toHaveTextContent(simulatedDevice.id);
-    expect(container).toHaveTextContent(simulatedDevice.deviceType);
+    expect(container).toHaveTextContent('Light Sensor');
   })
 
   it('should show device metadata', async () => {

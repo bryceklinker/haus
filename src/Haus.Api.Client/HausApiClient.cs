@@ -43,6 +43,11 @@ namespace Haus.Api.Client
             return DeviceApiClient.GetDeviceAsync(id);
         }
 
+        public Task<ListResult<DeviceType>> GetDeviceTypesAsync()
+        {
+            return DeviceApiClient.GetDeviceTypesAsync();
+        }
+
         public Task StartDiscoveryAsync()
         {
             return DeviceApiClient.StartDiscoveryAsync();

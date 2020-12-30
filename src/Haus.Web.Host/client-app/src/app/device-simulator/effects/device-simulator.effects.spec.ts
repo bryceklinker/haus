@@ -1,5 +1,5 @@
 import {
-  createAppTestingService, eventually, ModelFactory,
+  createAppTestingService, eventually, ModelFactory, setupAddSimulatedDevice,
   TestingActionsSubject,
   TestingSignalrHubConnection,
   TestingSignalrHubConnectionFactory
@@ -8,6 +8,7 @@ import {DeviceSimulatorEffects} from "./device-simulator.effects";
 import {TestBed} from "@angular/core/testing";
 import {KNOWN_HUB_NAMES, SignalrHubConnectionFactory} from "../../shared/signalr";
 import {DeviceSimulatorActions, DeviceSimulatorState} from "../state";
+import {CreateSimulatedDeviceModel} from "../models";
 
 describe('DeviceSimulatorEffects', () => {
   let actions$: TestingActionsSubject;
@@ -54,6 +55,20 @@ describe('DeviceSimulatorEffects', () => {
     await eventually(() => {
       signalrHub.triggerMessage('OnState', expected);
       expect(actions$.publishedActions).toContainEqual(DeviceSimulatorActions.stateReceived(expected));
+    })
+  })
+
+  it('should add simulated device when add simulated device requested', async () => {
+    setupAddSimulatedDevice();
+
+    const model: CreateSimulatedDeviceModel = {
+      deviceType: 'idk',
+      metadata: []
+    };
+    actions$.next(DeviceSimulatorActions.addSimulatedDevice.request(model));
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(DeviceSimulatorActions.addSimulatedDevice.success());
     })
   })
 })

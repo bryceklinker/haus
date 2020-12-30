@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {AppState} from "../../../app.state";
@@ -10,7 +10,7 @@ import {SimulatedDeviceModel} from "../../models";
   templateUrl: './device-simulator-root.component.html',
   styleUrls: ['./device-simulator-root.component.scss']
 })
-export class DeviceSimulatorRootComponent implements OnInit {
+export class DeviceSimulatorRootComponent implements OnInit, OnDestroy {
   simulatedDevices$: Observable<Array<SimulatedDeviceModel>>;
   isConnected$: Observable<boolean | undefined>;
 
@@ -21,5 +21,9 @@ export class DeviceSimulatorRootComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(DeviceSimulatorActions.start());
+  }
+
+  ngOnDestroy(): void {
+    this.store.dispatch(DeviceSimulatorActions.stop());
   }
 }

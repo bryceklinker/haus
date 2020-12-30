@@ -15,6 +15,12 @@ describe('AddSimulatedDeviceComponent', () => {
     expect(store.dispatchedActions).toContainEqual(DeviceTypesActions.loadDeviceTypes.request());
   })
 
+  it('should disable save when form is not valid', async () => {
+    await renderAdd();
+
+    expect(screen.getByTestId('save-simulated-device-btn')).toBeDisabled();
+  })
+
   it('should save simulated device using values from form', async () => {
     const deviceTypes = ModelFactory.createListResult('one', 'two');
     const {store, matHarness, detectChanges} = await renderAdd(DeviceTypesActions.loadDeviceTypes.success(deviceTypes));
@@ -28,6 +34,8 @@ describe('AddSimulatedDeviceComponent', () => {
 
     userEvent.type(screen.getByTestId('metadata-key-input'), 'something');
     userEvent.type(screen.getByTestId('metadata-value-input'), 'else');
+    detectChanges();
+
     userEvent.click(screen.getByTestId('save-simulated-device-btn'));
 
     expect(store.dispatchedActions).toContainEqual(DeviceSimulatorActions.addSimulatedDevice.request({
@@ -48,7 +56,7 @@ describe('AddSimulatedDeviceComponent', () => {
     })
   })
 
-  it('shuold navigate to device simulator dashboard when cancelled', async () => {
+  it('should navigate to device simulator dashboard when cancelled', async () => {
     const {router} = await renderAdd();
     spyOn(router, 'navigateByUrl');
 

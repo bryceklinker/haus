@@ -1,0 +1,34 @@
+@import "../../../shared/styles/utilities";
+
+:host,
+mat-card,
+mat-card-content {
+  @extend .fill;
+
+  flex-direction: column;
+
+  form {
+    @extend .fill;
+
+    flex-direction: column;
+  }
+
+  mat-card-actions {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .mat-display-1 {
+    margin-bottom: 1rem;
+  }
+
+  .metadata-list {
+    @extend .fill;
+
+    flex-direction: column;
+
+    mat-form-field {
+
+    }
+  }
+}

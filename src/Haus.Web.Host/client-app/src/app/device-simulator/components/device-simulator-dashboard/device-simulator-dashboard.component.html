@@ -1,12 +1,17 @@
 <mat-toolbar>
   <mat-toolbar-row>
+    <a mat-button routerLink="add-simulated-device">
+      Add Simulated Device
+    </a>
     <span class="spacer"></span>
-    <p class="mat-display-4">Status: {{status}}</p>
+    <span>Status: {{status}}</span>
   </mat-toolbar-row>
 </mat-toolbar>
-<mat-grid-list cols="4">
-  <mat-grid-tile *ngFor="let simulatedDevice of simulatedDevices"
-                 data-testid="simulated-device-item">
+
+<div class="dashboard">
+  <div *ngFor="let simulatedDevice of simulatedDevices"
+       data-testid="simulated-device-item"
+       class="widget">
     <simulated-device-widget [simulatedDevice]="simulatedDevice"></simulated-device-widget>
-  </mat-grid-tile>
-</mat-grid-list>
+  </div>
+</div>

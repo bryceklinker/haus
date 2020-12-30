@@ -30,6 +30,14 @@ describe('DeviceSimulatorRootComponent', () => {
     expect(container).toHaveTextContent('connected');
   })
 
+  it('should stop connection when destroyed', async () => {
+    const {store, fixture} = await renderRoot();
+
+    fixture.destroy();
+
+    expect(store.dispatchedActions).toContainEqual(DeviceSimulatorActions.stop());
+  })
+
   function renderRoot(...actions: Array<Action>) {
     return renderFeatureComponent(DeviceSimulatorRootComponent, {
       imports: [DeviceSimulatorModule],

@@ -11,6 +11,7 @@ namespace Haus.Api.Client.Devices
     public interface IDeviceApiClient : IApiClient
     {
         Task<DeviceModel> GetDeviceAsync(long id);
+        Task<ListResult<DeviceType>> GetDeviceTypesAsync();
         Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null);
         Task UpdateDeviceAsync(long deviceId, DeviceModel model);
         Task StartDiscoveryAsync();
@@ -31,6 +32,11 @@ namespace Haus.Api.Client.Devices
         public Task<DeviceModel> GetDeviceAsync(long id)
         {
             return GetAsJsonAsync<DeviceModel>($"devices/{id}");
+        }
+
+        public Task<ListResult<DeviceType>> GetDeviceTypesAsync()
+        {
+            return GetAsJsonAsync<ListResult<DeviceType>>("device-types");
         }
 
         public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)

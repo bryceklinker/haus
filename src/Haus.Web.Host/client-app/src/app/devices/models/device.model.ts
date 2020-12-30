@@ -1,4 +1,4 @@
-import {MetadataModel} from "./metadata.model";
+import {MetadataModel} from "../../shared/models";
 
 export interface DeviceModel {
   id: number;

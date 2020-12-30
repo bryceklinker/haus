@@ -5,7 +5,7 @@ import {DeviceTypesActions, selectAllDeviceTypes} from "../../../devices/state";
 import {Observable} from "rxjs";
 import {toTitleCase} from "../../../shared/humanize";
 import {DeviceSimulatorActions} from "../../state";
-import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Actions, ofType} from "@ngrx/effects";
 import {DestroyableSubject} from "../../../shared/destroyable-subject";
 import {tap} from "rxjs/operators";
@@ -65,6 +65,10 @@ export class AddSimulatedDeviceComponent implements OnInit, OnDestroy {
   onSave() {
     const model = this.form.getRawValue();
     this.store.dispatch(DeviceSimulatorActions.addSimulatedDevice.request(model));
+  }
+
+  getFormControl(group: FormGroup, key: string): FormControl {
+    return group.get(key) as FormControl;
   }
 
   async onCancel() {

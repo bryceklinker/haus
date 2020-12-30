@@ -1,7 +1,8 @@
+@import "../../../shared/styles/utilities";
+
 :host,
 mat-card {
-  display: flex;
-  flex: 1;
+  @extend .fill
 }
 
 mat-card {

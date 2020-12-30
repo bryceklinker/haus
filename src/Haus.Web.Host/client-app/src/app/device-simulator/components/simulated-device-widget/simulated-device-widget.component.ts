@@ -1,6 +1,7 @@
 import {Component, Input} from "@angular/core";
 import {SimulatedDeviceModel} from "../../models";
 import {MetadataModel} from "../../../shared/models/metadata.model";
+import {toTitleCase} from "../../../shared/humanize";
 
 @Component({
   selector: 'simulated-device-widget',
@@ -15,7 +16,7 @@ export class SimulatedDeviceWidgetComponent {
   }
 
   get deviceType(): string {
-    return this.simulatedDevice ? this.simulatedDevice.deviceType : 'N/A';
+    return this.simulatedDevice ? toTitleCase(this.simulatedDevice.deviceType) : 'N/A';
   }
 
   get metadata(): Array<MetadataModel> {

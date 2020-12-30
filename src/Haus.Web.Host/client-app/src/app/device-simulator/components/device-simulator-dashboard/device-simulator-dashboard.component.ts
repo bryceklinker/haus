@@ -8,7 +8,7 @@ import {SimulatedDeviceModel} from "../../models";
 })
 export class DeviceSimulatorDashboardComponent {
   @Input() simulatedDevices: Array<SimulatedDeviceModel> | undefined | null = null;
-  @Input() isConnected: boolean | undefined;
+  @Input() isConnected: boolean | null | undefined;
 
   get status() {
     return this.isConnected ? 'connected' : 'disconnected';

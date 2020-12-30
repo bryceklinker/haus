@@ -10,6 +10,7 @@ import {DeviceModel} from "../../devices/models";
 import {DiagnosticsMessageModel} from "../../diagnostics/models";
 import {HttpMethod} from "./http-method";
 import {DestroyableSubject} from "../destroyable-subject";
+import {CreateSimulatedDeviceModel} from "../../device-simulator/models";
 
 @Injectable({
   providedIn: 'root'
@@ -71,7 +72,11 @@ export class HausApiClient implements OnDestroy {
   }
 
   replayMessage(message: DiagnosticsMessageModel): Observable<void> {
-    return this.execute(HttpMethod.POST, '/api/diagnostics/replay', message).pipe(map(() => {}));
+    return this.execute(HttpMethod.POST, '/api/diagnostics/replay', message);
+  }
+
+  addSimulatedDevice(model: CreateSimulatedDeviceModel): Observable<void> {
+    return this.execute(HttpMethod.POST, '/api/device-simulator/devices', model);
   }
 
   ngOnDestroy(): void {
