@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {DeviceMetadataModel, DeviceModel} from "../../models";
+import {MetadataModel, DeviceModel} from "../../models";
 
 @Component({
   selector: 'device-detail',
@@ -21,7 +21,7 @@ export class DeviceDetailComponent {
     return this.device ? this.device.deviceType : 'N/A';
   }
 
-  get metadata(): Array<DeviceMetadataModel> {
+  get metadata(): Array<MetadataModel> {
     return this.device && this.device.metadata ? this.device.metadata : [];
   }
 

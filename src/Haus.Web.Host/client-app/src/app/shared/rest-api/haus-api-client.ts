@@ -34,6 +34,10 @@ export class HausApiClient implements OnDestroy {
     return this.execute<ListResult<DeviceModel>>(HttpMethod.GET, '/api/devices');
   }
 
+  getDeviceTypes(): Observable<ListResult<string>> {
+    return this.execute<ListResult<string>>(HttpMethod.GET, '/api/device-types');
+  }
+
   turnDeviceOff(deviceId: number): Observable<void> {
     return this.execute(HttpMethod.POST, `/api/devices/${deviceId}/turn-off`);
   }

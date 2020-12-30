@@ -3,6 +3,8 @@ import {Type} from "@angular/core";
 import {ActivatedRoute, Router, Routes} from "@angular/router";
 import {TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
+import {HarnessLoader} from '@angular/cdk/testing';
+import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed'
 
 import {createAppTestingModule, createTestingModule} from "./create-testing-module";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
@@ -39,6 +41,7 @@ export interface RenderComponentResult<T> extends RenderResult<T> {
   settingsService: TestingSettingsService;
   actionsSubject: TestingActionsSubject;
   store: TestingStore<AppState>;
+  matHarness: HarnessLoader
 }
 
 export async function renderAppComponent<T>(component: Type<T>, options?: RenderAppComponentOptions<T>): Promise<RenderComponentResult<T>> {
@@ -57,6 +60,7 @@ async function renderComponent<T>(component: Type<T>, options: RenderAppComponen
     excludeComponentDeclaration: true
   });
   result.fixture.detectChanges();
+  const matHarness = TestbedHarnessEnvironment.loader(result.fixture);
   return {
     ...result,
     triggerEventHandler: createEventTriggerHandler(result),
@@ -67,7 +71,8 @@ async function renderComponent<T>(component: Type<T>, options: RenderAppComponen
     activatedRoute: TestBed.inject(ActivatedRoute) as TestingActivatedRoute,
     settingsService: TestBed.inject(SettingsService) as TestingSettingsService,
     actionsSubject: TestBed.inject(ActionsSubject) as TestingActionsSubject,
-    store: TestBed.inject(Store) as TestingStore<AppState>
+    store: TestBed.inject(Store) as TestingStore<AppState>,
+    matHarness: matHarness
   };
 }
 

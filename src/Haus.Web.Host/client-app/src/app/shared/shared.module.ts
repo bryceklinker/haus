@@ -6,7 +6,7 @@ import {SettingsService} from "./settings";
 import {ThemeService} from "./theming/theme.service";
 import {HausApiClient} from "./rest-api";
 import {SHARED_COMPONENTS} from "./components";
-import {SignalrHubConnectionFactory, SignalrServiceFactory} from "./signalr";
+import {SignalrHubConnectionFactory, SignalrServiceFactory, SignalrEffectsFactory} from "./signalr";
 import {MaterialModule} from "./material.module";
 
 @NgModule({
@@ -15,7 +15,8 @@ import {MaterialModule} from "./material.module";
     ThemeService,
     HausApiClient,
     SignalrServiceFactory,
-    SignalrHubConnectionFactory
+    SignalrHubConnectionFactory,
+    SignalrEffectsFactory
   ],
   imports: [
     MaterialModule,

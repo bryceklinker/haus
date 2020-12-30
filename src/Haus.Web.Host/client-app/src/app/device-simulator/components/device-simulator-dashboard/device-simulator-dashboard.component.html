@@ -1,0 +1,12 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    <span class="spacer"></span>
+    <p class="mat-display-4">Status: {{status}}</p>
+  </mat-toolbar-row>
+</mat-toolbar>
+<mat-grid-list cols="4">
+  <mat-grid-tile *ngFor="let simulatedDevice of simulatedDevices"
+                 data-testid="simulated-device-item">
+    <simulated-device-widget [simulatedDevice]="simulatedDevice"></simulated-device-widget>
+  </mat-grid-tile>
+</mat-grid-list>

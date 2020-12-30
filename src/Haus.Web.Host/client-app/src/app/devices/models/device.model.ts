@@ -1,10 +1,10 @@
-import {DeviceMetadataModel} from "./device-metadata.model";
+import {MetadataModel} from "./metadata.model";
 
 export interface DeviceModel {
   id: number;
   roomId?: number;
   externalId: string;
   name: string;
-  metadata: Array<DeviceMetadataModel>;
+  metadata: Array<MetadataModel>;
   deviceType: string;
 }

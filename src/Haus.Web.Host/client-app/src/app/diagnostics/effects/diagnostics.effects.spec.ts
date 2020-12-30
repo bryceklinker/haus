@@ -6,20 +6,18 @@ import {
 } from "../../../testing";
 import {DiagnosticsEffects} from "./diagnostics.effects";
 import {TestBed} from "@angular/core/testing";
-import {SignalrHubConnectionFactory} from "../../shared/signalr";
+import {KNOWN_HUB_NAMES, SignalrHubConnectionFactory} from "../../shared/signalr";
 import {DiagnosticsActions} from "../state";
 
 describe('DiagnosticsEffects', () => {
   let actions$: TestingActionsSubject;
-  let effects: DiagnosticsEffects;
   let signalrHub: TestingSignalrHubConnection
 
   beforeEach(() => {
     const result = createAppTestingService(DiagnosticsEffects);
     actions$ = result.actionsSubject;
-    effects = result.service;
     signalrHub = (TestBed.inject(SignalrHubConnectionFactory) as TestingSignalrHubConnectionFactory)
-      .getTestingHub('diagnostics');
+      .getTestingHub(KNOWN_HUB_NAMES.diagnostics);
   })
 
   it('should start signalr connection when diagnostics is started', async () => {

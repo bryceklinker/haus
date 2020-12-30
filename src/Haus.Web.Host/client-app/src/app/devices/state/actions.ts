@@ -40,3 +40,12 @@ export const DevicesActions = {
     (err: any) => ({payload: err})
   )
 };
+
+export const DeviceTypesActions = {
+  loadDeviceTypes: createAsyncActionSet(
+    '[Device Types] Load Device Types',
+    () => ({payload: 'ignore'}),
+    (result: ListResult<string>) => ({payload: result.items}),
+    (err: any) => ({payload: err})
+  )
+}

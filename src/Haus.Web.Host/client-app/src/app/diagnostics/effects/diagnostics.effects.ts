@@ -1,35 +1,16 @@
 import {Injectable, OnInit} from "@angular/core";
-import {Actions, createEffect, ofType, OnInitEffects} from "@ngrx/effects";
+import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {Action, ActionsSubject, Store} from "@ngrx/store";
 import {map, mergeMap} from "rxjs/operators";
 
-import {KNOWN_HUB_NAMES, SignalrService, SignalrServiceFactory} from "../../shared/signalr";
+import {KNOWN_HUB_NAMES, SignalrService} from "../../shared/signalr";
 import {DiagnosticsActions} from "../state";
 import {DiagnosticsMessageModel} from "../models";
 import {HausApiClient} from "../../shared/rest-api";
+import {SignalrEffectsFactory} from "../../shared/signalr";
 
 @Injectable()
 export class DiagnosticsEffects {
-  private service: SignalrService | null = null;
-
-  private get hub(): SignalrService {
-    return this.service || (this.service = this.initializeHub());
-  }
-
-  start$ = createEffect(() => this.actions$.pipe(
-    ofType(DiagnosticsActions.start),
-    mergeMap(() => this.hub.start().pipe(
-      map(() => DiagnosticsActions.connected())
-    ))
-  ))
-
-  stop$ = createEffect(() => this.actions$.pipe(
-    ofType(DiagnosticsActions.stop),
-    mergeMap(() => this.hub.stop().pipe(
-      map(() => DiagnosticsActions.disconnected())
-    ))
-  ))
-
   replay$ = createEffect(() => this.actions$.pipe(
     ofType(DiagnosticsActions.replayMessage.request),
     mergeMap(({payload}) => this.api.replayMessage(payload).pipe(
@@ -37,17 +18,29 @@ export class DiagnosticsEffects {
     ))
   ))
 
+  start$;
+  stop$;
+
   constructor(private readonly actions$: Actions,
-              private readonly signalrServiceFactory: SignalrServiceFactory,
               private readonly actionsSubject: ActionsSubject,
-              private readonly api: HausApiClient) {
+              private readonly api: HausApiClient,
+              private readonly signalREffectsFactory: SignalrEffectsFactory) {
+    const {start$, stop$} = this.signalREffectsFactory.createEffects({
+      hubName: KNOWN_HUB_NAMES.diagnostics,
+      disconnectedAction: DiagnosticsActions.disconnected,
+      connectedAction: DiagnosticsActions.connected,
+      startAction: DiagnosticsActions.start,
+      stopAction: DiagnosticsActions.stop,
+      hubInitializer: hub => this.initializeHub(hub)
+    });
+
+    this.start$ = start$;
+    this.stop$ = stop$;
   }
 
-  initializeHub(): SignalrService {
-    const service = this.signalrServiceFactory.create(KNOWN_HUB_NAMES.diagnostics);
-    service.on<DiagnosticsMessageModel>('OnMqttMessage', msg => {
+  initializeHub(hub: SignalrService) {
+    hub.on<DiagnosticsMessageModel>('OnMqttMessage', msg => {
       this.actionsSubject.next(DiagnosticsActions.messageReceived(msg))
     });
-    return service;
   }
 }
