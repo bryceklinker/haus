@@ -24,4 +24,16 @@ describe('roomsReducer', () => {
 
     expect(state.entities[room.id]).toEqual(room);
   })
+
+  it('should update room lighting when room lighting change requested', () => {
+    const room = ModelFactory.createRoomModel();
+    const newLighting = ModelFactory.createLighting({temperature: 4500});
+
+    const state = generateStateFromActions(roomsReducer,
+      RoomsActions.loadRooms.success(ModelFactory.createListResult(room)),
+      RoomsActions.changeRoomLighting.request({roomId: room.id, lighting: newLighting})
+    );
+
+    expect(state.entities[room.id]?.lighting).toEqual(newLighting);
+  })
 })

@@ -14,3 +14,7 @@ export function setupGetAllRooms(rooms: Array<RoomModel> = [], options?: Request
 export function setupAddRoom(result: RoomModel = ModelFactory.createRoomModel(), options?: RequestOptions) {
   setupHttpPost(BASE_URL, result, {...options, status: HttpStatusCodes.Created});
 }
+
+export function setupChangeRoomLighting(roomId: number, options?: RequestOptions) {
+  setupHttpPost(`${BASE_URL}/${roomId}/lighting`, null, options);
+}

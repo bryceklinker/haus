@@ -52,7 +52,7 @@ namespace Haus.Web.Host.Tests.Devices
             await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(msg => hausCommand = msg);
             
             var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
-            await _hausClient.ChangeDeviceLightingAsync(device.Id, new LightingModel {Brightness = 5});
+            await _hausClient.ChangeDeviceLightingAsync(device.Id, new LightingModel {BrightnessPercent = 5});
             
             Eventually.Assert(() =>
             {

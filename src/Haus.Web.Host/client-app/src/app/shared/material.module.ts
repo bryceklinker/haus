@@ -19,6 +19,8 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatGridListModule} from "@angular/material/grid-list";
+import {MatSliderModule} from '@angular/material/slider';
+import {MatRippleModule} from "@angular/material/core";
 import {NgModule} from "@angular/core";
 
 const MATERIAL_MODULES = [
@@ -42,7 +44,9 @@ const MATERIAL_MODULES = [
   MatDatepickerModule,
   MatSlideToggleModule,
   MatExpansionModule,
-  MatGridListModule
+  MatGridListModule,
+  MatRippleModule,
+  MatSliderModule
 ]
 
 @NgModule({

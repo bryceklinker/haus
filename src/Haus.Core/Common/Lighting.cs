@@ -8,25 +8,25 @@ namespace Haus.Core.Common
     {
         private const LightingState DefaultState = LightingState.Off;
         private const double DefaultTemperature = 150;
-        private const double DefaultBrightness = 100;
-        public static readonly Lighting Default = new Lighting
+        private const double DefaultBrightnessPercent = 100;
+        public static readonly Lighting Default = new()
         {
             State = DefaultState,
-            Brightness = DefaultBrightness,
+            BrightnessPercent = DefaultBrightnessPercent,
             Color = LightingColor.Default,
             Temperature = DefaultTemperature
         };
 
         public LightingState State { get; set; } = DefaultState;
-        public double Brightness { get; set; } = DefaultBrightness;
+        public double BrightnessPercent { get; set; } = DefaultBrightnessPercent;
         public double Temperature { get; set; } = DefaultTemperature;
         public LightingColor Color { get; set; } = LightingColor.Default.Copy();
 
         public Lighting Copy()
         {
-            return new Lighting
+            return new()
             {
-                Brightness = Brightness,
+                BrightnessPercent = BrightnessPercent,
                 Color = Color?.Copy(),
                 State = State,
                 Temperature = Temperature
@@ -36,7 +36,7 @@ namespace Haus.Core.Common
         protected bool Equals(Lighting other)
         {
             return State == other.State 
-                   && Nullable.Equals(Brightness, other.Brightness) 
+                   && Nullable.Equals(BrightnessPercent, other.BrightnessPercent) 
                    && Nullable.Equals(Temperature, other.Temperature) 
                    && Equals(Color, other.Color);
         }
@@ -51,7 +51,7 @@ namespace Haus.Core.Common
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(State, Brightness, Temperature, Color);
+            return HashCode.Combine(State, BrightnessPercent, Temperature, Color);
         }
 
         public static Lighting FromModel(LightingModel model)
@@ -59,7 +59,7 @@ namespace Haus.Core.Common
             return new Lighting
             {
                 State = model.State,
-                Brightness = model.Brightness,
+                BrightnessPercent = model.BrightnessPercent,
                 Color = LightingColor.FromModel(model.Color),
                 Temperature = model.Temperature
             };

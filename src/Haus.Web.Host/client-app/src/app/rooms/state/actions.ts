@@ -1,7 +1,7 @@
 import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
-import {ListResult} from "../../shared/models";
+import {LightingModel, ListResult} from "../../shared/models";
 import {CreateRoomModel, RoomModel} from "../models";
-import {createAction} from "@ngrx/store";
+import {RoomLightingChangeModel} from "../models/room-lighting-change.model";
 
 export const RoomsActions = {
   loadRooms: createAsyncActionSet(
@@ -16,5 +16,12 @@ export const RoomsActions = {
     (room: CreateRoomModel) => ({payload: room}),
     (room: RoomModel) => ({payload: room}),
     (err: any) => ({payload: err})
+  ),
+
+  changeRoomLighting: createAsyncActionSet(
+    '[Rooms] Change Room Lighting',
+    (change: RoomLightingChangeModel) => ({payload: change}),
+    (change: RoomLightingChangeModel) => ({payload: change}),
+    (roomId: number, err: any) => ({payload: {roomId, error: err}})
   )
 }

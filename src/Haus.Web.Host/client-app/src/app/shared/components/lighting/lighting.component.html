@@ -1,0 +1,75 @@
+<div data-testid="lighting" *ngIf="hasLighting; else noLightingFound">
+  <div class="lighting-field">
+    <span class="label">State:</span>
+    <mat-slide-toggle data-testid="state-input"
+                      [checked]="state"
+                      (change)="onStateChange($event)">
+    </mat-slide-toggle>
+  </div>
+
+  <div class="lighting-field">
+    <span class="label">Brightness:</span>
+    <mat-slider data-testid="brightness-input"
+                min="0"
+                max="100"
+                [value]="brightnessPercent"
+                (input)="onBrightnessChanged($event)">
+    </mat-slider>
+  </div>
+
+  <div class="lighting-field">
+    <span class="label">Temperature (K):</span>
+    <mat-slider data-testid="temperature-input"
+                min="2000"
+                max="6500"
+                [value]="temperature"
+    (input)="onTemperatureChanged($event)">
+
+    </mat-slider>
+  </div>
+
+  <div class="lighting-color">
+    <span>Lighting Color (RGB)</span>
+    <div class="color-selectors">
+      <div class="color-selector">
+        <mat-slider data-testid="red-input"
+                    min="0"
+                    max="255"
+                    [value]="red"
+                    (input)="onRedChanged($event)"
+                    vertical="true">
+        </mat-slider>
+        <span>R</span>
+      </div>
+
+      <div class="color-selector">
+        <mat-slider data-testid="green-input"
+                    min="0"
+                    max="255"
+                    [value]="green"
+                    (input)="onGreenChanged($event)"
+                    vertical="true">
+        </mat-slider>
+        <span>G</span>
+      </div>
+
+      <div class="color-selector" >
+        <mat-slider data-testid="blue-input"
+                    min="0"
+                    max="255"
+                    [value]="blue"
+                    (input)="onBlueChanged($event)"
+                    vertical="true">
+        </mat-slider>
+        <span>B</span>
+      </div>
+
+      <div class="lighting-color-sample" [style]="{'background-color': colorSample}">
+      </div>
+    </div>
+  </div>
+
+</div>
+<ng-template #noLightingFound>
+  No lighting available
+</ng-template>

@@ -2,14 +2,11 @@ import {RoomsEffects} from "./rooms.effects";
 import {
   createAppTestingService,
   eventually,
-  ModelFactory, setupAddRoom,
+  ModelFactory, setupAddRoom, setupChangeRoomLighting,
   setupGetAllRooms,
   TestingActionsSubject
 } from "../../../testing";
 import {RoomsActions} from "../state";
-import {TestBed} from "@angular/core/testing";
-import {MatDialogRef} from "@angular/material/dialog";
-import {TestingMatDialogRef} from "../../../testing/fakes/testing-mat-dialog-ref";
 
 describe('RoomsEffects', () => {
   let actions$: TestingActionsSubject;
@@ -42,6 +39,17 @@ describe('RoomsEffects', () => {
 
     await eventually(() => {
       expect(actions$.publishedActions).toContainEqual(RoomsActions.addRoom.success(expected));
+    })
+  })
+
+  it('should change room lighting when change room lighting requested', async () => {
+    setupChangeRoomLighting(54);
+
+    const lighting = ModelFactory.createLighting();
+    actions$.next(RoomsActions.changeRoomLighting.request({roomId: 54, lighting}));
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(RoomsActions.changeRoomLighting.success({roomId: 54, lighting}));
     })
   })
 })

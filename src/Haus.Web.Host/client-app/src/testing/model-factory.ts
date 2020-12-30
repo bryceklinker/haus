@@ -1,10 +1,9 @@
 import {v4 as uuid} from 'uuid';
-import {ListResult} from "../app/shared/models";
+import {LightingColorModel, LightingModel, LightingState, ListResult, MetadataModel} from "../app/shared/models";
 import {DiagnosticsMessageModel} from "../app/diagnostics/models";
 import {DeviceModel} from "../app/devices/models";
 import {RoomModel} from "../app/rooms/models";
 import {SimulatedDeviceModel} from "../app/device-simulator/models";
-import {MetadataModel} from "../app/shared/models/metadata.model";
 
 let id = 0;
 
@@ -40,7 +39,8 @@ function createListResult<T>(...items: Array<T>): ListResult<T> {
 function createRoomModel(model: Partial<RoomModel> = {}): RoomModel {
   return {
     id: model.id || ++id,
-    name: model.name || uuid()
+    name: model.name || uuid(),
+    lighting: model.lighting || createLighting()
   };
 }
 
@@ -58,11 +58,30 @@ function createMetadata(key: string, value: string): MetadataModel {
   return { key, value };
 }
 
+function createLightingColor(model: Partial<LightingColorModel> = {}): LightingColorModel {
+  return {
+    red: model.red || 54,
+    green: model.green || 12,
+    blue: model.blue || 89
+  }
+}
+
+function createLighting(model: Partial<LightingModel> = {}): LightingModel {
+  return {
+    brightnessPercent: model.brightnessPercent || 23,
+    color: model.color || createLightingColor(model.color),
+    state: model.state || LightingState.On,
+    temperature: model.temperature || 2900
+  }
+}
+
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
   createRoomModel,
   createListResult,
   createSimulatedDevice,
-  createMetadata
+  createMetadata,
+  createLightingColor,
+  createLighting
 };

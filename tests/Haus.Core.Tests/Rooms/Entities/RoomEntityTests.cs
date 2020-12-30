@@ -29,7 +29,7 @@ namespace Haus.Core.Tests.Rooms.Entities
         public void WhenLightDeviceIsAddedToRoomThenLightingForDeviceIsSetToRoomLighting()
         {
             var room = new RoomEntity();
-            var roomLighting = new Lighting{Brightness = 65};
+            var roomLighting = new Lighting{BrightnessPercent = 65};
             room.ChangeLighting(roomLighting, new FakeDomainEventBus());
             
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
@@ -131,12 +131,12 @@ namespace Haus.Core.Tests.Rooms.Entities
         {
             var fakeDomainEventBus = new FakeDomainEventBus();
             var room = new RoomEntity();
-            room.ChangeLighting(new Lighting{State = LightingState.On, Brightness = 54}, fakeDomainEventBus);
+            room.ChangeLighting(new Lighting{State = LightingState.On, BrightnessPercent = 54}, fakeDomainEventBus);
 
             room.TurnOff(fakeDomainEventBus);
 
             Assert.Equal(LightingState.Off, room.Lighting.State);
-            Assert.Equal(54, room.Lighting.Brightness);
+            Assert.Equal(54, room.Lighting.BrightnessPercent);
         }
 
         [Fact]
@@ -144,12 +144,12 @@ namespace Haus.Core.Tests.Rooms.Entities
         {
             var fakeDomainEventBus = new FakeDomainEventBus();
             var room = new RoomEntity();
-            room.ChangeLighting(new Lighting{State = LightingState.Off, Brightness = 54}, fakeDomainEventBus);
+            room.ChangeLighting(new Lighting{State = LightingState.Off, BrightnessPercent = 54}, fakeDomainEventBus);
 
             room.TurnOn(fakeDomainEventBus);
 
             Assert.Equal(LightingState.On, room.Lighting.State);
-            Assert.Equal(54, room.Lighting.Brightness);
+            Assert.Equal(54, room.Lighting.BrightnessPercent);
         }
     }
 }

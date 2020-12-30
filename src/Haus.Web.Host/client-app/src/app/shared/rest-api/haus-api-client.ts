@@ -4,7 +4,7 @@ import {map, tap} from "rxjs/operators";
 import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
 
-import {ListResult} from "../models";
+import {LightingModel, ListResult} from "../models";
 import {CreateRoomModel, RoomModel} from "../../rooms/models";
 import {DeviceModel} from "../../devices/models";
 import {DiagnosticsMessageModel} from "../../diagnostics/models";
@@ -65,6 +65,10 @@ export class HausApiClient implements OnDestroy {
 
   addRoom(room: CreateRoomModel): Observable<RoomModel> {
     return this.execute<RoomModel>(HttpMethod.POST, '/api/rooms', room);
+  }
+
+  changeRoomLighting(roomId: number, lighting: LightingModel): Observable<void> {
+    return this.execute(HttpMethod.POST, `/api/rooms/${roomId}/lighting`, lighting);
   }
 
   getDevicesInRoom(roomId: string): Observable<ListResult<DeviceModel>> {

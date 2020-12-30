@@ -1,9 +1,4 @@
-import {
-  eventually,
-  ModelFactory,
-  renderFeatureComponent,
-  TestingActivatedRoute
-} from "../../../../testing";
+import {eventually, ModelFactory, renderFeatureComponent, TestingActivatedRoute} from "../../../../testing";
 import {RoomDetailRootComponent} from "./room-detail-root.component";
 import {RoomsModule} from "../../rooms.module";
 import {RoomModel} from "../../models";
@@ -11,12 +6,16 @@ import {screen} from "@testing-library/dom";
 import {Action} from "@ngrx/store";
 import {RoomsActions} from "../../state";
 import {DevicesActions} from "../../../devices/state";
+import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
+import {LightingState} from "../../../shared/models";
 
 describe('DeviceDetailRootComponent', () => {
   let room: RoomModel;
 
   beforeEach(() => {
-    room = ModelFactory.createRoomModel();
+    room = ModelFactory.createRoomModel({
+      lighting: ModelFactory.createLighting({state: LightingState.Off})
+    });
   })
 
 
@@ -44,6 +43,19 @@ describe('DeviceDetailRootComponent', () => {
       detectChanges();
       expect(screen.queryAllByTestId('room-device-item')).toHaveLength(2);
     })
+  })
+
+  it('should request lighting change when room lighting changed', async () => {
+    const {activatedRoute, store, matHarness} = await renderRoot(RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
+    triggerRoomChanged(activatedRoute, room.id);
+
+    const state = await matHarness.getHarness(MatSlideToggleHarness);
+    await state.check();
+
+    expect(store.dispatchedActions).toContainEqual(RoomsActions.changeRoomLighting.request({
+      roomId: room.id,
+      lighting: expect.objectContaining({state: LightingState.On})
+    }));
   })
 
   function renderRoot(...actions: Array<Action>) {

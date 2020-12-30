@@ -31,11 +31,11 @@ namespace Haus.Core.Tests.Devices.Commands
         {
             var device = _context.AddDevice(deviceType: DeviceType.Light);
             
-            var lighting = new LightingModel{ Brightness = 54};
+            var lighting = new LightingModel{ BrightnessPercent = 54};
             await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
             var updated = await _context.FindByIdAsync<DeviceEntity>(device.Id);
-            Assert.Equal(54, updated.Lighting.Brightness);
+            Assert.Equal(54, updated.Lighting.BrightnessPercent);
         }
 
         [Fact]
@@ -59,12 +59,12 @@ namespace Haus.Core.Tests.Devices.Commands
         {
             var device = _context.AddDevice(deviceType: DeviceType.Light);
             
-            var lighting = new LightingModel{Brightness = 65};
+            var lighting = new LightingModel{BrightnessPercent = 65};
             await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
             var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
             Assert.Equal(device.Id, hausCommand.Payload.Device.Id);
-            Assert.Equal(65, hausCommand.Payload.Lighting.Brightness);
+            Assert.Equal(65, hausCommand.Payload.Lighting.BrightnessPercent);
         }
     }
 }

@@ -4,10 +4,11 @@ import {Observable} from "rxjs";
 import {DeviceModel} from "../../../devices/models";
 import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
-import {selectRoomById} from "../../state";
+import {RoomsActions, selectRoomById} from "../../state";
 import {ActivatedRoute} from "@angular/router";
 import {map, mergeMap} from "rxjs/operators";
 import {selectAllDevicesByRoomId} from "../../../devices/state";
+import {RoomLightingChangeModel} from "../../models/room-lighting-change.model";
 
 @Component({
   selector: 'room-detail-root',
@@ -30,5 +31,9 @@ export class RoomDetailRootComponent {
     this.devices$ = roomId$.pipe(
       mergeMap(roomId => this.store.select(selectAllDevicesByRoomId(roomId)))
     )
+  }
+
+  onRoomLightingChanged($event: RoomLightingChangeModel) {
+    this.store.dispatch(RoomsActions.changeRoomLighting.request($event));
   }
 }

@@ -3,6 +3,15 @@
     <mat-card-title>{{name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
+    <mat-divider></mat-divider>
+    <div>
+      <h3>{{name}} Lighting</h3>
+      <lighting [lighting]="lighting"
+                (change)="onLightingChanged($event)">
+
+      </lighting>
+    </div>
+    <mat-divider></mat-divider>
     <div>
       <h4 class="mat-subheader">Room Devices</h4>
       <mat-list>

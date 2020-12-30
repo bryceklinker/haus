@@ -24,14 +24,14 @@ namespace Haus.Core.Tests.Devices.DomainEvents
         public async Task WhenDeviceLightingChangedThenRoutableCommandIsPublished()
         {
             var device = new DeviceEntity {Id = 123};
-            var lighting = new Lighting{Brightness = 34.12};
+            var lighting = new Lighting{BrightnessPercent = 34.12};
             _hausBus.Enqueue(new DeviceLightingChangedDomainEvent(device, lighting));
 
             await _hausBus.FlushAsync();
 
             var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
             Assert.Equal(123, hausCommand.Payload.Device.Id);
-            Assert.Equal(34.12, hausCommand.Payload.Lighting.Brightness);
+            Assert.Equal(34.12, hausCommand.Payload.Lighting.BrightnessPercent);
         }
     }
 }

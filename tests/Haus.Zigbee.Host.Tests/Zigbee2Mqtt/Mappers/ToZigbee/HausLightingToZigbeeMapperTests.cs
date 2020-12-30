@@ -52,7 +52,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
             var lightingModel = new LightingModel
             {
                 State = LightingState.Off,
-                Brightness = 54,
+                BrightnessPercent = 54,
                 Temperature = 67,
                 Color = new LightingColorModel
                 {

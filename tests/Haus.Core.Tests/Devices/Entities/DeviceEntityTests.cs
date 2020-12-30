@@ -135,7 +135,7 @@ namespace Haus.Core.Tests.Devices.Entities
         {
             var domainEventBus = new FakeDomainEventBus();
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            var lighting = new Lighting {Brightness = 12};
+            var lighting = new Lighting {BrightnessPercent = 12};
 
             light.ChangeLighting(lighting, domainEventBus);
 
@@ -146,24 +146,24 @@ namespace Haus.Core.Tests.Devices.Entities
         public void WhenDeviceIsTurnedOffThenDeviceLightingStateIsSetToOff()
         {
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            light.ChangeLighting(new Lighting{State = LightingState.On, Brightness = 6}, new FakeDomainEventBus());
+            light.ChangeLighting(new Lighting{State = LightingState.On, BrightnessPercent = 6}, new FakeDomainEventBus());
 
             light.TurnOff(new FakeDomainEventBus());
 
             Assert.Equal(LightingState.Off, light.Lighting.State);
-            Assert.Equal(6, light.Lighting.Brightness);
+            Assert.Equal(6, light.Lighting.BrightnessPercent);
         }
 
         [Fact]
         public void WhenDeviceIsTurnedOnThenDeviceLightingStateIsSetToOn()
         {
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            light.ChangeLighting(new Lighting{State = LightingState.Off, Brightness = 6}, new FakeDomainEventBus());
+            light.ChangeLighting(new Lighting{State = LightingState.Off, BrightnessPercent = 6}, new FakeDomainEventBus());
 
             light.TurnOn(new FakeDomainEventBus());
 
             Assert.Equal(LightingState.On, light.Lighting.State);
-            Assert.Equal(6, light.Lighting.Brightness);
+            Assert.Equal(6, light.Lighting.BrightnessPercent);
         }
         
         [Fact]
