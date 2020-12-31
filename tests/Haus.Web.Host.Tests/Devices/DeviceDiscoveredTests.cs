@@ -24,11 +24,7 @@ namespace Haus.Web.Host.Tests.Devices
         public async Task WhenDeviceDiscoveredEventReceivedThenDeviceIsAvailableFromTheApi()
         {
             var deviceType = DeviceType.LightSensor | DeviceType.MotionSensor | DeviceType.TemperatureSensor;
-            await _factory.PublishHausEventAsync(new DeviceDiscoveredModel
-            {
-                Id = "my-new-id",
-                DeviceType = deviceType,
-            });
+            await _factory.PublishHausEventAsync(new DeviceDiscoveredModel("my-new-id", deviceType));
             
             await Eventually.AssertAsync(async () =>
             {

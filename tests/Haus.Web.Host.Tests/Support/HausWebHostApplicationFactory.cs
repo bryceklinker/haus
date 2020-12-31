@@ -8,7 +8,6 @@ using Haus.Api.Client;
 using Haus.Api.Client.Options;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
-using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
@@ -17,7 +16,6 @@ using Haus.Core.Models.Rooms;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
-using Haus.Web.Host.Common.Mqtt;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -142,11 +140,7 @@ namespace Haus.Web.Host.Tests.Support
             string externalId = null)
         {
             var actualId = string.IsNullOrWhiteSpace(externalId) ? $"{Guid.NewGuid()}" : externalId;
-            await PublishHausEventAsync(new DeviceDiscoveredModel
-            {
-                DeviceType = deviceType,
-                Id = actualId
-            });
+            await PublishHausEventAsync(new DeviceDiscoveredModel(actualId, deviceType));
 
             var apiClient = CreateAuthenticatedClient();
             return await WaitFor.ResultAsync(async () =>

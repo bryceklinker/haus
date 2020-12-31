@@ -39,12 +39,8 @@ namespace Haus.Core.DeviceSimulator.Entities
 
         public DeviceDiscoveredModel ToDeviceDiscoveredModel()
         {
-            return new()
-            {
-                Id = Id,
-                DeviceType = DeviceType,
-                Metadata = Metadata.Select(m => m.ToModel()).ToArray()
-            };
+            var metadata = Metadata.Select(m => m.ToModel()).ToArray();
+            return new DeviceDiscoveredModel(Id, DeviceType, metadata);
         }
     }
 }

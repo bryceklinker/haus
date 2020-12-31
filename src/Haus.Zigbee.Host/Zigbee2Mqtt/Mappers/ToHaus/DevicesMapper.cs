@@ -51,12 +51,10 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
         {
             var model = jToken.Value<string>("model");
             var vendor = jToken.Value<string>("vendor");
-            return new DeviceDiscoveredModel
-            {
-                Id = jToken.Value<string>("friendly_name"),
-                DeviceType = _deviceTypeResolver.Resolve(vendor, model),
-                Metadata = CreateDeviceMetadata(jToken)
-            }.AsHausEvent();
+            return new DeviceDiscoveredModel(jToken.Value<string>("friendly_name"),
+                _deviceTypeResolver.Resolve(vendor, model),
+                CreateDeviceMetadata(jToken)
+            ).AsHausEvent();
         }
 
         private static MetadataModel[] CreateDeviceMetadata(JObject jObject)

@@ -16,16 +16,11 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenCreatedFromDeviceDiscoveredThenEntityIsPopulatedFromDiscoveredDevice()
         {
-            var model = new DeviceDiscoveredModel
+            var model = new DeviceDiscoveredModel("this-id", DeviceType.Light, new[]
             {
-                Id = "this-id",
-                DeviceType = DeviceType.Light,
-                Metadata = new []
-                {
-                    new MetadataModel("Model", "some model"),
-                    new MetadataModel("Vendor", "Vendy"), 
-                }
-            };
+                new MetadataModel("Model", "some model"),
+                new MetadataModel("Vendor", "Vendy"),
+            });
 
             var entity = DeviceEntity.FromDiscoveredDevice(model);
 
@@ -38,7 +33,7 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenCreatedFromDeviceDiscoveredThenNameIsSetToExternalId()
         {
-            var model = new DeviceDiscoveredModel { Id = "this-id" };
+            var model = new DeviceDiscoveredModel("this-id");
 
             var entity = DeviceEntity.FromDiscoveredDevice(model);
 
@@ -48,7 +43,7 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenUpdatedFromDiscoveredDeviceThenDeviceTypeIsUpdated()
         {
-            var model = new DeviceDiscoveredModel {DeviceType = DeviceType.MotionSensor};
+            var model = new DeviceDiscoveredModel("", DeviceType.MotionSensor);
             
             var entity = new DeviceEntity();
             entity.UpdateFromDiscoveredDevice(model);
@@ -59,13 +54,10 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenUpdatedFromDiscoveredDeviceThenModelMetadataIsAdded()
         {
-            var model = new DeviceDiscoveredModel
+            var model = new DeviceDiscoveredModel("", metadata: new []
             {
-                Metadata = new []
-                {
-                    new MetadataModel("Model", "boom"),
-                }
-            };
+                new MetadataModel("Model", "boom"),
+            });
             var entity = new DeviceEntity();
             
             entity.UpdateFromDiscoveredDevice(model);
@@ -76,13 +68,10 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenDeviceHasModelAndUpdatedFromDiscoveredDeviceThenModelMetadataIsUpdated()
         {
-            var model = new DeviceDiscoveredModel
+            var model = new DeviceDiscoveredModel("", metadata: new []
             {
-                Metadata = new []
-                {
-                    new MetadataModel("Model", "boom"),
-                }
-            };
+                new MetadataModel("Model", "boom"),
+            });
             var entity = new DeviceEntity();
             entity.AddOrUpdateMetadata("Model", "old");
 
