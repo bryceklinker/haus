@@ -30,7 +30,7 @@ namespace Haus.Web.Host.Tests.Devices
         public async Task WhenOccupancyChangedForDeviceInRoomThenRoomLightingChangedPublished()
         {
             var sensor = await _factory.WaitForDeviceToBeDiscovered(DeviceType.MotionSensor);
-            var response = await _apiClient.CreateRoomAsync(new RoomModel {Name = "home"});
+            var response = await _apiClient.CreateRoomAsync(new RoomModel(name: "home"));
             var room = await response.Content.ReadFromJsonAsync<RoomModel>();
             await _apiClient.AddDevicesToRoomAsync(room.Id, sensor.Id);
 

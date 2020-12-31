@@ -3,7 +3,6 @@ using FluentValidation.TestHelper;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.Validators;
-using Haus.Core.Tests.Support;
 using Haus.Testing.Support;
 using Xunit;
 
@@ -23,7 +22,7 @@ namespace Haus.Core.Tests.Rooms.Validators
         [Fact]
         public async Task WhenNameIsMissingThenReturnsInvalid()
         {
-            var result = await _validator.TestValidateAsync(new RoomModel {Name = null});
+            var result = await _validator.TestValidateAsync(new RoomModel(name: null));
 
             Assert.False(result.IsValid);
         }
@@ -33,9 +32,9 @@ namespace Haus.Core.Tests.Rooms.Validators
         {
             _context.AddRoom("one");
 
-            var result = await _validator.TestValidateAsync(new RoomModel {Name = "one"});
-            
-            Assert.False(result.IsValid);;
+            var result = await _validator.TestValidateAsync(new RoomModel(name: "one"));
+
+            Assert.False(result.IsValid);
         }
 
         [Fact]
@@ -43,7 +42,7 @@ namespace Haus.Core.Tests.Rooms.Validators
         {
             var room = _context.AddRoom("three");
 
-            var result = await _validator.TestValidateAsync(new RoomModel {Id = room.Id, Name = "three"});
+            var result = await _validator.TestValidateAsync(new RoomModel(room.Id, "three"));
 
             Assert.True(result.IsValid);
         }
@@ -53,7 +52,7 @@ namespace Haus.Core.Tests.Rooms.Validators
         {
             _context.AddRoom("one");
 
-            var result = await _validator.TestValidateAsync(new RoomModel {Name = "two"});
+            var result = await _validator.TestValidateAsync(new RoomModel(name: "two"));
 
             Assert.True(result.IsValid);
         }

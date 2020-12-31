@@ -4,7 +4,6 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Entities;
-using Haus.Core.Tests.Support;
 using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
@@ -33,7 +32,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         public async Task WhenRoomUpdatedThenRoomIsSavedToDatabase()
         {
             var original = _context.AddRoom();
-            var command = new UpdateRoomCommand(original.Id, new RoomModel{Name = "bob"});
+            var command = new UpdateRoomCommand(original.Id, new RoomModel(name: "bob"));
 
             await _hausBus.ExecuteCommandAsync(command);
 
@@ -53,7 +52,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         [Fact]
         public async Task WhenRoomIsMissingThenThrowsEntityNotFoundException()
         {
-            var command = new UpdateRoomCommand(54, new RoomModel{Name = "bob"});
+            var command = new UpdateRoomCommand(54, new RoomModel(name: "bob"));
 
             await Assert.ThrowsAsync<EntityNotFoundException<RoomEntity>>(() => _hausBus.ExecuteCommandAsync(command));
         }

@@ -31,11 +31,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
 
         public IEnumerable<MqttApplicationMessage> Map(Zigbee2MqttMessage message)
         {
-            var model = new UnknownModel
-            {
-                Topic = message.Topic,
-                Payload = message.Json
-            };
+            var model = new UnknownModel(message.Topic, message.Json);
             yield return new MqttApplicationMessage
             {
                 Topic = UnknownTopicName,

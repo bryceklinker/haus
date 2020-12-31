@@ -5,7 +5,6 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Entities;
-using Haus.Core.Tests.Support;
 using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
@@ -26,7 +25,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         [Fact]
         public async Task WhenRoomCreatedThenReturnsModelWithRoomId()
         {
-            var model = new RoomModel {Name = "Backroom"};
+            var model = new RoomModel(name: "Backroom");
 
             var result = await _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
 

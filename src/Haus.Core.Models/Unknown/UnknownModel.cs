@@ -1,8 +1,4 @@
 namespace Haus.Core.Models.Unknown
 {
-    public class UnknownModel
-    {
-        public string Topic { get; set; }
-        public string Payload { get; set; }
-    }
+    public record UnknownModel(string Topic, string Payload);
 }
