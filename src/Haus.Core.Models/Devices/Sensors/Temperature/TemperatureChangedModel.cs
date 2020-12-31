@@ -1,9 +1,7 @@
 namespace Haus.Core.Models.Devices.Sensors.Temperature
 {
-    public class TemperatureChangedModel
+    public record TemperatureChangedModel(string DeviceId, double Temperature)
     {
         public const string Type = "temperature_sensor_changed";
-        public string DeviceId { get; set; }
-        public double Temperature { get; set; }
     }
 }

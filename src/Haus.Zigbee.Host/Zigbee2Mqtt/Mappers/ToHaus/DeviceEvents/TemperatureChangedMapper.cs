@@ -11,11 +11,10 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
             if (message.Temperature.IsNull())
                 return null;
             
-            return new TemperatureChangedModel
-            {
-                DeviceId = message.GetFriendlyNameFromTopic(),
-                Temperature = message.Temperature.GetValueOrDefault()
-            };
+            return new TemperatureChangedModel(
+                message.GetFriendlyNameFromTopic(),
+                message.Temperature.GetValueOrDefault()
+            );
         }
     }
 }
