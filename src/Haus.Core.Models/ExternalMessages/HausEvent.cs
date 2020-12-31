@@ -1,23 +1,6 @@
 namespace Haus.Core.Models.ExternalMessages
 {
-    public class HausEvent
-    {
-        public string Type { get; set; }
+    public record HausEvent(string Type = null);
 
-        public HausEvent(string type = null)
-        {
-            Type = type;
-        }
-    }
-
-    public class HausEvent<T> : HausEvent
-    {
-        public T Payload { get; set; }
-
-        public HausEvent(string type = null, T payload = default)
-            : base(type)
-        {
-            Payload = payload;
-        }
-    }
+    public record HausEvent<T>(string Type = null, T Payload = default) : HausEvent(Type);
 }
