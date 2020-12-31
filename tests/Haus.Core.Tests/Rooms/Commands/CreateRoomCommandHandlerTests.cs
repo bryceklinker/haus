@@ -25,7 +25,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         [Fact]
         public async Task WhenRoomCreatedThenReturnsModelWithRoomId()
         {
-            var model = new RoomModel(name: "Backroom");
+            var model = new RoomModel(Name: "Backroom");
 
             var result = await _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
 

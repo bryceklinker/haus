@@ -36,7 +36,7 @@ namespace Haus.Web.Host.Tests.Rooms
         [Fact]
         public async Task WhenRoomCreatedThenReturnsLocationOfRoom()
         {
-            var response = await _apiClient.CreateRoomAsync(new RoomModel(name: "something"));
+            var response = await _apiClient.CreateRoomAsync(new RoomModel(Name: "something"));
 
             var result = await response.Content.ReadFromJsonAsync<RoomModel>();
             Assert.Equal($"{_apiClient.BaseUrl}/rooms/{result.Id}", response.Headers.Location.ToString());
@@ -47,7 +47,7 @@ namespace Haus.Web.Host.Tests.Rooms
         {
             var room = await CreateRoomAsync("old");
 
-            var updateResponse = await _apiClient.UpdateRoomAsync(room.Id, new RoomModel(name: "new hotness"));
+            var updateResponse = await _apiClient.UpdateRoomAsync(room.Id, new RoomModel(Name: "new hotness"));
             updateResponse.EnsureSuccessStatusCode();
 
             var updated = await _apiClient.GetRoomAsync(room.Id);
@@ -119,14 +119,14 @@ namespace Haus.Web.Host.Tests.Rooms
         {
             var client = _factory.CreateUnauthenticatedClient();
 
-            var response = await client.CreateRoomAsync(new RoomModel(name: "something"));
+            var response = await client.CreateRoomAsync(new RoomModel(Name: "something"));
 
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         private async Task<RoomModel> CreateRoomAsync(string name)
         {
-            var createResponse = await _apiClient.CreateRoomAsync(new RoomModel(name: name));
+            var createResponse = await _apiClient.CreateRoomAsync(new RoomModel(Name: name));
             return await createResponse.Content.ReadFromJsonAsync<RoomModel>();
         }
     }

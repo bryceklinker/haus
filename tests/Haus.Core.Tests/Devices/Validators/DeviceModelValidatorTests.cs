@@ -34,11 +34,8 @@ namespace Haus.Core.Tests.Devices.Validators
         [Fact]
         public async Task WhenMetadataHasNullKeyThenReturnsInvalid()
         {
-            var model = new DeviceModel
-            {
-                Name = "one",
-                Metadata = new [] { new MetadataModel(null, null) }
-            };
+            var model = new DeviceModel(Name: "one", Metadata: new[] {new MetadataModel()});
+                
             var result = await _validator.TestValidateAsync(model);
             
             Assert.False(result.IsValid);;

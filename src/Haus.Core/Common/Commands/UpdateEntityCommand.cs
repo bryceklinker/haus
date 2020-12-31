@@ -4,16 +4,14 @@ using Haus.Cqrs.Commands;
 namespace Haus.Core.Common.Commands
 {
     public class UpdateEntityCommand<TModel> : ICommand
-        where TModel : IModel
+        where TModel : IdentityModel
     {
-        public long Id { get; }
+        public long Id => Model.Id;
         public TModel Model { get; }
 
-        public UpdateEntityCommand(long id, TModel model)
+        public UpdateEntityCommand(TModel model)
         {
-            Id = id;
             Model = model;
-            Model.Id = id;
         }
     }
 }

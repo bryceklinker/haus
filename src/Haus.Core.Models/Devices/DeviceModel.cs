@@ -3,13 +3,14 @@ using Haus.Core.Models.Common;
 
 namespace Haus.Core.Models.Devices
 {
-    public record DeviceModel : IModel
+    public record DeviceModel(
+        long Id = -1, 
+        long? RoomId = null, 
+        string ExternalId = null, 
+        string Name = null, 
+        DeviceType DeviceType = DeviceType.Unknown,
+        MetadataModel[] Metadata = null) : IdentityModel
     {
-        public long Id { get; set; }
-        public long? RoomId { get; set; }
-        public string ExternalId { get; set; }
-        public string Name { get; set; }
-        public DeviceType DeviceType { get; set; }
-        public MetadataModel[] Metadata { get; set; } = Array.Empty<MetadataModel>();
+        public MetadataModel[] Metadata { get; } = Metadata ?? Array.Empty<MetadataModel>();
     }
 }

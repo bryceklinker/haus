@@ -13,8 +13,8 @@ namespace Haus.Core.Rooms.Commands
 {
     public class UpdateRoomCommand : UpdateEntityCommand<RoomModel>
     {
-        public UpdateRoomCommand(long id, RoomModel model) 
-            : base(id, model)
+        public UpdateRoomCommand(RoomModel model) 
+            : base(model)
         {
         }
     }

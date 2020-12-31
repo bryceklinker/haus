@@ -42,7 +42,7 @@ namespace Haus.Core.Tests.Rooms.Entities
         public void WhenUpdatedFromModelThenNameIsUpdated()
         {
             var room = new RoomEntity();
-            room.UpdateFromModel(new RoomModel(name: "kitchen"));
+            room.UpdateFromModel(new RoomModel(Name: "kitchen"));
 
             Assert.Equal("kitchen", room.Name);
         }
@@ -83,7 +83,7 @@ namespace Haus.Core.Tests.Rooms.Entities
         [Fact]
         public void WhenCreatedFromModelThenRoomIsPopulatedFromTheModel()
         {
-            var model = new RoomModel(name: "living room");
+            var model = new RoomModel(Name: "living room");
 
             var room = RoomEntity.CreateFromModel(model);
 

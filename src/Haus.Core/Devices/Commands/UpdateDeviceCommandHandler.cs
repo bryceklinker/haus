@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
-using Haus.Core.Common;
 using Haus.Core.Common.Commands;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
@@ -13,8 +12,8 @@ namespace Haus.Core.Devices.Commands
 {
     public class UpdateDeviceCommand : UpdateEntityCommand<DeviceModel>
     {
-        public UpdateDeviceCommand(long id, DeviceModel model)
-            : base(id, model)
+        public UpdateDeviceCommand(DeviceModel model)
+            : base(model)
         {
         }
     }

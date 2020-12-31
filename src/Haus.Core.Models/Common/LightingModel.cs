@@ -2,6 +2,7 @@ namespace Haus.Core.Models.Common
 {
     public record LightingModel
     {
+        public static readonly LightingModel Default = new();
         public LightingState State { get; }
         public double BrightnessPercent { get; }
         public double Temperature { get; }

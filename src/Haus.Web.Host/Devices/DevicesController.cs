@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Haus.Core.Common;
 using Haus.Core.Devices.Commands;
 using Haus.Core.Devices.Queries;
 using Haus.Core.Models.Common;
@@ -51,7 +50,7 @@ namespace Haus.Web.Host.Devices
         [HttpPut("{id}")]
         public Task<IActionResult> Update([FromRoute] long id, [FromBody] DeviceModel model)
         {
-            return CommandAsync(new UpdateDeviceCommand(id, model));
+            return CommandAsync(new UpdateDeviceCommand(model with { Id = id }));
         }
 
         [HttpPost("start-discovery")]

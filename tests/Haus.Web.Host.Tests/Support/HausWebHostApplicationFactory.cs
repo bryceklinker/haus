@@ -110,7 +110,7 @@ namespace Haus.Web.Host.Tests.Support
             var devices = await Task.WhenAll(discoverDeviceTasks);
 
             var apiClient = CreateAuthenticatedClient();
-            var createResponse = await apiClient.CreateRoomAsync(new RoomModel(name: roomName));
+            var createResponse = await apiClient.CreateRoomAsync(new RoomModel(Name: roomName));
             var room = await createResponse.Content.ReadFromJsonAsync<RoomModel>();
             await apiClient.AddDevicesToRoomAsync(room.Id, devices.Select(d => d.Id).ToArray());
 

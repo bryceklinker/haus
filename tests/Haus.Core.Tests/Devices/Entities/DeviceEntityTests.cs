@@ -101,14 +101,11 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenDeviceIsUpdatedFromModelThenMetadataForDeviceIsUpdated()
         {
-            var model = new DeviceModel
+            var model = new DeviceModel(Metadata: new []
             {
-                Metadata = new []
-                {
-                    new MetadataModel("one", "three"),
-                    new MetadataModel("three", "two"), 
-                }
-            };
+                new MetadataModel("one", "three"),
+                new MetadataModel("three", "two"), 
+            });
             var entity = new DeviceEntity();
             entity.AddOrUpdateMetadata("one", "two");
 

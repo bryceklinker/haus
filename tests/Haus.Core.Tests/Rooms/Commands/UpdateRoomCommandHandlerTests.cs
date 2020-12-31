@@ -22,17 +22,10 @@ namespace Haus.Core.Tests.Rooms.Commands
         }
 
         [Fact]
-        public void WhenUpdateCommandCreatedThenModelIdIsSetToCommandId()
-        {
-            var command = new UpdateRoomCommand(5, new RoomModel());
-            Assert.Equal(5, command.Model.Id);
-        }
-        
-        [Fact]
         public async Task WhenRoomUpdatedThenRoomIsSavedToDatabase()
         {
             var original = _context.AddRoom();
-            var command = new UpdateRoomCommand(original.Id, new RoomModel(name: "bob"));
+            var command = new UpdateRoomCommand(new RoomModel(original.Id, "bob"));
 
             await _hausBus.ExecuteCommandAsync(command);
 
@@ -44,7 +37,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         public async Task WhenRoomModelIsInvalidThenThrowsValidationException()
         {
             var original = _context.AddRoom();
-            var command = new UpdateRoomCommand(original.Id, new RoomModel());
+            var command = new UpdateRoomCommand(new RoomModel(original.Id));
 
             await Assert.ThrowsAsync<HausValidationException>(() => _hausBus.ExecuteCommandAsync(command));
         }
@@ -52,7 +45,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         [Fact]
         public async Task WhenRoomIsMissingThenThrowsEntityNotFoundException()
         {
-            var command = new UpdateRoomCommand(54, new RoomModel(name: "bob"));
+            var command = new UpdateRoomCommand(new RoomModel(54, Name: "bob"));
 
             await Assert.ThrowsAsync<EntityNotFoundException<RoomEntity>>(() => _hausBus.ExecuteCommandAsync(command));
         }

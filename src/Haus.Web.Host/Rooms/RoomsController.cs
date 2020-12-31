@@ -38,7 +38,7 @@ namespace Haus.Web.Host.Rooms
         [HttpPut("{id}")]
         public Task<IActionResult> Update([FromRoute] long id, [FromBody] RoomModel model)
         {
-            return CommandAsync(new UpdateRoomCommand(id, model));
+            return CommandAsync(new UpdateRoomCommand(model with {Id = id}));
         }
 
         [HttpPost("{id}/add-devices")]
@@ -64,7 +64,7 @@ namespace Haus.Web.Host.Rooms
         {
             return CommandAsync(new TurnRoomOffCommand(id));
         }
-        
+
         [HttpPost("{id}/turn-on")]
         public Task<IActionResult> TurnOn([FromRoute] long id)
         {
