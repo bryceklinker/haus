@@ -1,9 +1,7 @@
 namespace Haus.Core.Models.Devices.Sensors.Battery
 {
-    public class BatteryChangedModel
+    public record BatteryChangedModel(string DeviceId, long BatteryLevel)
     {
         public const string Type = "battery_changed";
-        public string DeviceId { get; set; }
-        public long BatteryLevel { get; set; }
     }
 }

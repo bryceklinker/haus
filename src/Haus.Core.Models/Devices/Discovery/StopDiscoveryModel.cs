@@ -3,7 +3,7 @@ using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Models.Devices.Discovery
 {
-    public class StopDiscoveryModel : IHausCommandCreator<StopDiscoveryModel>
+    public record StopDiscoveryModel : IHausCommandCreator<StopDiscoveryModel>
     {
         public const string Type = "stop_discovery";
 

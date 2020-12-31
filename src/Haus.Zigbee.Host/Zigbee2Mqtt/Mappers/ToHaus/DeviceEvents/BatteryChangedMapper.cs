@@ -10,12 +10,10 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
         {
             if (message.Battery.IsNull())
                 return null;
-            
-            return new BatteryChangedModel
-            {
-                DeviceId = message.GetFriendlyNameFromTopic(),
-                BatteryLevel = message.Battery.GetValueOrDefault()
-            };
+
+            return new BatteryChangedModel(
+                message.GetFriendlyNameFromTopic(), 
+                message.Battery.GetValueOrDefault());
         }
     }
 }
