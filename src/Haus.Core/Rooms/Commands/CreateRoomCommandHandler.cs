@@ -1,6 +1,5 @@
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using FluentValidation;
 using Haus.Core.Common.Commands;
 using Haus.Core.Common.Storage;
@@ -22,12 +21,10 @@ namespace Haus.Core.Rooms.Commands
     {
         private readonly HausDbContext _context;
         private readonly IValidator<RoomModel> _validator;
-        private readonly IMapper _mapper;
 
-        public CreateRoomCommandHandler(HausDbContext context, IMapper mapper, IValidator<RoomModel> validator)
+        public CreateRoomCommandHandler(HausDbContext context, IValidator<RoomModel> validator)
         {
             _context = context;
-            _mapper = mapper;
             _validator = validator;
         }
 
@@ -39,7 +36,7 @@ namespace Haus.Core.Rooms.Commands
             _context.Add(room);
             await _context.SaveChangesAsync(cancellationToken)
                 .ConfigureAwait(false);
-            return _mapper.Map<RoomModel>(room);
+            return room.ToModel();
         }
     }
 }

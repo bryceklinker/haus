@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Haus.Core.Common;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.Entities;
@@ -19,6 +21,22 @@ namespace Haus.Core.Rooms.Entities
         public Lighting Lighting { get; set; } = Lighting.Default.Copy();
         public ICollection<DeviceEntity> Devices { get; set; } = new List<DeviceEntity>();
         public IEnumerable<DeviceEntity> Lights => Devices.Where(d => d.IsLight);
+
+        public static readonly Expression<Func<RoomEntity, RoomModel>> ToModelExpression =
+            r => new RoomModel(
+                r.Id,
+                r.Name,
+                new LightingModel(
+                    r.Lighting.State,
+                    r.Lighting.BrightnessPercent,
+                    r.Lighting.Temperature,
+                    new LightingColorModel(r.Lighting.Color.Red, r.Lighting.Color.Green, r.Lighting.Color.Blue)
+                )
+            );
+
+        private static readonly Lazy<Func<RoomEntity, RoomModel>> ToModelFunc = new(ToModelExpression.Compile);
+        
+        public RoomModel ToModel() => ToModelFunc.Value(this);
 
         public static RoomEntity CreateFromModel(RoomModel model)
         {

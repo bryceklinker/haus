@@ -1,10 +1,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Haus.Core.Common;
-using Haus.Core.Common.Queries;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
@@ -28,12 +24,10 @@ namespace Haus.Core.Devices.Queries
     internal class GetDevicesQueryHandler : IQueryHandler<GetDevicesQuery, ListResult<DeviceModel>>
     {
         private readonly HausDbContext _context;
-        private readonly IMapper _mapper;
 
-        public GetDevicesQueryHandler(HausDbContext context, IMapper mapper = null)
+        public GetDevicesQueryHandler(HausDbContext context)
         {
             _context = context;
-            _mapper = mapper ?? DefaultMapperFactory.GetMapper();
         }
 
         public async Task<ListResult<DeviceModel>> Handle(GetDevicesQuery request, CancellationToken cancellationToken = default)
@@ -44,8 +38,8 @@ namespace Haus.Core.Devices.Queries
                 query = query.Where(d => d.ExternalId == request.ExternalId);
             
             return await query
-                .ProjectTo<DeviceModel>(_mapper.ConfigurationProvider)
-                .ToListResultAsync(cancellationToken: cancellationToken)
+                .Select(DeviceEntity.ToModelExpression)
+                .ToListResultAsync(cancellationToken)
                 .ConfigureAwait(false);
         }
     }

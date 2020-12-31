@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 using Haus.Core.Models.Common;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -22,6 +23,16 @@ namespace Haus.Core.Common
         public double Temperature { get; set; } = DefaultTemperature;
         public LightingColor Color { get; set; } = LightingColor.Default.Copy();
 
+        public static readonly Expression<Func<Lighting, LightingModel>> ToModelExpression = 
+            l => new LightingModel(l.State, l.BrightnessPercent, l.Temperature, new LightingColorModel(l.Color.Red, l.Color.Green, l.Color.Blue));
+
+        private static readonly Lazy<Func<Lighting, LightingModel>> ToModelFunc = new(ToModelExpression.Compile);
+
+        public LightingModel ToModel()
+        {
+            return ToModelFunc.Value(this);
+        }
+        
         public Lighting Copy()
         {
             return new()

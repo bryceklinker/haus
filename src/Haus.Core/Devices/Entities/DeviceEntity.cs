@@ -25,6 +25,19 @@ namespace Haus.Core.Devices.Entities
         public Lighting Lighting { get; set; } = Lighting.Default.Copy();
         public bool IsLight => DeviceType == DeviceType.Light;
 
+        public static readonly Expression<Func<DeviceEntity, DeviceModel>> ToModelExpression =
+            d => new DeviceModel(
+                d.Id,
+                d.Room == null ? default(long?) : d.Room.Id,
+                d.ExternalId,
+                d.Name,
+                d.DeviceType,
+                d.Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray()
+            );
+        private static readonly Lazy<Func<DeviceEntity, DeviceModel>> ToModelFunc = new(ToModelExpression.Compile);
+
+        public DeviceModel ToModel() => ToModelFunc.Value(this);
+        
         public static DeviceEntity FromDiscoveredDevice(DeviceDiscoveredModel model)
         {
             var entity = new DeviceEntity
