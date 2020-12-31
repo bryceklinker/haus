@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Haus.Core.Common;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.DomainEvents;
@@ -19,12 +20,9 @@ namespace Haus.Core.Devices.Entities
         public string ExternalId { get; set; }
         public string Name { get; set; }
         public DeviceType DeviceType { get; set; } = DeviceType.Unknown;
-        
         public ICollection<DeviceMetadataEntity> Metadata { get; set; } = new List<DeviceMetadataEntity>();
-
         public RoomEntity Room { get; set; }
         public Lighting Lighting { get; set; } = Lighting.Default.Copy();
-
         public bool IsLight => DeviceType == DeviceType.Light;
 
         public static DeviceEntity FromDiscoveredDevice(DeviceDiscoveredModel model)

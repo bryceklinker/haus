@@ -1,3 +1,4 @@
+using System.Linq;
 using AutoMapper;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
@@ -10,7 +11,8 @@ namespace Haus.Core.Devices
         public DevicesMappingProfile()
         {
             CreateMap<DeviceEntity, DeviceModel>()
-                .ForMember(model => model.RoomId, member => member.MapFrom(d => d.Room == null ? default(long?) : d.Room.Id));
+                .ConstructUsing(e =>
+                    new DeviceModel(e.Id, e.Room == null ? default(long?) : e.Room.Id, e.ExternalId, e.Name, e.DeviceType, e.Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray()));
             CreateMap<DeviceMetadataEntity, MetadataModel>();
         }
     }
