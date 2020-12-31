@@ -2,9 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Haus.Api.Client;
-using Haus.Core.Models;
 using Haus.Core.Models.Common;
-using Haus.Core.Models.Devices;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Models.Rooms.Events;
@@ -76,7 +74,7 @@ namespace Haus.Web.Host.Tests.Rooms
             await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(msg => hausCommand = msg);
             
             var room = await CreateRoomAsync("room");
-            await _apiClient.ChangeRoomLightingAsync(room.Id, new LightingModel {State = LightingState.On});
+            await _apiClient.ChangeRoomLightingAsync(room.Id, new LightingModel(LightingState.On));
             
             Eventually.Assert(() =>
             {

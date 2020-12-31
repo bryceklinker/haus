@@ -1,10 +1,22 @@
 namespace Haus.Core.Models.Common
 {
-    public class LightingModel
+    public record LightingModel
     {
-        public LightingState State { get; set; }
-        public double BrightnessPercent { get; set; }
-        public double Temperature { get; set; }
-        public LightingColorModel Color { get; set; }
+        public LightingState State { get; }
+        public double BrightnessPercent { get; }
+        public double Temperature { get; }
+        public LightingColorModel Color { get; }
+
+        public LightingModel(
+            LightingState state = LightingState.Off, 
+            double brightnessPercent = 0, 
+            double temperature = 0, 
+            LightingColorModel color = null)
+        {
+            State = state;
+            BrightnessPercent = brightnessPercent;
+            Temperature = temperature;
+            Color = color ?? LightingColorModel.Default;
+        }
     }
 }

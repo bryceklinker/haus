@@ -60,18 +60,8 @@ namespace Haus.Core.Tests.Common
 
         private static LightingModel CreateLightingModel()
         {
-            return new LightingModel
-            {
-                State = LightingState.On,
-                Temperature = 78,
-                BrightnessPercent = 43.12,
-                Color = new LightingColorModel
-                {
-                    Blue = 6,
-                    Green = 3,
-                    Red = 12
-                }
-            };
+            var color = new LightingColorModel(12, 3, 6);
+            return new LightingModel(LightingState.On, 43.12, 78, color);
         }
     }
 }

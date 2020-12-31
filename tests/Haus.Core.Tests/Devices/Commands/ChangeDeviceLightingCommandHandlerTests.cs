@@ -8,8 +8,6 @@ using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
-using Haus.Core.Models.ExternalMessages;
-using Haus.Core.Tests.Support;
 using Haus.Testing.Support;
 using Xunit;
 
@@ -31,7 +29,7 @@ namespace Haus.Core.Tests.Devices.Commands
         {
             var device = _context.AddDevice(deviceType: DeviceType.Light);
             
-            var lighting = new LightingModel{ BrightnessPercent = 54};
+            var lighting = new LightingModel(brightnessPercent: 54);
             await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
             var updated = await _context.FindByIdAsync<DeviceEntity>(device.Id);
@@ -59,7 +57,7 @@ namespace Haus.Core.Tests.Devices.Commands
         {
             var device = _context.AddDevice(deviceType: DeviceType.Light);
             
-            var lighting = new LightingModel{BrightnessPercent = 65};
+            var lighting = new LightingModel(brightnessPercent: 65);
             await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
             var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();

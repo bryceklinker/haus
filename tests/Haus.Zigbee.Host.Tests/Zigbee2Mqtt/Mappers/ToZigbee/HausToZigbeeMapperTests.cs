@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Haus.Core.Models.Common;
@@ -7,7 +6,6 @@ using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -71,7 +69,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
         public void WhenDeviceLightingCommandReceivedThenReturnsSetDeviceMessage()
         {
             var original =
-                new DeviceLightingChangedEvent(new DeviceModel {ExternalId = "my-ext-id"}, new LightingModel{State = LightingState.Off})
+                new DeviceLightingChangedEvent(new DeviceModel {ExternalId = "my-ext-id"}, new LightingModel())
                     .AsHausCommand()
                     .ToMqttMessage("haus/commands");
 

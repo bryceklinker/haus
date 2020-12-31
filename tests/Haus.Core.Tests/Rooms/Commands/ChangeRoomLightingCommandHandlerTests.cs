@@ -3,11 +3,9 @@ using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Common;
-using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Entities;
-using Haus.Core.Tests.Support;
 using Haus.Testing.Support;
 using Xunit;
 
@@ -29,7 +27,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         {
             var room = _context.AddRoom();
 
-            var lighting = new LightingModel {State = LightingState.Off};
+            var lighting = new LightingModel();
             await _hausBus.ExecuteCommandAsync(new ChangeRoomLightingCommand(room.Id, lighting));
 
             var updated = await _context.FindByIdAsync<RoomEntity>(room.Id);
@@ -40,7 +38,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         public async Task WhenLightingChangedThenRoomLightingChangedIsPublished()
         {
             var room = _context.AddRoom();
-            var lighting = new LightingModel{State = LightingState.On};
+            var lighting = new LightingModel(LightingState.On);
 
             await _hausBus.ExecuteCommandAsync(new ChangeRoomLightingCommand(room.Id, lighting));
 

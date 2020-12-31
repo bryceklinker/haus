@@ -49,18 +49,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
         [Fact]
         public void WhenLightingModelIsFullyPopulatedThenZigbeeLightingIsPopulated()
         {
-            var lightingModel = new LightingModel
-            {
-                State = LightingState.Off,
-                BrightnessPercent = 54,
-                Temperature = 67,
-                Color = new LightingColorModel
-                {
-                    Blue = 234,
-                    Green = 54,
-                    Red = 98
-                }
-            };
+            var color = new LightingColorModel(98, 54, 234);
+            var lightingModel = new LightingModel(LightingState.Off, 54, 67, color);
 
             var original = CreateMqttMessage(lightingModel);
             var message = _mapper.Map(original).Single();
@@ -77,7 +67,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
         [Fact]
         public void WhenLightingModelMissingColorThenReturnsZigbeeLighting()
         {
-            var model = new LightingModel{ State = LightingState.On};
+            var model = new LightingModel(LightingState.On);
 
             var original = CreateMqttMessage(model);
             var message = _mapper.Map(original).Single();
