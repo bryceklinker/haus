@@ -1,23 +1,6 @@
 namespace Haus.Core.Models.ExternalMessages
 {
-    public class HausCommand
-    {
-        public string Type { get; set; }
+    public record HausCommand(string Type = null);
 
-        public HausCommand(string type = null)
-        {
-            Type = type;
-        }
-    }
-
-    public class HausCommand<T> : HausCommand
-    {
-        public T Payload { get; set; }
-
-        public HausCommand(string type = null, T payload = default)
-            : base(type)
-        {
-            Payload = payload;
-        }
-    }
+    public record HausCommand<T>(string Type = null, T Payload = default) : HausCommand(Type);
 }
