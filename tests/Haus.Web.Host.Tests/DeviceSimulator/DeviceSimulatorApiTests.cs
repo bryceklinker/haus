@@ -30,10 +30,7 @@ namespace Haus.Web.Host.Tests.DeviceSimulator
             DeviceDiscoveredModel discoveredModel = null;
             await _factory.SubscribeToHausEventsAsync<DeviceDiscoveredModel>(evt => discoveredModel = evt.Payload);
 
-            await _client.AddSimulatedDeviceAsync(new CreateSimulatedDeviceModel
-            {
-                DeviceType = DeviceType.Light
-            });
+            await _client.AddSimulatedDeviceAsync(new CreateSimulatedDeviceModel(DeviceType.Light));
 
             Eventually.Assert(() =>
             {
@@ -44,9 +41,9 @@ namespace Haus.Web.Host.Tests.DeviceSimulator
         [Fact]
         public async Task WhenDeviceSimulatorIsResetThenStateIsSetToInitialState()
         {
-            await _client.AddSimulatedDeviceAsync(new CreateSimulatedDeviceModel {DeviceType = DeviceType.Light});
-            await _client.AddSimulatedDeviceAsync(new CreateSimulatedDeviceModel {DeviceType = DeviceType.Light});
-            await _client.AddSimulatedDeviceAsync(new CreateSimulatedDeviceModel {DeviceType = DeviceType.Light});
+            await _client.AddSimulatedDeviceAsync(new CreateSimulatedDeviceModel(DeviceType.Light));
+            await _client.AddSimulatedDeviceAsync(new CreateSimulatedDeviceModel(DeviceType.Light));
+            await _client.AddSimulatedDeviceAsync(new CreateSimulatedDeviceModel(DeviceType.Light));
 
             DeviceSimulatorState state = null;
             

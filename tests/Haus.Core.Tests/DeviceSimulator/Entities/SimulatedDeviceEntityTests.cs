@@ -13,7 +13,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
         [Fact]
         public void WhenCreatedThenSimulatedMetadataIsAdded()
         {
-            var model = new CreateSimulatedDeviceModel {DeviceType = DeviceType.Light};
+            var model = new CreateSimulatedDeviceModel(DeviceType.Light);
 
             var entity = SimulatedDeviceEntity.Create(model);
 
@@ -25,10 +25,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
         [Fact]
         public void WhenCreatedWithMetadataThenMetadataIsMappedToSimulatedDevice()
         {
-            var model = new CreateSimulatedDeviceModel
-            {
-                Metadata = new []{new MetadataModel("one", "three")}
-            };
+            var model = new CreateSimulatedDeviceModel(metadata: new []{new MetadataModel("one", "three")});
 
             var entity = SimulatedDeviceEntity.Create(model);
 
@@ -36,9 +33,9 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
         }
 
         [Fact]
-        public void WhenTurnedIntoDeviceDiscoveredThenDeviceDiscoverdIsPopulatedFromSimulatedDevice()
+        public void WhenTurnedIntoDeviceDiscoveredThenDeviceDiscoveredIsPopulatedFromSimulatedDevice()
         {
-            var entity = SimulatedDeviceEntity.Create(new CreateSimulatedDeviceModel {DeviceType = DeviceType.Light});
+            var entity = SimulatedDeviceEntity.Create(new CreateSimulatedDeviceModel(DeviceType.Light));
 
             var model = entity.ToDeviceDiscoveredModel();
 
