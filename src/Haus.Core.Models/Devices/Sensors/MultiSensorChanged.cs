@@ -8,11 +8,15 @@ using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Models.Devices.Sensors
 {
-    public class MultiSensorChanged : IHausEventCreator<MultiSensorChanged>
+    public record MultiSensorChanged(
+        string DeviceId,
+        OccupancyChangedModel OccupancyChanged = null,
+        TemperatureChangedModel TemperatureChanged = null,
+        IlluminanceChangedModel IlluminanceChanged = null,
+        BatteryChangedModel BatteryChanged = null) : IHausEventCreator<MultiSensorChanged>
     {
         public const string Type = "multi_sensor_changed";
         
-        public string DeviceId { get; set; }
         public bool HasTemperature => TemperatureChanged != null;
         public bool HasOccupancy => OccupancyChanged != null;
         public bool HasIlluminance => IlluminanceChanged != null;
@@ -20,11 +24,6 @@ namespace Haus.Core.Models.Devices.Sensors
         public bool[] Changes => new[] {HasTemperature, HasOccupancy, HasIlluminance, HasBattery};
         public bool HasMultipleChanges => Changes.Count(c => c) > 1;
         
-        public TemperatureChangedModel TemperatureChanged { get; set; }
-        public OccupancyChangedModel OccupancyChanged { get; set; }
-        public IlluminanceChangedModel IlluminanceChanged { get; set; }
-        public BatteryChangedModel BatteryChanged { get; set; }
-
         public object GetSingleChange()
         {
             if (HasTemperature)
@@ -41,7 +40,7 @@ namespace Haus.Core.Models.Devices.Sensors
 
         public HausEvent<MultiSensorChanged> AsHausEvent()
         {
-            return new HausEvent<MultiSensorChanged>(Type, this);
+            return new(Type, this);
         }
     }
 }

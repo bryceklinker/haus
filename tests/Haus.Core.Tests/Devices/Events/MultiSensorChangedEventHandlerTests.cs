@@ -22,11 +22,8 @@ namespace Haus.Core.Tests.Devices.Events
         public async Task WhenMultiSensorChangedHasOccupancyThenPublishesOccupancyChangedEvent()
         {
             var deviceId = $"{Guid.NewGuid()}";
-            var change = new MultiSensorChanged
-            {
-                DeviceId = deviceId,
-                OccupancyChanged = new OccupancyChangedModel(deviceId)
-            };
+            var change = new MultiSensorChanged(deviceId, new OccupancyChangedModel(deviceId));
+            
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
             Assert.Single(_hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>());

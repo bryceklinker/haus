@@ -30,7 +30,7 @@ namespace Haus.Core.Tests.Common.Events
         [Fact]
         public void WhenMultiSensorChangedThenReturnsRoutableEventFromMultiSensorChanged()
         {
-            var bytes = HausJsonSerializer.SerializeToBytes(new MultiSensorChanged().AsHausEvent());
+            var bytes = HausJsonSerializer.SerializeToBytes(new MultiSensorChanged($"{Guid.NewGuid()}").AsHausEvent());
 
             var routableEvent = _factory.Create(bytes);
 

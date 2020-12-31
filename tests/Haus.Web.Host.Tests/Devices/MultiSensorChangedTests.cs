@@ -24,17 +24,17 @@ namespace Haus.Web.Host.Tests.Devices
         [Fact]
         public async Task WhenMultiSensorChangedWithOccupancyThenRoomLightingChangedPublished()
         {
-            const DeviceType multiSensorDeviceType = DeviceType.MotionSensor | DeviceType.LightSensor | DeviceType.TemperatureSensor;
+            const DeviceType multiSensorDeviceType =
+                DeviceType.MotionSensor | DeviceType.LightSensor | DeviceType.TemperatureSensor;
             var (room, sensor) = await _factory.AddRoomWithDevice("sup", multiSensorDeviceType);
-            
+
             HausCommand<RoomLightingChangedEvent> hausCommand = null;
             await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(cmd => hausCommand = cmd);
-            await _factory.PublishHausEventAsync(new MultiSensorChanged
-            {
-                DeviceId = sensor.ExternalId,
-                OccupancyChanged = new OccupancyChangedModel(sensor.ExternalId, true)
-            });
-            
+            await _factory.PublishHausEventAsync(new MultiSensorChanged(
+                sensor.ExternalId,
+                new OccupancyChangedModel(sensor.ExternalId, true)
+            ));
+
             Eventually.Assert(() =>
             {
                 Assert.Equal(room.Id, hausCommand.Payload.Room.Id);

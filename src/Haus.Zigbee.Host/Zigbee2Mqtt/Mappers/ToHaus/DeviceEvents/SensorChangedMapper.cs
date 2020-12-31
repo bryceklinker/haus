@@ -20,14 +20,13 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
         
         public object Map(Zigbee2MqttMessage message)
         {
-            var multiSensorChanged = new MultiSensorChanged
-            {
-                DeviceId = message.GetFriendlyNameFromTopic(),
-                BatteryChanged = _batteryChangedMapper.Map(message),
-                IlluminanceChanged = _illuminanceChangedMapper.Map(message),
-                OccupancyChanged = _occupancyChangedMapper.Map(message),
-                TemperatureChanged = _temperatureChangedMapper.Map(message)
-            };
+            var multiSensorChanged = new MultiSensorChanged(
+                message.GetFriendlyNameFromTopic(),
+                _occupancyChangedMapper.Map(message),
+                _temperatureChangedMapper.Map(message),
+                _illuminanceChangedMapper.Map(message),
+                _batteryChangedMapper.Map(message)
+            );
 
             return multiSensorChanged.HasMultipleChanges 
                 ? multiSensorChanged 
