@@ -1,13 +1,9 @@
-using System.Linq;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Haus.Api.Client;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.ExternalMessages;
-using Haus.Core.Models.Rooms;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
@@ -36,11 +32,7 @@ namespace Haus.Web.Host.Tests.Devices
             await _factory.PublishHausEventAsync(new MultiSensorChanged
             {
                 DeviceId = sensor.ExternalId,
-                OccupancyChanged = new OccupancyChangedModel
-                {
-                    Occupancy = true,
-                    DeviceId = sensor.ExternalId
-                }
+                OccupancyChanged = new OccupancyChangedModel(sensor.ExternalId, true)
             });
             
             Eventually.Assert(() =>

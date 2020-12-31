@@ -8,7 +8,6 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Entities;
-using Haus.Core.Tests.Support;
 using Haus.Testing.Support;
 using Xunit;
 
@@ -18,9 +17,8 @@ namespace Haus.Core.Tests.Devices.Events
     {
         private readonly HausDbContext _context;
         private readonly CapturingHausBus _hausBus;
-        private DeviceEntity _sensor;
-        private DeviceEntity _light;
-        private RoomEntity _room;
+        private readonly DeviceEntity _sensor;
+        private readonly RoomEntity _room;
 
         public OccupancyChangedEventHandlerTests()
         {
@@ -28,18 +26,18 @@ namespace Haus.Core.Tests.Devices.Events
             _hausBus = HausBusFactory.CreateCapturingBus(_context);
             
             _sensor = _context.AddDevice(deviceType: DeviceType.MotionSensor);
-            _light = _context.AddDevice(deviceType: DeviceType.Light);
+            var light = _context.AddDevice(deviceType: DeviceType.Light);
             _room = _context.AddRoom(configure: entity =>
             {
                 entity.AddDevice(_sensor, _hausBus);
-                entity.AddDevice(_light, _hausBus);
+                entity.AddDevice(light, _hausBus);
             });
         }
 
         [Fact]
         public async Task WhenOccupancySensorDetectsMotionAndSensorIsInARoomThenRoomLightsAreTurnedOn()
         {
-            var change = new OccupancyChangedModel {Occupancy = true, DeviceId = _sensor.ExternalId};
+            var change = new OccupancyChangedModel(_sensor.ExternalId, true);
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
             var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
@@ -50,7 +48,7 @@ namespace Haus.Core.Tests.Devices.Events
         [Fact]
         public async Task WhenOccupancySensorTimedOutAndSensorIsInRoomThenRoomLightsAreTurnedOff()
         {
-            var change = new OccupancyChangedModel {Occupancy = false, DeviceId = _sensor.ExternalId};
+            var change = new OccupancyChangedModel(_sensor.ExternalId);
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
             var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
@@ -63,7 +61,7 @@ namespace Haus.Core.Tests.Devices.Events
         {
             var sensor = _context.AddDevice(deviceType: DeviceType.MotionSensor);
             
-            var change = new OccupancyChangedModel{Occupancy = true, DeviceId = sensor.ExternalId};
+            var change = new OccupancyChangedModel(sensor.ExternalId, true);
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
             
             Assert.Empty(_hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>());

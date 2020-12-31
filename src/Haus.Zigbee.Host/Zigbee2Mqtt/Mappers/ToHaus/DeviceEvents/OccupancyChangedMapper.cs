@@ -11,13 +11,12 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
             if (message.Occupancy.IsNull())
                 return null;
             
-            return new OccupancyChangedModel
-            {
-                DeviceId = message.GetFriendlyNameFromTopic(),
-                Timeout = message.OccupancyTimeout.GetValueOrDefault(),
-                Occupancy = message.Occupancy.GetValueOrDefault(),
-                Sensitivity = message.MotionSensitivity
-            };
+            return new OccupancyChangedModel(
+                message.GetFriendlyNameFromTopic(),
+                message.Occupancy.GetValueOrDefault(),
+                message.OccupancyTimeout.GetValueOrDefault(),
+                message.MotionSensitivity
+            );
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Haus.Core.Tests.Common.Events
         [Fact]
         public void WhenMotionSensorChangedThenReturnsRoutableEventFromMotionSensorChanged()
         {
-            var bytes = HausJsonSerializer.SerializeToBytes(new OccupancyChangedModel().AsHausEvent());
+            var bytes = HausJsonSerializer.SerializeToBytes(new OccupancyChangedModel($"{Guid.NewGuid()}").AsHausEvent());
 
             var routableEvent = _factory.Create(bytes);
 

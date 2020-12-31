@@ -3,16 +3,12 @@ using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Models.Devices.Sensors.Motion
 {
-    public class OccupancyChangedModel : IHausEventCreator<OccupancyChangedModel>
+    public record OccupancyChangedModel(string DeviceId, bool Occupancy = false, long Timeout = 0, string Sensitivity = null) : IHausEventCreator<OccupancyChangedModel>
     {
         public const string Type = "occupancy_changed";
-        public string DeviceId { get; set; }
-        public bool Occupancy { get; set; }
-        public long Timeout { get; set; }
-        public string Sensitivity { get; set; }
         public HausEvent<OccupancyChangedModel> AsHausEvent()
         {
-            return new HausEvent<OccupancyChangedModel>(Type, this);
+            return new(Type, this);
         }
     }
 }

@@ -25,10 +25,7 @@ namespace Haus.Core.Tests.Devices.Events
             var change = new MultiSensorChanged
             {
                 DeviceId = deviceId,
-                OccupancyChanged = new OccupancyChangedModel
-                {
-                    DeviceId = deviceId
-                }
+                OccupancyChanged = new OccupancyChangedModel(deviceId)
             };
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 

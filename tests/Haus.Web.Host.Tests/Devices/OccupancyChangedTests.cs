@@ -36,7 +36,7 @@ namespace Haus.Web.Host.Tests.Devices
 
             HausCommand<RoomLightingChangedEvent> hausCommand = null;
             await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(cmd => hausCommand = cmd);
-            await _factory.PublishHausEventAsync(new OccupancyChangedModel { Occupancy = true, DeviceId = sensor.ExternalId });
+            await _factory.PublishHausEventAsync(new OccupancyChangedModel(sensor.ExternalId, true));
             
             Eventually.Assert(() =>
             {
