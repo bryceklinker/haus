@@ -3,7 +3,7 @@ using Haus.Core.Models.Common;
 
 namespace Haus.Core.Models.Devices
 {
-    public class DeviceModel : IModel
+    public record DeviceModel : IModel
     {
         public long Id { get; set; }
         public long? RoomId { get; set; }
