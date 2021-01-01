@@ -1,7 +1,9 @@
 using System;
 using System.Text;
+using FluentAssertions;
 using Haus.Core.Diagnostics.Factories;
 using Haus.Core.Models;
+using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -24,8 +26,8 @@ namespace Haus.Core.Tests.Diagnostics.Factories
         {
             var model = _factory.Create("something", null);
 
-            Assert.Equal("something", model.Topic);
-            Assert.Null(model.Payload);
+            model.Topic.Should().Be("something");
+            model.Payload.Should().BeNull();
         }
 
         [Fact]
@@ -33,8 +35,8 @@ namespace Haus.Core.Tests.Diagnostics.Factories
         {
             var model = _factory.Create("something", Array.Empty<byte>());
 
-            Assert.Equal("something", model.Topic);
-            Assert.Equal(string.Empty, model.Payload);
+            model.Topic.Should().Be("something");
+            model.Payload.Should().Be("");
         }
         
         [Fact]
@@ -42,8 +44,8 @@ namespace Haus.Core.Tests.Diagnostics.Factories
         {
             var model = _factory.Create("my-topic", HausJsonSerializer.SerializeToBytes(new {id = 45}));
 
-            Assert.Equal("my-topic", model.Topic);
-            Assert.Equal(45, JObject.Parse(model.Payload.ToString()).Value<int>("id"));
+            model.Topic.Should().Be("my-topic");
+            JObject.Parse(model.Payload.ToString()).Value<int>("id").Should().Be(45);
         }
 
         [Fact]
@@ -51,7 +53,7 @@ namespace Haus.Core.Tests.Diagnostics.Factories
         {
             var model = _factory.Create("my-topic", Encoding.UTF8.GetBytes("hello there"));
 
-            Assert.Equal("hello there", model.Payload);
+            model.Payload.Should().Be("hello there");
         }
 
         [Fact]
@@ -59,7 +61,7 @@ namespace Haus.Core.Tests.Diagnostics.Factories
         {
             var model = _factory.Create("idk", Array.Empty<byte>());
 
-            Assert.True(Guid.TryParse(model.Id, out _));
+            model.Id.Should().BeAGuid();
         }
 
         [Fact]
@@ -68,7 +70,7 @@ namespace Haus.Core.Tests.Diagnostics.Factories
             _clock.SetNow(new DateTime(2020, 9, 23));
             var model = _factory.Create("idk", Array.Empty<byte>());
 
-            Assert.Equal(new DateTime(2020, 9, 23), model.Timestamp);
+            model.Timestamp.Should().Be(new DateTime(2020, 9, 23));
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common.Events;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Motion;
@@ -26,7 +27,8 @@ namespace Haus.Core.Tests.Devices.Events
             
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
-            Assert.Single(_hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>());
+            _hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>()
+                .Should().HaveCount(1);
         }
     }
 }

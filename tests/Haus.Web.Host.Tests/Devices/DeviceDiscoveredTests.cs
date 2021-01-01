@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.ExternalMessages;
@@ -30,8 +31,8 @@ namespace Haus.Web.Host.Tests.Devices
             {
                 var client = _factory.CreateAuthenticatedClient();
                 var list = await client.GetDevicesAsync();
-                Assert.Contains(list.Items, model => model.ExternalId == "my-new-id");
-                Assert.Contains(list.Items, model => model.DeviceType == deviceType);
+                list.Items.Should()
+                    .Contain(m => m.ExternalId == "my-new-id" && m.DeviceType == deviceType);
             });
         }
 
@@ -46,7 +47,7 @@ namespace Haus.Web.Host.Tests.Devices
 
             Eventually.Assert(() =>
             {
-                Assert.Equal(SyncDiscoveryModel.Type, command.Type);
+                command.Type.Should().Be(SyncDiscoveryModel.Type);
             });
         }
 
@@ -56,8 +57,8 @@ namespace Haus.Web.Host.Tests.Devices
             var client = _factory.CreateUnauthenticatedClient(); 
             
             var exception = await Assert.ThrowsAsync<HttpRequestException>(() => client.GetDevicesAsync());
-            
-            Assert.Equal(HttpStatusCode.Unauthorized, exception.StatusCode);
+
+            exception.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
     }
 }

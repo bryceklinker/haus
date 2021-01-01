@@ -1,4 +1,5 @@
 using System.Linq;
+using FluentAssertions;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Battery;
@@ -32,7 +33,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithDeviceTopic("device-friendly-name")
                 .BuildZigbee2MqttMessage();
 
-            Assert.True(_mapper.IsSupported(message));
+            _mapper.IsSupported(message).Should().BeTrue();
         }
 
         [Fact]
@@ -42,7 +43,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithDeviceTopic("device-friendly-name")
                 .BuildZigbee2MqttMessage();
 
-            Assert.False(_mapper.IsSupported(message));
+            _mapper.IsSupported(message).Should().BeFalse();
         }
 
         [Fact]
@@ -52,7 +53,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithTopicPath("one/two/three")
                 .BuildZigbee2MqttMessage();
 
-            Assert.False(_mapper.IsSupported(message));
+            _mapper.IsSupported(message).Should().BeFalse();
         }
 
         [Fact]
@@ -125,7 +126,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
         private static void AssertHausEventTypeIs(string expectedType, MqttApplicationMessage result)
         {
             var payload = HausJsonSerializer.Deserialize<HausEvent>(result.Payload);
-            Assert.Equal(expectedType, payload.Type);
+            payload.Type.Should().Be(expectedType);
         }
     }
 }

@@ -7,6 +7,8 @@ using Haus.Core.Rooms.DomainEvents;
 using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
 using System.Linq;
+using FluentAssertions;
+using Haus.Core.Models.Rooms.Events;
 using Xunit;
 
 namespace Haus.Core.Tests.Rooms.Entities
@@ -21,8 +23,8 @@ namespace Haus.Core.Tests.Rooms.Entities
             var room = new RoomEntity();
             room.AddDevice(device, new FakeDomainEventBus());
 
-            Assert.Contains(device, room.Devices);
-            Assert.Equal(room, device.Room);
+            room.Devices.Should().Contain(device);
+            device.Room.Should().Be(room);
         }
 
         [Fact]
@@ -35,7 +37,7 @@ namespace Haus.Core.Tests.Rooms.Entities
             var light = new DeviceEntity {DeviceType = DeviceType.Light};
             room.AddDevice(light, new FakeDomainEventBus());
 
-            Assert.Equal(roomLighting, light.Lighting);
+            light.Lighting.Should().BeEquivalentTo(roomLighting);
         }
 
         [Fact]
@@ -44,7 +46,7 @@ namespace Haus.Core.Tests.Rooms.Entities
             var room = new RoomEntity();
             room.UpdateFromModel(new RoomModel(Name: "kitchen"));
 
-            Assert.Equal("kitchen", room.Name);
+            room.Name.Should().Be("kitchen");
         }
 
         [Fact]
@@ -56,8 +58,8 @@ namespace Haus.Core.Tests.Rooms.Entities
             room.AddDevice(device, new FakeDomainEventBus());
             room.RemoveDevice(device);
 
-            Assert.DoesNotContain(device, room.Devices);
-            Assert.Null(device.Room);
+            room.Devices.Should().BeEmpty();
+            device.Room.Should().BeNull();
         }
 
         [Fact]
@@ -69,7 +71,7 @@ namespace Haus.Core.Tests.Rooms.Entities
 
             room.AddDevice(device, new FakeDomainEventBus());
 
-            Assert.Single(room.Devices);
+            room.Devices.Should().HaveCount(1);
         }
 
         [Fact]
@@ -77,7 +79,7 @@ namespace Haus.Core.Tests.Rooms.Entities
         {
             var room = new RoomEntity();
 
-            Assert.Equal(Lighting.Default, room.Lighting);
+            room.Lighting.Should().BeEquivalentTo(Lighting.Default);
         }
 
         [Fact]
@@ -87,7 +89,7 @@ namespace Haus.Core.Tests.Rooms.Entities
 
             var room = RoomEntity.CreateFromModel(model);
 
-            Assert.Equal("living room", room.Name);
+            room.Name.Should().Be("Living room");
         }
 
         [Fact]
@@ -98,7 +100,7 @@ namespace Haus.Core.Tests.Rooms.Entities
             var lighting = new Lighting {State = LightingState.On};
             room.ChangeLighting(lighting, new FakeDomainEventBus());
 
-            Assert.Equal(lighting, room.Lighting);
+            room.Lighting.Should().BeEquivalentTo(lighting);
         }
 
         [Fact]
@@ -111,7 +113,7 @@ namespace Haus.Core.Tests.Rooms.Entities
             var lighting = new Lighting {State = LightingState.On};
             room.ChangeLighting(lighting, new FakeDomainEventBus());
 
-            Assert.Equal(lighting, light.Lighting);
+            light.Lighting.Should().BeEquivalentTo(lighting);
         }
 
         [Fact]
@@ -123,7 +125,8 @@ namespace Haus.Core.Tests.Rooms.Entities
             var lighting = new Lighting();
             room.ChangeLighting(lighting, domainEventBus);
 
-            Assert.Single(domainEventBus.GetEvents.OfType<RoomLightingChangedDomainEvent>());
+            domainEventBus.GetEvents.Should().HaveCount(1)
+                .And.ContainItemsAssignableTo<RoomLightingChangedDomainEvent>();
         }
 
         [Fact]
@@ -135,8 +138,8 @@ namespace Haus.Core.Tests.Rooms.Entities
 
             room.TurnOff(fakeDomainEventBus);
 
-            Assert.Equal(LightingState.Off, room.Lighting.State);
-            Assert.Equal(54, room.Lighting.BrightnessPercent);
+            room.Lighting.State.Should().Be(LightingState.Off);
+            room.Lighting.BrightnessPercent.Should().Be(54);
         }
 
         [Fact]
@@ -148,8 +151,8 @@ namespace Haus.Core.Tests.Rooms.Entities
 
             room.TurnOn(fakeDomainEventBus);
 
-            Assert.Equal(LightingState.On, room.Lighting.State);
-            Assert.Equal(54, room.Lighting.BrightnessPercent);
+            room.Lighting.State.Should().Be(LightingState.On);
+            room.Lighting.BrightnessPercent.Should().Be(54);
         }
     }
 }

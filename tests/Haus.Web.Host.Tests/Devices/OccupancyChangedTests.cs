@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models;
 using Haus.Core.Models.Common;
@@ -40,8 +41,8 @@ namespace Haus.Web.Host.Tests.Devices
             
             Eventually.Assert(() =>
             {
-                Assert.Equal(room.Id, hausCommand.Payload.Room.Id);
-                Assert.Equal(LightingState.On, hausCommand.Payload.Lighting.State);
+                hausCommand.Payload.Room.Id.Should().Be(room.Id);
+                hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
             });
         }
     }

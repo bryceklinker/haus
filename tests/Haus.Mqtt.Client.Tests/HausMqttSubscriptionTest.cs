@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Mqtt.Client.Subscriptions;
 using MQTTnet;
 using Xunit;
@@ -22,7 +23,7 @@ namespace Haus.Mqtt.Client.Tests
                 Topic = "other"
             });
 
-            Assert.Null(actual);
+            actual.Should().BeNull();
         }
 
         [Fact]
@@ -38,7 +39,7 @@ namespace Haus.Mqtt.Client.Tests
             var expected =new MqttApplicationMessage{Topic = "other"};
             await subscription.ExecuteAsync(expected);
 
-            Assert.Same(expected, actual);
+            actual.Should().BeSameAs(expected);
         }
     }
 }

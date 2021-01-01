@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Commands;
@@ -33,14 +34,17 @@ namespace Haus.Core.Tests.Devices.Commands
             await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
             var updated = await _context.FindByIdAsync<DeviceEntity>(device.Id);
-            Assert.Equal(54, updated.Lighting.BrightnessPercent);
+            updated.Lighting.BrightnessPercent.Should().Be(54);
         }
 
         [Fact]
         public async Task WhenDeviceIsMissingThenThrowsEntityNotFoundException()
         {
             var command = new ChangeDeviceLightingCommand(4213, new LightingModel());
-            await Assert.ThrowsAsync<EntityNotFoundException<DeviceEntity>>(() => _hausBus.ExecuteCommandAsync(command));
+           
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+            
+            await act.Should().ThrowAsync<EntityNotFoundException<DeviceEntity>>();
         }
 
         [Fact]
@@ -49,7 +53,10 @@ namespace Haus.Core.Tests.Devices.Commands
             var device = _context.AddDevice();
             var lighting = new LightingModel();
             var command = new ChangeDeviceLightingCommand(device.Id, lighting);
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _hausBus.ExecuteCommandAsync(command));
+            
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+
+            await act.Should().ThrowAsync<InvalidOperationException>();
         }
 
         [Fact]
@@ -61,8 +68,8 @@ namespace Haus.Core.Tests.Devices.Commands
             await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
             var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
-            Assert.Equal(device.Id, hausCommand.Payload.Device.Id);
-            Assert.Equal(65, hausCommand.Payload.Lighting.BrightnessPercent);
+            hausCommand.Payload.Device.Id.Should().Be(device.Id);
+            hausCommand.Payload.Lighting.BrightnessPercent.Should().Be(65);
         }
     }
 }

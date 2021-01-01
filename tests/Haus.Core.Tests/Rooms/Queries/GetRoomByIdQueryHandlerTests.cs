@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Rooms.Queries;
@@ -27,7 +28,15 @@ namespace Haus.Core.Tests.Rooms.Queries
 
             var actual = await _hausBus.ExecuteQueryAsync(new GetRoomByIdQuery(existing.Id));
 
-            Assert.Equal("hotel", actual.Name);
+            actual.Name.Should().Be("hotel");
+        }
+
+        [Fact]
+        public async Task WhenRoomIsMissingThenReturnsNull()
+        {
+            var actual = await _hausBus.ExecuteQueryAsync(new GetRoomByIdQuery(3234));
+
+            actual.Should().BeNull();
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Rooms.Events;
@@ -30,8 +31,8 @@ namespace Haus.Core.Tests.Rooms.DomainEvents
             await _hausBus.FlushAsync();
 
             var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-            Assert.Equal(89, hausCommand.Payload.Room.Id);
-            Assert.Equal(LightingState.On, hausCommand.Payload.Lighting.State);
+            hausCommand.Payload.Room.Id.Should().Be(89);
+            hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
         }
     }
 }

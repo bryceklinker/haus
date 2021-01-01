@@ -1,5 +1,7 @@
 using System.Linq;
+using FluentAssertions;
 using Haus.Core.Models;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.ExternalMessages;
@@ -29,8 +31,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
                 .WithPairingType()
                 .WithInterviewSuccessful()
                 .BuildZigbee2MqttMessage();
-            
-            Assert.True(_mapper.IsSupported(message));
+
+            _mapper.IsSupported(message).Should().BeTrue();
         }
 
         [Fact]
@@ -41,8 +43,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
                 .WithPairingType()
                 .WithInterviewSuccessful()
                 .BuildZigbee2MqttMessage();
-            
-            Assert.False(_mapper.IsSupported(message));
+
+            _mapper.IsSupported(message).Should().BeFalse();
         }
 
         [Fact]
@@ -53,8 +55,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
                 .WithType("nope")
                 .WithInterviewSuccessful()
                 .BuildZigbee2MqttMessage();
-            
-            Assert.False(_mapper.IsSupported(message));
+
+            _mapper.IsSupported(message).Should().BeFalse();
         }
 
         [Fact]
@@ -65,8 +67,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
                 .WithPairingType()
                 .WithMessage("not good")
                 .BuildZigbee2MqttMessage();
-            
-            Assert.False(_mapper.IsSupported(message));
+
+            _mapper.IsSupported(message).Should().BeFalse();
         }
         
         [Fact]
@@ -81,7 +83,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
 
             var result = _mapper.Map(message).Single();
 
-            Assert.Equal(HausEventTopic, result.Topic);
+            result.Topic.Should().Be(HausEventTopic);
         }
 
         [Fact]
@@ -101,12 +103,13 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
             var result = _mapper.Map(message).Single();
 
             var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
-            Assert.Equal(DeviceDiscoveredModel.Type, hausEvent.Type);
-            Assert.Equal("this-is-an-id", hausEvent.Payload.Id);
-            Assert.Contains(hausEvent.Payload.Metadata, m => m.Key == "description" && m.Value == "my description");
-            Assert.Contains(hausEvent.Payload.Metadata, m => m.Key == "model" && m.Value == "this is a model");
-            Assert.Contains(hausEvent.Payload.Metadata, m => m.Key == "vendor" && m.Value == "Philips");
-            Assert.Equal(DeviceType.Unknown, hausEvent.Payload.DeviceType);
+            hausEvent.Type.Should().Be(DeviceDiscoveredModel.Type);
+            hausEvent.Payload.Id.Should().Be("this-is-an-id");
+            hausEvent.Payload.DeviceType.Should().Be(DeviceType.Unknown);
+            hausEvent.Payload.Metadata.Should()
+                .ContainEquivalentOf(new MetadataModel("description", "my description"))
+                .And.ContainEquivalentOf(new MetadataModel("model", "this is a model"))
+                .And.ContainEquivalentOf(new MetadataModel("vendor", "Philips"));
         }
 
         [Fact]
@@ -127,7 +130,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
             var result = _mapper.Map(message).Single();
             
             var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
-            Assert.Equal(DeviceType.Light, hausEvent.Payload.DeviceType);
+            hausEvent.Payload.DeviceType.Should().Be(DeviceType.Light);
         }
     }
 }

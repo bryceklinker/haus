@@ -12,6 +12,5 @@ namespace Haus.Core.Models.Devices
         MetadataModel[] Metadata = null) : IdentityModel
     {
         public MetadataModel[] Metadata { get; } = Metadata ?? Array.Empty<MetadataModel>();
-        public long? RoomId { get; } = RoomId == -1 ? null : RoomId;
     }
 }

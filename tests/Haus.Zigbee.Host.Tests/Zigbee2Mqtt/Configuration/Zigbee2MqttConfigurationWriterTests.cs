@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Microsoft.Extensions.Options;
 using Xunit;
@@ -23,7 +24,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Configuration
 
             await WriteAsync(options);
 
-            Assert.True(File.Exists(_configFilePath));
+            File.Exists(_configFilePath).Should().BeTrue();
         }
 
         [Fact]
@@ -34,22 +35,22 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Configuration
 
             await WriteAsync(options);
 
-            Assert.NotEqual("This is my text", await File.ReadAllTextAsync(_configFilePath));
+            (await File.ReadAllTextAsync(_configFilePath)).Should().NotBe("This is my text");
         }
 
         [Fact]
         public async Task WhenConfigExistsAndOverwritingIsOffThenConfigIsNotRewritten()
         {
             await File.WriteAllTextAsync(_configFilePath, "This is my text");
-            var options = CreateZigbeeOptions(_configFilePath, overwriteConfig: false);
+            var options = CreateZigbeeOptions(_configFilePath, false);
 
             await WriteAsync(options);
 
-            Assert.Equal("This is my text", await File.ReadAllTextAsync(_configFilePath));
+            (await File.ReadAllTextAsync(_configFilePath)).Should().Be("This is my text");
         }
 
         [Fact]
-        public async Task WhenConfigFileIsInDifferentDirectoryThenConfigFileIsWrittenToDirctory()
+        public async Task WhenConfigFileIsInDifferentDirectoryThenConfigFileIsWrittenToDirectory()
         {
             _configFilePath = Path.GetFullPath(Path.Join(Directory.GetCurrentDirectory(), $"{Guid.NewGuid()}", "config.yaml"));
 
@@ -57,7 +58,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Configuration
 
             await WriteAsync(options);
 
-            Assert.True(File.Exists(_configFilePath));
+
+            File.Exists(_configFilePath).Should().BeTrue();
         }
         
         public void Dispose()

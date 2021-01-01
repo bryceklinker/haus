@@ -1,9 +1,11 @@
 using System.Linq;
 using System.Text;
+using FluentAssertions;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
+using Haus.Testing.Support;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,8 +37,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
 
             var result = _mapper.Map(original).Single();
 
-            Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
-            Assert.Equal("true", Encoding.UTF8.GetString(result.Payload));
+            result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join");
+            result.Payload.Should().BeEncodedString("true");
         }
 
         [Fact]
@@ -48,8 +50,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
 
             var result = _mapper.Map(original).Single();
 
-            Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
-            Assert.Equal("false", Encoding.UTF8.GetString(result.Payload));
+            result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join");
+            result.Payload.Should().BeEncodedString("false");
         }
 
         [Fact]
@@ -61,8 +63,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
 
             var result = _mapper.Map(original).Single();
 
-            Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/devices/get", result.Topic);
-            Assert.Empty(result.Payload);
+            result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/devices/get");
+            result.Payload.Should().BeEmpty();
         }
 
         [Fact]
@@ -76,8 +78,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
             var result = _mapper.Map(original).Single();
 
             var payload = JObject.Parse(Encoding.UTF8.GetString(result.Payload));
-            Assert.Equal($"{Zigbee2MqttBaseTopic}/my-ext-id/set", result.Topic);
-            Assert.Equal("OFF", payload.Value<string>("state"));
+            result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/my-ext-id/set");
+            payload.Value<string>("state").Should().Be("OFF");
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Models.Diagnostics;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
@@ -35,10 +36,10 @@ namespace Haus.Web.Host.Tests.Diagnostics
             await mqttClient.PublishAsync("my-topic", "this is data");
             Eventually.Assert(() =>
             {
-                Assert.True(Guid.TryParse(received.Id, out _));
-                Assert.Equal("my-topic", received.Topic);
-                Assert.Equal("this is data", received.Payload.ToString());
-                Assert.Equal(CurrentTime, received.Timestamp);
+                received.Id.Should().BeAGuid();
+                received.Topic.Should().Be("my-topic");
+                received.Payload.Should().Be("this is data");
+                received.Timestamp.Should().Be(CurrentTime);
             });
         }
     }

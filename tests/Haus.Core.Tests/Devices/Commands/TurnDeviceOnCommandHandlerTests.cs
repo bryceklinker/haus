@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Commands;
@@ -32,15 +34,18 @@ namespace Haus.Core.Tests.Devices.Commands
             await _hausBus.ExecuteCommandAsync(new TurnDeviceOnCommand(device.Id));
 
             var publishedCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
-            Assert.Equal(device.Id, publishedCommand.Payload.Device.Id);
-            Assert.Equal(LightingState.On, publishedCommand.Payload.Lighting.State);
+            publishedCommand.Payload.Device.Id.Should().Be(device.Id);
+            publishedCommand.Payload.Lighting.Should().Should().Be(LightingState.On);
         }
 
         [Fact]
         public async Task WhenDeviceIsMissingThenThrowsNotFound()
         {
             var command = new TurnDeviceOnCommand(324);
-            await Assert.ThrowsAsync<EntityNotFoundException<DeviceEntity>>(() => _hausBus.ExecuteCommandAsync(command));
+
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+
+            await act.Should().ThrowAsync<EntityNotFoundException<DeviceEntity>>();
         }
     }
 }

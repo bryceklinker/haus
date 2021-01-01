@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
@@ -38,7 +39,7 @@ namespace Haus.Web.Host.Tests.Devices
                 });
 
                 var updated = await _hausClient.GetDeviceAsync(device.Id);
-                Assert.Equal("some-name", updated.Name);
+                updated.Name.Should().Be("some-name");
             });
         }
 
@@ -53,7 +54,7 @@ namespace Haus.Web.Host.Tests.Devices
             
             Eventually.Assert(() =>
             {
-                Assert.Equal(DeviceLightingChangedEvent.Type, hausCommand.Type);
+                hausCommand.Type.Should().Be(DeviceLightingChangedEvent.Type);
             });
         }
 
@@ -68,7 +69,7 @@ namespace Haus.Web.Host.Tests.Devices
             
             Eventually.Assert(() =>
             {
-                Assert.Equal(LightingState.Off, published.Payload.Lighting.State);
+                published.Payload.Lighting.State.Should().Be(LightingState.Off);
             });
         }
         
@@ -83,7 +84,7 @@ namespace Haus.Web.Host.Tests.Devices
             
             Eventually.Assert(() =>
             {
-                Assert.Equal(LightingState.On, published.Payload.Lighting.State);
+                published.Payload.Lighting.State.Should().Be(LightingState.On);
             });
         }
         
@@ -95,7 +96,10 @@ namespace Haus.Web.Host.Tests.Devices
 
             await _hausClient.StartDiscoveryAsync();
 
-            Eventually.Assert(() => { Assert.Equal(StartDiscoveryModel.Type, hausCommand.Type); });
+            Eventually.Assert(() =>
+            {
+                hausCommand.Type.Should().Be(StartDiscoveryModel.Type);
+            });
         }
 
         [Fact]
@@ -106,7 +110,10 @@ namespace Haus.Web.Host.Tests.Devices
 
             await _hausClient.StopDiscoveryAsync();
 
-            Eventually.Assert(() => { Assert.Equal(StopDiscoveryModel.Type, hausCommand.Type); });
+            Eventually.Assert(() =>
+            {
+                hausCommand.Type.Should().Be(StopDiscoveryModel.Type);
+            });
         }
     }
 }

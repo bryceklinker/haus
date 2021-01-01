@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Haus.Core.Models.Devices;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Tests.Support;
@@ -25,7 +26,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Resolvers
         {
             var meta = new Zigbee2MqttMetaBuilder()
                 .BuildMeta();
-            Assert.Equal(DeviceType.Unknown, _resolver.Resolve(meta));
+            
+            _resolver.Resolve(meta).Should().Be(DeviceType.Unknown);
         }
 
         [Fact]
@@ -36,7 +38,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Resolvers
                 .WithVendor("Philips")
                 .BuildMeta();
 
-            Assert.Equal(DeviceType.Light, _resolver.Resolve(meta));
+            _resolver.Resolve(meta).Should().Be(DeviceType.Light);
         }
 
         [Fact]
@@ -48,9 +50,9 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Resolvers
                 .BuildMeta();
 
             var deviceType = _resolver.Resolve(meta);
-            Assert.True(deviceType.HasFlag(DeviceType.LightSensor));
-            Assert.True(deviceType.HasFlag(DeviceType.MotionSensor));
-            Assert.True(deviceType.HasFlag(DeviceType.TemperatureSensor));
+            deviceType.Should().HaveFlag(DeviceType.LightSensor)
+                .And.HaveFlag(DeviceType.MotionSensor)
+                .And.HaveFlag(DeviceType.TemperatureSensor);
         }
 
         [Fact]
@@ -58,9 +60,9 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Resolvers
         {
             var deviceType = _resolver.Resolve("Philips", "9290012607");
             
-            Assert.True(deviceType.HasFlag(DeviceType.LightSensor));
-            Assert.True(deviceType.HasFlag(DeviceType.MotionSensor));
-            Assert.True(deviceType.HasFlag(DeviceType.TemperatureSensor));
+            deviceType.Should().HaveFlag(DeviceType.LightSensor)
+                .And.HaveFlag(DeviceType.MotionSensor)
+                .And.HaveFlag(DeviceType.TemperatureSensor);
         }
 
         [Fact]
@@ -72,7 +74,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Resolvers
                 .BuildMeta();
 
             var deviceType = _resolver.Resolve(meta);
-            Assert.Equal(DeviceType.Light, deviceType);
+         
+            deviceType.Should().Be(DeviceType.Light);
         }
     }
 }

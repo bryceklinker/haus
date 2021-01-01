@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
@@ -29,7 +31,9 @@ namespace Haus.Core.Tests.Rooms.Commands
         {
             var command = new AddDevicesToRoomCommand(54);
 
-            await Assert.ThrowsAsync<EntityNotFoundException<RoomEntity>>(() => _hausBus.ExecuteCommandAsync(command));
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+
+            await act.Should().ThrowAsync<EntityNotFoundException<RoomEntity>>();
         }
 
         [Fact]
@@ -39,8 +43,9 @@ namespace Haus.Core.Tests.Rooms.Commands
 
             var command = new AddDevicesToRoomCommand(room.Id, 65);
 
-            await Assert.ThrowsAsync<EntityNotFoundException<DeviceEntity>>(() =>
-                _hausBus.ExecuteCommandAsync(command));
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+
+            await act.Should().ThrowAsync<EntityNotFoundException<DeviceEntity>>();
         }
 
         [Fact]
@@ -52,9 +57,9 @@ namespace Haus.Core.Tests.Rooms.Commands
             var command = new AddDevicesToRoomCommand(room.Id, device.Id);
             await _hausBus.ExecuteCommandAsync(command);
 
-            var updatedRoom = _context.GetRoomsIncludeDevices().Single();
-
-            Assert.Single(updatedRoom.Devices);
+            _context.GetRoomsIncludeDevices().Should()
+                .HaveCount(1)
+                .And.Contain(r => r.Devices.Contains(device));
         }
 
         [Fact]
@@ -69,8 +74,10 @@ namespace Haus.Core.Tests.Rooms.Commands
             await _hausBus.ExecuteCommandAsync(command);
 
             var updatedRoom = _context.GetRoomsIncludeDevices().Single();
-
-            Assert.Equal(3, updatedRoom.Devices.Count);
+            updatedRoom.Devices.Should().HaveCount(3)
+                .And.Contain(first)
+                .And.Contain(second)
+                .And.Contain(third);
         }
     }
 }

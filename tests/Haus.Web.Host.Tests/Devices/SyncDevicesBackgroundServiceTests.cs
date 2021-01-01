@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Devices.Commands;
 using Haus.Testing.Support;
 using Haus.Web.Host.Devices;
@@ -25,7 +26,7 @@ namespace Haus.Web.Host.Tests.Devices
         {
             await _service.StartAsync(CancellationToken.None);
 
-            Assert.Single(_hausBus.GetExecutedCommands<SyncDiscoveryCommand>());
+            _hausBus.GetExecutedCommands<SyncDiscoveryCommand>().Should().HaveCount(1);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Linq;
+using FluentAssertions;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Tests.Support;
@@ -47,8 +48,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers
                 .BuildMqttMessage();
             
             var result = _mapper.Map(message).Single();
-            
-            Assert.Equal(HausEventsTopic, result.Topic);
+
+            result.Topic.Should().Be(HausEventsTopic);
         }
 
         [Fact]
@@ -58,7 +59,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers
 
             var result = _mapper.Map(message).Single();
 
-            Assert.StartsWith(Zigbee2MqttBaseTopic, result.Topic);
+            result.Topic.Should().StartWith(Zigbee2MqttBaseTopic);
         }
         
         [Fact]
@@ -67,8 +68,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers
             var message = new MqttApplicationMessage { Topic = "no-one-cares" };
 
             var result = _mapper.Map(message);
-            
-            Assert.Empty(result);;
+
+            result.Should().BeEmpty();
         }
     }
 }

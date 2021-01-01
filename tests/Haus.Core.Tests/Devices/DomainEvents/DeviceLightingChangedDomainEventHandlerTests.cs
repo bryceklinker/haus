@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Devices.Entities;
@@ -30,8 +31,8 @@ namespace Haus.Core.Tests.Devices.DomainEvents
             await _hausBus.FlushAsync();
 
             var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
-            Assert.Equal(123, hausCommand.Payload.Device.Id);
-            Assert.Equal(34.12, hausCommand.Payload.Lighting.BrightnessPercent);
+            hausCommand.Payload.Device.Id.Should().Be(123);
+            hausCommand.Payload.Lighting.BrightnessPercent.Should().Be(34.12);
         }
     }
 }

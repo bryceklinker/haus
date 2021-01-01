@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Haus.Core.Common.Entities;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
@@ -29,7 +31,7 @@ namespace Haus.Core.Tests.Devices.Events
 
             await _hausBus.PublishAsync(@event);
 
-            Assert.Single(_context.Set<DeviceEntity>());
+            _context.Set<DeviceEntity>().Should().HaveCount(1);
         }
 
         [Fact]
@@ -43,10 +45,9 @@ namespace Haus.Core.Tests.Devices.Events
             }));
             await _hausBus.PublishAsync(@event);
 
-            Assert.Single(_context.Set<DeviceEntity>());
-            
-            var deviceEntity = _context.Set<DeviceEntity>().Single();
-            Assert.Contains(deviceEntity.Metadata, m => m.Key == "Model" && m.Value == "Help");
+            _context.Set<DeviceEntity>().Should().HaveCount(1);
+            _context.Set<DeviceEntity>().Single().Metadata
+                .Should().ContainEquivalentOf(new Metadata("Model", "Help"));
         }
     }
 }

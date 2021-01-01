@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Mqtt.Client.Settings;
 using Haus.Testing.Support.Fakes;
 using Microsoft.Extensions.Options;
@@ -34,7 +35,7 @@ namespace Haus.Mqtt.Client.Tests
             var expected = new MqttApplicationMessage{Topic = "bob"};
             await _fakeMqttClient.PublishAsync(expected);
 
-            Assert.Same(expected, actual);
+            actual.Should().BeSameAs(expected);
         }
 
         [Fact]
@@ -53,7 +54,7 @@ namespace Haus.Mqtt.Client.Tests
             });
 
             await _fakeMqttClient.PublishAsync(new MqttApplicationMessage());
-            Assert.Equal(2, actuals.Count);
+            actuals.Should().HaveCount(2);
         }
     }
 }

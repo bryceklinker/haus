@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Battery;
 using Haus.Core.Models.Devices.Sensors.Light;
@@ -25,7 +26,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithIlluminance(54)
                 .BuildZigbee2MqttMessage();
 
-            Assert.IsType<IlluminanceChangedModel>(_mapper.Map(message));
+            _mapper.Map(message).Should().BeOfType<IlluminanceChangedModel>();
         }
 
         [Fact]
@@ -35,7 +36,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithOccupancy(true)
                 .BuildZigbee2MqttMessage();
 
-            Assert.IsType<OccupancyChangedModel>(_mapper.Map(message));
+            _mapper.Map(message).Should().BeOfType<OccupancyChangedModel>();
         }
 
         [Fact]
@@ -45,7 +46,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithTemperature(43)
                 .BuildZigbee2MqttMessage();
 
-            Assert.IsType<TemperatureChangedModel>(_mapper.Map(message));
+            _mapper.Map(message).Should().BeOfType<TemperatureChangedModel>();
         }
 
         [Fact]
@@ -55,7 +56,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithBatteryLevel(5)
                 .BuildZigbee2MqttMessage();
 
-            Assert.IsType<BatteryChangedModel>(_mapper.Map(message));
+            _mapper.Map(message).Should().BeOfType<BatteryChangedModel>();
         }
 
         [Fact]
@@ -66,7 +67,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithIlluminance(2)
                 .BuildZigbee2MqttMessage();
 
-            Assert.IsType<MultiSensorChanged>(_mapper.Map(message));
+            _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
         }
 
         [Fact]
@@ -77,7 +78,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithOccupancy(true)
                 .BuildZigbee2MqttMessage();
 
-            Assert.IsType<MultiSensorChanged>(_mapper.Map(message));
+            _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
         }
 
         [Fact]
@@ -88,7 +89,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithTemperature(1)
                 .BuildZigbee2MqttMessage();
 
-            Assert.IsType<MultiSensorChanged>(_mapper.Map(message));
+            _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
         }
 
         [Fact]
@@ -99,7 +100,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithOccupancy(false)
                 .BuildZigbee2MqttMessage();
 
-            Assert.IsType<MultiSensorChanged>(_mapper.Map(message));
+            _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
         }
 
         [Fact]
@@ -110,7 +111,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithTemperature(12)
                 .BuildZigbee2MqttMessage();
 
-            Assert.IsType<MultiSensorChanged>(_mapper.Map(message));
+            _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
         }
 
         [Fact]
@@ -121,7 +122,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 .WithTemperature(12)
                 .BuildZigbee2MqttMessage();
             
-            Assert.IsType<MultiSensorChanged>(_mapper.Map(message));
+            _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
         }
     }
 }

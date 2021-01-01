@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common.Events;
 using Haus.Core.Devices.Commands;
 using Haus.Core.Models.Devices.Discovery;
@@ -25,7 +26,7 @@ namespace Haus.Core.Tests.Devices.Commands
             await _capturingHausBus.ExecuteCommandAsync(command);
 
             var routableCommands = _capturingHausBus.GetPublishedEvents<RoutableCommand>();
-            Assert.Contains(routableCommands, r => r.HausCommand.Type == StartDiscoveryModel.Type);
+            routableCommands.Should().Contain(r => r.HausCommand.Type == StartDiscoveryModel.Type);
         }
     }
 }

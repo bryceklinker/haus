@@ -1,5 +1,7 @@
 using System.Linq;
+using FluentAssertions;
 using Haus.Core.Models;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.ExternalMessages;
@@ -27,8 +29,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
             var message = new Zigbee2MqttMessageBuilder()
                 .WithDevicesTopic()
                 .BuildZigbee2MqttMessage();
-            
-            Assert.True(_mapper.IsSupported(message));
+
+            _mapper.IsSupported(message).Should().BeTrue();
         }
 
         [Fact]
@@ -38,7 +40,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
                 .WithTopicPath("idk")
                 .BuildZigbee2MqttMessage();
 
-            Assert.False(_mapper.IsSupported(message));
+            _mapper.IsSupported(message).Should().BeFalse();
         }
         
         [Fact]
@@ -54,8 +56,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
 
             var result = _mapper.Map(message).ToArray();
 
-            Assert.Single(result);
-            Assert.Equal(Defaults.HausOptions.EventsTopic, result.Single().Topic);
+            result.Should().ContainSingle();
+            result.Single().Topic.Should().Be(Defaults.HausOptions.EventsTopic);
         }
 
         [Fact]
@@ -76,13 +78,13 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
             var result = _mapper.Map(message).Single();
 
             var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
-            Assert.Equal(DeviceDiscoveredModel.Type, @event.Type);
-            Assert.Equal("hello", @event.Payload.Id);
-            Assert.Equal(DeviceType.Unknown, @event.Payload.DeviceType);
-            Assert.Contains(@event.Payload.Metadata, m => m.Key == "model" && m.Value == "65");
-            Assert.Contains(@event.Payload.Metadata, m => m.Key == "vendor" && m.Value == "76");
-            Assert.Contains(@event.Payload.Metadata, m => m.Key == "description" && m.Value == "my desc");
-            Assert.Contains(@event.Payload.Metadata, meta => meta.Key == "powerSource" && meta.Value == "Battery");
+            @event.Type.Should().Be(DeviceDiscoveredModel.Type);
+            @event.Payload.Id.Should().Be("hello");
+            @event.Payload.Metadata.Should()
+                .ContainEquivalentOf(new MetadataModel("model", "65"))
+                .And.ContainEquivalentOf(new MetadataModel("vendor", "76"))
+                .And.ContainEquivalentOf(new MetadataModel("description", "my desc"))
+                .And.ContainEquivalentOf(new MetadataModel("powerSource", "Battery"));
         }
 
         [Fact]
@@ -100,7 +102,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
             var result = _mapper.Map(message).Single();
             
             var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
-            Assert.Equal(DeviceType.Light, @event.Payload.DeviceType);
+            @event.Payload.DeviceType.Should().Be(DeviceType.Light);
         }
 
         [Fact]
@@ -114,8 +116,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
                 .BuildZigbee2MqttMessage();
 
             var result = _mapper.Map(message);
-            
-            Assert.Equal(3, result.Count());
+
+            result.Should().HaveCount(3);
         }
     }
 }

@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Commands;
@@ -31,22 +33,28 @@ namespace Haus.Core.Tests.Devices.Commands
             await _hausBus.ExecuteCommandAsync(new UpdateDeviceCommand(model));
 
             var updated = await _context.FindAsync<DeviceEntity>(original.Id);
-            Assert.Equal("hi-bob", updated.Name);
+            updated.Name.Should().Be("hi-bob");
         }
 
         [Fact]
         public async Task WhenUpdateDeviceCommandExecutedForMissingDeviceThenThrowsException()
         {
             var command = new UpdateDeviceCommand(new DeviceModel(Name: "hello"));
-            await Assert.ThrowsAsync<EntityNotFoundException<DeviceEntity>>(() => _hausBus.ExecuteCommandAsync(command));
+
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+
+            await act.Should().ThrowAsync<EntityNotFoundException<DeviceEntity>>();
         }
 
         [Fact]
         public async Task WhenUpdateDeviceCommandIsInvalidThenThrowsException()
         {
             var device = _context.AddDevice();
-            var command = new UpdateDeviceCommand(new DeviceModel {Name = null});
-            await Assert.ThrowsAsync<HausValidationException>(() => _hausBus.ExecuteCommandAsync(command));
+            var command = new UpdateDeviceCommand(new DeviceModel(device.Id, Name: null));
+            
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+         
+            await act.Should().ThrowAsync<HausValidationException>();
         }
     }
 }

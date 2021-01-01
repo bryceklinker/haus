@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Devices.Commands;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Tests.Support;
@@ -21,7 +22,7 @@ namespace Haus.Core.Tests.Devices.Commands
         {
             await _hausBus.ExecuteCommandAsync(new SyncDiscoveryCommand());
 
-            Assert.Single(_hausBus.GetPublishedHausCommands<SyncDiscoveryModel>());
+            _hausBus.GetPublishedHausCommands<SyncDiscoveryModel>().Should().HaveCount(1);
         }
     }
 }

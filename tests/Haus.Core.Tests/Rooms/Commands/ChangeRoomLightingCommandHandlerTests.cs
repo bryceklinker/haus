@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Common;
@@ -31,7 +33,7 @@ namespace Haus.Core.Tests.Rooms.Commands
             await _hausBus.ExecuteCommandAsync(new ChangeRoomLightingCommand(room.Id, lighting));
 
             var updated = await _context.FindByIdAsync<RoomEntity>(room.Id);
-            Assert.Equal(LightingState.Off, updated.Lighting.State);
+            updated.Lighting.State.Should().Be(LightingState.Off);
         }
 
         [Fact]
@@ -43,15 +45,18 @@ namespace Haus.Core.Tests.Rooms.Commands
             await _hausBus.ExecuteCommandAsync(new ChangeRoomLightingCommand(room.Id, lighting));
 
             var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-            Assert.Equal(room.Id, hausCommand.Payload.Room.Id);
-            Assert.Equal(LightingState.On, hausCommand.Payload.Lighting.State);
+            hausCommand.Payload.Room.Id.Should().Be(room.Id);
+            hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
         }
 
         [Fact]
         public async Task WhenRoomIsMissingThenThrowsEntityNotFoundException()
         {
             var command = new ChangeRoomLightingCommand(2423, new LightingModel());
-            await Assert.ThrowsAsync<EntityNotFoundException<RoomEntity>>(() => _hausBus.ExecuteCommandAsync(command));
+
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+
+            await act.Should().ThrowAsync<EntityNotFoundException<RoomEntity>>();
         }
     }
 }

@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Models.Common;
 using Xunit;
@@ -9,12 +10,18 @@ namespace Haus.Core.Tests.Common
         [Fact]
         public void DefaultLightingHasPopulatedLightingObject()
         {
-            Assert.Equal(LightingState.Off, Lighting.Default.State);
-            Assert.Equal(100, Lighting.Default.BrightnessPercent);
-            Assert.Equal(150, Lighting.Default.Temperature);
-            Assert.Equal(255, Lighting.Default.Color.Blue);
-            Assert.Equal(255, Lighting.Default.Color.Green);
-            Assert.Equal(255, Lighting.Default.Color.Red);
+            Lighting.Default.Should().BeEquivalentTo(new Lighting
+            {
+                State = LightingState.Off,
+                BrightnessPercent = 100,
+                Temperature = 150,
+                Color = new LightingColor
+                {
+                    Blue = 255,
+                    Green = 255,
+                    Red = 255,
+                }
+            });
         }
         
         [Fact]
@@ -23,13 +30,19 @@ namespace Haus.Core.Tests.Common
             var model = CreateLightingModel();
 
             var lighting = Lighting.FromModel(model);
-
-            Assert.Equal(LightingState.On, lighting.State);
-            Assert.Equal(78, lighting.Temperature);
-            Assert.Equal(43.12, lighting.BrightnessPercent);
-            Assert.Equal((byte)6, lighting.Color.Blue);
-            Assert.Equal((byte)3, lighting.Color.Green);
-            Assert.Equal((byte)12, lighting.Color.Red);
+            
+            lighting.Should().BeEquivalentTo(new Lighting
+            {
+                State = LightingState.On,
+                Temperature = 78,
+                BrightnessPercent = 43.12,
+                Color = new LightingColor
+                {
+                    Blue = 6,
+                    Green = 3,
+                    Red = 12
+                }
+            });
         }
 
         [Fact]
@@ -39,14 +52,8 @@ namespace Haus.Core.Tests.Common
 
             var copy = lighting.Copy();
 
-            Assert.NotSame(lighting, copy);
-            Assert.NotSame(lighting.Color, copy.Color);
-            Assert.Equal(lighting.State, copy.State);
-            Assert.Equal(lighting.Temperature, copy.Temperature);
-            Assert.Equal(lighting.BrightnessPercent, copy.BrightnessPercent);
-            Assert.Equal(lighting.Color.Blue, copy.Color.Blue);
-            Assert.Equal(lighting.Color.Green, copy.Color.Green);
-            Assert.Equal(lighting.Color.Red, copy.Color.Red);
+            copy.Should().BeEquivalentTo(lighting);
+            copy.Should().NotBeSameAs(lighting);
         }
 
         [Fact]

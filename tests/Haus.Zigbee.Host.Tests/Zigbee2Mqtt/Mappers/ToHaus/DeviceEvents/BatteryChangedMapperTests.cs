@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 using Xunit;
@@ -23,8 +24,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
 
             var model = _mapper.Map(message);
 
-            Assert.Equal(43, model.BatteryLevel);
-            Assert.Equal("my-device-id", model.DeviceId);
+            model.BatteryLevel.Should().Be(43);
+            model.DeviceId.Should().Be("my-device-id");
         }
 
         [Fact]
@@ -32,7 +33,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
         {
             var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
 
-            Assert.Null(_mapper.Map(message));
+            _mapper.Map(message).Should().BeNull();
         }
     }
 }

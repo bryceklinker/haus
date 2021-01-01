@@ -1,4 +1,5 @@
 using System;
+using FluentAssertions;
 using Haus.Core.Common.Events;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Discovery;
@@ -23,8 +24,8 @@ namespace Haus.Core.Tests.Common.Events
             var bytes = HausJsonSerializer.SerializeToBytes(new DeviceDiscoveredModel($"{Guid.NewGuid()}").AsHausEvent());
             
             var routableEvent = _factory.Create(bytes);
-            
-            Assert.IsType<RoutableEvent<DeviceDiscoveredModel>>(routableEvent);
+
+            routableEvent.Should().BeOfType<RoutableEvent<DeviceDiscoveredModel>>();
         }
 
         [Fact]
@@ -34,7 +35,7 @@ namespace Haus.Core.Tests.Common.Events
 
             var routableEvent = _factory.Create(bytes);
 
-            Assert.IsType<RoutableEvent<MultiSensorChanged>>(routableEvent);
+            routableEvent.Should().BeOfType<RoutableEvent<MultiSensorChanged>>();
         }
 
         [Fact]
@@ -44,7 +45,7 @@ namespace Haus.Core.Tests.Common.Events
 
             var routableEvent = _factory.Create(bytes);
 
-            Assert.IsType<RoutableEvent<OccupancyChangedModel>>(routableEvent);
+            routableEvent.Should().BeOfType<RoutableEvent<OccupancyChangedModel>>();
         }
 
         [Fact]
@@ -54,7 +55,7 @@ namespace Haus.Core.Tests.Common.Events
 
             var routableEvent = _factory.Create(bytes);
 
-            Assert.Null(routableEvent);
+            routableEvent.Should().BeNull();
         }
     }
 }

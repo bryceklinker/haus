@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Sensors;
@@ -37,8 +38,8 @@ namespace Haus.Web.Host.Tests.Devices
 
             Eventually.Assert(() =>
             {
-                Assert.Equal(room.Id, hausCommand.Payload.Room.Id);
-                Assert.Equal(LightingState.On, hausCommand.Payload.Lighting.State);
+                hausCommand.Payload.Room.Id.Should().Be(room.Id);
+                hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
             });
         }
     }

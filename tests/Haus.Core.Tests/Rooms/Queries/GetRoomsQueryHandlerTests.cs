@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Rooms.Queries;
@@ -29,10 +30,11 @@ namespace Haus.Core.Tests.Rooms.Queries
 
             var result = await _hausBus.ExecuteQueryAsync(new GetRoomsQuery());
 
-            Assert.Equal(3, result.Count);
-            Assert.Contains(result.Items, r => r.Name == "three");
-            Assert.Contains(result.Items, r => r.Name == "hello");
-            Assert.Contains(result.Items, r => r.Name == "bob");
+            result.Count.Should().Be(3);
+            result.Items.Should().HaveCount(3)
+                .And.Contain(r => r.Name == "three")
+                .And.Contain(r => r.Name == "hello")
+                .And.Contain(r => r.Name == "bob");
         }
     }
 }

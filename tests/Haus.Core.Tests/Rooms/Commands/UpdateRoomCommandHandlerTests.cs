@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
@@ -30,7 +32,7 @@ namespace Haus.Core.Tests.Rooms.Commands
             await _hausBus.ExecuteCommandAsync(command);
 
             var updated = await _context.FindByIdAsync<RoomEntity>(original.Id);
-            Assert.Equal("bob", updated.Name);
+            updated.Name.Should().Be("bob");
         }
 
         [Fact]
@@ -39,7 +41,9 @@ namespace Haus.Core.Tests.Rooms.Commands
             var original = _context.AddRoom();
             var command = new UpdateRoomCommand(new RoomModel(original.Id));
 
-            await Assert.ThrowsAsync<HausValidationException>(() => _hausBus.ExecuteCommandAsync(command));
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+
+            await act.Should().ThrowAsync<HausValidationException>();
         }
 
         [Fact]
@@ -47,7 +51,9 @@ namespace Haus.Core.Tests.Rooms.Commands
         {
             var command = new UpdateRoomCommand(new RoomModel(54, Name: "bob"));
 
-            await Assert.ThrowsAsync<EntityNotFoundException<RoomEntity>>(() => _hausBus.ExecuteCommandAsync(command));
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+
+            await act.Should().ThrowAsync<EntityNotFoundException<RoomEntity>>();
         }
     }
 }

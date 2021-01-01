@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Rooms.Queries;
@@ -31,10 +32,11 @@ namespace Haus.Core.Tests.Rooms.Queries
             
             var result = await _hausBus.ExecuteQueryAsync(new GetDevicesInRoomQuery(room.Id));
 
-            Assert.Equal(3, result.Count);
-            Assert.Contains(result.Items, d => d.ExternalId == "one");
-            Assert.Contains(result.Items, d => d.ExternalId == "two");
-            Assert.Contains(result.Items, d => d.ExternalId == "three");
+            result.Count.Should().Be(3);
+            result.Items.Should().HaveCount(3)
+                .And.Contain(d => d.ExternalId == "one")
+                .And.Contain(d => d.ExternalId == "two")
+                .And.Contain(d => d.ExternalId == "three");
         }
 
         [Fact]
@@ -42,7 +44,7 @@ namespace Haus.Core.Tests.Rooms.Queries
         {
             var result = await _hausBus.ExecuteQueryAsync(new GetDevicesInRoomQuery(65));
 
-            Assert.Null(result);
+            result.Should().BeNull();
         }
 
         [Fact]
@@ -55,7 +57,7 @@ namespace Haus.Core.Tests.Rooms.Queries
 
             var result = await _hausBus.ExecuteQueryAsync(new GetDevicesInRoomQuery(room.Id));
 
-            Assert.Equal(1, result.Count);
+            result.Count.Should().Be(1);
         }
     }
 }

@@ -6,6 +6,8 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Tests.Support;
 using System.Linq;
+using FluentAssertions;
+using Haus.Core.Common.Entities;
 using Haus.Core.Models.Common;
 using Xunit;
 
@@ -24,10 +26,12 @@ namespace Haus.Core.Tests.Devices.Entities
 
             var entity = DeviceEntity.FromDiscoveredDevice(model);
 
-            Assert.Equal("this-id", entity.ExternalId);
-            Assert.Equal(DeviceType.Light, entity.DeviceType);
-            AssertHasMetadata("Vendor", "Vendy", entity);
-            AssertHasMetadata("Model", "some model", entity);
+            entity.ExternalId.Should().Be("this-id");
+            entity.DeviceType.Should().Be(DeviceType.Light);
+            
+            entity.Metadata.Should()
+                .ContainEquivalentOf(new Metadata("Vendor", "Vendy"))
+                .And.ContainEquivalentOf(new Metadata("Model", "some model"));
         }
 
         [Fact]
@@ -37,7 +41,7 @@ namespace Haus.Core.Tests.Devices.Entities
 
             var entity = DeviceEntity.FromDiscoveredDevice(model);
 
-            Assert.Equal("this-id", entity.Name);
+            entity.Name.Should().Be("this-id");
         }
 
         [Fact]
@@ -48,7 +52,7 @@ namespace Haus.Core.Tests.Devices.Entities
             var entity = new DeviceEntity();
             entity.UpdateFromDiscoveredDevice(model);
 
-            Assert.Equal(DeviceType.MotionSensor, entity.DeviceType);
+            entity.DeviceType.Should().Be(DeviceType.MotionSensor);
         }
         
         [Fact]
@@ -62,7 +66,7 @@ namespace Haus.Core.Tests.Devices.Entities
             
             entity.UpdateFromDiscoveredDevice(model);
 
-            AssertHasMetadata("Model", "boom", entity);
+            entity.Metadata.Should().ContainEquivalentOf(new Metadata("Model", "boom"));
         }
 
         [Fact]
@@ -77,8 +81,8 @@ namespace Haus.Core.Tests.Devices.Entities
 
             entity.UpdateFromDiscoveredDevice(model);
 
-            Assert.Single(entity.Metadata);
-            AssertHasMetadata("Model", "boom", entity);
+            entity.Metadata.Should().HaveCount(1)
+                .And.ContainEquivalentOf(new Metadata("Model", "boom"));
         }
 
         [Fact]
@@ -94,8 +98,8 @@ namespace Haus.Core.Tests.Devices.Entities
 
             entity.UpdateFromModel(model);
 
-            Assert.Equal("Somename", entity.Name);
-            Assert.Equal(DeviceType.LightSensor, entity.DeviceType);
+            entity.Name.Should().Be("Somename");
+            entity.DeviceType.Should().Be(DeviceType.Light);
         }
 
         [Fact]
@@ -111,9 +115,9 @@ namespace Haus.Core.Tests.Devices.Entities
 
             entity.UpdateFromModel(model);
 
-            Assert.Equal(2, entity.Metadata.Count);
-            Assert.Contains(entity.Metadata, m => m.Key == "one" && m.Value == "three");
-            Assert.Contains(entity.Metadata, m => m.Key == "three" && m.Value == "two");
+            entity.Metadata.Should().HaveCount(2)
+                .And.ContainEquivalentOf(new Metadata("one", "three"))
+                .And.ContainEquivalentOf(new Metadata("three", "two"));
         }
 
         [Fact]
@@ -125,7 +129,9 @@ namespace Haus.Core.Tests.Devices.Entities
 
             light.ChangeLighting(lighting, domainEventBus);
 
-            Assert.Single(domainEventBus.GetEvents.OfType<DeviceLightingChangedDomainEvent>());
+            domainEventBus.GetEvents.Should()
+                .HaveCount(1)
+                .And.ContainItemsAssignableTo<DeviceLightingChangedDomainEvent>();
         }
 
         [Fact]
@@ -136,8 +142,8 @@ namespace Haus.Core.Tests.Devices.Entities
 
             light.TurnOff(new FakeDomainEventBus());
 
-            Assert.Equal(LightingState.Off, light.Lighting.State);
-            Assert.Equal(6, light.Lighting.BrightnessPercent);
+            light.Lighting.State.Should().Be(LightingState.Off);
+            light.Lighting.BrightnessPercent.Should().Be(6);
         }
 
         [Fact]
@@ -148,21 +154,18 @@ namespace Haus.Core.Tests.Devices.Entities
 
             light.TurnOn(new FakeDomainEventBus());
 
-            Assert.Equal(LightingState.On, light.Lighting.State);
-            Assert.Equal(6, light.Lighting.BrightnessPercent);
+            light.Lighting.State.Should().Be(LightingState.On);
+            light.Lighting.BrightnessPercent.Should().Be(6);
         }
         
         [Fact]
         public void WhenDeviceIsNotALightThenChangeLightingThrowsInvalidOperation()
         {
             var device = new DeviceEntity();
-            
-            Assert.Throws<InvalidOperationException>(() => device.ChangeLighting(new Lighting(), new FakeDomainEventBus()));
-        }
 
-        private static void AssertHasMetadata(string key, string value, DeviceEntity entity)
-        {
-            Assert.Contains(entity.Metadata, meta => meta.Key == key && meta.Value == value);
+            Action act = () => device.ChangeLighting(new Lighting(), new FakeDomainEventBus());
+
+            act.Should().Throw<InvalidOperationException>();
         }
     }
 }

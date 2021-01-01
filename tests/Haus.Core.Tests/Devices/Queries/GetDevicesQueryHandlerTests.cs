@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
@@ -30,10 +31,11 @@ namespace Haus.Core.Tests.Devices.Queries
 
             var result = await _hausBus.ExecuteQueryAsync(new GetDevicesQuery());
 
-            Assert.Equal(3, result.Count);
-            Assert.Contains(result.Items, i => i.ExternalId == "one");
-            Assert.Contains(result.Items, i => i.ExternalId == "two");
-            Assert.Contains(result.Items, i => i.ExternalId == "three");
+            result.Count.Should().Be(3);
+            result.Items.Should().HaveCount(3)
+                .And.Contain(i => i.ExternalId == "one")
+                .And.Contain(i => i.ExternalId == "two")
+                .And.Contain(i => i.ExternalId == "three");
         }
     }
 }

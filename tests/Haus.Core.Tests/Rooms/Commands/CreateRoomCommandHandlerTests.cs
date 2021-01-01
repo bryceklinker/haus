@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
@@ -30,16 +32,18 @@ namespace Haus.Core.Tests.Rooms.Commands
             var result = await _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
 
             var entity = _context.Set<RoomEntity>().Single();
-            Assert.Equal(entity.Id, result.Id);
-            Assert.Equal("Backroom", result.Name);
+            entity.Id.Should().Be(result.Id);
+            entity.Name.Should().Be("Backroom");
         }
 
         [Fact]
         public async Task WhenModelIsInvalidThenThrowsValidationException()
         {
             var model = new RoomModel();
-            
-            await Assert.ThrowsAsync<HausValidationException>(() => _bus.ExecuteCommandAsync(new CreateRoomCommand(model)));
+
+            Func<Task> act = () => _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
+
+            await act.Should().ThrowAsync<HausValidationException>();
         }
     }
 }

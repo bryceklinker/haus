@@ -1,4 +1,5 @@
 using System.Linq;
+using FluentAssertions;
 using Haus.Core.Models;
 using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
@@ -27,7 +28,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
         [Fact]
         public void WhenIsSupportedThenAlwaysReturnsFalse()
         {
-            Assert.False(_mapper.IsSupported(Zigbee2MqttMessage.FromJToken("", JObject.FromObject(new object()))));
+            var message = Zigbee2MqttMessage.FromJToken("", JObject.FromObject(new object()));
+            _mapper.IsSupported(message).Should().BeFalse("Message was supported");
         }
         
         [Fact]
@@ -37,7 +39,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
             
             var result = _mapper.Map(message).Single();
 
-            Assert.Equal(UnknownTopicName, result.Topic);
+            result.Topic.Should().Be(UnknownTopicName);
         }
 
         [Fact]
@@ -48,7 +50,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
             var result = _mapper.Map(message).Single();
 
             var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.Payload);
-            Assert.Equal("zigbeetopic", payload.Topic);
+            payload.Topic.Should().Be("zigbeetopic");
         }
 
         [Fact]
@@ -62,7 +64,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
             var result = _mapper.Map(message).Single();
 
             var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.Payload);
-            Assert.Equal("my-id", JObject.Parse(payload.Payload).Value<string>("Id"));
+            JObject.Parse(payload.Payload).Value<string>("Id").Should().Be("my-id");
         }
     }
 }
