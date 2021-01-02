@@ -38,7 +38,7 @@ namespace Haus.Web.Host.Tests.Diagnostics
             {
                 received.Id.Should().BeAGuid();
                 received.Topic.Should().Be("my-topic");
-                received.Payload.Should().Be("this is data");
+                received.Payload.ToString().Should().Be("this is data");
                 received.Timestamp.Should().Be(CurrentTime);
             });
         }

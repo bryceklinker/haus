@@ -43,7 +43,7 @@ namespace Haus.Core.Tests.Devices.Events
 
             var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
             hausCommand.Payload.Room.Id.Should().Be(_room.Id);
-            hausCommand.Payload.Lighting.Should().Should().Be(LightingState.On);
+            hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace Haus.Core.Tests.Devices.Events
 
             var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
             hausCommand.Payload.Room.Id.Should().Be(_room.Id);
-            hausCommand.Payload.Lighting.Should().Should().Be(LightingState.Off);
+            hausCommand.Payload.Lighting.State.Should().Be(LightingState.Off);
         }
         
         [Fact]

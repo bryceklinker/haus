@@ -89,7 +89,7 @@ namespace Haus.Core.Tests.Rooms.Entities
 
             var room = RoomEntity.CreateFromModel(model);
 
-            room.Name.Should().Be("Living room");
+            room.Name.Should().Be("living room");
         }
 
         [Fact]

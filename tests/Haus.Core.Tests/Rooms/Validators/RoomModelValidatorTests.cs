@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using FluentValidation.TestHelper;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
@@ -24,7 +25,7 @@ namespace Haus.Core.Tests.Rooms.Validators
         {
             var result = await _validator.TestValidateAsync(new RoomModel(Name: null));
 
-            Assert.False(result.IsValid);
+            result.IsValid.Should().BeFalse();
         }
 
         [Fact]
@@ -34,7 +35,7 @@ namespace Haus.Core.Tests.Rooms.Validators
 
             var result = await _validator.TestValidateAsync(new RoomModel(Name: "one"));
 
-            Assert.False(result.IsValid);
+            result.IsValid.Should().BeFalse();
         }
 
         [Fact]
@@ -44,7 +45,7 @@ namespace Haus.Core.Tests.Rooms.Validators
 
             var result = await _validator.TestValidateAsync(new RoomModel(room.Id, "three"));
 
-            Assert.True(result.IsValid);
+            result.IsValid.Should().BeTrue();
         }
 
         [Fact]
@@ -54,7 +55,7 @@ namespace Haus.Core.Tests.Rooms.Validators
 
             var result = await _validator.TestValidateAsync(new RoomModel(Name: "two"));
 
-            Assert.True(result.IsValid);
+            result.IsValid.Should().BeTrue();
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Haus.Core.Tests.Devices.Events
 
             _context.Set<DeviceEntity>().Should().HaveCount(1);
             _context.Set<DeviceEntity>().Single().Metadata
-                .Should().ContainEquivalentOf(new Metadata("Model", "Help"));
+                .Should().ContainEquivalentOf(new DeviceMetadataEntity("Model", "Help"));
         }
     }
 }

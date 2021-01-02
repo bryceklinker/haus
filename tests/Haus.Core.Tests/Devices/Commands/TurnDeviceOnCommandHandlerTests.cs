@@ -35,7 +35,7 @@ namespace Haus.Core.Tests.Devices.Commands
 
             var publishedCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
             publishedCommand.Payload.Device.Id.Should().Be(device.Id);
-            publishedCommand.Payload.Lighting.Should().Should().Be(LightingState.On);
+            publishedCommand.Payload.Lighting.State.Should().Be(LightingState.On);
         }
 
         [Fact]

@@ -30,8 +30,8 @@ namespace Haus.Core.Tests.Devices.Entities
             entity.DeviceType.Should().Be(DeviceType.Light);
             
             entity.Metadata.Should()
-                .ContainEquivalentOf(new Metadata("Vendor", "Vendy"))
-                .And.ContainEquivalentOf(new Metadata("Model", "some model"));
+                .ContainEquivalentOf(new DeviceMetadataEntity("Vendor", "Vendy"))
+                .And.ContainEquivalentOf(new DeviceMetadataEntity("Model", "some model"));
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace Haus.Core.Tests.Devices.Entities
             
             entity.UpdateFromDiscoveredDevice(model);
 
-            entity.Metadata.Should().ContainEquivalentOf(new Metadata("Model", "boom"));
+            entity.Metadata.Should().ContainEquivalentOf(new DeviceMetadataEntity("Model", "boom"));
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Haus.Core.Tests.Devices.Entities
             entity.UpdateFromDiscoveredDevice(model);
 
             entity.Metadata.Should().HaveCount(1)
-                .And.ContainEquivalentOf(new Metadata("Model", "boom"));
+                .And.ContainEquivalentOf(new DeviceMetadataEntity("Model", "boom"));
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace Haus.Core.Tests.Devices.Entities
             entity.UpdateFromModel(model);
 
             entity.Name.Should().Be("Somename");
-            entity.DeviceType.Should().Be(DeviceType.Light);
+            entity.DeviceType.Should().Be(DeviceType.LightSensor);
         }
 
         [Fact]
@@ -116,8 +116,8 @@ namespace Haus.Core.Tests.Devices.Entities
             entity.UpdateFromModel(model);
 
             entity.Metadata.Should().HaveCount(2)
-                .And.ContainEquivalentOf(new Metadata("one", "three"))
-                .And.ContainEquivalentOf(new Metadata("three", "two"));
+                .And.ContainEquivalentOf(new DeviceMetadataEntity("one", "three"))
+                .And.ContainEquivalentOf(new DeviceMetadataEntity("three", "two"));
         }
 
         [Fact]
