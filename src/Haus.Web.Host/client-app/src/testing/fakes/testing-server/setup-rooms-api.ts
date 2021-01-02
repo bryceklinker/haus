@@ -18,3 +18,7 @@ export function setupAddRoom(result: RoomModel = ModelFactory.createRoomModel(),
 export function setupChangeRoomLighting(roomId: number, options?: RequestOptions) {
   setupHttpPost(`${BASE_URL}/${roomId}/lighting`, null, options);
 }
+
+export function setupAssignDevicesToRoom(roomId: number, options?: RequestOptions) {
+  setupHttpPost(`${BASE_URL}/${roomId}/add-devices`, null, options);
+}

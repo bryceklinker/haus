@@ -28,6 +28,13 @@ export class RoomsEffects {
     ))
   ))
 
+  assignDevices$ = createEffect(() => this.actions$.pipe(
+    ofType(RoomsActions.assignDevicesToRoom.request),
+    mergeMap(({payload}) => this.api.assignDevicesToRoom(payload.roomId, payload.deviceIds).pipe(
+      map(() => RoomsActions.assignDevicesToRoom.success(payload))
+    ))
+  ))
+
   constructor(private readonly actions$: Actions,
               private readonly api: HausApiClient) {
   }

@@ -67,6 +67,10 @@ export class HausApiClient implements OnDestroy {
     return this.execute<RoomModel>(HttpMethod.POST, '/api/rooms', room);
   }
 
+  assignDevicesToRoom(roomId: number, deviceIds: Array<number>): Observable<void> {
+    return this.execute(HttpMethod.POST, `/api/rooms/${roomId}/add-devices`, deviceIds);
+  }
+
   changeRoomLighting(roomId: number, lighting: LightingModel): Observable<void> {
     return this.execute(HttpMethod.POST, `/api/rooms/${roomId}/lighting`, lighting);
   }

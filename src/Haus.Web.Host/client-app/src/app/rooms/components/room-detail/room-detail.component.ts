@@ -1,9 +1,7 @@
 import {Component, Input, EventEmitter, Output} from '@angular/core';
-import {RoomModel} from "../../models";
+import {RoomModel, RoomLightingChangeModel} from "../../models";
 import {DeviceModel} from "../../../devices/models";
 import {LightingModel} from "../../../shared/models";
-import {RoomLightingChangeModel} from "../../models/room-lighting-change.model";
-
 
 @Component({
   selector: 'room-detail',
@@ -14,6 +12,7 @@ export class RoomDetailComponent {
   @Input() room: RoomModel | undefined | null = null;
   @Input() devices: Array<DeviceModel> | undefined | null = [];
   @Output() lightingChange = new EventEmitter<RoomLightingChangeModel>();
+  @Output() assignDevices = new EventEmitter<RoomModel>();
 
   get lighting(): LightingModel | null {
     return this.room && this.room.lighting ? this.room.lighting : null;
@@ -32,5 +31,11 @@ export class RoomDetailComponent {
       roomId: this.room.id,
       lighting: $event
     });
+  }
+
+  onAssignDevices() {
+    if (this.room) {
+      this.assignDevices.emit(this.room);
+    }
   }
 }

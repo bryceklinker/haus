@@ -1,9 +1,10 @@
 import {screen} from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
+import {Action} from "@ngrx/store";
+
 import {eventually, ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {AddRoomDialogComponent} from "./add-room-dialog.component";
 import {RoomsModule} from "../../rooms.module";
-import {Action} from "@ngrx/store";
 import {RoomsActions} from "../../state";
 
 describe('AddRoomDialogComponent', () => {

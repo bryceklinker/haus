@@ -1,5 +1,6 @@
 <room-detail [room]="room$ | async"
              [devices]="devices$ | async"
-(lightingChange)="onRoomLightingChanged($event)">
+             (lightingChange)="onRoomLightingChanged($event)"
+             (assignDevices)="onAssignDevices($event)">
 
 </room-detail>

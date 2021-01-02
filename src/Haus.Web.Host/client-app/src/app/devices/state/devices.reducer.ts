@@ -37,3 +37,4 @@ export const selectAllowDevicesToBeDiscovered = createSelector(selectDevicesStat
 export const selectAllDevicesByRoomId = (roomId: string | null) =>
   createSelector(selectDevicesState,
     (state) => roomId ? selectAll(state).filter(d => d.roomId === Number(roomId)) : [])
+export const selectUnassignedDevices = createSelector(selectAllDevices, s => s.filter(d => !d.roomId))

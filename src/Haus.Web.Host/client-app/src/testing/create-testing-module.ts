@@ -4,7 +4,7 @@ import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterTestingModule} from "@angular/router/testing";
 import {AuthModule, AuthService} from "@auth0/auth0-angular";
 import {SpyLocation} from "@angular/common/testing";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 
 import {
   TestingActionsSubject,
@@ -29,15 +29,18 @@ import {TestingStore} from "./fakes/testing-store";
 import {appReducerMap} from "../app/app-reducer-map";
 import {AppState} from "../app/app.state";
 import {APP_EFFECTS} from "../app/app-effects";
+import {Provider} from "@angular/core";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   routes?: Routes;
   actions?: Action[];
+  dialogData?: any
 }
 
 export function createTestingModule({
                                       routes = [],
                                       actions = [],
+                                      dialogData = undefined,
                                       ...rest
                                     }: TestModuleOptions = {}) {
   return {
@@ -47,7 +50,7 @@ export function createTestingModule({
       ...(rest.imports || [])
     ],
     providers: [
-      ...getTestingProviders(),
+      ...getTestingProviders(dialogData),
       ...(rest.providers || [])
     ],
     routes
@@ -90,8 +93,8 @@ export function getTestingImports(routes: Routes, actions: Action[]) {
   ];
 }
 
-export function getTestingProviders() {
-  return [
+export function getTestingProviders(dialogData: any) {
+  const providers: Array<Provider> = [
     {provide: Location, useFactory: () => new SpyLocation()},
     {provide: AuthService, useClass: TestingAuthService},
     {provide: MatDialog, useClass: TestingMatDialog},
@@ -100,6 +103,12 @@ export function getTestingProviders() {
     {provide: ActivatedRoute, useClass: TestingActivatedRoute},
     {provide: SettingsService, useClass: TestingSettingsService},
     {provide: ActionsSubject, useClass: TestingActionsSubject},
-    {provide: Store, useClass: TestingStore}
-  ]
+    {provide: Store, useClass: TestingStore},
+  ];
+
+  if (dialogData) {
+    providers.push({provide: MAT_DIALOG_DATA, useValue: dialogData});
+  }
+
+  return providers
 }

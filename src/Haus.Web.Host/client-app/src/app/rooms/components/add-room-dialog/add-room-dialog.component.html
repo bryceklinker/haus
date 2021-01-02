@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>Add Room</h1>
-<div mat-dialog-content >
+<mat-dialog-content >
   <form [formGroup]="form" *ngIf="isNotLoading$ | async">
     <mat-form-field>
       <mat-label>Name</mat-label>
@@ -7,12 +7,12 @@
     </mat-form-field>
   </form>
   <app-loading-indicator [show]="isLoading$ | async"></app-loading-indicator>
-</div>
-<div mat-dialog-actions>
+</mat-dialog-content>
+<mat-dialog-actions>
   <button mat-button (click)="onCancel()" data-testid="cancel-room-btn">
     Cancel
   </button>
   <button mat-button (click)="onSave()" data-testid="save-room-btn" [disabled]="form.invalid">
     Save
   </button>
-</div>
+</mat-dialog-actions>

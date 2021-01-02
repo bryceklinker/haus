@@ -1,13 +1,16 @@
+import userEvent from "@testing-library/user-event";
+import {screen} from "@testing-library/dom";
+import {Action} from "@ngrx/store";
+import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
+
 import {eventually, ModelFactory, renderFeatureComponent, TestingActivatedRoute} from "../../../../testing";
 import {RoomDetailRootComponent} from "./room-detail-root.component";
 import {RoomsModule} from "../../rooms.module";
 import {RoomModel} from "../../models";
-import {screen} from "@testing-library/dom";
-import {Action} from "@ngrx/store";
 import {RoomsActions} from "../../state";
 import {DevicesActions} from "../../../devices/state";
-import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
 import {LightingState} from "../../../shared/models";
+import {AssignDevicesToRoomDialogComponent} from "../assign-devices-to-room-dialog/assign-devices-to-room-dialog.component";
 
 describe('DeviceDetailRootComponent', () => {
   let room: RoomModel;
@@ -55,6 +58,19 @@ describe('DeviceDetailRootComponent', () => {
     expect(store.dispatchedActions).toContainEqual(RoomsActions.changeRoomLighting.request({
       roomId: room.id,
       lighting: expect.objectContaining({state: LightingState.On})
+    }));
+  })
+
+  it('should open assign devices dialog when assign devices triggered', async () => {
+    const {activatedRoute, matDialog, detectChanges} = await renderRoot(RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
+    triggerRoomChanged(activatedRoute, room.id);
+    detectChanges();
+
+    userEvent.click(screen.getByTestId('assign-devices-btn'));
+    detectChanges();
+
+    expect(matDialog.open).toHaveBeenCalledWith(AssignDevicesToRoomDialogComponent, expect.objectContaining({
+      data: room
     }));
   })
 

@@ -1,14 +1,16 @@
 import {Component} from "@angular/core";
-import {RoomModel} from "../../models";
 import {Observable} from "rxjs";
-import {DeviceModel} from "../../../devices/models";
-import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
-import {RoomsActions, selectRoomById} from "../../state";
 import {ActivatedRoute} from "@angular/router";
 import {map, mergeMap} from "rxjs/operators";
+
+import {RoomModel, RoomLightingChangeModel} from "../../models";
+import {DeviceModel} from "../../../devices/models";
+import {AppState} from "../../../app.state";
+import {RoomsActions, selectRoomById} from "../../state";
 import {selectAllDevicesByRoomId} from "../../../devices/state";
-import {RoomLightingChangeModel} from "../../models/room-lighting-change.model";
+import {MatDialog} from "@angular/material/dialog";
+import {AssignDevicesToRoomDialogComponent} from "../assign-devices-to-room-dialog/assign-devices-to-room-dialog.component";
 
 @Component({
   selector: 'room-detail-root',
@@ -21,7 +23,8 @@ export class RoomDetailRootComponent {
   devices$: Observable<Array<DeviceModel>>;
 
   constructor(private readonly store: Store<AppState>,
-              private readonly route: ActivatedRoute) {
+              private readonly route: ActivatedRoute,
+              private readonly dialog: MatDialog) {
     const roomId$ = this.route.paramMap.pipe(
       map(paramMap => paramMap.get('roomId') || '')
     );
@@ -35,5 +38,9 @@ export class RoomDetailRootComponent {
 
   onRoomLightingChanged($event: RoomLightingChangeModel) {
     this.store.dispatch(RoomsActions.changeRoomLighting.request($event));
+  }
+
+  onAssignDevices(room: RoomModel) {
+    this.dialog.open(AssignDevicesToRoomDialogComponent, {data: room});
   }
 }

@@ -25,6 +25,7 @@ import {AppState} from "../app/app.state";
 export interface RenderAppComponentOptions<T> extends RenderComponentOptions<T> {
   routes?: Routes;
   actions?: Action[];
+  dialogData?: any;
 }
 
 export interface RenderFeatureComponentOptions<T> extends RenderAppComponentOptions<T> {

@@ -1,11 +1,12 @@
 import {screen} from "@testing-library/dom";
+import userEvent from "@testing-library/user-event";
+import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
 
 import {RoomDetailComponent} from './room-detail.component';
 import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {RoomsModule} from "../../rooms.module";
-import {LightingModel, LightingState} from "../../../shared/models";
-import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
-import {RoomLightingChangeModel} from "../../models/room-lighting-change.model";
+import {LightingState} from "../../../shared/models";
+import {RoomLightingChangeModel, RoomModel} from "../../models";
 
 describe('RoomDetailComponent', () => {
   it('should show room name', async () => {
@@ -41,7 +42,7 @@ describe('RoomDetailComponent', () => {
     });
     const emitter = new TestingEventEmitter<RoomLightingChangeModel>();
 
-    const {matHarness, detectChanges} = await renderComponent({room, lightingChange: emitter});
+    const {matHarness} = await renderComponent({room, lightingChange: emitter});
     const state = await matHarness.getHarness(MatSlideToggleHarness);
     await state.check();
 
@@ -51,10 +52,26 @@ describe('RoomDetailComponent', () => {
     })
   })
 
-  function renderComponent({room = null, devices = [], lightingChange = new TestingEventEmitter<RoomLightingChangeModel>()}: Partial<RoomDetailComponent> = {}) {
+  it('should notify when assigning devices to room', async () => {
+    const room = ModelFactory.createRoomModel();
+    const emitter = new TestingEventEmitter<RoomModel>();
+
+    const {detectChanges} = await renderComponent({room, assignDevices: emitter});
+
+    userEvent.click(screen.getByTestId('assign-devices-btn'));
+    detectChanges();
+
+    expect(emitter.emit).toHaveBeenCalledWith(room);
+  })
+
+  function renderComponent({
+                             room = null, devices = [],
+                             lightingChange = new TestingEventEmitter<RoomLightingChangeModel>(),
+                             assignDevices = new TestingEventEmitter<RoomModel>()
+                           }: Partial<RoomDetailComponent> = {}) {
     return renderFeatureComponent(RoomDetailComponent, {
       imports: [RoomsModule],
-      componentProperties: {room, devices, lightingChange}
+      componentProperties: {room, devices, lightingChange, assignDevices}
     });
   }
 });

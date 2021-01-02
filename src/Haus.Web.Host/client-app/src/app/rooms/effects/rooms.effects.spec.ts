@@ -2,7 +2,10 @@ import {RoomsEffects} from "./rooms.effects";
 import {
   createAppTestingService,
   eventually,
-  ModelFactory, setupAddRoom, setupChangeRoomLighting,
+  ModelFactory,
+  setupAddRoom,
+  setupAssignDevicesToRoom,
+  setupChangeRoomLighting,
   setupGetAllRooms,
   TestingActionsSubject
 } from "../../../testing";
@@ -50,6 +53,17 @@ describe('RoomsEffects', () => {
 
     await eventually(() => {
       expect(actions$.publishedActions).toContainEqual(RoomsActions.changeRoomLighting.success({roomId: 54, lighting}));
+    })
+  })
+
+  it('should assign devices to room when assign devices to room requested', async () => {
+    setupAssignDevicesToRoom(65);
+
+    const deviceIds = [12, 5, 6];
+    actions$.next(RoomsActions.assignDevicesToRoom.request({roomId: 65, deviceIds}));
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(RoomsActions.assignDevicesToRoom.success({roomId: 65, deviceIds}));
     })
   })
 })
