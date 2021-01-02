@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
@@ -30,6 +31,7 @@ namespace Haus.Core.Tests.Devices.Events
             var light = _context.AddDevice(deviceType: DeviceType.Light);
             _room = _context.AddRoom(configure: entity =>
             {
+                entity.Lighting = Lighting.Default;
                 entity.AddDevice(_sensor, _hausBus);
                 entity.AddDevice(light, _hausBus);
             });
@@ -44,6 +46,15 @@ namespace Haus.Core.Tests.Devices.Events
             var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
             hausCommand.Payload.Room.Id.Should().Be(_room.Id);
             hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
+        }
+
+        [Fact]
+        public async Task WhenOccupancySensorDetectsMotionAndSensorIsInARoomThenRoomStateIsUpdatedToOn()
+        {
+            var change = new OccupancyChangedModel(_sensor.ExternalId, true);
+            await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
+
+            _context.ChangeTracker.HasChanges().Should().BeFalse();
         }
 
         [Fact]

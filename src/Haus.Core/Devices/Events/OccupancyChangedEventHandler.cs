@@ -35,6 +35,7 @@ namespace Haus.Core.Devices.Events
             else
                 room.TurnOff(_domainEventBus);
 
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
         }
 
