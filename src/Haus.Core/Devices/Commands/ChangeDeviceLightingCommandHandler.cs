@@ -37,7 +37,7 @@ namespace Haus.Core.Devices.Commands
 
         protected override async Task Handle(ChangeDeviceLightingCommand request, CancellationToken cancellationToken)
         {
-            var device = await _context.FindByIdOrThrowAsync<DeviceEntity>(request.DeviceId, cancellationToken)
+            var device = await _context.FindByIdOrThrowAsync<DeviceEntity>(request.DeviceId, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
             if (!device.IsLight)

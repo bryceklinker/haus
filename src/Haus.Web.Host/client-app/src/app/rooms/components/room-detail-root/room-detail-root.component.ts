@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
 import {ActivatedRoute} from "@angular/router";
@@ -8,7 +8,7 @@ import {RoomModel, RoomLightingChangeModel} from "../../models";
 import {DeviceModel} from "../../../devices/models";
 import {AppState} from "../../../app.state";
 import {RoomsActions, selectRoomById} from "../../state";
-import {selectAllDevicesByRoomId} from "../../../devices/state";
+import {DevicesActions, selectAllDevicesByRoomId} from "../../../devices/state";
 import {MatDialog} from "@angular/material/dialog";
 import {AssignDevicesToRoomDialogComponent} from "../assign-devices-to-room-dialog/assign-devices-to-room-dialog.component";
 
@@ -17,7 +17,7 @@ import {AssignDevicesToRoomDialogComponent} from "../assign-devices-to-room-dial
   templateUrl: './room-detail-root.component.html',
   styleUrls: ['./room-detail-root.component.scss']
 })
-export class RoomDetailRootComponent {
+export class RoomDetailRootComponent implements OnInit {
   room$: Observable<RoomModel | undefined | null>;
 
   devices$: Observable<Array<DeviceModel>>;
@@ -34,6 +34,10 @@ export class RoomDetailRootComponent {
     this.devices$ = roomId$.pipe(
       mergeMap(roomId => this.store.select(selectAllDevicesByRoomId(roomId)))
     )
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(DevicesActions.loadDevices.request());
   }
 
   onRoomLightingChanged($event: RoomLightingChangeModel) {

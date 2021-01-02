@@ -34,7 +34,7 @@ namespace Haus.Core.Rooms.Queries
             if (await _context.IsMissingAsync<RoomEntity>(request.RoomId).ConfigureAwait(false))
                 return null;
             
-            return await _context.GetAllReadOnly<DeviceEntity>()
+            return await _context.QueryAll<DeviceEntity>()
                 .Where(d => d.Room.Id == request.RoomId)
                 .Select(DeviceEntity.ToModelExpression)
                 .ToListResultAsync(cancellationToken)

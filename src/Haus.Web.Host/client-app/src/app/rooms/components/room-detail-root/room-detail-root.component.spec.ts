@@ -32,6 +32,12 @@ describe('DeviceDetailRootComponent', () => {
     })
   })
 
+  it('should load devices when rendered', async () => {
+    const {store} = await renderRoot();
+
+    expect(store.dispatchedActions).toContainEqual(DevicesActions.loadDevices.request());
+  })
+
   it('should show devices in room', async () => {
     const {detectChanges, activatedRoute} = await renderRoot(
       RoomsActions.loadRooms.success(ModelFactory.createListResult(room)),

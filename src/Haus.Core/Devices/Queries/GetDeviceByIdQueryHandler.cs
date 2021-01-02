@@ -30,7 +30,7 @@ namespace Haus.Core.Devices.Queries
 
         public async Task<DeviceModel> Handle(GetDeviceByIdQuery request, CancellationToken cancellationToken = default)
         {
-            return await _context.GetAllReadOnly<DeviceEntity>()
+            return await _context.QueryAll<DeviceEntity>()
                 .Where(d => d.Id == request.Id)
                 .Select(DeviceEntity.ToModelExpression)
                 .SingleOrDefaultAsync(cancellationToken)

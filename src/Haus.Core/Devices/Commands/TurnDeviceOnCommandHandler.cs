@@ -32,7 +32,7 @@ namespace Haus.Core.Devices.Commands
 
         protected override async Task Handle(TurnDeviceOnCommand request, CancellationToken cancellationToken)
         {
-            var device = await _context.FindByIdOrThrowAsync<DeviceEntity>(request.DeviceId, cancellationToken).ConfigureAwait(false);
+            var device = await _context.FindByIdOrThrowAsync<DeviceEntity>(request.DeviceId, cancellationToken: cancellationToken).ConfigureAwait(false);
             device.TurnOn(_domainEventBus);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);

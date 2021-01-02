@@ -29,7 +29,7 @@ namespace Haus.Core.Rooms.Queries
 
         public async Task<RoomModel> Handle(GetRoomByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _context.GetAllReadOnly<RoomEntity>()
+            return await _context.QueryAll<RoomEntity>()
                 .Select(RoomEntity.ToModelExpression)
                 .SingleOrDefaultAsync(r => r.Id == request.Id, cancellationToken)
                 .ConfigureAwait(false);

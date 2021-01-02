@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Entities;
-using Haus.Core.Common.Queries;
 using Haus.Core.Rooms.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,7 +29,7 @@ namespace Haus.Core.Common.Storage
             return Set<TEntity>();
         }
         
-        public IQueryable<TEntity> GetAllReadOnly<TEntity>()
+        public IQueryable<TEntity> QueryAll<TEntity>()
             where TEntity : class, IEntity
         {
             return GetAll<TEntity>()
@@ -47,7 +45,7 @@ namespace Haus.Core.Common.Storage
         public Task<bool> DoesExistAsync<TEntity>(long id)
             where TEntity : class, IEntity
         {
-            return GetAllReadOnly<TEntity>()
+            return QueryAll<TEntity>()
                 .AnyAsync(e => e.Id == id);
         }
 
@@ -58,25 +56,28 @@ namespace Haus.Core.Common.Storage
                 .ConfigureAwait(false);
         }
         
-        public async Task<TEntity> FindByAsync<TEntity>(Expression<Func<TEntity, bool>> expression) 
+        public async Task<TEntity> FindByAsync<TEntity>(Expression<Func<TEntity, bool>> expression, Func<IQueryable<TEntity>, IQueryable<TEntity>> configureQuery = null, CancellationToken token = default) 
             where TEntity : class, IEntity
         {
-            return await GetAll<TEntity>()
-                .SingleOrDefaultAsync(expression)
+            var queryable = GetAll<TEntity>();
+            
+            queryable = configureQuery?.Invoke(queryable) ?? queryable;
+            return await queryable
+                .SingleOrDefaultAsync(expression, token)
                 .ConfigureAwait(false);
         }
 
-        public async Task<TEntity> FindByIdAsync<TEntity>(long id, CancellationToken token = default) 
+        public async Task<TEntity> FindByIdAsync<TEntity>(long id, Func<IQueryable<TEntity>, IQueryable<TEntity>> configureQuery = null, CancellationToken token = default) 
             where TEntity : class, IEntity
         {
-            return await FindAsync<TEntity>(new object[]{id}, token)
+            return await FindByAsync(e => e.Id == id, configureQuery, token)
                 .ConfigureAwait(false);
         }
 
-        public async Task<TEntity> FindByIdOrThrowAsync<TEntity>(long id, CancellationToken token = default)
+        public async Task<TEntity> FindByIdOrThrowAsync<TEntity>(long id, Func<IQueryable<TEntity>, IQueryable<TEntity>> configureQuery = null, CancellationToken cancellationToken = default)
             where TEntity : class, IEntity
         {
-            var entity = await FindByIdAsync<TEntity>(id, token).ConfigureAwait(false);
+            var entity = await FindByIdAsync(id, configureQuery, cancellationToken).ConfigureAwait(false);
             if (entity == null)
                 throw new EntityNotFoundException<TEntity>(id);
 

@@ -6,6 +6,7 @@ using Haus.Core.Rooms.Entities;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Core.Rooms.Commands
 {
@@ -32,7 +33,9 @@ namespace Haus.Core.Rooms.Commands
 
         protected override async Task Handle(TurnRoomOnCommand request, CancellationToken cancellationToken)
         {
-            var room = await _context.FindByIdOrThrowAsync<RoomEntity>(request.RoomId, cancellationToken).ConfigureAwait(false);
+            var room = await _context.FindByIdOrThrowAsync<RoomEntity>(request.RoomId, 
+                query => query.Include(r => r.Devices), 
+                cancellationToken).ConfigureAwait(false);
             room.TurnOn(_domainEventBus);
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);

@@ -28,6 +28,17 @@ describe('RoomDetailComponent', () => {
     expect(screen.queryAllByTestId('room-device-item')).toHaveLength(2);
   })
 
+  it('should show each device\'s info', async () => {
+    const devices = [
+      ModelFactory.createDeviceModel({name: 'bob', deviceType: 'Light'})
+    ];
+
+    const {container} = await renderComponent({devices});
+
+    expect(container).toHaveTextContent(/bob/g);
+    expect(container).toHaveTextContent(/Light/g);
+  })
+
   it('should show room lighting', async () => {
     const room = ModelFactory.createRoomModel();
 

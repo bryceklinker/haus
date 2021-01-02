@@ -43,6 +43,8 @@ namespace Haus.Core.Devices.Events
         {
             return await _context.GetAll<DeviceEntity>()
                 .Where(d => d.ExternalId == externalId)
+                .Include(d => d.Room)
+                    .ThenInclude(r => r.Devices)
                 .Select(d => d.Room)
                 .SingleOrDefaultAsync(token)
                 .ConfigureAwait(false);

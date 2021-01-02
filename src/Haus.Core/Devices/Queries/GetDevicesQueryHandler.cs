@@ -32,7 +32,7 @@ namespace Haus.Core.Devices.Queries
 
         public async Task<ListResult<DeviceModel>> Handle(GetDevicesQuery request, CancellationToken cancellationToken = default)
         {
-            var query = _context.GetAllReadOnly<DeviceEntity>();
+            var query = _context.QueryAll<DeviceEntity>();
 
             if (request.HasExternalId) 
                 query = query.Where(d => d.ExternalId == request.ExternalId);

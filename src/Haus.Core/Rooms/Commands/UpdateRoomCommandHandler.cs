@@ -35,7 +35,7 @@ namespace Haus.Core.Rooms.Commands
             await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
                 .ConfigureAwait(false);
                
-            var room = await _context.FindByIdOrThrowAsync<RoomEntity>(request.Id, cancellationToken)
+            var room = await _context.FindByIdOrThrowAsync<RoomEntity>(request.Id, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
             
             room.UpdateFromModel(request.Model);

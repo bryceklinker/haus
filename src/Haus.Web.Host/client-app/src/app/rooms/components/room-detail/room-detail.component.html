@@ -18,8 +18,8 @@
         <a *ngFor="let device of devices"
            mat-list-item
            data-testid="room-device-item"
-           [routerLink]="['devices', device.id]">
-
+           [routerLink]="['/devices', device.id]">
+          ({{device.deviceType}}) {{device.name}}
         </a>
       </mat-list>
       <button mat-fab data-testid="assign-devices-btn" (click)="onAssignDevices()">

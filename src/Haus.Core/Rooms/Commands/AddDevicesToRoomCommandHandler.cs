@@ -38,7 +38,7 @@ namespace Haus.Core.Rooms.Commands
 
         protected override async Task Handle(AddDevicesToRoomCommand request, CancellationToken cancellationToken)
         {
-            var room = await _context.FindByIdOrThrowAsync<RoomEntity>(request.RoomId, cancellationToken)
+            var room = await _context.FindByIdOrThrowAsync<RoomEntity>(request.RoomId, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
             var devices = await EnsureAllDevicesExist(request.DeviceIds, cancellationToken)
