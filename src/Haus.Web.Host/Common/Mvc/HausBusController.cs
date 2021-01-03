@@ -30,24 +30,29 @@ namespace Haus.Web.Host.Common.Mvc
 
         protected async Task<IActionResult> CommandAsync(ICommand command)
         {
-            await _hausBus.ExecuteCommandAsync(command).ConfigureAwait(false);
-            return NoContent();
-        }
-
-        protected async Task<IActionResult> CommandAsync<TResult>(ICommand<TResult> command)
-        { 
-            var result = await _hausBus.ExecuteCommandAsync(command).ConfigureAwait(false);
-            if (result == null)
+            try
+            {
+                await _hausBus.ExecuteCommandAsync(command).ConfigureAwait(false);
                 return NoContent();
-
-            return Ok(result);
+            }
+            catch (HausValidationException e)
+            {
+                return BadRequest(e.Errors);
+            }
         }
 
         protected async Task<IActionResult> CreateCommandAsync<TResult>(ICommand<TResult> command, string routeName, Func<TResult, object> createRouteValues)
         {
-            var result = await _hausBus.ExecuteCommandAsync(command).ConfigureAwait(false);
-            var routeValues = createRouteValues(result);
-            return CreatedAtRoute(routeName, routeValues, result);
+            try
+            {
+                var result = await _hausBus.ExecuteCommandAsync(command).ConfigureAwait(false);
+                var routeValues = createRouteValues(result);
+                return CreatedAtRoute(routeName, routeValues, result);
+            }
+            catch (HausValidationException e)
+            {
+                return BadRequest(e.Errors);
+            }
         }
         
         protected IActionResult OkOrNotFound<T>(T model)

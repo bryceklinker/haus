@@ -1,6 +1,8 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Lighting;
 using Haus.Core.Lighting.Commands;
@@ -37,6 +39,17 @@ namespace Haus.Core.Tests.Lighting.Commands
                 MinTemperature = 12,
                 MaxTemperature = 100
             });
+        }
+
+        [Fact]
+        public async Task WhenModelContainsInvalidConstraintsThenThrowsValidationException()
+        {
+            _context.AddDefaultLightingConstraints(10, 90);
+
+            var command = new UpdateDefaultLightingConstraintsCommand(new LightingConstraintsModel(90, 10));
+            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+
+            await act.Should().ThrowAsync<HausValidationException>();
         }
     }
 }

@@ -4,7 +4,7 @@ using Haus.Cqrs.Events;
 
 namespace Haus.Core.Common.Events
 {
-    public class RoutableEvent : IEvent
+    public record RoutableEvent : IEvent
     {
         public static RoutableEvent<T> FromEvent<T>(T @event)
             where T : IHausEventCreator<T>
@@ -13,7 +13,7 @@ namespace Haus.Core.Common.Events
         }
     }
 
-    public class RoutableEvent<T> : RoutableEvent
+    public record RoutableEvent<T> : RoutableEvent
     {
         private readonly HausEvent<T> _hausEvent;
         

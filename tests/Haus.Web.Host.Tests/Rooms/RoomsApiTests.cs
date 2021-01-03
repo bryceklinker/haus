@@ -59,6 +59,26 @@ namespace Haus.Web.Host.Tests.Rooms
         }
 
         [Fact]
+        public async Task WhenRoomCreatedWithDuplicateNameThenReturnsBadRequest()
+        {
+            await CreateRoomAsync("create-duplicate");
+            
+            var response = await _apiClient.CreateRoomAsync(new RoomModel(Name: "create-duplicate"));
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+        
+        [Fact]
+        public async Task WhenRoomUpdatedWithDuplicateNameThenReturnsBadRequest()
+        {
+            await CreateRoomAsync("duplicate");
+            var room = await CreateRoomAsync("update-to-be-duplicate");
+
+            var response = await _apiClient.UpdateRoomAsync(room.Id, new RoomModel(Name: "duplicate"));
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+        
+        [Fact]
         public async Task WhenDeviceAddedToRoomThenRoomHasDevice()
         {
             var room = await CreateRoomAsync("room with devices");
