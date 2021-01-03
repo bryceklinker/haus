@@ -7,8 +7,8 @@ namespace Haus.Core.Lighting
 {
     public class LightingConstraintsEntity
     {
-        public const double DefaultMinBrightnessValue = 0;
-        public const double DefaultMaxBrightnessValue = 100;
+        public const double DefaultMinLevel = 0;
+        public const double DefaultMaxLevel = 100;
         public const double DefaultMinTemperature = 2000;
         public const double DefaultMaxTemperature = 6000;
 
@@ -16,27 +16,49 @@ namespace Haus.Core.Lighting
 
         public static readonly Expression<Func<LightingConstraintsEntity, LightingConstraintsModel>> ToModelExpression =
             e => new LightingConstraintsModel(
-                e.MinBrightnessValue, 
-                e.MaxBrightnessValue, 
+                e.MinLevel, 
+                e.MaxLevel, 
                 e.MinTemperature,
                 e.MaxTemperature);
         
-        public double MinBrightnessValue { get; set; } = DefaultMinBrightnessValue;
-        public double MaxBrightnessValue { get; set; } = DefaultMaxBrightnessValue;
-        public double MinTemperature { get; set; } = DefaultMinTemperature;
-        public double MaxTemperature { get; set; } = DefaultMaxTemperature;
+        public double MinLevel { get; set; }
+        public double MaxLevel { get; set; }
+        public double MinTemperature { get; set; }
+        public double MaxTemperature { get; set; }
 
+        public LightingConstraintsEntity(
+            double minLevel = DefaultMinLevel, 
+            double maxLevel = DefaultMaxLevel, 
+            double minTemperature = DefaultMinTemperature, 
+            double maxTemperature = DefaultMaxTemperature)
+        {
+            MinLevel = minLevel;
+            MaxLevel = maxLevel;
+            MinTemperature = minTemperature;
+            MaxTemperature = maxTemperature;
+        }
+        
         public void UpdateFromModel(LightingConstraintsModel model)
         {
-            MinBrightnessValue = model.MinBrightnessValue;
-            MaxBrightnessValue = model.MaxBrightnessValue;
+            MinLevel = model.MinLevel;
+            MaxLevel = model.MaxLevel;
             MinTemperature = model.MinTemperature;
             MaxTemperature = model.MaxTemperature;
         }
-        
+
+        public LightingConstraintsEntity Copy()
+        {
+            return new(MinLevel, MaxLevel, MinTemperature, MaxTemperature);
+        }
+
+        public static LightingConstraintsEntity FromModel(LightingConstraintsModel model)
+        {
+            return new(model.MinLevel, model.MaxLevel, model.MinTemperature, model.MaxTemperature);
+        }
+
         protected bool Equals(LightingConstraintsEntity other)
         {
-            return MinBrightnessValue.Equals(other.MinBrightnessValue) && MaxBrightnessValue.Equals(other.MaxBrightnessValue) && MinTemperature.Equals(other.MinTemperature) && MaxTemperature.Equals(other.MaxTemperature);
+            return MinLevel.Equals(other.MinLevel) && MaxLevel.Equals(other.MaxLevel) && MinTemperature.Equals(other.MinTemperature) && MaxTemperature.Equals(other.MaxTemperature);
         }
 
         public override bool Equals(object obj)
@@ -49,7 +71,7 @@ namespace Haus.Core.Lighting
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(MinBrightnessValue, MaxBrightnessValue, MinTemperature, MaxTemperature);
+            return HashCode.Combine(MinLevel, MaxLevel, MinTemperature, MaxTemperature);
         }
 
         public static void Configure<TEntity>(OwnedNavigationBuilder<TEntity, LightingConstraintsEntity> builder)

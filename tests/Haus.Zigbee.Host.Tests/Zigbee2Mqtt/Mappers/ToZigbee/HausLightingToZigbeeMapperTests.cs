@@ -4,6 +4,7 @@ using System.Text;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.Lighting;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
 using MQTTnet;

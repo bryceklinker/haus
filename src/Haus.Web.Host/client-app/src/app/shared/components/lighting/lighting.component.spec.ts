@@ -1,22 +1,29 @@
-import {LightingComponent} from "./lighting.component";
-import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
-import {SharedModule} from "../../shared.module";
-import {MatSliderHarness} from "@angular/material/slider/testing";
-import {LightingModel, LightingState} from "../../models";
 import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
 import {HarnessLoader} from "@angular/cdk/testing";
-import {MatSlider} from "@angular/material/slider";
 import {By} from "@angular/platform-browser";
 import {ComponentFixture} from "@angular/core/testing";
+import {LightingComponent} from "./lighting.component";
+import {MatSliderHarness} from "@angular/material/slider/testing";
+
+import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
+import {SharedModule} from "../../shared.module";
+import {LightingModel, LightingState} from "../../models";
 
 describe('LightingComponent', () => {
   it('should show lighting values when rendered', async () => {
-    const lighting = ModelFactory.createLighting({state: LightingState.On});
-    const {brightness, state, temperature, red, green, blue} = await renderLightingWithHarnesses({lighting});
+    const lighting = ModelFactory.createLighting({
+      state: LightingState.On,
+      constraints: ModelFactory.createLightingConstraints({minLevel: 5, maxLevel: 95, minTemperature: 1000, maxTemperature: 6000})
+    });
+    const {level, state, temperature, red, green, blue} = await renderLightingWithHarnesses({lighting});
 
-    expect(await brightness.getValue()).toEqual(lighting.brightnessPercent);
+    expect(await level.getValue()).toEqual(lighting.level);
+    expect(await level.getMinValue()).toEqual(5);
+    expect(await level.getMaxValue()).toEqual(95);
     expect(await state.isChecked()).toEqual(true);
     expect(await temperature.getValue()).toEqual(lighting.temperature);
+    expect(await temperature.getMinValue()).toEqual(1000);
+    expect(await temperature.getMaxValue()).toEqual(6000);
     expect(await red.getValue()).toEqual(lighting.color.red);
     expect(await green.getValue()).toEqual(lighting.color.green);
     expect(await blue.getValue()).toEqual(lighting.color.blue);
@@ -29,11 +36,11 @@ describe('LightingComponent', () => {
   })
 
   it('should notify of change when brightness changes', async () => {
-    const lighting = ModelFactory.createLighting({brightnessPercent: 0});
+    const lighting = ModelFactory.createLighting({level: 0});
     const changeEmitter = new TestingEventEmitter<LightingModel>();
     const {fixture} = await renderLightingWithHarnesses({lighting, change: changeEmitter});
 
-    triggerSliderInput(fixture, 'brightness-input', 78);
+    triggerSliderInput(fixture, 'level-input', 78);
 
     expect(changeEmitter.emit).toHaveBeenCalledWith({
       ...lighting,
@@ -133,7 +140,7 @@ describe('LightingComponent', () => {
     const result = await renderLighting(props);
     return {
       ...result,
-      brightness: await getSliderHarness(result.matHarness, 'brightness-input'),
+      level: await getSliderHarness(result.matHarness, 'level-input'),
       state: await result.matHarness.getHarness(MatSlideToggleHarness.with({selector: '[data-testid="state-input"]'})),
       temperature: await getSliderHarness(result.matHarness, 'temperature-input'),
       red: await getSliderHarness(result.matHarness, 'red-input'),

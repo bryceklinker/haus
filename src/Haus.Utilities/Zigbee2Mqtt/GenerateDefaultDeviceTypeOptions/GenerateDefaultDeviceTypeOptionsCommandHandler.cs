@@ -15,10 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions
 {
     [Command("zigbee2mqtt", "generateDeviceTypeDefaults")]
-    public class GenerateDefaultDeviceTypeOptionsCommand : IRequest
-    {
-        
-    }
+    public record GenerateDefaultDeviceTypeOptionsCommand : IRequest;
     
     public class GenerateDefaultDeviceTypeOptionsCommandHandler : AsyncRequestHandler<GenerateDefaultDeviceTypeOptionsCommand>
     {

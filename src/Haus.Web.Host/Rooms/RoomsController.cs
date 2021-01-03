@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Queries;

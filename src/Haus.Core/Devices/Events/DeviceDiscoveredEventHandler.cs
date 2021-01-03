@@ -19,7 +19,7 @@ namespace Haus.Core.Devices.Events
 
         public async Task Handle(RoutableEvent<DeviceDiscoveredModel> notification, CancellationToken cancellationToken = default)
         {
-            var existing = await _context.FindByAsync<DeviceEntity>(d => d.ExternalId == notification.Payload.Id);
+            var existing = await _context.FindByAsync<DeviceEntity>(d => d.ExternalId == notification.Payload.Id, token: cancellationToken);
             if (existing == null)
                 _context.Add(DeviceEntity.FromDiscoveredDevice(notification.Payload));
             else

@@ -7,6 +7,7 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Lighting;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
 using MediatR;

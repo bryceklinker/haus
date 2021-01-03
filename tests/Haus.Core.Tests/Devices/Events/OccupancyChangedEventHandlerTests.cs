@@ -9,6 +9,7 @@ using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Sensors.Motion;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Entities;
 using Haus.Testing.Support;

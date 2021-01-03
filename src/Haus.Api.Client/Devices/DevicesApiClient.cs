@@ -4,6 +4,7 @@ using Haus.Api.Client.Common;
 using Haus.Api.Client.Options;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
+using Haus.Core.Models.Lighting;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client.Devices

@@ -34,8 +34,8 @@ namespace Haus.Core.Tests.Lighting.Commands
             var updated = _context.Set<DefaultLightingConstraintsEntity>().Single();
             updated.Constraints.Should().BeEquivalentTo(new LightingConstraintsEntity
             {
-                MinBrightnessValue = 7,
-                MaxBrightnessValue = 90,
+                MinLevel = 7,
+                MaxLevel = 90,
                 MinTemperature = 12,
                 MaxTemperature = 100
             });

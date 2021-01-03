@@ -10,6 +10,7 @@ using FluentAssertions;
 using Haus.Core.Common.Entities;
 using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Lighting;
 using Xunit;
 
 namespace Haus.Core.Tests.Devices.Entities
@@ -126,7 +127,7 @@ namespace Haus.Core.Tests.Devices.Entities
         {
             var domainEventBus = new FakeDomainEventBus();
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            var lighting = new LightingEntity {BrightnessPercent = 12};
+            var lighting = new LightingEntity {Level = 12};
 
             light.ChangeLighting(lighting, domainEventBus);
 
@@ -139,24 +140,24 @@ namespace Haus.Core.Tests.Devices.Entities
         public void WhenDeviceIsTurnedOffThenDeviceLightingStateIsSetToOff()
         {
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            light.ChangeLighting(new LightingEntity{State = LightingState.On, BrightnessPercent = 6}, new FakeDomainEventBus());
+            light.ChangeLighting(new LightingEntity{State = LightingState.On, Level = 6}, new FakeDomainEventBus());
 
             light.TurnOff(new FakeDomainEventBus());
 
             light.Lighting.State.Should().Be(LightingState.Off);
-            light.Lighting.BrightnessPercent.Should().Be(6);
+            light.Lighting.Level.Should().Be(6);
         }
 
         [Fact]
         public void WhenDeviceIsTurnedOnThenDeviceLightingStateIsSetToOn()
         {
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            light.ChangeLighting(new LightingEntity{State = LightingState.Off, BrightnessPercent = 6}, new FakeDomainEventBus());
+            light.ChangeLighting(new LightingEntity{State = LightingState.Off, Level = 6}, new FakeDomainEventBus());
 
             light.TurnOn(new FakeDomainEventBus());
 
             light.Lighting.State.Should().Be(LightingState.On);
-            light.Lighting.BrightnessPercent.Should().Be(6);
+            light.Lighting.Level.Should().Be(6);
         }
         
         [Fact]

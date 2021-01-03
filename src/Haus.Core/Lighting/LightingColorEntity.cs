@@ -1,5 +1,6 @@
 using System;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Lighting;
 
 namespace Haus.Core.Lighting
 {
@@ -38,7 +39,7 @@ namespace Haus.Core.Lighting
 
         public static LightingColorEntity FromModel(LightingColorModel modelColor)
         {
-            return new LightingColorEntity
+            return new()
             {
                 Blue = modelColor?.Blue ?? DefaultColorValue,
                 Green = modelColor?.Green ?? DefaultColorValue,
@@ -48,7 +49,7 @@ namespace Haus.Core.Lighting
 
         public LightingColorEntity Copy()
         {
-            return new LightingColorEntity
+            return new()
             {
                 Blue = Blue,
                 Green = Green,

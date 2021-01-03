@@ -1,4 +1,5 @@
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Lighting;
 
 namespace Haus.Core.Models.Rooms
 {

@@ -6,6 +6,7 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
+using Haus.Core.Models.Lighting;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
 using Xunit;
@@ -50,7 +51,7 @@ namespace Haus.Web.Host.Tests.Devices
             await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(msg => hausCommand = msg);
             
             var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
-            await _hausClient.ChangeDeviceLightingAsync(device.Id, new LightingModel(brightnessPercent: 5));
+            await _hausClient.ChangeDeviceLightingAsync(device.Id, new LightingModel(level: 5));
             
             Eventually.Assert(() =>
             {

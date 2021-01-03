@@ -5,6 +5,7 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.ExternalMessages;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;

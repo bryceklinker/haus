@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.DomainEvents;
 using Haus.Core.Rooms.Entities;

@@ -18,7 +18,7 @@ namespace Haus.Core.Tests.Lighting.Validators
         }
 
         [Fact]
-        public async Task WhenMinBrightnessIsGreaterThanMaxBrightnessThenReturnsInvalid()
+        public async Task WhenMinLevelIsGreaterThanMaxBrightnessThenReturnsInvalid()
         {
             var model = new LightingConstraintsModel(100, 0);
             var result = await _validator.TestValidateAsync(model);

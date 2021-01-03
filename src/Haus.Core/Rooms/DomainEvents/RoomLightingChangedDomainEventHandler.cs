@@ -4,6 +4,7 @@ using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Entities;

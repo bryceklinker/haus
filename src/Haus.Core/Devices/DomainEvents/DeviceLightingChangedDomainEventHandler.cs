@@ -6,6 +6,7 @@ using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.Lighting;
 using Haus.Cqrs;
 using Haus.Cqrs.DomainEvents;
 

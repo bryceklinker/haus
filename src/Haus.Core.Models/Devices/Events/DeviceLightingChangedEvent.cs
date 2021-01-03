@@ -1,5 +1,6 @@
 using Haus.Core.Models.Common;
 using Haus.Core.Models.ExternalMessages;
+using Haus.Core.Models.Lighting;
 
 namespace Haus.Core.Models.Devices.Events
 {

@@ -5,6 +5,7 @@ using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.ExternalMessages;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Testing.Support;

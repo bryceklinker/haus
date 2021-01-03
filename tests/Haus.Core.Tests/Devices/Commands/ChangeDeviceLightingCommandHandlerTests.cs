@@ -9,6 +9,7 @@ using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.Lighting;
 using Haus.Testing.Support;
 using Xunit;
 
@@ -30,11 +31,11 @@ namespace Haus.Core.Tests.Devices.Commands
         {
             var device = _context.AddDevice(deviceType: DeviceType.Light);
             
-            var lighting = new LightingModel(brightnessPercent: 54);
+            var lighting = new LightingModel(level: 54);
             await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
             var updated = await _context.FindByIdAsync<DeviceEntity>(device.Id);
-            updated.Lighting.BrightnessPercent.Should().Be(54);
+            updated.Lighting.Level.Should().Be(54);
         }
 
         [Fact]
@@ -64,12 +65,12 @@ namespace Haus.Core.Tests.Devices.Commands
         {
             var device = _context.AddDevice(deviceType: DeviceType.Light);
             
-            var lighting = new LightingModel(brightnessPercent: 65);
+            var lighting = new LightingModel(level: 65);
             await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
             var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
             hausCommand.Payload.Device.Id.Should().Be(device.Id);
-            hausCommand.Payload.Lighting.BrightnessPercent.Should().Be(65);
+            hausCommand.Payload.Lighting.Level.Should().Be(65);
         }
     }
 }

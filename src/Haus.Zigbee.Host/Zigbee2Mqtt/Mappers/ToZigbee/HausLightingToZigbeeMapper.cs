@@ -4,6 +4,7 @@ using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
+using Haus.Core.Models.Lighting;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Microsoft.Extensions.Options;
 using MQTTnet;
@@ -43,7 +44,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee
             return HausJsonSerializer.SerializeToBytes(new
             {
                 state = lighting.State.ToString().ToUpperInvariant(),
-                brightness = lighting.BrightnessPercent,
+                brightness = lighting.Level,
                 color_temp = lighting.Temperature,
                 color = lighting.Color == null
                     ? null

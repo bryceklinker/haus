@@ -34,8 +34,8 @@ namespace Haus.Testing.Support
         }
 
         public static DefaultLightingConstraintsEntity AddDefaultLightingConstraints(this HausDbContext context,
-            double minBrightnessValue = LightingConstraintsEntity.DefaultMinBrightnessValue,
-            double maxBrightnessValue = LightingConstraintsEntity.DefaultMaxBrightnessValue,
+            double minLevel = LightingConstraintsEntity.DefaultMinLevel,
+            double maxLevel = LightingConstraintsEntity.DefaultMaxLevel,
             double minTemperature = LightingConstraintsEntity.DefaultMinTemperature,
             double maxTemperature = LightingConstraintsEntity.DefaultMaxTemperature)
         {
@@ -45,8 +45,8 @@ namespace Haus.Testing.Support
                 {
                     MaxTemperature = maxTemperature,
                     MinTemperature = minTemperature,
-                    MaxBrightnessValue = maxBrightnessValue,
-                    MinBrightnessValue = minBrightnessValue
+                    MaxLevel = maxLevel,
+                    MinLevel = minLevel
                 }
             };
 

@@ -1,6 +1,6 @@
 using System;
 using System.Linq.Expressions;
-using Haus.Core.Models.Common;
+using Haus.Core.Models.Lighting;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Haus.Core.Lighting
@@ -9,45 +9,86 @@ namespace Haus.Core.Lighting
     {
         private const LightingState DefaultState = LightingState.Off;
         private const double DefaultTemperature = 150;
-        private const double DefaultBrightnessPercent = 100;
-        public static readonly LightingEntity Default = new()
+        private const double DefaultLevel = 100;
+        public static readonly LightingEntity Default = new();
+
+        public LightingState State { get; set; }
+        public double Level { get; set; }
+        public double Temperature { get; set; }
+        public LightingColorEntity Color { get; set; }
+        public LightingConstraintsEntity Constraints { get; set; }
+
+        public LightingEntity(
+            LightingState state = DefaultState, 
+            double level = DefaultLevel,
+            double temperature = DefaultTemperature,
+            LightingColorEntity color = null,
+            LightingConstraintsEntity constraints = null)
         {
-            State = DefaultState,
-            BrightnessPercent = DefaultBrightnessPercent,
-            Color = LightingColorEntity.Default,
-            Temperature = DefaultTemperature
-        };
-
-        public LightingState State { get; set; } = DefaultState;
-        public double BrightnessPercent { get; set; } = DefaultBrightnessPercent;
-        public double Temperature { get; set; } = DefaultTemperature;
-        public LightingColorEntity Color { get; set; } = LightingColorEntity.Default.Copy();
-
+            State = state;
+            Level = level;
+            Temperature = temperature;
+            Color = color ?? LightingColorEntity.Default.Copy();
+            Constraints = constraints ?? LightingConstraintsEntity.Default.Copy();
+        }
+        
         public static readonly Expression<Func<LightingEntity, LightingModel>> ToModelExpression = 
-            l => new LightingModel(l.State, l.BrightnessPercent, l.Temperature, new LightingColorModel(l.Color.Red, l.Color.Green, l.Color.Blue));
+            l => new LightingModel(
+                l.State, 
+                l.Level, 
+                l.Temperature, 
+                new LightingColorModel(l.Color.Red, l.Color.Green, l.Color.Blue),
+                new LightingConstraintsModel(l.Constraints.MinLevel, l.Constraints.MaxLevel, l.Constraints.MinTemperature, l.Constraints.MaxTemperature));
 
         private static readonly Lazy<Func<LightingEntity, LightingModel>> ToModelFunc = new(ToModelExpression.Compile);
-
+        
         public LightingModel ToModel()
         {
             return ToModelFunc.Value(this);
         }
-        
+
+        public LightingEntity ToDesiredLighting(LightingEntity desired)
+        {
+            var actual = Copy();
+            actual.Level = CalculateDesiredLevel(desired);
+            actual.Temperature = desired.Temperature;
+            actual.State = desired.State;
+            return actual;
+        }
+
         public LightingEntity Copy()
         {
-            return new()
-            {
-                BrightnessPercent = BrightnessPercent,
-                Color = Color?.Copy(),
-                State = State,
-                Temperature = Temperature
-            };
+            return new(State, Level, Temperature, Color.Copy(), Constraints.Copy());
+        }
+
+        public static LightingEntity FromModel(LightingModel model)
+        {
+            return new(
+                model.State,
+                model.Level,
+                model.Temperature,
+                LightingColorEntity.FromModel(model.Color),
+                LightingConstraintsEntity.FromModel(model.Constraints));
+        }
+
+        public static void Configure<TEntity>(OwnedNavigationBuilder<TEntity, LightingEntity> builder) 
+            where TEntity : class
+        {
+            builder.Property(l => l.State).HasConversion<string>();
+            builder.OwnsOne(l => l.Color);
+            builder.OwnsOne(l => l.Constraints, LightingConstraintsEntity.Configure);
+        }
+
+        private double CalculateDesiredLevel(LightingEntity desired)
+        {
+            var desiredLevel = (desired.Level * Constraints.MaxLevel) / desired.Constraints.MaxLevel;
+            return Math.Max(desiredLevel, Constraints.MinLevel);
         }
 
         protected bool Equals(LightingEntity other)
         {
             return State == other.State 
-                   && Nullable.Equals(BrightnessPercent, other.BrightnessPercent) 
+                   && Nullable.Equals(Level, other.Level) 
                    && Nullable.Equals(Temperature, other.Temperature) 
                    && Equals(Color, other.Color);
         }
@@ -62,25 +103,7 @@ namespace Haus.Core.Lighting
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(State, BrightnessPercent, Temperature, Color);
-        }
-
-        public static LightingEntity FromModel(LightingModel model)
-        {
-            return new LightingEntity
-            {
-                State = model.State,
-                BrightnessPercent = model.BrightnessPercent,
-                Color = LightingColorEntity.FromModel(model.Color),
-                Temperature = model.Temperature
-            };
-        }
-
-        public static void Configure<TEntity>(OwnedNavigationBuilder<TEntity, LightingEntity> builder) 
-            where TEntity : class
-        {
-            builder.Property(l => l.State).HasConversion<string>();
-            builder.OwnsOne(l => l.Color);
+            return HashCode.Combine(State, Level, Temperature, Color);
         }
     }
 }

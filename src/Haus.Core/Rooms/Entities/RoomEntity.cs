@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Haus.Core.Common;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Lighting;
-using Haus.Core.Models.Common;
-using Haus.Core.Models.Devices;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.DomainEvents;
 using Haus.Cqrs.DomainEvents;
@@ -29,9 +27,10 @@ namespace Haus.Core.Rooms.Entities
                 r.Name,
                 new LightingModel(
                     r.Lighting.State,
-                    r.Lighting.BrightnessPercent,
+                    r.Lighting.Level,
                     r.Lighting.Temperature,
-                    new LightingColorModel(r.Lighting.Color.Red, r.Lighting.Color.Green, r.Lighting.Color.Blue)
+                    new LightingColorModel(r.Lighting.Color.Red, r.Lighting.Color.Green, r.Lighting.Color.Blue),
+                    new LightingConstraintsModel(r.Lighting.Constraints.MinLevel, r.Lighting.Constraints.MaxLevel, r.Lighting.Constraints.MinTemperature, r.Lighting.Constraints.MaxTemperature)
                 )
             );
 
@@ -41,7 +40,7 @@ namespace Haus.Core.Rooms.Entities
 
         public static RoomEntity CreateFromModel(RoomModel model)
         {
-            return new RoomEntity {Name = model.Name};
+            return new() {Name = model.Name};
         }
 
         public void UpdateFromModel(RoomModel roomModel)

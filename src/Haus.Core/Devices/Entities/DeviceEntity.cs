@@ -8,6 +8,7 @@ using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Rooms.Entities;
 using Haus.Cqrs.DomainEvents;
 using Microsoft.EntityFrameworkCore;
@@ -91,13 +92,13 @@ namespace Haus.Core.Devices.Entities
             Room = null;
         }
 
-        public void ChangeLighting(LightingEntity lighting, IDomainEventBus domainEventBus)
+        public void ChangeLighting(LightingEntity desiredLighting, IDomainEventBus domainEventBus)
         {
             if (!IsLight)
                 throw new InvalidOperationException($"Device with id {Id} is not a light.");
             
-            Lighting = lighting;
-            domainEventBus.Enqueue(new DeviceLightingChangedDomainEvent(this, lighting));
+            Lighting = Lighting.ToDesiredLighting(desiredLighting);
+            domainEventBus.Enqueue(new DeviceLightingChangedDomainEvent(this, Lighting));
         }
 
         public void TurnOff(IDomainEventBus domainEventBus)

@@ -8,22 +8,22 @@
   </div>
 
   <div class="lighting-field">
-    <span class="label">Brightness:</span>
-    <mat-slider data-testid="brightness-input"
-                min="0"
-                max="100"
-                [value]="brightnessPercent"
-                (input)="onBrightnessChanged($event)">
+    <span class="label">Level:</span>
+    <mat-slider data-testid="level-input"
+                [min]="minLevel"
+                [max]="maxLevel"
+                [value]="level"
+                (input)="onLevelChanged($event)">
     </mat-slider>
   </div>
 
   <div class="lighting-field">
     <span class="label">Temperature (K):</span>
     <mat-slider data-testid="temperature-input"
-                min="2000"
-                max="6500"
+                [min]="minTemperature"
+                [max]="maxTemperature"
                 [value]="temperature"
-    (input)="onTemperatureChanged($event)">
+                (input)="onTemperatureChanged($event)">
 
     </mat-slider>
   </div>
@@ -53,7 +53,7 @@
         <span>G</span>
       </div>
 
-      <div class="color-selector" >
+      <div class="color-selector">
         <mat-slider data-testid="blue-input"
                     min="0"
                     max="255"

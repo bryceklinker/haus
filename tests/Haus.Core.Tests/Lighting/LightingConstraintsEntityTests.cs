@@ -13,8 +13,8 @@ namespace Haus.Core.Tests.Lighting
             var entity = new DefaultLightingConstraintsEntity();
             entity.UpdateFromModel(new LightingConstraintsModel(54, 65, 9000, 10000));
 
-            entity.Constraints.MinBrightnessValue.Should().Be(54);
-            entity.Constraints.MaxBrightnessValue.Should().Be(65);
+            entity.Constraints.MinLevel.Should().Be(54);
+            entity.Constraints.MaxLevel.Should().Be(65);
             entity.Constraints.MinTemperature.Should().Be(9000);
             entity.Constraints.MaxTemperature.Should().Be(10000);
         }

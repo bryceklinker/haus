@@ -9,6 +9,7 @@ using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Tests.Support;
 using Haus.Testing.Support;
 using Xunit;

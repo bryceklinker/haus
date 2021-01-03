@@ -21,8 +21,16 @@ export class LightingComponent {
     return !!this.lighting;
   }
 
-  get brightnessPercent(): number {
-    return this.lighting ? this.lighting.brightnessPercent : 0;
+  get level(): number {
+    return this.lighting ? this.lighting.level : 0;
+  }
+
+  get minLevel(): number {
+    return this.lighting?.constraints ? this.lighting.constraints.minLevel : 0;
+  }
+
+  get maxLevel(): number {
+    return this.lighting?.constraints ? this.lighting.constraints.maxLevel : 0;
   }
 
   get state(): boolean {
@@ -31,6 +39,14 @@ export class LightingComponent {
 
   get temperature(): number {
     return this.lighting ? this.lighting.temperature : 0;
+  }
+
+  get minTemperature(): number {
+    return this.lighting?.constraints ? this.lighting.constraints.minTemperature : 0;
+  }
+
+  get maxTemperature(): number {
+    return this.lighting?.constraints ? this.lighting.constraints.maxTemperature : 0;
   }
 
   get red(): number {
@@ -45,8 +61,8 @@ export class LightingComponent {
     return this.lighting && this.lighting.color ? this.lighting.color.blue : 0;
   }
 
-  onBrightnessChanged(change: MatSliderChange) {
-    this.onLightingChanged({brightnessPercent: change.value || 0});
+  onLevelChanged(change: MatSliderChange) {
+    this.onLightingChanged({level: change.value || 0});
   }
 
   onStateChange($event: MatSlideToggleChange) {

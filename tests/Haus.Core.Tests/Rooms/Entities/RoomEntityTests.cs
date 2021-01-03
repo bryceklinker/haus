@@ -1,4 +1,3 @@
-using Haus.Core.Common;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
@@ -6,10 +5,9 @@ using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.DomainEvents;
 using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
-using System.Linq;
 using FluentAssertions;
 using Haus.Core.Lighting;
-using Haus.Core.Models.Rooms.Events;
+using Haus.Core.Models.Lighting;
 using Xunit;
 
 namespace Haus.Core.Tests.Rooms.Entities
@@ -32,7 +30,7 @@ namespace Haus.Core.Tests.Rooms.Entities
         public void WhenLightDeviceIsAddedToRoomThenLightingForDeviceIsSetToRoomLighting()
         {
             var room = new RoomEntity();
-            var roomLighting = new LightingEntity {BrightnessPercent = 65};
+            var roomLighting = new LightingEntity {Level = 65};
             room.ChangeLighting(roomLighting, new FakeDomainEventBus());
 
             var light = new DeviceEntity {DeviceType = DeviceType.Light};
@@ -94,6 +92,15 @@ namespace Haus.Core.Tests.Rooms.Entities
         }
 
         [Fact]
+        public void WhenCreatedThenLightingLevelIsTreatedLikeAPercentage()
+        {
+            var room = RoomEntity.CreateFromModel(new RoomModel());
+
+            room.Lighting.Constraints.MinLevel.Should().Be(0);
+            room.Lighting.Constraints.MaxLevel.Should().Be(100);
+        }
+        
+        [Fact]
         public void WhenLightingIsChangedThenRoomLightingIsChanged()
         {
             var room = new RoomEntity();
@@ -135,12 +142,12 @@ namespace Haus.Core.Tests.Rooms.Entities
         {
             var fakeDomainEventBus = new FakeDomainEventBus();
             var room = new RoomEntity();
-            room.ChangeLighting(new LightingEntity {State = LightingState.On, BrightnessPercent = 54}, fakeDomainEventBus);
+            room.ChangeLighting(new LightingEntity {State = LightingState.On, Level = 54}, fakeDomainEventBus);
 
             room.TurnOff(fakeDomainEventBus);
 
             room.Lighting.State.Should().Be(LightingState.Off);
-            room.Lighting.BrightnessPercent.Should().Be(54);
+            room.Lighting.Level.Should().Be(54);
         }
 
         [Fact]
@@ -148,12 +155,29 @@ namespace Haus.Core.Tests.Rooms.Entities
         {
             var fakeDomainEventBus = new FakeDomainEventBus();
             var room = new RoomEntity();
-            room.ChangeLighting(new LightingEntity {State = LightingState.Off, BrightnessPercent = 54}, fakeDomainEventBus);
+            room.ChangeLighting(new LightingEntity {State = LightingState.Off, Level = 54}, fakeDomainEventBus);
 
             room.TurnOn(fakeDomainEventBus);
 
             room.Lighting.State.Should().Be(LightingState.On);
-            room.Lighting.BrightnessPercent.Should().Be(54);
+            room.Lighting.Level.Should().Be(54);
+        }
+
+        [Fact]
+        public void WhenRoomContainsDevicesWithDifferentMinAndMaxLevelsWhenLightingIsChangedThenDeviceLevelIsSetBasedOnPercentLevelOfRoom()
+        {
+            var fakeDomainEventBus = new FakeDomainEventBus();
+            var room = new RoomEntity();
+            var device = new DeviceEntity
+            {
+                DeviceType = DeviceType.Light,
+                Lighting = new LightingEntity(constraints: new LightingConstraintsEntity(0, 254))
+            };
+            room.AddDevice(device, fakeDomainEventBus);
+
+            room.ChangeLighting(new LightingEntity(level: 50), fakeDomainEventBus);
+
+            device.Lighting.Level.Should().Be(127);
         }
     }
 }

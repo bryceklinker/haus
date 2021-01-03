@@ -4,6 +4,7 @@ import {DiagnosticsMessageModel} from "../app/diagnostics/models";
 import {DeviceModel} from "../app/devices/models";
 import {RoomModel} from "../app/rooms/models";
 import {SimulatedDeviceModel} from "../app/device-simulator/models";
+import {LightingConstraintsModel} from "../app/shared/models/lighting-constraints.model";
 
 let id = 0;
 
@@ -66,12 +67,22 @@ function createLightingColor(model: Partial<LightingColorModel> = {}): LightingC
   }
 }
 
+function createLightingConstraints(model: Partial<LightingConstraintsModel> = {}): LightingConstraintsModel {
+  return {
+    minLevel: model.minLevel || 0,
+    maxLevel: model.maxLevel || 100,
+    minTemperature: model.minTemperature || 2000,
+    maxTemperature: model.maxTemperature || 4000
+  }
+}
+
 function createLighting(model: Partial<LightingModel> = {}): LightingModel {
   return {
-    brightnessPercent: model.brightnessPercent || 23,
-    color: model.color || createLightingColor(model.color),
+    level: model.level || 23,
+    color: model.color || createLightingColor(),
     state: model.state || LightingState.On,
-    temperature: model.temperature || 2900
+    temperature: model.temperature || 2900,
+    constraints: model.constraints || createLightingConstraints()
   }
 }
 
@@ -83,5 +94,6 @@ export const ModelFactory = {
   createSimulatedDevice,
   createMetadata,
   createLightingColor,
+  createLightingConstraints,
   createLighting
 };

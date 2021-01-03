@@ -1,23 +1,26 @@
-namespace Haus.Core.Models.Common
+namespace Haus.Core.Models.Lighting
 {
     public record LightingModel
     {
         public static readonly LightingModel Default = new();
         public LightingState State { get; }
-        public double BrightnessPercent { get; }
+        public double Level { get; }
         public double Temperature { get; }
         public LightingColorModel Color { get; }
+        public LightingConstraintsModel Constraints { get; }
 
         public LightingModel(
             LightingState state = LightingState.Off, 
-            double brightnessPercent = 0, 
+            double level = 0,
             double temperature = 0, 
-            LightingColorModel color = null)
+            LightingColorModel color = null,
+            LightingConstraintsModel constraints = null)
         {
             State = state;
-            BrightnessPercent = brightnessPercent;
+            Level = level;
             Temperature = temperature;
             Color = color ?? LightingColorModel.Default;
+            Constraints = constraints ?? LightingConstraintsModel.Default;
         }
     }
 }

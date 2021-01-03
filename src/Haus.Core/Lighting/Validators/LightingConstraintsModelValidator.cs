@@ -7,8 +7,8 @@ namespace Haus.Core.Lighting.Validators
     {
         public LightingConstraintsModelValidator()
         {
-            RuleFor(c => c.MinBrightnessValue)
-                .LessThanOrEqualTo(c => c.MaxBrightnessValue);
+            RuleFor(c => c.MinLevel)
+                .LessThanOrEqualTo(c => c.MaxLevel);
 
             RuleFor(c => c.MinTemperature)
                 .LessThanOrEqualTo(c => c.MaxTemperature);
