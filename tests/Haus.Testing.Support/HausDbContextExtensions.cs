@@ -1,6 +1,7 @@
 using System;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Lighting;
 using Haus.Core.Models.Devices;
 using Haus.Core.Rooms.Entities;
 
@@ -32,6 +33,27 @@ namespace Haus.Testing.Support
             return room;
         }
 
+        public static DefaultLightingConstraintsEntity AddDefaultLightingConstraints(this HausDbContext context,
+            double minBrightnessValue = LightingConstraintsEntity.DefaultMinBrightnessValue,
+            double maxBrightnessValue = LightingConstraintsEntity.DefaultMaxBrightnessValue,
+            double minTemperature = LightingConstraintsEntity.DefaultMinTemperature,
+            double maxTemperature = LightingConstraintsEntity.DefaultMaxTemperature)
+        {
+            var constraints = new DefaultLightingConstraintsEntity
+            {
+                Constraints = new LightingConstraintsEntity
+                {
+                    MaxTemperature = maxTemperature,
+                    MinTemperature = minTemperature,
+                    MaxBrightnessValue = maxBrightnessValue,
+                    MinBrightnessValue = minBrightnessValue
+                }
+            };
+
+            context.AddAndSave(constraints);
+            return constraints;
+        }
+        
         private static void AddAndSave<T>(this HausDbContext context, T entity)
         {
             context.Add(entity);

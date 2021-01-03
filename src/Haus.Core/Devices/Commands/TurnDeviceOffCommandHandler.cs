@@ -9,15 +9,7 @@ using MediatR;
 
 namespace Haus.Core.Devices.Commands
 {
-    public class TurnDeviceOffCommand : ICommand
-    {
-        public long DeviceId { get; }
-
-        public TurnDeviceOffCommand(long deviceId)
-        {
-            DeviceId = deviceId;
-        }
-    }
+    public record TurnDeviceOffCommand(long DeviceId) : ICommand;
 
     internal class TurnDeviceOffCommandHandler : AsyncRequestHandler<TurnDeviceOffCommand>, ICommandHandler<TurnDeviceOffCommand>
     {

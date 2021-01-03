@@ -5,6 +5,7 @@ using Haus.Core.Common;
 using Haus.Core.Common.Commands;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
@@ -12,17 +13,7 @@ using MediatR;
 
 namespace Haus.Core.Devices.Commands
 {
-    public class ChangeDeviceLightingCommand : ICommand
-    {
-        public long DeviceId { get; }
-        public LightingModel Lighting { get; }
-
-        public ChangeDeviceLightingCommand(long deviceId, LightingModel lighting)
-        {
-            DeviceId = deviceId;
-            Lighting = lighting;
-        }
-    }
+    public record ChangeDeviceLightingCommand(long DeviceId, LightingModel Lighting) : ICommand;
 
     internal class ChangeDeviceLightingCommandHandler : AsyncRequestHandler<ChangeDeviceLightingCommand>, ICommandHandler<ChangeDeviceLightingCommand>
     {
@@ -43,7 +34,7 @@ namespace Haus.Core.Devices.Commands
             if (!device.IsLight)
                 throw new InvalidOperationException($"Device with id {device.Id} is not a light");
 
-            var lighting = Lighting.FromModel(request.Lighting);
+            var lighting = LightingEntity.FromModel(request.Lighting);
             device.ChangeLighting(lighting, _domainEventBus);
             await _context.SaveChangesAsync(cancellationToken);
 

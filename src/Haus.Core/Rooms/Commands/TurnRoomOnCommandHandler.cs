@@ -1,43 +1,30 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Core.Common.Commands;
-using Haus.Core.Common.Storage;
-using Haus.Core.Rooms.Entities;
+using Haus.Core.Rooms.Repositories;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Core.Rooms.Commands
 {
-    public class TurnRoomOnCommand : ICommand
-    {
-        public long RoomId { get; }
-
-        public TurnRoomOnCommand(long roomId)
-        {
-            RoomId = roomId;
-        }
-    }
+    public record TurnRoomOnCommand(long RoomId) : ICommand;
 
     internal class TurnRoomOnCommandHandler : AsyncRequestHandler<TurnRoomOnCommand>, ICommandHandler<TurnRoomOnCommand>
     {
-        private readonly HausDbContext _context;
+        private readonly ICommandRoomRepository _repository;
         private readonly IDomainEventBus _domainEventBus;
 
-        public TurnRoomOnCommandHandler(HausDbContext context, IDomainEventBus domainEventBus)
+        public TurnRoomOnCommandHandler(IDomainEventBus domainEventBus, ICommandRoomRepository repository)
         {
-            _context = context;
             _domainEventBus = domainEventBus;
+            _repository = repository;
         }
 
         protected override async Task Handle(TurnRoomOnCommand request, CancellationToken cancellationToken)
         {
-            var room = await _context.FindByIdOrThrowAsync<RoomEntity>(request.RoomId, 
-                query => query.Include(r => r.Devices), 
-                cancellationToken).ConfigureAwait(false);
+            var room = await _repository.GetByIdAsync(request.RoomId, cancellationToken).ConfigureAwait(false);
             room.TurnOn(_domainEventBus);
-            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
             await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
         }
     }

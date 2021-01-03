@@ -10,13 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Core.Rooms.Queries
 {
-    public class GetRoomByIdQuery : GetByIdQuery<RoomModel>
-    {
-        public GetRoomByIdQuery(long id) 
-            : base(id)
-        {
-        }
-    }
+    public record GetRoomByIdQuery(long Id) : GetByIdQuery<RoomModel>(Id);
 
     internal class GetRoomByIdQueryHandler : IQueryHandler<GetRoomByIdQuery, RoomModel>
     {

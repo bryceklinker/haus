@@ -10,13 +10,7 @@ using MediatR;
 
 namespace Haus.Core.Devices.Commands
 {
-    public class UpdateDeviceCommand : UpdateEntityCommand<DeviceModel>
-    {
-        public UpdateDeviceCommand(DeviceModel model)
-            : base(model)
-        {
-        }
-    }
+    public record UpdateDeviceCommand(DeviceModel Model) : UpdateEntityCommand<DeviceModel>(Model);
 
     internal class UpdateDeviceCommandHandler : AsyncRequestHandler<UpdateDeviceCommand>, ICommandHandler<UpdateDeviceCommand>
     {

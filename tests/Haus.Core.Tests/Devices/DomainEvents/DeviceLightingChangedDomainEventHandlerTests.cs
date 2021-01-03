@@ -4,6 +4,7 @@ using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Lighting;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Tests.Support;
@@ -25,7 +26,7 @@ namespace Haus.Core.Tests.Devices.DomainEvents
         public async Task WhenDeviceLightingChangedThenRoutableCommandIsPublished()
         {
             var device = new DeviceEntity {Id = 123};
-            var lighting = new Lighting{BrightnessPercent = 34.12};
+            var lighting = new LightingEntity{BrightnessPercent = 34.12};
             _hausBus.Enqueue(new DeviceLightingChangedDomainEvent(device, lighting));
 
             await _hausBus.FlushAsync();

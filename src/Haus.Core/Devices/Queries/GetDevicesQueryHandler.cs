@@ -9,16 +9,9 @@ using Haus.Cqrs.Queries;
 
 namespace Haus.Core.Devices.Queries
 {
-    public class GetDevicesQuery : IQuery<ListResult<DeviceModel>>
+    public record GetDevicesQuery(string ExternalId = null) : IQuery<ListResult<DeviceModel>>
     {
-        public string ExternalId { get; }
-
         public bool HasExternalId => !string.IsNullOrWhiteSpace(ExternalId);
-        
-        public GetDevicesQuery(string externalId = null)
-        {
-            ExternalId = externalId;
-        }
     }
 
     internal class GetDevicesQueryHandler : IQueryHandler<GetDevicesQuery, ListResult<DeviceModel>>

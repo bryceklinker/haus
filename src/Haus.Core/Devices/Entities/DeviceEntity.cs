@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Haus.Core.Common;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.DomainEvents;
+using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
@@ -22,7 +22,7 @@ namespace Haus.Core.Devices.Entities
         public DeviceType DeviceType { get; set; } = DeviceType.Unknown;
         public ICollection<DeviceMetadataEntity> Metadata { get; set; } = new List<DeviceMetadataEntity>();
         public RoomEntity Room { get; set; }
-        public Lighting Lighting { get; set; } = Lighting.Default.Copy();
+        public LightingEntity Lighting { get; set; } = LightingEntity.Default.Copy();
         public bool IsLight => DeviceType == DeviceType.Light;
 
         public static readonly Expression<Func<DeviceEntity, DeviceModel>> ToModelExpression =
@@ -91,7 +91,7 @@ namespace Haus.Core.Devices.Entities
             Room = null;
         }
 
-        public void ChangeLighting(Lighting lighting, IDomainEventBus domainEventBus)
+        public void ChangeLighting(LightingEntity lighting, IDomainEventBus domainEventBus)
         {
             if (!IsLight)
                 throw new InvalidOperationException($"Device with id {Id} is not a light.");
@@ -126,7 +126,7 @@ namespace Haus.Core.Devices.Entities
 
             builder.Ignore(d => d.IsLight);
             
-            builder.OwnsOne(d => d.Lighting, Lighting.Configure);
+            builder.OwnsOne(d => d.Lighting, LightingEntity.Configure);
             
             builder.HasMany(d => d.Metadata)
                 .WithOne(m => m.Device);

@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Common.Events;
+using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Models.Rooms.Events;
@@ -11,19 +12,10 @@ using Haus.Cqrs.DomainEvents;
 
 namespace Haus.Core.Rooms.DomainEvents
 {
-    public class RoomLightingChangedDomainEvent : IDomainEvent
+    public record RoomLightingChangedDomainEvent(RoomEntity Room, LightingEntity Lighting) : IDomainEvent
     {
-        public RoomEntity Room { get; }
-        public Lighting Lighting { get; }
-
         public RoomModel RoomModel => Room.ToModel();
         public LightingModel LightingModel => Lighting.ToModel();
-        
-        public RoomLightingChangedDomainEvent(RoomEntity room, Lighting lighting)
-        {
-            Room = room;
-            Lighting = lighting;
-        }
     }
     
     internal class RoomLightingChangedDomainEventHandler : IDomainEventHandler<RoomLightingChangedDomainEvent>

@@ -1,12 +1,12 @@
 using System;
 using Haus.Core.Models.Common;
 
-namespace Haus.Core.Common
+namespace Haus.Core.Lighting
 {
-    public class LightingColor
+    public class LightingColorEntity
     {
         private const byte DefaultColorValue = 255;
-        public static readonly LightingColor Default = new LightingColor
+        public static readonly LightingColorEntity Default = new LightingColorEntity
         {
             Blue = DefaultColorValue,
             Green = DefaultColorValue,
@@ -16,7 +16,7 @@ namespace Haus.Core.Common
         public byte Green { get; set; }
         public byte Blue { get; set; }
 
-        protected bool Equals(LightingColor other)
+        protected bool Equals(LightingColorEntity other)
         {
             return Red == other.Red 
                    && Green == other.Green 
@@ -28,7 +28,7 @@ namespace Haus.Core.Common
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((LightingColor) obj);
+            return Equals((LightingColorEntity) obj);
         }
 
         public override int GetHashCode()
@@ -36,9 +36,9 @@ namespace Haus.Core.Common
             return HashCode.Combine(Red, Green, Blue);
         }
 
-        public static LightingColor FromModel(LightingColorModel modelColor)
+        public static LightingColorEntity FromModel(LightingColorModel modelColor)
         {
-            return new LightingColor
+            return new LightingColorEntity
             {
                 Blue = modelColor?.Blue ?? DefaultColorValue,
                 Green = modelColor?.Green ?? DefaultColorValue,
@@ -46,9 +46,9 @@ namespace Haus.Core.Common
             };
         }
 
-        public LightingColor Copy()
+        public LightingColorEntity Copy()
         {
-            return new LightingColor
+            return new LightingColorEntity
             {
                 Blue = Blue,
                 Green = Green,

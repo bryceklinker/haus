@@ -8,9 +8,7 @@ using Haus.Cqrs.Queries;
 
 namespace Haus.Core.Devices.Queries
 {
-    public class GetDeviceTypesQuery : IQuery<ListResult<DeviceType>>
-    {
-    }
+    public record GetDeviceTypesQuery : IQuery<ListResult<DeviceType>>;
 
     public class GetDeviceTypesQueryHandler : IQueryHandler<GetDeviceTypesQuery, ListResult<DeviceType>>
     {

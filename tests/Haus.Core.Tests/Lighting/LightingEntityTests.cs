@@ -1,21 +1,21 @@
 using FluentAssertions;
-using Haus.Core.Common;
+using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Xunit;
 
-namespace Haus.Core.Tests.Common
+namespace Haus.Core.Tests.Lighting
 {
-    public class LightingTests
+    public class LightingEntityTests
     {
         [Fact]
         public void DefaultLightingHasPopulatedLightingObject()
         {
-            Lighting.Default.Should().BeEquivalentTo(new Lighting
+            LightingEntity.Default.Should().BeEquivalentTo(new LightingEntity
             {
                 State = LightingState.Off,
                 BrightnessPercent = 100,
                 Temperature = 150,
-                Color = new LightingColor
+                Color = new LightingColorEntity
                 {
                     Blue = 255,
                     Green = 255,
@@ -29,14 +29,14 @@ namespace Haus.Core.Tests.Common
         {
             var model = CreateLightingModel();
 
-            var lighting = Lighting.FromModel(model);
+            var lighting = LightingEntity.FromModel(model);
             
-            lighting.Should().BeEquivalentTo(new Lighting
+            lighting.Should().BeEquivalentTo(new LightingEntity
             {
                 State = LightingState.On,
                 Temperature = 78,
                 BrightnessPercent = 43.12,
-                Color = new LightingColor
+                Color = new LightingColorEntity
                 {
                     Blue = 6,
                     Green = 3,
@@ -48,7 +48,7 @@ namespace Haus.Core.Tests.Common
         [Fact]
         public void WhenLightingIsCopiedThenNewLightingReturned()
         {
-            var lighting = Lighting.FromModel(CreateLightingModel());
+            var lighting = LightingEntity.FromModel(CreateLightingModel());
 
             var copy = lighting.Copy();
 
@@ -59,8 +59,8 @@ namespace Haus.Core.Tests.Common
         [Fact]
         public void WhenComparingLightingsThenValuesAreUsedToCompare()
         {
-            var first = Lighting.FromModel(CreateLightingModel());
-            var second = Lighting.FromModel(CreateLightingModel());
+            var first = LightingEntity.FromModel(CreateLightingModel());
+            var second = LightingEntity.FromModel(CreateLightingModel());
 
             Assert.True(first.Equals(second));
         }

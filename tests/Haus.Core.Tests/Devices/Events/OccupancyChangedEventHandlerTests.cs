@@ -5,6 +5,7 @@ using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Sensors.Motion;
@@ -31,7 +32,7 @@ namespace Haus.Core.Tests.Devices.Events
             var light = _context.AddDevice(deviceType: DeviceType.Light);
             _room = _context.AddRoom(configure: entity =>
             {
-                entity.Lighting = Lighting.Default;
+                entity.Lighting = LightingEntity.Default;
                 entity.AddDevice(_sensor, _hausBus);
                 entity.AddDevice(light, _hausBus);
             });

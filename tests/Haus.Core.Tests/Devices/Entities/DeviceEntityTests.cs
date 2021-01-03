@@ -8,6 +8,7 @@ using Haus.Core.Tests.Support;
 using System.Linq;
 using FluentAssertions;
 using Haus.Core.Common.Entities;
+using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Xunit;
 
@@ -125,7 +126,7 @@ namespace Haus.Core.Tests.Devices.Entities
         {
             var domainEventBus = new FakeDomainEventBus();
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            var lighting = new Lighting {BrightnessPercent = 12};
+            var lighting = new LightingEntity {BrightnessPercent = 12};
 
             light.ChangeLighting(lighting, domainEventBus);
 
@@ -138,7 +139,7 @@ namespace Haus.Core.Tests.Devices.Entities
         public void WhenDeviceIsTurnedOffThenDeviceLightingStateIsSetToOff()
         {
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            light.ChangeLighting(new Lighting{State = LightingState.On, BrightnessPercent = 6}, new FakeDomainEventBus());
+            light.ChangeLighting(new LightingEntity{State = LightingState.On, BrightnessPercent = 6}, new FakeDomainEventBus());
 
             light.TurnOff(new FakeDomainEventBus());
 
@@ -150,7 +151,7 @@ namespace Haus.Core.Tests.Devices.Entities
         public void WhenDeviceIsTurnedOnThenDeviceLightingStateIsSetToOn()
         {
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            light.ChangeLighting(new Lighting{State = LightingState.Off, BrightnessPercent = 6}, new FakeDomainEventBus());
+            light.ChangeLighting(new LightingEntity{State = LightingState.Off, BrightnessPercent = 6}, new FakeDomainEventBus());
 
             light.TurnOn(new FakeDomainEventBus());
 
@@ -163,7 +164,7 @@ namespace Haus.Core.Tests.Devices.Entities
         {
             var device = new DeviceEntity();
 
-            Action act = () => device.ChangeLighting(new Lighting(), new FakeDomainEventBus());
+            Action act = () => device.ChangeLighting(new LightingEntity(), new FakeDomainEventBus());
 
             act.Should().Throw<InvalidOperationException>();
         }

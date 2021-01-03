@@ -1,4 +1,5 @@
 using System;
+using Haus.Api.Client.Lighting;
 using Haus.Api.Client.Options;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +18,7 @@ namespace Haus.Api.Client
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDiagnosticsClient())
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateRoomsClient())
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDeviceSimulatorClient())
+                .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateLightingApiClient())
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().Create());
         }
     }

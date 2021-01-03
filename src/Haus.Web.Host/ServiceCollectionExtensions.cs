@@ -3,6 +3,7 @@ using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Settings;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.Mqtt;
+using Haus.Web.Host.Common.Services;
 using Haus.Web.Host.Devices;
 using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
@@ -29,9 +30,9 @@ namespace Haus.Web.Host
                 .AddHausMqtt()
                 .AddMediatR(typeof(ServiceCollectionExtensions).Assembly)
                 .AddHostedService<MqttMessageRouter>()
-                .AddHostedService<SyncDevicesBackgroundService>()
                 .AddHostedService<DiagnosticsMqttListener>()
-                .AddHostedService<DeviceSimulatorStatePublisher>();
+                .AddHostedService<DeviceSimulatorStatePublisher>()
+                .AddHostedService<InitializerService>();
         }
 
         public static IServiceCollection AddAuthenticatedUserRequired(this IServiceCollection services,

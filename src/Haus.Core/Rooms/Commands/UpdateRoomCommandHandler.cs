@@ -1,46 +1,36 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
-using Haus.Core.Common;
 using Haus.Core.Common.Commands;
-using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
-using Haus.Core.Rooms.Entities;
+using Haus.Core.Rooms.Repositories;
 using Haus.Cqrs.Commands;
 using MediatR;
 
 namespace Haus.Core.Rooms.Commands
 {
-    public class UpdateRoomCommand : UpdateEntityCommand<RoomModel>
-    {
-        public UpdateRoomCommand(RoomModel model) 
-            : base(model)
-        {
-        }
-    }
+    public record UpdateRoomCommand(RoomModel Model) : UpdateEntityCommand<RoomModel>(Model);
 
     internal class UpdateRoomCommandHandler : AsyncRequestHandler<UpdateRoomCommand>, ICommandHandler<UpdateRoomCommand>
     {
-        private readonly HausDbContext _context;
+        private readonly ICommandRoomRepository _repository;
         private readonly IValidator<RoomModel> _validator;
 
-        public UpdateRoomCommandHandler(HausDbContext context, IValidator<RoomModel> validator)
+        public UpdateRoomCommandHandler(IValidator<RoomModel> validator, ICommandRoomRepository repository)
         {
-            _context = context;
             _validator = validator;
+            _repository = repository;
         }
 
         protected override async Task Handle(UpdateRoomCommand request, CancellationToken cancellationToken)
         {
             await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
                 .ConfigureAwait(false);
-               
-            var room = await _context.FindByIdOrThrowAsync<RoomEntity>(request.Id, cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
+
+            var room = await _repository.GetByIdAsync(request.Id, cancellationToken).ConfigureAwait(false);
             
             room.UpdateFromModel(request.Model);
-            await _context.SaveChangesAsync(cancellationToken)
-                .ConfigureAwait(false);
+            await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -6,10 +6,7 @@ using MediatR;
 
 namespace Haus.Core.DeviceSimulator.Commands
 {
-    public class ResetDeviceSimulatorCommand : ICommand
-    {
-        
-    }
+    public record ResetDeviceSimulatorCommand : ICommand;
     
     public class ResetDeviceSimulatorCommandHandler : AsyncRequestHandler<ResetDeviceSimulatorCommand>, ICommandHandler<ResetDeviceSimulatorCommand>
     {

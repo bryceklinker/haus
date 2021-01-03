@@ -8,6 +8,7 @@ using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
 using System.Linq;
 using FluentAssertions;
+using Haus.Core.Lighting;
 using Haus.Core.Models.Rooms.Events;
 using Xunit;
 
@@ -31,7 +32,7 @@ namespace Haus.Core.Tests.Rooms.Entities
         public void WhenLightDeviceIsAddedToRoomThenLightingForDeviceIsSetToRoomLighting()
         {
             var room = new RoomEntity();
-            var roomLighting = new Lighting {BrightnessPercent = 65};
+            var roomLighting = new LightingEntity {BrightnessPercent = 65};
             room.ChangeLighting(roomLighting, new FakeDomainEventBus());
 
             var light = new DeviceEntity {DeviceType = DeviceType.Light};
@@ -79,7 +80,7 @@ namespace Haus.Core.Tests.Rooms.Entities
         {
             var room = new RoomEntity();
 
-            room.Lighting.Should().BeEquivalentTo(Lighting.Default);
+            room.Lighting.Should().BeEquivalentTo(LightingEntity.Default);
         }
 
         [Fact]
@@ -97,7 +98,7 @@ namespace Haus.Core.Tests.Rooms.Entities
         {
             var room = new RoomEntity();
 
-            var lighting = new Lighting {State = LightingState.On};
+            var lighting = new LightingEntity {State = LightingState.On};
             room.ChangeLighting(lighting, new FakeDomainEventBus());
 
             room.Lighting.Should().BeEquivalentTo(lighting);
@@ -110,7 +111,7 @@ namespace Haus.Core.Tests.Rooms.Entities
             var room = new RoomEntity();
             room.AddDevice(light, new FakeDomainEventBus());
 
-            var lighting = new Lighting {State = LightingState.On};
+            var lighting = new LightingEntity {State = LightingState.On};
             room.ChangeLighting(lighting, new FakeDomainEventBus());
 
             light.Lighting.Should().BeEquivalentTo(lighting);
@@ -122,7 +123,7 @@ namespace Haus.Core.Tests.Rooms.Entities
             var domainEventBus = new FakeDomainEventBus();
             var room = new RoomEntity();
 
-            var lighting = new Lighting();
+            var lighting = new LightingEntity();
             room.ChangeLighting(lighting, domainEventBus);
 
             domainEventBus.GetEvents.Should().HaveCount(1)
@@ -134,7 +135,7 @@ namespace Haus.Core.Tests.Rooms.Entities
         {
             var fakeDomainEventBus = new FakeDomainEventBus();
             var room = new RoomEntity();
-            room.ChangeLighting(new Lighting {State = LightingState.On, BrightnessPercent = 54}, fakeDomainEventBus);
+            room.ChangeLighting(new LightingEntity {State = LightingState.On, BrightnessPercent = 54}, fakeDomainEventBus);
 
             room.TurnOff(fakeDomainEventBus);
 
@@ -147,7 +148,7 @@ namespace Haus.Core.Tests.Rooms.Entities
         {
             var fakeDomainEventBus = new FakeDomainEventBus();
             var room = new RoomEntity();
-            room.ChangeLighting(new Lighting {State = LightingState.Off, BrightnessPercent = 54}, fakeDomainEventBus);
+            room.ChangeLighting(new LightingEntity {State = LightingState.Off, BrightnessPercent = 54}, fakeDomainEventBus);
 
             room.TurnOn(fakeDomainEventBus);
 

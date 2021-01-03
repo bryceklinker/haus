@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Core.Common.Queries;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Devices;
@@ -9,15 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Core.Devices.Queries
 {
-    public class GetDeviceByIdQuery : IQuery<DeviceModel>
-    {
-        public long Id { get; }
-
-        public GetDeviceByIdQuery(long id)
-        {
-            Id = id;
-        }
-    }
+    public record GetDeviceByIdQuery(long Id) : GetByIdQuery<DeviceModel>(Id);
 
     internal class GetDeviceByIdQueryHandler : IQueryHandler<GetDeviceByIdQuery, DeviceModel>
     {

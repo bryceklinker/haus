@@ -10,10 +10,7 @@ using MediatR;
 
 namespace Haus.Core.Devices.Commands
 {
-    public class StartDiscoveryCommand : ICommand
-    {
-        
-    }
+    public record StartDiscoveryCommand : ICommand;
 
     internal class StartDiscoveryCommandHandler : AsyncRequestHandler<StartDiscoveryCommand>, ICommandHandler<StartDiscoveryCommand>
     {

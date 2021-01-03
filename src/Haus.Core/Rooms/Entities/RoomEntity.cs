@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using Haus.Core.Common;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Rooms;
@@ -18,7 +19,7 @@ namespace Haus.Core.Rooms.Entities
     public class RoomEntity : Entity
     {
         public string Name { get; set; } = string.Empty;
-        public Lighting Lighting { get; set; } = Lighting.Default.Copy();
+        public LightingEntity Lighting { get; set; } = LightingEntity.Default.Copy();
         public ICollection<DeviceEntity> Devices { get; set; } = new List<DeviceEntity>();
         public IEnumerable<DeviceEntity> Lights => Devices.Where(d => d.IsLight);
 
@@ -70,7 +71,7 @@ namespace Haus.Core.Rooms.Entities
             device.UnAssignRoom();
         }
 
-        public void ChangeLighting(Lighting lighting, IDomainEventBus domainEventBus)
+        public void ChangeLighting(LightingEntity lighting, IDomainEventBus domainEventBus)
         {
             Lighting = lighting;
             foreach (var light in Lights)
@@ -101,7 +102,7 @@ namespace Haus.Core.Rooms.Entities
             builder.HasKey(r => r.Id);
             builder.Property(r => r.Name).IsRequired();
 
-            builder.OwnsOne(r => r.Lighting, Lighting.Configure);
+            builder.OwnsOne(r => r.Lighting, LightingEntity.Configure);
 
             builder.Ignore(r => r.Lights);
             builder.HasMany(r => r.Devices)

@@ -4,12 +4,14 @@ using Haus.Api.Client.Common;
 using Haus.Api.Client.Devices;
 using Haus.Api.Client.DeviceSimulator;
 using Haus.Api.Client.Diagnostics;
+using Haus.Api.Client.Lighting;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Core.Models.Diagnostics;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Microsoft.Extensions.Options;
 
@@ -19,7 +21,8 @@ namespace Haus.Api.Client
         IDeviceApiClient, 
         IDiagnosticsApiClient, 
         IRoomsApiClient,
-        IDeviceSimulatorApiClient
+        IDeviceSimulatorApiClient,
+        ILightingConstraintsApiClient
     {
         
     }
@@ -31,6 +34,7 @@ namespace Haus.Api.Client
         private IDiagnosticsApiClient DiagnosticsApiClient => _factory.CreateDiagnosticsClient();
         private IRoomsApiClient RoomsApiClient => _factory.CreateRoomsClient();
         private IDeviceSimulatorApiClient DeviceSimulatorApiClient => _factory.CreateDeviceSimulatorClient();
+        private ILightingConstraintsApiClient LightingConstraintsApiClient => _factory.CreateLightingApiClient();
         
         public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
             : base(httpClient, options)
@@ -146,6 +150,16 @@ namespace Haus.Api.Client
         public Task<HttpResponseMessage> ResetDeviceSimulatorAsync()
         {
             return DeviceSimulatorApiClient.ResetDeviceSimulatorAsync();
+        }
+
+        public Task<LightingConstraintsModel> GetDefaultLightingConstraintsAsync()
+        {
+            return LightingConstraintsApiClient.GetDefaultLightingConstraintsAsync();
+        }
+
+        public Task<HttpResponseMessage> UpdateDefaultLightingConstraintsAsync(LightingConstraintsModel model)
+        {
+            return LightingConstraintsApiClient.UpdateDefaultLightingConstraintsAsync(model);
         }
     }
 }

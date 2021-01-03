@@ -9,9 +9,7 @@ using Haus.Cqrs.Queries;
 
 namespace Haus.Core.Rooms.Queries
 {
-    public class GetRoomsQuery : IQuery<ListResult<RoomModel>>
-    {
-    }
+    public record GetRoomsQuery : IQuery<ListResult<RoomModel>>;
 
     public class GetRoomsQueryHandler : IQueryHandler<GetRoomsQuery, ListResult<RoomModel>>
     {

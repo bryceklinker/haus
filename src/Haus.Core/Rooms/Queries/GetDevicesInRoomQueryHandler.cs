@@ -10,15 +10,7 @@ using Haus.Cqrs.Queries;
 
 namespace Haus.Core.Rooms.Queries
 {
-    public class GetDevicesInRoomQuery : IQuery<ListResult<DeviceModel>>
-    {
-        public long RoomId { get; }
-
-        public GetDevicesInRoomQuery(long roomId)
-        {
-            RoomId = roomId;
-        }
-    }
+    public record GetDevicesInRoomQuery(long RoomId) : IQuery<ListResult<DeviceModel>>;
 
     public class GetDevicesInRoomQueryHandler : IQueryHandler<GetDevicesInRoomQuery, ListResult<DeviceModel>>
     {
