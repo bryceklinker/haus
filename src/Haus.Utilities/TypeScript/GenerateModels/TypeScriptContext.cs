@@ -17,6 +17,7 @@ namespace Haus.Utilities.TypeScript.GenerateModels
     public class TypeScriptGeneratorContext : ITypeScriptGeneratorContext
     {
         private readonly Dictionary<Type, TypeScriptModel> _models = new();
+        private int _conflictCount = 0;
 
         public TypeScriptModel[] GetAll() => _models.Values.ToArray();
 
@@ -32,13 +33,23 @@ namespace Haus.Utilities.TypeScript.GenerateModels
 
         public void Add(TypeScriptModel model)
         {
-            _models.TryAdd(model.ModelType, model);
+            if (GetAll().Any(m => m.FileName == model.FileName))
+            {
+                _conflictCount++;
+                var newFileName = $"{Path.GetFileNameWithoutExtension(model.FileName)}.{_conflictCount}.ts";
+                _models.TryAdd(model.ModelType, model with {FileName = newFileName});
+            }
+            else
+            {
+                _models.TryAdd(model.ModelType, model);    
+            }
+            
         }
 
         public TypescriptBarrelModel GetBarrel()
         {
             var builder = new StringBuilder();
-            foreach (var model in GetAll())
+            foreach (var model in GetAll().OrderBy(t => t.Timestamp))
                 builder.AppendLine($"export * from './{Path.GetFileNameWithoutExtension(model.FileName)}'");
             return new TypescriptBarrelModel("index.ts", builder.ToString());
         }

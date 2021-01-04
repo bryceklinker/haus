@@ -6,16 +6,18 @@ namespace Haus.Utilities.Tests
 {
     public class TypeExtensionsTests
     {
-        [Fact]
-        public void WhenDateTimeIsConvertedToTypeScriptTypeThenReturnsString()
+        [Theory]
+        [InlineData(typeof(DateTime), "string")]
+        [InlineData(typeof(Guid), "string")]
+        [InlineData(typeof(long), "number")]
+        [InlineData(typeof(int), "number")]
+        [InlineData(typeof(double), "number")]
+        [InlineData(typeof(byte), "number")]
+        [InlineData(typeof(object), "object")]
+        public void WhenTypeIsANativeTypescriptTypeThenReturnsTypescriptTypeAsString(Type type, string typescriptType)
         {
-            typeof(DateTime).ToTypeScriptType().Should().Be("string");
-        }
-
-        [Fact]
-        public void WhenDateTimeThenIsNativeTypeScriptType()
-        {
-            typeof(DateTime).IsNativeTypeScriptType().Should().BeTrue();
+            type.IsNativeTypeScriptType().Should().BeTrue();
+            type.ToTypeScriptType().Should().Be(typescriptType);
         }
     }
 }

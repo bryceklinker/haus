@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -50,11 +51,10 @@ namespace Haus.Utilities.TypeScript.GenerateModels
             File.WriteAllText(Path.Combine(ModelsDirectory, barrel.FileName), barrel.Contents);
         }
 
-        private static Type[] GetAllTypesInCoreModels()
+        private static IEnumerable<Type> GetAllTypesInCoreModels()
         {
-            var types = Assembly.GetAssembly(typeof(HausJsonSerializer))
+            return Assembly.GetAssembly(typeof(HausJsonSerializer))
                 .GetExportedTypes();
-            return types;
         }
     }
 }

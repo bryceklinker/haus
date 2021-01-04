@@ -147,6 +147,41 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels
             var model = _context.GetModelForType(typeof(ModelWithNullable));
             model.Contents.Should().Contain("id?: number");
         }
+
+        [Fact]
+        public void WhenTypeContainsArrayOfModelsThenTypeScriptContainsPropertyWithAnArrayOfModels()
+        {
+            _generator.Generate(typeof(ModelWithArrayOfModels), _context);
+
+            _context.GetAll().Should().HaveCount(2);
+            var model = _context.GetModelForType(typeof(ModelWithArrayOfModels));
+            model.Contents.Should()
+                .Contain("import {SimpleModel} from './simple-model'")
+                .And.Contain("models: Array<SimpleModel>;");
+        }
+
+        [Fact]
+        public void WhenTypeDerivesFromAnotherTypeThenTypeScriptInterfaceExtendsTheBaseType()
+        {
+            _generator.Generate(typeof(DerivedFromSimpleModel), _context);
+
+            _context.GetAll().Should().HaveCount(2);
+            var model = _context.GetModelForType(typeof(DerivedFromSimpleModel));
+            model.Contents.Should().Contain("export interface DerivedFromSimpleModel extends SimpleModel")
+                .And.Contain("import {SimpleModel} from './simple-model';")
+                .And.NotContain("id: number;")
+                .And.Contain("stuff: string;");
+        }
+
+        [Fact]
+        public void WhenDerivedTypesWouldShareTheSameFileNameThenFileNameOfSecondTypeIsChanged()
+        {
+            _generator.Generate(typeof(SimpleModel<>), _context);
+
+            _context.GetAll().Should().HaveCount(2);
+            var model = _context.GetModelForType(typeof(SimpleModel<>));
+            model.FileName.Should().NotBe("simple-model.ts");
+        }
     }
 
     public enum SimpleEnum
@@ -187,5 +222,20 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels
     public class ModelWithNullable
     {
         public int? Id { get; set; }
+    }
+
+    public class ModelWithArrayOfModels
+    {
+        public SimpleModel[] Models { get; set; }
+    }
+
+    public class DerivedFromSimpleModel : SimpleModel
+    {
+        public string Stuff { get; set; }
+    }
+
+    public class SimpleModel<T> : SimpleModel
+    {
+        public T Payload { get; set; }
     }
 }

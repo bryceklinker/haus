@@ -18,7 +18,7 @@ namespace Haus.Utilities.Tests.Common
         [Fact]
         public void WhenCommandGroupAndNameMatchesCommandThenReturnsAnInstanceOfTheMatchingCommand()
         {
-            var command = _commandFactory.Create(new[] {"zigbee2mqtt", "generateDeviceTypeDefaults"});
+            var command = _commandFactory.Create(new[] {"zigbee2mqtt", "generate-device-type-defaults"});
 
             Assert.IsType<GenerateDefaultDeviceTypeOptionsCommand>(command);
         }

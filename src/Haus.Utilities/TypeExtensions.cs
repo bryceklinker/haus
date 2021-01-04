@@ -15,13 +15,14 @@ namespace Haus.Utilities
         
         public static readonly Dictionary<Type, string> ClrToTypeScript = new()
         {   
-            {typeof(object), Object},
+            {typeof(byte), Number},
             {typeof(double), Number},
             {typeof(int), Number},
             {typeof(long), Number},
             {typeof(string), String},
             {typeof(Guid), String},
-            {typeof(DateTime), String}
+            {typeof(DateTime), String},
+            {typeof(object), Object},
         };
 
         public static bool IsStatic(this Type type)
@@ -37,7 +38,26 @@ namespace Haus.Utilities
             
             return name.Kebaberize();
         }
-        
+
+        public static bool RequiresTypescriptImport(this Type type)
+        {
+            return type.GetTypeThatRequiresImport() != null;
+        }
+
+        public static Type GetTypeThatRequiresImport(this Type type)
+        {
+            if (!type.IsNativeTypeScriptType())
+                return type;
+
+            if (type.IsArray && !type.GetElementType().IsNativeTypeScriptType())
+                return type.GetElementType();
+
+            if (type.BaseType != null && !type.BaseType.IsNativeTypeScriptType())
+                return type.BaseType;
+
+            return null;
+        }
+
         public static string ToTypeScriptType(this Type type)
         {
             if (ClrToTypeScript.ContainsKey(type))
@@ -67,6 +87,9 @@ namespace Haus.Utilities
                 return true;
 
             if (type.IsNullable())
+                return true;
+
+            if (type == typeof(ValueType))
                 return true;
 
             return ClrToTypeScript.ContainsKey(type);

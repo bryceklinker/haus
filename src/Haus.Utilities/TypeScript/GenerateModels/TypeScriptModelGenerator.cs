@@ -48,44 +48,62 @@ namespace Haus.Utilities.TypeScript.GenerateModels
         private string GenerateTypeScriptInterface(Type type, ITypeScriptGeneratorContext context)
         {
             return new StringBuilder()
-                .Append(GenerateImportStatements(type, context))
-                .AppendLine($"export interface {type.ToTypescriptTypeName()} {{")
-                .Append(GenerateTypeScriptProperties(type, context))
+                .AppendLine(GenerateImportStatements(type, context))
+                .AppendLine()
+                .AppendLine(GenerateTypeScriptInterfaceDeclaration(type, context))
+                .AppendLine(GenerateTypeScriptProperties(type, context))
                 .AppendLine("}")
                 .ToString();
         }
 
         private string GenerateImportStatements(Type type, ITypeScriptGeneratorContext context)
         {
-            var imports = GetDependentTypes(type, context)
+            var imports = GetTypesToImport(type, context)
                 .Select(GenerateImportStatement);
             return string.Join(Environment.NewLine, imports);
+        }
+
+        private string GenerateTypeScriptInterfaceDeclaration(Type type, ITypeScriptGeneratorContext context)
+        {
+            if (!type.BaseType.RequiresTypescriptImport())
+                return $"export interface {type.ToTypescriptTypeName()} {{";
+
+            var baseModel = context.GetModelForType(type.BaseType);
+            return $"export interface {type.ToTypescriptTypeName()} extends {baseModel.ModelName} {{";
         }
 
         private string GenerateImportStatement(TypeScriptModel model)
         {
             var fileName = Path.GetFileNameWithoutExtension(model.FileName);
-            return $"import {{{model.ModelName}}} from './{fileName}';{Environment.NewLine}";
+            return $"import {{{model.ModelName}}} from './{fileName}';";
         }
 
-        private IEnumerable<TypeScriptModel> GetDependentTypes(Type type, ITypeScriptGeneratorContext context)
+        private IEnumerable<TypeScriptModel> GetTypesToImport(Type type, ITypeScriptGeneratorContext context)
         {
             var propertyInfos = type.GetProperties();
-            return propertyInfos
-                .Where(p => !p.PropertyType.IsNativeTypeScriptType())
-                .Select(p => p.PropertyType)
-                .Select(dependentType =>
-                {
-                    if (context.IsMissingModelForType(dependentType))
-                        Generate(dependentType, context);
-                    
-                    return context.GetModelForType(dependentType);
-                });
+            var importTypes = propertyInfos.Select(p => p.PropertyType)
+                .Where(t => t.RequiresTypescriptImport())
+                .Select(t => t.GetTypeThatRequiresImport())
+                .Select(t => GetOrGenerateModelForType(t, context));
+
+            if (type.BaseType != null && type.BaseType.RequiresTypescriptImport())
+                importTypes = importTypes.Append(GetOrGenerateModelForType(type.BaseType.GetTypeThatRequiresImport(), context));
+
+            return importTypes.ToArray();
         }
 
+        private TypeScriptModel GetOrGenerateModelForType(Type type, ITypeScriptGeneratorContext context)
+        {
+            if (context.IsMissingModelForType(type))
+                Generate(type, context);
+
+            return context.GetModelForType(type);
+        }
+        
         private static string GenerateTypeScriptProperties(Type type, ITypeScriptGeneratorContext context)
         {
             var lines = type.GetProperties()
+                .Where(property => property.DeclaringType == type)
                 .Select(p => GenerateTypeScriptProperty(p, context));
             return string.Join(Environment.NewLine, lines);
         }
@@ -99,7 +117,7 @@ namespace Haus.Utilities.TypeScript.GenerateModels
             var typescriptPropertyType = property.PropertyType.IsNativeTypeScriptType()
                 ? property.PropertyType.ToTypeScriptType()
                 : context.GetModelForType(property.PropertyType).ModelName;
-            return $"\t{propertyName}: {typescriptPropertyType};{Environment.NewLine}";
+            return $"\t{propertyName}: {typescriptPropertyType};";
         }
     }
 }
