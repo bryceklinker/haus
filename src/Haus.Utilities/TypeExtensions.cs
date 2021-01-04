@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Humanizer;
 
 namespace Haus.Utilities
 {
@@ -23,6 +24,20 @@ namespace Haus.Utilities
             {typeof(DateTime), String}
         };
 
+        public static bool IsStatic(this Type type)
+        {
+            return type.IsAbstract && type.IsSealed;
+        }
+        
+        public static string ToTypeScriptFileName(this Type type)
+        {
+            var name = type.IsGenericType
+                ? type.Name.Split('`')[0]
+                : type.Name;
+            
+            return name.Kebaberize();
+        }
+        
         public static string ToTypeScriptType(this Type type)
         {
             if (ClrToTypeScript.ContainsKey(type))
@@ -33,6 +48,9 @@ namespace Haus.Utilities
 
             if (type.IsArray)
                 return $"Array<{type.Name.Split('[')[0]}>";
+
+            if (type.IsNullable())
+                return $"{type.GetGenericArguments()[0].ToTypeScriptType()}";
 
             return Any;
         }
@@ -48,10 +66,20 @@ namespace Haus.Utilities
             if (type.IsArray)
                 return true;
 
+            if (type.IsNullable())
+                return true;
+
             return ClrToTypeScript.ContainsKey(type);
         }
+
+        public static bool IsNullable(this Type type)
+        {
+            return type.BaseType == typeof(ValueType)
+                   && type.IsGenericType
+                   && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
         
-        public static string ToTypescriptInterfaceName(this Type type)
+        public static string ToTypescriptTypeName(this Type type)
         {
             if (!type.IsGenericTypeDefinition)
                 return type.Name;

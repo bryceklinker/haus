@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Humanizer;
 
@@ -17,58 +18,88 @@ namespace Haus.Utilities.TypeScript.GenerateModels
     {
         public void Generate(Type type, ITypeScriptGeneratorContext context)
         {
-            var filename = $"{type.Name.Kebaberize()}.ts";
-            var dependentTypes = GetDependentTypes(type, context);
-            var contents = GenerateTypeScriptInterface(type, dependentTypes);
+            if (type.IsStatic())
+                return;
 
+            if (type.IsInterface)
+                return;
+
+            var filename = $"{type.ToTypeScriptFileName()}.ts";
+            var contents = type.IsEnum
+                ? GenerateTypeScriptEnum(type)
+                : GenerateTypeScriptInterface(type, context);
             context.Add(new TypeScriptModel(type, filename, contents));
         }
 
-        private IEnumerable<TypeScriptModel> GetDependentTypes(Type type, ITypeScriptGeneratorContext generatorContext)
+        private string GenerateTypeScriptEnum(Type type)
         {
-            var propertyInfos = type.GetProperties();
-            var dependentTypes = propertyInfos
-                .Where(p => !p.PropertyType.IsNativeTypeScriptType())
-                .Select(p => p.PropertyType);
-            foreach (var dependentType in dependentTypes)
-            {
-                if (generatorContext.IsMissingModelForType(dependentType))
-                    Generate(dependentType, generatorContext);
+            var values = Enum.GetNames(type)
+                .Select(value => $"\t{value} = '{value}',");
 
-                yield return generatorContext.GetModelForType(dependentType);
-            }
+            var enumerationValues = string.Join(Environment.NewLine, values);
+            return new StringBuilder()
+                .AppendLine($"export enum {type.ToTypescriptTypeName()} {{")
+                .AppendLine(enumerationValues)
+                .AppendLine("}")
+                .ToString();
+
         }
         
-        private static string GenerateTypeScriptInterface(Type type, IEnumerable<TypeScriptModel> dependencies)
+        private string GenerateTypeScriptInterface(Type type, ITypeScriptGeneratorContext context)
         {
             return new StringBuilder()
-                .Append(GenerateImportStatements(dependencies))
-                .Append($"export interface {type.ToTypescriptInterfaceName()} ")
-                .AppendLine("{")
-                .Append(GenerateTypeScriptProperties(type))
+                .Append(GenerateImportStatements(type, context))
+                .AppendLine($"export interface {type.ToTypescriptTypeName()} {{")
+                .Append(GenerateTypeScriptProperties(type, context))
                 .AppendLine("}")
                 .ToString();
         }
 
-        private static string GenerateImportStatements(IEnumerable<TypeScriptModel> dependencies)
+        private string GenerateImportStatements(Type type, ITypeScriptGeneratorContext context)
         {
-            var builder = new StringBuilder();
-            foreach (var dependency in dependencies)
-            {
-                builder.Append("import {")
-                    .Append($"{dependency.ModelName}")
-                    .Append("} from './")
-                    .Append($"{Path.GetFileNameWithoutExtension(dependency.FileName)}';");
-            }
-            return builder.ToString();
+            var imports = GetDependentTypes(type, context)
+                .Select(GenerateImportStatement);
+            return string.Join(Environment.NewLine, imports);
         }
-        
-        private static string GenerateTypeScriptProperties(Type type)
+
+        private string GenerateImportStatement(TypeScriptModel model)
         {
-            var builder = new StringBuilder();
-            foreach (var property in type.GetProperties())
-                builder.AppendLine($"{property.Name.Camelize()}: {property.PropertyType.ToTypeScriptType()};");
-            return builder.ToString();
+            var fileName = Path.GetFileNameWithoutExtension(model.FileName);
+            return $"import {{{model.ModelName}}} from './{fileName}';{Environment.NewLine}";
+        }
+
+        private IEnumerable<TypeScriptModel> GetDependentTypes(Type type, ITypeScriptGeneratorContext context)
+        {
+            var propertyInfos = type.GetProperties();
+            return propertyInfos
+                .Where(p => !p.PropertyType.IsNativeTypeScriptType())
+                .Select(p => p.PropertyType)
+                .Select(dependentType =>
+                {
+                    if (context.IsMissingModelForType(dependentType))
+                        Generate(dependentType, context);
+                    
+                    return context.GetModelForType(dependentType);
+                });
+        }
+
+        private static string GenerateTypeScriptProperties(Type type, ITypeScriptGeneratorContext context)
+        {
+            var lines = type.GetProperties()
+                .Select(p => GenerateTypeScriptProperty(p, context));
+            return string.Join(Environment.NewLine, lines);
+        }
+
+        private static string GenerateTypeScriptProperty(PropertyInfo property, ITypeScriptGeneratorContext context)
+        {
+            var propertyName = property.PropertyType.IsNullable()
+                ? $"{property.Name.Camelize()}?"
+                : property.Name.Camelize();
+            
+            var typescriptPropertyType = property.PropertyType.IsNativeTypeScriptType()
+                ? property.PropertyType.ToTypeScriptType()
+                : context.GetModelForType(property.PropertyType).ModelName;
+            return $"\t{propertyName}: {typescriptPropertyType};{Environment.NewLine}";
         }
     }
 }

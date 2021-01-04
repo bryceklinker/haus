@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -16,6 +17,9 @@ namespace Haus.Utilities.TypeScript.GenerateModels
     
     public class GenerateTypeScriptModelsCommandHandler : AsyncRequestHandler<GenerateTypeScriptModelsCommand>
     {
+        private static readonly string ModelsDirectory = Path.Combine(
+            Directory.GetCurrentDirectory(), "..", "Haus.Web.Host", "client-app", "src", "app", "shared", "models", "generated");
+        
         private readonly ITypeScriptModelGenerator _generator;
 
         public GenerateTypeScriptModelsCommandHandler(ITypeScriptModelGenerator generator)
@@ -26,18 +30,31 @@ namespace Haus.Utilities.TypeScript.GenerateModels
         protected override Task Handle(GenerateTypeScriptModelsCommand request, CancellationToken cancellationToken)
         {
             var context = new TypeScriptGeneratorContext();
-            var types = Assembly.GetAssembly(typeof(HausJsonSerializer))
-                .GetExportedTypes();
+            var types = GetAllTypesInCoreModels();
             foreach (var type in types) 
                 _generator.Generate(type, context);
 
+            WriteAllModelsToModelsDirectory(context);
+            return Task.CompletedTask;
+        }
+
+        private static void WriteAllModelsToModelsDirectory(TypeScriptGeneratorContext context)
+        {
+            if (!Directory.Exists(ModelsDirectory)) Directory.CreateDirectory(ModelsDirectory);
+            
             var models = context.GetAll();
             var barrel = context.GetBarrel();
             foreach (var model in models)
-                File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), model.FileName), model.Contents);
+                File.WriteAllText(Path.Combine(ModelsDirectory, model.FileName), model.Contents);
 
-            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), barrel.FileName), barrel.Contents);
-            return Task.CompletedTask;
+            File.WriteAllText(Path.Combine(ModelsDirectory, barrel.FileName), barrel.Contents);
+        }
+
+        private static Type[] GetAllTypesInCoreModels()
+        {
+            var types = Assembly.GetAssembly(typeof(HausJsonSerializer))
+                .GetExportedTypes();
+            return types;
         }
     }
 }

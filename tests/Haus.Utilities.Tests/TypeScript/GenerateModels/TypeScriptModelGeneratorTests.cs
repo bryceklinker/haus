@@ -63,7 +63,17 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels
 
             var model = _context.GetModelForType(typeof(SlightlyComplexModel));
             model.Contents.Should()
-                .Contain("import {SimpleModel} from './simple-model';");
+                .Contain("import {SimpleModel} from './simple-model';")
+                .And.Contain("simple: SimpleModel;");
+        }
+
+        [Fact]
+        public void WhenTypeContainsGenericThenFileNameIsTypeNameExcludingGenericParameters()
+        {
+            _generator.Generate(typeof(GenericType<>), _context);
+
+            var model = _context.GetModelForType(typeof(GenericType<>));
+            model.FileName.Should().Be("generic-type.ts");
         }
 
         [Fact]
@@ -100,8 +110,50 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels
                 .Contain("export interface ResultSet<T>")
                 .And.Contain("items: Array<T>;");
         }
+
+        [Fact]
+        public void WhenTypeIsStaticThenNoModelsShouldBeGenerated()
+        {
+            _generator.Generate(typeof(TypeExtensions), _context);
+
+            _context.GetAll().Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WhenTypeIsAnInterfaceThenNoModelsShouldBeGenerated()
+        {
+            _generator.Generate(typeof(ITypeScriptModelGenerator), _context);
+
+            _context.GetAll().Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WhenTypeIsEnumThenTypescriptEnumIsGenerated()
+        {
+            _generator.Generate(typeof(SimpleEnum), _context);
+
+            var model = _context.GetModelForType(typeof(SimpleEnum));
+            model.FileName.Should().Be("simple-enum.ts");
+            model.Contents.Should().Contain("export enum SimpleEnum")
+                .And.Contain("Hello = 'Hello',");
+        }
+
+        [Fact]
+        public void WhenTypeContainsNullablePropertyThenTypescriptPropertyIsOptional()
+        {
+            _generator.Generate(typeof(ModelWithNullable), _context);
+
+            _context.GetAll().Should().HaveCount(1);
+            var model = _context.GetModelForType(typeof(ModelWithNullable));
+            model.Contents.Should().Contain("id?: number");
+        }
     }
 
+    public enum SimpleEnum
+    {
+        Hello
+    }
+    
     public class SimpleModel
     {
         public int Id { get; set; }
@@ -130,5 +182,10 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels
     public class ResultSet<T>
     {
         public T[] Items { get; set; }
+    }
+
+    public class ModelWithNullable
+    {
+        public int? Id { get; set; }
     }
 }
