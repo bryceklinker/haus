@@ -44,7 +44,7 @@ describe('LightingComponent', () => {
 
     expect(changeEmitter.emit).toHaveBeenCalledWith({
       ...lighting,
-      brightnessPercent: 78
+      level: 78
     })
   })
 
