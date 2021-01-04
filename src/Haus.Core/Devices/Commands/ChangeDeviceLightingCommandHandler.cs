@@ -1,12 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Core.Common;
-using Haus.Core.Common.Commands;
-using Haus.Core.Common.Storage;
-using Haus.Core.Devices.Entities;
+using Haus.Core.Devices.Repositories;
 using Haus.Core.Lighting;
-using Haus.Core.Models.Common;
 using Haus.Core.Models.Lighting;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
@@ -18,18 +14,18 @@ namespace Haus.Core.Devices.Commands
 
     internal class ChangeDeviceLightingCommandHandler : AsyncRequestHandler<ChangeDeviceLightingCommand>, ICommandHandler<ChangeDeviceLightingCommand>
     {
-        private readonly HausDbContext _context;
+        private readonly IDeviceCommandRepository _repository;
         private readonly IDomainEventBus _domainEventBus;
 
-        public ChangeDeviceLightingCommandHandler(HausDbContext context, IDomainEventBus domainEventBus)
+        public ChangeDeviceLightingCommandHandler(IDomainEventBus domainEventBus, IDeviceCommandRepository repository)
         {
-            _context = context;
             _domainEventBus = domainEventBus;
+            _repository = repository;
         }
 
         protected override async Task Handle(ChangeDeviceLightingCommand request, CancellationToken cancellationToken)
         {
-            var device = await _context.FindByIdOrThrowAsync<DeviceEntity>(request.DeviceId, cancellationToken: cancellationToken)
+            var device = await _repository.GetById(request.DeviceId, cancellationToken)
                 .ConfigureAwait(false);
 
             if (!device.IsLight)
@@ -37,7 +33,7 @@ namespace Haus.Core.Devices.Commands
 
             var lighting = LightingEntity.FromModel(request.Lighting);
             device.ChangeLighting(lighting, _domainEventBus);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
 
             await _domainEventBus.FlushAsync(cancellationToken);
         }

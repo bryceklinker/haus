@@ -7,9 +7,6 @@ namespace Haus.Core.Models.Devices.Discovery
     {
         public const string Type = "sync_discovery";
         
-        public HausCommand<SyncDiscoveryModel> AsHausCommand()
-        {
-            return new HausCommand<SyncDiscoveryModel>(Type, this);
-        }
+        public HausCommand<SyncDiscoveryModel> AsHausCommand() => new(Type, this);
     }
 }

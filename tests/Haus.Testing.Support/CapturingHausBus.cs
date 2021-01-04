@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Events;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
@@ -64,28 +65,16 @@ namespace Haus.Testing.Support
             return _domainEventBus.FlushAsync(token);
         }
 
-        public IEnumerable<T> GetExecutedCommands<T>()
-            where T : ICommand
-        {
-            return _messages.OfType<T>();
-        }
-
-        public IEnumerable<TCommand> GetExecutedCommands<TCommand, TResult>()
-            where TCommand : ICommand<TResult>
-        {
-            return _messages.OfType<TCommand>();
-        }
-
-        public IEnumerable<TQuery> GetExecutedQueries<TQuery, TResult>()
-            where TQuery : IQuery<TResult>
-        {
-            return _messages.OfType<TQuery>();
-        }
-
         public IEnumerable<TEvent> GetPublishedEvents<TEvent>()
             where TEvent : IEvent
         {
             return _messages.OfType<TEvent>();
+        }
+
+        public IEnumerable<RoutableEvent<T>> GetPublishedRoutableEvents<T>()
+            where T : IHausEventCreator<T>
+        {
+            return _messages.OfType<RoutableEvent<T>>();
         }
 
         public IEnumerable<HausCommand<T>> GetPublishedHausCommands<T>()
@@ -94,12 +83,5 @@ namespace Haus.Testing.Support
                 .Select(r => r.HausCommand)
                 .OfType<HausCommand<T>>();
         }
-
-        public IEnumerable<TDomainEvent> GetQueuedDomainEvents<TDomainEvent>()
-            where TDomainEvent : IDomainEvent
-        {
-            return _messages.OfType<TDomainEvent>();
-        }
-        
     }
 }

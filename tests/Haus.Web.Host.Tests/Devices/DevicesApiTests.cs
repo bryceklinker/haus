@@ -28,7 +28,7 @@ namespace Haus.Web.Host.Tests.Devices
         [Fact]
         public async Task WhenADeviceIsUpdatedThenUpdatedDeviceIsAvailableFromTheApi()
         {
-            await _factory.PublishHausEventAsync(new DeviceDiscoveredModel("hello"));
+            await _factory.PublishHausEventAsync(new DeviceDiscoveredEvent("hello"));
 
             await Eventually.AssertAsync(async () =>
             {

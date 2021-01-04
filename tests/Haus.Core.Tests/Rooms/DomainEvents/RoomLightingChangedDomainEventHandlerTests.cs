@@ -34,5 +34,17 @@ namespace Haus.Core.Tests.Rooms.DomainEvents
             hausCommand.Payload.Room.Id.Should().Be(89);
             hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
         }
+
+        [Fact]
+        public async Task WhenRoomLightingChangedThenRoutableEventIsPublished()
+        {
+            var room = new RoomEntity{Id = 89};
+            var lighting = new LightingEntity{State = LightingState.On};
+            _hausBus.Enqueue(new RoomLightingChangedDomainEvent(room, lighting));
+
+            await _hausBus.FlushAsync();
+
+            _hausBus.GetPublishedRoutableEvents<RoomLightingChangedEvent>().Should().HaveCount(1);
+        }
     }
 }

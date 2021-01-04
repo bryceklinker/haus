@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using Haus.Core.Common.Entities;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.DeviceSimulator;
 
 namespace Haus.Core.DeviceSimulator.Entities
@@ -37,10 +38,10 @@ namespace Haus.Core.DeviceSimulator.Entities
             return new SimulatedDeviceEntity($"{Guid.NewGuid()}", model.DeviceType, metadata);
         }
 
-        public DeviceDiscoveredModel ToDeviceDiscoveredModel()
+        public DeviceDiscoveredEvent ToDeviceDiscoveredModel()
         {
             var metadata = Metadata.Select(m => m.ToModel()).ToArray();
-            return new DeviceDiscoveredModel(Id, DeviceType, metadata);
+            return new DeviceDiscoveredEvent(Id, DeviceType, metadata);
         }
     }
 }

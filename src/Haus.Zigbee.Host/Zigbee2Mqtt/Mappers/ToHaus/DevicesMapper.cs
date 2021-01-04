@@ -4,6 +4,7 @@ using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
@@ -47,11 +48,11 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
                 });
         }
 
-        private HausEvent<DeviceDiscoveredModel> CreateDeviceDiscoveredEvent(JObject jToken)
+        private HausEvent<DeviceDiscoveredEvent> CreateDeviceDiscoveredEvent(JObject jToken)
         {
             var model = jToken.Value<string>("model");
             var vendor = jToken.Value<string>("vendor");
-            return new DeviceDiscoveredModel(jToken.Value<string>("friendly_name"),
+            return new DeviceDiscoveredEvent(jToken.Value<string>("friendly_name"),
                 _deviceTypeResolver.Resolve(vendor, model),
                 CreateDeviceMetadata(jToken)
             ).AsHausEvent();

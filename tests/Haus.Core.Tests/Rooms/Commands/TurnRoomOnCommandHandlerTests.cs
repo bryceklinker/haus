@@ -27,7 +27,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         }
 
         [Fact]
-        public async Task WhenRoomTurnedOnThenRoomLightingEventPublished()
+        public async Task WhenRoomTurnedOnThenRoomLightingChangedCommandPublished()
         {
             var room = _context.AddRoom();
 

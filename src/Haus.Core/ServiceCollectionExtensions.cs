@@ -3,6 +3,7 @@ using FluentValidation;
 using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
+using Haus.Core.Devices.Repositories;
 using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Diagnostics.Factories;
 using Haus.Core.Rooms.Repositories;
@@ -19,7 +20,8 @@ namespace Haus.Core
             var coreAssembly = typeof(ServiceCollectionExtensions).Assembly;
             return services.AddSingleton<IClock, Clock>()
                 .AddDbContext<HausDbContext>(configureDb)
-                .AddTransient<ICommandRoomRepository, CommandRoomRepository>()
+                .AddTransient<IRoomCommandRepository, RoomCommandRepository>()
+                .AddTransient<IDeviceCommandRepository, DeviceCommandRepository>()
                 .AddValidatorsFromAssembly(coreAssembly)
                 .AddHausCqrs(coreAssembly)
                 .AddTransient(p => p.GetRequiredService<IDeviceSimulatorStore>().Current)

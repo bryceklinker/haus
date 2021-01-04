@@ -4,9 +4,9 @@ using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
+using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Entities;
-using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 
@@ -15,24 +15,35 @@ namespace Haus.Core.Tests.Rooms.Commands
     public class UpdateRoomCommandHandlerTests
     {
         private readonly HausDbContext _context;
-        private readonly IHausBus _hausBus;
+        private readonly CapturingHausBus _hausBus;
 
         public UpdateRoomCommandHandlerTests()
         {
             _context = HausDbContextFactory.Create();
-            _hausBus = HausBusFactory.Create(_context);
+            _hausBus = HausBusFactory.CreateCapturingBus(_context);
         }
 
         [Fact]
         public async Task WhenRoomUpdatedThenRoomIsSavedToDatabase()
         {
             var original = _context.AddRoom();
+            
             var command = new UpdateRoomCommand(new RoomModel(original.Id, "bob"));
-
             await _hausBus.ExecuteCommandAsync(command);
 
             var updated = await _context.FindByIdAsync<RoomEntity>(original.Id);
             updated.Name.Should().Be("bob");
+        }
+
+        [Fact]
+        public async Task WhenRoomUpdatedThenRoomUpdatedEventPublished()
+        {
+            var original = _context.AddRoom();
+            
+            var command = new UpdateRoomCommand(new RoomModel(original.Id, "bob"));
+            await _hausBus.ExecuteCommandAsync(command);
+
+            _hausBus.GetPublishedRoutableEvents<RoomUpdatedEvent>().Should().HaveCount(1);
         }
 
         [Fact]

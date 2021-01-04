@@ -3,31 +3,32 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Common;
+using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Entities;
-using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 
 namespace Haus.Core.Tests.Rooms.Commands
 {
-    public class AddDevicesToRoomCommandHandlerTests
+    public class AssignDevicesToRoomCommandHandlerTests
     {
         private readonly HausDbContext _context;
-        private readonly IHausBus _hausBus;
+        private readonly CapturingHausBus _hausBus;
 
-        public AddDevicesToRoomCommandHandlerTests()
+        public AssignDevicesToRoomCommandHandlerTests()
         {
             _context = HausDbContextFactory.Create();
-            _hausBus = HausBusFactory.Create(_context);
+            _hausBus = HausBusFactory.CreateCapturingBus(_context);
         }
 
         [Fact]
         public async Task WhenRoomIdIsMissingFromDbThenThrowsEntityNotFoundException()
         {
-            var command = new AddDevicesToRoomCommand(54);
+            var command = new AssignDevicesToRoomCommand(54);
 
             Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
 
@@ -39,7 +40,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         {
             var room = _context.AddRoom();
 
-            var command = new AddDevicesToRoomCommand(room.Id, 65);
+            var command = new AssignDevicesToRoomCommand(room.Id, 65);
 
             Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
 
@@ -52,7 +53,7 @@ namespace Haus.Core.Tests.Rooms.Commands
             var room = _context.AddRoom();
             var device = _context.AddDevice();
 
-            var command = new AddDevicesToRoomCommand(room.Id, device.Id);
+            var command = new AssignDevicesToRoomCommand(room.Id, device.Id);
             await _hausBus.ExecuteCommandAsync(command);
 
             _context.GetRoomsIncludeDevices().Should()
@@ -68,7 +69,7 @@ namespace Haus.Core.Tests.Rooms.Commands
             var second = _context.AddDevice();
             var third = _context.AddDevice();
 
-            var command = new AddDevicesToRoomCommand(room.Id, first.Id, second.Id, third.Id);
+            var command = new AssignDevicesToRoomCommand(room.Id, first.Id, second.Id, third.Id);
             await _hausBus.ExecuteCommandAsync(command);
 
             var updatedRoom = _context.GetRoomsIncludeDevices().Single();
@@ -76,6 +77,19 @@ namespace Haus.Core.Tests.Rooms.Commands
                 .And.Contain(first)
                 .And.Contain(second)
                 .And.Contain(third);
+        }
+
+        [Fact]
+        public async Task WhenDevicesAreAssignedToRoomThenPublishesDevicesAssignedToRoomEvent()
+        {
+            var room = _context.AddRoom();
+            var one = _context.AddDevice();
+            var two = _context.AddDevice();
+
+            var command = new AssignDevicesToRoomCommand(room.Id, one.Id, two.Id);
+            await _hausBus.ExecuteCommandAsync(command);
+
+            _hausBus.GetPublishedRoutableEvents<DevicesAssignedToRoomEvent>().Should().HaveCount(1);
         }
     }
 }

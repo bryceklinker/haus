@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
@@ -25,7 +26,7 @@ namespace Haus.Web.Host.Tests.Devices
         public async Task WhenDeviceDiscoveredEventReceivedThenDeviceIsAvailableFromTheApi()
         {
             var deviceType = DeviceType.LightSensor | DeviceType.MotionSensor | DeviceType.TemperatureSensor;
-            await _factory.PublishHausEventAsync(new DeviceDiscoveredModel("my-new-id", deviceType));
+            await _factory.PublishHausEventAsync(new DeviceDiscoveredEvent("my-new-id", deviceType));
             
             await Eventually.AssertAsync(async () =>
             {

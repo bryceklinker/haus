@@ -4,6 +4,7 @@ using Haus.Api.Client;
 using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
@@ -27,14 +28,14 @@ namespace Haus.Web.Host.Tests.DeviceSimulator
         [Fact]
         public async Task WhenSimulatedDeviceIsAddedThenPublishesDeviceDiscoveredEvent()
         {
-            DeviceDiscoveredModel discoveredModel = null;
-            await _factory.SubscribeToHausEventsAsync<DeviceDiscoveredModel>(evt => discoveredModel = evt.Payload);
+            DeviceDiscoveredEvent discoveredEvent = null;
+            await _factory.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(evt => discoveredEvent = evt.Payload);
 
             await _client.AddSimulatedDeviceAsync(new CreateSimulatedDeviceModel(DeviceType.Light));
 
             Eventually.Assert(() =>
             {
-                discoveredModel.DeviceType.Should().Be(DeviceType.Light);
+                discoveredEvent.DeviceType.Should().Be(DeviceType.Light);
             });
         }
 

@@ -11,10 +11,10 @@ namespace Haus.Core.Rooms.Commands
 
     internal class TurnRoomOffCommandHandler : AsyncRequestHandler<TurnRoomOffCommand>, ICommandHandler<TurnRoomOffCommand>
     {
-        private readonly ICommandRoomRepository _repository;
+        private readonly IRoomCommandRepository _repository;
         private readonly IDomainEventBus _domainEventBus;
 
-        public TurnRoomOffCommandHandler(IDomainEventBus domainEventBus, ICommandRoomRepository repository)
+        public TurnRoomOffCommandHandler(IDomainEventBus domainEventBus, IRoomCommandRepository repository)
         {
             _domainEventBus = domainEventBus;
             _repository = repository;

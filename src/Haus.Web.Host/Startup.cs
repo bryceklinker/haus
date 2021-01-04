@@ -1,5 +1,6 @@
 using Haus.Hosting;
 using Haus.Web.Host.Auth;
+using Haus.Web.Host.Common.Events;
 using Haus.Web.Host.Common.Mqtt;
 using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
@@ -51,6 +52,7 @@ namespace Haus.Web.Host
                 {
                     endpoints.MapHub<DiagnosticsHub>("/hubs/diagnostics");
                     endpoints.MapHub<DeviceSimulatorHub>("/hubs/device-simulator");
+                    endpoints.MapHub<EventsHub>("/hubs/events");
                     endpoints.MapControllers();
                 });
             

@@ -10,6 +10,7 @@ using FluentAssertions;
 using Haus.Core.Common.Entities;
 using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Xunit;
 
@@ -20,7 +21,7 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenCreatedFromDeviceDiscoveredThenEntityIsPopulatedFromDiscoveredDevice()
         {
-            var model = new DeviceDiscoveredModel("this-id", DeviceType.Light, new[]
+            var model = new DeviceDiscoveredEvent("this-id", DeviceType.Light, new[]
             {
                 new MetadataModel("Model", "some model"),
                 new MetadataModel("Vendor", "Vendy"),
@@ -39,7 +40,7 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenCreatedFromDeviceDiscoveredThenNameIsSetToExternalId()
         {
-            var model = new DeviceDiscoveredModel("this-id");
+            var model = new DeviceDiscoveredEvent("this-id");
 
             var entity = DeviceEntity.FromDiscoveredDevice(model);
 
@@ -49,7 +50,7 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenUpdatedFromDiscoveredDeviceThenDeviceTypeIsUpdated()
         {
-            var model = new DeviceDiscoveredModel("", DeviceType.MotionSensor);
+            var model = new DeviceDiscoveredEvent("", DeviceType.MotionSensor);
             
             var entity = new DeviceEntity();
             entity.UpdateFromDiscoveredDevice(model);
@@ -60,7 +61,7 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenUpdatedFromDiscoveredDeviceThenModelMetadataIsAdded()
         {
-            var model = new DeviceDiscoveredModel("", metadata: new []
+            var model = new DeviceDiscoveredEvent("", Metadata: new []
             {
                 new MetadataModel("Model", "boom"),
             });
@@ -74,7 +75,7 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenDeviceHasModelAndUpdatedFromDiscoveredDeviceThenModelMetadataIsUpdated()
         {
-            var model = new DeviceDiscoveredModel("", metadata: new []
+            var model = new DeviceDiscoveredEvent("", Metadata: new []
             {
                 new MetadataModel("Model", "boom"),
             });

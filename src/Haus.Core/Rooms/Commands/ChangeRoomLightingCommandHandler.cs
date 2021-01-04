@@ -15,10 +15,10 @@ namespace Haus.Core.Rooms.Commands
 
     internal class ChangeRoomLightingCommandHandler : AsyncRequestHandler<ChangeRoomLightingCommand>, ICommandHandler<ChangeRoomLightingCommand>
     {
-        private readonly ICommandRoomRepository _repository;
+        private readonly IRoomCommandRepository _repository;
         private readonly IDomainEventBus _domainEventBus;
 
-        public ChangeRoomLightingCommandHandler(IDomainEventBus domainEventBus, ICommandRoomRepository repository)
+        public ChangeRoomLightingCommandHandler(IDomainEventBus domainEventBus, IRoomCommandRepository repository)
         {
             _domainEventBus = domainEventBus;
             _repository = repository;

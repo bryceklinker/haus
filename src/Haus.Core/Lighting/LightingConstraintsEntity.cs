@@ -26,6 +26,12 @@ namespace Haus.Core.Lighting
         public double MinTemperature { get; set; }
         public double MaxTemperature { get; set; }
 
+        public LightingConstraintsEntity()
+            : this(DefaultMinLevel, DefaultMaxLevel, DefaultMinTemperature, DefaultMaxTemperature)
+        {
+            
+        }
+        
         public LightingConstraintsEntity(
             double minLevel = DefaultMinLevel, 
             double maxLevel = DefaultMaxLevel, 

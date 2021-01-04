@@ -4,6 +4,7 @@ using Haus.Core.DeviceSimulator.Commands;
 using Haus.Core.DeviceSimulator.Events;
 using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Cqrs;
 using Haus.Testing.Support;
@@ -37,7 +38,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Commands
             var command = new CreateSimulatedDeviceCommand(new CreateSimulatedDeviceModel());
             await _hausBus.ExecuteCommandAsync(command);
 
-            _hausBus.GetPublishedEvents<SimulatedEvent>().Should().ContainSingle(e => e.HausEvent.Type == DeviceDiscoveredModel.Type);
+            _hausBus.GetPublishedEvents<SimulatedEvent>().Should().ContainSingle(e => e.HausEvent.Type == DeviceDiscoveredEvent.Type);
         }
     }
 }

@@ -1,8 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Core.Common.Commands;
-using Haus.Core.Common.Storage;
-using Haus.Core.Devices.Entities;
+using Haus.Core.Devices.Repositories;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
 using MediatR;
@@ -13,21 +11,21 @@ namespace Haus.Core.Devices.Commands
 
     internal class TurnDeviceOffCommandHandler : AsyncRequestHandler<TurnDeviceOffCommand>, ICommandHandler<TurnDeviceOffCommand>
     {
-        private readonly HausDbContext _context;
+        private readonly IDeviceCommandRepository _repository;
         private readonly IDomainEventBus _domainEventBus;
 
-        public TurnDeviceOffCommandHandler(HausDbContext context, IDomainEventBus domainEventBus)
+        public TurnDeviceOffCommandHandler(IDomainEventBus domainEventBus, IDeviceCommandRepository repository)
         {
-            _context = context;
             _domainEventBus = domainEventBus;
+            _repository = repository;
         }
 
         protected override async Task Handle(TurnDeviceOffCommand request, CancellationToken cancellationToken)
         {
-            var device = await _context.FindByIdOrThrowAsync<DeviceEntity>(request.DeviceId, cancellationToken: cancellationToken)
+            var device = await _repository.GetById(request.DeviceId, cancellationToken)
                 .ConfigureAwait(false);
             device.TurnOff(_domainEventBus);
-            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
             await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
         }
     }

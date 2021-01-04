@@ -4,6 +4,7 @@ using Haus.Core.Common;
 using Haus.Core.Common.Commands;
 using Haus.Core.Common.Events;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 using MediatR;
@@ -12,7 +13,8 @@ namespace Haus.Core.Devices.Commands
 {
     public record StopDiscoveryCommand : ICommand;
 
-    internal class StopDiscoveryCommandHandler : AsyncRequestHandler<StopDiscoveryCommand>, ICommandHandler<StopDiscoveryCommand>
+    internal class StopDiscoveryCommandHandler : AsyncRequestHandler<StopDiscoveryCommand>,
+        ICommandHandler<StopDiscoveryCommand>
     {
         private readonly IHausBus _hausBus;
 
@@ -24,7 +26,10 @@ namespace Haus.Core.Devices.Commands
         protected override Task Handle(StopDiscoveryCommand request, CancellationToken cancellationToken)
         {
             var model = new StopDiscoveryModel();
-            return _hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken);
+            return Task.WhenAll(
+                _hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken),
+                _hausBus.PublishAsync(RoutableEvent.FromEvent(new DiscoveryStoppedEvent()), cancellationToken)
+            );
         }
     }
 }

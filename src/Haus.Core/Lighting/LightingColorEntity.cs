@@ -7,20 +7,29 @@ namespace Haus.Core.Lighting
     public class LightingColorEntity
     {
         private const byte DefaultColorValue = 255;
-        public static readonly LightingColorEntity Default = new LightingColorEntity
-        {
-            Blue = DefaultColorValue,
-            Green = DefaultColorValue,
-            Red = DefaultColorValue
-        };
+        public static readonly LightingColorEntity Default = new();
+
         public byte Red { get; set; }
         public byte Green { get; set; }
         public byte Blue { get; set; }
 
+        public LightingColorEntity()
+            : this(DefaultColorValue, DefaultColorValue, DefaultColorValue)
+        {
+        }
+
+        private LightingColorEntity(byte red = DefaultColorValue, byte green = DefaultColorValue,
+            byte blue = DefaultColorValue)
+        {
+            Red = red;
+            Green = green;
+            Blue = blue;
+        }
+
         protected bool Equals(LightingColorEntity other)
         {
-            return Red == other.Red 
-                   && Green == other.Green 
+            return Red == other.Red
+                   && Green == other.Green
                    && Blue == other.Blue;
         }
 
@@ -39,22 +48,16 @@ namespace Haus.Core.Lighting
 
         public static LightingColorEntity FromModel(LightingColorModel modelColor)
         {
-            return new()
-            {
-                Blue = modelColor?.Blue ?? DefaultColorValue,
-                Green = modelColor?.Green ?? DefaultColorValue,
-                Red = modelColor?.Red ?? DefaultColorValue
-            };
+            return new(
+                modelColor?.Red ?? DefaultColorValue,
+                modelColor?.Green ?? DefaultColorValue,
+                modelColor?.Blue ?? DefaultColorValue
+            );
         }
 
         public LightingColorEntity Copy()
         {
-            return new()
-            {
-                Blue = Blue,
-                Green = Green,
-                Red = Red
-            };
+            return new(Red, Green, Blue);
         }
     }
 }

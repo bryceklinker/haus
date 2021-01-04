@@ -3,6 +3,7 @@ using FluentAssertions;
 using Haus.Core.Common.Events;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Xunit;
@@ -21,11 +22,11 @@ namespace Haus.Core.Tests.Common.Events
         [Fact]
         public void WhenDeviceDiscoveredEventThenReturnsRoutableEventFromDeviceDiscovered()
         {
-            var bytes = HausJsonSerializer.SerializeToBytes(new DeviceDiscoveredModel($"{Guid.NewGuid()}").AsHausEvent());
+            var bytes = HausJsonSerializer.SerializeToBytes(new DeviceDiscoveredEvent($"{Guid.NewGuid()}").AsHausEvent());
             
             var routableEvent = _factory.Create(bytes);
 
-            routableEvent.Should().BeOfType<RoutableEvent<DeviceDiscoveredModel>>();
+            routableEvent.Should().BeOfType<RoutableEvent<DeviceDiscoveredEvent>>();
         }
 
         [Fact]

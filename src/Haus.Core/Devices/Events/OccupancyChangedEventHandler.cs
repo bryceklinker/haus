@@ -1,32 +1,29 @@
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Events;
-using Haus.Core.Common.Storage;
-using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Devices.Sensors.Motion;
-using Haus.Core.Rooms.Entities;
+using Haus.Core.Rooms.Repositories;
 using Haus.Cqrs.DomainEvents;
 using Haus.Cqrs.Events;
-using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Core.Devices.Events
 {
     internal class OccupancyChangedEventHandler : IEventHandler<RoutableEvent<OccupancyChangedModel>>
     {
-        private readonly HausDbContext _context;
+        private readonly IRoomCommandRepository _repository;
         private readonly IDomainEventBus _domainEventBus;
 
-        public OccupancyChangedEventHandler(HausDbContext context, IDomainEventBus domainEventBus)
+        public OccupancyChangedEventHandler(IDomainEventBus domainEventBus, IRoomCommandRepository repository)
         {
-            _context = context;
             _domainEventBus = domainEventBus;
+            _repository = repository;
         }
 
         public async Task Handle(RoutableEvent<OccupancyChangedModel> notification, CancellationToken cancellationToken)
         {
             var deviceExternalId = notification.Payload.DeviceId;
-            var room = await GetRoomByDeviceExternalId(deviceExternalId, cancellationToken).ConfigureAwait(false);
+            var room = await _repository.GetRoomByDeviceExternalId(deviceExternalId, cancellationToken)
+                .ConfigureAwait(false);
             if (room == null)
                 return;
 
@@ -35,19 +32,8 @@ namespace Haus.Core.Devices.Events
             else
                 room.TurnOff(_domainEventBus);
 
-            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
             await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
-        }
-
-        private async Task<RoomEntity> GetRoomByDeviceExternalId(string externalId, CancellationToken token)
-        {
-            return await _context.GetAll<DeviceEntity>()
-                .Where(d => d.ExternalId == externalId)
-                .Include(d => d.Room)
-                    .ThenInclude(r => r.Devices)
-                .Select(d => d.Room)
-                .SingleOrDefaultAsync(token)
-                .ConfigureAwait(false);
         }
     }
 }

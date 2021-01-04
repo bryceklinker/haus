@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
@@ -41,10 +42,10 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus
             yield return new MqttApplicationMessage
             {
                 Topic = EventsTopic,
-                Payload = HausJsonSerializer.SerializeToBytes(new HausEvent<DeviceDiscoveredModel>
+                Payload = HausJsonSerializer.SerializeToBytes(new HausEvent<DeviceDiscoveredEvent>
                 {
-                    Type = DeviceDiscoveredModel.Type,
-                    Payload = new DeviceDiscoveredModel(
+                    Type = DeviceDiscoveredEvent.Type,
+                    Payload = new DeviceDiscoveredEvent(
                         zigbeeMessage.Meta.FriendlyName,
                         _deviceTypeResolver.Resolve(zigbeeMessage.Meta),
                         zigbeeMessage.Meta.Root.ToDeviceMetadata().ToArray()

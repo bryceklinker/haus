@@ -17,7 +17,7 @@ namespace Haus.Core.Devices.DomainEvents
         public DeviceModel DeviceModel => Device.ToModel();
         public LightingModel LightingModel => Lighting.ToModel();
     }
-    
+
     internal class DeviceLightingChangedDomainEventHandler : IDomainEventHandler<DeviceLightingChangedDomainEvent>
     {
         private readonly IHausBus _hausBus;
@@ -30,7 +30,10 @@ namespace Haus.Core.Devices.DomainEvents
         public Task Handle(DeviceLightingChangedDomainEvent notification, CancellationToken cancellationToken)
         {
             var @event = new DeviceLightingChangedEvent(notification.DeviceModel, notification.LightingModel);
-            return _hausBus.PublishAsync(RoutableCommand.FromEvent(@event), cancellationToken);
+            return Task.WhenAll(
+                _hausBus.PublishAsync(RoutableCommand.FromEvent(@event), cancellationToken),
+                _hausBus.PublishAsync(RoutableEvent.FromEvent(@event), cancellationToken)
+            );
         }
     }
 }

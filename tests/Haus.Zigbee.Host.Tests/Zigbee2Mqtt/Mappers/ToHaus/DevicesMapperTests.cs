@@ -4,6 +4,7 @@ using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
@@ -77,8 +78,8 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
 
             var result = _mapper.Map(message).Single();
 
-            var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
-            @event.Type.Should().Be(DeviceDiscoveredModel.Type);
+            var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.Payload);
+            @event.Type.Should().Be(DeviceDiscoveredEvent.Type);
             @event.Payload.Id.Should().Be("hello");
             @event.Payload.Metadata.Should()
                 .ContainEquivalentOf(new MetadataModel("model", "65"))
@@ -101,7 +102,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus
 
             var result = _mapper.Map(message).Single();
             
-            var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredModel>>(result.Payload);
+            var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.Payload);
             @event.Payload.DeviceType.Should().Be(DeviceType.Light);
         }
 

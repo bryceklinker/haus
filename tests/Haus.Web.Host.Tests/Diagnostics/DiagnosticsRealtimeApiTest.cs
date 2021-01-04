@@ -10,12 +10,12 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Diagnostics
 {
     [Collection(HausWebHostCollectionFixture.Name)]
-    public class DiagnosticsHubTest
+    public class DiagnosticsRealtimeApiTest
     {
         private static readonly DateTime CurrentTime = new DateTime(2020, 3, 9, 2, 3, 4);
         private readonly HausWebHostApplicationFactory _factory;
 
-        public DiagnosticsHubTest(HausWebHostApplicationFactory factory)
+        public DiagnosticsRealtimeApiTest(HausWebHostApplicationFactory factory)
         {
             _factory = factory;
             _factory.SetClockTime(CurrentTime);

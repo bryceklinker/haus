@@ -18,6 +18,12 @@ namespace Haus.Core.Lighting
         public LightingColorEntity Color { get; set; }
         public LightingConstraintsEntity Constraints { get; set; }
 
+        public LightingEntity()
+            : this(DefaultState, DefaultLevel, DefaultTemperature, LightingColorEntity.Default, LightingConstraintsEntity.Default)
+        {
+            
+        }
+        
         public LightingEntity(
             LightingState state = DefaultState, 
             double level = DefaultLevel,

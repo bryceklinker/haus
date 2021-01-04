@@ -8,6 +8,7 @@ using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Rooms.Entities;
 using Haus.Cqrs.DomainEvents;
@@ -39,22 +40,22 @@ namespace Haus.Core.Devices.Entities
 
         public DeviceModel ToModel() => ToModelFunc.Value(this);
         
-        public static DeviceEntity FromDiscoveredDevice(DeviceDiscoveredModel model)
+        public static DeviceEntity FromDiscoveredDevice(DeviceDiscoveredEvent @event)
         {
             var entity = new DeviceEntity
             {
-                ExternalId = model.Id,
-                DeviceType = model.DeviceType,
-                Name = model.Id
+                ExternalId = @event.Id,
+                DeviceType = @event.DeviceType,
+                Name = @event.Id
             };
-            entity.UpdateFromDiscoveredDevice(model);
+            entity.UpdateFromDiscoveredDevice(@event);
             return entity;
         }
 
-        public void UpdateFromDiscoveredDevice(DeviceDiscoveredModel model)
+        public void UpdateFromDiscoveredDevice(DeviceDiscoveredEvent @event)
         {
-            DeviceType = model.DeviceType;
-            AddOrUpdateMetadata(model.Metadata);
+            DeviceType = @event.DeviceType;
+            AddOrUpdateMetadata(@event.Metadata);
         }
 
         public void UpdateFromModel(DeviceModel model)

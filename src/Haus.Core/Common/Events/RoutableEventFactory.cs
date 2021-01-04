@@ -1,5 +1,6 @@
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.ExternalMessages;
@@ -20,7 +21,7 @@ namespace Haus.Core.Common.Events
             
             return hausEvent.Type switch
             {
-                DeviceDiscoveredModel.Type => CreateRoutableEvent<DeviceDiscoveredModel>(bytes),
+                DeviceDiscoveredEvent.Type => CreateRoutableEvent<DeviceDiscoveredEvent>(bytes),
                 MultiSensorChanged.Type => CreateRoutableEvent<MultiSensorChanged>(bytes),
                 OccupancyChangedModel.Type => CreateRoutableEvent<OccupancyChangedModel>(bytes),
                 _ => null

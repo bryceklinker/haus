@@ -35,5 +35,17 @@ namespace Haus.Core.Tests.Devices.DomainEvents
             hausCommand.Payload.Device.Id.Should().Be(123);
             hausCommand.Payload.Lighting.Level.Should().Be(34.12);
         }
+
+        [Fact]
+        public async Task WhenDeviceLightingChangedThenRoutableEventPublished()
+        {
+            var device = new DeviceEntity {Id = 123};
+            var lighting = new LightingEntity{Level = 34.12};
+            _hausBus.Enqueue(new DeviceLightingChangedDomainEvent(device, lighting));
+
+            await _hausBus.FlushAsync();
+            
+            _hausBus.GetPublishedRoutableEvents<DeviceLightingChangedEvent>().Should().HaveCount(1);
+        }
     }
 }

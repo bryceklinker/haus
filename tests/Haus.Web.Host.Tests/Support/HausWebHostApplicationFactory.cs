@@ -11,6 +11,7 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;
 using Haus.Mqtt.Client;
@@ -140,7 +141,7 @@ namespace Haus.Web.Host.Tests.Support
             string externalId = null)
         {
             var actualId = string.IsNullOrWhiteSpace(externalId) ? $"{Guid.NewGuid()}" : externalId;
-            await PublishHausEventAsync(new DeviceDiscoveredModel(actualId, deviceType));
+            await PublishHausEventAsync(new DeviceDiscoveredEvent(actualId, deviceType));
 
             var apiClient = CreateAuthenticatedClient();
             return await WaitFor.ResultAsync(async () =>

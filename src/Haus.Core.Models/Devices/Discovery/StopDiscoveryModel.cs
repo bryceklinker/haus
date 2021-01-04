@@ -7,9 +7,6 @@ namespace Haus.Core.Models.Devices.Discovery
     {
         public const string Type = "stop_discovery";
 
-        public HausCommand<StopDiscoveryModel> AsHausCommand()
-        {
-            return new HausCommand<StopDiscoveryModel>(Type, this);
-        }
+        public HausCommand<StopDiscoveryModel> AsHausCommand() => new HausCommand<StopDiscoveryModel>(Type, this);
     }
 }
