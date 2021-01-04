@@ -38,9 +38,6 @@ namespace Haus.Core.Models.Devices.Sensors
             return BatteryChanged;
         }
 
-        public HausEvent<MultiSensorChanged> AsHausEvent()
-        {
-            return new(Type, this);
-        }
+        public HausEvent<MultiSensorChanged> AsHausEvent() =>new(Type, this);
     }
 }
