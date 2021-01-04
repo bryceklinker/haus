@@ -3,7 +3,7 @@ import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {AppState} from "../../../app.state";
 import {DeviceSimulatorActions, selectAllSimulatedDevices, selectIsDeviceSimulatorConnected} from "../../state";
-import {SimulatedDeviceModel} from "../../models";
+import {SimulatedDeviceModel} from "../../../shared/models";
 
 @Component({
   selector: 'device-simulator-root',

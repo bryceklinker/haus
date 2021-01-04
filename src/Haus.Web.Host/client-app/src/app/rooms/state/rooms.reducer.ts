@@ -1,10 +1,11 @@
 import {createEntityAdapter} from "@ngrx/entity";
-import {RoomModel} from "../models";
 import {createComparer} from "../../shared/sort-array-by";
 import {Action, createReducer, createSelector, on} from "@ngrx/store";
 import {RoomsState} from "./rooms.state";
 import {RoomsActions} from "./actions";
 import {AppState} from "../../app.state";
+import {RoomModel} from "../../shared/models";
+import {EventsActions} from "../../shared/events";
 
 const adapter = createEntityAdapter<RoomModel>({
   selectId: r => r.id,
@@ -15,12 +16,13 @@ const initialState: RoomsState = adapter.getInitialState();
 const reducer = createReducer(initialState,
   on(RoomsActions.loadRooms.success, (state, {payload}) => adapter.upsertMany(payload, state)),
   on(RoomsActions.addRoom.success, (state, {payload}) => ({...adapter.upsertOne(payload, state), isAdding: false})),
-  on(RoomsActions.changeRoomLighting.request, (state, {payload}) => ({
-    ...adapter.updateOne({
-      id: payload.roomId,
-      changes: {lighting: payload.lighting}
+  on(RoomsActions.changeRoomLighting.request, EventsActions.roomLightingChanged, (state, {payload}) => ({
+    ...adapter.upsertOne({
+      ...payload.room,
+      lighting: payload.lighting,
     }, state)
-  }))
+  })),
+  on(EventsActions.roomCreated, EventsActions.roomUpdated, (state, {payload}) => ({...adapter.upsertOne(payload.room, state)}))
 );
 
 export function roomsReducer(state: RoomsState | undefined, action: Action) {

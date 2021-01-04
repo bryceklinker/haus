@@ -4,13 +4,12 @@ import {Store} from "@ngrx/store";
 import {ActivatedRoute} from "@angular/router";
 import {map, mergeMap} from "rxjs/operators";
 
-import {RoomModel, RoomLightingChangeModel} from "../../models";
-import {DeviceModel} from "../../../devices/models";
 import {AppState} from "../../../app.state";
 import {RoomsActions, selectRoomById} from "../../state";
 import {DevicesActions, selectAllDevicesByRoomId} from "../../../devices/state";
 import {MatDialog} from "@angular/material/dialog";
 import {AssignDevicesToRoomDialogComponent} from "../assign-devices-to-room-dialog/assign-devices-to-room-dialog.component";
+import {DeviceModel, RoomLightingChangedEvent, RoomModel} from "../../../shared/models";
 
 @Component({
   selector: 'room-detail-root',
@@ -40,7 +39,7 @@ export class RoomDetailRootComponent implements OnInit {
     this.store.dispatch(DevicesActions.loadDevices.request());
   }
 
-  onRoomLightingChanged($event: RoomLightingChangeModel) {
+  onRoomLightingChanged($event: RoomLightingChangedEvent) {
     this.store.dispatch(RoomsActions.changeRoomLighting.request($event));
   }
 

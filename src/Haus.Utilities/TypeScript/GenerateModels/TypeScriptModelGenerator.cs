@@ -18,10 +18,7 @@ namespace Haus.Utilities.TypeScript.GenerateModels
     {
         public void Generate(Type type, ITypeScriptGeneratorContext context)
         {
-            if (type.IsStatic())
-                return;
-
-            if (type.IsInterface)
+            if (type.IsSkippable())
                 return;
 
             var filename = $"{type.ToTypeScriptFileName()}.ts";
@@ -115,7 +112,7 @@ namespace Haus.Utilities.TypeScript.GenerateModels
                 : property.Name.Camelize();
             
             var typescriptPropertyType = property.PropertyType.IsNativeTypeScriptType()
-                ? property.PropertyType.ToTypeScriptType()
+                ? property.PropertyType.ToTypeScriptType(context)
                 : context.GetModelForType(property.PropertyType).ModelName;
             return $"\t{propertyName}: {typescriptPropertyType};";
         }

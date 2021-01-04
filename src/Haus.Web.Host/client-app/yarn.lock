@@ -1381,6 +1381,13 @@
   dependencies:
     tslib "^2.0.0"
 
+"@ngrx/store-devtools@10.1.2":
+  version "10.1.2"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store-devtools/-/@ngrx/store-devtools-10.1.2.tgz#1dba8c84df4b56a2b15d6abc01c3c378d1518830"
+  integrity sha1-HbqMhN9LVqKxXWq8AcPDeNFRiDA=
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngrx/store@10.1.2":
   version "10.1.2"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store/-/@ngrx/store-10.1.2.tgz#a41aee81ea7b7e4a9f927be560e6024830211efb"

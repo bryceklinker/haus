@@ -11,7 +11,7 @@ using MediatR;
 
 namespace Haus.Core.DeviceSimulator.Commands
 {
-    public record CreateSimulatedDeviceCommand(CreateSimulatedDeviceModel Model) : ICommand;
+    public record CreateSimulatedDeviceCommand(SimulatedDeviceModel Model) : ICommand;
 
     internal class CreateSimulatedDeviceCommandHandler : AsyncRequestHandler<CreateSimulatedDeviceCommand>, ICommandHandler<CreateSimulatedDeviceCommand>
     {

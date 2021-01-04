@@ -5,8 +5,7 @@ import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
 import {RoomDetailComponent} from './room-detail.component';
 import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {RoomsModule} from "../../rooms.module";
-import {LightingState} from "../../../shared/models";
-import {RoomLightingChangeModel, RoomModel} from "../../models";
+import {LightingState, RoomLightingChangedEvent, RoomModel} from "../../../shared/models";
 
 describe('RoomDetailComponent', () => {
   it('should show room name', async () => {
@@ -51,14 +50,14 @@ describe('RoomDetailComponent', () => {
     const room = ModelFactory.createRoomModel({
       lighting: ModelFactory.createLighting({state: LightingState.Off})
     });
-    const emitter = new TestingEventEmitter<RoomLightingChangeModel>();
+    const emitter = new TestingEventEmitter<RoomLightingChangedEvent>();
 
     const {matHarness} = await renderComponent({room, lightingChange: emitter});
     const state = await matHarness.getHarness(MatSlideToggleHarness);
     await state.check();
 
     expect(emitter.emit).toHaveBeenCalledWith({
-      roomId: room.id,
+      room: room,
       lighting: expect.objectContaining({state: LightingState.On})
     })
   })
@@ -77,7 +76,7 @@ describe('RoomDetailComponent', () => {
 
   function renderComponent({
                              room = null, devices = [],
-                             lightingChange = new TestingEventEmitter<RoomLightingChangeModel>(),
+                             lightingChange = new TestingEventEmitter<RoomLightingChangedEvent>(),
                              assignDevices = new TestingEventEmitter<RoomModel>()
                            }: Partial<RoomDetailComponent> = {}) {
     return renderFeatureComponent(RoomDetailComponent, {

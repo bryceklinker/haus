@@ -16,7 +16,7 @@ namespace Haus.Web.Host.DeviceSimulator
         }
 
         [HttpPost("devices")]
-        public Task<IActionResult> AddDevice([FromBody] CreateSimulatedDeviceModel model)
+        public Task<IActionResult> AddDevice([FromBody] SimulatedDeviceModel model)
         {
             return CommandAsync(new CreateSimulatedDeviceCommand(model));
         }

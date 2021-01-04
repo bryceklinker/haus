@@ -2,9 +2,9 @@ import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
 import {HarnessLoader} from "@angular/cdk/testing";
 import {By} from "@angular/platform-browser";
 import {ComponentFixture} from "@angular/core/testing";
-import {LightingComponent} from "./lighting.component";
 import {MatSliderHarness} from "@angular/material/slider/testing";
 
+import {LightingComponent} from "./lighting.component";
 import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {SharedModule} from "../../shared.module";
 import {LightingModel, LightingState} from "../../models";

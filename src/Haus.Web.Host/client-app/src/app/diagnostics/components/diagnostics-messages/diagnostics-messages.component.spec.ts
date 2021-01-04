@@ -4,11 +4,11 @@ import userEvent from "@testing-library/user-event";
 import {renderFeatureComponent, TestingEventEmitter, ModelFactory} from "../../../../testing";
 import {DiagnosticsMessagesComponent} from "./diagnostics-messages.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
-import {DiagnosticsMessageModel} from "../../models";
+import {UiMqttDiagnosticsMessageModel} from "../../../shared/models";
 
 describe('DiagnosticsMessagesComponent', () => {
   it('should show each message', async () => {
-    const messages: Array<DiagnosticsMessageModel> = [
+    const messages: Array<UiMqttDiagnosticsMessageModel> = [
       ModelFactory.createMqttDiagnosticsMessage(),
       ModelFactory.createMqttDiagnosticsMessage(),
       ModelFactory.createMqttDiagnosticsMessage()
@@ -20,7 +20,7 @@ describe('DiagnosticsMessagesComponent', () => {
   })
 
   it('should show message topic', async () => {
-    const messages: Array<DiagnosticsMessageModel> = [
+    const messages: Array<UiMqttDiagnosticsMessageModel> = [
       ModelFactory.createMqttDiagnosticsMessage({topic: 'one'})
     ];
 
@@ -30,7 +30,7 @@ describe('DiagnosticsMessagesComponent', () => {
   })
 
   it('should show message payload', async () => {
-    const messages: Array<DiagnosticsMessageModel> = [
+    const messages: Array<UiMqttDiagnosticsMessageModel> = [
       ModelFactory.createMqttDiagnosticsMessage({payload: '123'})
     ];
 
@@ -40,7 +40,7 @@ describe('DiagnosticsMessagesComponent', () => {
   })
 
   it('should show message payload json', async () => {
-    const messages: Array<DiagnosticsMessageModel> = [
+    const messages: Array<UiMqttDiagnosticsMessageModel> = [
       ModelFactory.createMqttDiagnosticsMessage({payload: {id: 45, text: 'jack'}})
     ];
 
@@ -52,7 +52,7 @@ describe('DiagnosticsMessagesComponent', () => {
 
   it('should trigger replay message when message is replayed', async () => {
     const model = ModelFactory.createMqttDiagnosticsMessage();
-    const replayMessageEmitter = new TestingEventEmitter<DiagnosticsMessageModel>();
+    const replayMessageEmitter = new TestingEventEmitter<UiMqttDiagnosticsMessageModel>();
 
     await renderMessages([model], replayMessageEmitter);
 
@@ -69,12 +69,12 @@ describe('DiagnosticsMessagesComponent', () => {
     expect(screen.getByTestId('replay-message-btn')).toBeDisabled();
   })
 
-  async function renderMessages(messages: Array<DiagnosticsMessageModel>, replayMessage?: EventEmitter<DiagnosticsMessageModel>) {
+  async function renderMessages(messages: Array<UiMqttDiagnosticsMessageModel>, replayMessage?: EventEmitter<UiMqttDiagnosticsMessageModel>) {
     return await renderFeatureComponent(DiagnosticsMessagesComponent, {
       imports: [DiagnosticsModule],
       componentProperties: {
         messages,
-        replayMessage: replayMessage || new TestingEventEmitter<DiagnosticsMessageModel>()
+        replayMessage: replayMessage || new TestingEventEmitter<UiMqttDiagnosticsMessageModel>()
       }
     })
   }

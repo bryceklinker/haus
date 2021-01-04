@@ -1,13 +1,13 @@
-import {Injectable, OnInit} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {Action, ActionsSubject, Store} from "@ngrx/store";
+import {ActionsSubject} from "@ngrx/store";
 import {map, mergeMap} from "rxjs/operators";
 
 import {KNOWN_HUB_NAMES, SignalrService} from "../../shared/signalr";
 import {DiagnosticsActions} from "../state";
-import {DiagnosticsMessageModel} from "../models";
 import {HausApiClient} from "../../shared/rest-api";
 import {SignalrEffectsFactory} from "../../shared/signalr";
+import {MqttDiagnosticsMessageModel} from "../../shared/models";
 
 @Injectable()
 export class DiagnosticsEffects {
@@ -39,7 +39,7 @@ export class DiagnosticsEffects {
   }
 
   initializeHub(hub: SignalrService) {
-    hub.on<DiagnosticsMessageModel>('OnMqttMessage', msg => {
+    hub.on<MqttDiagnosticsMessageModel>('OnMqttMessage', msg => {
       this.actionsSubject.next(DiagnosticsActions.messageReceived(msg))
     });
   }

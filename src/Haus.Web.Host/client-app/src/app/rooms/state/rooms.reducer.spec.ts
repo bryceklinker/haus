@@ -2,6 +2,7 @@ import {generateStateFromActions} from "../../../testing/app-state-generator";
 import {roomsReducer} from "./rooms.reducer";
 import {RoomsActions} from "./actions";
 import {ModelFactory} from "../../../testing";
+import {EventsActions} from "../../shared/events";
 
 describe('roomsReducer', () => {
   it('should have all rooms in state', () => {
@@ -31,9 +32,40 @@ describe('roomsReducer', () => {
 
     const state = generateStateFromActions(roomsReducer,
       RoomsActions.loadRooms.success(ModelFactory.createListResult(room)),
-      RoomsActions.changeRoomLighting.request({roomId: room.id, lighting: newLighting})
+      RoomsActions.changeRoomLighting.request({room, lighting: newLighting})
     );
 
     expect(state.entities[room.id]?.lighting).toEqual(newLighting);
+  })
+
+  it('should update lighting on room when room lighting changed event received', () => {
+    const room = ModelFactory.createRoomModel();
+    const lighting = ModelFactory.createLighting({level: 89});
+
+    const state = generateStateFromActions(roomsReducer,
+      EventsActions.roomLightingChanged({room, lighting})
+    );
+
+    expect(state.entities[room.id]?.lighting).toEqual(lighting);
+  })
+
+  it('should add room when room created event received', () => {
+    const room = ModelFactory.createRoomModel();
+
+    const state = generateStateFromActions(roomsReducer,
+      EventsActions.roomCreated({room})
+    );
+
+    expect(state.entities[room.id]).toEqual(room);
+  })
+
+  it('should update room when room updated event received', () => {
+    const room = ModelFactory.createRoomModel();
+
+    const state = generateStateFromActions(roomsReducer,
+      EventsActions.roomUpdated({room})
+    );
+
+    expect(state.entities[room.id]).toEqual(room);
   })
 })

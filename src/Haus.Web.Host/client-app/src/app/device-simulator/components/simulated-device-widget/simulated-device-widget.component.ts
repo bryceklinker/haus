@@ -1,7 +1,6 @@
 import {Component, Input} from "@angular/core";
-import {SimulatedDeviceModel} from "../../models";
-import {MetadataModel} from "../../../shared/models/metadata.model";
 import {toTitleCase} from "../../../shared/humanize";
+import {MetadataModel, SimulatedDeviceModel} from "../../../shared/models";
 
 @Component({
   selector: 'simulated-device-widget',

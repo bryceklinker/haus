@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text.Json.Serialization;
 using Haus.Core.Common.Entities;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
@@ -29,13 +30,19 @@ namespace Haus.Core.DeviceSimulator.Entities
             Metadata = metadata;
         }
 
-        public static SimulatedDeviceEntity Create(CreateSimulatedDeviceModel model)
+        public static SimulatedDeviceEntity Create(SimulatedDeviceModel model)
         {
             var metadata = model.Metadata
                 .Select(Common.Entities.Metadata.FromModel)
                 .Concat(StandardMetadata)
                 .ToImmutableArray();
             return new SimulatedDeviceEntity($"{Guid.NewGuid()}", model.DeviceType, metadata);
+        }
+
+        public SimulatedDeviceModel ToModel()
+        {
+            var metadataModels = Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray();
+            return new SimulatedDeviceModel(Id, DeviceType, metadataModels);
         }
 
         public DeviceDiscoveredEvent ToDeviceDiscoveredModel()

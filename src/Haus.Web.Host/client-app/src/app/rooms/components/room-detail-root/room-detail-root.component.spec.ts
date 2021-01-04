@@ -6,10 +6,9 @@ import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
 import {eventually, ModelFactory, renderFeatureComponent, TestingActivatedRoute} from "../../../../testing";
 import {RoomDetailRootComponent} from "./room-detail-root.component";
 import {RoomsModule} from "../../rooms.module";
-import {RoomModel} from "../../models";
 import {RoomsActions} from "../../state";
 import {DevicesActions} from "../../../devices/state";
-import {LightingState} from "../../../shared/models";
+import {LightingState, RoomModel} from "../../../shared/models";
 import {AssignDevicesToRoomDialogComponent} from "../assign-devices-to-room-dialog/assign-devices-to-room-dialog.component";
 
 describe('DeviceDetailRootComponent', () => {
@@ -62,7 +61,7 @@ describe('DeviceDetailRootComponent', () => {
     await state.check();
 
     expect(store.dispatchedActions).toContainEqual(RoomsActions.changeRoomLighting.request({
-      roomId: room.id,
+      room: room,
       lighting: expect.objectContaining({state: LightingState.On})
     }));
   })

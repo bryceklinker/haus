@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {DiagnosticsMessageModel} from "../../models";
+import {UiMqttDiagnosticsMessageModel} from "../../../shared/models";
 
 
 @Component({
@@ -8,10 +8,10 @@ import {DiagnosticsMessageModel} from "../../models";
   styleUrls: ['./diagnostics-messages.component.scss']
 })
 export class DiagnosticsMessagesComponent {
-  @Input() messages: Array<DiagnosticsMessageModel> | null = [];
-  @Output() replayMessage = new EventEmitter<DiagnosticsMessageModel>();
+  @Input() messages: Array<UiMqttDiagnosticsMessageModel> | null = [];
+  @Output() replayMessage = new EventEmitter<UiMqttDiagnosticsMessageModel>();
 
-  onReplay(message: DiagnosticsMessageModel) {
+  onReplay(message: UiMqttDiagnosticsMessageModel) {
     this.replayMessage.emit(message);
   }
 }

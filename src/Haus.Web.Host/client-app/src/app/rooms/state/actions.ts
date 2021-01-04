@@ -1,6 +1,6 @@
 import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
-import {ListResult} from "../../shared/models";
-import {CreateRoomModel, RoomModel, RoomLightingChangeModel, AssignDevicesToRoomModel} from "../models";
+import {ListResult, RoomLightingChangedEvent, RoomModel} from "../../shared/models";
+import {AssignDevicesToRoomModel} from "../models";
 
 export const RoomsActions = {
   loadRooms: createAsyncActionSet(
@@ -12,15 +12,15 @@ export const RoomsActions = {
 
   addRoom: createAsyncActionSet(
     '[Rooms] Add Room',
-    (room: CreateRoomModel) => ({payload: room}),
+    (room: Partial<RoomModel>) => ({payload: room}),
     (room: RoomModel) => ({payload: room}),
     (error: any) => ({payload: error})
   ),
 
   changeRoomLighting: createAsyncActionSet(
     '[Rooms] Change Room Lighting',
-    (change: RoomLightingChangeModel) => ({payload: change}),
-    (change: RoomLightingChangeModel) => ({payload: change}),
+    (change: RoomLightingChangedEvent) => ({payload: change}),
+    (change: RoomLightingChangedEvent) => ({payload: change}),
     (roomId: number, error: any) => ({payload: {roomId, error}})
   ),
 

@@ -6,12 +6,11 @@ import {eventually, ModelFactory, renderFeatureComponent, TestingActionsSubject}
 import {AssignDevicesToRoomDialogComponent} from "./assign-devices-to-room-dialog.component";
 import {RoomsModule} from "../../rooms.module";
 import {DevicesActions} from "../../../devices/state";
-import {DeviceModel} from "../../../devices/models";
 import {AppState} from "../../../app.state";
 import {TestingStore} from "../../../../testing/fakes/testing-store";
 import {RoomsActions} from "../../state";
-import {RoomModel} from "../../models";
 import {TestingMatDialogRef} from "../../../../testing/fakes/testing-mat-dialog-ref";
+import {DeviceModel, RoomModel} from "../../../shared/models";
 
 describe('AssignDevicesToRoomDialogComponent', () => {
   let unassignedDevices: Array<DeviceModel>;

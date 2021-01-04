@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {DiagnosticsMessageModel} from "../../models";
 import {Observable} from "rxjs";
 import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
@@ -9,6 +8,7 @@ import {
   selectAllowDiagnosticsDiscovery,
   selectIsDiagnosticsConnected
 } from "../../state";
+import {MqttDiagnosticsMessageModel, UiMqttDiagnosticsMessageModel} from "../../../shared/models";
 
 @Component({
   selector: 'diagnostics-root',
@@ -16,7 +16,7 @@ import {
   styleUrls: ['./diagnostics-root.component.scss']
 })
 export class DiagnosticsRootComponent implements OnInit, OnDestroy {
-  messages$: Observable<DiagnosticsMessageModel[]>;
+  messages$: Observable<UiMqttDiagnosticsMessageModel[]>;
   isConnected$: Observable<boolean>;
   allowDiscovery$: Observable<boolean>;
 
@@ -46,7 +46,7 @@ export class DiagnosticsRootComponent implements OnInit, OnDestroy {
     this.store.dispatch(DiagnosticsActions.syncDiscovery.request());
   }
 
-  onReplayMessage($event: DiagnosticsMessageModel) {
+  onReplayMessage($event: UiMqttDiagnosticsMessageModel) {
     this.store.dispatch(DiagnosticsActions.replayMessage.request($event));
   }
 }

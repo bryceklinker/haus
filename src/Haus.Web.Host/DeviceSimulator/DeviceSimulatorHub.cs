@@ -18,7 +18,7 @@ namespace Haus.Web.Host.DeviceSimulator
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
-            await Clients.Caller.SendAsync("OnState", _store.Current);
+            await Clients.Caller.SendAsync("OnState", _store.Current.ToModel());
         }
     }
 }

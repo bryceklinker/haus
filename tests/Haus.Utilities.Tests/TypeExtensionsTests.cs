@@ -1,5 +1,7 @@
 using System;
 using FluentAssertions;
+using Haus.Core.Models;
+using Haus.Utilities.TypeScript.GenerateModels;
 using Xunit;
 
 namespace Haus.Utilities.Tests
@@ -17,7 +19,31 @@ namespace Haus.Utilities.Tests
         public void WhenTypeIsANativeTypescriptTypeThenReturnsTypescriptTypeAsString(Type type, string typescriptType)
         {
             type.IsNativeTypeScriptType().Should().BeTrue();
-            type.ToTypeScriptType().Should().Be(typescriptType);
+            type.ToTypeScriptType(new TypeScriptGeneratorContext()).Should().Be(typescriptType);
+        }
+
+        [Fact]
+        public void WhenTypeIsStaticThenIsSkippableReturnsTrue()
+        {
+            typeof(TypeExtensions).IsSkippable().Should().BeTrue();
+        }
+
+        [Fact]
+        public void WhenTypeIsAttributeThenIsSkippableReturnsTrue()
+        {
+            typeof(SkipGenerationAttribute).IsSkippable().Should().BeTrue();
+        }
+
+        [Fact]
+        public void WhenTypeIsAnInterfaceThenIsSkippableReturnsTrue()
+        {
+            typeof(ITypeScriptGeneratorContext).IsSkippable().Should().BeTrue();
+        }
+
+        [Fact]
+        public void PrimitiveArrayTypeShouldNotRequireATypescriptImport()
+        {
+            typeof(long[]).RequiresTypescriptImport().Should().BeFalse();
         }
     }
 }

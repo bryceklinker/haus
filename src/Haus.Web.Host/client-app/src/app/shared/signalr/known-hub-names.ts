@@ -1,4 +1,5 @@
 export const KNOWN_HUB_NAMES = {
   diagnostics: 'diagnostics',
-  deviceSimulator: 'device-simulator'
+  deviceSimulator: 'device-simulator',
+  events: 'events'
 }

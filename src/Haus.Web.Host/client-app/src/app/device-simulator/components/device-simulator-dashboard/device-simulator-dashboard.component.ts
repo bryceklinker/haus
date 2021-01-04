@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {SimulatedDeviceModel} from "../../models";
+import {SimulatedDeviceModel} from "../../../shared/models";
 
 @Component({
   selector: 'device-simulator-dashboard',

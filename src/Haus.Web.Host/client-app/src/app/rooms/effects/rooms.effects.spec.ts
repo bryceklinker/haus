@@ -49,10 +49,11 @@ describe('RoomsEffects', () => {
     setupChangeRoomLighting(54);
 
     const lighting = ModelFactory.createLighting();
-    actions$.next(RoomsActions.changeRoomLighting.request({roomId: 54, lighting}));
+    const room = ModelFactory.createRoomModel({id: 54});
+    actions$.next(RoomsActions.changeRoomLighting.request({room, lighting}));
 
     await eventually(() => {
-      expect(actions$.publishedActions).toContainEqual(RoomsActions.changeRoomLighting.success({roomId: 54, lighting}));
+      expect(actions$.publishedActions).toContainEqual(RoomsActions.changeRoomLighting.success({room, lighting}));
     })
   })
 

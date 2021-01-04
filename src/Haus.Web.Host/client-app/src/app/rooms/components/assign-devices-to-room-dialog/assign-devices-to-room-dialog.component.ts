@@ -2,15 +2,14 @@ import {Component, Inject, OnDestroy, OnInit} from "@angular/core";
 import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
 
-import {DeviceModel} from "../../../devices/models";
 import {AppState} from "../../../app.state";
 import {selectUnassignedDevices} from "../../../devices/state";
 import {toTitleCase} from "../../../shared/humanize";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {RoomModel} from "../../models";
 import {RoomsActions} from "../../state";
 import {Actions, ofType} from "@ngrx/effects";
 import {DestroyableSubject} from "../../../shared/destroyable-subject";
+import {DeviceModel, RoomModel} from "../../../shared/models";
 
 @Component({
   selector: 'assign-devices-to-room-dialog',
@@ -29,7 +28,7 @@ export class AssignDevicesToRoomDialogComponent implements OnInit, OnDestroy {
   constructor(private readonly store: Store<AppState>,
               private readonly actions: Actions,
               private readonly dialogRef: MatDialogRef<AssignDevicesToRoomDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) private readonly room: RoomModel,) {
+              @Inject(MAT_DIALOG_DATA) private readonly room: RoomModel) {
 
     this.unassignedDevices$ = store.select(selectUnassignedDevices);
   }

@@ -23,7 +23,7 @@ export class RoomsEffects {
   changeLighting$ = createEffect(() => this.actions$.pipe(
     ofType(RoomsActions.changeRoomLighting.request),
     debounceTime(200),
-    mergeMap(({payload}) => this.api.changeRoomLighting(payload.roomId, payload.lighting).pipe(
+    mergeMap(({payload}) => this.api.changeRoomLighting(payload.room.id, payload.lighting).pipe(
       map(() => RoomsActions.changeRoomLighting.success(payload))
     ))
   ))

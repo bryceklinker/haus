@@ -1,5 +1,7 @@
 using System.Collections.Immutable;
+using System.Linq;
 using Haus.Core.DeviceSimulator.Entities;
+using Haus.Core.Models.DeviceSimulator;
 
 namespace Haus.Core.DeviceSimulator.State
 {
@@ -8,6 +10,7 @@ namespace Haus.Core.DeviceSimulator.State
         ImmutableArray<SimulatedDeviceEntity> Devices { get; }
         IDeviceSimulatorState AddSimulatedDevice(SimulatedDeviceEntity entity);
         IDeviceSimulatorState Reset();
+        DeviceSimulatorStateModel ToModel();
     }
 
     public record DeviceSimulatorState : IDeviceSimulatorState
@@ -29,6 +32,12 @@ namespace Haus.Core.DeviceSimulator.State
         public IDeviceSimulatorState AddSimulatedDevice(SimulatedDeviceEntity entity)
         {
             return new DeviceSimulatorState(Devices.Add(entity));
+        }
+
+        public DeviceSimulatorStateModel ToModel()
+        {
+            var devices = Devices.Select(d => d.ToModel()).ToArray();
+            return new DeviceSimulatorStateModel(devices);
         }
     }
 }

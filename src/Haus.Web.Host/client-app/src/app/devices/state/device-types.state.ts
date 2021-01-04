@@ -1,3 +1,5 @@
+import {DeviceType} from "../../shared/models";
+
 export interface DeviceTypesState {
-  deviceTypes: Array<string>;
+  deviceTypes: Array<DeviceType>;
 }

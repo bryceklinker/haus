@@ -1,4 +1,4 @@
-import {SimulatedDeviceModel} from "../models";
+import {SimulatedDeviceModel} from "../../shared/models";
 
 export interface DeviceSimulatorState {
   devices: Array<SimulatedDeviceModel>;

@@ -26,7 +26,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Commands
         [Fact]
         public async Task WhenSimulatedDeviceCreatedThenDeviceIsAddedToState()
         {
-            var command = new CreateSimulatedDeviceCommand(new CreateSimulatedDeviceModel());
+            var command = new CreateSimulatedDeviceCommand(new SimulatedDeviceModel());
             await _hausBus.ExecuteCommandAsync(command);
 
             _store.Current.Devices.Should().HaveCount(1);
@@ -35,7 +35,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Commands
         [Fact]
         public async Task WhenSimulatedDeviceCreatedThenSimulatedDeviceDiscoveredEventIsPublished()
         {
-            var command = new CreateSimulatedDeviceCommand(new CreateSimulatedDeviceModel());
+            var command = new CreateSimulatedDeviceCommand(new SimulatedDeviceModel());
             await _hausBus.ExecuteCommandAsync(command);
 
             _hausBus.GetPublishedEvents<SimulatedEvent>().Should().ContainSingle(e => e.HausEvent.Type == DeviceDiscoveredEvent.Type);

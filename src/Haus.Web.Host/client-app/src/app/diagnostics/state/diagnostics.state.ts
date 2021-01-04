@@ -1,6 +1,6 @@
 import {EntityState} from "@ngrx/entity";
-import {DiagnosticsMessageModel} from "../models";
+import {UiMqttDiagnosticsMessageModel} from "../../shared/models";
 
-export interface DiagnosticsState extends EntityState<DiagnosticsMessageModel> {
+export interface DiagnosticsState extends EntityState<UiMqttDiagnosticsMessageModel> {
   isConnected: boolean;
 }

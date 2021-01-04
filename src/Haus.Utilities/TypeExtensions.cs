@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using Haus.Core.Models;
+using Haus.Utilities.TypeScript.GenerateModels;
 using Humanizer;
 
 namespace Haus.Utilities
@@ -12,9 +15,9 @@ namespace Haus.Utilities
         public const string String = "string";
         public const string Any = "any";
         public const string Object = "object";
-        
+
         public static readonly Dictionary<Type, string> ClrToTypeScript = new()
-        {   
+        {
             {typeof(byte), Number},
             {typeof(double), Number},
             {typeof(int), Number},
@@ -29,13 +32,13 @@ namespace Haus.Utilities
         {
             return type.IsAbstract && type.IsSealed;
         }
-        
+
         public static string ToTypeScriptFileName(this Type type)
         {
             var name = type.IsGenericType
                 ? type.Name.Split('`')[0]
                 : type.Name;
-            
+
             return name.Kebaberize();
         }
 
@@ -44,21 +47,32 @@ namespace Haus.Utilities
             return type.GetTypeThatRequiresImport() != null;
         }
 
+        public static bool IsSkippable(this Type type)
+        {
+            return type.IsStatic()
+                   || type.IsInterface
+                   || type.IsAssignableTo(typeof(Attribute))
+                   || type.GetCustomAttributes<SkipGenerationAttribute>().Any();
+        }
+
         public static Type GetTypeThatRequiresImport(this Type type)
         {
             if (!type.IsNativeTypeScriptType())
                 return type;
 
-            if (type.IsArray && !type.GetElementType().IsNativeTypeScriptType())
-                return type.GetElementType();
-
+            if (type.IsArray)
+            {
+                var elementType = type.GetElementType();
+                return elementType.IsNativeTypeScriptType() ? null : elementType;
+            }
+            
             if (type.BaseType != null && !type.BaseType.IsNativeTypeScriptType())
                 return type.BaseType;
 
             return null;
         }
 
-        public static string ToTypeScriptType(this Type type)
+        public static string ToTypeScriptType(this Type type, ITypeScriptGeneratorContext context)
         {
             if (ClrToTypeScript.ContainsKey(type))
                 return ClrToTypeScript[type];
@@ -67,10 +81,16 @@ namespace Haus.Utilities
                 return type.Name;
 
             if (type.IsArray)
-                return $"Array<{type.Name.Split('[')[0]}>";
+            {
+                var elementType = type.GetElementType();
+                var elementTypeName = elementType.IsNativeTypeScriptType()
+                    ? elementType.ToTypeScriptType(context)
+                    : context.GetModelForType(elementType).ModelName;
+                return $"Array<{elementTypeName}>";
+            }
 
             if (type.IsNullable())
-                return $"{type.GetGenericArguments()[0].ToTypeScriptType()}";
+                return $"{type.GetGenericArguments()[0].ToTypeScriptType(context)}";
 
             return Any;
         }
@@ -101,7 +121,7 @@ namespace Haus.Utilities
                    && type.IsGenericType
                    && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
-        
+
         public static string ToTypescriptTypeName(this Type type)
         {
             if (!type.IsGenericTypeDefinition)

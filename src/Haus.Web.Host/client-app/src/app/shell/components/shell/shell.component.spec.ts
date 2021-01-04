@@ -4,6 +4,7 @@ import {renderAppComponent} from "../../../../testing";
 import userEvent from "@testing-library/user-event";
 import {screen} from "@testing-library/dom";
 import {ComponentFixture} from "@angular/core/testing";
+import {SharedActions} from "../../../shared/actions";
 
 describe('ShellComponent', () => {
   it('should open side nav when menu clicked', async () => {
@@ -30,6 +31,12 @@ describe('ShellComponent', () => {
 
     expect(container.querySelector('shell-header')).toHaveClass(DARK_THEME_CLASS_NAME);
     expect(container.querySelector('shell-nav-drawer')).toHaveClass(DARK_THEME_CLASS_NAME);
+  })
+
+  it('should dispatch init action when rendered', async () => {
+    const {store} = await renderAppComponent(ShellComponent);
+
+    expect(store.dispatchedActions).toContainEqual(SharedActions.initApp());
   })
 
   async function clickMenuButton(fixture: ComponentFixture<ShellComponent>) {

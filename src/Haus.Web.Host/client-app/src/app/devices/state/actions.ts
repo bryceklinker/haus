@@ -1,6 +1,5 @@
 import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
-import {DeviceModel} from "../models";
-import {ListResult} from "../../shared/models";
+import {DeviceModel, DeviceType, ListResult} from "../../shared/models";
 
 export const DevicesActions = {
   loadDevices: createAsyncActionSet(
@@ -45,7 +44,7 @@ export const DeviceTypesActions = {
   loadDeviceTypes: createAsyncActionSet(
     '[Device Types] Load Device Types',
     () => ({payload: 'ignore'}),
-    (result: ListResult<string>) => ({payload: result.items}),
+    (result: ListResult<DeviceType>) => ({payload: result.items}),
     (err: any) => ({payload: err})
   )
 }

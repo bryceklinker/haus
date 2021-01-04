@@ -8,6 +8,7 @@ COVERAGE_FILE_PATH="${WORKING_DIRECTORY}/coverage.json"
 REPORT_COVERAGE_FILE_PATH="${WORKING_DIRECTORY}/coverage.cobertura.xml"
 IS_RELEASE=${IS_RELEASE:-false}
 
+UTILITIES_DIRECTORY="${WORKING_DIRECTORY}/src/Haus.Utilities"
 FRONT_END_DIRECTORY="${WORKING_DIRECTORY}/src/Haus.Web.Host/client-app"
 WEB_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Web.Host/Haus.Web.Host.csproj"
 ZIGBEE_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Zigbee.Host/Haus.Zigbee.Host.csproj"
@@ -26,6 +27,12 @@ function run_dotnet_test() {
     --format cobertura \
     --format json \
     --exclude "[Haus.Testing.*]*"
+}
+
+function generate_typescript_models() {
+  pushd "${UTILITIES_DIRECTORY}" || exit
+    dotnet run typescript generate-models
+  popd
 }
 
 function run_tests() {

@@ -1,4 +1,4 @@
 export enum LightingState {
-  On = 'On',
-  Off = 'Off',
+	On = 'On',
+	Off = 'Off',
 }

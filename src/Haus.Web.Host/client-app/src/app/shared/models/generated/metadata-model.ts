@@ -1,4 +1,6 @@
+
+
 export interface MetadataModel {
-  key: string;
-  value: string;
+	key: string;
+	value: string;
 }

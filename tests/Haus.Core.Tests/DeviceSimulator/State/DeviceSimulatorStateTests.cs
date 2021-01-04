@@ -11,7 +11,7 @@ namespace Haus.Core.Tests.DeviceSimulator.State
         [Fact]
         public void WhenSimulatedDeviceIsAddedThenStateHasSimulatedDevice()
         {
-            var entity = SimulatedDeviceEntity.Create(new CreateSimulatedDeviceModel());
+            var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel());
             
             var state = DeviceSimulatorState.Initial.AddSimulatedDevice(entity);
 
@@ -21,13 +21,23 @@ namespace Haus.Core.Tests.DeviceSimulator.State
         [Fact]
         public void WhenResetThenReturnsInitialState()
         {
-            var entity = SimulatedDeviceEntity.Create(new CreateSimulatedDeviceModel());
+            var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel());
 
             var state = DeviceSimulatorState.Initial
                 .AddSimulatedDevice(entity)
                 .Reset();
 
             state.Should().Be(DeviceSimulatorState.Initial);
+        }
+
+        [Fact]
+        public void WhenConvertedToModelThenDevicesAreInModel()
+        {
+            var model = DeviceSimulatorState.Initial
+                .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel()))
+                .ToModel();
+
+            model.Devices.Should().HaveCount(1);
         }
     }
 }

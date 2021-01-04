@@ -1,3 +1,4 @@
+using System;
 using FluentAssertions;
 using Haus.Core.Common.Entities;
 using Haus.Core.DeviceSimulator.Entities;
@@ -13,7 +14,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
         [Fact]
         public void WhenCreatedThenSimulatedMetadataIsAdded()
         {
-            var model = new CreateSimulatedDeviceModel(DeviceType.Light);
+            var model = new SimulatedDeviceModel(DeviceType: DeviceType.Light);
 
             var entity = SimulatedDeviceEntity.Create(model);
 
@@ -25,7 +26,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
         [Fact]
         public void WhenCreatedWithMetadataThenMetadataIsMappedToSimulatedDevice()
         {
-            var model = new CreateSimulatedDeviceModel(metadata: new []{new MetadataModel("one", "three")});
+            var model = new SimulatedDeviceModel(Metadata: new []{new MetadataModel("one", "three")});
 
             var entity = SimulatedDeviceEntity.Create(model);
 
@@ -35,13 +36,29 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
         [Fact]
         public void WhenTurnedIntoDeviceDiscoveredThenDeviceDiscoveredIsPopulatedFromSimulatedDevice()
         {
-            var entity = SimulatedDeviceEntity.Create(new CreateSimulatedDeviceModel(DeviceType.Light));
+            var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel(DeviceType: DeviceType.Light));
 
             var model = entity.ToDeviceDiscoveredModel();
 
             model.Id.Should().Be(entity.Id);
             model.DeviceType.Should().Be(entity.DeviceType);
             model.Metadata.Should().Contain(m => m.Key == "simulated" && m.Value == "true");
+        }
+
+        [Fact]
+        public void WhenConvertedToModelThenReturnsSimulatedDeviceModel()
+        {
+            var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel($"{Guid.NewGuid()}", DeviceType.Light, new []
+            {
+                new MetadataModel("one", "three")
+            }));
+
+            var model = entity.ToModel();
+
+            model.Id.Should().Be(entity.Id);
+            model.DeviceType.Should().Be(DeviceType.Light);
+            model.Metadata.Should().HaveCount(2)
+                .And.ContainEquivalentOf(new MetadataModel("one", "three"));
         }
     }
 }

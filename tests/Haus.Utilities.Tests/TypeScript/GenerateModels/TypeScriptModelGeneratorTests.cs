@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Haus.Core.Models;
 using Haus.Utilities.TypeScript.GenerateModels;
 using Xunit;
 
@@ -174,13 +175,27 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels
         }
 
         [Fact]
-        public void WhenDerivedTypesWouldShareTheSameFileNameThenFileNameOfSecondTypeIsChanged()
+        public void WhenTypeIsMarkedToBeSkippedThenTypeIsNotGenerated()
         {
-            _generator.Generate(typeof(SimpleModel<>), _context);
+            _generator.Generate(typeof(Skippable), _context);
 
-            _context.GetAll().Should().HaveCount(2);
-            var model = _context.GetModelForType(typeof(SimpleModel<>));
-            model.FileName.Should().NotBe("simple-model.ts");
+            _context.GetAll().Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WhenTypeIsAttributeThenSkipped()
+        {
+            _generator.Generate(typeof(SkipGenerationAttribute), _context);
+
+            _context.GetAll().Should().BeEmpty();
+        }
+
+        [Fact]
+        public void WhenTypeContainsPropertyWithPrimitiveArrayThenArrayIsNotGenerated()
+        {
+            _generator.Generate(typeof(ModelWithPrimitiveArray), _context);
+
+            _context.GetAll().Should().HaveCount(1);
         }
     }
 
@@ -234,8 +249,14 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels
         public string Stuff { get; set; }
     }
 
-    public class SimpleModel<T> : SimpleModel
+    [SkipGeneration]
+    public class Skippable
     {
-        public T Payload { get; set; }
+        
+    }
+
+    public class ModelWithPrimitiveArray
+    {
+        public long[] Ids { get; set; }
     }
 }

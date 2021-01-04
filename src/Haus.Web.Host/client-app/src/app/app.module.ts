@@ -4,6 +4,8 @@ import {CommonModule} from "@angular/common";
 import {BrowserModule} from "@angular/platform-browser";
 import {HTTP_INTERCEPTORS, HttpBackend, HttpClientModule} from "@angular/common/http";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {StoreModule} from "@ngrx/store";
+import {EffectsModule} from "@ngrx/effects";
 
 import {AppRoutingModule} from './app-routing.module';
 import {SharedModule} from "./shared/shared.module";
@@ -11,11 +13,11 @@ import {SHELL_COMPONENTS} from "./shell/components";
 import {SettingsService} from "./shared/settings";
 import {ShellComponent} from "./shell/components/shell/shell.component";
 import {SHELL_PROVIDERS} from "./shell/services";
-import {StoreModule} from "@ngrx/store";
 import {AppState} from "./app.state";
-import {EffectsModule} from "@ngrx/effects";
 import {appReducerMap} from "./app-reducer-map";
 import {APP_EFFECTS} from "./app-effects";
+import {StoreDevtools, StoreDevtoolsModule} from "@ngrx/store-devtools";
+import {environment} from "../environments/environment";
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import {APP_EFFECTS} from "./app-effects";
     HttpClientModule,
     SharedModule,
     StoreModule.forRoot<AppState>(appReducerMap),
-    EffectsModule.forRoot(APP_EFFECTS)
+    EffectsModule.forRoot(APP_EFFECTS),
+    ...(environment.production ? [] : [StoreDevtoolsModule.instrument()])
   ],
   bootstrap: [ShellComponent],
   providers: [

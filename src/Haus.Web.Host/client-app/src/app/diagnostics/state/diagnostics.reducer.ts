@@ -1,15 +1,15 @@
 import {createEntityAdapter} from "@ngrx/entity";
-import {DiagnosticsMessageModel} from "../models";
 import {createComparer, SortDirection} from "../../shared/sort-array-by";
 import {DiagnosticsState} from "./diagnostics.state";
 import {Action, createReducer, createSelector, on} from "@ngrx/store";
 import {AppState} from "../../app.state";
 import {DiagnosticsActions} from "./actions";
 import {selectAllowDevicesToBeDiscovered} from "../../devices/state";
+import {UiMqttDiagnosticsMessageModel} from "../../shared/models";
 
-const adapter = createEntityAdapter<DiagnosticsMessageModel>({
+const adapter = createEntityAdapter<UiMqttDiagnosticsMessageModel>({
   selectId: msg => msg.id,
-  sortComparer: createComparer<DiagnosticsMessageModel>(d => d.timestamp, SortDirection.Descending)
+  sortComparer: createComparer<UiMqttDiagnosticsMessageModel>(d => d.timestamp, SortDirection.Descending)
 });
 
 const initialState: DiagnosticsState = adapter.getInitialState({

@@ -1,11 +1,12 @@
 import {Component} from "@angular/core";
-import {DeviceModel} from "../../models";
 import {Observable} from "rxjs";
-import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
-import {selectDeviceById} from "../../state";
 import {ActivatedRoute} from "@angular/router";
 import {map, mergeMap} from "rxjs/operators";
+
+import {AppState} from "../../../app.state";
+import {selectDeviceById} from "../../state";
+import {DeviceModel} from "../../../shared/models";
 
 @Component({
   selector: 'device-detail-root',

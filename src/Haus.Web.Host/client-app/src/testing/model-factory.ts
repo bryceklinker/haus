@@ -1,21 +1,28 @@
 import {v4 as uuid} from 'uuid';
-import {LightingColorModel, LightingModel, LightingState, ListResult, MetadataModel} from "../app/shared/models";
-import {DiagnosticsMessageModel} from "../app/diagnostics/models";
-import {DeviceModel} from "../app/devices/models";
-import {RoomModel} from "../app/rooms/models";
-import {SimulatedDeviceModel} from "../app/device-simulator/models";
-import {LightingConstraintsModel} from "../app/shared/models/lighting-constraints.model";
+import {
+  DeviceModel,
+  DeviceType,
+  LightingColorModel,
+  LightingConstraintsModel,
+  LightingModel,
+  LightingState,
+  ListResult,
+  MetadataModel,
+  RoomModel,
+  SimulatedDeviceModel,
+  UiMqttDiagnosticsMessageModel
+} from "../app/shared/models";
 
 let id = 0;
 
-function createMqttDiagnosticsMessage(model: Partial<DiagnosticsMessageModel> = {}): DiagnosticsMessageModel {
+function createMqttDiagnosticsMessage(model: Partial<UiMqttDiagnosticsMessageModel> = {}): UiMqttDiagnosticsMessageModel {
   return {
     id: model.id || uuid(),
     topic: model.topic || uuid(),
-    payload: model.payload || uuid(),
+    payload: model.payload || <any>uuid(),
     timestamp: model.timestamp || new Date().toISOString(),
-    replayError: model.replayError,
-    isReplaying: model.isReplaying
+    replayError: model.replayError || null,
+    isReplaying: model.isReplaying || false
   };
 }
 
@@ -25,7 +32,7 @@ function createDeviceModel(model: Partial<DeviceModel> = {}): DeviceModel {
     name: model.name || uuid(),
     externalId: model.externalId || uuid(),
     metadata: model.metadata || [],
-    deviceType: model.deviceType || 'Unknown',
+    deviceType: model.deviceType || DeviceType.Unknown,
     roomId: model.roomId || undefined
   }
 }
@@ -47,7 +54,7 @@ function createRoomModel(model: Partial<RoomModel> = {}): RoomModel {
 
 function createSimulatedDevice(model: Partial<SimulatedDeviceModel> = {}): SimulatedDeviceModel {
   return {
-    deviceType: model.deviceType || 'Unknown',
+    deviceType: model.deviceType || DeviceType.Unknown,
     id: model.id || uuid(),
     metadata: [
       ...(model.metadata || []),

@@ -1,7 +1,7 @@
 import {DeviceSimulatorState} from "./device-simulator.state";
 import {createAction} from "@ngrx/store";
 import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
-import {CreateSimulatedDeviceModel} from "../models";
+import {SimulatedDeviceModel} from "../../shared/models";
 
 export const DeviceSimulatorActions = {
   start: createAction('[Device Simulator] Start'),
@@ -12,7 +12,7 @@ export const DeviceSimulatorActions = {
 
   addSimulatedDevice: createAsyncActionSet(
     '[Device Simulator] Add Simulated Device',
-    (model: CreateSimulatedDeviceModel) => ({payload: model}),
+    (model: Partial<SimulatedDeviceModel>) => ({payload: model}),
     () => ({payload: 'ignore'}),
     (err: any) => ({payload: err})
   )

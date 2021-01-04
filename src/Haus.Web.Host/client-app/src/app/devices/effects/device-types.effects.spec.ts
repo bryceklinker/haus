@@ -7,6 +7,7 @@ import {
 } from "../../../testing";
 import {DeviceTypesEffects} from "./device-types.effects";
 import {DeviceTypesActions} from "../state";
+import {DeviceType} from "../../shared/models";
 
 describe('DeviceTypesEffects', () => {
   let actions$: TestingActionsSubject;
@@ -17,7 +18,7 @@ describe('DeviceTypesEffects', () => {
   })
 
   it('should get device types from api when load device types requested', async () => {
-    const expected = ['one', 'two', 'three'];
+    const expected = [DeviceType.Light, DeviceType.LightSensor, DeviceType.MotionSensor];
     setupGetAllDeviceTypes(expected);
 
     actions$.next(DeviceTypesActions.loadDeviceTypes.request());

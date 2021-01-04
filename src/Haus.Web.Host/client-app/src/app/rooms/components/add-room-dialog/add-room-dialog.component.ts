@@ -1,14 +1,14 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {FormBuilder, Validators} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
-import {Observable, Subscription} from "rxjs";
+import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {Store} from "@ngrx/store";
+import {Actions, ofType} from "@ngrx/effects";
 
 import {AppState} from "../../../app.state";
 import {RoomsActions} from "../../state";
 import {selectIsLoading} from "../../../shared/loading";
-import {Actions, ofType} from "@ngrx/effects";
 import {DestroyableSubject} from "../../../shared/destroyable-subject";
 
 @Component({

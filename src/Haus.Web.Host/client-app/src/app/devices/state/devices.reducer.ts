@@ -1,10 +1,11 @@
 import {createEntityAdapter} from "@ngrx/entity";
 import {Action, createReducer, createSelector, on} from "@ngrx/store";
-import {DeviceModel} from "../models";
 import {createComparer} from "../../shared/sort-array-by";
 import {DevicesState} from "./devices.state";
 import {DevicesActions} from "./actions";
 import {AppState} from "../../app.state";
+import {DeviceModel} from "../../shared/models";
+import {EventsActions} from "../../shared/events";
 
 const adapter = createEntityAdapter<DeviceModel>({
   selectId: device => device.id,
@@ -16,8 +17,20 @@ const initialState: DevicesState = adapter.getInitialState({
 });
 const reducer = createReducer(initialState,
   on(DevicesActions.loadDevices.success, (state, {payload}) => adapter.upsertMany(payload.items, state)),
-  on(DevicesActions.startDiscovery.success, (state) => ({...state, allowDiscovery: true})),
-  on(DevicesActions.stopDiscovery.success, (state) => ({...state, allowDiscovery: false})),
+  on(DevicesActions.startDiscovery.success, EventsActions.discoveryStarted, (state) => ({
+    ...state,
+    allowDiscovery: true
+  })),
+  on(DevicesActions.stopDiscovery.success, EventsActions.discoveryStopped, (state) => ({
+    ...state,
+    allowDiscovery: false
+  })),
+  on(EventsActions.deviceCreated, EventsActions.deviceUpdated, (state, {payload}) => adapter.upsertOne(payload.device, state)),
+  on(EventsActions.devicesAssignedToRoom, (state, {payload}) => adapter.updateMany(
+    payload.deviceIds.map(id => ({id, changes: {roomId: payload.roomId}})),
+    state
+    )
+  )
 );
 
 export function devicesReducer(state: DevicesState | undefined, action: Action) {

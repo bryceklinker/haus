@@ -19,7 +19,7 @@ namespace Haus.Core.Tests.DeviceSimulator.State
         [Fact]
         public void WhenDeviceIsAddedThenStateIsUpdatedToHaveDevice()
         {
-            var device = SimulatedDeviceEntity.Create(new CreateSimulatedDeviceModel());
+            var device = SimulatedDeviceEntity.Create(new SimulatedDeviceModel());
 
             var store = new DeviceSimulatorStore();
             store.Publish(store.Current.AddSimulatedDevice(device));

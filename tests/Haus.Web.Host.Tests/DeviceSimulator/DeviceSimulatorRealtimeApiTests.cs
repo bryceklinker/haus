@@ -29,10 +29,10 @@ namespace Haus.Web.Host.Tests.DeviceSimulator
             
             var hub = await _factory.CreateHubConnection("device-simulator");
             
-            DeviceSimulatorState state = null;
-            hub.On<DeviceSimulatorState>("OnState", s => state = s);
+            DeviceSimulatorStateModel state = null;
+            hub.On<DeviceSimulatorStateModel>("OnState", s => state = s);
 
-            await _client.AddSimulatedDeviceAsync(new CreateSimulatedDeviceModel());
+            await _client.AddSimulatedDeviceAsync(new SimulatedDeviceModel());
             
             Eventually.Assert(() =>
             {

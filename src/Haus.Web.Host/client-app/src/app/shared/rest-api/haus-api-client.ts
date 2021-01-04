@@ -4,13 +4,17 @@ import {map, tap} from "rxjs/operators";
 import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
 
-import {LightingModel, ListResult} from "../models";
-import {CreateRoomModel, RoomModel} from "../../rooms/models";
-import {DeviceModel} from "../../devices/models";
-import {DiagnosticsMessageModel} from "../../diagnostics/models";
+import {
+  LightingModel,
+  ListResult,
+  RoomModel,
+  DeviceModel,
+  MqttDiagnosticsMessageModel,
+  SimulatedDeviceModel,
+  DeviceType
+} from "../models";
 import {HttpMethod} from "./http-method";
 import {DestroyableSubject} from "../destroyable-subject";
-import {CreateSimulatedDeviceModel} from "../../device-simulator/models";
 
 @Injectable({
   providedIn: 'root'
@@ -35,8 +39,8 @@ export class HausApiClient implements OnDestroy {
     return this.execute<ListResult<DeviceModel>>(HttpMethod.GET, '/api/devices');
   }
 
-  getDeviceTypes(): Observable<ListResult<string>> {
-    return this.execute<ListResult<string>>(HttpMethod.GET, '/api/device-types');
+  getDeviceTypes(): Observable<ListResult<DeviceType>> {
+    return this.execute<ListResult<DeviceType>>(HttpMethod.GET, '/api/device-types');
   }
 
   turnDeviceOff(deviceId: number): Observable<void> {
@@ -63,7 +67,7 @@ export class HausApiClient implements OnDestroy {
     return this.execute<ListResult<RoomModel>>(HttpMethod.GET, '/api/rooms');
   }
 
-  addRoom(room: CreateRoomModel): Observable<RoomModel> {
+  addRoom(room: Partial<RoomModel>): Observable<RoomModel> {
     return this.execute<RoomModel>(HttpMethod.POST, '/api/rooms', room);
   }
 
@@ -79,11 +83,11 @@ export class HausApiClient implements OnDestroy {
     return this.execute<ListResult<DeviceModel>>(HttpMethod.GET, `/api/rooms/${roomId}/devices`)
   }
 
-  replayMessage(message: DiagnosticsMessageModel): Observable<void> {
+  replayMessage(message: MqttDiagnosticsMessageModel): Observable<void> {
     return this.execute(HttpMethod.POST, '/api/diagnostics/replay', message);
   }
 
-  addSimulatedDevice(model: CreateSimulatedDeviceModel): Observable<void> {
+  addSimulatedDevice(model: Partial<SimulatedDeviceModel>): Observable<void> {
     return this.execute(HttpMethod.POST, '/api/device-simulator/devices', model);
   }
 

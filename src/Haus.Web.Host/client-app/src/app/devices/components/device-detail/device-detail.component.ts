@@ -1,6 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {DeviceModel} from "../../models";
-import {MetadataModel} from "../../../shared/models";
+import {DeviceModel, MetadataModel} from "../../../shared/models";
 
 @Component({
   selector: 'device-detail',

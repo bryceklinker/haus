@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {DeviceModel} from "../../models";
+import {DeviceModel} from "../../../shared/models";
 
 @Component({
   selector: 'devices-list',

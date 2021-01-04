@@ -1,9 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {Observable} from "rxjs";
-import {DeviceModel} from "../../models";
 import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
 import {DevicesActions, selectAllDevices} from "../../state";
+import {DeviceModel} from "../../../shared/models";
 
 @Component({
   selector: 'devices-root',

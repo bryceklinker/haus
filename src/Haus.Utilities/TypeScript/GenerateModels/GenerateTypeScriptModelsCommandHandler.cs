@@ -41,7 +41,11 @@ namespace Haus.Utilities.TypeScript.GenerateModels
 
         private static void WriteAllModelsToModelsDirectory(TypeScriptGeneratorContext context)
         {
-            if (!Directory.Exists(ModelsDirectory)) Directory.CreateDirectory(ModelsDirectory);
+            if (!Directory.Exists(ModelsDirectory))
+            {
+                Directory.Delete(ModelsDirectory, true);
+                Directory.CreateDirectory(ModelsDirectory);
+            }
             
             var models = context.GetAll();
             var barrel = context.GetBarrel();

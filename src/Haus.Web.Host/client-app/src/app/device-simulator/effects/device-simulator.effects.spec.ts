@@ -1,5 +1,8 @@
 import {
-  createAppTestingService, eventually, ModelFactory, setupAddSimulatedDevice,
+  createAppTestingService,
+  eventually,
+  ModelFactory,
+  setupAddSimulatedDevice,
   TestingActionsSubject,
   TestingSignalrHubConnection,
   TestingSignalrHubConnectionFactory
@@ -8,7 +11,7 @@ import {DeviceSimulatorEffects} from "./device-simulator.effects";
 import {TestBed} from "@angular/core/testing";
 import {KNOWN_HUB_NAMES, SignalrHubConnectionFactory} from "../../shared/signalr";
 import {DeviceSimulatorActions, DeviceSimulatorState} from "../state";
-import {CreateSimulatedDeviceModel} from "../models";
+import {DeviceType, SimulatedDeviceModel} from "../../shared/models";
 
 describe('DeviceSimulatorEffects', () => {
   let actions$: TestingActionsSubject;
@@ -61,8 +64,8 @@ describe('DeviceSimulatorEffects', () => {
   it('should add simulated device when add simulated device requested', async () => {
     setupAddSimulatedDevice();
 
-    const model: CreateSimulatedDeviceModel = {
-      deviceType: 'idk',
+    const model: Partial<SimulatedDeviceModel> = {
+      deviceType: DeviceType.Light,
       metadata: []
     };
     actions$.next(DeviceSimulatorActions.addSimulatedDevice.request(model));

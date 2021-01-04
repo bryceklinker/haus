@@ -142,7 +142,7 @@ namespace Haus.Api.Client
             return RoomsApiClient.TurnRoomOffAsync(roomId);
         }
 
-        public Task<HttpResponseMessage> AddSimulatedDeviceAsync(CreateSimulatedDeviceModel model)
+        public Task<HttpResponseMessage> AddSimulatedDeviceAsync(SimulatedDeviceModel model)
         {
             return DeviceSimulatorApiClient.AddSimulatedDeviceAsync(model);
         }
