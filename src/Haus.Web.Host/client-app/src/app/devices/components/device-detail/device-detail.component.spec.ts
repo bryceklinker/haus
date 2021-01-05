@@ -14,7 +14,7 @@ describe('DeviceDetailComponent', () => {
 
     expect(screen.getByTestId('device-name-field')).toHaveValue(device.name);
     expect(screen.getByTestId('device-external-id-field')).toHaveValue(device.externalId);
-    expect(screen.getByTestId('device-type-field')).toHaveValue('LightSensor, MotionSensor, TemperatureSensor');
+    expect(screen.getByTestId('device-type-field')).toHaveValue(DeviceType.MotionSensor);
   })
 
   it('should show not available when no device provided', async () => {
