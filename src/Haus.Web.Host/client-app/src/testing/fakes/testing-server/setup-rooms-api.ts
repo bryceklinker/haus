@@ -1,9 +1,8 @@
-import {RoomModel} from "../../../app/rooms/models";
 import {ModelFactory} from "../../model-factory";
 import {setupHttpGet, setupHttpPost} from "./setup-http";
 import {RequestOptions} from "./request-options";
-import {DeviceModel} from "../../../app/devices/models";
 import {HttpStatusCodes} from "../../../app/shared/rest-api";
+import {RoomModel} from "../../../app/shared/models";
 
 const BASE_URL = '/api/rooms'
 

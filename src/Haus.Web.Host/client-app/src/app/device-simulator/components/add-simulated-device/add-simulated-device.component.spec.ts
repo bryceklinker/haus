@@ -7,6 +7,7 @@ import {DeviceSimulatorActions} from "../../state";
 import {DeviceTypesActions} from "../../../devices/state";
 import {Action} from "@ngrx/store";
 import {MatSelectHarness} from "@angular/material/select/testing";
+import {DeviceType} from "../../../shared/models";
 
 describe('AddSimulatedDeviceComponent', () => {
   it('should request device types to be loaded', async () => {
@@ -22,12 +23,12 @@ describe('AddSimulatedDeviceComponent', () => {
   })
 
   it('should save simulated device using values from form', async () => {
-    const deviceTypes = ModelFactory.createListResult('one', 'two');
+    const deviceTypes = ModelFactory.createListResult(DeviceType.MotionSensor, DeviceType.Light);
     const {store, matHarness, detectChanges} = await renderAdd(DeviceTypesActions.loadDeviceTypes.success(deviceTypes));
 
     const select = await matHarness.getHarness(MatSelectHarness)
     await select.open();
-    await select.clickOptions({text: 'Two'});
+    await select.clickOptions({text: DeviceType.Light});
 
     userEvent.click(screen.getByTestId('add-metadata-btn'));
     detectChanges();
@@ -39,7 +40,7 @@ describe('AddSimulatedDeviceComponent', () => {
     userEvent.click(screen.getByTestId('save-simulated-device-btn'));
 
     expect(store.dispatchedActions).toContainEqual(DeviceSimulatorActions.addSimulatedDevice.request({
-      deviceType: 'two',
+      deviceType: DeviceType.Light,
       metadata: [
         {key: 'something', value: 'else'}
       ]

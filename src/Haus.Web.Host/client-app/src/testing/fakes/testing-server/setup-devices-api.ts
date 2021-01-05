@@ -1,7 +1,7 @@
-import {DeviceModel} from "../../../app/devices/models";
 import {RequestOptions} from "./request-options";
 import {setupHttpGet, setupHttpPost} from "./setup-http";
 import {ModelFactory} from "../../model-factory";
+import {DeviceModel} from "../../../app/shared/models";
 
 const BASE_URL = '/api/devices';
 

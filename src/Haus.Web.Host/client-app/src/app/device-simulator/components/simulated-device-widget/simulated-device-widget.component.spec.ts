@@ -2,11 +2,12 @@ import {ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DeviceSimulatorModule} from "../../device-simulator.module";
 import {SimulatedDeviceWidgetComponent} from "./simulated-device-widget.component";
 import {screen} from "@testing-library/dom";
+import {DeviceType} from "../../../shared/models";
 
 describe('SimulatedDeviceWidgetComponent', () => {
 
   it('should show device information', async () => {
-    const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: 'LightSensor'});
+    const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.LightSensor});
 
     const {container} = await renderWidget({simulatedDevice});
 

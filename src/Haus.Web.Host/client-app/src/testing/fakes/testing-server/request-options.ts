@@ -1,4 +1,4 @@
-import {HttpStatusCodes} from "../../../app/shared/rest-api/http-status-codes";
+import {HttpStatusCodes} from "../../../app/shared/rest-api";
 
 export interface RequestOptions {
   status?: HttpStatusCodes,

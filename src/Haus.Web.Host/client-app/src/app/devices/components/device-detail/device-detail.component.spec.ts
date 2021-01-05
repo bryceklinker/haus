@@ -2,12 +2,12 @@ import {screen} from "@testing-library/dom";
 import {ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DeviceDetailComponent} from "./device-detail.component";
 import {DevicesModule} from "../../devices.module";
-import {DeviceModel} from "../../models";
+import {DeviceModel, DeviceType} from "../../../shared/models";
 
 describe('DeviceDetailComponent', () => {
   it('should show device information', async () => {
     const device = ModelFactory.createDeviceModel({
-      deviceType: 'LightSensor, MotionSensor, TemperatureSensor'
+      deviceType: DeviceType.MotionSensor
     });
 
     await renderDeviceDetail(device);

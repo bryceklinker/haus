@@ -5,7 +5,7 @@ import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
 import {RoomDetailComponent} from './room-detail.component';
 import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {RoomsModule} from "../../rooms.module";
-import {LightingState, RoomLightingChangedEvent, RoomModel} from "../../../shared/models";
+import {DeviceType, LightingState, RoomLightingChangedEvent, RoomModel} from "../../../shared/models";
 
 describe('RoomDetailComponent', () => {
   it('should show room name', async () => {
@@ -29,7 +29,7 @@ describe('RoomDetailComponent', () => {
 
   it('should show each device\'s info', async () => {
     const devices = [
-      ModelFactory.createDeviceModel({name: 'bob', deviceType: 'Light'})
+      ModelFactory.createDeviceModel({name: 'bob', deviceType: DeviceType.Light})
     ];
 
     const {container} = await renderComponent({devices});
