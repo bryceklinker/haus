@@ -7,4 +7,9 @@ mat-card {
 
 mat-card {
   flex-direction: column;
+
+  .mat-fab {
+    position: relative;
+    float: right;
+  }
 }

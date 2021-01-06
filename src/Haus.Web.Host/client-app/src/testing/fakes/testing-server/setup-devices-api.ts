@@ -9,18 +9,6 @@ export function setupGetAllDevices(devices: Array<DeviceModel> = [], options?: R
   setupHttpGet(BASE_URL, ModelFactory.createListResult(...devices), options);
 }
 
-export function setupDevicesStartDiscovery(options?: RequestOptions) {
-  setupHttpPost(`${BASE_URL}/start-discovery`, null, options);
-}
-
-export function setupDevicesStopDiscovery(options?: RequestOptions) {
-  setupHttpPost(`${BASE_URL}/stop-discovery`, null, options);
-}
-
-export function setupDevicesSyncDiscovery(options?: RequestOptions) {
-  setupHttpPost(`${BASE_URL}/sync-discovery`, null, options);
-}
-
 export function setupDeviceTurnOff(deviceId: string | number, options?: RequestOptions) {
   setupHttpPost(`${BASE_URL}/${deviceId}/turn-off`, null, options);
 }

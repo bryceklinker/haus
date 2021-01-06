@@ -2,6 +2,8 @@ import {v4 as uuid} from 'uuid';
 import {
   DeviceModel,
   DeviceType,
+  DiscoveryModel,
+  DiscoveryState,
   LightingColorModel,
   LightingConstraintsModel,
   LightingModel,
@@ -94,6 +96,12 @@ function createLighting(model: Partial<LightingModel> = {}): LightingModel {
   }
 }
 
+function createDiscovery(model: Partial<DiscoveryModel> = {}): DiscoveryModel {
+  return {
+    state: model.state || DiscoveryState.Disabled
+  };
+}
+
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
@@ -103,5 +111,6 @@ export const ModelFactory = {
   createMetadata,
   createLightingColor,
   createLightingConstraints,
-  createLighting
+  createLighting,
+  createDiscovery
 };

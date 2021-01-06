@@ -10,6 +10,7 @@ import {
 import {DiagnosticsModule} from "../../diagnostics.module";
 import {DiagnosticsRootComponent} from "./diagnostics-root.component";
 import {DiagnosticsActions} from "../../state";
+import {DiscoveryActions} from "../../../shared/discovery";
 
 describe('DiagnosticsRootComponent', () => {
   it('should start connection to diagnostics when rendered', async () => {
@@ -47,15 +48,15 @@ describe('DiagnosticsRootComponent', () => {
 
     userEvent.click(screen.getByTestId('start-discovery-btn'));
 
-    expect(store.dispatchedActions).toContainEqual(DiagnosticsActions.startDiscovery.request());
+    expect(store.dispatchedActions).toContainEqual(DiscoveryActions.startDiscovery.request());
   })
 
   it('should stop discovery', async () => {
-    const {store} = await renderRoot(DiagnosticsActions.startDiscovery.success());
+    const {store} = await renderRoot(DiscoveryActions.startDiscovery.success());
 
     userEvent.click(screen.getByTestId('stop-discovery-btn'));
 
-    expect(store.dispatchedActions).toContainEqual(DiagnosticsActions.stopDiscovery.request());
+    expect(store.dispatchedActions).toContainEqual(DiscoveryActions.stopDiscovery.request());
   })
 
   it('should sync discovery', async () => {
@@ -63,7 +64,7 @@ describe('DiagnosticsRootComponent', () => {
 
     userEvent.click(screen.getByTestId('sync-discovery-btn'));
 
-    expect(store.dispatchedActions).toContainEqual(DiagnosticsActions.syncDiscovery.request());
+    expect(store.dispatchedActions).toContainEqual(DiscoveryActions.syncDiscovery.request());
   })
 
   it('should replay message when message is replayed', async () => {

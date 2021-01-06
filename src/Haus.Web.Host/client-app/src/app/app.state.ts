@@ -4,6 +4,7 @@ import {RoomsState} from "./rooms/state";
 import {LoadingState} from "./shared/loading";
 import {DeviceSimulatorState} from "./device-simulator/state";
 import {DeviceTypesState} from "./devices/state/device-types.state";
+import {AppDiscoveryState} from "./shared/discovery";
 
 export interface AppState {
   devices: DevicesState;
@@ -12,4 +13,5 @@ export interface AppState {
   loading: LoadingState;
   deviceSimulator: DeviceSimulatorState;
   deviceTypes: DeviceTypesState;
+  discovery: AppDiscoveryState;
 }

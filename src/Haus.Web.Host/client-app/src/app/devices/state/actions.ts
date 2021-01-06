@@ -1,4 +1,4 @@
-import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
+import {createAsyncActionSet} from "../../shared/actions";
 import {DeviceModel, DeviceType, ListResult} from "../../shared/models";
 
 export const DevicesActions = {
@@ -19,24 +19,6 @@ export const DevicesActions = {
     (id: number) => ({payload: id}),
     (id: number) => ({payload: id}),
     (id: number, err: any) => ({payload: {error: err, id}})
-  ),
-  startDiscovery: createAsyncActionSet(
-    '[Devices] Start Discovery',
-    () => ({payload: 'ignore'}),
-    () => ({payload: 'ignore'}),
-    (err: any) => ({payload: err})
-  ),
-  stopDiscovery: createAsyncActionSet(
-    '[Devices] Stop Discovery',
-    () => ({payload: 'ignore'}),
-    () => ({payload: 'ignore'}),
-    (err: any) => ({payload: err})
-  ),
-  syncDiscovery: createAsyncActionSet(
-    '[Devices] Sync Discovery',
-    () => ({payload: 'ignore'}),
-    () => ({payload: 'ignore'}),
-    (err: any) => ({payload: err})
   )
 };
 

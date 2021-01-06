@@ -3,9 +3,6 @@ import {
   createAppTestingService,
   eventually,
   ModelFactory,
-  setupDevicesStartDiscovery,
-  setupDevicesStopDiscovery,
-  setupDevicesSyncDiscovery,
   setupDeviceTurnOff,
   setupDeviceTurnOn,
   setupGetAllDevices,
@@ -52,36 +49,6 @@ describe('DevicesEffects', () => {
 
     await eventually(() => {
       expect(actions$.publishedActions).toContainEqual(DevicesActions.turnOnDevice.success(7));
-    })
-  })
-
-  it('should start discovery when start discovery is requested', async () => {
-    setupDevicesStartDiscovery();
-
-    actions$.next(DevicesActions.startDiscovery.request());
-
-    await eventually(() => {
-      expect(actions$.publishedActions).toContainEqual(DevicesActions.startDiscovery.success());
-    })
-  })
-
-  it('should stop discovery when stop discovery is requested', async () => {
-    setupDevicesStopDiscovery();
-
-    actions$.next(DevicesActions.stopDiscovery.request());
-
-    await eventually(() => {
-      expect(actions$.publishedActions).toContainEqual(DevicesActions.stopDiscovery.success());
-    })
-  })
-
-  it('should sync discovery when sync discovery is requested', async () => {
-    setupDevicesSyncDiscovery();
-
-    actions$.next(DevicesActions.syncDiscovery.request());
-
-    await eventually(() => {
-      expect(actions$.publishedActions).toContainEqual(DevicesActions.syncDiscovery.success());
     })
   })
 })

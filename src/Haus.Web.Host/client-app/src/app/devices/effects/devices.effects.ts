@@ -32,27 +32,6 @@ export class DevicesEffects {
     ))
   ))
 
-  startDiscovery$ = createEffect(() => this.actions$.pipe(
-    ofType(DevicesActions.startDiscovery.request),
-    mergeMap(() => this.api.startDiscovery().pipe(
-      map(() => DevicesActions.startDiscovery.success())
-    ))
-  ))
-
-  stopDiscovery$ = createEffect(() => this.actions$.pipe(
-    ofType(DevicesActions.stopDiscovery.request),
-    mergeMap(() => this.api.stopDiscovery().pipe(
-      map(() => DevicesActions.stopDiscovery.success())
-    ))
-  ))
-
-  syncDiscovery$ = createEffect(() => this.actions$.pipe(
-    ofType(DevicesActions.syncDiscovery.request),
-    mergeMap(() => this.api.syncDiscovery().pipe(
-      map(() => DevicesActions.syncDiscovery.success())
-    ))
-  ))
-
   constructor(private readonly actions$: Actions, private readonly api: HausApiClient) {
   }
 }

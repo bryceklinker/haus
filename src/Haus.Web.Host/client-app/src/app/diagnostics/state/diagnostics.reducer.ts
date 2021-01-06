@@ -4,7 +4,6 @@ import {DiagnosticsState} from "./diagnostics.state";
 import {Action, createReducer, createSelector, on} from "@ngrx/store";
 import {AppState} from "../../app.state";
 import {DiagnosticsActions} from "./actions";
-import {selectAllowDevicesToBeDiscovered} from "../../devices/state";
 import {UiMqttDiagnosticsMessageModel} from "../../shared/models";
 
 const adapter = createEntityAdapter<UiMqttDiagnosticsMessageModel>({
@@ -35,4 +34,3 @@ const selectDiagnosticsState = (state: AppState) => state.diagnostics;
 
 export const selectAllDiagnosticMessages = createSelector(selectDiagnosticsState, selectAll);
 export const selectIsDiagnosticsConnected = createSelector(selectDiagnosticsState, s => s.isConnected);
-export const selectAllowDiagnosticsDiscovery = selectAllowDevicesToBeDiscovered;

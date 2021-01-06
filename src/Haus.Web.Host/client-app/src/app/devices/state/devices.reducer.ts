@@ -13,19 +13,9 @@ const adapter = createEntityAdapter<DeviceModel>({
   sortComparer: createComparer<DeviceModel>(d => d.name)
 });
 
-const initialState: DevicesState = adapter.getInitialState({
-  allowDiscovery: false
-});
+const initialState: DevicesState = adapter.getInitialState();
 const reducer = createReducer(initialState,
   on(DevicesActions.loadDevices.success, (state, {payload}) => adapter.upsertMany(payload.items, state)),
-  on(DevicesActions.startDiscovery.success, EventsActions.discoveryStarted, (state) => ({
-    ...state,
-    allowDiscovery: true
-  })),
-  on(DevicesActions.stopDiscovery.success, EventsActions.discoveryStopped, (state) => ({
-    ...state,
-    allowDiscovery: false
-  })),
   on(EventsActions.deviceCreated, EventsActions.deviceUpdated, (state, {payload}) => adapter.upsertOne(payload.device, state)),
   on(RoomsActions.assignDevicesToRoom.success, EventsActions.devicesAssignedToRoom, (state, {payload}) => adapter.updateMany(
     payload.deviceIds.map(id => ({id, changes: {roomId: payload.roomId}})),
@@ -53,7 +43,6 @@ export const selectAllDevices = createSelector(selectDevicesState, selectAll);
 export const selectDeviceById = (id: string | null) => createSelector(
   selectDevicesState,
   (state) => id ? selectEntities(state)[id] : null);
-export const selectAllowDevicesToBeDiscovered = createSelector(selectDevicesState, s => s.allowDiscovery);
 export const selectAllDevicesByRoomId = (roomId: string | null) =>
   createSelector(selectDevicesState,
     (state) => roomId ? selectAll(state).filter(d => d.roomId === Number(roomId)) : [])

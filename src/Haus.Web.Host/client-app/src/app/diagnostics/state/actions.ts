@@ -1,6 +1,5 @@
 import {createAction} from "@ngrx/store";
-import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
-import {DevicesActions} from "../../devices/state";
+import {createAsyncActionSet} from "../../shared/actions";
 import {MqttDiagnosticsMessageModel, UiMqttDiagnosticsMessageModel} from "../../shared/models";
 
 export const DiagnosticsActions = {
@@ -15,9 +14,5 @@ export const DiagnosticsActions = {
     (msg: UiMqttDiagnosticsMessageModel) => ({payload: msg}),
     (msg: UiMqttDiagnosticsMessageModel) => ({payload: msg}),
     (msg: UiMqttDiagnosticsMessageModel, err: any) => ({payload: {message: msg, error: err}})
-  ),
-
-  startDiscovery: DevicesActions.startDiscovery,
-  stopDiscovery: DevicesActions.stopDiscovery,
-  syncDiscovery: DevicesActions.syncDiscovery,
+  )
 }

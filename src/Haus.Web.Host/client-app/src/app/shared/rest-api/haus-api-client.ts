@@ -11,7 +11,7 @@ import {
   DeviceModel,
   MqttDiagnosticsMessageModel,
   SimulatedDeviceModel,
-  DeviceType
+  DeviceType, DiscoveryModel
 } from "../models";
 import {HttpMethod} from "./http-method";
 import {DestroyableSubject} from "../destroyable-subject";
@@ -52,15 +52,19 @@ export class HausApiClient implements OnDestroy {
   }
 
   startDiscovery(): Observable<void> {
-    return this.execute(HttpMethod.POST, '/api/devices/start-discovery');
+    return this.execute(HttpMethod.POST, '/api/discovery/start');
   }
 
   stopDiscovery(): Observable<void> {
-    return this.execute(HttpMethod.POST, '/api/devices/stop-discovery');
+    return this.execute(HttpMethod.POST, '/api/discovery/stop');
   }
 
   syncDiscovery(): Observable<void> {
-    return this.execute(HttpMethod.POST, '/api/devices/sync-discovery');
+    return this.execute(HttpMethod.POST, '/api/discovery/sync');
+  }
+
+  getDiscovery(): Observable<DiscoveryModel> {
+    return this.execute<DiscoveryModel>(HttpMethod.GET, '/api/discovery/state');
   }
 
   getRooms(): Observable<ListResult<RoomModel>> {

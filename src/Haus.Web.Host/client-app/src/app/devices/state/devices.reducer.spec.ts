@@ -20,37 +20,6 @@ describe('devicesReducer', () => {
     expect(state.entities[devices.items[2].id]).toEqual(devices.items[2]);
   })
 
-  it('should allow discovery of devices', () => {
-    const state = generateStateFromActions(devicesReducer, DevicesActions.startDiscovery.success());
-
-    expect(state.allowDiscovery).toEqual(true);
-  })
-
-  it('should disable discovery of devices', () => {
-    const state = generateStateFromActions(devicesReducer,
-      DevicesActions.startDiscovery.success(),
-      DevicesActions.stopDiscovery.success());
-
-    expect(state.allowDiscovery).toEqual(false);
-  })
-
-  it('should allow discovery of devices when discovery started event received', () => {
-    const state = generateStateFromActions(devicesReducer,
-      EventsActions.discoveryStarted({})
-    );
-
-    expect(state.allowDiscovery).toEqual(true);
-  })
-
-  it('should disable discovery of devices when discovery stopped', () => {
-    const state = generateStateFromActions(devicesReducer,
-      EventsActions.discoveryStarted({}),
-      EventsActions.discoveryStopped({})
-    );
-
-    expect(state.allowDiscovery).toEqual(false);
-  })
-
   it('should add device when device created event received', () => {
     const device = ModelFactory.createDeviceModel();
 

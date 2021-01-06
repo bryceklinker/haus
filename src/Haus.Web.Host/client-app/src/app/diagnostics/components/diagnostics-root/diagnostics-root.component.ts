@@ -1,14 +1,15 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Observable} from "rxjs";
-import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
+
+import {AppState} from "../../../app.state";
 import {
   DiagnosticsActions,
   selectAllDiagnosticMessages,
-  selectAllowDiagnosticsDiscovery,
   selectIsDiagnosticsConnected
 } from "../../state";
-import {MqttDiagnosticsMessageModel, UiMqttDiagnosticsMessageModel} from "../../../shared/models";
+import {UiMqttDiagnosticsMessageModel} from "../../../shared/models";
+import {DiscoveryActions, selectIsDiscoveryAllowed} from "../../../shared/discovery";
 
 @Component({
   selector: 'diagnostics-root',
@@ -23,7 +24,7 @@ export class DiagnosticsRootComponent implements OnInit, OnDestroy {
   constructor(private readonly store: Store<AppState>) {
     this.messages$ = this.store.select(selectAllDiagnosticMessages);
     this.isConnected$ = this.store.select(selectIsDiagnosticsConnected);
-    this.allowDiscovery$ = this.store.select(selectAllowDiagnosticsDiscovery);
+    this.allowDiscovery$ = this.store.select(selectIsDiscoveryAllowed);
   }
 
   ngOnInit(): void {
@@ -35,15 +36,15 @@ export class DiagnosticsRootComponent implements OnInit, OnDestroy {
   }
 
   onStartDiscovery() {
-    this.store.dispatch(DiagnosticsActions.startDiscovery.request());
+    this.store.dispatch(DiscoveryActions.startDiscovery.request());
   }
 
   onStopDiscovery() {
-    this.store.dispatch(DiagnosticsActions.stopDiscovery.request());
+    this.store.dispatch(DiscoveryActions.stopDiscovery.request());
   }
 
   onSyncDiscovery() {
-    this.store.dispatch(DiagnosticsActions.syncDiscovery.request());
+    this.store.dispatch(DiscoveryActions.syncDiscovery.request());
   }
 
   onReplayMessage($event: UiMqttDiagnosticsMessageModel) {
