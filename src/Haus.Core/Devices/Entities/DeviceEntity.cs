@@ -7,7 +7,6 @@ using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
-using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Rooms.Entities;
@@ -19,14 +18,6 @@ namespace Haus.Core.Devices.Entities
 {
     public class DeviceEntity : Entity
     {
-        public string ExternalId { get; set; }
-        public string Name { get; set; }
-        public DeviceType DeviceType { get; set; } = DeviceType.Unknown;
-        public ICollection<DeviceMetadataEntity> Metadata { get; set; } = new List<DeviceMetadataEntity>();
-        public RoomEntity Room { get; set; }
-        public LightingEntity Lighting { get; set; } = LightingEntity.Default.Copy();
-        public bool IsLight => DeviceType == DeviceType.Light;
-
         public static readonly Expression<Func<DeviceEntity, DeviceModel>> ToModelExpression =
             d => new DeviceModel(
                 d.Id,
@@ -34,12 +25,59 @@ namespace Haus.Core.Devices.Entities
                 d.ExternalId,
                 d.Name,
                 d.DeviceType,
-                d.Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray()
+                d.Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray(),
+                new LightingModel(d.Lighting.State, d.Lighting.Level, d.Lighting.Temperature,
+                    new LightingColorModel(d.Lighting.Color.Red, d.Lighting.Color.Green, d.Lighting.Color.Blue),
+                    new LightingConstraintsModel(
+                        d.Lighting.Constraints.MinLevel, 
+                        d.Lighting.Constraints.MaxLevel,
+                        d.Lighting.Constraints.MinTemperature, 
+                        d.Lighting.Constraints.MaxTemperature)
+                )
             );
+
         private static readonly Lazy<Func<DeviceEntity, DeviceModel>> ToModelFunc = new(ToModelExpression.Compile);
 
+        public string ExternalId { get; set; }
+
+        public string Name { get; set; }
+
+        public DeviceType DeviceType { get; set; }
+
+        public ICollection<DeviceMetadataEntity> Metadata { get; set; }
+
+        public RoomEntity Room { get; set; }
+
+        public LightingEntity Lighting { get; set; }
+
+        public bool IsLight => DeviceType == DeviceType.Light;
+
+        public DeviceEntity()
+            : this(0, null, null)
+        {
+            
+        }
+
+        public DeviceEntity(
+            long id, 
+            string externalId, 
+            string name, 
+            DeviceType deviceType = DeviceType.Unknown, 
+            RoomEntity room = null, 
+            LightingEntity lighting = null, 
+            ICollection<DeviceMetadataEntity> metadata = null)
+        {
+            Id = id;
+            ExternalId = externalId ?? string.Empty;
+            Name = name ?? string.Empty;
+            DeviceType = deviceType;
+            Room = room;
+            Lighting = lighting ?? LightingEntity.Default.Copy();
+            Metadata = metadata ?? new List<DeviceMetadataEntity>();
+        }
+
         public DeviceModel ToModel() => ToModelFunc.Value(this);
-        
+
         public static DeviceEntity FromDiscoveredDevice(DeviceDiscoveredEvent @event)
         {
             var entity = new DeviceEntity
@@ -97,7 +135,7 @@ namespace Haus.Core.Devices.Entities
         {
             if (!IsLight)
                 throw new InvalidOperationException($"Device with id {Id} is not a light.");
-            
+
             Lighting = Lighting.ToDesiredLighting(desiredLighting);
             domainEventBus.Enqueue(new DeviceLightingChangedDomainEvent(this, Lighting));
         }
@@ -127,9 +165,9 @@ namespace Haus.Core.Devices.Entities
             builder.Property(d => d.DeviceType).IsRequired().HasConversion<string>();
 
             builder.Ignore(d => d.IsLight);
-            
+
             builder.OwnsOne(d => d.Lighting, LightingEntity.Configure);
-            
+
             builder.HasMany(d => d.Metadata)
                 .WithOne(m => m.Device);
         }

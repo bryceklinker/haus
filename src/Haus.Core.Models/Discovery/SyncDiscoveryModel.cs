@@ -1,7 +1,7 @@
 using Haus.Core.Models.Common;
 using Haus.Core.Models.ExternalMessages;
 
-namespace Haus.Core.Models.Devices.Discovery
+namespace Haus.Core.Models.Discovery
 {
     public record SyncDiscoveryModel : IHausCommandCreator<SyncDiscoveryModel>
     {

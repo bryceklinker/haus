@@ -3,8 +3,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Models.Devices;
-using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.Discovery;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
@@ -34,21 +34,6 @@ namespace Haus.Web.Host.Tests.Devices
                 var list = await client.GetDevicesAsync();
                 list.Items.Should()
                     .Contain(m => m.ExternalId == "my-new-id" && m.DeviceType == deviceType);
-            });
-        }
-
-        [Fact]
-        public async Task WhenExternalDevicesAreSyncedThenSyncExternalDevicesIsPublished()
-        {
-            HausCommand<SyncDiscoveryModel> command = null;
-            await _factory.SubscribeToHausCommandsAsync<SyncDiscoveryModel>(cmd => command = cmd);
-
-            var client = _factory.CreateAuthenticatedClient();
-            await client.SyncDevicesAsync();
-
-            Eventually.Assert(() =>
-            {
-                command.Type.Should().Be(SyncDiscoveryModel.Type);
             });
         }
 

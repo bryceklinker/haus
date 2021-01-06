@@ -55,6 +55,22 @@ describe('DeviceDetailComponent', () => {
     expect(container).toHaveTextContent('2342');
   })
 
+  it('should show lighting when device is a light', async () => {
+    const device = ModelFactory.createDeviceModel({deviceType: DeviceType.Light});
+
+    await renderDeviceDetail(device);
+
+    expect(screen.getByTestId('lighting')).toBeInTheDocument();
+  })
+
+  it('should hide lighting when device is not a light', async () => {
+    const device = ModelFactory.createDeviceModel({deviceType: DeviceType.MotionSensor});
+
+    await renderDeviceDetail(device);
+
+    expect(screen.queryByTestId('lighting')).not.toBeInTheDocument();
+  })
+
   function renderDeviceDetail(device?: DeviceModel) {
     return renderFeatureComponent(DeviceDetailComponent, {
       imports: [DevicesModule],

@@ -1,6 +1,7 @@
 using System.Linq;
 using FluentAssertions;
-using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices;
+using Haus.Core.Models.Discovery;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;

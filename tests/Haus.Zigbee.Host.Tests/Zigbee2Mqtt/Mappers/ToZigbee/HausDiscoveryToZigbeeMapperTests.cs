@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Text;
-using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Devices;
+using Haus.Core.Models.Discovery;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
 using Xunit;

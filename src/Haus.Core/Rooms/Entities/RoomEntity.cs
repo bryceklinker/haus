@@ -16,11 +16,6 @@ namespace Haus.Core.Rooms.Entities
 {
     public class RoomEntity : Entity
     {
-        public string Name { get; set; } = string.Empty;
-        public LightingEntity Lighting { get; set; } = LightingEntity.Default.Copy();
-        public ICollection<DeviceEntity> Devices { get; set; } = new List<DeviceEntity>();
-        public IEnumerable<DeviceEntity> Lights => Devices.Where(d => d.IsLight);
-
         public static readonly Expression<Func<RoomEntity, RoomModel>> ToModelExpression =
             r => new RoomModel(
                 r.Id,
@@ -35,6 +30,28 @@ namespace Haus.Core.Rooms.Entities
             );
 
         private static readonly Lazy<Func<RoomEntity, RoomModel>> ToModelFunc = new(ToModelExpression.Compile);
+
+        public string Name { get; set; }
+
+        public LightingEntity Lighting { get; set; }
+
+        public ICollection<DeviceEntity> Devices { get; set; }
+
+        public IEnumerable<DeviceEntity> Lights => Devices.Where(d => d.IsLight);
+
+        public RoomEntity()
+            : this(0, null)
+        {
+            
+        }
+
+        public RoomEntity(long id, string name, LightingEntity lighting = null, ICollection<DeviceEntity> devices = null)
+        {
+            Id = id;
+            Name = name ?? string.Empty;
+            Lighting = lighting ?? LightingEntity.Default.Copy();
+            Devices = devices ?? new List<DeviceEntity>();
+        }
         
         public RoomModel ToModel() => ToModelFunc.Value(this);
 

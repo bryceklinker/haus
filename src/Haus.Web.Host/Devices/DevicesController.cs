@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Haus.Core.Devices.Commands;
 using Haus.Core.Devices.Queries;
+using Haus.Core.Discovery.Commands;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Lighting;
@@ -52,24 +53,6 @@ namespace Haus.Web.Host.Devices
         public Task<IActionResult> Update([FromRoute] long id, [FromBody] DeviceModel model)
         {
             return CommandAsync(new UpdateDeviceCommand(model with { Id = id }));
-        }
-
-        [HttpPost("start-discovery")]
-        public Task<IActionResult> StartDiscovery()
-        {
-            return CommandAsync(new StartDiscoveryCommand());
-        }
-
-        [HttpPost("stop-discovery")]
-        public Task<IActionResult> StopDiscovery()
-        {
-            return CommandAsync(new StopDiscoveryCommand());
-        }
-
-        [HttpPost("sync-discovery")]
-        public Task<IActionResult> Sync()
-        {
-            return CommandAsync(new SyncDiscoveryCommand());
-        }
+        }        
     }
 }

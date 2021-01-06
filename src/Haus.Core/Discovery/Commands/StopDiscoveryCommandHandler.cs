@@ -1,35 +1,41 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Core.Common;
-using Haus.Core.Common.Commands;
 using Haus.Core.Common.Events;
-using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Common.Storage;
 using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.Discovery;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 using MediatR;
 
-namespace Haus.Core.Devices.Commands
+namespace Haus.Core.Discovery.Commands
 {
     public record StopDiscoveryCommand : ICommand;
 
     internal class StopDiscoveryCommandHandler : AsyncRequestHandler<StopDiscoveryCommand>,
         ICommandHandler<StopDiscoveryCommand>
     {
+        private readonly HausDbContext _context;
         private readonly IHausBus _hausBus;
 
-        public StopDiscoveryCommandHandler(IHausBus hausBus)
+        public StopDiscoveryCommandHandler(IHausBus hausBus, HausDbContext context)
         {
             _hausBus = hausBus;
+            _context = context;
         }
 
-        protected override Task Handle(StopDiscoveryCommand request, CancellationToken cancellationToken)
+        protected override async Task Handle(StopDiscoveryCommand request, CancellationToken cancellationToken)
         {
             var model = new StopDiscoveryModel();
-            return Task.WhenAll(
+            
+            var discovery = await _context.GetDiscoveryEntityAsync(cancellationToken).ConfigureAwait(false);
+            discovery.Stop();
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            
+            await Task.WhenAll(
                 _hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken),
                 _hausBus.PublishAsync(RoutableEvent.FromEvent(new DiscoveryStoppedEvent()), cancellationToken)
-            );
+            ).ConfigureAwait(false);
         }
     }
 }

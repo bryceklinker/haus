@@ -14,11 +14,13 @@ namespace Haus.Core.Lighting
         public byte Blue { get; set; }
 
         public LightingColorEntity()
-            : this(DefaultColorValue, DefaultColorValue, DefaultColorValue)
+            : this(DefaultColorValue)
         {
         }
 
-        private LightingColorEntity(byte red = DefaultColorValue, byte green = DefaultColorValue,
+        public LightingColorEntity(
+            byte red = DefaultColorValue, 
+            byte green = DefaultColorValue,
             byte blue = DefaultColorValue)
         {
             Red = red;

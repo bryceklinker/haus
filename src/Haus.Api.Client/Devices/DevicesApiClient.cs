@@ -15,9 +15,6 @@ namespace Haus.Api.Client.Devices
         Task<ListResult<DeviceType>> GetDeviceTypesAsync();
         Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null);
         Task UpdateDeviceAsync(long deviceId, DeviceModel model);
-        Task StartDiscoveryAsync();
-        Task StopDiscoveryAsync();
-        Task<HttpResponseMessage> SyncDevicesAsync();
         Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model);
         Task<HttpResponseMessage> TurnLightOffAsync(long deviceId);
         Task<HttpResponseMessage> TurnLightOnAsync(long deviceId);
@@ -29,6 +26,8 @@ namespace Haus.Api.Client.Devices
             : base(httpClient, options)
         {
         }
+
+        
 
         public Task<DeviceModel> GetDeviceAsync(long id)
         {
@@ -53,11 +52,6 @@ namespace Haus.Api.Client.Devices
             return PutAsJsonAsync($"devices/{deviceId}", model);
         }
 
-        public Task<HttpResponseMessage> SyncDevicesAsync()
-        {
-            return PostEmptyContentAsync("devices/sync-discovery");
-        }
-
         public Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model)
         {
             return PostAsJsonAsync($"devices/{deviceId}/lighting", model);
@@ -67,24 +61,10 @@ namespace Haus.Api.Client.Devices
         {
             return PostEmptyContentAsync($"devices/{deviceId}/turn-off");
         }
-        
+
         public Task<HttpResponseMessage> TurnLightOnAsync(long deviceId)
         {
             return PostEmptyContentAsync($"devices/{deviceId}/turn-on");
-        }
-
-        public async Task StartDiscoveryAsync()
-        {
-            var response = await PostEmptyContentAsync("devices/start-discovery")
-                .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-        }
-
-        public async Task StopDiscoveryAsync()
-        {
-            var response = await PostEmptyContentAsync("devices/stop-discovery")
-                .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
         }
     }
 }

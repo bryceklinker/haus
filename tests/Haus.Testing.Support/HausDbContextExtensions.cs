@@ -1,8 +1,10 @@
 using System;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Discovery.Entities;
 using Haus.Core.Lighting;
 using Haus.Core.Models.Devices;
+using Haus.Core.Models.Discovery;
 using Haus.Core.Rooms.Entities;
 
 namespace Haus.Testing.Support
@@ -52,6 +54,14 @@ namespace Haus.Testing.Support
 
             context.AddAndSave(constraints);
             return constraints;
+        }
+
+        public static DiscoveryEntity AddDiscovery(this HausDbContext context,
+            DiscoveryState state = DiscoveryState.Disabled)
+        {
+            var entity = new DiscoveryEntity(state: state);
+            context.AddAndSave(entity);
+            return entity;
         }
         
         private static void AddAndSave<T>(this HausDbContext context, T entity)

@@ -64,22 +64,6 @@ function dotnet_publish() {
     -p:PublishTrimmed=true \
     -p:PublishSingleFile=true \
     --self-contained true
-    
-  dotnet publish "${PROJECT_PATH}" \
-    --output "${OUTPUT_PATH}/osx-x64" \
-    --configuration "${CONFIGURATION}" \
-    --runtime "osx-x64" \
-    -p:PublishTrimmed=true \
-    -p:PublishSingleFile=true \
-    --self-contained true
-    
-  dotnet publish "${PROJECT_PATH}" \
-    --output "${OUTPUT_PATH}/win-x64" \
-    --configuration "${CONFIGURATION}" \
-    --runtime "win-x64" \
-    -p:PublishTrimmed=true \
-    -p:PublishSingleFile=true \
-    --self-contained true
 }
 
 function publish_app() {
@@ -87,8 +71,8 @@ function publish_app() {
     exit 0
   fi
   
-  dotnet_publish $WEB_HOST_PROJECT "${PUBLISH_DIRECTORY}/web_host"
-  dotnet_publish $ZIGBEE_HOST_PROJECT "${PUBLISH_DIRECTORY}/zigbee_host"
+  dotnet_publish "${WEB_HOST_PROJECT}" "${PUBLISH_DIRECTORY}/web_host"
+  dotnet_publish "${ZIGBEE_HOST_PROJECT}" "${PUBLISH_DIRECTORY}/zigbee_host"
 }
 
 function main() {

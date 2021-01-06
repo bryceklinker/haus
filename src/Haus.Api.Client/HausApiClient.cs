@@ -4,6 +4,7 @@ using Haus.Api.Client.Common;
 using Haus.Api.Client.Devices;
 using Haus.Api.Client.DeviceSimulator;
 using Haus.Api.Client.Diagnostics;
+using Haus.Api.Client.Discovery;
 using Haus.Api.Client.Lighting;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
@@ -11,6 +12,7 @@ using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Core.Models.Diagnostics;
+using Haus.Core.Models.Discovery;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Microsoft.Extensions.Options;
@@ -22,7 +24,8 @@ namespace Haus.Api.Client
         IDiagnosticsApiClient, 
         IRoomsApiClient,
         IDeviceSimulatorApiClient,
-        ILightingConstraintsApiClient
+        ILightingConstraintsApiClient,
+        IDiscoveryApiClient
     {
         
     }
@@ -35,11 +38,32 @@ namespace Haus.Api.Client
         private IRoomsApiClient RoomsApiClient => _factory.CreateRoomsClient();
         private IDeviceSimulatorApiClient DeviceSimulatorApiClient => _factory.CreateDeviceSimulatorClient();
         private ILightingConstraintsApiClient LightingConstraintsApiClient => _factory.CreateLightingApiClient();
+        private IDiscoveryApiClient DiscoveryApiClient => _factory.CreateDiscoveryClient();
         
         public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
             : base(httpClient, options)
         {
             _factory = factory;
+        }
+
+        public Task<DiscoveryModel> GetDiscoveryStateAsync()
+        {
+            return DiscoveryApiClient.GetDiscoveryStateAsync();
+        }
+
+        public Task<HttpResponseMessage> StartDiscoveryAsync()
+        {
+            return DiscoveryApiClient.StartDiscoveryAsync();
+        }
+
+        public Task<HttpResponseMessage> StopDiscoveryAsync()
+        {
+            return DiscoveryApiClient.StopDiscoveryAsync();
+        }
+
+        public Task<HttpResponseMessage> SyncDevicesAsync()
+        {
+            return DiscoveryApiClient.SyncDevicesAsync();
         }
 
         public Task<DeviceModel> GetDeviceAsync(long id)
@@ -50,21 +74,6 @@ namespace Haus.Api.Client
         public Task<ListResult<DeviceType>> GetDeviceTypesAsync()
         {
             return DeviceApiClient.GetDeviceTypesAsync();
-        }
-
-        public Task StartDiscoveryAsync()
-        {
-            return DeviceApiClient.StartDiscoveryAsync();
-        }
-
-        public Task StopDiscoveryAsync()
-        {
-            return DeviceApiClient.StopDiscoveryAsync();
-        }
-
-        public Task<HttpResponseMessage> SyncDevicesAsync()
-        {
-            return DeviceApiClient.SyncDevicesAsync();
         }
 
         public Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model)

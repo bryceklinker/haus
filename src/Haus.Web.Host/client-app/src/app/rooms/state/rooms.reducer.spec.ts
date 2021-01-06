@@ -43,6 +43,7 @@ describe('roomsReducer', () => {
     const lighting = ModelFactory.createLighting({level: 89});
 
     const state = generateStateFromActions(roomsReducer,
+      EventsActions.roomCreated({room}),
       EventsActions.roomLightingChanged({room, lighting})
     );
 
@@ -60,12 +61,13 @@ describe('roomsReducer', () => {
   })
 
   it('should update room when room updated event received', () => {
-    const room = ModelFactory.createRoomModel();
+    const room = ModelFactory.createRoomModel({id: 88});
 
     const state = generateStateFromActions(roomsReducer,
+      EventsActions.roomCreated({room: ModelFactory.createRoomModel({id: 88})}),
       EventsActions.roomUpdated({room})
     );
 
-    expect(state.entities[room.id]).toEqual(room);
+    expect(state.entities[88]).toEqual(room);
   })
 })

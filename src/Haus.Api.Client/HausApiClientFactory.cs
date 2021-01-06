@@ -2,6 +2,7 @@ using System.Net.Http;
 using Haus.Api.Client.Devices;
 using Haus.Api.Client.DeviceSimulator;
 using Haus.Api.Client.Diagnostics;
+using Haus.Api.Client.Discovery;
 using Haus.Api.Client.Lighting;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
@@ -17,6 +18,7 @@ namespace Haus.Api.Client
         IRoomsApiClient CreateRoomsClient();
         IDeviceSimulatorApiClient CreateDeviceSimulatorClient();
         ILightingConstraintsApiClient CreateLightingApiClient();
+        IDiscoveryApiClient CreateDiscoveryClient();
     }
 
     public class HausApiClientFactory : IHausApiClientFactory
@@ -58,6 +60,11 @@ namespace Haus.Api.Client
         public ILightingConstraintsApiClient CreateLightingApiClient()
         {
             return new LightingConstraintsApiClient(_httpClientFactory.CreateClient(), _options);
+        }
+
+        public IDiscoveryApiClient CreateDiscoveryClient()
+        {
+            return new DiscoveryApiClient(_httpClientFactory.CreateClient(), _options);
         }
     }
 }

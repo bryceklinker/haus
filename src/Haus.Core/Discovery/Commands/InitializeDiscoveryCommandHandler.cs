@@ -1,0 +1,33 @@
+using System.Threading;
+using System.Threading.Tasks;
+using Haus.Core.Common.Storage;
+using Haus.Core.Discovery.Entities;
+using Haus.Cqrs.Commands;
+using MediatR;
+
+namespace Haus.Core.Discovery.Commands
+{
+    public class InitializeDiscoveryCommand : ICommand
+    {
+    }
+
+    public class InitializeDiscoveryCommandHandler : AsyncRequestHandler<InitializeDiscoveryCommand>, ICommandHandler<InitializeDiscoveryCommand>
+    {
+        private readonly HausDbContext _context;
+
+        public InitializeDiscoveryCommandHandler(HausDbContext context)
+        {
+            _context = context;
+        }
+
+        protected override async Task Handle(InitializeDiscoveryCommand request, CancellationToken cancellationToken)
+        {
+            var discovery = await _context.GetDiscoveryEntityAsync(cancellationToken);
+            if (discovery != null)
+                return;
+
+            _context.Add(new DiscoveryEntity());
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+    }
+}

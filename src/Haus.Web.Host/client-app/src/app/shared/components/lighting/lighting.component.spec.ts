@@ -8,6 +8,7 @@ import {LightingComponent} from "./lighting.component";
 import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {SharedModule} from "../../shared.module";
 import {LightingModel, LightingState} from "../../models";
+import {screen} from "@testing-library/dom";
 
 describe('LightingComponent', () => {
   it('should show lighting values when rendered', async () => {
@@ -27,6 +28,25 @@ describe('LightingComponent', () => {
     expect(await red.getValue()).toEqual(lighting.color.red);
     expect(await green.getValue()).toEqual(lighting.color.green);
     expect(await blue.getValue()).toEqual(lighting.color.blue);
+  })
+
+  it('should show lighting values', async () => {
+    const lighting = ModelFactory.createLighting({
+      state: LightingState.Off,
+      level: 45,
+      temperature: 2700,
+      color: ModelFactory.createLightingColor({red: 6, green: 9, blue: 8})
+    });
+
+    await renderLightingWithHarnesses({lighting});
+
+    expect(screen.getByTestId('state-value')).toHaveTextContent('Off');
+    expect(screen.getByTestId('level-value')).toHaveTextContent('45');
+    expect(screen.getByTestId('temperature-value')).toHaveTextContent('2700');
+    expect(screen.getByTestId('rgb-value')).toHaveTextContent('6');
+    expect(screen.getByTestId('rgb-value')).toHaveTextContent('9');
+    expect(screen.getByTestId('rgb-value')).toHaveTextContent('8');
+    expect(screen.getByTestId('hex-value')).toHaveTextContent('#060908');
   })
 
   it('should render show lighting not available when lighting is not provided', async () => {
@@ -127,6 +147,19 @@ describe('LightingComponent', () => {
       ...lighting,
       state: LightingState.On
     })
+  })
+
+  it('should disable controls when lighting is readonly', async () => {
+    const lighting = ModelFactory.createLighting();
+
+    const {level, state, temperature, red, green, blue} = await renderLightingWithHarnesses({lighting, readonly: true});
+
+    expect(await level.isDisabled()).toEqual(true);
+    expect(await state.isDisabled()).toEqual(true);
+    expect(await temperature.isDisabled()).toEqual(true);
+    expect(await red.isDisabled()).toEqual(true);
+    expect(await green.isDisabled()).toEqual(true);
+    expect(await blue.isDisabled()).toEqual(true);
   })
 
   function renderLighting(props: Partial<LightingComponent> = {}) {

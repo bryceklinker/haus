@@ -1,17 +1,14 @@
 using System;
-using Haus.Core.Common;
 using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Devices;
-using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Tests.Support;
-using System.Linq;
 using FluentAssertions;
-using Haus.Core.Common.Entities;
 using Haus.Core.Lighting;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
+using Haus.Core.Rooms.Entities;
 using Xunit;
 
 namespace Haus.Core.Tests.Devices.Entities
@@ -141,12 +138,21 @@ namespace Haus.Core.Tests.Devices.Entities
         public void WhenDeviceIsTurnedOffThenDeviceLightingStateIsSetToOff()
         {
             var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            light.ChangeLighting(new LightingEntity{State = LightingState.On, Level = 6}, new FakeDomainEventBus());
+            var lighting = new LightingEntity(
+                LightingState.On,
+                6,
+                4500,
+                new LightingColorEntity(65, 12, 54)
+            );
+            light.ChangeLighting(lighting, new FakeDomainEventBus());
 
             light.TurnOff(new FakeDomainEventBus());
 
             light.Lighting.State.Should().Be(LightingState.Off);
             light.Lighting.Level.Should().Be(6);
+            light.Lighting.Color.Red.Should().Be(65);
+            light.Lighting.Color.Green.Should().Be(12);
+            light.Lighting.Color.Blue.Should().Be(54);
         }
 
         [Fact]
@@ -169,6 +175,25 @@ namespace Haus.Core.Tests.Devices.Entities
             Action act = () => device.ChangeLighting(new LightingEntity(), new FakeDomainEventBus());
 
             act.Should().Throw<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void WhenConvertedToModelThenModelIsPopulatedFromDevice()
+        {
+            var lighting = new LightingEntity(LightingState.On, 50, 12);
+            var metadata = new[] {new DeviceMetadataEntity("one", "two")};
+            var device = new DeviceEntity(12, $"{Guid.NewGuid()}", $"{Guid.NewGuid()}", DeviceType.LightSensor, new RoomEntity(89, "ignore"), lighting, metadata);
+
+            var model = device.ToModel();
+
+            model.Id.Should().Be(12);
+            model.ExternalId.Should().Be(device.ExternalId);
+            model.Name.Should().Be(device.Name);
+            model.DeviceType.Should().Be(DeviceType.LightSensor);
+            model.RoomId.Should().Be(89);
+            model.Lighting.Should().BeEquivalentTo(lighting.ToModel());
+            model.Metadata.Should().HaveCount(1)
+                .And.ContainEquivalentOf(metadata[0].ToModel());
         }
     }
 }

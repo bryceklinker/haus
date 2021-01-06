@@ -59,6 +59,7 @@ namespace Haus.Core.Lighting
             actual.Level = CalculateDesiredLevel(desired);
             actual.Temperature = desired.Temperature;
             actual.State = desired.State;
+            actual.Color = desired.Color.Copy();
             return actual;
         }
 

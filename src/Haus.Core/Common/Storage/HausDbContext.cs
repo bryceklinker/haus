@@ -4,6 +4,8 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Entities;
+using Haus.Core.Devices.Entities;
+using Haus.Core.Discovery.Entities;
 using Haus.Core.Lighting;
 using Haus.Core.Rooms.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,9 @@ namespace Haus.Core.Common.Storage
 
         public Task<DefaultLightingConstraintsEntity> GetDefaultLightingConstraintsAsync(CancellationToken token) =>
             Set<DefaultLightingConstraintsEntity>().SingleOrDefaultAsync(token);
+
+        public Task<DiscoveryEntity> GetDiscoveryEntityAsync(CancellationToken token) =>
+            Set<DiscoveryEntity>().SingleOrDefaultAsync(token);
         
         public IQueryable<TEntity> GetAll<TEntity>()
             where TEntity : class, IEntity

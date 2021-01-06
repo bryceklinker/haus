@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {DeviceModel, MetadataModel} from "../../../shared/models";
+import {DeviceModel, DeviceType, LightingModel, MetadataModel} from "../../../shared/models";
 
 @Component({
   selector: 'device-detail',
@@ -21,8 +21,16 @@ export class DeviceDetailComponent {
     return this.device ? this.device.deviceType : 'N/A';
   }
 
+  get isLight(): boolean {
+    return this.device?.deviceType === DeviceType.Light;
+  }
+
   get metadata(): Array<MetadataModel> {
     return this.device && this.device.metadata ? this.device.metadata : [];
+  }
+
+  get lighting(): LightingModel | null {
+    return this.device && this.device.lighting ? this.device.lighting : null;
   }
 
   get canEdit(): boolean {

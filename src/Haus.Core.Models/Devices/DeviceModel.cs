@@ -1,5 +1,6 @@
 using System;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Lighting;
 
 namespace Haus.Core.Models.Devices
 {
@@ -9,8 +10,10 @@ namespace Haus.Core.Models.Devices
         string ExternalId = null, 
         string Name = null, 
         DeviceType DeviceType = DeviceType.Unknown,
-        MetadataModel[] Metadata = null) : IdentityModel
+        MetadataModel[] Metadata = null,
+        LightingModel Lighting = null) : IdentityModel
     {
         public MetadataModel[] Metadata { get; } = Metadata ?? Array.Empty<MetadataModel>();
+        public LightingModel Lighting { get; } = Lighting ?? LightingModel.Default;
     }
 }

@@ -14,9 +14,9 @@ namespace Haus.Core.Common.Entities
             Value = value;
         }
 
-        public MetadataModel ToModel()
+        public virtual MetadataModel ToModel()
         {
-            return new MetadataModel(Key, Value);
+            return new(Key, Value);
         }
         
         public static Metadata FromModel(MetadataModel model)

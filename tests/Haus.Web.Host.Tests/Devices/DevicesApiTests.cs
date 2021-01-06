@@ -3,8 +3,8 @@ using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
-using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.Discovery;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Lighting;
 using Haus.Testing.Support;
@@ -86,34 +86,6 @@ namespace Haus.Web.Host.Tests.Devices
             Eventually.Assert(() =>
             {
                 published.Payload.Lighting.State.Should().Be(LightingState.On);
-            });
-        }
-        
-        [Fact]
-        public async Task WhenDiscoveryIsStartedThenStartDiscoveryCommandIsPublished()
-        {
-            HausCommand<StartDiscoveryModel> hausCommand = null;
-            await _factory.SubscribeToHausCommandsAsync<StartDiscoveryModel>(cmd => hausCommand = cmd);
-
-            await _hausClient.StartDiscoveryAsync();
-
-            Eventually.Assert(() =>
-            {
-                hausCommand.Type.Should().Be(StartDiscoveryModel.Type);
-            });
-        }
-
-        [Fact]
-        public async Task WhenDiscoveryStoppedThenStopDiscoveryCommandIsPublished()
-        {
-            HausCommand<StopDiscoveryModel> hausCommand = null;
-            await _factory.SubscribeToHausCommandsAsync<StopDiscoveryModel>(cmd => hausCommand = cmd);
-
-            await _hausClient.StopDiscoveryAsync();
-
-            Eventually.Assert(() =>
-            {
-                hausCommand.Type.Should().Be(StopDiscoveryModel.Type);
             });
         }
     }

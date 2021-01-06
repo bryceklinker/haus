@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Haus.Core.Common.Events;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Devices.Repositories;
-using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
 using Haus.Cqrs;
 using Haus.Cqrs.Events;

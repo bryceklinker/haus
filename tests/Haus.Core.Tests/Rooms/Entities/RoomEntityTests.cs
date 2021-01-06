@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
@@ -178,6 +180,19 @@ namespace Haus.Core.Tests.Rooms.Entities
             room.ChangeLighting(new LightingEntity(level: 50), fakeDomainEventBus);
 
             device.Lighting.Level.Should().Be(127);
+        }
+
+        [Fact]
+        public void WhenRoomConvertedToModelThenModelIsPopulatedFromRoom()
+        {
+            var lighting = new LightingEntity(LightingState.On, 55, 98);
+            var room = new RoomEntity(34, $"{Guid.NewGuid()}", lighting);
+
+            var model = room.ToModel();
+
+            model.Id.Should().Be(34);
+            model.Name.Should().Be(room.Name);
+            model.Lighting.Should().BeEquivalentTo(lighting.ToModel());
         }
     }
 }

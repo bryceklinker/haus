@@ -6,7 +6,6 @@ using System.Text.Json.Serialization;
 using Haus.Core.Common.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
-using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.DeviceSimulator;
 

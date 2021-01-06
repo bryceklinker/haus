@@ -33,7 +33,8 @@ function createDeviceModel(model: Partial<DeviceModel> = {}): DeviceModel {
     externalId: model.externalId || uuid(),
     metadata: model.metadata || [],
     deviceType: model.deviceType || DeviceType.Unknown,
-    roomId: model.roomId || undefined
+    roomId: model.roomId || undefined,
+    lighting: model.lighting || createLighting()
   }
 }
 

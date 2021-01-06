@@ -3,17 +3,21 @@
     <mat-card-title>{{name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <mat-divider></mat-divider>
-    <div>
-      <h3>{{name}} Lighting</h3>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{name}} Lighting</mat-panel-title>
+      </mat-expansion-panel-header>
       <lighting [lighting]="lighting"
                 (change)="onLightingChanged($event)">
 
       </lighting>
-    </div>
-    <mat-divider></mat-divider>
-    <div>
-      <h4 class="mat-subheader">Room Devices</h4>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Room Devices</mat-panel-title>
+      </mat-expansion-panel-header>
       <mat-list>
         <a *ngFor="let device of devices"
            mat-list-item
@@ -25,6 +29,6 @@
       <button mat-fab data-testid="assign-devices-btn" (click)="onAssignDevices()">
         <mat-icon>add</mat-icon>
       </button>
-    </div>
+    </mat-expansion-panel>
   </mat-card-content>
 </mat-card>

@@ -19,6 +19,7 @@
   justify-content: center;
 
   .color-selectors {
+    margin-top: 1rem;
     display: flex;
     flex: 1;
     flex-direction: row;
@@ -30,9 +31,21 @@
     }
   }
 
+  .color-sample {
+    display: flex;
+    flex-direction: column;
 
-  .lighting-color-sample {
-    height: 8rem;
-    width: 8rem;
+    .lighting-color-sample {
+      height: 8rem;
+      width: 8rem;
+      border-radius: 10px;
+    }
+
+    .lighting-color-values {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
+
 }

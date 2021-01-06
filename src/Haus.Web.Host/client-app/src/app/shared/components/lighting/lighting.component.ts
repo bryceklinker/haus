@@ -11,6 +11,7 @@ const DEFAULT_LIGHTING_COLOR: LightingColorModel = {red: 0, green: 0, blue: 0};
 })
 export class LightingComponent {
   @Input() lighting: LightingModel | undefined | null = null;
+  @Input() readonly: boolean = false;
   @Output() change = new EventEmitter<LightingModel>();
 
   get colorSample(): string {
@@ -34,7 +35,11 @@ export class LightingComponent {
   }
 
   get state(): boolean {
-    return !!this.lighting && this.lighting.state === LightingState.On;
+    return this.lightingState === LightingState.On;
+  }
+
+  get lightingState(): LightingState | null {
+    return this.lighting?.state ? this.lighting.state : null;
   }
 
   get temperature(): number {

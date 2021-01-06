@@ -1,14 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Core.Common;
-using Haus.Core.Common.Commands;
 using Haus.Core.Common.Events;
-using Haus.Core.Models.Devices.Discovery;
+using Haus.Core.Models.Discovery;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 using MediatR;
 
-namespace Haus.Core.Devices.Commands
+namespace Haus.Core.Discovery.Commands
 {
     public record SyncDiscoveryCommand : ICommand;
 

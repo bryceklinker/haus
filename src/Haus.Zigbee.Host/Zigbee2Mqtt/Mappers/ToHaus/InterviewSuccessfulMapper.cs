@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Models;
-using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Zigbee.Host.Configuration;

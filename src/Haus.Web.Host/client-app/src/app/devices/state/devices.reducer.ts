@@ -6,6 +6,7 @@ import {DevicesActions} from "./actions";
 import {AppState} from "../../app.state";
 import {DeviceModel} from "../../shared/models";
 import {EventsActions} from "../../shared/events";
+import {RoomsActions} from "../../rooms/state";
 
 const adapter = createEntityAdapter<DeviceModel>({
   selectId: device => device.id,
@@ -26,11 +27,17 @@ const reducer = createReducer(initialState,
     allowDiscovery: false
   })),
   on(EventsActions.deviceCreated, EventsActions.deviceUpdated, (state, {payload}) => adapter.upsertOne(payload.device, state)),
-  on(EventsActions.devicesAssignedToRoom, (state, {payload}) => adapter.updateMany(
+  on(RoomsActions.assignDevicesToRoom.success, EventsActions.devicesAssignedToRoom, (state, {payload}) => adapter.updateMany(
     payload.deviceIds.map(id => ({id, changes: {roomId: payload.roomId}})),
     state
     )
-  )
+  ),
+  on(EventsActions.deviceLightingChanged, (state, {payload}) => ({
+    ...adapter.updateOne({
+      id: payload.device.id,
+      changes: {lighting: payload.lighting}
+    }, state)
+  }))
 );
 
 export function devicesReducer(state: DevicesState | undefined, action: Action) {

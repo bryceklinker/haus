@@ -16,12 +16,12 @@ const initialState: RoomsState = adapter.getInitialState();
 const reducer = createReducer(initialState,
   on(RoomsActions.loadRooms.success, (state, {payload}) => adapter.upsertMany(payload, state)),
   on(RoomsActions.addRoom.success, (state, {payload}) => ({...adapter.upsertOne(payload, state), isAdding: false})),
-  on(RoomsActions.changeRoomLighting.request, EventsActions.roomLightingChanged, (state, {payload}) => ({
-    ...adapter.upsertOne({
-      ...payload.room,
-      lighting: payload.lighting,
+  on(RoomsActions.changeRoomLighting.request, EventsActions.roomLightingChanged, (state, {payload}) =>
+    adapter.updateOne({
+      id: payload.room.id,
+      changes: {lighting: payload.lighting},
     }, state)
-  })),
+  ),
   on(EventsActions.roomCreated, EventsActions.roomUpdated, (state, {payload}) => ({...adapter.upsertOne(payload.room, state)}))
 );
 

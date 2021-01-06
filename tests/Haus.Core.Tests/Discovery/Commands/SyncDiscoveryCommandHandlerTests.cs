@@ -1,12 +1,11 @@
 using System.Threading.Tasks;
 using FluentAssertions;
-using Haus.Core.Devices.Commands;
-using Haus.Core.Models.Devices.Discovery;
-using Haus.Core.Tests.Support;
+using Haus.Core.Discovery.Commands;
+using Haus.Core.Models.Discovery;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Devices.Commands
+namespace Haus.Core.Tests.Discovery.Commands
 {
     public class SyncDiscoveryCommandHandlerTests
     {

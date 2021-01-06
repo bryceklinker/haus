@@ -10,7 +10,6 @@ using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
-using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;

@@ -3,7 +3,6 @@ using FluentAssertions;
 using Haus.Core.DeviceSimulator.Commands;
 using Haus.Core.DeviceSimulator.Events;
 using Haus.Core.DeviceSimulator.State;
-using Haus.Core.Models.Devices.Discovery;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Cqrs;

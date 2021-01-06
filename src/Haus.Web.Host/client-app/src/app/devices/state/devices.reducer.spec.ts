@@ -3,6 +3,7 @@ import {DevicesActions} from "./actions";
 import {ModelFactory} from "../../../testing";
 import {generateStateFromActions} from "../../../testing/app-state-generator";
 import {EventsActions} from "../../shared/events";
+import {RoomsActions} from "../../rooms/state";
 
 describe('devicesReducer', () => {
   it('should add all devices to state when load devices finishes', () => {
@@ -71,6 +72,17 @@ describe('devicesReducer', () => {
     expect(state.entities[7]).toEqual(updated);
   })
 
+  it('should update room id for devices when devices assigned to room is successful', () => {
+    const device = ModelFactory.createDeviceModel();
+
+    const state = generateStateFromActions(devicesReducer,
+      EventsActions.deviceCreated({device}),
+      RoomsActions.assignDevicesToRoom.success({roomId: 66, deviceIds: [device.id]})
+    );
+
+    expect(state.entities[device.id]?.roomId).toEqual(66);
+  })
+
   it('should update room id for devices when devices assigned to room event received', () => {
     const existing = ModelFactory.createDeviceModel();
 
@@ -80,5 +92,17 @@ describe('devicesReducer', () => {
     );
 
     expect(state.entities[existing.id]?.roomId).toEqual(76);
+  })
+
+  it('should update device lighting when device lighting changed event received', () => {
+    const original = ModelFactory.createDeviceModel();
+    const lighting = ModelFactory.createLighting({level: 98});
+
+    const state = generateStateFromActions(devicesReducer,
+      EventsActions.deviceCreated({device: original}),
+      EventsActions.deviceLightingChanged({device: original, lighting})
+    );
+
+    expect(state.entities[original.id]?.lighting).toEqual(lighting);
   })
 })
