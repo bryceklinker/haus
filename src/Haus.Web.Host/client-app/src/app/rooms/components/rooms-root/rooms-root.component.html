@@ -1,3 +1,9 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    Rooms
+    <span class="spacer"></span>
+  </mat-toolbar-row>
+</mat-toolbar>
 <div class="master-detail-container">
   <rooms-list [rooms]="rooms$ | async"
               (addRoom)="onAddRoom()">

@@ -1,6 +1,6 @@
 namespace Haus.Core.Models.Lighting
 {
-    public record LightingColorModel(byte Red = 0, byte Green = 0, byte Blue = 0)
+    public record LightingColorModel(byte Red = LightingDefaults.Red, byte Green = LightingDefaults.Green, byte Blue = LightingDefaults.Blue)
     {
         public static readonly LightingColorModel Default = new();
     }

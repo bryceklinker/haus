@@ -15,7 +15,7 @@ namespace Haus.Core.Tests.Lighting
             {
                 State = LightingState.Off,
                 Level = 100,
-                Temperature = 150,
+                Temperature = 3000,
                 Color = new LightingColorEntity
                 {
                     Blue = 255,

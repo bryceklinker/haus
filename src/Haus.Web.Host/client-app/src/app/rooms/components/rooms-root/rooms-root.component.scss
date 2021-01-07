@@ -1,5 +1,6 @@
 @import "../../../shared/styles/utilities";
 
 :host {
-  @extend .fill
+  @extend .fill;
+  flex-direction: column;
 }

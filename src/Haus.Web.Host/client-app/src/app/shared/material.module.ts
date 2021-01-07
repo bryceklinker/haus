@@ -22,6 +22,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import {MatSliderModule} from '@angular/material/slider';
 import {MatRippleModule} from "@angular/material/core";
 import {NgModule} from "@angular/core";
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 const MATERIAL_MODULES = [
   MatButtonModule,
@@ -46,7 +47,8 @@ const MATERIAL_MODULES = [
   MatExpansionModule,
   MatGridListModule,
   MatRippleModule,
-  MatSliderModule
+  MatSliderModule,
+  DragDropModule
 ]
 
 @NgModule({

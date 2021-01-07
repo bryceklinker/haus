@@ -6,7 +6,6 @@ namespace Haus.Core.Lighting
 {
     public class LightingColorEntity
     {
-        private const byte DefaultColorValue = 255;
         public static readonly LightingColorEntity Default = new();
 
         public byte Red { get; set; }
@@ -14,14 +13,14 @@ namespace Haus.Core.Lighting
         public byte Blue { get; set; }
 
         public LightingColorEntity()
-            : this(DefaultColorValue)
+            : this(LightingDefaults.Red)
         {
         }
 
         public LightingColorEntity(
-            byte red = DefaultColorValue, 
-            byte green = DefaultColorValue,
-            byte blue = DefaultColorValue)
+            byte red = LightingDefaults.Red, 
+            byte green = LightingDefaults.Green,
+            byte blue = LightingDefaults.Blue)
         {
             Red = red;
             Green = green;
@@ -51,9 +50,9 @@ namespace Haus.Core.Lighting
         public static LightingColorEntity FromModel(LightingColorModel modelColor)
         {
             return new(
-                modelColor?.Red ?? DefaultColorValue,
-                modelColor?.Green ?? DefaultColorValue,
-                modelColor?.Blue ?? DefaultColorValue
+                modelColor?.Red ?? LightingDefaults.Red,
+                modelColor?.Green ?? LightingDefaults.Green,
+                modelColor?.Blue ?? LightingDefaults.Blue
             );
         }
 

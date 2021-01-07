@@ -5,6 +5,7 @@ using Haus.Core.Discovery.Entities;
 using Haus.Core.Lighting;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Discovery;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Rooms.Entities;
 
 namespace Haus.Testing.Support
@@ -36,10 +37,10 @@ namespace Haus.Testing.Support
         }
 
         public static DefaultLightingConstraintsEntity AddDefaultLightingConstraints(this HausDbContext context,
-            double minLevel = LightingConstraintsEntity.DefaultMinLevel,
-            double maxLevel = LightingConstraintsEntity.DefaultMaxLevel,
-            double minTemperature = LightingConstraintsEntity.DefaultMinTemperature,
-            double maxTemperature = LightingConstraintsEntity.DefaultMaxTemperature)
+            double minLevel = LightingDefaults.MinLevel,
+            double maxLevel = LightingDefaults.MaxLevel,
+            double minTemperature = LightingDefaults.MinTemperature,
+            double maxTemperature = LightingDefaults.MaxTemperature)
         {
             var constraints = new DefaultLightingConstraintsEntity
             {

@@ -1,6 +1,14 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    Devices
+    <span class="spacer"></span>
+    <a mat-button routerLink="discovery">
+      Discover New Devices
+    </a>
+  </mat-toolbar-row>
+</mat-toolbar>
 <div class="master-detail-container">
   <devices-list [devices]="devices$ | async">
-
   </devices-list>
   <router-outlet></router-outlet>
 </div>

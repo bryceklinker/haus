@@ -79,6 +79,10 @@ async function renderComponent<T>(component: Type<T>, options: RenderAppComponen
 
 function createEventTriggerHandler<TComponent, TDirective>({fixture}: RenderResult<TComponent>) {
   return <TDirective>(directive: Type<TDirective>, eventName: string, eventArg?: any) => {
-      fixture.debugElement.query(By.directive(directive)).triggerEventHandler(eventName, eventArg);
+    const debugElement = fixture.debugElement.query(By.directive(directive));
+    if (!debugElement) {
+      throw new Error(`Failed to locate directive ${directive.name}`);
+    }
+    debugElement.triggerEventHandler(eventName, eventArg);
   }
 }

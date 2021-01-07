@@ -22,9 +22,11 @@ namespace Haus.Web.Host.Common.Services
         {
             using var scope = _scopeFactory.CreateScope();
             var bus = scope.GetService<IHausBus>();
-            await bus.ExecuteCommandAsync(new InitializeDiscoveryCommand(), stoppingToken).ConfigureAwait(false);
-            await bus.ExecuteCommandAsync(new InitializeDefaultLightingSettingsCommand(), stoppingToken).ConfigureAwait(false);
-            await bus.ExecuteCommandAsync(new SyncDiscoveryCommand(), stoppingToken);
+            await Task.WhenAll(
+                bus.ExecuteCommandAsync(new InitializeDiscoveryCommand(), stoppingToken),
+                bus.ExecuteCommandAsync(new InitializeDefaultLightingSettingsCommand(), stoppingToken),
+                bus.ExecuteCommandAsync(new SyncDiscoveryCommand(), stoppingToken)
+            ).ConfigureAwait(false);
         }
     }
 }

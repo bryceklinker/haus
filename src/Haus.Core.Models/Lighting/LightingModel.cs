@@ -10,9 +10,9 @@ namespace Haus.Core.Models.Lighting
         public LightingConstraintsModel Constraints { get; }
 
         public LightingModel(
-            LightingState state = LightingState.Off, 
-            double level = 0,
-            double temperature = 0, 
+            LightingState state = LightingDefaults.State, 
+            double level = LightingDefaults.Level,
+            double temperature = LightingDefaults.Temperature, 
             LightingColorModel color = null,
             LightingConstraintsModel constraints = null)
         {

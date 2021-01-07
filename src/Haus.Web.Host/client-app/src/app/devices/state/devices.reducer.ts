@@ -39,11 +39,16 @@ const {
   selectEntities
 } = adapter.getSelectors();
 const selectDevicesState = (state: AppState) => state.devices;
+
 export const selectAllDevices = createSelector(selectDevicesState, selectAll);
+
 export const selectDeviceById = (id: string | null) => createSelector(
   selectDevicesState,
   (state) => id ? selectEntities(state)[id] : null);
-export const selectAllDevicesByRoomId = (roomId: string | null) =>
+
+export const selectAllDevicesByRoomId = (roomId: string | number | null) =>
   createSelector(selectDevicesState,
     (state) => roomId ? selectAll(state).filter(d => d.roomId === Number(roomId)) : [])
+
 export const selectUnassignedDevices = createSelector(selectAllDevices, s => s.filter(d => !d.roomId))
+export const selectAssignedDevices = createSelector(selectAllDevices, s => s.filter(d => d.roomId))

@@ -1,16 +1,11 @@
 namespace Haus.Core.Models.Lighting
 {
     public record LightingConstraintsModel(
-        double MinLevel = LightingConstraintsModel.DefaultMinLevel, 
-        double MaxLevel = LightingConstraintsModel.DefaultMaxLevel,
-        double MinTemperature = LightingConstraintsModel.DefaultMinTemperature,
-        double MaxTemperature = LightingConstraintsModel.DefaultMaxTemperature)
+        double MinLevel = LightingDefaults.MinLevel, 
+        double MaxLevel = LightingDefaults.MaxLevel,
+        double MinTemperature = LightingDefaults.MinTemperature,
+        double MaxTemperature = LightingDefaults.MaxTemperature)
     {
-        public const double DefaultMinLevel = 0;
-        public const double DefaultMaxLevel = 100;
-        public const double DefaultMinTemperature = 2000;
-        public const double DefaultMaxTemperature = 6000;
-        
         public static readonly LightingConstraintsModel Default = new();
     }
 }

@@ -7,11 +7,6 @@ namespace Haus.Core.Lighting
 {
     public class LightingConstraintsEntity
     {
-        public const double DefaultMinLevel = 0;
-        public const double DefaultMaxLevel = 100;
-        public const double DefaultMinTemperature = 2000;
-        public const double DefaultMaxTemperature = 6000;
-
         public static readonly LightingConstraintsEntity Default = new();
 
         public static readonly Expression<Func<LightingConstraintsEntity, LightingConstraintsModel>> ToModelExpression =
@@ -27,16 +22,16 @@ namespace Haus.Core.Lighting
         public double MaxTemperature { get; set; }
 
         public LightingConstraintsEntity()
-            : this(DefaultMinLevel, DefaultMaxLevel, DefaultMinTemperature, DefaultMaxTemperature)
+            : this(LightingDefaults.MinLevel)
         {
             
         }
         
         public LightingConstraintsEntity(
-            double minLevel = DefaultMinLevel, 
-            double maxLevel = DefaultMaxLevel, 
-            double minTemperature = DefaultMinTemperature, 
-            double maxTemperature = DefaultMaxTemperature)
+            double minLevel = LightingDefaults.MinLevel, 
+            double maxLevel = LightingDefaults.MaxLevel, 
+            double minTemperature = LightingDefaults.MinTemperature, 
+            double maxTemperature = LightingDefaults.MaxTemperature)
         {
             MinLevel = minLevel;
             MaxLevel = maxLevel;

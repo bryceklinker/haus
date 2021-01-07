@@ -7,9 +7,6 @@ namespace Haus.Core.Lighting
 {
     public class LightingEntity
     {
-        private const LightingState DefaultState = LightingState.Off;
-        private const double DefaultTemperature = 150;
-        private const double DefaultLevel = 100;
         public static readonly LightingEntity Default = new();
 
         public LightingState State { get; set; }
@@ -19,15 +16,15 @@ namespace Haus.Core.Lighting
         public LightingConstraintsEntity Constraints { get; set; }
 
         public LightingEntity()
-            : this(DefaultState, DefaultLevel, DefaultTemperature, LightingColorEntity.Default, LightingConstraintsEntity.Default)
+            : this(LightingDefaults.State, LightingDefaults.Level, LightingDefaults.Temperature, LightingColorEntity.Default, LightingConstraintsEntity.Default)
         {
             
         }
         
         public LightingEntity(
-            LightingState state = DefaultState, 
-            double level = DefaultLevel,
-            double temperature = DefaultTemperature,
+            LightingState state = LightingDefaults.State, 
+            double level = LightingDefaults.Level,
+            double temperature = LightingDefaults.Temperature,
             LightingColorEntity color = null,
             LightingConstraintsEntity constraints = null)
         {
