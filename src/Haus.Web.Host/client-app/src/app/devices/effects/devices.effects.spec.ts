@@ -55,7 +55,7 @@ describe('DevicesEffects', () => {
   it('should change device lighting constraints on change device lighting constraints requested', async () => {
     setupChangeDeviceLightingConstraints(66);
 
-    const device = ModelFactory.createDeviceModel();
+    const device = ModelFactory.createDeviceModel({id: 66});
     const constraints = ModelFactory.createLightingConstraints();
     actions$.next(DevicesActions.changeDeviceLightingConstraints.request({device, constraints}));
 
