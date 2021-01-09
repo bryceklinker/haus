@@ -34,7 +34,7 @@ export class DevicesEffects {
 
   changeDeviceLightingConstraints$ = createEffect(() => this.actions$.pipe(
     ofType(DevicesActions.changeDeviceLightingConstraints.request),
-    mergeMap(({payload}) => this.api.changeDeviceLightingConstraints(payload.deviceId, payload.constraints).pipe(
+    mergeMap(({payload}) => this.api.changeDeviceLightingConstraints(payload.device.id, payload.constraints).pipe(
       map(() => DevicesActions.changeDeviceLightingConstraints.success(payload))
     ))
   ))
