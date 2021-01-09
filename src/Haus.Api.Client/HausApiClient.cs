@@ -91,6 +91,11 @@ namespace Haus.Api.Client
             return DeviceApiClient.TurnLightOnAsync(deviceId);
         }
 
+        public Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model)
+        {
+            return DeviceApiClient.ChangeDeviceLightingConstraintsAsync(deviceId, model);
+        }
+
         public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
         {
             return DeviceApiClient.GetDevicesAsync(externalId);

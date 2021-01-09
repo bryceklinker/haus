@@ -9,6 +9,7 @@ using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
 using FluentAssertions;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Xunit;
 

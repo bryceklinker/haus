@@ -7,8 +7,10 @@ using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Core.Models.ExternalMessages;
+using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
+using Microsoft.Extensions.Logging.Abstractions;
 using MQTTnet;
 using Xunit;
 
@@ -23,7 +25,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
         {
             var hausOptions = OptionsFactory.CreateHausOptionsMonitor(EventsTopicName);
             var zigbeeOptions = OptionsFactory.CreateZigbeeOptions();
-            _mapper = new DeviceEventMapper(hausOptions, zigbeeOptions);
+            _mapper = new DeviceEventMapper(hausOptions, zigbeeOptions, new NullLogger<DeviceEventMapper>());
         }
 
         [Fact]
@@ -121,6 +123,18 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
             var result = _mapper.Map(message).Single();
 
             AssertHausEventTypeIs(BatteryChangedModel.Type, result);
+        }
+
+        [Fact]
+        public void WhenEventIsNotRecognizedThenEventTypeIsUnknownEvent()
+        {
+            var message = new Zigbee2MqttMessageBuilder()
+                .WithDeviceTopic("something")
+                .BuildZigbee2MqttMessage();
+
+            var result = _mapper.Map(message).Single();
+
+            AssertHausEventTypeIs(UnknownEvent.Type, result);
         }
 
         private static void AssertHausEventTypeIs(string expectedType, MqttApplicationMessage result)

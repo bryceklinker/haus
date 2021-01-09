@@ -3,6 +3,7 @@ using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Lighting;
 using Haus.Core.Lighting.Commands;
+using Haus.Core.Lighting.Entities;
 using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;

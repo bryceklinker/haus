@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Haus.Core.Lighting;
-using Haus.Core.Models.Common;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Xunit;
 
-namespace Haus.Core.Tests.Lighting
+namespace Haus.Core.Tests.Lighting.Entities
 {
     public class LightingEntityTests
     {
@@ -83,6 +83,22 @@ namespace Haus.Core.Tests.Lighting
         }
 
         [Fact]
+        public void WhenLightingTurnedIntoDesiredLightingThenTemperatureIsCalculatedBasedOnConstraintsOfTheCurrentLightingAndDesiredLighting()
+        {
+            const double desiredTemperature = 5000;
+            const double desiredMaxTemperatureConstraint = 6000;
+            const double currentMaxTemperatureConstraint = 250;
+            
+            var current = new LightingEntity(constraints: new LightingConstraintsEntity(minTemperature: 0, maxTemperature: currentMaxTemperatureConstraint));
+            var desired = new LightingEntity(temperature: desiredTemperature, constraints: new LightingConstraintsEntity(minTemperature: 0, maxTemperature: desiredMaxTemperatureConstraint));
+
+            var result = current.ToDesiredLighting(desired);
+            
+            const double expected = (desiredTemperature * currentMaxTemperatureConstraint) / desiredMaxTemperatureConstraint;
+            result.Temperature.Should().Be(expected);
+        }
+
+        [Fact]
         public void WhenDesiredLightingLevelIsCalculatedToBeBelowMinimumLevelThenReturnsMinimumLevelFromCurrentLighting()
         {
             var current = new LightingEntity(constraints: new LightingConstraintsEntity(87, 100));
@@ -116,6 +132,42 @@ namespace Haus.Core.Tests.Lighting
             result.Should().NotBeSameAs(current);
         }
 
+        [Fact]
+        public void WhenLightingConstraintsAreChangedThenReturnsLightingWithNewConstraints()
+        {
+            var current = new LightingEntity();
+
+            var constraints = new LightingConstraintsEntity(25, 75, 0, 250);
+            var result = current.ChangeLightingConstraints(constraints);
+
+            result.Should().NotBeSameAs(current);
+            result.Constraints.Should().BeEquivalentTo(constraints);
+        }
+
+        [Fact]
+        public void WhenLightingConstraintsMaxValuesAreChangedBelowCurrentValuesThenReturnsLightingAtNewMaxValues()
+        {
+            var current = new LightingEntity(level: 90, temperature: 6000);
+            var constraints = new LightingConstraintsEntity(25, 75, 0, 250);
+
+            var result = current.ChangeLightingConstraints(constraints);
+
+            result.Level.Should().Be(75);
+            result.Temperature.Should().Be(250);
+        }
+
+        [Fact]
+        public void WhenLightingConstraintsMinValuesAreChangedAboveCurrentValuesThenReturnsLightingAtNewMinValues()
+        {
+            var current = new LightingEntity(level: 25, temperature: 10);
+            var constraints = new LightingConstraintsEntity(30, 75, 70, 250);
+
+            var result = current.ChangeLightingConstraints(constraints);
+
+            result.Level.Should().Be(30);
+            result.Temperature.Should().Be(70);
+        }
+        
         private static LightingModel CreateLightingModel()
         {
             var color = new LightingColorModel(12, 3, 6);

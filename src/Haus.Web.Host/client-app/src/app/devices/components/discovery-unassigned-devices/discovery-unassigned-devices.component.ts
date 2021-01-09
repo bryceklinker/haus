@@ -8,8 +8,8 @@ import {getDeviceDisplayText} from "../../../shared/humanize/get-device-display-
   styleUrls: ['./discovery-unassigned-devices.component.scss']
 })
 export class DiscoveryUnassignedDevicesComponent {
-  @Input() devices: Array<DeviceModel> = [];
-  @Input() roomIds: Array<number> = [];
+  @Input() devices: Array<DeviceModel> | null = [];
+  @Input() roomIds: Array<number> | null = [];
 
   get roomStringIds(): Array<string> {
     return this.roomIds ? this.roomIds.map(id => id.toString()) : [];

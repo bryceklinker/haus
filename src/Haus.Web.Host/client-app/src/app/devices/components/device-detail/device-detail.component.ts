@@ -1,5 +1,12 @@
-import {Component, Input} from "@angular/core";
-import {DeviceModel, DeviceType, LightingModel, MetadataModel} from "../../../shared/models";
+import {Component, Input, Output, EventEmitter} from "@angular/core";
+import {
+  DeviceLightingConstraintsChangedEvent,
+  DeviceModel,
+  DeviceType,
+  LightingConstraintsModel,
+  LightingModel,
+  MetadataModel
+} from "../../../shared/models";
 
 @Component({
   selector: 'device-detail',
@@ -8,6 +15,7 @@ import {DeviceModel, DeviceType, LightingModel, MetadataModel} from "../../../sh
 })
 export class DeviceDetailComponent {
   @Input() device: DeviceModel | null | undefined = null;
+  @Output() saveLightingConstraints = new EventEmitter<DeviceLightingConstraintsChangedEvent>();
 
   get name(): string {
     return this.device ? this.device.name : 'N/A';
@@ -33,7 +41,22 @@ export class DeviceDetailComponent {
     return this.device && this.device.lighting ? this.device.lighting : null;
   }
 
+  get lightingConstraints(): LightingConstraintsModel | null {
+    return this.lighting ? this.lighting.constraints : null;
+  }
+
   get canEdit(): boolean {
     return !this.device;
+  }
+
+  onSaveLightingConstraints($event: LightingConstraintsModel) {
+    if(!this.device) {
+      return;
+    }
+
+    this.saveLightingConstraints.emit({
+      device: this.device,
+      constraints: $event
+    })
   }
 }

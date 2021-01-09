@@ -1,5 +1,5 @@
 import {RequestOptions} from "./request-options";
-import {setupHttpGet, setupHttpPost} from "./setup-http";
+import {setupHttpGet, setupHttpPost, setupHttpPut} from "./setup-http";
 import {ModelFactory} from "../../model-factory";
 import {DeviceModel} from "../../../app/shared/models";
 
@@ -19,4 +19,8 @@ export function setupDeviceTurnOn(deviceId: string | number, options?: RequestOp
 
 export function setupGetAllDeviceTypes(deviceTypes: Array<string> = [], options?: RequestOptions) {
   setupHttpGet('/api/device-types', ModelFactory.createListResult(...deviceTypes), options);
+}
+
+export function setupChangeDeviceLightingConstraints(deviceId: number, options?: RequestOptions) {
+  setupHttpPut(`${BASE_URL}/${deviceId}/lighting-constraints`, null, options);
 }

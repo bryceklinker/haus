@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Devices.Repositories;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;

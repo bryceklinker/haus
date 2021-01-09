@@ -32,17 +32,17 @@ namespace Haus.Cqrs.Commands
 
         protected override void LogFinished<TInput>(TInput input, long elapsedMilliseconds)
         {
-            Logger.LogInformation("Finished executing command {Command} in {ElapsedTime}ms", input, elapsedMilliseconds);
+            Logger.LogInformation("Finished executing command {@Command} in {@ElapsedTime}ms", input, elapsedMilliseconds);
         }
 
         protected override void LogError<TInput>(TInput input, Exception exception, long elapsedMilliseconds)
         {
-            Logger.LogError("Command {Command} failed to execute after {ElapsedTime}ms: {Exception}", input, exception, elapsedMilliseconds);
+            Logger.LogError(exception, "Command {@Command} failed to execute after {@ElapsedTime}ms", input, elapsedMilliseconds);
         }
 
         protected override void LogStarted<TInput>(TInput input)
         {
-            Logger.LogInformation("Starting to execute command {Command}", input);
+            Logger.LogInformation("Starting to execute command {@Command}", input);
         }
     }
 }

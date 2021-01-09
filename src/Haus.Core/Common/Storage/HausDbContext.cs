@@ -7,6 +7,7 @@ using Haus.Core.Common.Entities;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Discovery.Entities;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Rooms.Entities;
 using Microsoft.EntityFrameworkCore;
 

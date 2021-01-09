@@ -3,6 +3,7 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Discovery.Entities;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Discovery;
 using Haus.Core.Models.Lighting;

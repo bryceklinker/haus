@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;

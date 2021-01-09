@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Storage;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Haus.Cqrs.Queries;
 using Microsoft.EntityFrameworkCore;

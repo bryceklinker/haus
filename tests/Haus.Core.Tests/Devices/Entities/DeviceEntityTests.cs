@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Devices;
 using Haus.Core.Tests.Support;
 using FluentAssertions;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
@@ -194,6 +196,65 @@ namespace Haus.Core.Tests.Devices.Entities
             model.Lighting.Should().BeEquivalentTo(lighting.ToModel());
             model.Metadata.Should().HaveCount(1)
                 .And.ContainEquivalentOf(metadata[0].ToModel());
+        }
+
+        [Fact]
+        public void WhenDeviceIsNotALightThenChangingLightingConstraintsThrowsInvalidOperation()
+        {
+            var device = new DeviceEntity();
+
+            Action act = () => device.ChangeLightingConstraints(LightingConstraintsEntity.Default, new FakeDomainEventBus());
+
+            act.Should().Throw<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void WhenLightingConstraintsChangedThenConstraintsForLightingAreChanged()
+        {
+            var device = new DeviceEntity(deviceType: DeviceType.Light);
+            var originalLighting = device.Lighting;
+
+            var constraints = new LightingConstraintsEntity(45, 92, 200, 300);
+            device.ChangeLightingConstraints(constraints, new FakeDomainEventBus());
+
+            device.Lighting.Should().NotBeSameAs(originalLighting);
+            device.Lighting.Constraints.Should().BeEquivalentTo(constraints);
+        }
+
+        [Fact]
+        public void WhenLightingConstraintsChangedThenLightingLevelIsChangedToBeWithinConstraints()
+        {
+            var device = new DeviceEntity(deviceType: DeviceType.Light, lighting: new LightingEntity(LightingState.Off, 100, 6000));
+
+            var constraints = new LightingConstraintsEntity(10, 50, 4000, 5000);
+            device.ChangeLightingConstraints(constraints, new FakeDomainEventBus());
+
+            device.Lighting.Level.Should().Be(50);
+            device.Lighting.Temperature.Should().Be(5000);
+        }
+
+        [Fact]
+        public void WhenLightingConstraintsChangedThenPublishesDeviceLightingConstraintsChangedEvent()
+        {
+            var device = new DeviceEntity(deviceType: DeviceType.Light);
+            var bus = new FakeDomainEventBus();
+
+            device.ChangeLightingConstraints(LightingConstraintsEntity.Default, bus);
+
+            bus.GetEvents.OfType<DeviceLightingConstraintsChangedDomainEvent>()
+                .Should().HaveCount(1);
+        }
+
+        [Fact]
+        public void WhenLightingConstraintsChangedThenPublishesDeviceLightingChangedEvent()
+        {
+            var device = new DeviceEntity(deviceType: DeviceType.Light);
+            var bus = new FakeDomainEventBus();
+
+            device.ChangeLightingConstraints(LightingConstraintsEntity.Default, bus);
+
+            bus.GetEvents.OfType<DeviceLightingChangedDomainEvent>()
+                .Should().HaveCount(1);
         }
     }
 }

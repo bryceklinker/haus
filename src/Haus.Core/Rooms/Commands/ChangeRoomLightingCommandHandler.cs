@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Rooms.Repositories;

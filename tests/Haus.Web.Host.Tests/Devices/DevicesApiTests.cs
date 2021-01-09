@@ -88,5 +88,21 @@ namespace Haus.Web.Host.Tests.Devices
                 published.Payload.Lighting.State.Should().Be(LightingState.On);
             });
         }
+
+        [Fact]
+        public async Task WhenDeviceLightingConstraintsAreUpdatedThenGettingDeviceHasNewConstraints()
+        {
+            var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
+            
+            var constraints = new LightingConstraintsModel(45, 90, 200, 300);
+            await _hausClient.ChangeDeviceLightingConstraintsAsync(device.Id, constraints);
+
+            var updated = await _hausClient.GetDeviceAsync(device.Id);
+
+            updated.Lighting.Constraints.MinLevel.Should().Be(45);
+            updated.Lighting.Constraints.MaxLevel.Should().Be(90);
+            updated.Lighting.Constraints.MinTemperature.Should().Be(200);
+            updated.Lighting.Constraints.MaxTemperature.Should().Be(300);
+        }
     }
 }

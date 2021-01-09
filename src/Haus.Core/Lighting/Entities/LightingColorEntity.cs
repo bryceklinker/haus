@@ -1,8 +1,7 @@
 using System;
-using Haus.Core.Models.Common;
 using Haus.Core.Models.Lighting;
 
-namespace Haus.Core.Lighting
+namespace Haus.Core.Lighting.Entities
 {
     public class LightingColorEntity
     {

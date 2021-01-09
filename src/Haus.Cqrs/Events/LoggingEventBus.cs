@@ -28,17 +28,17 @@ namespace Haus.Cqrs.Events
         
         protected override void LogFinished<TInput>(TInput input, long elapsedMilliseconds)
         {
-            Logger.LogInformation("Finished publishing {Event} in {ElapsedTime}ms", input, elapsedMilliseconds);
+            Logger.LogInformation("Finished publishing {@Event} in {@ElapsedTime}ms", input, elapsedMilliseconds);
         }
 
         protected override void LogError<TInput>(TInput input, Exception exception, long elapsedMilliseconds)
         {
-            Logger.LogError("Event {Event} failed to publish after {ElapsedTime}ms: {Exception}", input, exception, elapsedMilliseconds);
+            Logger.LogError(exception, "Event {@Event} failed to publish after {@ElapsedTime}ms", input, elapsedMilliseconds);
         }
 
         protected override void LogStarted<TInput>(TInput input)
         {
-            Logger.LogInformation("Starting to publish event {Event}", input);
+            Logger.LogInformation("Starting to publish event {@Event}", input);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using Haus.Core.Models.Lighting;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Haus.Core.Lighting
+namespace Haus.Core.Lighting.Entities
 {
     public class LightingEntity
     {
@@ -14,7 +14,9 @@ namespace Haus.Core.Lighting
         public double Temperature { get; set; }
         public LightingColorEntity Color { get; set; }
         public LightingConstraintsEntity Constraints { get; set; }
-
+        public double MaxLevel => Constraints.MaxLevel;
+        public double MaxTemperature => Constraints.MaxTemperature;
+        
         public LightingEntity()
             : this(LightingDefaults.State, LightingDefaults.Level, LightingDefaults.Temperature, LightingColorEntity.Default, LightingConstraintsEntity.Default)
         {
@@ -54,10 +56,17 @@ namespace Haus.Core.Lighting
         {
             var actual = Copy();
             actual.Level = CalculateDesiredLevel(desired);
-            actual.Temperature = desired.Temperature;
+            actual.Temperature = CalculateDesiredTemperature(desired);
             actual.State = desired.State;
             actual.Color = desired.Color.Copy();
             return actual;
+        }
+
+        public LightingEntity ChangeLightingConstraints(LightingConstraintsEntity constraints)
+        {
+            var actual = Copy();
+            actual.Constraints = constraints.Copy();
+            return actual.ToDesiredLighting(actual);
         }
 
         public LightingEntity Copy()
@@ -85,8 +94,19 @@ namespace Haus.Core.Lighting
 
         private double CalculateDesiredLevel(LightingEntity desired)
         {
-            var desiredLevel = (desired.Level * Constraints.MaxLevel) / desired.Constraints.MaxLevel;
-            return Math.Max(desiredLevel, Constraints.MinLevel);
+            var desiredLevel = ConvertDesiredValueToEquivalentValue(desired.Level, MaxLevel, desired.MaxLevel);
+            return Constraints.GetLevelWithinConstraints(desiredLevel);
+        }
+        
+        private double CalculateDesiredTemperature(LightingEntity desired)
+        {
+            var desiredTemperature = ConvertDesiredValueToEquivalentValue(desired.Temperature, MaxTemperature, desired.MaxTemperature);
+            return Constraints.GetTemperatureWithinConstraints(desiredTemperature);
+        }
+
+        private double ConvertDesiredValueToEquivalentValue(double desiredValue, double currentMax, double desiredMax)
+        {
+            return (desiredValue * currentMax) / desiredMax;
         }
 
         protected bool Equals(LightingEntity other)

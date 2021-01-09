@@ -1,5 +1,8 @@
 import {
-  DeviceCreatedEvent, DeviceLightingChangedEvent, DevicesAssignedToRoomEvent,
+  DeviceCreatedEvent,
+  DeviceLightingChangedEvent,
+  DeviceLightingConstraintsChangedEvent,
+  DevicesAssignedToRoomEvent,
   DeviceUpdatedEvent,
   DiscoveryStartedEvent,
   DiscoveryStoppedEvent,
@@ -19,6 +22,7 @@ export const EventsActions = {
   deviceCreated: createAction(KNOWN_EVENT_TYPES.DEVICE_CREATED, (payload: DeviceCreatedEvent) => ({payload})),
   deviceUpdated: createAction(KNOWN_EVENT_TYPES.DEVICE_UPDATED, (payload: DeviceUpdatedEvent) => ({payload})),
   deviceLightingChanged: createAction(KNOWN_EVENT_TYPES.DEVICE_LIGHTING_CHANGED, (payload: DeviceLightingChangedEvent) => ({payload})),
+  deviceLightingConstraintsChanged: createAction(KNOWN_EVENT_TYPES.DEVICE_LIGHTING_CONSTRAINTS_CHANGED, (payload: DeviceLightingConstraintsChangedEvent) => ({payload})),
   devicesAssignedToRoom: createAction(KNOWN_EVENT_TYPES.DEVICES_ASSIGNED_TO_ROOM, (payload: DevicesAssignedToRoomEvent) => ({payload})),
   discoveryStarted: createAction(KNOWN_EVENT_TYPES.DISCOVERY_STARTED, (payload: DiscoveryStartedEvent) => ({payload})),
   discoveryStopped: createAction(KNOWN_EVENT_TYPES.DISCOVERY_STOPPED, (payload: DiscoveryStoppedEvent) => ({payload}))

@@ -6,6 +6,7 @@ using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Lighting;
 using Haus.Core.Lighting.Commands;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Haus.Cqrs;
 using Haus.Testing.Support;

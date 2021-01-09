@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Storage;
+using Haus.Core.Lighting.Entities;
 using Haus.Cqrs.Commands;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

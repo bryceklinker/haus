@@ -1,9 +1,10 @@
 using FluentAssertions;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Xunit;
 
-namespace Haus.Core.Tests.Lighting
+namespace Haus.Core.Tests.Lighting.Entities
 {
     public class LightingConstraintsEntityTests
     {

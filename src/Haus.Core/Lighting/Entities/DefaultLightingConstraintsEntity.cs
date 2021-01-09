@@ -3,7 +3,7 @@ using Haus.Core.Models.Lighting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Haus.Core.Lighting
+namespace Haus.Core.Lighting.Entities
 {
     public class DefaultLightingConstraintsEntity : IEntity
     {

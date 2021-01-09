@@ -7,9 +7,11 @@ using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Core.Models.ExternalMessages;
+using Haus.Core.Models.Unknown;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MQTTnet;
 
@@ -18,12 +20,14 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
     public class DeviceEventMapper : ToHausMapperBase
     {
         private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
+        private readonly ILogger<DeviceEventMapper> _logger;
         private readonly SensorChangedMapper _sensorChangedMapper;
         
-        public DeviceEventMapper(IOptionsMonitor<HausOptions> options, IOptions<ZigbeeOptions> zigbeeOptions)
+        public DeviceEventMapper(IOptionsMonitor<HausOptions> options, IOptions<ZigbeeOptions> zigbeeOptions, ILogger<DeviceEventMapper> logger)
             : base(options)
         {
             _zigbeeOptions = zigbeeOptions;
+            _logger = logger;
             _sensorChangedMapper = new SensorChangedMapper();
         }
 
@@ -45,9 +49,12 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
         private byte[] MapMessageToPayload(Zigbee2MqttMessage message)
         {
             var payload = _sensorChangedMapper.Map(message);
+            var type = GetHausEventType(payload);
+            if (type == UnknownEvent.Type) _logger.LogWarning("Unknown payload received: {@Payload}", payload);
+            
             return HausJsonSerializer.SerializeToBytes(new HausEvent<object>
             {
-                Type = GetHausEventType(payload),
+                Type = type,
                 Payload = payload
             });
         }
@@ -61,7 +68,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
                 BatteryChangedModel => BatteryChangedModel.Type,
                 OccupancyChangedModel => OccupancyChangedModel.Type,
                 TemperatureChangedModel => TemperatureChangedModel.Type,
-                _ => throw new InvalidOperationException($"Unknown payload type: {payload?.GetType()}")
+                _ => UnknownEvent.Type
             };
         }
     }

@@ -54,7 +54,7 @@ namespace Haus.Web.Host.Rooms
             return QueryAsync(new GetDevicesInRoomQuery(id));
         }
 
-        [HttpPost("{id}/lighting")]
+        [HttpPut("{id}/lighting")]
         public Task<IActionResult> ChangeLighting([FromRoute] long id, [FromBody] LightingModel model)
         {
             return CommandAsync(new ChangeRoomLightingCommand(id, model));

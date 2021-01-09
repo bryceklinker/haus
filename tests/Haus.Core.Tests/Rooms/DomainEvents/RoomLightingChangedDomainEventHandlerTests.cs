@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms.Events;

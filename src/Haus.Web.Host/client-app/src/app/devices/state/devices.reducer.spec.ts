@@ -74,4 +74,28 @@ describe('devicesReducer', () => {
 
     expect(state.entities[original.id]?.lighting).toEqual(lighting);
   })
+
+  it('should update device lighting constraints when device lighting constraints changed event received', () => {
+    const original = ModelFactory.createDeviceModel();
+    const constraints = ModelFactory.createLightingConstraints({minLevel: 60});
+
+    const state = generateStateFromActions(devicesReducer,
+      EventsActions.deviceCreated({device: original}),
+      EventsActions.deviceLightingConstraintsChanged({device: original, constraints})
+    );
+
+    expect(state.entities[original.id]?.lighting.constraints).toEqual(constraints);
+  })
+
+  it('should update device lighting constraints when device lighting constraints chagned successfully', () => {
+    const original = ModelFactory.createDeviceModel();
+    const constraints = ModelFactory.createLightingConstraints({minLevel: 60});
+
+    const state = generateStateFromActions(devicesReducer,
+      EventsActions.deviceCreated({device: original}),
+      DevicesActions.changeDeviceLightingConstraints.success({device: original, constraints})
+    );
+
+    expect(state.entities[original.id]?.lighting.constraints).toEqual(constraints);
+  })
 })

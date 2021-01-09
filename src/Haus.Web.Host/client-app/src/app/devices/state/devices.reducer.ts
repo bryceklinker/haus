@@ -23,11 +23,24 @@ const reducer = createReducer(initialState,
     )
   ),
   on(EventsActions.deviceLightingChanged, (state, {payload}) => ({
+      ...adapter.updateOne({
+        id: payload.device.id,
+        changes: {lighting: payload.lighting}
+      }, state)
+    })
+  ),
+  on(DevicesActions.changeDeviceLightingConstraints.success, EventsActions.deviceLightingConstraintsChanged, (state, {payload}) => ({
     ...adapter.updateOne({
       id: payload.device.id,
-      changes: {lighting: payload.lighting}
+      changes: {
+        lighting: {
+          ...payload.device.lighting,
+          constraints: payload.constraints
+        }
+      }
     }, state)
-  }))
+  })
+  )
 );
 
 export function devicesReducer(state: DevicesState | undefined, action: Action) {

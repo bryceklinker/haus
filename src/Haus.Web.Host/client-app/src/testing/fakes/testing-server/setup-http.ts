@@ -37,3 +37,20 @@ export function setupHttpPost(url: Mask, data: any, {status = DEFAULT_POST_STATU
     })
   )
 }
+
+export function setupHttpPut(url: Mask, data: any, {status = DEFAULT_POST_STATUS, delay = DEFAULT_DELAY}: RequestOptions = {}) {
+  server.use(
+    rest.put(url, (req, res, ctx) => {
+      captureRequest(req);
+      const transforms = [
+        ctx.status(status),
+        ctx.delay(delay)
+      ]
+
+      if (data) {
+        transforms.push(ctx.json(data));
+      }
+      return res(...transforms);
+    })
+  )
+}

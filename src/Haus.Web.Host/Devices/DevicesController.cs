@@ -1,8 +1,6 @@
 using System.Threading.Tasks;
 using Haus.Core.Devices.Commands;
 using Haus.Core.Devices.Queries;
-using Haus.Core.Discovery.Commands;
-using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Lighting;
 using Haus.Cqrs;
@@ -31,10 +29,16 @@ namespace Haus.Web.Host.Devices
             return QueryAsync(new GetDeviceByIdQuery(id));
         }
 
-        [HttpPost("{id}/lighting")]
+        [HttpPut("{id}/lighting")]
         public Task<IActionResult> ChangeLighting([FromRoute] long id, [FromBody] LightingModel model)
         {
             return CommandAsync(new ChangeDeviceLightingCommand(id, model));
+        }
+
+        [HttpPut("{id}/lighting-constraints")]
+        public Task<IActionResult> ChangeLightingConstraints([FromRoute] long id, [FromBody] LightingConstraintsModel model)
+        {
+            return CommandAsync(new ChangeDeviceLightingConstraintsCommand(id, model));
         }
 
         [HttpPost("{id}/turn-off")]

@@ -1,9 +1,10 @@
 using System;
 using System.Linq.Expressions;
 using Haus.Core.Models.Lighting;
+using Haus.Core.Tests.Lighting.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Haus.Core.Lighting
+namespace Haus.Core.Lighting.Entities
 {
     public class LightingConstraintsEntity
     {
@@ -21,6 +22,9 @@ namespace Haus.Core.Lighting
         public double MinTemperature { get; set; }
         public double MaxTemperature { get; set; }
 
+        public ValueRange TemperatureRange => new(MinTemperature, MaxTemperature);
+        public ValueRange LevelRange => new(MinLevel, MaxLevel);
+        
         public LightingConstraintsEntity()
             : this(LightingDefaults.MinLevel)
         {
@@ -45,6 +49,21 @@ namespace Haus.Core.Lighting
             MaxLevel = model.MaxLevel;
             MinTemperature = model.MinTemperature;
             MaxTemperature = model.MaxTemperature;
+        }
+
+        public LightingConstraintsModel ToModel()
+        {
+            return new(MinLevel, MaxLevel, MinTemperature, MaxTemperature);
+        }
+        
+        public double GetTemperatureWithinConstraints(double temperature)
+        {
+            return TemperatureRange.GetValueWithinRange(temperature);
+        }
+
+        public double GetLevelWithinConstraints(double level)
+        {
+            return LevelRange.GetValueWithinRange(level);
         }
 
         public LightingConstraintsEntity Copy()

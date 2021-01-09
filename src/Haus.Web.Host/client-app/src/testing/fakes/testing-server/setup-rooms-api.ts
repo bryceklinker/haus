@@ -1,5 +1,5 @@
 import {ModelFactory} from "../../model-factory";
-import {setupHttpGet, setupHttpPost} from "./setup-http";
+import {setupHttpGet, setupHttpPost, setupHttpPut} from "./setup-http";
 import {RequestOptions} from "./request-options";
 import {HttpStatusCodes} from "../../../app/shared/rest-api";
 import {RoomModel} from "../../../app/shared/models";
@@ -15,7 +15,7 @@ export function setupAddRoom(result: RoomModel = ModelFactory.createRoomModel(),
 }
 
 export function setupChangeRoomLighting(roomId: number, options?: RequestOptions) {
-  setupHttpPost(`${BASE_URL}/${roomId}/lighting`, null, options);
+  setupHttpPut(`${BASE_URL}/${roomId}/lighting`, null, options);
 }
 
 export function setupAssignDevicesToRoom(roomId: number, options?: RequestOptions) {

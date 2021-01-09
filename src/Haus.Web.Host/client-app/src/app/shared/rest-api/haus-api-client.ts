@@ -5,13 +5,15 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
 
 import {
+  DeviceModel,
+  DeviceType,
+  DiscoveryModel,
+  LightingConstraintsModel,
   LightingModel,
   ListResult,
-  RoomModel,
-  DeviceModel,
   MqttDiagnosticsMessageModel,
-  SimulatedDeviceModel,
-  DeviceType, DiscoveryModel
+  RoomModel,
+  SimulatedDeviceModel
 } from "../models";
 import {HttpMethod} from "./http-method";
 import {DestroyableSubject} from "../destroyable-subject";
@@ -41,6 +43,10 @@ export class HausApiClient implements OnDestroy {
 
   getDeviceTypes(): Observable<ListResult<DeviceType>> {
     return this.execute<ListResult<DeviceType>>(HttpMethod.GET, '/api/device-types');
+  }
+
+  changeDeviceLightingConstraints(deviceId: number, model: LightingConstraintsModel): Observable<void> {
+    return this.execute(HttpMethod.PUT, `/api/devices/${deviceId}/lighting-constraints`, model);
   }
 
   turnDeviceOff(deviceId: number): Observable<void> {
@@ -80,7 +86,7 @@ export class HausApiClient implements OnDestroy {
   }
 
   changeRoomLighting(roomId: number, lighting: LightingModel): Observable<void> {
-    return this.execute(HttpMethod.POST, `/api/rooms/${roomId}/lighting`, lighting);
+    return this.execute(HttpMethod.PUT, `/api/rooms/${roomId}/lighting`, lighting);
   }
 
   getDevicesInRoom(roomId: string): Observable<ListResult<DeviceModel>> {
@@ -113,6 +119,8 @@ export class HausApiClient implements OnDestroy {
         return this.http.get<T>(url);
       case 'POST':
         return this.http.post<T>(url, data);
+      case 'PUT':
+        return this.http.put<T>(url, data);
       default:
         throw new Error(`Unrecognized http method: ${method}`);
     }

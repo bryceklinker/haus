@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
@@ -59,9 +60,9 @@ namespace Haus.Core.Devices.Entities
         }
 
         public DeviceEntity(
-            long id, 
-            string externalId, 
-            string name, 
+            long id = 0, 
+            string externalId = "", 
+            string name = "", 
             DeviceType deviceType = DeviceType.Unknown, 
             RoomEntity room = null, 
             LightingEntity lighting = null, 
@@ -137,6 +138,18 @@ namespace Haus.Core.Devices.Entities
                 throw new InvalidOperationException($"Device with id {Id} is not a light.");
 
             Lighting = Lighting.ToDesiredLighting(desiredLighting);
+            domainEventBus.Enqueue(new DeviceLightingChangedDomainEvent(this, Lighting));
+        }
+
+        public void ChangeLightingConstraints(
+            LightingConstraintsEntity lightingConstraintsEntity,
+            IDomainEventBus domainEventBus)
+        {
+            if (!IsLight)
+                throw new InvalidOperationException($"Device {Id} is not a light");
+
+            Lighting = Lighting.ChangeLightingConstraints(lightingConstraintsEntity);
+            domainEventBus.Enqueue(new DeviceLightingConstraintsChangedDomainEvent(this, Lighting.Constraints));
             domainEventBus.Enqueue(new DeviceLightingChangedDomainEvent(this, Lighting));
         }
 

@@ -1,0 +1,29 @@
+<div class="lighting-constraints" data-testid="lighting-constraints" [formGroup]="constraintsForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Min Level</mat-label>
+    <input matInput type="number" formControlName="minLevel" data-testid="min-level-input" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Max Level</mat-label>
+    <input matInput type="number" formControlName="maxLevel" data-testid="max-level-input" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Min Temperature</mat-label>
+    <input matInput type="number" formControlName="minTemperature" data-testid="min-temperature-input" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Max Temperature</mat-label>
+    <input matInput type="number" formControlName="maxTemperature" data-testid="max-temperature-input" />
+  </mat-form-field>
+
+  <button mat-button (click)="onCancel()" [disabled]="readonly" *ngIf="showCancel" data-testid="cancel-constraints-btn">
+    Cancel
+  </button>
+
+  <button mat-button (click)="onSave()" [disabled]="constraintsForm.invalid || readonly" data-testid="save-constraints-btn">
+    Save
+  </button>
+</div>

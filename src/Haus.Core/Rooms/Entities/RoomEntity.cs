@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.DomainEvents;

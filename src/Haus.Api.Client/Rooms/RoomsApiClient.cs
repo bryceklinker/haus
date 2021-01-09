@@ -62,7 +62,7 @@ namespace Haus.Api.Client.Rooms
 
         public Task<HttpResponseMessage> ChangeRoomLightingAsync(long roomId, LightingModel model)
         {
-            return PostAsJsonAsync($"rooms/{roomId}/lighting", model);
+            return PutAsJsonAsync($"rooms/{roomId}/lighting", model);
         }
 
         public Task<HttpResponseMessage> TurnRoomOnAsync(long roomId)

@@ -70,9 +70,9 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
 
             foreach (var message in messageToSend)
             {
-                _logger.LogInformation($"Sending message to {message.Topic}...");
+                _logger.LogInformation("Sending message to {@Topic}...", message.Topic);
                 await targetMqtt.PublishAsync(message).ConfigureAwait(false);
-                _logger.LogInformation($"Sent message to {message.Topic}.");    
+                _logger.LogInformation("Sent message to {@Topic}.", message.Topic);    
             }
         }
     }

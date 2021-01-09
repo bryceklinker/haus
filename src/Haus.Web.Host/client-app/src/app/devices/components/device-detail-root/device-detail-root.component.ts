@@ -5,8 +5,8 @@ import {ActivatedRoute} from "@angular/router";
 import {map, mergeMap} from "rxjs/operators";
 
 import {AppState} from "../../../app.state";
-import {selectDeviceById} from "../../state";
-import {DeviceModel} from "../../../shared/models";
+import {DevicesActions, selectDeviceById} from "../../state";
+import {DeviceLightingConstraintsChangedEvent, DeviceModel} from "../../../shared/models";
 
 @Component({
   selector: 'device-detail-root',
@@ -21,5 +21,9 @@ export class DeviceDetailRootComponent {
       map(paramMap => paramMap.get('deviceId') || ''),
       mergeMap(deviceId => this.store.select(selectDeviceById(deviceId)))
     )
+  }
+
+  onSaveLightingConstraints($event: DeviceLightingConstraintsChangedEvent) {
+    this.store.dispatch(DevicesActions.changeDeviceLightingConstraints.request($event));
   }
 }

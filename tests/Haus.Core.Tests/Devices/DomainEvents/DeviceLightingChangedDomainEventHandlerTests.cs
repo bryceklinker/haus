@@ -5,6 +5,7 @@ using Haus.Core.Common;
 using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Lighting;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Tests.Support;

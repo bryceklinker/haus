@@ -1,1 +1,4 @@
-<device-detail [device]="selectedDevice$ | async"></device-detail>
+<device-detail [device]="selectedDevice$ | async"
+               (saveLightingConstraints)="onSaveLightingConstraints($event)">
+
+</device-detail>
