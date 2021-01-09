@@ -7,6 +7,8 @@ namespace Haus.Core.DeviceSimulator.State
     {
         IDeviceSimulatorState Current { get; }
         void Publish(IDeviceSimulatorState state);
+
+        void PublishNext(Func<IDeviceSimulatorState, IDeviceSimulatorState> generateNextState);
     }
     
     public class DeviceSimulatorStore : IDeviceSimulatorStore
@@ -23,6 +25,15 @@ namespace Haus.Core.DeviceSimulator.State
         public void Publish(IDeviceSimulatorState state)
         {
             _subject.OnNext(state);
+        }
+
+        public void PublishNext(Func<IDeviceSimulatorState, IDeviceSimulatorState> generateNextState)
+        {
+            var next = generateNextState(Current);
+            if (next == Current)
+                return;
+            
+            Publish(next);
         }
 
         public IDisposable Subscribe(IObserver<IDeviceSimulatorState> observer)

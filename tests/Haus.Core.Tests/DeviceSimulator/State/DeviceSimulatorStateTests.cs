@@ -1,7 +1,10 @@
+using System;
 using FluentAssertions;
 using Haus.Core.DeviceSimulator.Entities;
 using Haus.Core.DeviceSimulator.State;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
+using Haus.Core.Models.Lighting;
 using Xunit;
 
 namespace Haus.Core.Tests.DeviceSimulator.State
@@ -38,6 +41,28 @@ namespace Haus.Core.Tests.DeviceSimulator.State
                 .ToModel();
 
             model.Devices.Should().HaveCount(1);
+        }
+
+        [Fact]
+        public void WhenDeviceLightingIsChangedThenReturnsUpdatedDeviceInState()
+        {
+            var deviceId = $"{Guid.NewGuid()}";
+            var state = DeviceSimulatorState.Initial
+                .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel(deviceId, DeviceType.Light)))
+                .ChangeDeviceLighting(deviceId, new LightingModel(LightingState.On));
+
+            state.Devices.Should().HaveCount(1)
+                .And.OnlyContain(e => e.Id == deviceId && e.Lighting.State == LightingState.On);
+        }
+
+        [Fact]
+        public void WhenDeviceLightingChangesForDeviceNotInStateThenReturnsUnchangedState()
+        {
+            var state = DeviceSimulatorState.Initial
+                .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel()))
+                .ChangeDeviceLighting($"{Guid.NewGuid()}", new LightingModel());
+
+            state.Devices.Should().HaveCount(1);
         }
     }
 }

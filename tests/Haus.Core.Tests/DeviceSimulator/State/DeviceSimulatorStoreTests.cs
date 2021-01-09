@@ -1,3 +1,5 @@
+using System;
+using System.Reactive.Linq;
 using FluentAssertions;
 using Haus.Core.DeviceSimulator.Entities;
 using Haus.Core.DeviceSimulator.State;
@@ -25,6 +27,19 @@ namespace Haus.Core.Tests.DeviceSimulator.State
             store.Publish(store.Current.AddSimulatedDevice(device));
 
             store.Current.Devices.Should().Contain(device);
+        }
+
+        [Fact]
+        public void WhenPublishNextIsUsedAndNewStateIsUnchangedThenNoUpdatesAreSent()
+        {
+            var publishCount = 0;
+            
+            var store = new DeviceSimulatorStore();
+            store.Skip(1).Subscribe(s => publishCount++);
+
+            store.PublishNext(s => s);
+
+            publishCount.Should().Be(0);
         }
     }
 }
