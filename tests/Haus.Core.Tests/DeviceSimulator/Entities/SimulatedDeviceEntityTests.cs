@@ -5,6 +5,7 @@ using Haus.Core.DeviceSimulator.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
+using Haus.Core.Models.Lighting;
 using Xunit;
 
 namespace Haus.Core.Tests.DeviceSimulator.Entities
@@ -59,6 +60,16 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
             model.DeviceType.Should().Be(DeviceType.Light);
             model.Metadata.Should().HaveCount(2)
                 .And.ContainEquivalentOf(new MetadataModel("one", "three"));
+        }
+
+        [Fact]
+        public void WhenSimulatorIsLightAndConvertedToModelThenLightingIsInModel()
+        {
+            var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.Light, Lighting: LightingModel.Default);
+
+            var model = entity.ToModel();
+
+            model.Lighting.Should().BeEquivalentTo(LightingModel.Default);
         }
     }
 }

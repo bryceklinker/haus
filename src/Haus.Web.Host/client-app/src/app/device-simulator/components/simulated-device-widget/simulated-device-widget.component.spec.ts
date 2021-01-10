@@ -35,6 +35,14 @@ describe('SimulatedDeviceWidgetComponent', () => {
     expect(container).toHaveTextContent('2000');
   })
 
+  it('should show lighting when simulator is a light', async () => {
+    const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.Light});
+
+    await renderWidget({simulatedDevice});
+
+    expect(screen.getByTestId('lighting')).toBeInTheDocument();
+  })
+
   function renderWidget(props: Partial<SimulatedDeviceWidgetComponent>) {
     return renderFeatureComponent(SimulatedDeviceWidgetComponent, {
       imports: [DeviceSimulatorModule],

@@ -36,7 +36,7 @@ namespace Haus.Core.DeviceSimulator.Entities
         public SimulatedDeviceModel ToModel()
         {
             var metadataModels = Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray();
-            return new SimulatedDeviceModel(Id, DeviceType, metadataModels);
+            return new SimulatedDeviceModel(Id, DeviceType, metadataModels, Lighting);
         }
 
         public DeviceDiscoveredEvent ToDeviceDiscoveredModel()

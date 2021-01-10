@@ -42,7 +42,7 @@ namespace Haus.Web.Host.DeviceSimulator
         {
             using var scope = _scopeFactory.CreateScope();
             var hubContext = scope.GetService<IHubContext<DeviceSimulatorHub>>();
-            await hubContext.BroadcastAsync("OnState", state).ConfigureAwait(false);
+            await hubContext.BroadcastAsync("OnState", state.ToModel()).ConfigureAwait(false);
         }
     }
 }

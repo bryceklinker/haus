@@ -30,7 +30,7 @@ namespace Haus.Core.DeviceSimulator.State
         public void PublishNext(Func<IDeviceSimulatorState, IDeviceSimulatorState> generateNextState)
         {
             var next = generateNextState(Current);
-            if (next == Current)
+            if (ReferenceEquals(next, Current)) 
                 return;
             
             Publish(next);

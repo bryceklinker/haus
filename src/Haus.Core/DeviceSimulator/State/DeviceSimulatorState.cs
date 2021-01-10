@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Haus.Core.DeviceSimulator.Entities;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Core.Models.Lighting;
 
@@ -15,16 +16,11 @@ namespace Haus.Core.DeviceSimulator.State
         IDeviceSimulatorState ChangeDeviceLighting(string id, LightingModel lighting);
     }
 
-    public record DeviceSimulatorState : IDeviceSimulatorState
+    public record DeviceSimulatorState(ImmutableArray<SimulatedDeviceEntity> Devices) : IDeviceSimulatorState
     {
         public static readonly DeviceSimulatorState Initial = new(ImmutableArray<SimulatedDeviceEntity>.Empty);
 
-        public ImmutableArray<SimulatedDeviceEntity> Devices { get; }
-
-        public DeviceSimulatorState(ImmutableArray<SimulatedDeviceEntity> devices)
-        {
-            Devices = devices;
-        }
+        public ImmutableArray<SimulatedDeviceEntity> Devices { get; } = Devices.IsDefaultOrEmpty ? ImmutableArray<SimulatedDeviceEntity>.Empty :  Devices;
 
         public IDeviceSimulatorState Reset()
         {
