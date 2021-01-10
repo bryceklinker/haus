@@ -78,7 +78,10 @@ namespace Haus.Core.Lighting.Entities
 
         protected bool Equals(LightingConstraintsEntity other)
         {
-            return MinLevel.Equals(other.MinLevel) && MaxLevel.Equals(other.MaxLevel) && MinTemperature.Equals(other.MinTemperature) && MaxTemperature.Equals(other.MaxTemperature);
+            return MinLevel.Equals(other.MinLevel)
+                   && MaxLevel.Equals(other.MaxLevel)
+                   && MinTemperature.Equals(other.MinTemperature)
+                   && MaxTemperature.Equals(other.MaxTemperature);
         }
 
         public override bool Equals(object obj)

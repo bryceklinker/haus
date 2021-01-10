@@ -10,7 +10,7 @@ using MQTTnet;
 
 namespace Haus.Web.Host.Common.Mqtt
 {
-    public class RoutableCommandHandler : IEventHandler<RoutableCommand>
+    internal class RoutableCommandHandler : IEventHandler<RoutableCommand>
     {
         private readonly IOptions<HausMqttSettings> _mqttOptions;
         private readonly IHausMqttClientFactory _clientFactory;

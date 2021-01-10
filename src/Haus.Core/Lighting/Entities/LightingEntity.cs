@@ -16,15 +16,15 @@ namespace Haus.Core.Lighting.Entities
         public LightingConstraintsEntity Constraints { get; set; }
         public double MaxLevel => Constraints.MaxLevel;
         public double MaxTemperature => Constraints.MaxTemperature;
-        
+
         public LightingEntity()
-            : this(LightingDefaults.State, LightingDefaults.Level, LightingDefaults.Temperature, LightingColorEntity.Default, LightingConstraintsEntity.Default)
+            : this(LightingDefaults.State, LightingDefaults.Level, LightingDefaults.Temperature,
+                LightingColorEntity.Default, LightingConstraintsEntity.Default)
         {
-            
         }
-        
+
         public LightingEntity(
-            LightingState state = LightingDefaults.State, 
+            LightingState state = LightingDefaults.State,
             double level = LightingDefaults.Level,
             double temperature = LightingDefaults.Temperature,
             LightingColorEntity color = null,
@@ -36,17 +36,23 @@ namespace Haus.Core.Lighting.Entities
             Color = color ?? LightingColorEntity.Default.Copy();
             Constraints = constraints ?? LightingConstraintsEntity.Default.Copy();
         }
-        
-        public static readonly Expression<Func<LightingEntity, LightingModel>> ToModelExpression = 
+
+        public static readonly Expression<Func<LightingEntity, LightingModel>> ToModelExpression =
             l => new LightingModel(
-                l.State, 
-                l.Level, 
-                l.Temperature, 
+                l.State,
+                l.Level,
+                l.Temperature,
                 new LightingColorModel(l.Color.Red, l.Color.Green, l.Color.Blue),
-                new LightingConstraintsModel(l.Constraints.MinLevel, l.Constraints.MaxLevel, l.Constraints.MinTemperature, l.Constraints.MaxTemperature));
+                new LightingConstraintsModel(
+                    l.Constraints.MinLevel,
+                    l.Constraints.MaxLevel,
+                    l.Constraints.MinTemperature,
+                    l.Constraints.MaxTemperature
+                )
+            );
 
         private static readonly Lazy<Func<LightingEntity, LightingModel>> ToModelFunc = new(ToModelExpression.Compile);
-        
+
         public LightingModel ToModel()
         {
             return ToModelFunc.Value(this);
@@ -84,7 +90,7 @@ namespace Haus.Core.Lighting.Entities
                 LightingConstraintsEntity.FromModel(model.Constraints));
         }
 
-        public static void Configure<TEntity>(OwnedNavigationBuilder<TEntity, LightingEntity> builder) 
+        public static void Configure<TEntity>(OwnedNavigationBuilder<TEntity, LightingEntity> builder)
             where TEntity : class
         {
             builder.Property(l => l.State).HasConversion<string>();
@@ -97,10 +103,11 @@ namespace Haus.Core.Lighting.Entities
             var desiredLevel = ConvertDesiredValueToEquivalentValue(desired.Level, MaxLevel, desired.MaxLevel);
             return Constraints.GetLevelWithinConstraints(desiredLevel);
         }
-        
+
         private double CalculateDesiredTemperature(LightingEntity desired)
         {
-            var desiredTemperature = ConvertDesiredValueToEquivalentValue(desired.Temperature, MaxTemperature, desired.MaxTemperature);
+            var desiredTemperature =
+                ConvertDesiredValueToEquivalentValue(desired.Temperature, MaxTemperature, desired.MaxTemperature);
             return Constraints.GetTemperatureWithinConstraints(desiredTemperature);
         }
 
@@ -111,9 +118,10 @@ namespace Haus.Core.Lighting.Entities
 
         protected bool Equals(LightingEntity other)
         {
-            return State == other.State 
-                   && Nullable.Equals(Level, other.Level) 
-                   && Nullable.Equals(Temperature, other.Temperature) 
+            return State == other.State
+                   && Nullable.Equals(Level, other.Level)
+                   && Nullable.Equals(Temperature, other.Temperature)
+                   && Nullable.Equals(Constraints, other.Constraints)
                    && Equals(Color, other.Color);
         }
 
@@ -127,7 +135,7 @@ namespace Haus.Core.Lighting.Entities
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(State, Level, Temperature, Color);
+            return HashCode.Combine(State, Level, Temperature, Color, Constraints);
         }
     }
 }

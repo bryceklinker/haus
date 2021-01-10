@@ -5,7 +5,6 @@ using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Devices;
 using Haus.Core.Tests.Support;
 using FluentAssertions;
-using Haus.Core.Lighting;
 using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices.Events;
@@ -126,8 +125,8 @@ namespace Haus.Core.Tests.Devices.Entities
         public void WhenDeviceLightingChangedThenDeviceLightingChangedEventQueued()
         {
             var domainEventBus = new FakeDomainEventBus();
-            var light = new DeviceEntity{DeviceType = DeviceType.Light};
-            var lighting = new LightingEntity {Level = 12};
+            var light = new DeviceEntity(deviceType: DeviceType.Light);
+            var lighting = new LightingEntity(level: 12);
 
             light.ChangeLighting(lighting, domainEventBus);
 
@@ -135,7 +134,7 @@ namespace Haus.Core.Tests.Devices.Entities
                 .HaveCount(1)
                 .And.ContainItemsAssignableTo<DeviceLightingChangedDomainEvent>();
         }
-
+        
         [Fact]
         public void WhenDeviceIsTurnedOffThenDeviceLightingStateIsSetToOff()
         {

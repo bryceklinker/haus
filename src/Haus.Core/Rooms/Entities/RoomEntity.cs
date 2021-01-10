@@ -26,7 +26,11 @@ namespace Haus.Core.Rooms.Entities
                     r.Lighting.Level,
                     r.Lighting.Temperature,
                     new LightingColorModel(r.Lighting.Color.Red, r.Lighting.Color.Green, r.Lighting.Color.Blue),
-                    new LightingConstraintsModel(r.Lighting.Constraints.MinLevel, r.Lighting.Constraints.MaxLevel, r.Lighting.Constraints.MinTemperature, r.Lighting.Constraints.MaxTemperature)
+                    new LightingConstraintsModel(
+                        r.Lighting.Constraints.MinLevel, 
+                        r.Lighting.Constraints.MaxLevel, 
+                        r.Lighting.Constraints.MinTemperature, 
+                        r.Lighting.Constraints.MaxTemperature)
                 )
             );
 

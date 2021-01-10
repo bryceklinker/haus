@@ -15,5 +15,8 @@ namespace Haus.Core.Models.Lighting
         public const byte Red = 255;
         public const byte Green = 255;
         public const byte Blue = 255;
+
+        public const bool UseTemperature = false;
+        public const bool UseColor = false;
     }
 }

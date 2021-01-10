@@ -19,5 +19,18 @@ namespace Haus.Core.Tests.Lighting.Entities
             entity.Constraints.MinTemperature.Should().Be(9000);
             entity.Constraints.MaxTemperature.Should().Be(10000);
         }
+
+        [Fact]
+        public void WhenConvertedToModelThenReturnsModelPopulatedFromEntity()
+        {
+            var entity = new LightingConstraintsEntity(23, 45, 100, 200);
+
+            var model = entity.ToModel();
+
+            model.MinLevel.Should().Be(23);
+            model.MaxLevel.Should().Be(45);
+            model.MinTemperature.Should().Be(100);
+            model.MaxTemperature.Should().Be(200);
+        }
     }
 }
