@@ -17,7 +17,7 @@ function checkRGBValues(red: number, green: number, blue: number): void {
     console.warn('Green value is greater than 255', green);
   }
 
-  if (blue > 200) {
+  if (blue > 255) {
     console.warn('Blue value is greater than 255', blue);
   }
 }
