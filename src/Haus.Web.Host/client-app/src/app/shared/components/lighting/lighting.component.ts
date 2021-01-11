@@ -35,6 +35,10 @@ export class LightingComponent {
     return this.lighting?.temperature ? this.lighting.temperature : null;
   }
 
+  get colorLighting(): ColorLightingModel | null {
+    return this.lighting?.color ? this.lighting.color : null;
+  }
+
   get state(): boolean {
     return this.lightingState === LightingState.On;
   }
@@ -61,10 +65,6 @@ export class LightingComponent {
 
   get maxTemperature(): number {
     return this.temperatureLighting == null ? 0 : this.temperatureLighting.max;
-  }
-
-  get color(): ColorLightingModel | null {
-    return this.lighting?.color ? this.lighting.color : null;
   }
 
   onStateChange($event: MatSlideToggleChange) {

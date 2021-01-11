@@ -19,7 +19,7 @@
     </mat-slider>
   </div>
 
-  <div class="lighting-field">
+  <div class="lighting-field" *ngIf="temperatureLighting">
     <span data-testid="temperature-value" class="label">Temperature (K): {{temperature}}</span>
     <mat-slider data-testid="temperature-input"
                 [min]="minTemperature"
@@ -31,7 +31,8 @@
     </mat-slider>
   </div>
 
-  <lighting-color [color]="color"
+  <lighting-color *ngIf="colorLighting"
+                  [color]="colorLighting"
                   [readonly]="readonly"
                   (colorChange)="onLightingColorChanged($event)">
   </lighting-color>

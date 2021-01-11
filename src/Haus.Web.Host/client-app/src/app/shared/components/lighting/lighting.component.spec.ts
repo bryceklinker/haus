@@ -16,6 +16,7 @@ describe('LightingComponent', () => {
       state: LightingState.On,
       level: ModelFactory.createLevelLighting({value: 45, min: 5, max: 95}),
       temperature: ModelFactory.createTemperatureLighting({value: 77, min: 0, max: 1000}),
+      color: ModelFactory.createColorLighting()
     });
     const {level, state, temperature} = await renderLightingWithHarnesses({lighting});
 
@@ -51,7 +52,11 @@ describe('LightingComponent', () => {
   })
 
   it('should notify of change when brightness changes', async () => {
-    const lighting = ModelFactory.createLighting({level: ModelFactory.createLevelLighting()});
+    const lighting = ModelFactory.createLighting({
+      level: ModelFactory.createLevelLighting(),
+      temperature: ModelFactory.createTemperatureLighting(),
+      color: ModelFactory.createColorLighting()
+    });
     const changeEmitter = new TestingEventEmitter<LightingModel>();
     const {fixture} = await renderLightingWithHarnesses({lighting, change: changeEmitter});
 
@@ -78,6 +83,7 @@ describe('LightingComponent', () => {
 
   it('should notify of change when color changes', async () => {
     const lighting = ModelFactory.createLighting({
+      temperature: ModelFactory.createTemperatureLighting(),
       color: ModelFactory.createColorLighting({red: 9})
     });
     const changeEmitter = new TestingEventEmitter<LightingModel>();
@@ -95,7 +101,11 @@ describe('LightingComponent', () => {
   })
 
   it('should notify of change when state changes', async () => {
-    const lighting = ModelFactory.createLighting({state: LightingState.Off});
+    const lighting = ModelFactory.createLighting({
+      state: LightingState.Off,
+      temperature: ModelFactory.createTemperatureLighting(),
+      color: ModelFactory.createColorLighting()
+    });
     const changeEmitter = new TestingEventEmitter<LightingModel>();
 
     const {state, detectChanges} = await renderLightingWithHarnesses({lighting, change: changeEmitter});
@@ -109,13 +119,32 @@ describe('LightingComponent', () => {
   })
 
   it('should disable controls when lighting is readonly', async () => {
-    const lighting = ModelFactory.createLighting();
+    const lighting = ModelFactory.createLighting({
+      temperature: ModelFactory.createTemperatureLighting(),
+      color: ModelFactory.createColorLighting()
+    });
 
     const {level, state, temperature} = await renderLightingWithHarnesses({lighting, readonly: true});
 
     expect(await level.isDisabled()).toEqual(true);
     expect(await state.isDisabled()).toEqual(true);
     expect(await temperature.isDisabled()).toEqual(true);
+  })
+
+  it('should hide color when lighting does not have color', async () => {
+    const lighting = ModelFactory.createLighting();
+
+    await renderLighting({lighting});
+
+    expect(screen.queryByTestId('lighting-color')).not.toBeInTheDocument();
+  })
+
+  it('should hide temperature when lighting does not have temperature', async () => {
+    const lighting = ModelFactory.createLighting();
+
+    await renderLighting({lighting});
+
+    expect(screen.queryByTestId('temperature-input')).not.toBeInTheDocument();
   })
 
   async function renderLightingWithHarnesses(props: Partial<LightingComponent> = {}) {
