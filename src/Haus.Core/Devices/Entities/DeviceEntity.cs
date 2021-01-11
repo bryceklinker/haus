@@ -19,6 +19,12 @@ namespace Haus.Core.Devices.Entities
 {
     public class DeviceEntity : Entity
     {
+        private static readonly LightingEntity FullDefaultLighting
+            = new(LightingDefaults.State, 
+                new LevelLightingEntity(), 
+                new TemperatureLightingEntity(),
+                new ColorLightingEntity());
+
         public static readonly Expression<Func<DeviceEntity, DeviceModel>> ToModelExpression =
             d => new DeviceModel(
                 d.Id,
@@ -26,24 +32,35 @@ namespace Haus.Core.Devices.Entities
                 d.ExternalId,
                 d.Name,
                 d.DeviceType,
+                d.LightType,
                 d.Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray(),
-                new LightingModel(d.Lighting.State, d.Lighting.Level, d.Lighting.Temperature,
-                    new LightingColorModel(d.Lighting.Color.Red, d.Lighting.Color.Green, d.Lighting.Color.Blue),
-                    new LightingConstraintsModel(
-                        d.Lighting.Constraints.MinLevel, 
-                        d.Lighting.Constraints.MaxLevel,
-                        d.Lighting.Constraints.MinTemperature, 
-                        d.Lighting.Constraints.MaxTemperature)
-                )
+                d.Lighting == null
+                    ? null
+                    : new LightingModel(
+                        d.Lighting.State,
+                        d.Lighting.Level == null
+                            ? null
+                            : new LevelLightingModel(d.Lighting.Level.Value, d.Lighting.Level.Min,
+                                d.Lighting.Level.Max),
+                        d.Lighting.Temperature == null
+                            ? null
+                            : new TemperatureLightingModel(d.Lighting.Temperature.Value, d.Lighting.Temperature.Min,
+                                d.Lighting.Temperature.Max),
+                        d.Lighting.Color == null
+                            ? null
+                            : new ColorLightingModel(d.Lighting.Color.Red, d.Lighting.Color.Green,
+                                d.Lighting.Color.Blue)
+                    )
             );
 
         private static readonly Lazy<Func<DeviceEntity, DeviceModel>> ToModelFunc = new(ToModelExpression.Compile);
-
+        
         public string ExternalId { get; set; }
 
         public string Name { get; set; }
 
         public DeviceType DeviceType { get; set; }
+        public LightType LightType { get; set; }
 
         public ICollection<DeviceMetadataEntity> Metadata { get; set; }
 
@@ -56,51 +73,61 @@ namespace Haus.Core.Devices.Entities
         public DeviceEntity()
             : this(0, null, null)
         {
-            
         }
 
         public DeviceEntity(
-            long id = 0, 
-            string externalId = "", 
-            string name = "", 
-            DeviceType deviceType = DeviceType.Unknown, 
-            RoomEntity room = null, 
-            LightingEntity lighting = null, 
+            long id = 0,
+            string externalId = "",
+            string name = "",
+            DeviceType deviceType = DeviceType.Unknown,
+            LightType lightType = LightType.None,
+            RoomEntity room = null,
+            LightingEntity lighting = null,
             ICollection<DeviceMetadataEntity> metadata = null)
         {
             Id = id;
             ExternalId = externalId ?? string.Empty;
             Name = name ?? string.Empty;
             DeviceType = deviceType;
+            LightType = lightType;
             Room = room;
-            Lighting = lighting ?? LightingEntity.Default.Copy();
+            Lighting = lighting;
             Metadata = metadata ?? new List<DeviceMetadataEntity>();
         }
 
         public DeviceModel ToModel() => ToModelFunc.Value(this);
 
-        public static DeviceEntity FromDiscoveredDevice(DeviceDiscoveredEvent @event)
+        public static DeviceEntity FromDiscoveredDevice(DeviceDiscoveredEvent @event, IDomainEventBus domainEventBus)
         {
             var entity = new DeviceEntity
             {
                 ExternalId = @event.Id,
-                DeviceType = @event.DeviceType,
                 Name = @event.Id
             };
-            entity.UpdateFromDiscoveredDevice(@event);
+            entity.UpdateFromDiscoveredDevice(@event, domainEventBus);
             return entity;
         }
 
-        public void UpdateFromDiscoveredDevice(DeviceDiscoveredEvent @event)
+        public void UpdateFromDiscoveredDevice(DeviceDiscoveredEvent @event, IDomainEventBus domainEventBus)
         {
             DeviceType = @event.DeviceType;
+            LightType = IsLight && LightType == LightType.None ? LightType.Level : LightType;
+            Lighting = GetDefaultLightingGenerator().Generate(Lighting, Room?.Lighting);
+            if (IsLight) ChangeLighting(Lighting, domainEventBus);
+
             AddOrUpdateMetadata(@event.Metadata);
         }
 
-        public void UpdateFromModel(DeviceModel model)
+        public void UpdateFromModel(DeviceModel model, IDomainEventBus domainEvenBus)
         {
             Name = model.Name;
             DeviceType = model.DeviceType;
+            if (LightType != model.LightType)
+            {
+                LightType = model.LightType;
+                Lighting = GetDefaultLightingGenerator().Generate(Lighting, Room?.Lighting);
+                if (IsLight) ChangeLighting(Lighting, domainEvenBus);
+            }
             AddOrUpdateMetadata(model.Metadata);
         }
 
@@ -127,7 +154,7 @@ namespace Haus.Core.Devices.Entities
             Room = room;
         }
 
-        public void UnAssignRoom()
+        public void UnassignFromRoom()
         {
             Room = null;
         }
@@ -136,35 +163,28 @@ namespace Haus.Core.Devices.Entities
         {
             if (!IsLight)
                 throw new InvalidOperationException($"Device with id {Id} is not a light.");
-
-            Lighting = Lighting.ToDesiredLighting(desiredLighting);
-            domainEventBus.Enqueue(new DeviceLightingChangedDomainEvent(this, Lighting));
-        }
-
-        public void ChangeLightingConstraints(
-            LightingConstraintsEntity lightingConstraintsEntity,
-            IDomainEventBus domainEventBus)
-        {
-            if (!IsLight)
-                throw new InvalidOperationException($"Device {Id} is not a light");
-
-            Lighting = Lighting.ChangeLightingConstraints(lightingConstraintsEntity);
-            domainEventBus.Enqueue(new DeviceLightingConstraintsChangedDomainEvent(this, Lighting.Constraints));
+            
+            Lighting = Lighting == null ? desiredLighting : Lighting.CalculateTarget(desiredLighting);
             domainEventBus.Enqueue(new DeviceLightingChangedDomainEvent(this, Lighting));
         }
 
         public void TurnOff(IDomainEventBus domainEventBus)
         {
-            var lightingCopy = Lighting.Copy();
+            var lightingCopy = LightingEntity.FromEntity(Lighting);
             lightingCopy.State = LightingState.Off;
             ChangeLighting(lightingCopy, domainEventBus);
         }
 
         public void TurnOn(IDomainEventBus domainEventBus)
         {
-            var lightingCopy = Lighting.Copy();
-            lightingCopy.State = LightingState.On;
-            ChangeLighting(lightingCopy, domainEventBus);
+            var turnOnLighting = LightingEntity.FromEntity(Lighting);
+            turnOnLighting.State = LightingState.On;
+            ChangeLighting(turnOnLighting, domainEventBus);
+        }
+
+        private IDefaultLightingGenerator GetDefaultLightingGenerator()
+        {
+            return DefaultLightingGeneratorFactory.GetGenerator(DeviceType, LightType);
         }
     }
 

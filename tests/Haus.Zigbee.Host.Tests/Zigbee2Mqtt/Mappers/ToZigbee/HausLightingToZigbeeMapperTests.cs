@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Text;
-using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
@@ -50,8 +49,12 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
         [Fact]
         public void WhenLightingModelIsFullyPopulatedThenZigbeeLightingIsPopulated()
         {
-            var color = new LightingColorModel(98, 54, 234);
-            var lightingModel = new LightingModel(LightingState.Off, 54, 67, color);
+            var color = new ColorLightingModel(98, 54, 234);
+            var lightingModel = new LightingModel(
+                LightingState.Off, 
+                new LevelLightingModel(54), 
+                new TemperatureLightingModel(67), 
+                color);
 
             var original = CreateMqttMessage(lightingModel);
             var message = _mapper.Map(original).Single();

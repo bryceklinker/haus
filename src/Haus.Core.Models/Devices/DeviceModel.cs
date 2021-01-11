@@ -10,10 +10,10 @@ namespace Haus.Core.Models.Devices
         string ExternalId = null, 
         string Name = null, 
         DeviceType DeviceType = DeviceType.Unknown,
+        LightType LightType = LightType.None,
         MetadataModel[] Metadata = null,
         LightingModel Lighting = null) : IdentityModel
     {
         public MetadataModel[] Metadata { get; } = Metadata ?? Array.Empty<MetadataModel>();
-        public LightingModel Lighting { get; } = Lighting ?? LightingModel.Default;
     }
 }

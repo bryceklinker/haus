@@ -27,9 +27,6 @@ namespace Haus.Core.Common.Storage
             base.OnModelCreating(modelBuilder);
         }
 
-        public Task<DefaultLightingConstraintsEntity> GetDefaultLightingConstraintsAsync(CancellationToken token) =>
-            Set<DefaultLightingConstraintsEntity>().SingleOrDefaultAsync(token);
-
         public Task<DiscoveryEntity> GetDiscoveryEntityAsync(CancellationToken token) =>
             Set<DiscoveryEntity>().SingleOrDefaultAsync(token);
         

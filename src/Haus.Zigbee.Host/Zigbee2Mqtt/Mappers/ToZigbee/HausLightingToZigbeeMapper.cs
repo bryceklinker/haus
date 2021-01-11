@@ -44,8 +44,8 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee
             return HausJsonSerializer.SerializeToBytes(new
             {
                 state = lighting.State.ToString().ToUpperInvariant(),
-                brightness = lighting.Level,
-                color_temp = lighting.Temperature,
+                brightness = lighting.Level == null ? default(double?) : lighting.Level.Value,
+                color_temp = lighting.Temperature == null ? default(double?) : lighting.Temperature.Value,
                 color = lighting.Color == null
                     ? null
                     : new

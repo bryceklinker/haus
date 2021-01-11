@@ -18,7 +18,6 @@ namespace Haus.Api.Client.Devices
         Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model);
         Task<HttpResponseMessage> TurnLightOffAsync(long deviceId);
         Task<HttpResponseMessage> TurnLightOnAsync(long deviceId);
-        Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model);
     }
     
     public class DevicesApiClient : ApiClient, IDeviceApiClient 
@@ -66,11 +65,6 @@ namespace Haus.Api.Client.Devices
         public Task<HttpResponseMessage> TurnLightOnAsync(long deviceId)
         {
             return PostEmptyContentAsync($"devices/{deviceId}/turn-on");
-        }
-
-        public Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model)
-        {
-            return PutAsJsonAsync($"devices/{deviceId}/lighting-constraints", model);
         }
     }
 }

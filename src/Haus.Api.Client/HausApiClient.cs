@@ -5,7 +5,6 @@ using Haus.Api.Client.Devices;
 using Haus.Api.Client.DeviceSimulator;
 using Haus.Api.Client.Diagnostics;
 using Haus.Api.Client.Discovery;
-using Haus.Api.Client.Lighting;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
 using Haus.Core.Models.Common;
@@ -24,7 +23,6 @@ namespace Haus.Api.Client
         IDiagnosticsApiClient, 
         IRoomsApiClient,
         IDeviceSimulatorApiClient,
-        ILightingConstraintsApiClient,
         IDiscoveryApiClient
     {
         
@@ -37,7 +35,6 @@ namespace Haus.Api.Client
         private IDiagnosticsApiClient DiagnosticsApiClient => _factory.CreateDiagnosticsClient();
         private IRoomsApiClient RoomsApiClient => _factory.CreateRoomsClient();
         private IDeviceSimulatorApiClient DeviceSimulatorApiClient => _factory.CreateDeviceSimulatorClient();
-        private ILightingConstraintsApiClient LightingConstraintsApiClient => _factory.CreateLightingApiClient();
         private IDiscoveryApiClient DiscoveryApiClient => _factory.CreateDiscoveryClient();
         
         public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
@@ -89,11 +86,6 @@ namespace Haus.Api.Client
         public Task<HttpResponseMessage> TurnLightOnAsync(long deviceId)
         {
             return DeviceApiClient.TurnLightOnAsync(deviceId);
-        }
-
-        public Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model)
-        {
-            return DeviceApiClient.ChangeDeviceLightingConstraintsAsync(deviceId, model);
         }
 
         public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
@@ -164,16 +156,6 @@ namespace Haus.Api.Client
         public Task<HttpResponseMessage> ResetDeviceSimulatorAsync()
         {
             return DeviceSimulatorApiClient.ResetDeviceSimulatorAsync();
-        }
-
-        public Task<LightingConstraintsModel> GetDefaultLightingConstraintsAsync()
-        {
-            return LightingConstraintsApiClient.GetDefaultLightingConstraintsAsync();
-        }
-
-        public Task<HttpResponseMessage> UpdateDefaultLightingConstraintsAsync(LightingConstraintsModel model)
-        {
-            return LightingConstraintsApiClient.UpdateDefaultLightingConstraintsAsync(model);
         }
     }
 }

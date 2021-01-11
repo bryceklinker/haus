@@ -32,7 +32,7 @@ namespace Haus.Core.Devices.Events
 
         private async Task CreateDeviceAsync(DeviceDiscoveredEvent @event, CancellationToken cancellationToken)
         {
-            var device = await _repository.AddAsync(DeviceEntity.FromDiscoveredDevice(@event), cancellationToken)
+            var device = await _repository.AddAsync(DeviceEntity.FromDiscoveredDevice(@event, _hausBus), cancellationToken)
                 .ConfigureAwait(false);
 
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceCreatedEvent(device.ToModel())), cancellationToken)
@@ -41,7 +41,7 @@ namespace Haus.Core.Devices.Events
 
         private async Task UpdateDeviceAsync(DeviceEntity device, DeviceDiscoveredEvent @event, CancellationToken cancellationToken)
         {
-            device.UpdateFromDiscoveredDevice(@event);
+            device.UpdateFromDiscoveredDevice(@event, _hausBus);
             await _repository.SaveAsync(device, cancellationToken);
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceUpdatedEvent(device.ToModel())), cancellationToken)
                 .ConfigureAwait(false);

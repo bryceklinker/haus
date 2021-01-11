@@ -52,7 +52,6 @@ namespace Haus.Core.Rooms.Repositories
 
         public Task SaveAsync(RoomEntity room, CancellationToken cancellationToken = default)
         {
-            _context.Update(room);
             return _context.SaveChangesAsync(cancellationToken);
         }
     }

@@ -1,8 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Core.Devices.Commands;
 using Haus.Core.Discovery.Commands;
-using Haus.Core.Lighting.Commands;
 using Haus.Cqrs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +22,6 @@ namespace Haus.Web.Host.Common.Services
             var bus = scope.GetService<IHausBus>();
             await Task.WhenAll(
                 bus.ExecuteCommandAsync(new InitializeDiscoveryCommand(), stoppingToken),
-                bus.ExecuteCommandAsync(new InitializeDefaultLightingSettingsCommand(), stoppingToken),
                 bus.ExecuteCommandAsync(new SyncDiscoveryCommand(), stoppingToken)
             ).ConfigureAwait(false);
         }

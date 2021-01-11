@@ -65,11 +65,11 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
         [Fact]
         public void WhenSimulatorIsLightAndConvertedToModelThenLightingIsInModel()
         {
-            var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.Light, Lighting: LightingModel.Default);
+            var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.Light, Lighting: new LightingModel());
 
             var model = entity.ToModel();
 
-            model.Lighting.Should().BeEquivalentTo(LightingModel.Default);
+            model.Lighting.Should().BeEquivalentTo(new LightingModel());
         }
     }
 }

@@ -5,6 +5,7 @@ using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.Lighting;
 using Haus.Testing.Support;
 using Xunit;
 
@@ -23,21 +24,21 @@ namespace Haus.Core.Tests.Devices.DomainEvents
         public async Task WhenDeviceLightingChangedThenRoutableCommandIsPublished()
         {
             var device = new DeviceEntity {Id = 123};
-            var lighting = new LightingEntity{Level = 34.12};
+            var lighting = new LightingEntity(level: new LevelLightingEntity(34.12));
             _hausBus.Enqueue(new DeviceLightingChangedDomainEvent(device, lighting));
 
             await _hausBus.FlushAsync();
 
             var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
             hausCommand.Payload.Device.Id.Should().Be(123);
-            hausCommand.Payload.Lighting.Level.Should().Be(34.12);
+            hausCommand.Payload.Lighting.Level.Should().BeEquivalentTo(new LevelLightingModel(34.12));
         }
 
         [Fact]
         public async Task WhenDeviceLightingChangedThenRoutableEventPublished()
         {
             var device = new DeviceEntity {Id = 123};
-            var lighting = new LightingEntity{Level = 34.12};
+            var lighting = new LightingEntity(level: new LevelLightingEntity());
             _hausBus.Enqueue(new DeviceLightingChangedDomainEvent(device, lighting));
 
             await _hausBus.FlushAsync();

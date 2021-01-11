@@ -2,11 +2,8 @@ using System;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Discovery.Entities;
-using Haus.Core.Lighting;
-using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Discovery;
-using Haus.Core.Models.Lighting;
 using Haus.Core.Rooms.Entities;
 
 namespace Haus.Testing.Support
@@ -35,27 +32,6 @@ namespace Haus.Testing.Support
             configure?.Invoke(room);
             context.AddAndSave(room);
             return room;
-        }
-
-        public static DefaultLightingConstraintsEntity AddDefaultLightingConstraints(this HausDbContext context,
-            double minLevel = LightingDefaults.MinLevel,
-            double maxLevel = LightingDefaults.MaxLevel,
-            double minTemperature = LightingDefaults.MinTemperature,
-            double maxTemperature = LightingDefaults.MaxTemperature)
-        {
-            var constraints = new DefaultLightingConstraintsEntity
-            {
-                Constraints = new LightingConstraintsEntity
-                {
-                    MaxTemperature = maxTemperature,
-                    MinTemperature = minTemperature,
-                    MaxLevel = maxLevel,
-                    MinLevel = minLevel
-                }
-            };
-
-            context.AddAndSave(constraints);
-            return constraints;
         }
 
         public static DiscoveryEntity AddDiscovery(this HausDbContext context,

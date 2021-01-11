@@ -1,10 +1,8 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Api.Client;
-using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
-using Haus.Core.Models.Discovery;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Lighting;
 using Haus.Testing.Support;
@@ -51,7 +49,7 @@ namespace Haus.Web.Host.Tests.Devices
             await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(msg => hausCommand = msg);
             
             var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
-            await _hausClient.ChangeDeviceLightingAsync(device.Id, new LightingModel(level: 5));
+            await _hausClient.ChangeDeviceLightingAsync(device.Id, new LightingModel());
             
             Eventually.Assert(() =>
             {
@@ -87,22 +85,6 @@ namespace Haus.Web.Host.Tests.Devices
             {
                 published.Payload.Lighting.State.Should().Be(LightingState.On);
             });
-        }
-
-        [Fact]
-        public async Task WhenDeviceLightingConstraintsAreUpdatedThenGettingDeviceHasNewConstraints()
-        {
-            var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
-            
-            var constraints = new LightingConstraintsModel(45, 90, 200, 300);
-            await _hausClient.ChangeDeviceLightingConstraintsAsync(device.Id, constraints);
-
-            var updated = await _hausClient.GetDeviceAsync(device.Id);
-
-            updated.Lighting.Constraints.MinLevel.Should().Be(45);
-            updated.Lighting.Constraints.MaxLevel.Should().Be(90);
-            updated.Lighting.Constraints.MinTemperature.Should().Be(200);
-            updated.Lighting.Constraints.MaxTemperature.Should().Be(300);
         }
     }
 }

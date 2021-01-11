@@ -34,7 +34,6 @@ namespace Haus.Core.Tests.Devices.Events
             var light = _context.AddDevice(deviceType: DeviceType.Light);
             _room = _context.AddRoom(configure: entity =>
             {
-                entity.Lighting = LightingEntity.Default;
                 entity.AddDevice(_sensor, _hausBus);
                 entity.AddDevice(light, _hausBus);
             });

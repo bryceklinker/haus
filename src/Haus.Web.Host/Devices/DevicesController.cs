@@ -35,12 +35,6 @@ namespace Haus.Web.Host.Devices
             return CommandAsync(new ChangeDeviceLightingCommand(id, model));
         }
 
-        [HttpPut("{id}/lighting-constraints")]
-        public Task<IActionResult> ChangeLightingConstraints([FromRoute] long id, [FromBody] LightingConstraintsModel model)
-        {
-            return CommandAsync(new ChangeDeviceLightingConstraintsCommand(id, model));
-        }
-
         [HttpPost("{id}/turn-off")]
         public Task<IActionResult> TurnOff([FromRoute] long id)
         {

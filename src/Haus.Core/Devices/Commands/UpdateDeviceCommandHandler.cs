@@ -35,7 +35,7 @@ namespace Haus.Core.Devices.Commands
             var device = await _repository.GetById(request.Id, cancellationToken)
                 .ConfigureAwait(false);
             
-            device.UpdateFromModel(request.Model);
+            device.UpdateFromModel(request.Model, _hausBus);
             await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
 
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceUpdatedEvent(device.ToModel())), cancellationToken)
