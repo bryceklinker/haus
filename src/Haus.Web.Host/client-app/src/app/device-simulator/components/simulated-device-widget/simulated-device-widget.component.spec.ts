@@ -1,7 +1,8 @@
+import {screen} from "@testing-library/dom";
+
 import {ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DeviceSimulatorModule} from "../../device-simulator.module";
 import {SimulatedDeviceWidgetComponent} from "./simulated-device-widget.component";
-import {screen} from "@testing-library/dom";
 import {DeviceType} from "../../../shared/models";
 
 describe('SimulatedDeviceWidgetComponent', () => {

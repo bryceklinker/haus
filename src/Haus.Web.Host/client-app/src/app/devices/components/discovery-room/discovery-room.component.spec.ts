@@ -1,4 +1,5 @@
 import {CdkDropList} from "@angular/cdk/drag-drop";
+
 import {DiscoveryRoomComponent} from "./discovery-room.component";
 import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {DevicesModule} from "../../devices.module";

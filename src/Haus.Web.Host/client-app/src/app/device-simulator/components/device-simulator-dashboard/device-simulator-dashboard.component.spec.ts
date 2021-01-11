@@ -1,7 +1,8 @@
+import {screen} from "@testing-library/dom";
+
 import {DeviceSimulatorDashboardComponent} from "./device-simulator-dashboard.component";
 import {ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DeviceSimulatorModule} from "../../device-simulator.module";
-import {screen} from "@testing-library/dom";
 
 describe('DeviceSimulatorDashboardComponent', () => {
   it('should show connected when is connected', async () => {

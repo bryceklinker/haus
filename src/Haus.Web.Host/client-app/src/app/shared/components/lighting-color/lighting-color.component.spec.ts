@@ -7,11 +7,11 @@ import {screen} from "@testing-library/dom";
 import {LightingColorComponent} from "./lighting-color.component";
 import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {SharedModule} from "../../shared.module";
-import {LightingColorModel} from "../../models";
+import {ColorLightingModel} from "../../models";
 
 describe('LightingColorComponent', () => {
   it('should show color values when rendered', async () => {
-    const color = ModelFactory.createLightingColor({red: 7, green: 9, blue: 19});
+    const color = ModelFactory.createColorLighting({red: 7, green: 9, blue: 19});
 
     const {red, green, blue} = await renderColorWithHarnesses({color});
 
@@ -21,7 +21,7 @@ describe('LightingColorComponent', () => {
   })
 
   it('should show color values when rendered', async () => {
-    const color = ModelFactory.createLightingColor({red: 6, green: 9, blue: 8});
+    const color = ModelFactory.createColorLighting({red: 6, green: 9, blue: 8});
 
     await renderColor({color});
 
@@ -32,8 +32,8 @@ describe('LightingColorComponent', () => {
   })
 
   it('should notify of color change when red changes', async () => {
-    const color = ModelFactory.createLightingColor();
-    const emitter = new TestingEventEmitter<LightingColorModel>();
+    const color = ModelFactory.createColorLighting();
+    const emitter = new TestingEventEmitter<ColorLightingModel>();
 
     const {fixture} = await renderColorWithHarnesses({color, colorChange: emitter});
 
@@ -46,8 +46,8 @@ describe('LightingColorComponent', () => {
   })
 
   it('should notify of color change when green changes', async () => {
-    const color = ModelFactory.createLightingColor();
-    const emitter = new TestingEventEmitter<LightingColorModel>();
+    const color = ModelFactory.createColorLighting();
+    const emitter = new TestingEventEmitter<ColorLightingModel>();
 
     const {fixture} = await renderColorWithHarnesses({color, colorChange: emitter});
 
@@ -60,8 +60,8 @@ describe('LightingColorComponent', () => {
   })
 
   it('should notify of color change when blue changes', async () => {
-    const color = ModelFactory.createLightingColor();
-    const emitter = new TestingEventEmitter<LightingColorModel>();
+    const color = ModelFactory.createColorLighting();
+    const emitter = new TestingEventEmitter<ColorLightingModel>();
 
     const {fixture} = await renderColorWithHarnesses({color, colorChange: emitter});
 
@@ -74,7 +74,7 @@ describe('LightingColorComponent', () => {
   })
 
   it('should disable controls when readonly', async () => {
-    const color = ModelFactory.createLightingColor();
+    const color = ModelFactory.createColorLighting();
 
     const {red, green, blue} = await renderColorWithHarnesses({color, readonly: true});
 

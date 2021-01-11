@@ -1,10 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import {Observable} from "rxjs";
+import {Store} from "@ngrx/store";
+import {MatDialog} from "@angular/material/dialog";
 
 import {AppState} from "../../../app.state";
 import {RoomsActions, selectAllRooms} from "../../state";
-import {Store} from "@ngrx/store";
-import {MatDialog} from "@angular/material/dialog";
 import {AddRoomDialogComponent} from "../add-room-dialog/add-room-dialog.component";
 import {RoomModel} from "../../../shared/models";
 

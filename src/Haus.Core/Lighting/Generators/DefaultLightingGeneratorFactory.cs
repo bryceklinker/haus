@@ -1,6 +1,6 @@
 using Haus.Core.Models.Devices;
 
-namespace Haus.Core.Lighting
+namespace Haus.Core.Lighting.Generators
 {
     public static class DefaultLightingGeneratorFactory
     {

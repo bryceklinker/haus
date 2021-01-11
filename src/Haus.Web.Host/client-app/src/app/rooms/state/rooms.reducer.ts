@@ -1,6 +1,7 @@
 import {createEntityAdapter} from "@ngrx/entity";
-import {createComparer} from "../../shared/sort-array-by";
 import {Action, createReducer, createSelector, on} from "@ngrx/store";
+
+import {createComparer} from "../../shared/sort-array-by";
 import {RoomsState} from "./rooms.state";
 import {RoomsActions} from "./actions";
 import {AppState} from "../../app.state";

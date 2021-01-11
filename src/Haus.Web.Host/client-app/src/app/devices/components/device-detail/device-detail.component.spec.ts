@@ -1,11 +1,9 @@
 import {screen} from "@testing-library/dom";
-import {EventEmitter} from "@angular/core";
-import {MatButtonHarness} from "@angular/material/button/testing";
 
-import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
+import {ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DeviceDetailComponent} from "./device-detail.component";
 import {DevicesModule} from "../../devices.module";
-import {DeviceLightingConstraintsChangedEvent, DeviceModel, DeviceType} from "../../../shared/models";
+import {DeviceModel, DeviceType} from "../../../shared/models";
 
 describe('DeviceDetailComponent', () => {
   it('should show device information', async () => {
@@ -74,40 +72,10 @@ describe('DeviceDetailComponent', () => {
     expect(screen.queryByTestId('lighting')).not.toBeInTheDocument();
   })
 
-  it('should show lighting constraints when device is a light', async () => {
-    const device = ModelFactory.createDeviceModel({deviceType: DeviceType.Light});
-
-    await renderDeviceDetail(device);
-
-    expect(screen.getByTestId('lighting-constraints')).toBeInTheDocument();
-  })
-
-  it('should notify when lighting constraints are saved', async () => {
-    const device = ModelFactory.createDeviceModel({deviceType: DeviceType.Light});
-    const emitter = new TestingEventEmitter<DeviceLightingConstraintsChangedEvent>();
-
-    const {matHarness} = await renderDeviceDetail(device, emitter);
-    const saveConstraints = await matHarness.getHarness(MatButtonHarness.with({selector: '[data-testid="save-constraints-btn"]'}));
-    await saveConstraints.click();
-
-    expect(emitter.emit).toHaveBeenCalledWith({
-      device: device,
-      constraints: device.lighting.constraints
-    });
-  })
-
-  it('should hide lighting constraints when device is not a light', async () => {
-    const device = ModelFactory.createDeviceModel({deviceType: DeviceType.MotionSensor});
-
-    await renderDeviceDetail(device);
-
-    expect(screen.queryByTestId('lighting-constraints')).not.toBeInTheDocument();
-  })
-
-  function renderDeviceDetail(device?: DeviceModel, saveLightingConstraints?: EventEmitter<DeviceLightingConstraintsChangedEvent>) {
+  function renderDeviceDetail(device?: DeviceModel) {
     return renderFeatureComponent(DeviceDetailComponent, {
       imports: [DevicesModule],
-      componentProperties: {device, saveLightingConstraints}
+      componentProperties: {device}
     })
   }
 })

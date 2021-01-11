@@ -1,9 +1,10 @@
 import {Action} from "@ngrx/store";
+import {screen} from "@testing-library/dom";
+
 import {ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DeviceSimulatorRootComponent} from "./device-simulator-root.component";
 import {DeviceSimulatorModule} from "../../device-simulator.module";
 import {DeviceSimulatorActions} from "../../state";
-import {screen} from "@testing-library/dom";
 
 describe('DeviceSimulatorRootComponent', () => {
   it('should start connection to device simulator', async () => {

@@ -3,11 +3,11 @@ import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
 import {ActivatedRoute} from "@angular/router";
 import {map, mergeMap} from "rxjs/operators";
+import {MatDialog} from "@angular/material/dialog";
 
 import {AppState} from "../../../app.state";
 import {RoomsActions, selectRoomById} from "../../state";
 import {DevicesActions, selectAllDevicesByRoomId} from "../../../devices/state";
-import {MatDialog} from "@angular/material/dialog";
 import {AssignDevicesToRoomDialogComponent} from "../assign-devices-to-room-dialog/assign-devices-to-room-dialog.component";
 import {DeviceModel, RoomLightingChangedEvent, RoomModel} from "../../../shared/models";
 

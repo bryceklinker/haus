@@ -25,16 +25,6 @@
       </lighting>
     </mat-expansion-panel>
 
-    <mat-expansion-panel *ngIf="isLight">
-      <mat-expansion-panel-header>
-        <mat-panel-title>Lighting Constraints</mat-panel-title>
-      </mat-expansion-panel-header>
-      <lighting-constraints [constraints]="lightingConstraints"
-                            [readonly]="canEdit"
-                            (save)="onSaveLightingConstraints($event)">
-      </lighting-constraints>
-    </mat-expansion-panel>
-
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>Metadata</mat-panel-title>

@@ -28,7 +28,7 @@ describe('roomsReducer', () => {
 
   it('should update room lighting when room lighting change requested', () => {
     const room = ModelFactory.createRoomModel();
-    const newLighting = ModelFactory.createLighting({temperature: 4500});
+    const newLighting = ModelFactory.createLighting({temperature: ModelFactory.createTemperatureLighting()});
 
     const state = generateStateFromActions(roomsReducer,
       RoomsActions.loadRooms.success(ModelFactory.createListResult(room)),
@@ -40,7 +40,7 @@ describe('roomsReducer', () => {
 
   it('should update lighting on room when room lighting changed event received', () => {
     const room = ModelFactory.createRoomModel();
-    const lighting = ModelFactory.createLighting({level: 89});
+    const lighting = ModelFactory.createLighting({level: ModelFactory.createLevelLighting()});
 
     const state = generateStateFromActions(roomsReducer,
       EventsActions.roomCreated({room}),

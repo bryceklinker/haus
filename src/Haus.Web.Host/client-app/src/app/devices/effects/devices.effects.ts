@@ -32,13 +32,6 @@ export class DevicesEffects {
     ))
   ))
 
-  changeDeviceLightingConstraints$ = createEffect(() => this.actions$.pipe(
-    ofType(DevicesActions.changeDeviceLightingConstraints.request),
-    mergeMap(({payload}) => this.api.changeDeviceLightingConstraints(payload.device.id, payload.constraints).pipe(
-      map(() => DevicesActions.changeDeviceLightingConstraints.success(payload))
-    ))
-  ))
-
   constructor(private readonly actions$: Actions, private readonly api: HausApiClient) {
   }
 }

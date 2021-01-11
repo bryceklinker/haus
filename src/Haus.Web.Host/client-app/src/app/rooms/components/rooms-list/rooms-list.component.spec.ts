@@ -1,8 +1,9 @@
+import {screen} from "@testing-library/dom";
+import userEvent from "@testing-library/user-event";
+
 import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {RoomsListComponent} from "./rooms-list.component";
 import {RoomsModule} from "../../rooms.module";
-import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
 
 describe('RoomsListComponent', () => {
   it('should show rooms', async () => {

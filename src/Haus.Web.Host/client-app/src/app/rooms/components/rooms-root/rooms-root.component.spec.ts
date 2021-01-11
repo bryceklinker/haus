@@ -1,4 +1,6 @@
 import {screen} from "@testing-library/dom";
+import userEvent from "@testing-library/user-event";
+import {Action} from "@ngrx/store";
 
 import {
   ModelFactory,
@@ -6,8 +8,6 @@ import {
 } from "../../../../testing";
 import {RoomsModule} from "../../rooms.module";
 import {RoomsRootComponent} from "./rooms-root.component";
-import userEvent from "@testing-library/user-event";
-import {Action} from "@ngrx/store";
 import {RoomsActions} from "../../state";
 import {AddRoomDialogComponent} from "../add-room-dialog/add-room-dialog.component";
 

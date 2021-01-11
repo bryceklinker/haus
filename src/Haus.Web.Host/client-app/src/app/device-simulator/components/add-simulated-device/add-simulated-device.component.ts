@@ -1,15 +1,16 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {AppState} from "../../../app.state";
+import {Actions, ofType} from "@ngrx/effects";
 import {Store} from "@ngrx/store";
-import {DeviceTypesActions, selectAllDeviceTypes} from "../../../devices/state";
+import {AppState} from "../../../app.state";
 import {Observable} from "rxjs";
+import {tap} from "rxjs/operators";
+import {Router} from "@angular/router";
+
+import {DeviceTypesActions, selectAllDeviceTypes} from "../../../devices/state";
 import {toTitleCase} from "../../../shared/humanize";
 import {DeviceSimulatorActions} from "../../state";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Actions, ofType} from "@ngrx/effects";
 import {DestroyableSubject} from "../../../shared/destroyable-subject";
-import {tap} from "rxjs/operators";
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'add-simulated-device',

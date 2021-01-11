@@ -1,9 +1,10 @@
 import {screen} from "@testing-library/dom";
-import {eventually, ModelFactory, renderFeatureComponent} from "../../../../testing";
+import {Action} from "@ngrx/store";
+
+import {ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DevicesRootComponent} from "./devices-root.component";
 import {DevicesModule} from "../../devices.module";
 import {DevicesActions} from "../../state";
-import {Action} from "@ngrx/store";
 
 describe('DevicesRootComponent', () => {
   it('should get all devices when rendered', async () => {

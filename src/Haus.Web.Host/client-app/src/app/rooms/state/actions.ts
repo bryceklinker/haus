@@ -1,4 +1,4 @@
-import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
+import {createAsyncActionSet} from "../../shared/actions";
 import {ListResult, RoomLightingChangedEvent, RoomModel} from "../../shared/models";
 import {AssignDevicesToRoomModel} from "../models";
 

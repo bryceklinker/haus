@@ -1,6 +1,6 @@
 using Haus.Core.Lighting.Entities;
 
-namespace Haus.Core.Lighting
+namespace Haus.Core.Lighting.Generators
 {
     public interface IDefaultLightingGenerator
     {

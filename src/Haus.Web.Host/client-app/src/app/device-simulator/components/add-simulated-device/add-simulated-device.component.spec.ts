@@ -1,12 +1,13 @@
+import {MatSelectHarness} from "@angular/material/select/testing";
+import {screen} from "@testing-library/dom";
+import userEvent from "@testing-library/user-event";
+import {Action} from "@ngrx/store";
+
 import {eventually, ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {AddSimulatedDeviceComponent} from "./add-simulated-device.component";
 import {DeviceSimulatorModule} from "../../device-simulator.module";
-import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
 import {DeviceSimulatorActions} from "../../state";
 import {DeviceTypesActions} from "../../../devices/state";
-import {Action} from "@ngrx/store";
-import {MatSelectHarness} from "@angular/material/select/testing";
 import {DeviceType} from "../../../shared/models";
 
 describe('AddSimulatedDeviceComponent', () => {

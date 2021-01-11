@@ -1,3 +1,5 @@
+import {TestBed} from "@angular/core/testing";
+
 import {
   createAppTestingService, eventually, ModelFactory, setupDiagnosticsReplay,
   TestingActionsSubject,
@@ -5,7 +7,6 @@ import {
   TestingSignalrHubConnectionFactory
 } from "../../../testing";
 import {DiagnosticsEffects} from "./diagnostics.effects";
-import {TestBed} from "@angular/core/testing";
 import {KNOWN_HUB_NAMES, SignalrHubConnectionFactory} from "../../shared/signalr";
 import {DiagnosticsActions} from "../state";
 

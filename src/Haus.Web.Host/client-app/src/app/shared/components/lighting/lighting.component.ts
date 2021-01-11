@@ -1,5 +1,11 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {LightingColorModel, LightingModel, LightingState} from "../../models";
+import {
+  ColorLightingModel,
+  LevelLightingModel,
+  LightingModel,
+  LightingState,
+  TemperatureLightingModel
+} from "../../models";
 import {MatSliderChange} from "@angular/material/slider";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
 
@@ -17,55 +23,71 @@ export class LightingComponent {
     return !!this.lighting;
   }
 
-  get level(): number {
-    return this.lighting ? this.lighting.level : 0;
-  }
-
-  get minLevel(): number {
-    return this.lighting?.constraints ? this.lighting.constraints.minLevel : 0;
-  }
-
-  get maxLevel(): number {
-    return this.lighting?.constraints ? this.lighting.constraints.maxLevel : 0;
-  }
-
-  get state(): boolean {
-    return this.lightingState === LightingState.On;
+  get levelLighting(): LevelLightingModel | null {
+    return this.lighting?.level ? this.lighting.level : null;
   }
 
   get lightingState(): LightingState | null {
     return this.lighting?.state ? this.lighting.state : null;
   }
 
+  get temperatureLighting(): TemperatureLightingModel | null {
+    return this.lighting?.temperature ? this.lighting.temperature : null;
+  }
+
+  get state(): boolean {
+    return this.lightingState === LightingState.On;
+  }
+
+  get level(): number {
+    return this.levelLighting == null ? 0 : this.levelLighting.value;
+  }
+
+  get minLevel(): number {
+    return this.levelLighting == null ? 0 : this.levelLighting.min;
+  }
+
+  get maxLevel(): number {
+    return this.levelLighting == null ? 0 : this.levelLighting.max;
+  }
+
   get temperature(): number {
-    return this.lighting ? this.lighting.temperature : 0;
+    return this.temperatureLighting == null ? 0 : this.temperatureLighting.value;
   }
 
   get minTemperature(): number {
-    return this.lighting?.constraints ? this.lighting.constraints.minTemperature : 0;
+    return this.temperatureLighting == null ? 0 : this.temperatureLighting.min;
   }
 
   get maxTemperature(): number {
-    return this.lighting?.constraints ? this.lighting.constraints.maxTemperature : 0;
+    return this.temperatureLighting == null ? 0 : this.temperatureLighting.max;
   }
 
-  get color(): LightingColorModel | null {
-    return this.lighting ? this.lighting.color : null;
-  }
-
-  onLevelChanged(change: MatSliderChange) {
-    this.onLightingChanged({level: change.value || 0});
+  get color(): ColorLightingModel | null {
+    return this.lighting?.color ? this.lighting.color : null;
   }
 
   onStateChange($event: MatSlideToggleChange) {
     this.onLightingChanged({state: $event.checked ? LightingState.On : LightingState.Off});
   }
 
-  onTemperatureChanged($event: MatSliderChange) {
-    this.onLightingChanged({temperature: $event.value || 0});
+  onLevelChanged($event: MatSliderChange) {
+    if (!this.levelLighting) {
+      return;
+    }
+
+    this.onLightingChanged({level: {...this.levelLighting, value: $event.value || 0}});
   }
 
-  onLightingColorChanged(color: LightingColorModel) {
+  onTemperatureChanged($event: MatSliderChange) {
+    if (!this.temperatureLighting) {
+      return;
+    }
+
+    this.onLightingChanged({temperature: {...this.temperatureLighting, value: $event.value || 0}});
+  }
+
+  onLightingColorChanged(color: ColorLightingModel) {
     this.onLightingChanged({color});
   }
 

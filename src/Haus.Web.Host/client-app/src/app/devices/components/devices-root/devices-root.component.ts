@@ -1,7 +1,8 @@
 import {Component, OnInit} from "@angular/core";
 import {Observable} from "rxjs";
-import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
+
+import {AppState} from "../../../app.state";
 import {DevicesActions, selectAllDevices} from "../../state";
 import {DeviceModel} from "../../../shared/models";
 

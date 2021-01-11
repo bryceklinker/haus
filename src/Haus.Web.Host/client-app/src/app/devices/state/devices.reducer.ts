@@ -1,5 +1,6 @@
 import {createEntityAdapter} from "@ngrx/entity";
 import {Action, createReducer, createSelector, on} from "@ngrx/store";
+
 import {createComparer} from "../../shared/sort-array-by";
 import {DevicesState} from "./devices.state";
 import {DevicesActions} from "./actions";
@@ -28,18 +29,6 @@ const reducer = createReducer(initialState,
         changes: {lighting: payload.lighting}
       }, state)
     })
-  ),
-  on(DevicesActions.changeDeviceLightingConstraints.success, EventsActions.deviceLightingConstraintsChanged, (state, {payload}) => ({
-    ...adapter.updateOne({
-      id: payload.device.id,
-      changes: {
-        lighting: {
-          ...payload.device.lighting,
-          constraints: payload.constraints
-        }
-      }
-    }, state)
-  })
   )
 );
 

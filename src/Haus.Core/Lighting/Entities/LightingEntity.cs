@@ -49,24 +49,6 @@ namespace Haus.Core.Lighting.Entities
             return CalculateTarget(this, target);
         }
 
-        protected bool Equals(LightingEntity other)
-        {
-            return State == other.State && Equals(Level, other.Level) && Equals(Temperature, other.Temperature) && Equals(Color, other.Color);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((LightingEntity) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine((int) State, Level, Temperature, Color);
-        }
-
         public static LightingEntity FromModel(LightingModel model)
         {
             return new(

@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels;
 using Haus.Utilities.TypeScript.GenerateModels;
 using Xunit;
 

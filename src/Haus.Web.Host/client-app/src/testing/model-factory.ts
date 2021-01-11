@@ -1,17 +1,19 @@
 import {v4 as uuid} from 'uuid';
 import {
+  ColorLightingModel,
   DeviceModel,
   DeviceType,
   DiscoveryModel,
   DiscoveryState,
-  LightingColorModel,
-  LightingConstraintsModel,
+  LevelLightingModel,
   LightingModel,
   LightingState,
+  LightType,
   ListResult,
   MetadataModel,
   RoomModel,
   SimulatedDeviceModel,
+  TemperatureLightingModel,
   UiMqttDiagnosticsMessageModel
 } from "../app/shared/models";
 
@@ -35,6 +37,7 @@ function createDeviceModel(model: Partial<DeviceModel> = {}): DeviceModel {
     externalId: model.externalId || uuid(),
     metadata: model.metadata || [],
     deviceType: model.deviceType || DeviceType.Unknown,
+    lightType: model.lightType || LightType.None,
     roomId: model.roomId || undefined,
     lighting: model.lighting || createLighting()
   }
@@ -70,30 +73,36 @@ function createMetadata(key: string, value: string): MetadataModel {
   return { key, value };
 }
 
-function createLightingColor(model: Partial<LightingColorModel> = {}): LightingColorModel {
+function createColorLighting(model: Partial<ColorLightingModel> = {}): ColorLightingModel {
   return {
-    red: model.red || 54,
-    green: model.green || 12,
-    blue: model.blue || 89
+    red: model.red === undefined ? 54 : model.red,
+    green: model.green === undefined ? 12 : model.green,
+    blue: model.blue === undefined ? 89 : model.blue
   }
 }
 
-function createLightingConstraints(model: Partial<LightingConstraintsModel> = {}): LightingConstraintsModel {
+function createLevelLighting(model: Partial<LevelLightingModel> = {}): LevelLightingModel {
   return {
-    minLevel: model.minLevel || 0,
-    maxLevel: model.maxLevel || 100,
-    minTemperature: model.minTemperature || 2000,
-    maxTemperature: model.maxTemperature || 4000
+    value: model.value === undefined ? 100 : model.value,
+    min: model.min === undefined ? 100 : model.min,
+    max: model.max === undefined ? 0 : model.max
+  }
+}
+
+function createTemperatureLighting(model: Partial<TemperatureLightingModel> = {}): TemperatureLightingModel {
+  return {
+    value: model.value === undefined ? 3000 : model.value,
+    min: model.min === undefined ? 2000 : model.min,
+    max: model.max === undefined ? 6000 : model.max
   }
 }
 
 function createLighting(model: Partial<LightingModel> = {}): LightingModel {
   return {
-    level: model.level || 23,
-    color: model.color || createLightingColor(),
-    state: model.state || LightingState.On,
-    temperature: model.temperature || 2900,
-    constraints: model.constraints || createLightingConstraints()
+    state: model.state === undefined ? LightingState.On : model.state,
+    level: model.level || createLevelLighting(),
+    temperature: model.temperature,
+    color: model.color
   }
 }
 
@@ -110,8 +119,9 @@ export const ModelFactory = {
   createListResult,
   createSimulatedDevice,
   createMetadata,
-  createLightingColor,
-  createLightingConstraints,
+  createColorLighting,
+  createLevelLighting,
+  createTemperatureLighting,
   createLighting,
   createDiscovery
 };

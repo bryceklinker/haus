@@ -8,7 +8,6 @@ import {
   DeviceModel,
   DeviceType,
   DiscoveryModel,
-  LightingConstraintsModel,
   LightingModel,
   ListResult,
   MqttDiagnosticsMessageModel,
@@ -43,10 +42,6 @@ export class HausApiClient implements OnDestroy {
 
   getDeviceTypes(): Observable<ListResult<DeviceType>> {
     return this.execute<ListResult<DeviceType>>(HttpMethod.GET, '/api/device-types');
-  }
-
-  changeDeviceLightingConstraints(deviceId: number, model: LightingConstraintsModel): Observable<void> {
-    return this.execute(HttpMethod.PUT, `/api/devices/${deviceId}/lighting-constraints`, model);
   }
 
   turnDeviceOff(deviceId: number): Observable<void> {

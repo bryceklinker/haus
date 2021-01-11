@@ -1,6 +1,7 @@
 import {DeviceType} from './device-type';
-import {MetadataModel} from './metadata-model';
+import {LightType} from './light-type';
 import {LightingModel} from './lighting-model';
+import {MetadataModel} from './metadata-model';
 
 export interface DeviceModel {
 	id: number;
@@ -8,6 +9,7 @@ export interface DeviceModel {
 	externalId: string;
 	name: string;
 	deviceType: DeviceType;
-	metadata: Array<MetadataModel>;
+	lightType: LightType;
 	lighting: LightingModel;
+	metadata: Array<MetadataModel>;
 }

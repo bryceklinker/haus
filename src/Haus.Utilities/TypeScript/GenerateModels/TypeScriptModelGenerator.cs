@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Haus.Core.Models;
 using Humanizer;
 
 namespace Haus.Utilities.TypeScript.GenerateModels
@@ -114,6 +115,9 @@ namespace Haus.Utilities.TypeScript.GenerateModels
             var typescriptPropertyType = property.PropertyType.IsNativeTypeScriptType()
                 ? property.PropertyType.ToTypeScriptType(context)
                 : context.GetModelForType(property.PropertyType).ModelName;
+            var isOptional = property.GetCustomAttribute<OptionalGenerationAttribute>() != null;
+            if (isOptional)
+                return $"\t{propertyName}?: {typescriptPropertyType};";
             return $"\t{propertyName}: {typescriptPropertyType};";
         }
     }

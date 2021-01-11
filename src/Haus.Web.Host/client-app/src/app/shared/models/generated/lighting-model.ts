@@ -1,11 +1,11 @@
 import {LightingState} from './lighting-state';
-import {LightingColorModel} from './lighting-color-model';
-import {LightingConstraintsModel} from './lighting-constraints-model';
+import {LevelLightingModel} from './level-lighting-model';
+import {TemperatureLightingModel} from './temperature-lighting-model';
+import {ColorLightingModel} from './color-lighting-model';
 
 export interface LightingModel {
 	state: LightingState;
-	level: number;
-	temperature: number;
-	color: LightingColorModel;
-	constraints: LightingConstraintsModel;
+	level: LevelLightingModel;
+	temperature?: TemperatureLightingModel;
+	color?: ColorLightingModel;
 }

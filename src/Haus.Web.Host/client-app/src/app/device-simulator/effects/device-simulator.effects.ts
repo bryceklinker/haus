@@ -1,9 +1,10 @@
 import {Injectable} from "@angular/core";
-import {KNOWN_HUB_NAMES, SignalrEffectsFactory, SignalrService} from "../../shared/signalr";
-import {ActionsSubject} from "@ngrx/store";
-import {DeviceSimulatorActions, DeviceSimulatorState} from "../state";
-import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {map, mergeMap} from "rxjs/operators";
+import {ActionsSubject} from "@ngrx/store";
+import {Actions, createEffect, ofType} from "@ngrx/effects";
+
+import {KNOWN_HUB_NAMES, SignalrEffectsFactory, SignalrService} from "../../shared/signalr";
+import {DeviceSimulatorActions, DeviceSimulatorState} from "../state";
 import {HausApiClient} from "../../shared/rest-api";
 
 @Injectable()

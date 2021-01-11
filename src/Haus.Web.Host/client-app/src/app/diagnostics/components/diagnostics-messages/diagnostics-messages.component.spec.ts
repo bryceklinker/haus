@@ -1,6 +1,7 @@
 import {EventEmitter} from "@angular/core";
 import {screen} from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
+
 import {renderFeatureComponent, TestingEventEmitter, ModelFactory} from "../../../../testing";
 import {DiagnosticsMessagesComponent} from "./diagnostics-messages.component";
 import {DiagnosticsModule} from "../../diagnostics.module";

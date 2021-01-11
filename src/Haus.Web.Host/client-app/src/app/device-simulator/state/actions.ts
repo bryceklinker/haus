@@ -1,6 +1,7 @@
 import {DeviceSimulatorState} from "./device-simulator.state";
 import {createAction} from "@ngrx/store";
-import {createAsyncActionSet} from "../../shared/actions/create-async-action-set";
+
+import {createAsyncActionSet} from "../../shared/actions";
 import {SimulatedDeviceModel} from "../../shared/models";
 
 export const DeviceSimulatorActions = {

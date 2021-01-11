@@ -1,9 +1,10 @@
 import {screen} from "@testing-library/dom";
 import userEvent from '@testing-library/user-event';
+import {EventEmitter} from "@angular/core";
+
 import {renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {DiagnosticsHeaderComponent} from "./diagnostics-header.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
-import {EventEmitter} from "@angular/core";
 
 describe('DiagnosticsHeaderComponent', () => {
   it('should show connected when connected', async () => {

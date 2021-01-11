@@ -1,18 +1,18 @@
 import {Component, Input, Output, EventEmitter} from "@angular/core";
-import {LightingColorModel} from "../../models";
+import {ColorLightingModel} from "../../models";
 import {MatSliderChange} from "@angular/material/slider";
 import {toHexFromRGB} from "../../color-converter";
 
-const DEFAULT_LIGHTING_COLOR: LightingColorModel = {red: 0, green: 0, blue: 0};
+const DEFAULT_LIGHTING_COLOR: ColorLightingModel = {red: 0, green: 0, blue: 0};
 @Component({
   selector: 'lighting-color',
   templateUrl: './lighting-color.component.html',
   styleUrls: ['./lighting-color.component.scss']
 })
 export class LightingColorComponent {
-  @Input() color: LightingColorModel | null = null;
+  @Input() color: ColorLightingModel | null = null;
   @Input() readonly: boolean = false;
-  @Output() colorChange = new EventEmitter<LightingColorModel>();
+  @Output() colorChange = new EventEmitter<ColorLightingModel>();
 
   get colorSample(): string {
     return toHexFromRGB(this.red, this.green, this.blue);
@@ -42,7 +42,7 @@ export class LightingColorComponent {
     this.onColorChanged({blue: $event.value || DEFAULT_LIGHTING_COLOR.blue});
   }
 
-  private onColorChanged(change: Partial<LightingColorModel>) {
+  private onColorChanged(change: Partial<ColorLightingModel>) {
     this.colorChange.emit({
       ...(this.color || DEFAULT_LIGHTING_COLOR),
       ...change

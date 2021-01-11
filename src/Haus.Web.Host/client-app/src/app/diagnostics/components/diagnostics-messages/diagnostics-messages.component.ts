@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {UiMqttDiagnosticsMessageModel} from "../../../shared/models";
 
-
 @Component({
   selector: 'diagnostics-messages',
   templateUrl: './diagnostics-messages.component.html',

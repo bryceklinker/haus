@@ -3,36 +3,37 @@ import {HarnessLoader} from "@angular/cdk/testing";
 import {By} from "@angular/platform-browser";
 import {ComponentFixture} from "@angular/core/testing";
 import {MatSliderHarness} from "@angular/material/slider/testing";
+import {screen} from "@testing-library/dom";
 
 import {LightingComponent} from "./lighting.component";
 import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
 import {SharedModule} from "../../shared.module";
 import {LightingModel, LightingState} from "../../models";
-import {screen} from "@testing-library/dom";
 
 describe('LightingComponent', () => {
   it('should show lighting values when rendered', async () => {
     const lighting = ModelFactory.createLighting({
       state: LightingState.On,
-      constraints: ModelFactory.createLightingConstraints({minLevel: 5, maxLevel: 95, minTemperature: 1000, maxTemperature: 6000})
+      level: ModelFactory.createLevelLighting({value: 45, min: 5, max: 95}),
+      temperature: ModelFactory.createTemperatureLighting({value: 77, min: 0, max: 1000}),
     });
     const {level, state, temperature} = await renderLightingWithHarnesses({lighting});
 
-    expect(await level.getValue()).toEqual(lighting.level);
+    expect(await state.isChecked()).toEqual(true);
+    expect(await level.getValue()).toEqual(45);
     expect(await level.getMinValue()).toEqual(5);
     expect(await level.getMaxValue()).toEqual(95);
-    expect(await state.isChecked()).toEqual(true);
-    expect(await temperature.getValue()).toEqual(lighting.temperature);
-    expect(await temperature.getMinValue()).toEqual(1000);
-    expect(await temperature.getMaxValue()).toEqual(6000);
+    expect(await temperature.getValue()).toEqual(77);
+    expect(await temperature.getMinValue()).toEqual(0);
+    expect(await temperature.getMaxValue()).toEqual(1000);
   })
 
   it('should show lighting values', async () => {
     const lighting = ModelFactory.createLighting({
       state: LightingState.Off,
-      level: 45,
-      temperature: 2700,
-      color: ModelFactory.createLightingColor()
+      level: ModelFactory.createLevelLighting({value: 45}),
+      temperature: ModelFactory.createTemperatureLighting({value: 2700}),
+      color: ModelFactory.createColorLighting()
     });
 
     await renderLightingWithHarnesses({lighting});
@@ -50,7 +51,7 @@ describe('LightingComponent', () => {
   })
 
   it('should notify of change when brightness changes', async () => {
-    const lighting = ModelFactory.createLighting({level: 0});
+    const lighting = ModelFactory.createLighting({level: ModelFactory.createLevelLighting()});
     const changeEmitter = new TestingEventEmitter<LightingModel>();
     const {fixture} = await renderLightingWithHarnesses({lighting, change: changeEmitter});
 
@@ -58,12 +59,12 @@ describe('LightingComponent', () => {
 
     expect(changeEmitter.emit).toHaveBeenCalledWith({
       ...lighting,
-      level: 78
+      level: {...lighting.level, value: 78}
     })
   })
 
   it('should notify of change when temperature changes', async () => {
-    const lighting = ModelFactory.createLighting({temperature: 4500});
+    const lighting = ModelFactory.createLighting({temperature: ModelFactory.createTemperatureLighting({value: 4500})});
     const changeEmitter = new TestingEventEmitter<LightingModel>();
     const {fixture} = await renderLightingWithHarnesses({lighting, change: changeEmitter});
 
@@ -71,13 +72,13 @@ describe('LightingComponent', () => {
 
     expect(changeEmitter.emit).toHaveBeenCalledWith({
       ...lighting,
-      temperature: 6000
+      temperature: {...lighting.temperature, value: 6000}
     })
   })
 
   it('should notify of change when color changes', async () => {
     const lighting = ModelFactory.createLighting({
-      color: ModelFactory.createLightingColor({red: 9})
+      color: ModelFactory.createColorLighting({red: 9})
     });
     const changeEmitter = new TestingEventEmitter<LightingModel>();
     const {fixture} = await renderLightingWithHarnesses({lighting, change: changeEmitter});
@@ -117,13 +118,6 @@ describe('LightingComponent', () => {
     expect(await temperature.isDisabled()).toEqual(true);
   })
 
-  function renderLighting(props: Partial<LightingComponent> = {}) {
-    return renderFeatureComponent(LightingComponent, {
-      imports: [SharedModule],
-      componentProperties: props
-    });
-  }
-
   async function renderLightingWithHarnesses(props: Partial<LightingComponent> = {}) {
     const result = await renderLighting(props);
     return {
@@ -132,6 +126,13 @@ describe('LightingComponent', () => {
       state: await result.matHarness.getHarness(MatSlideToggleHarness.with({selector: '[data-testid="state-input"]'})),
       temperature: await getSliderHarness(result.matHarness, 'temperature-input')
     }
+  }
+
+  function renderLighting(props: Partial<LightingComponent> = {}) {
+    return renderFeatureComponent(LightingComponent, {
+      imports: [SharedModule],
+      componentProperties: props
+    });
   }
 
   function getSliderHarness(matHarness: HarnessLoader, testId: string): Promise<MatSliderHarness> {

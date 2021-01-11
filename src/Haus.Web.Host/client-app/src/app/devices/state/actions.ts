@@ -1,5 +1,5 @@
 import {createAsyncActionSet} from "../../shared/actions";
-import {DeviceLightingConstraintsChangedEvent, DeviceModel, DeviceType, ListResult} from "../../shared/models";
+import {DeviceModel, DeviceType, ListResult} from "../../shared/models";
 
 export const DevicesActions = {
   loadDevices: createAsyncActionSet(
@@ -19,12 +19,6 @@ export const DevicesActions = {
     (id: number) => ({payload: id}),
     (id: number) => ({payload: id}),
     (id: number, err: any) => ({payload: {error: err, id}})
-  ),
-  changeDeviceLightingConstraints: createAsyncActionSet(
-    '[Devices] Update Device Lighting Constraints',
-    (model: DeviceLightingConstraintsChangedEvent) => ({payload: model}),
-    (model: DeviceLightingConstraintsChangedEvent) => ({payload: model}),
-    (id: number, error: any) => ({payload: {error, id}})
   )
 };
 

@@ -1,8 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
+import {debounceTime, map, mergeMap} from "rxjs/operators";
+
 import {HausApiClient} from "../../shared/rest-api";
 import {RoomsActions} from "../state";
-import {debounceTime, map, mergeMap} from "rxjs/operators";
 
 @Injectable()
 export class RoomsEffects {

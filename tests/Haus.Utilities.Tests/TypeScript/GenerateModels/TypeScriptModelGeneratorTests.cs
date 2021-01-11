@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Haus.Core.Models;
+using Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels;
 using Haus.Utilities.TypeScript.GenerateModels;
 using Xunit;
 
@@ -197,66 +198,15 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels
 
             _context.GetAll().Should().HaveCount(1);
         }
-    }
 
-    public enum SimpleEnum
-    {
-        Hello
-    }
-    
-    public class SimpleModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public double Value { get; set; }
-    }
+        [Fact]
+        public void WhenTypeContainsOptionalGenerationAttributesThenOptionalPropertiesAreGeneratedAsOptional()
+        {
+            _generator.Generate(typeof(ModelWithOptionalProperty), _context);
 
-    public class SlightlyComplexModel
-    {
-        public long Id { get; set; }
-        public SimpleModel Simple { get; set; }
-    }
-
-    public class GenericType<T>
-    {
-        public T Item { get; set; }
-    }
-
-    public class GenericType<T, R, U>
-    {
-        public T First { get; set; }
-        public R Second { get; set; }
-        public U Third { get; set; }
-    }
-
-    public class ResultSet<T>
-    {
-        public T[] Items { get; set; }
-    }
-
-    public class ModelWithNullable
-    {
-        public int? Id { get; set; }
-    }
-
-    public class ModelWithArrayOfModels
-    {
-        public SimpleModel[] Models { get; set; }
-    }
-
-    public class DerivedFromSimpleModel : SimpleModel
-    {
-        public string Stuff { get; set; }
-    }
-
-    [SkipGeneration]
-    public class Skippable
-    {
-        
-    }
-
-    public class ModelWithPrimitiveArray
-    {
-        public long[] Ids { get; set; }
+            var model = _context.GetModelForType(typeof(ModelWithOptionalProperty));
+            model.Contents.Should()
+                .Contain("id?: number;");
+        }
     }
 }

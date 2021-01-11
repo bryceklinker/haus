@@ -4,8 +4,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.DomainEvents;
-using Haus.Core.Lighting;
 using Haus.Core.Lighting.Entities;
+using Haus.Core.Lighting.Generators;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
@@ -19,12 +19,6 @@ namespace Haus.Core.Devices.Entities
 {
     public class DeviceEntity : Entity
     {
-        private static readonly LightingEntity FullDefaultLighting
-            = new(LightingDefaults.State, 
-                new LevelLightingEntity(), 
-                new TemperatureLightingEntity(),
-                new ColorLightingEntity());
-
         public static readonly Expression<Func<DeviceEntity, DeviceModel>> ToModelExpression =
             d => new DeviceModel(
                 d.Id,
@@ -112,7 +106,7 @@ namespace Haus.Core.Devices.Entities
         {
             DeviceType = @event.DeviceType;
             LightType = IsLight && LightType == LightType.None ? LightType.Level : LightType;
-            Lighting = GetDefaultLightingGenerator().Generate(Lighting, Room?.Lighting);
+            Lighting = GenerateDefaultLighting();
             if (IsLight) ChangeLighting(Lighting, domainEventBus);
 
             AddOrUpdateMetadata(@event.Metadata);
@@ -125,9 +119,10 @@ namespace Haus.Core.Devices.Entities
             if (LightType != model.LightType)
             {
                 LightType = model.LightType;
-                Lighting = GetDefaultLightingGenerator().Generate(Lighting, Room?.Lighting);
-                if (IsLight) ChangeLighting(Lighting, domainEvenBus);
+                Lighting = GenerateDefaultLighting();
             }
+            if (IsLight) ChangeLighting(Lighting, domainEvenBus);
+            
             AddOrUpdateMetadata(model.Metadata);
         }
 
@@ -159,32 +154,33 @@ namespace Haus.Core.Devices.Entities
             Room = null;
         }
 
-        public void ChangeLighting(LightingEntity desiredLighting, IDomainEventBus domainEventBus)
+        public void ChangeLighting(LightingEntity targetLighting, IDomainEventBus domainEventBus)
         {
             if (!IsLight)
                 throw new InvalidOperationException($"Device with id {Id} is not a light.");
-            
-            Lighting = Lighting == null ? desiredLighting : Lighting.CalculateTarget(desiredLighting);
+
+            Lighting = Lighting == null ? targetLighting : Lighting.CalculateTarget(targetLighting);
             domainEventBus.Enqueue(new DeviceLightingChangedDomainEvent(this, Lighting));
         }
 
         public void TurnOff(IDomainEventBus domainEventBus)
         {
-            var lightingCopy = LightingEntity.FromEntity(Lighting);
+            var lightingCopy = LightingEntity.FromEntity(Lighting ?? GenerateDefaultLighting());
             lightingCopy.State = LightingState.Off;
             ChangeLighting(lightingCopy, domainEventBus);
         }
 
         public void TurnOn(IDomainEventBus domainEventBus)
         {
-            var turnOnLighting = LightingEntity.FromEntity(Lighting);
+            var turnOnLighting = LightingEntity.FromEntity(Lighting ?? GenerateDefaultLighting());
             turnOnLighting.State = LightingState.On;
             ChangeLighting(turnOnLighting, domainEventBus);
         }
 
-        private IDefaultLightingGenerator GetDefaultLightingGenerator()
+        private LightingEntity GenerateDefaultLighting()
         {
-            return DefaultLightingGeneratorFactory.GetGenerator(DeviceType, LightType);
+            return DefaultLightingGeneratorFactory.GetGenerator(DeviceType, LightType)
+                .Generate(Lighting, Room?.Lighting);
         }
     }
 

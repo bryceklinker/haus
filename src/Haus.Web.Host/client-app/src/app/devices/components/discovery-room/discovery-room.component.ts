@@ -1,7 +1,8 @@
 import {Component, Input, EventEmitter, Output} from "@angular/core";
+import {CdkDragDrop} from "@angular/cdk/drag-drop";
+
 import {DeviceModel, DevicesAssignedToRoomEvent, RoomModel} from "../../../shared/models";
 import {getDeviceDisplayText} from "../../../shared/humanize/get-device-display-text";
-import {CdkDragDrop} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'discovery-room',

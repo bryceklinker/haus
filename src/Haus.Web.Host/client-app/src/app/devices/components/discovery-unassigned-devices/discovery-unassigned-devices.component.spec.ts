@@ -31,7 +31,7 @@ describe('DiscoveryUnassignedDevicesComponent', () => {
   })
 
   it('should have drop list', async () => {
-    const {fixture, debug} = await renderUnassignedDevices({roomIds: [1, 2, 4]});
+    const {fixture} = await renderUnassignedDevices({roomIds: [1, 2, 4]});
 
     const dropList = fixture.debugElement.query(By.directive(CdkDropList));
     expect(dropList.nativeElement).toBeInTheDocument();

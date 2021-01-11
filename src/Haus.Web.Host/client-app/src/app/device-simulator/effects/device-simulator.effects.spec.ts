@@ -1,3 +1,5 @@
+import {TestBed} from "@angular/core/testing";
+
 import {
   createAppTestingService,
   eventually,
@@ -8,7 +10,6 @@ import {
   TestingSignalrHubConnectionFactory
 } from "../../../testing";
 import {DeviceSimulatorEffects} from "./device-simulator.effects";
-import {TestBed} from "@angular/core/testing";
 import {KNOWN_HUB_NAMES, SignalrHubConnectionFactory} from "../../shared/signalr";
 import {DeviceSimulatorActions, DeviceSimulatorState} from "../state";
 import {DeviceType, SimulatedDeviceModel} from "../../shared/models";

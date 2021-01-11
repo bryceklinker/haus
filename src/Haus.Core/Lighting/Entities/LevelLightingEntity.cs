@@ -38,7 +38,7 @@ namespace Haus.Core.Lighting.Entities
             if (model == null)
                 return null;
 
-            return new LevelLightingEntity(model.Value, model.MinLevel, model.MaxLevel);
+            return new LevelLightingEntity(model.Value, model.Min, model.Max);
         }
 
         public static LevelLightingEntity FromEntity(LevelLightingEntity entity)

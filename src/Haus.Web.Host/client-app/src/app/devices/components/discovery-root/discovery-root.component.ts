@@ -1,14 +1,13 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 
 import {AppState} from "../../../app.state";
 import {DiscoveryActions} from "../../../shared/discovery";
 import {DeviceModel, DevicesAssignedToRoomEvent, RoomModel} from "../../../shared/models";
-import {DevicesActions, selectAllDevicesByRoomId, selectAssignedDevices, selectUnassignedDevices} from "../../state";
+import {DevicesActions, selectAssignedDevices, selectUnassignedDevices} from "../../state";
 import {RoomsActions, selectAllRooms} from "../../../rooms/state";
-import {map} from "rxjs/operators";
-import {toTitleCase} from "../../../shared/humanize";
 
 @Component({
   selector: 'discovery-root',
@@ -39,14 +38,6 @@ export class DiscoveryRootComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.store.dispatch(DiscoveryActions.stopDiscovery.request());
-  }
-
-  getDeviceText(device: DeviceModel): string {
-    return `(${toTitleCase(device.deviceType)}) ${device.name}`;
-  }
-
-  getDevicesInRoom(room: RoomModel): Observable<Array<DeviceModel>> {
-    return this.store.select(selectAllDevicesByRoomId(room.id));
   }
 
   onDeviceAssignedToRoom($event: DevicesAssignedToRoomEvent) {

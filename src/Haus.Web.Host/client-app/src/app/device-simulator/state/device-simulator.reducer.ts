@@ -1,4 +1,5 @@
 import {Action, createReducer, createSelector, on} from "@ngrx/store";
+
 import {DeviceSimulatorState} from "./device-simulator.state";
 import {AppState} from "../../app.state";
 import {DeviceSimulatorActions} from "./actions";

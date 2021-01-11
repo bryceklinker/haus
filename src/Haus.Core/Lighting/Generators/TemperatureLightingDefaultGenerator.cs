@@ -1,7 +1,7 @@
 using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 
-namespace Haus.Core.Lighting
+namespace Haus.Core.Lighting.Generators
 {
     public class TemperatureLightingDefaultGenerator : IDefaultLightingGenerator
     {
