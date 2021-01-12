@@ -15,6 +15,14 @@ export abstract class HausComponentHarness<TComponent> {
     return this.result.fixture;
   }
 
+  protected get actionsSubject() {
+    return this.result.actionsSubject;
+  }
+
+  get router() {
+    return this.result.router;
+  }
+
   get container() {
     return this.result.container;
   }
