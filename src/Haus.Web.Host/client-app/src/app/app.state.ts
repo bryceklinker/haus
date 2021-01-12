@@ -5,6 +5,7 @@ import {LoadingState} from "./shared/loading";
 import {DeviceSimulatorState} from "./device-simulator/state";
 import {DeviceTypesState} from "./devices/state/device-types.state";
 import {AppDiscoveryState} from "./shared/discovery";
+import {LightTypesState} from "./devices/state/light-types.state";
 
 export interface AppState {
   devices: DevicesState;
@@ -14,4 +15,5 @@ export interface AppState {
   deviceSimulator: DeviceSimulatorState;
   deviceTypes: DeviceTypesState;
   discovery: AppDiscoveryState;
+  lightTypes: LightTypesState
 }

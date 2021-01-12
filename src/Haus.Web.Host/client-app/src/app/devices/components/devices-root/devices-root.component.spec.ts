@@ -1,16 +1,13 @@
-import {screen} from "@testing-library/dom";
-import {Action} from "@ngrx/store";
-
-import {ModelFactory, renderFeatureComponent} from "../../../../testing";
+import {ModelFactory} from "../../../../testing";
 import {DevicesRootComponent} from "./devices-root.component";
-import {DevicesModule} from "../../devices.module";
 import {DevicesActions} from "../../state";
+import {DevicesRootHarness} from "./devices-root.harness";
 
 describe('DevicesRootComponent', () => {
   it('should get all devices when rendered', async () => {
-    const { store } = await renderRoot();
+    const harness = await DevicesRootHarness.render();
 
-    expect(store.dispatchedActions).toContainEqual(DevicesActions.loadDevices.request());
+    expect(harness.dispatchedActions).toContainEqual(DevicesActions.loadDevices.request());
   })
 
   it('should show all devices', async () => {
@@ -20,17 +17,10 @@ describe('DevicesRootComponent', () => {
       ModelFactory.createDeviceModel()
     ];
 
-    await renderRoot(
+    const harness = await DevicesRootHarness.render(
       DevicesActions.loadDevices.success(ModelFactory.createListResult(...devices))
     );
 
-    expect(screen.queryAllByTestId('device-item')).toHaveLength(3);
+    expect(harness.deviceItems).toHaveLength(3);
   })
-
-  function renderRoot(...actions: Array<Action>) {
-    return renderFeatureComponent(DevicesRootComponent, {
-      imports: [DevicesModule],
-      actions: actions
-    })
-  }
 })

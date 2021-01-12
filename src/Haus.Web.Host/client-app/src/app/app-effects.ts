@@ -5,6 +5,7 @@ import {DeviceSimulatorEffects} from "./device-simulator/effects/device-simulato
 import {DeviceTypesEffects} from "./devices/effects/device-types.effects";
 import {EventsEffects} from "./shared/events";
 import {DiscoveryEffects} from "./shared/discovery";
+import {LightTypesEffects} from "./devices/effects/light-types.effects";
 
 export const APP_EFFECTS = [
   DevicesEffects,
@@ -13,5 +14,6 @@ export const APP_EFFECTS = [
   DeviceSimulatorEffects,
   DeviceTypesEffects,
   EventsEffects,
-  DiscoveryEffects
+  DiscoveryEffects,
+  LightTypesEffects
 ]

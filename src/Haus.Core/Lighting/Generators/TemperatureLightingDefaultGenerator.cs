@@ -13,11 +13,13 @@ namespace Haus.Core.Lighting.Generators
 
         public LightingEntity Generate(LightingEntity currentLighting, LightingEntity roomLighting)
         {
-            var lighting = LightingEntity.FromEntity(currentLighting ?? roomLighting ?? Default);
+            var lighting = LightingEntity.FromEntity(currentLighting ?? Default);
             lighting.Color = null;
-            lighting.Temperature ??= Default.Temperature;
+            lighting.Temperature = Default.Temperature;
             lighting.Level ??= Default.Level;
-            return lighting;
+            return roomLighting != null 
+                ? lighting.CalculateTarget(roomLighting) 
+                : lighting;
         }
     }
 }

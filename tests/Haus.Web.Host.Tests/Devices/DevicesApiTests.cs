@@ -86,5 +86,17 @@ namespace Haus.Web.Host.Tests.Devices
                 published.Payload.Lighting.State.Should().Be(LightingState.On);
             });
         }
+
+        [Fact]
+        public async Task WhenDeviceLightingConstraintsChangedThenDeviceLightingConstraintsAreUpdated()
+        {
+            var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
+
+            await _hausClient.ChangeDeviceLightingConstraintsAsync(device.Id, new LightingConstraintsModel(50, 90));
+
+            var updatedDevice = await _hausClient.GetDeviceAsync(device.Id);
+            updatedDevice.Lighting.Level.Min.Should().Be(50);
+            updatedDevice.Lighting.Level.Max.Should().Be(90);
+        }
     }
 }

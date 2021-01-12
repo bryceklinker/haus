@@ -1,7 +1,6 @@
-import {screen} from "@testing-library/dom";
-import {renderFeatureComponent, ModelFactory} from "../../../../testing";
+import {ModelFactory} from "../../../../testing";
 import {DevicesListComponent} from "./devices-list.component";
-import {DevicesModule} from "../../devices.module";
+import {DevicesListHarness} from "./devices-list.harness";
 
 describe('DevicesListComponent', () => {
   it('should show each device name', async () => {
@@ -11,18 +10,11 @@ describe('DevicesListComponent', () => {
       ModelFactory.createDeviceModel()
     ];
 
-    const {container} = await renderDevicesList({devices})
+    const harness = await DevicesListHarness.render({devices});
 
-    expect(screen.queryAllByTestId('device-item')).toHaveLength(3);
-    expect(container).toHaveTextContent(devices[0].name);
-    expect(container).toHaveTextContent(devices[1].name);
-    expect(container).toHaveTextContent(devices[2].name);
+    expect(harness.deviceItems).toHaveLength(3);
+    expect(harness.container).toHaveTextContent(devices[0].name);
+    expect(harness.container).toHaveTextContent(devices[1].name);
+    expect(harness.container).toHaveTextContent(devices[2].name);
   })
-
-  function renderDevicesList({devices = []}: Partial<DevicesListComponent> = {}) {
-    return renderFeatureComponent(DevicesListComponent, {
-      imports: [DevicesModule],
-      componentProperties: {devices}
-    })
-  }
 })

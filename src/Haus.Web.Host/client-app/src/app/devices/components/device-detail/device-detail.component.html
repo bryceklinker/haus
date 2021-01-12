@@ -2,18 +2,28 @@
   <mat-card-header>
     <mat-card-title>{{name}}</mat-card-title>
   </mat-card-header>
-  <mat-card-content>
+  <mat-card-content [formGroup]="form">
     <mat-form-field appearance="fill">
       <mat-label>Name</mat-label>
-      <input matInput [value]="name" data-testid="device-name-field" [disabled]="canEdit"/>
+      <input matInput formControlName="name" data-testid="device-name-field"/>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>External Id</mat-label>
-      <input matInput [value]="externalId" data-testid="device-external-id-field" disabled/>
+      <input matInput formControlName="externalId" data-testid="device-external-id-field"/>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Device Type</mat-label>
-      <input matInput [value]="type" data-testid="device-type-field" disabled/>
+      <input matInput formControlName="deviceType" data-testid="device-type-field"/>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" *ngIf="isLight">
+      <mat-label>Light Type</mat-label>
+      <mat-select formControlName="lightType" data-testid="light-type-select">
+        <mat-option *ngFor="let lightType of lightTypes"
+                    [value]="lightType">
+          {{humanize(lightType)}}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
 
     <mat-expansion-panel *ngIf="isLight">
@@ -23,6 +33,17 @@
       <lighting [lighting]="lighting"
                 [readonly]="true">
       </lighting>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel *ngIf="isLight">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Lighting Constraints</mat-panel-title>
+      </mat-expansion-panel-header>
+      <lighting-constraints [level]="levelLighting"
+                            [temperature]="temperatureLighting"
+                            [hideCancel]="true"
+                            (save)="onSaveConstraints($event)">
+      </lighting-constraints>
     </mat-expansion-panel>
 
     <mat-expansion-panel>
@@ -38,4 +59,10 @@
       </mat-list>
     </mat-expansion-panel>
   </mat-card-content>
+  <mat-card-actions>
+    <span class="spacer"></span>
+    <button mat-button data-testid="save-device-btn" (click)="onSaveDevice()">
+      Save Device
+    </button>
+  </mat-card-actions>
 </mat-card>

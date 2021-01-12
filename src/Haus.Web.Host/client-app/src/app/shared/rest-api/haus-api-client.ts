@@ -8,7 +8,9 @@ import {
   DeviceModel,
   DeviceType,
   DiscoveryModel,
+  LightingConstraintsModel,
   LightingModel,
+  LightType,
   ListResult,
   MqttDiagnosticsMessageModel,
   RoomModel,
@@ -27,6 +29,7 @@ export class HausApiClient implements OnDestroy {
   get inflightRequests(): Array<string> {
     return this._inflightRequests.getValue();
   }
+
   get isLoading$(): Observable<boolean> {
     return this.destroyable.register(this._inflightRequests.pipe(
       map(requests => requests.length > 0),
@@ -40,8 +43,16 @@ export class HausApiClient implements OnDestroy {
     return this.execute<ListResult<DeviceModel>>(HttpMethod.GET, '/api/devices');
   }
 
+  updateDevice(deviceId: number, model: DeviceModel): Observable<void> {
+    return this.execute(HttpMethod.PUT, `/api/devices/${deviceId}`, model);
+  }
+
   getDeviceTypes(): Observable<ListResult<DeviceType>> {
     return this.execute<ListResult<DeviceType>>(HttpMethod.GET, '/api/device-types');
+  }
+
+  getLightTypes(): Observable<ListResult<LightType>> {
+    return this.execute<ListResult<LightType>>(HttpMethod.GET, '/api/light-types');
   }
 
   turnDeviceOff(deviceId: number): Observable<void> {
@@ -50,6 +61,10 @@ export class HausApiClient implements OnDestroy {
 
   turnDeviceOn(deviceId: number): Observable<void> {
     return this.execute(HttpMethod.POST, `/api/devices/${deviceId}/turn-on`);
+  }
+
+  changeDeviceLightingConstraints(deviceId: number, model: LightingConstraintsModel): Observable<void> {
+    return this.execute(HttpMethod.PUT, `/api/devices/${deviceId}/lighting-constraints`, model);
   }
 
   startDiscovery(): Observable<void> {
@@ -82,10 +97,6 @@ export class HausApiClient implements OnDestroy {
 
   changeRoomLighting(roomId: number, lighting: LightingModel): Observable<void> {
     return this.execute(HttpMethod.PUT, `/api/rooms/${roomId}/lighting`, lighting);
-  }
-
-  getDevicesInRoom(roomId: string): Observable<ListResult<DeviceModel>> {
-    return this.execute<ListResult<DeviceModel>>(HttpMethod.GET, `/api/rooms/${roomId}/devices`)
   }
 
   replayMessage(message: MqttDiagnosticsMessageModel): Observable<void> {

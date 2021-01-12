@@ -16,6 +16,14 @@ export class DevicesEffects {
     ))
   ))
 
+  updateDevice$ = createEffect(() => this.actions$.pipe(
+    ofType(DevicesActions.updateDevice.request),
+    mergeMap(({payload}) => this.api.updateDevice(payload.id, payload).pipe(
+      map(() => DevicesActions.updateDevice.success(payload)),
+      catchError(error => of(DevicesActions.updateDevice.failed(payload.id, error)))
+    ))
+  ))
+
   turnOnDevice$ = createEffect(() => this.actions$.pipe(
     ofType(DevicesActions.turnOnDevice.request),
     mergeMap(({payload}) => this.api.turnDeviceOn(payload).pipe(
@@ -31,6 +39,14 @@ export class DevicesEffects {
       catchError(err => of(DevicesActions.turnOffDevice.failed(payload, err)))
     ))
   ))
+
+  changeDeviceLightingConstraints$ = createEffect(() => this.actions$.pipe(
+    ofType(DevicesActions.changeDeviceLightingConstraints.request),
+    mergeMap(({payload}) => this.api.changeDeviceLightingConstraints(payload.device.id, payload.constraints).pipe(
+      map(() => DevicesActions.changeDeviceLightingConstraints.success(payload)),
+      catchError(err => of(DevicesActions.changeDeviceLightingConstraints.failed(payload.device.id, err)))
+    ))
+  ));
 
   constructor(private readonly actions$: Actions, private readonly api: HausApiClient) {
   }

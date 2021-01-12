@@ -1,3 +1,6 @@
-<device-detail [device]="selectedDevice$ | async">
+<device-detail [device]="selectedDevice$ | async"
+               [lightTypes]="lightTypes$ | async"
+               (saveDevice)="onSaveDevice($event)"
+               (saveConstraints)="onSaveConstraints($event)">
 
 </device-detail>

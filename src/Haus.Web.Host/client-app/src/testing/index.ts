@@ -4,4 +4,5 @@ export * from './fakes';
 export * from './create-testing-module';
 export * from './create-testing-service';
 export * from './render-component';
+export * from './haus-component.harness';
 

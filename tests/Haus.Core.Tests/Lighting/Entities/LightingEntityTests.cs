@@ -1,6 +1,8 @@
+using System.Drawing;
 using FluentAssertions;
 using Haus.Core.Lighting;
 using Haus.Core.Lighting.Entities;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Xunit;
 
@@ -71,7 +73,7 @@ namespace Haus.Core.Tests.Lighting.Entities
 
         [Fact]
         public void
-            WhenDesiredLightingLevelIsCalculatedToBeBelowMinimumLevelThenReturnsMinimumLevelFromCurrentLighting()
+            WhenTargetLightingLevelIsCalculatedToBeBelowMinimumLevelThenReturnsMinimumLevelFromCurrentLighting()
         {
             var current = new LightingEntity(level: new LevelLightingEntity(87, 87, 100));
             var desired = new LightingEntity(level: new LevelLightingEntity(50, 0, 100));
@@ -82,7 +84,7 @@ namespace Haus.Core.Tests.Lighting.Entities
         }
 
         [Fact]
-        public void WhenConvertingToDesiredLevelThenConstraintsAreNotModified()
+        public void WhenCalculatingTargetLightingThenLightingRangeIsNotModified()
         {
             var current = new LightingEntity(level: new LevelLightingEntity(100, 100, 1000));
             var desired = new LightingEntity(level: new LevelLightingEntity(0, 0, 2000));
@@ -93,7 +95,29 @@ namespace Haus.Core.Tests.Lighting.Entities
         }
 
         [Fact]
-        public void WhenConvertingToDesiredLevelThenReturnsNewLightingInstance()
+        public void WhenCurrentLightingIsMissingTemperatureAndTargetHasTemperatureThenReturnsLightingMissingTemperature()
+        {
+            var current = new LightingEntity(level: new LevelLightingEntity(45));
+            var target = new LightingEntity(level: new LevelLightingEntity(65), temperature: new TemperatureLightingEntity());
+
+            var result = current.CalculateTarget(target);
+
+            result.Temperature.Should().BeNull();
+        }
+
+        [Fact]
+        public void WhenCurrentLightingIsMissingColorAndTargetHasColorThenReturnsLightingMissingColor()
+        {
+            var current = new LightingEntity(level: new LevelLightingEntity(45));
+            var target = new LightingEntity(level: new LevelLightingEntity(65), color: new ColorLightingEntity());
+
+            var result = current.CalculateTarget(target);
+
+            result.Color.Should().BeNull();
+        }
+
+        [Fact]
+        public void WhenCalculatingTargetLightingThenReturnsNewLightingInstance()
         {
             var current = new LightingEntity();
             var desired = new LightingEntity();
@@ -103,12 +127,44 @@ namespace Haus.Core.Tests.Lighting.Entities
             result.Should().NotBeSameAs(current);
         }
 
-        private static LightingModel CreateLightingModel()
+        [Fact]
+        public void WhenLightingConvertedToRangeWithLevelOnlyThenLevelIsConvertedToNewRange()
         {
-            var level = new LevelLightingModel(12, 10, 29);
-            var temperature = new TemperatureLightingModel(3000, 1000, 8000);
-            var color = new ColorLightingModel(12, 3, 6);
-            return new LightingModel(LightingState.On, level, temperature, color);
+            var current = new LightingEntity(level: new LevelLightingEntity(50));
+            var model = new LightingConstraintsModel(1, 251);
+
+            var converted = current.ConvertToConstraints(model);
+
+            converted.Level.Value.Should().Be(125.5);
+            converted.Level.Min.Should().Be(1);
+            converted.Level.Max.Should().Be(251);
+        }
+
+        [Fact]
+        public void WhenLightingConvertedToRangeWithTemperatureThenTemperatureIsConvertedToNewRange()
+        {
+            var current = new LightingEntity(temperature: new TemperatureLightingEntity(4500));
+            var model = new LightingConstraintsModel(0, 100, 1, 254);
+
+            var converted = current.ConvertToConstraints(model);
+
+            converted.Temperature.Value.Should().Be(190.5);
+            converted.Temperature.Min.Should().Be(1);
+            converted.Temperature.Max.Should().Be(254);
+        }
+
+        [Fact]
+        public void WhenLightingConvertedToRangeThenReturnsColorUnchanged()
+        {
+            var current = new LightingEntity(
+                level: new LevelLightingEntity(50),
+                color: new ColorLightingEntity(123, 123, 123));
+            
+            var model = new LightingConstraintsModel(200, 500);
+
+            var converted = current.ConvertToConstraints(model);
+
+            converted.Color.Should().BeEquivalentTo(new ColorLightingEntity(123, 123, 123));
         }
     }
 }

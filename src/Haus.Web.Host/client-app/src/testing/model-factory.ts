@@ -5,7 +5,7 @@ import {
   DeviceType,
   DiscoveryModel,
   DiscoveryState,
-  LevelLightingModel,
+  LevelLightingModel, LightingConstraintsModel,
   LightingModel,
   LightingState,
   LightType,
@@ -106,6 +106,13 @@ function createLighting(model: Partial<LightingModel> = {}): LightingModel {
   }
 }
 
+function createLightingConstraints(model: Partial<LightingConstraintsModel> = {}): LightingConstraintsModel {
+  return {
+    minLevel: model.minLevel || 0,
+    maxLevel: model.maxLevel || 100
+  }
+}
+
 function createDiscovery(model: Partial<DiscoveryModel> = {}): DiscoveryModel {
   return {
     state: model.state || DiscoveryState.Disabled
@@ -122,6 +129,7 @@ export const ModelFactory = {
   createColorLighting,
   createLevelLighting,
   createTemperatureLighting,
+  createLightingConstraints,
   createLighting,
   createDiscovery
 };

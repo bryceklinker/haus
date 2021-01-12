@@ -7,7 +7,7 @@
   </mat-card-header>
   <mat-card-content>
     <mat-list>
-      <mat-list-item *ngFor="let device of devicesInRoom">
+      <mat-list-item *ngFor="let device of devicesInRoom" data-testid="assigned-device-item">
         {{getDeviceText(device)}}
       </mat-list-item>
     </mat-list>

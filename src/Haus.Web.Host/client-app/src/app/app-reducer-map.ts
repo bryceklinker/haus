@@ -1,6 +1,6 @@
 import {ActionReducerMap} from "@ngrx/store";
 import {AppState} from "./app.state";
-import {devicesReducer, deviceTypesReducer} from "./devices/state";
+import {devicesReducer, deviceTypesReducer, lightTypesReducer} from "./devices/state";
 import {diagnosticsReducer} from "./diagnostics/state";
 import {roomsReducer} from "./rooms/state";
 import {loadingReducer} from "./shared/loading";
@@ -14,5 +14,6 @@ export const appReducerMap: ActionReducerMap<AppState> = {
   loading: loadingReducer,
   deviceSimulator: deviceSimulatorReducer,
   deviceTypes: deviceTypesReducer,
-  discovery: discoveryReducer
+  discovery: discoveryReducer,
+  lightTypes: lightTypesReducer
 };

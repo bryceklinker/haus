@@ -5,7 +5,15 @@
 }
 
 mat-card {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+
+  mat-card-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
 }
 
 mat-form-field {

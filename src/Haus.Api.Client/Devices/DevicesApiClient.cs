@@ -13,21 +13,21 @@ namespace Haus.Api.Client.Devices
     {
         Task<DeviceModel> GetDeviceAsync(long id);
         Task<ListResult<DeviceType>> GetDeviceTypesAsync();
+        Task<ListResult<LightType>> GetLightTypesAsync();
         Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null);
         Task UpdateDeviceAsync(long deviceId, DeviceModel model);
         Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model);
+        Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model);
         Task<HttpResponseMessage> TurnLightOffAsync(long deviceId);
         Task<HttpResponseMessage> TurnLightOnAsync(long deviceId);
     }
     
-    public class DevicesApiClient : ApiClient, IDeviceApiClient 
+    public class DevicesApiClient : ApiClient, IDeviceApiClient
     {
         public DevicesApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) 
             : base(httpClient, options)
         {
         }
-
-        
 
         public Task<DeviceModel> GetDeviceAsync(long id)
         {
@@ -37,6 +37,11 @@ namespace Haus.Api.Client.Devices
         public Task<ListResult<DeviceType>> GetDeviceTypesAsync()
         {
             return GetAsJsonAsync<ListResult<DeviceType>>("device-types");
+        }
+
+        public Task<ListResult<LightType>> GetLightTypesAsync()
+        {
+            return GetAsJsonAsync<ListResult<LightType>>("light-types");
         }
 
         public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
@@ -55,6 +60,11 @@ namespace Haus.Api.Client.Devices
         public Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model)
         {
             return PutAsJsonAsync($"devices/{deviceId}/lighting", model);
+        }
+
+        public Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model)
+        {
+            return PutAsJsonAsync($"devices/{deviceId}/lighting-constraints", model);
         }
 
         public Task<HttpResponseMessage> TurnLightOffAsync(long deviceId)

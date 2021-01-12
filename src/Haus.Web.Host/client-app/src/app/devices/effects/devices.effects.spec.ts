@@ -2,10 +2,11 @@ import {DevicesEffects} from "./devices.effects";
 import {
   createAppTestingService,
   eventually,
-  ModelFactory, setupChangeDeviceLightingConstraints,
+  ModelFactory,
+  setupChangeDeviceLightingConstraints,
   setupDeviceTurnOff,
   setupDeviceTurnOn,
-  setupGetAllDevices,
+  setupGetAllDevices, setupUpdateDevice,
   TestingActionsSubject
 } from "../../../testing";
 import {DevicesActions} from "../state";
@@ -49,6 +50,29 @@ describe('DevicesEffects', () => {
 
     await eventually(() => {
       expect(actions$.publishedActions).toContainEqual(DevicesActions.turnOnDevice.success(7));
+    })
+  })
+
+  it('should change lighting constraints when change lighting constraints requested', async () => {
+    const device = ModelFactory.createDeviceModel();
+    const constraints = ModelFactory.createLightingConstraints();
+    setupChangeDeviceLightingConstraints(device.id);
+
+    actions$.next(DevicesActions.changeDeviceLightingConstraints.request({device, constraints}));
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(DevicesActions.changeDeviceLightingConstraints.success({device, constraints}));
+    })
+  })
+
+  it('should update device when device update requested', async () => {
+    const device = ModelFactory.createDeviceModel();
+    setupUpdateDevice(device.id);
+
+    actions$.next(DevicesActions.updateDevice.request(device));
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(DevicesActions.updateDevice.success(device));
     })
   })
 })

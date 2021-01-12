@@ -357,7 +357,7 @@ namespace Haus.Core.Tests.Devices.Entities
         [Fact]
         public void WhenDeviceIsTurnedOffThenDeviceLightingStateIsSetToOff()
         {
-            var light = new DeviceEntity {DeviceType = DeviceType.Light};
+            var light = new DeviceEntity(deviceType: DeviceType.Light);
             var lighting = new LightingEntity(LightingState.On);
             light.ChangeLighting(lighting, new FakeDomainEventBus());
 
@@ -416,6 +416,31 @@ namespace Haus.Core.Tests.Devices.Entities
             model.Lighting.Should().BeEquivalentTo(lighting.ToModel());
             model.Metadata.Should().HaveCount(1)
                 .And.ContainEquivalentOf(metadata[0].ToModel());
+        }
+
+        [Fact]
+        public void WhenDeviceUpdatedFromLightingConstraintsThenLightingMinAndMaxLevelsAreUpdated()
+        {
+            var device = new DeviceEntity(deviceType: DeviceType.Light);
+            var model = new LightingConstraintsModel(1, 254);
+            
+            device.UpdateFromLightingConstraints(model, new FakeDomainEventBus());
+
+            device.Lighting.Level.Min.Should().Be(1);
+            device.Lighting.Level.Max.Should().Be(254);
+        }
+
+        [Fact]
+        public void WhenDeviceUpdatedFromLightingConstraintsThenDeviceLightingChangedEventIsQueued()
+        {
+            var domainEventBus = new FakeDomainEventBus();
+            var device = new DeviceEntity(deviceType: DeviceType.Light);
+            var model = new LightingConstraintsModel(1, 254);
+
+            device.UpdateFromLightingConstraints(model, domainEventBus);
+
+            domainEventBus.GetEvents.OfType<DeviceLightingChangedDomainEvent>()
+                .Should().HaveCount(1);
         }
     }
 }

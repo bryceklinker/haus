@@ -83,9 +83,9 @@ namespace Haus.Core.Devices.Entities
             ExternalId = externalId ?? string.Empty;
             Name = name ?? string.Empty;
             DeviceType = deviceType;
-            LightType = lightType;
+            LightType = GetValidLightType(deviceType, lightType);
             Room = room;
-            Lighting = lighting;
+            Lighting = lighting ?? GenerateDefaultLighting();
             Metadata = metadata ?? new List<DeviceMetadataEntity>();
         }
 
@@ -105,7 +105,7 @@ namespace Haus.Core.Devices.Entities
         public void UpdateFromDiscoveredDevice(DeviceDiscoveredEvent @event, IDomainEventBus domainEventBus)
         {
             DeviceType = @event.DeviceType;
-            LightType = IsLight && LightType == LightType.None ? LightType.Level : LightType;
+            LightType = GetValidLightType(@event.DeviceType, LightType);
             Lighting = GenerateDefaultLighting();
             if (IsLight) ChangeLighting(Lighting, domainEventBus);
 
@@ -124,6 +124,12 @@ namespace Haus.Core.Devices.Entities
             if (IsLight) ChangeLighting(Lighting, domainEvenBus);
             
             AddOrUpdateMetadata(model.Metadata);
+        }
+
+        public void UpdateFromLightingConstraints(LightingConstraintsModel model, IDomainEventBus domainEventBus)
+        {
+            Lighting = (Lighting ?? GenerateDefaultLighting()).ConvertToConstraints(model);
+            if (IsLight) ChangeLighting(Lighting, domainEventBus);
         }
 
         private void AddOrUpdateMetadata(IEnumerable<MetadataModel> models)
@@ -181,6 +187,14 @@ namespace Haus.Core.Devices.Entities
         {
             return DefaultLightingGeneratorFactory.GetGenerator(DeviceType, LightType)
                 .Generate(Lighting, Room?.Lighting);
+        }
+
+        private LightType GetValidLightType(DeviceType deviceType, LightType lightType)
+        {
+            if (deviceType != DeviceType.Light)
+                return LightType.None;
+
+            return lightType == LightType.None ? LightType.Level : lightType;
         }
     }
 

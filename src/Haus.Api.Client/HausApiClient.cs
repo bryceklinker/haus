@@ -73,9 +73,19 @@ namespace Haus.Api.Client
             return DeviceApiClient.GetDeviceTypesAsync();
         }
 
+        public Task<ListResult<LightType>> GetLightTypesAsync()
+        {
+            return DeviceApiClient.GetLightTypesAsync();
+        }
+
         public Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model)
         {
             return DeviceApiClient.ChangeDeviceLightingAsync(deviceId, model);
+        }
+
+        public Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model)
+        {
+            return DeviceApiClient.ChangeDeviceLightingConstraintsAsync(deviceId, model);
         }
 
         public Task<HttpResponseMessage> TurnLightOffAsync(long deviceId)

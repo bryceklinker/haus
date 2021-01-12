@@ -49,6 +49,16 @@ namespace Haus.Core.Lighting.Entities
             return CalculateTarget(this, target);
         }
 
+        public LightingEntity ConvertToConstraints(LightingConstraintsModel model)
+        {
+            var level = new LevelLightingEntity(0, model.MinLevel, model.MaxLevel);
+            var temperature = model.HasTemperature && Temperature != null
+                ? new TemperatureLightingEntity(0, model.MinTemperature.Value, model.MaxTemperature.Value)
+                : null;
+            var lighting = new LightingEntity(State, level, temperature, Color);
+            return lighting.CalculateTarget(this);
+        }
+
         public static LightingEntity FromModel(LightingModel model)
         {
             return new(
@@ -83,7 +93,7 @@ namespace Haus.Core.Lighting.Entities
             var color = ColorLightingEntity.CalculateTarget(current.Color, target.Color);
             return new LightingEntity(target.State, level, temperature, color);
         }
-        
+
         public static void Configure<TEntity>(OwnedNavigationBuilder<TEntity, LightingEntity> builder)
             where TEntity : class
         {
