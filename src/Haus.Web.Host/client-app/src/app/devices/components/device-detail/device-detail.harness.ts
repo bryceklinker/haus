@@ -1,9 +1,7 @@
 import {screen} from "@testing-library/dom";
-import {MatButtonHarness} from "@angular/material/button/testing";
-import {MatSelectHarness} from "@angular/material/select/testing";
 
 import {DeviceDetailComponent} from "./device-detail.component";
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {DevicesModule} from "../../devices.module";
 import {LightType} from "../../../shared/models";
 
@@ -37,29 +35,23 @@ export class DeviceDetailHarness extends HausComponentHarness<DeviceDetailCompon
   }
 
   async saveConstraints() {
-    const button = await this.getMatHarnessByTestId(MatButtonHarness.with, 'save-constraints-btn');
-    await button.click();
+    await this.clickButtonByTestId('save-constraints-btn');
   }
 
   async saveDevice() {
-    const button = await this.getMatHarnessByTestId(MatButtonHarness.with, 'save-device-btn');
-    await button.click();
+    await this.clickButtonByTestId('save-device-btn');
   }
 
   async selectLightType(lightType: LightType) {
-    const select = await this.getLightTypeSelect();
-    await select.open();
-    await select.clickOptions({text: lightType});
+    await this.changeSelectedOptionByTestId(lightType, 'light-type-select');
   }
 
   async getLightTypesOptions() {
-    const select = await this.getLightTypeSelect();
-    await select.open();
-    return await select.getOptions();
+    return await this.getSelectOptionsByTestId('light-type-select');
   }
 
-  private async getLightTypeSelect() {
-    return await this.getMatHarnessByTestId(MatSelectHarness.with, 'light-type-select');
+  static fromResult(result: RenderComponentResult<any>) {
+    return new DeviceDetailHarness(result);
   }
 
   static async render(props: Partial<DeviceDetailComponent> = {}) {

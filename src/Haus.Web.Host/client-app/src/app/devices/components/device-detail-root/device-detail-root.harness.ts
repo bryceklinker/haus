@@ -1,52 +1,51 @@
 import {Action} from "@ngrx/store";
 import {screen} from "@testing-library/dom";
-import {MatSelectHarness} from "@angular/material/select/testing";
-import {MatButtonHarness} from "@angular/material/button/testing";
 
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {DeviceDetailRootComponent} from "./device-detail-root.component";
 import {DeviceModel} from "../../../shared/models";
 import {DevicesModule} from "../../devices.module";
+import {DeviceDetailHarness} from "../device-detail/device-detail.harness";
 
 export class DeviceDetailRootHarness extends HausComponentHarness<DeviceDetailRootComponent> {
-    get dispatchedActions(): Array<Action> {
-        return this.store.dispatchedActions;
-    }
+  private _deviceDetailHarness: DeviceDetailHarness;
 
-    get deviceDetail() {
-        return screen.getByTestId('device-detail');
-    }
+  get deviceDetail() {
+    return screen.getByTestId('device-detail');
+  }
 
-    async getLightTypes() {
-        const lightTypesSelect = await this.getMatHarnessByTestId(MatSelectHarness.with, 'light-type-select');
-        await lightTypesSelect.open();
-        return await lightTypesSelect.getOptions();
-    }
+  private constructor(result: RenderComponentResult<DeviceDetailRootComponent>) {
+    super(result);
 
-    async saveDevice() {
-        const saveButton = await this.getMatHarnessByTestId(MatButtonHarness.with, 'save-device-btn');
-        await saveButton.click();
-    }
+    this._deviceDetailHarness = DeviceDetailHarness.fromResult(result);
+  }
 
-    async saveConstraints() {
-        const saveButton = await this.getMatHarnessByTestId(MatButtonHarness.with, 'save-constraints-btn');
-        await saveButton.click();
-    }
+  async getLightTypes() {
+    return await this._deviceDetailHarness.getLightTypesOptions();
+  }
 
-    static async render(device: DeviceModel, ...actions: Action[]) {
-        const result = await DeviceDetailRootHarness.renderRoot(...actions);
-        result.activatedRoute.triggerParamsChange({deviceId: `${device.id}`});
+  async saveDevice() {
+    await this._deviceDetailHarness.saveDevice();
+  }
 
-        result.detectChanges();
-        await result.fixture.whenRenderingDone();
+  async saveConstraints() {
+    await this._deviceDetailHarness.saveConstraints();
+  }
 
-        return new DeviceDetailRootHarness(result);
-    }
+  static async render(device: DeviceModel, ...actions: Action[]) {
+    const result = await DeviceDetailRootHarness.renderRoot(...actions);
+    result.activatedRoute.triggerParamsChange({deviceId: `${device.id}`});
 
-    private static renderRoot(...actions: Action[]) {
-        return renderFeatureComponent(DeviceDetailRootComponent, {
-            imports: [DevicesModule],
-            actions: actions
-        })
-    }
+    result.detectChanges();
+    await result.fixture.whenRenderingDone();
+
+    return new DeviceDetailRootHarness(result);
+  }
+
+  private static renderRoot(...actions: Action[]) {
+    return renderFeatureComponent(DeviceDetailRootComponent, {
+      imports: [DevicesModule],
+      actions: actions
+    })
+  }
 }

@@ -2,7 +2,7 @@ import {screen} from "@testing-library/dom";
 import {CdkDrag, CdkDropList} from "@angular/cdk/drag-drop";
 import {By} from "@angular/platform-browser";
 
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {DiscoveryUnassignedDevicesComponent} from "./discovery-unassigned-devices.component";
 import {DevicesModule} from "../../devices.module";
 
@@ -21,6 +21,10 @@ export class DiscoveryUnassignedDevicesHarness extends HausComponentHarness<Disc
 
   get zonesUnassignedDevicesIsConnectedTo() {
     return this.unassignedDevicesZone.getAttribute('ng-reflect-connected-to');
+  }
+
+  static fromResult(result: RenderComponentResult<any>) {
+    return new DiscoveryUnassignedDevicesHarness(result);
   }
 
   static async render(props: Partial<DiscoveryUnassignedDevicesComponent>) {

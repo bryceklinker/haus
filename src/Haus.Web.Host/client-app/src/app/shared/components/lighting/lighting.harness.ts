@@ -6,26 +6,37 @@ import {MatSliderHarness} from "@angular/material/slider/testing";
 import {screen} from "@testing-library/dom";
 import {LightingColorHarness} from "../lighting-color/lighting-color.harness";
 
+const TEST_IDS = {
+  LEVEL_INPUT: 'level-input',
+  LEVEL_VALUE: 'level-value',
+  STATE_INPUT: 'state-input',
+  STATE_VALUE: 'state-value',
+  TEMPERATURE_INPUT: 'temperature-input',
+  TEMPERATURE_VALUE: 'temperature-value',
+  LIGHTING_COLOR: 'lighting-color'
+};
+
 export class LightingHarness extends HausComponentHarness<LightingComponent> {
   private _colorHarness: LightingColorHarness;
+
   get levelDisplay() {
-    return screen.getByTestId('level-value');
+    return screen.getByTestId(TEST_IDS.LEVEL_VALUE);
   }
 
   get stateDisplay() {
-    return screen.getByTestId('state-value');
+    return screen.getByTestId(TEST_IDS.STATE_VALUE);
   }
 
   get temperatureDisplay() {
-    return screen.getByTestId('temperature-value');
+    return screen.getByTestId(TEST_IDS.TEMPERATURE_VALUE);
   }
 
   get colorElement() {
-    return screen.getByTestId('lighting-color');
+    return screen.queryByTestId(TEST_IDS.LIGHTING_COLOR);
   }
 
   get temperatureElement() {
-    return screen.queryByTestId('temperature-input');
+    return screen.queryByTestId(TEST_IDS.TEMPERATURE_INPUT);
   }
 
   constructor(result: RenderComponentResult<LightingComponent>) {
@@ -35,84 +46,59 @@ export class LightingHarness extends HausComponentHarness<LightingComponent> {
   }
 
   async isStateOn() {
-    const state = await this.getStateSlide();
-    return await state.isChecked();
+    return await this.isSlideToggleCheckedByTestId(TEST_IDS.STATE_INPUT);
   }
 
   async isLevelDisabled() {
-    const level = await this.getLevelSlider();
-    return await level.isDisabled();
+    return await this.isSliderDisabledByTestId(TEST_IDS.LEVEL_INPUT);
   }
 
   async isTemperatureDisabled() {
-    const temperature = await this.getTemperatureSlider();
-    return await temperature.isDisabled();
+    return await this.isSliderDisabledByTestId(TEST_IDS.TEMPERATURE_INPUT);
   }
 
   async isStateDisabled() {
-    const state = await this.getStateSlide();
-    return await state.isDisabled();
+    return await this.isSlideToggleDisabledByTestId(TEST_IDS.STATE_INPUT)
   }
 
   async levelValue() {
-    const level = await this.getLevelSlider();
-    return await level.getValue();
+    return await this.getSliderValueByTestId(TEST_IDS.LEVEL_INPUT);
   }
 
   async levelMin() {
-    const level = await this.getLevelSlider();
-    return await level.getMinValue();
+    return await this.getSliderMinByTestId(TEST_IDS.LEVEL_INPUT);
   }
 
   async levelMax() {
-    const level = await this.getLevelSlider();
-    return await level.getMaxValue();
+    return await this.getSliderMaxByTestId(TEST_IDS.LEVEL_INPUT);
   }
 
   async temperatureValue() {
-    const temperature = await this.getTemperatureSlider();
-    return await temperature.getValue();
+    return await this.getSliderValueByTestId(TEST_IDS.TEMPERATURE_INPUT);
   }
 
   async temperatureMin() {
-    const temperature = await this.getTemperatureSlider();
-    return await temperature.getMinValue();
+    return await this.getSliderMinByTestId(TEST_IDS.TEMPERATURE_INPUT);
   }
 
   async temperatureMax() {
-    const temperature = await this.getTemperatureSlider();
-    return await temperature.getMaxValue();
+    return await this.getSliderMaxByTestId(TEST_IDS.TEMPERATURE_INPUT);
   }
 
   async turnLightingOn() {
-    const state = await this.getStateSlide();
-    await state.check();
+    await this.checkSlideToggleByTestId(TEST_IDS.STATE_INPUT);
   }
 
   async changeLevel(level: number) {
-    const slider = await this.getLevelSlider();
-    await slider.setValue(level);
+    await this.changeSliderValueByTestId(level, TEST_IDS.LEVEL_INPUT);
   }
 
   async changeTemperature(temperature: number) {
-    const slider = await this.getTemperatureSlider();
-    await slider.setValue(temperature);
+    await this.changeSliderValueByTestId(temperature, TEST_IDS.TEMPERATURE_INPUT);
   }
 
   async changeRed(red: number) {
     await this._colorHarness.changeRed(red);
-  }
-
-  private async getLevelSlider() {
-    return await this.getMatHarnessByTestId(MatSliderHarness.with, 'level-input')
-  }
-
-  private async getTemperatureSlider() {
-    return await this.getMatHarnessByTestId(MatSliderHarness.with, 'temperature-input')
-  }
-
-  private async getStateSlide() {
-    return await this.getMatHarnessByTestId(MatSlideToggleHarness.with, 'state-input');
   }
 
   static async render(props: Partial<LightingComponent> = {}) {

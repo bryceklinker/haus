@@ -74,7 +74,7 @@ describe('DiscoveryRootComponent', () => {
       EventsActions.deviceCreated({device})
     );
 
-    await harness.assignDevice(room, device);
+    await harness.assignDevice(device);
 
     expect(harness.dispatchedActions).toContainEqual(RoomsActions.assignDevicesToRoom.request({roomId: room.id, deviceIds: [device.id]}))
   })

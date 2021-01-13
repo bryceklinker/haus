@@ -1,11 +1,16 @@
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
-import {DiagnosticsRootComponent} from "./diagnostics-root.component";
-import {DiagnosticsModule} from "../../diagnostics.module";
 import {Action} from "@ngrx/store";
 import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
+
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
+import {DiagnosticsRootComponent} from "./diagnostics-root.component";
+import {DiagnosticsModule} from "../../diagnostics.module";
+import {DiagnosticsHeaderHarness} from "../diagnostics-header/diagnostics-header.harness";
+import {DiagnosticsMessagesHarness} from "../diagnostics-messages/diagnostics-messages.harness";
 
 export class DiagnosticsRootHarness extends HausComponentHarness<DiagnosticsRootComponent> {
+  private _diagnosticsHeaderHarness: DiagnosticsHeaderHarness;
+  private _diagnosticsMessagesHarness: DiagnosticsMessagesHarness;
+
   get messages() {
     return screen.queryAllByTestId('diagnostic-message');
   }
@@ -14,24 +19,27 @@ export class DiagnosticsRootHarness extends HausComponentHarness<DiagnosticsRoot
     return screen.queryByTestId('connection-status');
   }
 
+  private constructor(result: RenderComponentResult<DiagnosticsRootComponent>) {
+    super(result);
+
+    this._diagnosticsHeaderHarness = DiagnosticsHeaderHarness.fromResult(result);
+    this._diagnosticsMessagesHarness = DiagnosticsMessagesHarness.fromResult(result);
+  }
+
   async startDiscovery() {
-    userEvent.click(screen.getByTestId('start-discovery-btn'));
-    await this.whenRenderingDone();
+    await this._diagnosticsHeaderHarness.startDiscovery();
   }
 
   async stopDiscovery() {
-    userEvent.click(screen.getByTestId('stop-discovery-btn'));
-    await this.whenRenderingDone();
+    await this._diagnosticsHeaderHarness.stopDiscovery();
   }
 
   async syncDiscovery() {
-    userEvent.click(screen.getByTestId('sync-discovery-btn'));
-    await this.whenRenderingDone();
+    await this._diagnosticsHeaderHarness.syncDiscovery();
   }
 
   async replayMessage() {
-    userEvent.click(screen.getByTestId('replay-message-btn'));
-    await this.whenRenderingDone();
+    await this._diagnosticsMessagesHarness.replayMessage();
   }
 
   static async render(...actions: Action[]) {

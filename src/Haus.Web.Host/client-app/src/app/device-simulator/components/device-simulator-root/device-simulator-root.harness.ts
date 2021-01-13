@@ -1,13 +1,22 @@
 import {screen} from "@testing-library/dom";
 import {Action} from "@ngrx/store";
 
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {DeviceSimulatorRootComponent} from "./device-simulator-root.component";
 import {DeviceSimulatorModule} from "../../device-simulator.module";
+import {DeviceSimulatorDashboardHarness} from "../device-simulator-dashboard/device-simulator-dashboard.harness";
 
 export class DeviceSimulatorRootHarness extends HausComponentHarness<DeviceSimulatorRootComponent> {
+  private _deviceSimulatorDashboardHarness: DeviceSimulatorDashboardHarness;
+
   get simulatedDevices() {
-    return screen.queryAllByTestId('simulated-device-item')
+    return this._deviceSimulatorDashboardHarness.simulatedDevices;
+  }
+
+  private constructor(result: RenderComponentResult<DeviceSimulatorRootComponent>) {
+    super(result);
+
+    this._deviceSimulatorDashboardHarness = DeviceSimulatorDashboardHarness.fromResult(result);
   }
 
   static async render(...actions: Action[]) {

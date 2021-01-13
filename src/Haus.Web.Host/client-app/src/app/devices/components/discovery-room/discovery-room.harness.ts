@@ -1,9 +1,10 @@
 import {CdkDropList} from "@angular/cdk/drag-drop";
 
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {DiscoveryRoomComponent} from "./discovery-room.component";
 import {DevicesModule} from "../../devices.module";
 import {DeviceModel} from "../../../shared/models";
+import {screen} from "@testing-library/dom";
 
 export class DiscoveryRoomHarness extends HausComponentHarness<DiscoveryRoomComponent> {
 
@@ -11,8 +12,16 @@ export class DiscoveryRoomHarness extends HausComponentHarness<DiscoveryRoomComp
     return this.container.querySelector(`[id="${this.componentInstance.roomId}"]`)
   }
 
+  get assignedDevices() {
+    return screen.queryAllByTestId('assigned-device-item');
+  }
+
   async dropDeviceOnRoom(device: DeviceModel) {
     await this.triggerEventHandler(CdkDropList, 'cdkDropListDropped', {item: {data: device}});
+  }
+
+  static fromResult(result: RenderComponentResult<any>) {
+    return new DiscoveryRoomHarness(result);
   }
 
   static async render(props: Partial<DiscoveryRoomComponent>) {

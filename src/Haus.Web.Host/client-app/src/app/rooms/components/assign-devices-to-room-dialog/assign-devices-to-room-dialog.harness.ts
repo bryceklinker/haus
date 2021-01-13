@@ -22,13 +22,11 @@ export class AssignDevicesToRoomDialogHarness extends HausComponentHarness<Assig
   }
 
   async assignDevices() {
-    userEvent.click(screen.getByTestId('assign-devices-to-room-btn'));
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('assign-devices-to-room-btn')
   }
 
   async cancel() {
-    userEvent.click(screen.getByTestId('cancel-assign-devices-btn'));
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('cancel-assign-devices-btn');
   }
 
   simulateAssignDevicesSuccess(roomId: number) {

@@ -1,18 +1,25 @@
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
-import {RoomsRootComponent} from "./rooms-root.component";
 import {Action} from "@ngrx/store";
+
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
+import {RoomsRootComponent} from "./rooms-root.component";
 import {RoomsModule} from "../../rooms.module";
-import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
+import {RoomsListHarness} from "../rooms-list/rooms-list.harness";
 
 export class RoomsRootHarness extends HausComponentHarness<RoomsRootComponent> {
+  private _roomsListHarness: RoomsListHarness;
+
   get rooms() {
-      return screen.queryAllByTestId('room-item');
+      return this._roomsListHarness.rooms;
+  }
+
+  private constructor(result: RenderComponentResult<RoomsRootComponent>) {
+    super(result);
+
+    this._roomsListHarness = RoomsListHarness.fromResult(result);
   }
 
   async addRoom() {
-    userEvent.click(screen.getByTestId('add-room-btn'));
-    await this.whenRenderingDone();
+    await this._roomsListHarness.addRoom();
   }
 
   static async render(...actions: Action[]) {

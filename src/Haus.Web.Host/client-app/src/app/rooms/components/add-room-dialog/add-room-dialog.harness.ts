@@ -1,10 +1,10 @@
+import {Action} from "@ngrx/store";
+import {screen} from "@testing-library/dom";
+
 import {HausComponentHarness, ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {AddRoomDialogComponent} from "./add-room-dialog.component";
 import {RoomsActions} from "../../state";
-import {Action} from "@ngrx/store";
 import {RoomsModule} from "../../rooms.module";
-import userEvent from "@testing-library/user-event";
-import {screen} from "@testing-library/dom";
 
 export class AddRoomDialogHarness extends HausComponentHarness<AddRoomDialogComponent> {
   get loadingIndicator() {
@@ -20,18 +20,15 @@ export class AddRoomDialogHarness extends HausComponentHarness<AddRoomDialogComp
   }
 
   async enterName(name: string) {
-    userEvent.type(screen.getByTestId('room-name-field'), name);
-    await this.whenRenderingDone();
+    await this.changeInputByTestId(name, 'room-name-field');
   }
 
   async save() {
-    userEvent.click(screen.getByTestId('save-room-btn'));
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('save-room-btn');
   }
 
   async cancel() {
-    userEvent.click(screen.getByTestId('cancel-room-btn'));
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('cancel-room-btn');
   }
 
   static async render(...actions: Action[]) {

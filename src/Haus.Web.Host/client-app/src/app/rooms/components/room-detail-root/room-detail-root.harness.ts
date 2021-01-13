@@ -1,25 +1,29 @@
 import {Action} from "@ngrx/store";
 
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {RoomDetailRootComponent} from "./room-detail-root.component";
 import {RoomsModule} from "../../rooms.module";
-import {screen} from "@testing-library/dom";
-import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
-import userEvent from "@testing-library/user-event";
+import {RoomDetailHarness} from "../room-detail/room-detail.harness";
 
 export class RoomDetailRootHarness extends HausComponentHarness<RoomDetailRootComponent> {
+  private _roomDetailHarness: RoomDetailHarness;
+
   get devices() {
-    return screen.queryAllByTestId('room-device-item');
+    return this._roomDetailHarness.devices;
+  }
+
+  private constructor(result: RenderComponentResult<RoomDetailRootComponent>) {
+    super(result);
+
+    this._roomDetailHarness = RoomDetailHarness.fromResult(result);
   }
 
   async turnRoomOn() {
-    const state = await this.getMatHarnessByTestId(MatSlideToggleHarness.with, 'state-input');
-    await state.check();
+    await this._roomDetailHarness.turnRoomOn();
   }
 
   async assignDevices() {
-    userEvent.click(screen.getByTestId('assign-devices-btn'));
-    await this.whenRenderingDone();
+    await this._roomDetailHarness.assignDevices();
   }
 
   static async render(roomId?: number, ...actions: Action[]) {

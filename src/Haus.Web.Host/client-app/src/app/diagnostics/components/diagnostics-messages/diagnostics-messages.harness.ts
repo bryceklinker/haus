@@ -1,8 +1,7 @@
-import {HausComponentHarness, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {DiagnosticsMessagesComponent} from "./diagnostics-messages.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
 import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
 
 export class DiagnosticsMessagesHarness extends HausComponentHarness<DiagnosticsMessagesComponent> {
   get messages() {
@@ -18,8 +17,11 @@ export class DiagnosticsMessagesHarness extends HausComponentHarness<Diagnostics
   }
 
   async replayMessage() {
-    userEvent.click(screen.getByTestId('replay-message-btn'));
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('replay-message-btn');
+  }
+
+  static fromResult(result: RenderComponentResult<any>) {
+    return new DiagnosticsMessagesHarness(result);
   }
 
   static async render(props: Partial<DiagnosticsMessagesComponent>) {

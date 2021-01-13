@@ -1,8 +1,8 @@
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
+import {screen} from "@testing-library/dom";
+
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {RoomsListComponent} from "./rooms-list.component";
 import {RoomsModule} from "../../rooms.module";
-import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
 
 export class RoomsListHarness extends HausComponentHarness<RoomsListComponent> {
   get rooms() {
@@ -10,8 +10,11 @@ export class RoomsListHarness extends HausComponentHarness<RoomsListComponent> {
   }
 
   async addRoom() {
-    userEvent.click(screen.getByTestId('add-room-btn'));
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('add-room-btn');
+  }
+
+  static fromResult(result: RenderComponentResult<any>) {
+    return new RoomsListHarness(result);
   }
 
   static async render(props: Partial<RoomsListComponent>) {

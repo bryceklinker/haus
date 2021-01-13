@@ -1,7 +1,5 @@
-import userEvent from "@testing-library/user-event";
 import {screen} from "@testing-library/dom";
 import {Action} from "@ngrx/store";
-import {MatSelectHarness} from "@angular/material/select/testing";
 
 import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {AddSimulatedDeviceComponent} from "./add-simulated-device.component";
@@ -22,37 +20,27 @@ export class AddSimulatedDeviceHarness extends HausComponentHarness<AddSimulated
   }
 
   async enterMetadataKey(key: string) {
-    userEvent.type(screen.getByTestId('metadata-key-input'), 'something');
-    this.detectChanges();
-    await this.whenRenderingDone();
+    await this.changeInputByTestId('something', 'metadata-key-input');
   }
 
   async enterMetadataValue(value: string) {
-    userEvent.type(screen.getByTestId('metadata-value-input'), 'else');
-    this.detectChanges();
-    await this.whenRenderingDone();
+    await this.changeInputByTestId('else', 'metadata-value-input');
   }
 
   async addMetadata() {
-    userEvent.click(screen.getByTestId('add-metadata-btn'));
-    this.detectChanges();
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('add-metadata-btn');
   }
 
   async selectDeviceType(deviceType: DeviceType) {
-    const select = await this.getMatHarnessByTestId(MatSelectHarness.with, 'device-type-select')
-    await select.open();
-    await select.clickOptions({text: deviceType});
+    await this.changeSelectedOptionByTestId(deviceType, 'device-type-select');
   }
 
   async save() {
-    userEvent.click(screen.getByTestId('save-simulated-device-btn'));
-    this.detectChanges();
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('save-simulated-device-btn')
   }
 
   async cancel() {
-    userEvent.click(screen.getByTestId('cancel-simulated-device-btn'));
+    await this.clickButtonByTestId('cancel-simulated-device-btn');
   }
 
   async simulateAddSuccess() {

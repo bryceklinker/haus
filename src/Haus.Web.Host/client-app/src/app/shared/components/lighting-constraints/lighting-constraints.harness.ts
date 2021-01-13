@@ -31,51 +31,51 @@ export class LightingConstraintsHarness extends HausComponentHarness<LightingCon
   }
 
   async minLevelValue() {
-    return await this.getInputValue(TEST_IDS.MIN_LEVEL);
+    return await this.getInputValueByTestId(TEST_IDS.MIN_LEVEL);
   }
 
   async changeMinLevel(value: number) {
-    await this.changeInput(value, TEST_IDS.MIN_LEVEL);
+    await this.changeInputByTestId(`${value}`, TEST_IDS.MIN_LEVEL);
   }
 
   async isMinLevelDisabled() {
-    return await this.isInputDisabled(TEST_IDS.MIN_LEVEL)
+    return await this.isInputDisabledByTestId(TEST_IDS.MIN_LEVEL)
   }
 
   async maxLevelValue() {
-    return await this.getInputValue(TEST_IDS.MAX_LEVEL);
+    return await this.getInputValueByTestId(TEST_IDS.MAX_LEVEL);
   }
 
   async changeMaxLevel(value: number) {
-    await this.changeInput(value, TEST_IDS.MAX_LEVEL);
+    await this.changeInputByTestId(`${value}`, TEST_IDS.MAX_LEVEL);
   }
 
   async isMaxLevelDisabled() {
-    return await this.isInputDisabled(TEST_IDS.MAX_LEVEL)
+    return await this.isInputDisabledByTestId(TEST_IDS.MAX_LEVEL)
   }
 
   async minTemperatureValue() {
-    return await this.getInputValue(TEST_IDS.MIN_TEMPERATURE);
+    return await this.getInputValueByTestId(TEST_IDS.MIN_TEMPERATURE);
   }
 
   async changeMinTemperature(value: number) {
-    await this.changeInput(value, TEST_IDS.MIN_TEMPERATURE);
+    await this.changeInputByTestId(`${value}`, TEST_IDS.MIN_TEMPERATURE);
   }
 
   async isMinTemperatureDisabled() {
-    return await this.isInputDisabled(TEST_IDS.MIN_TEMPERATURE)
+    return await this.isInputDisabledByTestId(TEST_IDS.MIN_TEMPERATURE)
   }
 
   async maxTemperatureValue() {
-    return await this.getInputValue(TEST_IDS.MAX_TEMPERATURE);
+    return await this.getInputValueByTestId(TEST_IDS.MAX_TEMPERATURE);
   }
 
   async changeMaxTemperature(value: number) {
-    await this.changeInput(value, TEST_IDS.MAX_TEMPERATURE);
+    await this.changeInputByTestId(`${value}`, TEST_IDS.MAX_TEMPERATURE);
   }
 
   async isMaxTemperatureDisabled() {
-    return await this.isInputDisabled(TEST_IDS.MAX_TEMPERATURE)
+    return await this.isInputDisabledByTestId(TEST_IDS.MAX_TEMPERATURE)
   }
 
   async save() {
@@ -83,7 +83,7 @@ export class LightingConstraintsHarness extends HausComponentHarness<LightingCon
   }
 
   async isSaveDisabled() {
-    return await this.isButtonDisabled(TEST_IDS.SAVE);
+    return await this.isButtonDisabledByTestId(TEST_IDS.SAVE);
   }
 
   async cancel() {
@@ -91,27 +91,7 @@ export class LightingConstraintsHarness extends HausComponentHarness<LightingCon
   }
 
   async isCancelDisabled() {
-    return await this.isButtonDisabled(TEST_IDS.CANCEL);
-  }
-
-  private async changeInput(value: number, testId: string) {
-    const input = await this.getInputByTestId(testId);
-    await input.setValue(`${value}`);
-  }
-
-  private async isInputDisabled(testId: string) {
-    const input = await this.getInputByTestId(testId);
-    return await input.isDisabled();
-  }
-
-  private async getInputValue(testId: string) {
-    const input = await this.getInputByTestId(testId);
-    return await input.getValue();
-  }
-
-  private async isButtonDisabled(testId: string) {
-    const button = await this.getButtonByTestId(testId);
-    return await button.isDisabled();
+    return await this.isButtonDisabledByTestId(TEST_IDS.CANCEL);
   }
 
   static async render(props: Partial<LightingConstraintsComponent>) {

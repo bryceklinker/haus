@@ -1,7 +1,6 @@
 import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
 
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {DiagnosticsHeaderComponent} from "./diagnostics-header.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
 
@@ -23,18 +22,19 @@ export class DiagnosticsHeaderHarness extends HausComponentHarness<DiagnosticsHe
   }
 
   async startDiscovery() {
-    userEvent.click(screen.getByTestId('start-discovery-btn'));
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('start-discovery-btn');
   }
 
   async stopDiscovery() {
-    userEvent.click(screen.getByTestId('stop-discovery-btn'));
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('stop-discovery-btn');
   }
 
   async syncDiscovery() {
-    userEvent.click(screen.getByTestId('sync-discovery-btn'));
-    await this.whenRenderingDone();
+    await this.clickButtonByTestId('sync-discovery-btn');
+  }
+
+  static fromResult(result: RenderComponentResult<any>) {
+    return new DiagnosticsHeaderHarness(result);
   }
 
   static async render(props: Partial<DiagnosticsHeaderComponent>) {

@@ -5,70 +5,57 @@ import {SharedModule} from "../../shared.module";
 import {screen} from "@testing-library/dom";
 import {findAttributeOnElementWithAttrs} from "@angular/cdk/schematics";
 
+const TEST_IDS = {
+  RGB_VALUE: 'rgb-value',
+  HEX_VALUE: 'hex-value',
+  RED: 'red-input',
+  GREEN: 'green-input',
+  BLUE: 'blue-input'
+}
+
 export class LightingColorHarness extends HausComponentHarness<LightingColorComponent> {
   get rgbValue() {
-    return screen.getByTestId('rgb-value');
+    return screen.getByTestId(TEST_IDS.RGB_VALUE);
   }
 
   get hexValue() {
-    return screen.getByTestId('hex-value');
+    return screen.getByTestId(TEST_IDS.HEX_VALUE);
   }
 
   async redValue() {
-    const red = await this.getRedSlider();
-    return await red.getValue();
+    return await this.getSliderValueByTestId(TEST_IDS.RED);
   }
 
   async isRedDisabled() {
-    const red = await this.getRedSlider();
-    return await red.isDisabled();
+    return await this.isSliderDisabledByTestId(TEST_IDS.RED);
   }
 
   async greenValue() {
-    const green = await this.getGreenSlider();
-    return await green.getValue();
+    return await this.getSliderValueByTestId(TEST_IDS.GREEN);
   }
 
   async isGreenDisabled() {
-    const green = await this.getGreenSlider();
-    return await green.isDisabled();
+    return await this.isSliderDisabledByTestId(TEST_IDS.GREEN);
   }
 
   async blueValue() {
-    const blue = await this.getBlueSlider();
-    return await blue.getValue();
+    return await this.getSliderValueByTestId(TEST_IDS.BLUE);
   }
 
   async isBlueDisabled() {
-    const blue = await this.getBlueSlider();
-    return await blue.isDisabled();
+    return await this.isSliderDisabledByTestId(TEST_IDS.BLUE);
   }
 
   async changeRed(red: number) {
-    const slider = await this.getRedSlider();
-    await slider.setValue(red);
+    await this.changeSliderValueByTestId(red, TEST_IDS.RED);
   }
 
   async changeGreen(green: number) {
-    const slider = await this.getGreenSlider();
-    await slider.setValue(green);
+    await this.changeSliderValueByTestId(green, TEST_IDS.GREEN);
   }
 
   async changeBlue(blue: number) {
-    const slider = await this.getBlueSlider();
-    await slider.setValue(blue);
-  }
-
-  private async getRedSlider() {
-    return await this.getMatHarnessByTestId(MatSliderHarness.with, 'red-input');
-  }
-
-  private async getGreenSlider() {
-    return await this.getMatHarnessByTestId(MatSliderHarness.with, 'green-input');
-  }
-
-  private async getBlueSlider() {
-    return await this.getMatHarnessByTestId(MatSliderHarness.with, 'blue-input');
+    await this.changeSliderValueByTestId(blue, TEST_IDS.BLUE);
   }
 
   static fromResult(result: RenderComponentResult<any>) {
