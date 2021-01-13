@@ -1,21 +1,16 @@
-import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
-import {Action} from "@ngrx/store";
-
 import {
   ModelFactory,
-  renderFeatureComponent,
 } from "../../../../testing";
-import {RoomsModule} from "../../rooms.module";
 import {RoomsRootComponent} from "./rooms-root.component";
 import {RoomsActions} from "../../state";
 import {AddRoomDialogComponent} from "../add-room-dialog/add-room-dialog.component";
+import {RoomsRootHarness} from "./rooms-root.harness";
 
 describe('RoomsRootComponent', () => {
   it('should load rooms when rendered', async () => {
-    const {store} = await renderRoot();
+    const harness = await RoomsRootHarness.render();
 
-    expect(store.dispatchedActions).toContainEqual(RoomsActions.loadRooms.request());
+    expect(harness.dispatchedActions).toContainEqual(RoomsActions.loadRooms.request());
   })
 
   it('should show rooms when rendered', async () => {
@@ -25,23 +20,16 @@ describe('RoomsRootComponent', () => {
       ModelFactory.createRoomModel()
     ];
 
-    await renderRoot(RoomsActions.loadRooms.success(ModelFactory.createListResult(...rooms)));
+    const harness = await RoomsRootHarness.render(RoomsActions.loadRooms.success(ModelFactory.createListResult(...rooms)));
 
-    expect(screen.queryAllByTestId('room-item')).toHaveLength(3);
+    expect(harness.rooms).toHaveLength(3);
   })
 
   it('should open add dialog when add room clicked', async () => {
-    const {store, matDialog} = await renderRoot();
+    const harness = await RoomsRootHarness.render();
 
-    userEvent.click(screen.getByTestId('add-room-btn'));
+    await harness.addRoom();
 
-    expect(matDialog.open).toHaveBeenCalledWith(AddRoomDialogComponent);
+    expect(harness.dialog.open).toHaveBeenCalledWith(AddRoomDialogComponent);
   })
-
-  function renderRoot(...actions: Array<Action>) {
-    return renderFeatureComponent(RoomsRootComponent, {
-      imports: [RoomsModule],
-      actions: actions
-    })
-  }
 })

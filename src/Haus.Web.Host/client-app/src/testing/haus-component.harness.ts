@@ -19,6 +19,10 @@ export abstract class HausComponentHarness<TComponent> {
     return this.result.actionsSubject;
   }
 
+  get dialog() {
+    return this.result.matDialog;
+  }
+
   get dialogRef() {
     return this.result.matDialogRef;
   }

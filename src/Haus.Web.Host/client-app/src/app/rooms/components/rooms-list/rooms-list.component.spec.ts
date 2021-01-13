@@ -1,9 +1,6 @@
-import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
-
-import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
+import {ModelFactory, TestingEventEmitter} from "../../../../testing";
 import {RoomsListComponent} from "./rooms-list.component";
-import {RoomsModule} from "../../rooms.module";
+import {RoomsListHarness} from "./rooms-list.harness";
 
 describe('RoomsListComponent', () => {
   it('should show rooms', async () => {
@@ -13,24 +10,17 @@ describe('RoomsListComponent', () => {
       ModelFactory.createRoomModel(),
     ];
 
-    await renderComponent({rooms});
+    const harness = await RoomsListHarness.render({rooms});
 
-    expect(screen.queryAllByTestId('room-item')).toHaveLength(3);
+    expect(harness.rooms).toHaveLength(3);
   })
 
   it('should notify when room is added', async () => {
     const emitter = new TestingEventEmitter();
 
-    await renderComponent({addRoom: emitter});
-    userEvent.click(screen.getByTestId('add-room-btn'));
+    const harness = await RoomsListHarness.render({addRoom: emitter});
+    await harness.addRoom();
 
     expect(emitter.emit).toHaveBeenCalled();
   })
-
-  function renderComponent({rooms = [], addRoom = new TestingEventEmitter()}: Partial<RoomsListComponent> = {}) {
-    return renderFeatureComponent(RoomsListComponent, {
-      imports: [RoomsModule],
-      componentProperties: {rooms, addRoom}
-    })
-  }
 })

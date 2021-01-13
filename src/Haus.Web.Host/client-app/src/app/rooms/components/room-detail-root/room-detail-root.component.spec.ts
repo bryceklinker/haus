@@ -1,15 +1,9 @@
-import userEvent from "@testing-library/user-event";
-import {screen} from "@testing-library/dom";
-import {Action} from "@ngrx/store";
-import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
-
-import {eventually, ModelFactory, renderFeatureComponent, TestingActivatedRoute} from "../../../../testing";
-import {RoomDetailRootComponent} from "./room-detail-root.component";
-import {RoomsModule} from "../../rooms.module";
+import {eventually, ModelFactory} from "../../../../testing";
 import {RoomsActions} from "../../state";
 import {DevicesActions} from "../../../devices/state";
 import {LightingState, RoomModel} from "../../../shared/models";
 import {AssignDevicesToRoomDialogComponent} from "../assign-devices-to-room-dialog/assign-devices-to-room-dialog.component";
+import {RoomDetailRootHarness} from "./room-detail-root.harness";
 
 describe('DeviceDetailRootComponent', () => {
   let room: RoomModel;
@@ -22,71 +16,52 @@ describe('DeviceDetailRootComponent', () => {
 
 
   it('should show room name', async () => {
-    const {activatedRoute, detectChanges, container} = await renderRoot(RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
-    triggerRoomChanged(activatedRoute, room.id);
+    const harness = await RoomDetailRootHarness.render(room.id, RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
 
     await eventually(() => {
-      detectChanges();
-      expect(container).toHaveTextContent(room.name);
+      expect(harness.container).toHaveTextContent(room.name);
     })
   })
 
   it('should load devices when rendered', async () => {
-    const {store} = await renderRoot();
+    const harness = await RoomDetailRootHarness.render();
 
-    expect(store.dispatchedActions).toContainEqual(DevicesActions.loadDevices.request());
+    expect(harness.dispatchedActions).toContainEqual(DevicesActions.loadDevices.request());
   })
 
   it('should show devices in room', async () => {
-    const {detectChanges, activatedRoute} = await renderRoot(
+    const harness = await RoomDetailRootHarness.render(
+      room.id,
       RoomsActions.loadRooms.success(ModelFactory.createListResult(room)),
       DevicesActions.loadDevices.success(ModelFactory.createListResult(
         ModelFactory.createDeviceModel({roomId: room.id}),
         ModelFactory.createDeviceModel({roomId: room.id}),
       ))
     );
-    triggerRoomChanged(activatedRoute, room.id);
 
     await eventually(() => {
-      detectChanges();
-      expect(screen.queryAllByTestId('room-device-item')).toHaveLength(2);
+      expect(harness.devices).toHaveLength(2);
     })
   })
 
   it('should request lighting change when room lighting changed', async () => {
-    const {activatedRoute, store, matHarness} = await renderRoot(RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
-    triggerRoomChanged(activatedRoute, room.id);
+    const harness = await RoomDetailRootHarness.render(room.id, RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
 
-    const state = await matHarness.getHarness(MatSlideToggleHarness);
-    await state.check();
+    await harness.turnRoomOn();
 
-    expect(store.dispatchedActions).toContainEqual(RoomsActions.changeRoomLighting.request({
+    expect(harness.dispatchedActions).toContainEqual(RoomsActions.changeRoomLighting.request({
       room: room,
       lighting: expect.objectContaining({state: LightingState.On})
     }));
   })
 
   it('should open assign devices dialog when assign devices triggered', async () => {
-    const {activatedRoute, matDialog, detectChanges} = await renderRoot(RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
-    triggerRoomChanged(activatedRoute, room.id);
-    detectChanges();
+    const harness = await RoomDetailRootHarness.render(room.id, RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
 
-    userEvent.click(screen.getByTestId('assign-devices-btn'));
-    detectChanges();
+    await harness.assignDevices();
 
-    expect(matDialog.open).toHaveBeenCalledWith(AssignDevicesToRoomDialogComponent, expect.objectContaining({
+    expect(harness.dialog.open).toHaveBeenCalledWith(AssignDevicesToRoomDialogComponent, expect.objectContaining({
       data: room
     }));
   })
-
-  function renderRoot(...actions: Array<Action>) {
-    return renderFeatureComponent(RoomDetailRootComponent, {
-      imports: [RoomsModule],
-      actions: actions
-    })
-  }
-
-  function triggerRoomChanged(activatedRoute: TestingActivatedRoute, roomId?: number) {
-    activatedRoute.triggerParamsChange({roomId: roomId ? `${roomId}` : null});
-  }
 })
