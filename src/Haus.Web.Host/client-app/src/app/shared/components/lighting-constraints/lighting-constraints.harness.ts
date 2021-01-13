@@ -1,6 +1,4 @@
 import {screen} from "@testing-library/dom";
-import {MatInputHarness} from "@angular/material/input/testing";
-import {MatButtonHarness} from "@angular/material/button/testing";
 
 import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
 import {LightingConstraintsComponent} from "./lighting-constraints.component";
@@ -81,7 +79,7 @@ export class LightingConstraintsHarness extends HausComponentHarness<LightingCon
   }
 
   async save() {
-    await this.clickButton(TEST_IDS.SAVE);
+    await this.clickButtonByTestId(TEST_IDS.SAVE);
   }
 
   async isSaveDisabled() {
@@ -89,19 +87,11 @@ export class LightingConstraintsHarness extends HausComponentHarness<LightingCon
   }
 
   async cancel() {
-    await this.clickButton(TEST_IDS.CANCEL);
+    await this.clickButtonByTestId(TEST_IDS.CANCEL);
   }
 
   async isCancelDisabled() {
     return await this.isButtonDisabled(TEST_IDS.CANCEL);
-  }
-
-  private async getInputByTestId(testId: string) {
-    return await this.getMatHarnessByTestId(MatInputHarness.with, testId);
-  }
-
-  private async getButtonByTestId(testId: string) {
-    return await this.getMatHarnessByTestId(MatButtonHarness.with, testId);
   }
 
   private async changeInput(value: number, testId: string) {
@@ -117,11 +107,6 @@ export class LightingConstraintsHarness extends HausComponentHarness<LightingCon
   private async getInputValue(testId: string) {
     const input = await this.getInputByTestId(testId);
     return await input.getValue();
-  }
-
-  private async clickButton(testId: string) {
-    const button = await this.getButtonByTestId(testId);
-    await button.click();
   }
 
   private async isButtonDisabled(testId: string) {

@@ -1,6 +1,6 @@
-import {MatSidenav} from "@angular/material/sidenav";
 import {NavDrawerComponent} from "./nav-drawer.component";
-import {renderAppComponent, TestingEventEmitter} from "../../../../testing";
+import {TestingEventEmitter} from "../../../../testing";
+import {NavDrawerHarness} from "./nav-drawer.harness";
 
 describe('NavDrawerComponent', () => {
   let drawerClosed: TestingEventEmitter;
@@ -10,30 +10,26 @@ describe('NavDrawerComponent', () => {
   })
 
   it('should notify when sidenav closes', async () => {
-    const {triggerEventHandler} = await renderAppComponent(NavDrawerComponent, {
-      componentProperties: {drawerClosed}
-    });
+    const harness = await NavDrawerHarness.render({drawerClosed});
 
-    triggerEventHandler(MatSidenav, 'openedChange', false);
+    await harness.closeDrawer();
 
     expect(drawerClosed.emit).toHaveBeenCalled()
   });
 
   it('should not notify sidenav closed when opened', async () => {
-    const {triggerEventHandler} = await renderAppComponent(NavDrawerComponent, {
-      componentProperties: {drawerClosed}
-    });
+    const harness = await NavDrawerHarness.render({drawerClosed});
 
-    triggerEventHandler(MatSidenav, 'openedChange', true);
+    await harness.openDrawer();
 
     expect(drawerClosed.emit).not.toHaveBeenCalled()
   })
 
   it('should show available routes only', async () => {
-    const {container} = await renderAppComponent(NavDrawerComponent);
+    const harness = await NavDrawerHarness.render();
 
-    expect(container).toHaveTextContent('Diagnostics');
-    expect(container).toHaveTextContent('Devices');
-    expect(container).toHaveTextContent('Rooms');
+    expect(harness.container).toHaveTextContent('Diagnostics');
+    expect(harness.container).toHaveTextContent('Devices');
+    expect(harness.container).toHaveTextContent('Rooms');
   })
 })

@@ -1,46 +1,36 @@
 import {ShellComponent} from "./shell.component";
 import {DARK_THEME_CLASS_NAME} from "../../../shared/theming/theme-palettes";
-import {renderAppComponent} from "../../../../testing";
-import userEvent from "@testing-library/user-event";
-import {screen} from "@testing-library/dom";
-import {ComponentFixture} from "@angular/core/testing";
 import {SharedActions} from "../../../shared/actions";
+import {ShellHarness} from "./shell.harness";
 
 describe('ShellComponent', () => {
   it('should open side nav when menu clicked', async () => {
-    const {fixture} = await renderAppComponent(ShellComponent);
+    const harness = await ShellHarness.render();
 
-    await clickMenuButton(fixture);
-    fixture.detectChanges();
-    await fixture.whenRenderingDone();
+    await harness.clickMenu();
 
-    expect(screen.getByTestId('nav-drawer').getAttribute('style')).toContain('visible');
+    expect(harness.navDrawerStyle).toContain('visible');
   })
 
   it('should close side nav when menu clicked', async () => {
-    const {fixture} = await renderAppComponent(ShellComponent);
+    const harness = await ShellHarness.render();
 
-    await clickMenuButton(fixture);
-    await clickMenuButton(fixture);
+    await harness.clickMenu();
+    await harness.clickMenu();
 
-    expect(screen.getByTestId('nav-drawer').getAttribute('style')).not.toContain('visible');
+    expect(harness.navDrawerStyle).not.toContain('visible');
   })
 
   it('should be dark theme when rendered', async () => {
-    const {container} = await renderAppComponent(ShellComponent);
+    const harness = await ShellHarness.render();
 
-    expect(container.querySelector('shell-header')).toHaveClass(DARK_THEME_CLASS_NAME);
-    expect(container.querySelector('shell-nav-drawer')).toHaveClass(DARK_THEME_CLASS_NAME);
+    expect(harness.headerElement).toHaveClass(DARK_THEME_CLASS_NAME);
+    expect(harness.navDrawerElement).toHaveClass(DARK_THEME_CLASS_NAME);
   })
 
   it('should dispatch init action when rendered', async () => {
-    const {store} = await renderAppComponent(ShellComponent);
+    const harness = await ShellHarness.render();
 
-    expect(store.dispatchedActions).toContainEqual(SharedActions.initApp());
+    expect(harness.dispatchedActions).toContainEqual(SharedActions.initApp());
   })
-
-  async function clickMenuButton(fixture: ComponentFixture<ShellComponent>) {
-    userEvent.click(screen.getByTestId('menu-btn'));
-    await fixture.whenRenderingDone();
-  }
 })

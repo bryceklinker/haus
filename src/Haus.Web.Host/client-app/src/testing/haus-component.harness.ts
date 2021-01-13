@@ -1,6 +1,10 @@
 import {RenderComponentResult} from "./render-component";
 import {BaseHarnessFilters, ComponentHarness, HarnessPredicate} from "@angular/cdk/testing";
 import {Type} from "@angular/core";
+import {MatButtonHarness} from "@angular/material/button/testing";
+import {MatInputHarness} from "@angular/material/input/testing";
+import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
+import {MatSliderHarness} from "@angular/material/slider/testing";
 
 export abstract class HausComponentHarness<TComponent> {
   protected get matHarness() {
@@ -68,5 +72,26 @@ export abstract class HausComponentHarness<TComponent> {
 
   destroy() {
     this.result.fixture.destroy();
+  }
+
+  protected async getButtonByTestId(testId: string) {
+    return this.getMatHarnessByTestId(MatButtonHarness.with, testId);
+  }
+
+  protected async getInputByTestId(testId: string) {
+    return this.getMatHarnessByTestId(MatInputHarness.with, testId);
+  }
+
+  protected async getSlideToggleByTestId(testId: string) {
+    return this.getMatHarnessByTestId(MatSlideToggleHarness.with, testId);
+  }
+
+  protected async getSliderByTestId(testId: string) {
+    return this.getMatHarnessByTestId(MatSliderHarness.with, testId);
+  }
+
+  protected async clickButtonByTestId(testId: string) {
+    const button = await this.getButtonByTestId(testId);
+    await button.click();
   }
 }
