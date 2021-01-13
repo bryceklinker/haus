@@ -45,7 +45,7 @@ describe('SimulatedDeviceWidgetComponent', () => {
   it('should show no lighting when simulator is missing lighting', async () => {
     const simulatedDevice = ModelFactory.createSimulatedDevice();
     simulatedDevice.lighting = null as any;
-    
+
     const harness = await SimulatedDeviceWidgetHarness.render({simulatedDevice});
 
     expect(harness.lightingExists).toEqual(false);
