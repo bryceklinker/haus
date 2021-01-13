@@ -22,6 +22,10 @@ export const MAIN_ROUTE: Route = {
     {
       path: 'device-simulator',
       loadChildren: () => import('./device-simulator/device-simulator.module').then(m => m.DeviceSimulatorModule)
+    },
+    {
+      path: 'health',
+      loadChildren: () => import('./health/health.module').then(m => m.HealthModule)
     }
   ]
 }

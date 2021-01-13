@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Web.Host.Tests.Support
@@ -55,6 +56,11 @@ namespace Haus.Web.Host.Tests.Support
                     .AddScheme<AuthenticationSchemeOptions, TestingAuthenticationHandler>(
                         TestingAuthenticationHandler.TestingScheme, opts => { });
                 services.AddDbContext<HausDbContext>(opts => opts.UseInMemoryDatabase("HausDB"));
+                services.Configure<HealthCheckPublisherOptions>(opts =>
+                {
+                    opts.Delay = TimeSpan.Zero;
+                    opts.Period = TimeSpan.FromSeconds(1);
+                });
             });
         }
 

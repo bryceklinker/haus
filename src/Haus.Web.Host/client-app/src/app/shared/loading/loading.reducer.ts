@@ -26,7 +26,7 @@ export const selectIsLoading = ({type}: { type: string }) => createSelector(
     const matches = ASYNC_ACTION_REGEX.exec(type);
     if (matches) {
       const [, asyncName] = matches;
-      return state[asyncName];
+      return state[asyncName] || false;
     }
     return false;
   })

@@ -1,8 +1,6 @@
 import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {LightingComponent} from "./lighting.component";
 import {SharedModule} from "../../shared.module";
-import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
-import {MatSliderHarness} from "@angular/material/slider/testing";
 import {screen} from "@testing-library/dom";
 import {LightingColorHarness} from "../lighting-color/lighting-color.harness";
 
@@ -18,6 +16,10 @@ const TEST_IDS = {
 
 export class LightingHarness extends HausComponentHarness<LightingComponent> {
   private _colorHarness: LightingColorHarness;
+
+  get exists() {
+    return screen.queryAllByTestId('lighting').length > 0
+  }
 
   get levelDisplay() {
     return screen.getByTestId(TEST_IDS.LEVEL_VALUE);
@@ -99,6 +101,10 @@ export class LightingHarness extends HausComponentHarness<LightingComponent> {
 
   async changeRed(red: number) {
     await this._colorHarness.changeRed(red);
+  }
+
+  static fromResult(result: RenderComponentResult<any>) {
+    return new LightingHarness(result);
   }
 
   static async render(props: Partial<LightingComponent> = {}) {

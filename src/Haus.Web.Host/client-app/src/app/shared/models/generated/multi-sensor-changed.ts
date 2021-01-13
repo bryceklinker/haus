@@ -9,10 +9,10 @@ export interface MultiSensorChanged {
 	temperatureChanged: TemperatureChangedModel;
 	illuminanceChanged: IlluminanceChangedModel;
 	batteryChanged: BatteryChangedModel;
-	hasTemperature: any;
-	hasOccupancy: any;
-	hasIlluminance: any;
-	hasBattery: any;
-	changes: Array<any>;
-	hasMultipleChanges: any;
+	hasTemperature: boolean;
+	hasOccupancy: boolean;
+	hasIlluminance: boolean;
+	hasBattery: boolean;
+	changes: Array<boolean>;
+	hasMultipleChanges: boolean;
 }

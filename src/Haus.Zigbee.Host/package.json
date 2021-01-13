@@ -7,6 +7,6 @@
     "start": "node ./Zigbee2Mqtt/Node/js/index.js"
   },
   "dependencies": {
-    "zigbee2mqtt": "1.16.1"
+    "zigbee2mqtt": "1.17.0"
   }
 }

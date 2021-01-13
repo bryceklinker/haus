@@ -2,7 +2,7 @@
 
 export interface OccupancyChangedModel {
 	deviceId: string;
-	occupancy: any;
+	occupancy: boolean;
 	timeout: number;
 	sensitivity: string;
 }

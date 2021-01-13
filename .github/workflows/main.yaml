@@ -9,6 +9,10 @@ on:
         description: 'Is this a release?'
         required: false
         default: false
+      version_bump:
+        description: 'What kind of release is this?'
+        required: false
+        default: patch
 jobs:
   continuous_integration:
     name: Continuous Integration
@@ -32,14 +36,18 @@ jobs:
         with:
           version: '1.6'
 
-      - name: Run Build Script
-        run: ./scripts/build.sh
-
       - name: Bump version and Push Tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v5.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: ${{ github.event.inputs.version_bump }}
+
+      - name: Run Build Script
+        run: ./scripts/build.sh
+        env:
+          IS_RELEASE: ${{ github.event.inputs.is_release || false }}
+          VERSION: ${{ steps.tag_version.outputs.new_tag }}
       
       - name: Create Release
         id: create_release
@@ -50,7 +58,7 @@ jobs:
           tag_name: ${{ steps.tag_version.outputs.new_tag }}
           release_name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
-          prerelease: ${{ !github.event.inputs && !github.event.inputs.is_release }} 
+        if: ${{ github.event.inputs.is_release }}
 
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
@@ -61,6 +69,7 @@ jobs:
           asset_path: ./publish/Haus.Web.Host.linux-x64.zip
           asset_name: Haus.Web.Host.linux-x64.zip
           asset_content_type: application/zip
+        if: ${{ github.event.inputs.is_release }}
 
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
@@ -71,3 +80,4 @@ jobs:
           asset_path: ./publish/Haus.Zigbee.Host.linux-x64.zip
           asset_name: Haus.Zigbee.Host.linux-x64.zip
           asset_content_type: application/zip
+        if: ${{ github.event.inputs.is_release }}

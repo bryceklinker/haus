@@ -6,5 +6,8 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels
     {
         [OptionalGeneration]
         public long Id { get; set; }
+        
+        [OptionalGeneration]
+        public double? Value { get; set; }
     }
 }

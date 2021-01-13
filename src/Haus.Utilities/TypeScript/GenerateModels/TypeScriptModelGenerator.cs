@@ -108,15 +108,12 @@ namespace Haus.Utilities.TypeScript.GenerateModels
 
         private static string GenerateTypeScriptProperty(PropertyInfo property, ITypeScriptGeneratorContext context)
         {
-            var propertyName = property.PropertyType.IsNullable()
-                ? $"{property.Name.Camelize()}?"
-                : property.Name.Camelize();
-            
+            var propertyName = property.Name.Camelize();
             var typescriptPropertyType = property.PropertyType.IsNativeTypeScriptType()
                 ? property.PropertyType.ToTypeScriptType(context)
                 : context.GetModelForType(property.PropertyType).ModelName;
-            var isOptional = property.GetCustomAttribute<OptionalGenerationAttribute>() != null;
-            if (isOptional)
+            
+            if (property.IsOptional())
                 return $"\t{propertyName}?: {typescriptPropertyType};";
             return $"\t{propertyName}: {typescriptPropertyType};";
         }

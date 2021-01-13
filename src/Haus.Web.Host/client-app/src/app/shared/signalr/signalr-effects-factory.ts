@@ -29,7 +29,7 @@ export class SignalrEffectsFactory {
     const initializeHub = () => {
         const hubService = this.signalrFactory.create(options.hubName);
         if (options.hubInitializer) {
-          options.hubInitializer(hubService);
+          options?.hubInitializer(hubService);
         }
         return hubService;
     };

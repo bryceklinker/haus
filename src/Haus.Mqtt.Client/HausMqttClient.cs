@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models;
 using Haus.Core.Models.Common;
@@ -14,6 +15,9 @@ namespace Haus.Mqtt.Client
 {
     public interface IHausMqttClient : IAsyncDisposable
     {
+        bool IsConnected { get; }
+        bool IsStarted { get; }
+        Task PingAsync(CancellationToken token);
         Task<IHausMqttSubscription> SubscribeAsync(string topic, Func<MqttApplicationMessage, Task> handler);
         Task<IHausMqttSubscription> SubscribeAsync(string topic, Action<MqttApplicationMessage> handler);
         Task PublishAsync(MqttApplicationMessage message);
@@ -32,13 +36,21 @@ namespace Haus.Mqtt.Client
 
         private string EventsTopic => _settings.Value.EventsTopic;
         private string CommandsTopic => _settings.Value.CommandsTopic;
-        
+
+        public bool IsConnected => _mqttClient.IsConnected;
+        public bool IsStarted => _mqttClient.IsStarted;
+
         public HausMqttClient(IManagedMqttClient mqttClient, IOptions<HausMqttSettings> settings)
         {
             _mqttClient = mqttClient;
             _settings = settings;
             _subscriptions = new ConcurrentDictionary<Guid, IHausMqttSubscription>();
             _setupMqttListener = new Lazy<Task>(SetupMqttListenerAsync);
+        }
+
+        public Task PingAsync(CancellationToken token)
+        {
+            return _mqttClient.PingAsync(token);
         }
 
         public async Task<IHausMqttSubscription> SubscribeAsync(string topic, Func<MqttApplicationMessage, Task> handler)

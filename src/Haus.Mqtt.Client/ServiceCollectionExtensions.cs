@@ -1,3 +1,4 @@
+using Haus.Mqtt.Client.Health;
 using Haus.Mqtt.Client.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using MQTTnet;
@@ -12,6 +13,11 @@ namespace Haus.Mqtt.Client
             return services.AddTransient<IMqttFactory, MqttFactory>()
                 .AddTransient<IMqttNetLogger, MqttLogger>()
                 .AddSingleton<IHausMqttClientFactory, HausMqttClientFactory>();
+        }
+
+        public static IHealthChecksBuilder AddHausMqttHealthChecks(this IHealthChecksBuilder builder)
+        {
+            return builder.AddCheck<HausMqttHealthCHeck>("haus-mqtt");
         }
     }
 }

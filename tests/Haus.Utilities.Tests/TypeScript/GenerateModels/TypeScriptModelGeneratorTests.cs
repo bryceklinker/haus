@@ -206,7 +206,8 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels
 
             var model = _context.GetModelForType(typeof(ModelWithOptionalProperty));
             model.Contents.Should()
-                .Contain("id?: number;");
+                .Contain("id?: number;")
+                .And.Contain("value?: number");
         }
     }
 }

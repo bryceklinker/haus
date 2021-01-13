@@ -6,6 +6,7 @@ import {DeviceTypesEffects} from "./devices/effects/device-types.effects";
 import {EventsEffects} from "./shared/events";
 import {DiscoveryEffects} from "./shared/discovery";
 import {LightTypesEffects} from "./devices/effects/light-types.effects";
+import {HealthEffects} from "./health/effects/health.effects";
 
 export const APP_EFFECTS = [
   DevicesEffects,
@@ -15,5 +16,6 @@ export const APP_EFFECTS = [
   DeviceTypesEffects,
   EventsEffects,
   DiscoveryEffects,
-  LightTypesEffects
+  LightTypesEffects,
+  HealthEffects
 ]

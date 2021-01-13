@@ -5,5 +5,5 @@ export interface LightingConstraintsModel {
 	maxLevel: number;
 	minTemperature?: number;
 	maxTemperature?: number;
-	hasTemperature?: any;
+	hasTemperature?: boolean;
 }

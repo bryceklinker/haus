@@ -20,15 +20,12 @@ export class NavigationService {
   }
 
   private static createNavigationLinks(routes: Array<Route>): Array<NavigationLinkModel> {
-    return routes.filter(r => !!r.path)
-      .map(route => NavigationService.createNavigationLink(route));
+    return routes
+      .filter(r => !!r.path)
+      .map(route => NavigationService.createNavigationLink(route as any));
   }
 
-  private static createNavigationLink(route: Route): NavigationLinkModel {
-    if (!route.path) {
-      throw new Error('Route path was not set');
-    }
-
+  private static createNavigationLink(route: Route & {path: string}): NavigationLinkModel {
     return {
       name: toTitleCase(route.path),
       path: route.path

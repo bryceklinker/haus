@@ -4,6 +4,7 @@ using Haus.Web.Host.Common.Events;
 using Haus.Web.Host.Common.Mqtt;
 using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
+using Haus.Web.Host.Health;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -29,10 +30,11 @@ namespace Haus.Web.Host
         {
             services
                 .AddHausWebHost(_configuration)
-                .AddAuthenticatedUserRequired(_configuration)
-                .AddRestApi()
-                .AddSignalR(opts => { opts.EnableDetailedErrors = true; });
-            services.AddSpaStaticFiles(spa => spa.RootPath = ClientAppRoot);
+                .AddHausAuthentication(_configuration)
+                .AddHausRestApi()
+                .AddHausRealtimeApi()
+                .AddHausSpa(ClientAppRoot)
+                .AddHausHealthChecks();
         }
 
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
@@ -53,6 +55,7 @@ namespace Haus.Web.Host
                     endpoints.MapHub<DiagnosticsHub>("/hubs/diagnostics");
                     endpoints.MapHub<DeviceSimulatorHub>("/hubs/device-simulator");
                     endpoints.MapHub<EventsHub>("/hubs/events");
+                    endpoints.MapHub<HealthHub>("/hubs/health");
                     endpoints.MapControllers();
                 });
             

@@ -1,5 +1,5 @@
-import {loadingReducer} from "./loading.reducer";
-import {generateStateFromActions} from "../../../testing/app-state-generator";
+import {loadingReducer, selectIsLoading} from "./loading.reducer";
+import {generateAppStateFromActions, generateStateFromActions} from "../../../testing/app-state-generator";
 
 describe('loadingReducer', () => {
   it('should be loading when request action received', () => {
@@ -30,5 +30,17 @@ describe('loadingReducer', () => {
       {type: 'idk'});
 
     expect(state).toEqual({});
+  })
+
+  it('selecting loading state should return false by default', () => {
+    const state = generateAppStateFromActions();
+
+    expect(selectIsLoading({type: 'something'})(state)).toEqual(false);
+  })
+
+  it('selecting loading state is selected for type that has not been seen should return false by default', () => {
+    const state = generateAppStateFromActions();
+
+    expect(selectIsLoading({type: 'something Request'})(state)).toEqual(false);
   })
 })

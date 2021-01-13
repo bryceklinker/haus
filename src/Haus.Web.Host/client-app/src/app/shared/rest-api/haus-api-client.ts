@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {map, tap} from "rxjs/operators";
 import {BehaviorSubject, Observable} from "rxjs";
@@ -17,13 +17,11 @@ import {
   SimulatedDeviceModel
 } from "../models";
 import {HttpMethod} from "./http-method";
-import {DestroyableSubject} from "../destroyable-subject";
 
 @Injectable({
   providedIn: 'root'
 })
-export class HausApiClient implements OnDestroy {
-  private readonly destroyable = new DestroyableSubject();
+export class HausApiClient {
   private readonly _inflightRequests = new BehaviorSubject<Array<string>>([]);
 
   get inflightRequests(): Array<string> {
@@ -31,9 +29,9 @@ export class HausApiClient implements OnDestroy {
   }
 
   get isLoading$(): Observable<boolean> {
-    return this.destroyable.register(this._inflightRequests.pipe(
+    return this._inflightRequests.pipe(
       map(requests => requests.length > 0),
-    ));
+    );
   }
 
   constructor(private http: HttpClient) {
@@ -107,16 +105,12 @@ export class HausApiClient implements OnDestroy {
     return this.execute(HttpMethod.POST, '/api/device-simulator/devices', model);
   }
 
-  ngOnDestroy(): void {
-    this.destroyable.destroy();
-  }
-
   private execute<T>(method: HttpMethod, url: string, data: any = null): Observable<T> {
     const requestId = uuid();
     this.addInflightRequest(requestId);
-    return this.destroyable.register(this.executeHttpMethod<T>(method, url, data).pipe(
+    return this.executeHttpMethod<T>(method, url, data).pipe(
       tap(() => this.removeInflightRequest(requestId)),
-    ));
+    );
   }
 
   private executeHttpMethod<T>(method: HttpMethod, url: string, data: any): Observable<T> {

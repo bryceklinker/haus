@@ -15,6 +15,7 @@ namespace Haus.Utilities
         public const string String = "string";
         public const string Any = "any";
         public const string Object = "object";
+        public const string Boolean = "boolean";
 
         public static readonly Dictionary<Type, string> ClrToTypeScript = new()
         {
@@ -26,6 +27,7 @@ namespace Haus.Utilities
             {typeof(Guid), String},
             {typeof(DateTime), String},
             {typeof(object), Object},
+            {typeof(bool), Boolean},
         };
 
         public static bool IsStatic(this Type type)

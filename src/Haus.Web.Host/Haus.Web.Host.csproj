@@ -5,15 +5,19 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.2" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\Haus.Core\Haus.Core.csproj" />
     <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
     <ProjectReference Include="..\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="client-app\src\app\health\components" />
   </ItemGroup>
 
   <Target Name="RunBundler" AfterTargets="ComputeFilesToPublish">

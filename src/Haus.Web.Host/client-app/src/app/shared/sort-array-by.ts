@@ -5,14 +5,6 @@ export enum SortDirection {
 
 export type Sortable = string | number;
 
-export function sortArrayByAscending<T>(items: T[], property: (item: T) => Sortable) {
-  return sortArrayBy(items, property, SortDirection.Ascending);
-}
-
-export function sortArrayByDescending<T>(items: T[], property: (item: T) => Sortable) {
-  return sortArrayBy(items, property, SortDirection.Descending);
-}
-
 export function sortArrayBy<T>(items: T[], property: (item: T) => Sortable, direction: SortDirection): Array<T> {
   return [...items].sort(createComparer(property, direction));
 }

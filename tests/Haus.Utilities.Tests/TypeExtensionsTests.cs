@@ -16,6 +16,7 @@ namespace Haus.Utilities.Tests
         [InlineData(typeof(double), "number")]
         [InlineData(typeof(byte), "number")]
         [InlineData(typeof(object), "object")]
+        [InlineData(typeof(bool), "boolean")]
         public void WhenTypeIsANativeTypescriptTypeThenReturnsTypescriptTypeAsString(Type type, string typescriptType)
         {
             type.IsNativeTypeScriptType().Should().BeTrue();

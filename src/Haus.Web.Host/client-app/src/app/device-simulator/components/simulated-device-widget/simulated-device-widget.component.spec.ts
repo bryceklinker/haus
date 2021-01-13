@@ -42,6 +42,21 @@ describe('SimulatedDeviceWidgetComponent', () => {
     expect(harness.lighting).toBeInTheDocument();
   })
 
+  it('should show no lighting when simulator is missing lighting', async () => {
+    const simulatedDevice = ModelFactory.createSimulatedDevice();
+    simulatedDevice.lighting = null as any;
+    
+    const harness = await SimulatedDeviceWidgetHarness.render({simulatedDevice});
+
+    expect(harness.lightingExists).toEqual(false);
+  })
+
+  it('should show empty data when simulated device is missing', async () => {
+    const harness = await SimulatedDeviceWidgetHarness.render({simulatedDevice: undefined});
+
+    expect(harness.container).toHaveTextContent('N/A');
+  })
+
   function renderWidget(props: Partial<SimulatedDeviceWidgetComponent>) {
     return renderFeatureComponent(SimulatedDeviceWidgetComponent, {
       imports: [DeviceSimulatorModule],
