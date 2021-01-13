@@ -1,86 +1,75 @@
-import {screen} from '@testing-library/dom'
-import userEvent from "@testing-library/user-event";
-import {Action} from "@ngrx/store";
-
 import {
   eventually,
   ModelFactory,
-  renderFeatureComponent,
 } from "../../../../testing";
-import {DiagnosticsModule} from "../../diagnostics.module";
 import {DiagnosticsRootComponent} from "./diagnostics-root.component";
 import {DiagnosticsActions} from "../../state";
 import {DiscoveryActions} from "../../../shared/discovery";
+import {DiagnosticsRootHarness} from "./diagnostics-root.harness";
 
 describe('DiagnosticsRootComponent', () => {
   it('should start connection to diagnostics when rendered', async () => {
-    const {store} = await renderRoot();
+    const harness = await DiagnosticsRootHarness.render();
 
-    expect(store.dispatchedActions).toContainEqual(DiagnosticsActions.start());
+    expect(harness.dispatchedActions).toContainEqual(DiagnosticsActions.start());
   })
 
   it('should stop connection when destroyed', async () => {
-    const {fixture, store} = await renderRoot();
+    const harness = await DiagnosticsRootHarness.render();
 
-    fixture.destroy();
+    harness.destroy();
 
-    expect(store.dispatchedActions).toContainEqual(DiagnosticsActions.stop());
+    expect(harness.dispatchedActions).toContainEqual(DiagnosticsActions.stop());
   })
 
   it('should render diagnostic messages', async () => {
-    await renderRoot(DiagnosticsActions.messageReceived(ModelFactory.createMqttDiagnosticsMessage()));
+    const harness = await DiagnosticsRootHarness.render(DiagnosticsActions.messageReceived(ModelFactory.createMqttDiagnosticsMessage()));
 
     await eventually(() => {
-      expect(screen.queryAllByTestId('diagnostic-message')).toHaveLength(1);
+      expect(harness.messages).toHaveLength(1);
     })
   })
 
   it('should show diagnostic connection status', async () => {
-    await renderRoot(DiagnosticsActions.connected());
+    const harness = await DiagnosticsRootHarness.render(DiagnosticsActions.connected());
 
     await eventually(() => {
-      expect(screen.queryAllByText('connected')).toHaveLength(1);
+      expect(harness.connectionStatus).toHaveTextContent('connected');
+      expect(harness.connectionStatus).not.toHaveTextContent('disconnected');
     })
   })
 
   it('should start discovery', async () => {
-    const {store} = await renderRoot();
+    const harness = await DiagnosticsRootHarness.render();
 
-    userEvent.click(screen.getByTestId('start-discovery-btn'));
+    await harness.startDiscovery();
 
-    expect(store.dispatchedActions).toContainEqual(DiscoveryActions.startDiscovery.request());
+    expect(harness.dispatchedActions).toContainEqual(DiscoveryActions.startDiscovery.request());
   })
 
   it('should stop discovery', async () => {
-    const {store} = await renderRoot(DiscoveryActions.startDiscovery.success());
+    const harness = await DiagnosticsRootHarness.render(DiscoveryActions.startDiscovery.success());
 
-    userEvent.click(screen.getByTestId('stop-discovery-btn'));
+    await harness.stopDiscovery();
 
-    expect(store.dispatchedActions).toContainEqual(DiscoveryActions.stopDiscovery.request());
+    expect(harness.dispatchedActions).toContainEqual(DiscoveryActions.stopDiscovery.request());
   })
 
   it('should sync discovery', async () => {
-    const {store} = await renderRoot();
+    const harness = await DiagnosticsRootHarness.render();
 
-    userEvent.click(screen.getByTestId('sync-discovery-btn'));
+    await harness.syncDiscovery();
 
-    expect(store.dispatchedActions).toContainEqual(DiscoveryActions.syncDiscovery.request());
+    expect(harness.dispatchedActions).toContainEqual(DiscoveryActions.syncDiscovery.request());
   })
 
   it('should replay message when message is replayed', async () => {
     const messageToReplay = ModelFactory.createMqttDiagnosticsMessage();
 
-    const {store} = await renderRoot(DiagnosticsActions.messageReceived(messageToReplay));
+    const harness = await DiagnosticsRootHarness.render(DiagnosticsActions.messageReceived(messageToReplay));
 
-    userEvent.click(screen.getByTestId('replay-message-btn'));
+    await harness.replayMessage();
 
-    expect(store.dispatchedActions).toContainEqual(DiagnosticsActions.replayMessage.request(messageToReplay));
+    expect(harness.dispatchedActions).toContainEqual(DiagnosticsActions.replayMessage.request(messageToReplay));
   })
-
-  function renderRoot(...actions: Array<Action>) {
-    return renderFeatureComponent(DiagnosticsRootComponent, {
-      imports: [DiagnosticsModule],
-      actions: actions
-    })
-  }
 })

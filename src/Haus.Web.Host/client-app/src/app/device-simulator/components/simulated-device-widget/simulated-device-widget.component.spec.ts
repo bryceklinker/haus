@@ -1,19 +1,17 @@
-import {screen} from "@testing-library/dom";
-
 import {ModelFactory, renderFeatureComponent} from "../../../../testing";
 import {DeviceSimulatorModule} from "../../device-simulator.module";
 import {SimulatedDeviceWidgetComponent} from "./simulated-device-widget.component";
 import {DeviceType} from "../../../shared/models";
+import {SimulatedDeviceWidgetHarness} from "./simulated-device-widget.harness";
 
 describe('SimulatedDeviceWidgetComponent', () => {
-
   it('should show device information', async () => {
     const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.LightSensor});
 
-    const {container} = await renderWidget({simulatedDevice});
+    const harness = await SimulatedDeviceWidgetHarness.render({simulatedDevice});
 
-    expect(container).toHaveTextContent(simulatedDevice.id);
-    expect(container).toHaveTextContent('Light Sensor');
+    expect(harness.container).toHaveTextContent(simulatedDevice.id);
+    expect(harness.container).toHaveTextContent('Light Sensor');
   })
 
   it('should show device metadata', async () => {
@@ -25,23 +23,23 @@ describe('SimulatedDeviceWidgetComponent', () => {
       ]
     });
 
-    const {container} = await renderWidget({simulatedDevice});
+    const harness = await SimulatedDeviceWidgetHarness.render({simulatedDevice});
 
-    expect(screen.queryAllByTestId('simulated-metadata-item')).toHaveLength(3);
-    expect(container).toHaveTextContent('simulated');
-    expect(container).toHaveTextContent('true');
-    expect(container).toHaveTextContent('low');
-    expect(container).toHaveTextContent('100');
-    expect(container).toHaveTextContent('high');
-    expect(container).toHaveTextContent('2000');
+    expect(harness.simulatedMetadata).toHaveLength(3);
+    expect(harness.container).toHaveTextContent('simulated');
+    expect(harness.container).toHaveTextContent('true');
+    expect(harness.container).toHaveTextContent('low');
+    expect(harness.container).toHaveTextContent('100');
+    expect(harness.container).toHaveTextContent('high');
+    expect(harness.container).toHaveTextContent('2000');
   })
 
   it('should show lighting when simulator is a light', async () => {
     const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.Light});
 
-    await renderWidget({simulatedDevice});
+    const harness = await SimulatedDeviceWidgetHarness.render({simulatedDevice});
 
-    expect(screen.getByTestId('lighting')).toBeInTheDocument();
+    expect(harness.lighting).toBeInTheDocument();
   })
 
   function renderWidget(props: Partial<SimulatedDeviceWidgetComponent>) {

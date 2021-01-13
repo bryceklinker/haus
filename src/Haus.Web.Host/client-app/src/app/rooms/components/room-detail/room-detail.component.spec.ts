@@ -1,19 +1,15 @@
-import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
-import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
-
 import {RoomDetailComponent} from './room-detail.component';
-import {ModelFactory, renderFeatureComponent, TestingEventEmitter} from "../../../../testing";
-import {RoomsModule} from "../../rooms.module";
+import {ModelFactory, TestingEventEmitter} from "../../../../testing";
 import {DeviceType, LightingState, RoomLightingChangedEvent, RoomModel} from "../../../shared/models";
+import {RoomDetailHarness} from "./room-detail.harness";
 
 describe('RoomDetailComponent', () => {
   it('should show room name', async () => {
     const room = ModelFactory.createRoomModel({name: 'new hotness'});
 
-    await renderComponent({room});
+    const harness = await RoomDetailHarness.render({room});
 
-    expect(screen.getByTestId('room-detail')).toHaveTextContent('new hotness');
+    expect(harness.roomDetail).toHaveTextContent('new hotness');
   })
 
   it('should show each device', async () => {
@@ -22,9 +18,9 @@ describe('RoomDetailComponent', () => {
       ModelFactory.createDeviceModel()
     ];
 
-    await renderComponent({devices});
+    const harness = await RoomDetailHarness.render({devices});
 
-    expect(screen.queryAllByTestId('room-device-item')).toHaveLength(2);
+    expect(harness.devices).toHaveLength(2);
   })
 
   it('should show each device\'s info', async () => {
@@ -32,18 +28,18 @@ describe('RoomDetailComponent', () => {
       ModelFactory.createDeviceModel({name: 'bob', deviceType: DeviceType.Light})
     ];
 
-    const {container} = await renderComponent({devices});
+    const harness = await RoomDetailHarness.render({devices});
 
-    expect(container).toHaveTextContent(/bob/g);
-    expect(container).toHaveTextContent(/Light/g);
+    expect(harness.container).toHaveTextContent(/bob/g);
+    expect(harness.container).toHaveTextContent(/Light/g);
   })
 
   it('should show room lighting', async () => {
     const room = ModelFactory.createRoomModel();
 
-    await renderComponent({room});
+    const harness = await RoomDetailHarness.render({room});
 
-    expect(await screen.findByTestId('lighting')).toBeInTheDocument();
+    expect(harness.lighting).toBeInTheDocument();
   })
 
   it('should notify when lighting changed', async () => {
@@ -52,9 +48,8 @@ describe('RoomDetailComponent', () => {
     });
     const emitter = new TestingEventEmitter<RoomLightingChangedEvent>();
 
-    const {matHarness} = await renderComponent({room, lightingChange: emitter});
-    const state = await matHarness.getHarness(MatSlideToggleHarness);
-    await state.check();
+    const harness = await RoomDetailHarness.render({room, lightingChange: emitter});
+    await harness.turnRoomOn();
 
     expect(emitter.emit).toHaveBeenCalledWith({
       room: room,
@@ -66,22 +61,9 @@ describe('RoomDetailComponent', () => {
     const room = ModelFactory.createRoomModel();
     const emitter = new TestingEventEmitter<RoomModel>();
 
-    const {detectChanges} = await renderComponent({room, assignDevices: emitter});
-
-    userEvent.click(screen.getByTestId('assign-devices-btn'));
-    detectChanges();
+    const harness = await RoomDetailHarness.render({room, assignDevices: emitter});
+    await harness.assignDevices();
 
     expect(emitter.emit).toHaveBeenCalledWith(room);
   })
-
-  function renderComponent({
-                             room = null, devices = [],
-                             lightingChange = new TestingEventEmitter<RoomLightingChangedEvent>(),
-                             assignDevices = new TestingEventEmitter<RoomModel>()
-                           }: Partial<RoomDetailComponent> = {}) {
-    return renderFeatureComponent(RoomDetailComponent, {
-      imports: [RoomsModule],
-      componentProperties: {room, devices, lightingChange, assignDevices}
-    });
-  }
 });

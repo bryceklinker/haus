@@ -1,48 +1,40 @@
-import {Action} from "@ngrx/store";
-import {screen} from "@testing-library/dom";
-
-import {ModelFactory, renderFeatureComponent} from "../../../../testing";
+import {ModelFactory} from "../../../../testing";
 import {DeviceSimulatorRootComponent} from "./device-simulator-root.component";
-import {DeviceSimulatorModule} from "../../device-simulator.module";
 import {DeviceSimulatorActions} from "../../state";
+import {DeviceSimulatorRootHarness} from "./device-simulator-root.harness";
 
 describe('DeviceSimulatorRootComponent', () => {
   it('should start connection to device simulator', async () => {
-    const {store} = await renderRoot();
+    const harness = await DeviceSimulatorRootHarness.render();
 
-    expect(store.dispatchedActions).toContainEqual(DeviceSimulatorActions.start());
+    expect(harness.dispatchedActions).toContainEqual(DeviceSimulatorActions.start());
   })
 
   it('should show all simulated devices', async () => {
-    await renderRoot(DeviceSimulatorActions.stateReceived({
-      devices: [
-        ModelFactory.createSimulatedDevice(),
-        ModelFactory.createSimulatedDevice(),
-        ModelFactory.createSimulatedDevice(),
-      ]
-    }));
+    const harness = await DeviceSimulatorRootHarness.render(
+      DeviceSimulatorActions.stateReceived({
+        devices: [
+          ModelFactory.createSimulatedDevice(),
+          ModelFactory.createSimulatedDevice(),
+          ModelFactory.createSimulatedDevice(),
+        ]
+      })
+    )
 
-    expect(screen.queryAllByTestId('simulated-device-item')).toHaveLength(3);
+    expect(harness.simulatedDevices).toHaveLength(3);
   })
 
   it('should show connection status of device simulator', async () => {
-    const {container} = await renderRoot(DeviceSimulatorActions.connected());
+    const harness = await DeviceSimulatorRootHarness.render(DeviceSimulatorActions.connected());
 
-    expect(container).toHaveTextContent('connected');
+    expect(harness.container).toHaveTextContent('connected');
   })
 
   it('should stop connection when destroyed', async () => {
-    const {store, fixture} = await renderRoot();
+    const harness = await DeviceSimulatorRootHarness.render();
 
-    fixture.destroy();
+    harness.destroy();
 
-    expect(store.dispatchedActions).toContainEqual(DeviceSimulatorActions.stop());
+    expect(harness.dispatchedActions).toContainEqual(DeviceSimulatorActions.stop());
   })
-
-  function renderRoot(...actions: Array<Action>) {
-    return renderFeatureComponent(DeviceSimulatorRootComponent, {
-      imports: [DeviceSimulatorModule],
-      actions: actions
-    })
-  }
 })

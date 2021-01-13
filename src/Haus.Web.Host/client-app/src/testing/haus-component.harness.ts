@@ -19,6 +19,10 @@ export abstract class HausComponentHarness<TComponent> {
     return this.result.actionsSubject;
   }
 
+  get dialogRef() {
+    return this.result.matDialogRef;
+  }
+
   get router() {
     return this.result.router;
   }
@@ -48,6 +52,7 @@ export abstract class HausComponentHarness<TComponent> {
   }
 
   whenRenderingDone() {
+    this.detectChanges();
     return this.result.fixture.whenRenderingDone();
   }
 

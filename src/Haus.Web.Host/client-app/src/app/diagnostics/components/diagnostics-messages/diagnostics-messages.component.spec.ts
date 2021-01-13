@@ -1,11 +1,7 @@
-import {EventEmitter} from "@angular/core";
-import {screen} from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
-
-import {renderFeatureComponent, TestingEventEmitter, ModelFactory} from "../../../../testing";
+import {TestingEventEmitter, ModelFactory} from "../../../../testing";
 import {DiagnosticsMessagesComponent} from "./diagnostics-messages.component";
-import {DiagnosticsModule} from "../../diagnostics.module";
 import {UiMqttDiagnosticsMessageModel} from "../../../shared/models";
+import {DiagnosticsMessagesHarness} from "./diagnostics-messages.harness";
 
 describe('DiagnosticsMessagesComponent', () => {
   it('should show each message', async () => {
@@ -15,9 +11,9 @@ describe('DiagnosticsMessagesComponent', () => {
       ModelFactory.createMqttDiagnosticsMessage()
     ];
 
-    await renderMessages(messages);
+    const harness = await DiagnosticsMessagesHarness.render({messages});
 
-    expect(screen.queryAllByTestId('diagnostic-message')).toHaveLength(3);
+    expect(harness.messages).toHaveLength(3);
   })
 
   it('should show message topic', async () => {
@@ -25,9 +21,9 @@ describe('DiagnosticsMessagesComponent', () => {
       ModelFactory.createMqttDiagnosticsMessage({topic: 'one'})
     ];
 
-    await renderMessages(messages);
+    const harness = await DiagnosticsMessagesHarness.render({messages});
 
-    expect(screen.getByTestId('diagnostic-message')).toHaveTextContent('one');
+    expect(harness.firstMessage).toHaveTextContent('one');
   })
 
   it('should show message payload', async () => {
@@ -35,9 +31,9 @@ describe('DiagnosticsMessagesComponent', () => {
       ModelFactory.createMqttDiagnosticsMessage({payload: '123'})
     ];
 
-    await renderMessages(messages);
+    const harness = await DiagnosticsMessagesHarness.render({messages});
 
-    expect(screen.getByTestId('diagnostic-message')).toHaveTextContent('123');
+    expect(harness.firstMessage).toHaveTextContent('123');
   })
 
   it('should show message payload json', async () => {
@@ -45,38 +41,27 @@ describe('DiagnosticsMessagesComponent', () => {
       ModelFactory.createMqttDiagnosticsMessage({payload: {id: 45, text: 'jack'}})
     ];
 
-    await renderMessages(messages);
+    const harness = await DiagnosticsMessagesHarness.render({messages});
 
-    expect(screen.getByTestId('diagnostic-message')).toHaveTextContent('45')
-    expect(screen.getByTestId('diagnostic-message')).toHaveTextContent('jack')
+    expect(harness.firstMessage).toHaveTextContent('45')
+    expect(harness.firstMessage).toHaveTextContent('jack')
   })
 
   it('should trigger replay message when message is replayed', async () => {
     const model = ModelFactory.createMqttDiagnosticsMessage();
-    const replayMessageEmitter = new TestingEventEmitter<UiMqttDiagnosticsMessageModel>();
+    const emitter = new TestingEventEmitter<UiMqttDiagnosticsMessageModel>();
 
-    await renderMessages([model], replayMessageEmitter);
+    const harness = await DiagnosticsMessagesHarness.render({messages: [model], replayMessage: emitter});
+    await harness.replayMessage();
 
-    userEvent.click(screen.getByTestId('replay-message-btn'));
-
-    expect(replayMessageEmitter.emit).toHaveBeenCalledWith(model);
+    expect(emitter.emit).toHaveBeenCalledWith(model);
   })
 
   it('should disable replay button when message is being replayed', async () => {
     const model = ModelFactory.createMqttDiagnosticsMessage({isReplaying: true});
 
-    await renderMessages([model]);
+    const harness = await DiagnosticsMessagesHarness.render({messages: [model]});
 
-    expect(screen.getByTestId('replay-message-btn')).toBeDisabled();
+    expect(harness.replayMessageElement).toBeDisabled();
   })
-
-  async function renderMessages(messages: Array<UiMqttDiagnosticsMessageModel>, replayMessage?: EventEmitter<UiMqttDiagnosticsMessageModel>) {
-    return await renderFeatureComponent(DiagnosticsMessagesComponent, {
-      imports: [DiagnosticsModule],
-      componentProperties: {
-        messages,
-        replayMessage: replayMessage || new TestingEventEmitter<UiMqttDiagnosticsMessageModel>()
-      }
-    })
-  }
 })
