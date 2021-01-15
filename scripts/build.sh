@@ -2,7 +2,7 @@
 set -ex
 
 IS_RELEASE=${IS_RELEASE:-false}
-VERSION=${VERSION:-"0.0.0"}
+VERSION=${VERSION:-"v0.0.0"}
 WORKING_DIRECTORY=$(pwd)
 CONFIGURATION=${CONFIGURATION:-'Release'}
 PUBLISH_DIRECTORY="${WORKING_DIRECTORY}/publish"
@@ -18,7 +18,7 @@ WEB_HOST_BASE_ASSET_PATH="${PUBLISH_DIRECTORY}/Haus.Web.Host"
 ZIGBEE_HOST_BASE_ASSET_PATH="${PUBLISH_DIRECTORY}/Haus.Zigbee.Host"
 
 function build_solution() {
-  dotnet build /p:Version="${VERSION}"
+  dotnet build /p:Version="${VERSION:1}"
 }
 
 function run_dotnet_test() {
@@ -84,7 +84,6 @@ function publish_app() {
     dotnet_publish "linux-x64" "${ZIGBEE_HOST_PROJECT}" "${PUBLISH_DIRECTORY}/zigbee_host" "${ZIGBEE_HOST_BASE_ASSET_PATH}"
     dotnet_publish "win-x64" "${ZIGBEE_HOST_PROJECT}" "${PUBLISH_DIRECTORY}/zigbee_host" "${ZIGBEE_HOST_BASE_ASSET_PATH}"
     dotnet_publish "osx-x64" "${ZIGBEE_HOST_PROJECT}" "${PUBLISH_DIRECTORY}/zigbee_host" "${ZIGBEE_HOST_BASE_ASSET_PATH}"
-      
   fi
   
   
