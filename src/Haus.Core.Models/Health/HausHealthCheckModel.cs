@@ -13,10 +13,13 @@ namespace Haus.Core.Models.Health
         string ExceptionMessage, 
         string[] Tags)
     {
-        public bool IsOk => Status != HealthStatus.Healthy;
-        public bool IsDown => Status == HealthStatus.Unhealthy;
+        public bool IsOk => Status == HealthStatus.Healthy;
+        public bool IsWarn { get; } = Status == HealthStatus.Degraded;
+        public bool IsError => Status == HealthStatus.Unhealthy;
 
         public double DurationOfCheckInSeconds => TimeSpan.FromMilliseconds(DurationOfCheckInMilliseconds).TotalSeconds;
+
+        [OptionalGeneration] public string ExceptionMessage { get; } = ExceptionMessage;
 
         public static HausHealthCheckModel FromHealthReportEntry(KeyValuePair<string, HealthReportEntry> entry)
         {

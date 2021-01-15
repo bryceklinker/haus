@@ -1,0 +1,7 @@
+@import "../../../shared/styles/utilities";
+
+:host,
+mat-card {
+  @extend .fill;
+  flex-direction: column;
+}

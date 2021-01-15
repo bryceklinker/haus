@@ -5,7 +5,11 @@ import {
   DeviceType,
   DiscoveryModel,
   DiscoveryState,
-  LevelLightingModel, LightingConstraintsModel,
+  HausHealthCheckModel,
+  HausHealthReportModel,
+  HealthStatus,
+  LevelLightingModel,
+  LightingConstraintsModel,
   LightingModel,
   LightingState,
   LightType,
@@ -119,6 +123,33 @@ function createDiscovery(model: Partial<DiscoveryModel> = {}): DiscoveryModel {
   };
 }
 
+function createHealthCheckModel(model: Partial<HausHealthCheckModel> = {}): HausHealthCheckModel {
+  return {
+    description: model.description || uuid(),
+    durationOfCheckInMilliseconds: model.durationOfCheckInMilliseconds || 500,
+    durationOfCheckInSeconds: model.durationOfCheckInSeconds || 0.5,
+    isError: model.isError !== undefined ? model.isError : false,
+    isWarn: model.isWarn !== undefined ? model.isWarn : false,
+    isOk: model.isOk !== undefined ? model.isOk : true,
+    exceptionMessage: model.exceptionMessage,
+    name: model.name || uuid(),
+    status: model.status || HealthStatus.Healthy,
+    tags: model.tags || []
+  }
+}
+
+function createHealthReportModel(model: Partial<HausHealthReportModel> = {}): HausHealthReportModel {
+  return {
+    durationOfCheckInMilliseconds: model.durationOfCheckInMilliseconds || 1000,
+    durationOfCheckInSeconds: model.durationOfCheckInSeconds || 1,
+    isError: model.isError !== undefined ? model.isError : false,
+    isWarn: model.isWarn !== undefined ? model.isWarn : false,
+    isOk: model.isOk !== undefined ? model.isOk : true,
+    status: model.status || HealthStatus.Healthy,
+    checks: model.checks || []
+  }
+}
+
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
@@ -131,5 +162,7 @@ export const ModelFactory = {
   createTemperatureLighting,
   createLightingConstraints,
   createLighting,
-  createDiscovery
+  createDiscovery,
+  createHealthCheckModel,
+  createHealthReportModel
 };

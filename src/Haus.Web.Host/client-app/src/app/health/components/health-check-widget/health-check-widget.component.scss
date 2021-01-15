@@ -1,0 +1,13 @@
+.health-widget {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  .details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+}
+
+

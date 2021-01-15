@@ -24,7 +24,7 @@ namespace Haus.Web.Host.Health
         public async Task PublishAsync(HealthReport report, CancellationToken cancellationToken)
         {
             var health = HausHealthReportModel.FromHealthReport(report);
-            if (health.IsDown) _logger.LogCritical("System is reporting to be down");
+            if (health.IsError) _logger.LogCritical("System is reporting to be down");
             else if (health.IsOk) _logger.LogInformation("System is reporting to be healthy");
 
             _lastKnownHealthCache.LastKnownHealth = health;

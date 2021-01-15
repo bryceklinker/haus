@@ -6,6 +6,7 @@ export interface HausHealthReportModel {
 	durationOfCheckInMilliseconds: number;
 	checks: Array<HausHealthCheckModel>;
 	isOk: boolean;
-	isDown: boolean;
+	isWarn: boolean;
+	isError: boolean;
 	durationOfCheckInSeconds: number;
 }

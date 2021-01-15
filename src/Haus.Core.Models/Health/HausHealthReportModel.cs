@@ -9,10 +9,11 @@ namespace Haus.Core.Models.Health
         double DurationOfCheckInMilliseconds,
         HausHealthCheckModel[] Checks)
     {
-        public bool IsOk => Status != HealthStatus.Healthy;
-        public bool IsDown => Status == HealthStatus.Unhealthy;
+        public bool IsOk { get; } = Status == HealthStatus.Healthy;
+        public bool IsWarn { get; } = Status == HealthStatus.Degraded;
+        public bool IsError => Status == HealthStatus.Unhealthy;
 
-        public double DurationOfCheckInSeconds => TimeSpan.FromMilliseconds(DurationOfCheckInMilliseconds).TotalSeconds;
+        public double DurationOfCheckInSeconds { get; } = TimeSpan.FromMilliseconds(DurationOfCheckInMilliseconds).TotalSeconds;
 
         public static HausHealthReportModel FromHealthReport(HealthReport report)
         {

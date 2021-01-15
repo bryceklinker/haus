@@ -1,5 +1,6 @@
 using System;
 using Haus.Core;
+using Haus.Core.Models;
 using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Settings;
 using Haus.Web.Host.Auth;
@@ -72,7 +73,13 @@ namespace Haus.Web.Host
 
         public static IServiceCollection AddHausRealtimeApi(this IServiceCollection services)
         {
-            services.AddSignalR(opts => { opts.EnableDetailedErrors = true; });
+            services.AddSignalR(opts =>
+            {
+                opts.EnableDetailedErrors = true;
+            }).AddJsonProtocol(opts =>
+            {
+                opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
+            });
             return services;
         }
 

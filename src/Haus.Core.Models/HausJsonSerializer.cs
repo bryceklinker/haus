@@ -5,7 +5,7 @@ namespace Haus.Core.Models
 {
     public static class HausJsonSerializer
     {
-        private static readonly JsonSerializerOptions DefaultOptions = new(JsonSerializerDefaults.Web)
+        public static readonly JsonSerializerOptions DefaultOptions = new(JsonSerializerDefaults.Web)
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
