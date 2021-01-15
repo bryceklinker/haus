@@ -71,6 +71,28 @@ jobs:
           asset_name: Haus.Web.Host.linux-x64.zip
           asset_content_type: application/zip
         if: ${{ github.event.inputs.is_release }}
+        
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/Haus.Web.Host.win-x64.zip
+          asset_name: Haus.Web.Host.win-x64.zip
+          asset_content_type: application/zip
+        if: ${{ github.event.inputs.is_release }}
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/Haus.Web.Host.osx-x64.zip
+          asset_name: Haus.Web.Host.osx-x64.zip
+          asset_content_type: application/zip
+        if: ${{ github.event.inputs.is_release }}
 
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
@@ -80,5 +102,27 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./publish/Haus.Zigbee.Host.linux-x64.zip
           asset_name: Haus.Zigbee.Host.linux-x64.zip
+          asset_content_type: application/zip
+        if: ${{ github.event.inputs.is_release }}
+        
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/Haus.Zigbee.Host.win-x64.zip
+          asset_name: Haus.Zigbee.Host.win-x64.zip
+          asset_content_type: application/zip
+        if: ${{ github.event.inputs.is_release }}
+        
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/Haus.Zigbee.Host.osx-x64.zip
+          asset_name: Haus.Zigbee.Host.osx-x64.zip
           asset_content_type: application/zip
         if: ${{ github.event.inputs.is_release }}

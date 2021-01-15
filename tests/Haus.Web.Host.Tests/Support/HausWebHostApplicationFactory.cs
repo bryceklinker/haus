@@ -8,6 +8,7 @@ using Haus.Api.Client;
 using Haus.Api.Client.Options;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
+using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
@@ -80,6 +81,10 @@ namespace Haus.Web.Host.Tests.Support
         {
             CreateClient();
             var connection = new HubConnectionBuilder()
+                .AddJsonProtocol(opts =>
+                {
+                    opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
+                })
                 .WithUrl(
                     $"http://localhost/hubs/{hub}",
                     o =>
