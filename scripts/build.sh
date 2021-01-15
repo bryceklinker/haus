@@ -3,6 +3,7 @@ set -ex
 
 IS_RELEASE=${IS_RELEASE:-false}
 VERSION=${VERSION:-"v0.0.0"}
+VERSION=${VERSION:1}
 WORKING_DIRECTORY=$(pwd)
 CONFIGURATION=${CONFIGURATION:-'Release'}
 PUBLISH_DIRECTORY="${WORKING_DIRECTORY}/publish"
@@ -18,7 +19,7 @@ WEB_HOST_BASE_ASSET_PATH="${PUBLISH_DIRECTORY}/Haus.Web.Host"
 ZIGBEE_HOST_BASE_ASSET_PATH="${PUBLISH_DIRECTORY}/Haus.Zigbee.Host"
 
 function build_solution() {
-  dotnet build /p:Version="${VERSION:1}"
+  dotnet build /p:Version="${VERSION}"
 }
 
 function run_dotnet_test() {
