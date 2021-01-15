@@ -4,7 +4,7 @@ import {
   DeviceModel,
   DeviceType,
   DiscoveryModel,
-  DiscoveryState,
+  DiscoveryState, HausEvent,
   HausHealthCheckModel,
   HausHealthReportModel,
   HealthStatus,
@@ -150,6 +150,15 @@ function createHealthReportModel(model: Partial<HausHealthReportModel> = {}): Ha
   }
 }
 
+function createHausEvent<T = any>(model: Partial<HausEvent<T>> = {}): HausEvent<T> {
+  return {
+    type: model.type || '',
+    timestamp: model.timestamp || new Date().toISOString(),
+    payload: model.payload || null as any,
+    isEvent: model.isEvent === undefined ? model.isEvent : true
+  }
+}
+
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
@@ -164,5 +173,6 @@ export const ModelFactory = {
   createLighting,
   createDiscovery,
   createHealthCheckModel,
-  createHealthReportModel
+  createHealthReportModel,
+  createHausEvent
 };

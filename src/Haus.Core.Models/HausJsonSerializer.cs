@@ -7,7 +7,11 @@ namespace Haus.Core.Models
     {
         public static readonly JsonSerializerOptions DefaultOptions = new(JsonSerializerDefaults.Web)
         {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Converters =
+            {
+                new JsonStringEnumConverter()
+            }
         };
         
         public static bool TryDeserialize<T>(byte[] bytes, out T value)

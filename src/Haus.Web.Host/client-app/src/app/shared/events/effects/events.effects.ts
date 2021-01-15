@@ -1,4 +1,4 @@
-import {Actions, rootEffectsInit} from "@ngrx/effects";
+import {Actions} from "@ngrx/effects";
 import {ActionsSubject, createAction} from "@ngrx/store";
 import {KNOWN_HUB_NAMES, SignalrEffectsFactory, SignalrService} from "../../signalr";
 import {Injectable} from "@angular/core";

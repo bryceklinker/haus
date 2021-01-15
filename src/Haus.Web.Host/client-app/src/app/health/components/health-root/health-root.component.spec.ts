@@ -1,6 +1,7 @@
 import {HealthRootHarness} from "./health-root.harness";
 import {HealthActions} from "../../state";
 import {ModelFactory} from "../../../../testing";
+import {EventsActions} from "../../../shared/events";
 
 describe('HealthRootComponent', () => {
   it('should start health monitoring', async () => {
@@ -33,5 +34,15 @@ describe('HealthRootComponent', () => {
 
     expect(harness.hasDashboard).toEqual(false);
     expect(harness.isWaitingForReport).toEqual(true);
+  })
+
+  it('should show recent events', async () => {
+    const harness = await HealthRootHarness.render(
+      EventsActions.fromHausEvent({type: '', payload: null, timestamp: ''}),
+      EventsActions.fromHausEvent({type: '', payload: null, timestamp: ''}),
+      EventsActions.fromHausEvent({type: '', payload: null, timestamp: ''})
+    );
+
+    expect(harness.recentEvents).toHaveLength(3);
   })
 })

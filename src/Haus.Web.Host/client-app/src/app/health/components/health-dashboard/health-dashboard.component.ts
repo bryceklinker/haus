@@ -8,6 +8,7 @@ import {HausHealthCheckModel, HausHealthReportModel} from "../../../shared/model
 })
 export class HealthDashboardComponent {
   @Input() report: HausHealthReportModel | undefined | null = null;
+
   get isError(): boolean {
     return this.report ? this.report.isError : false;
   }

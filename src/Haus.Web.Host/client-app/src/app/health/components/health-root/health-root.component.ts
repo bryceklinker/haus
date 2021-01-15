@@ -3,7 +3,8 @@ import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {AppState} from "../../../app.state";
 import {HealthActions, selectHealthReport} from "../../state";
-import {HausHealthReportModel} from "../../../shared/models";
+import {HausEvent, HausHealthReportModel} from "../../../shared/models";
+import {selectAllEvents} from "../../../shared/events";
 
 @Component({
   selector: 'health-root',
@@ -11,11 +12,12 @@ import {HausHealthReportModel} from "../../../shared/models";
   styleUrls: ['./health-root.component.scss']
 })
 export class HealthRootComponent implements OnInit, OnDestroy {
-
   report$: Observable<HausHealthReportModel | null>;
+  events$: Observable<Array<HausEvent>>;
 
   constructor(private readonly store: Store<AppState>) {
     this.report$ = this.store.select(selectHealthReport);
+    this.events$ = this.store.select(selectAllEvents);
   }
 
   ngOnInit(): void {

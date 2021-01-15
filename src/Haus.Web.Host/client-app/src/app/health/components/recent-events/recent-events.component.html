@@ -1,0 +1,17 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Recent Events</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-expansion-panel
+      *ngFor="let event of events"
+      data-testid="haus-event">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{event.type}}<span class="spacer"></span>{{event.timestamp}}</mat-panel-title>
+      </mat-expansion-panel-header>
+      <pre>{{event.payload | json}}</pre>
+    </mat-expansion-panel>
+  </mat-card-content>
+</mat-card>
+
+

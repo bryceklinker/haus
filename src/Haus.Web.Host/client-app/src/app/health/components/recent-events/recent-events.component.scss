@@ -1,13 +1,14 @@
 @import "../../../shared/styles/utilities";
 
-:host {
+:host,
+mat-card {
   @extend .fill;
   flex-direction: column;
 
-  :first-child {
-    flex: 0.75;
-  }
-  :nth-child(2) {
-    flex: 0.25;
+  mat-card-content {
+    max-height: 200px;
+    overflow-y: scroll;
   }
 }
+
+

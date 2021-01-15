@@ -7,6 +7,7 @@ import {DeviceTypesState} from "./devices/state/device-types.state";
 import {AppDiscoveryState} from "./shared/discovery";
 import {LightTypesState} from "./devices/state/light-types.state";
 import {HealthState} from "./health/state";
+import {EventsState} from "./shared/events";
 
 export interface AppState {
   devices: DevicesState;
@@ -18,4 +19,5 @@ export interface AppState {
   discovery: AppDiscoveryState;
   lightTypes: LightTypesState;
   health: HealthState;
+  events: EventsState;
 }

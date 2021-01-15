@@ -23,6 +23,7 @@ import {MatSliderModule} from '@angular/material/slider';
 import {MatRippleModule} from "@angular/material/core";
 import {NgModule} from "@angular/core";
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import {ScrollingModule} from "@angular/cdk/scrolling";
 
 const MATERIAL_MODULES = [
   MatButtonModule,
@@ -48,7 +49,8 @@ const MATERIAL_MODULES = [
   MatGridListModule,
   MatRippleModule,
   MatSliderModule,
-  DragDropModule
+  DragDropModule,
+  ScrollingModule
 ]
 
 @NgModule({

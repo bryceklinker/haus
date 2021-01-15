@@ -19,6 +19,7 @@ namespace Haus.Core.Common.Events
         
         public string Type => _hausEvent.Type;
         public T Payload => _hausEvent.Payload;
+        public string Timestamp => _hausEvent.Timestamp;
 
         public RoutableEvent(HausEvent<T> hausEvent)
         {

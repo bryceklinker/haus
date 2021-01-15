@@ -14,7 +14,7 @@ import {createAction} from "@ngrx/store";
 import {KNOWN_EVENT_TYPES} from "./known-event-types";
 
 export const EventsActions = {
-  fromHausEvent: <T>(hausEvent: HausEvent<T>) => ({type: hausEvent.type, payload: hausEvent.payload}),
+  fromHausEvent: <T>(hausEvent: HausEvent<T>) => ({...hausEvent, isEvent: true}),
   roomLightingChanged: createAction(KNOWN_EVENT_TYPES.ROOM_LIGHTING_CHANGED, (payload: RoomLightingChangedEvent) => ({payload})),
   roomCreated: createAction(KNOWN_EVENT_TYPES.ROOM_CREATED, (payload: RoomCreatedEvent) => ({payload})),
   roomUpdated: createAction(KNOWN_EVENT_TYPES.ROOM_UPDATED, (payload: RoomUpdatedEvent) => ({payload})),
