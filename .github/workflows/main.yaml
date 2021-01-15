@@ -41,7 +41,7 @@ jobs:
         uses: mathieudutour/github-tag-action@v5.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_bump: ${{ github.event.inputs.version_bump || patch }}
+          default_bump: ${{ github.event.inputs.version_bump || 'patch' }}
 
       - name: Run Build Script
         run: ./scripts/build.sh
