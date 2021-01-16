@@ -15,8 +15,8 @@ FRONT_END_DIRECTORY="${WORKING_DIRECTORY}/src/Haus.Web.Host/client-app"
 WEB_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Web.Host/Haus.Web.Host.csproj"
 ZIGBEE_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Zigbee.Host/Haus.Zigbee.Host.csproj"
 
-WEB_HOST_BASE_ASSET_PATH="${PUBLISH_DIRECTORY}/Haus.Web.Host"
-ZIGBEE_HOST_BASE_ASSET_PATH="${PUBLISH_DIRECTORY}/Haus.Zigbee.Host"
+WEB_HOST_BASE_ASSET_PATH="Haus.Web.Host"
+ZIGBEE_HOST_BASE_ASSET_PATH="Haus.Zigbee.Host"
 
 function build_solution() {
   dotnet build /p:Version="${VERSION}"
@@ -62,18 +62,20 @@ function run_tests() {
 function dotnet_publish() {
   RUNTIME_IDENTIFIER=$1
   PROJECT_PATH=$2
-  OUTPUT_PATH=$3
+  OUTPUT_PATH="${3}/${RUNTIME_IDENTIFIER}"
   ASSET_PATH=$4
   
   dotnet publish "${PROJECT_PATH}" \
-    --output "${OUTPUT_PATH}/${RUNTIME_IDENTIFIER}" \
+    --output "${OUTPUT_PATH}" \
     --configuration "${CONFIGURATION}" \
     --runtime "${RUNTIME_IDENTIFIER}" \
     -p:PublishTrimmed=true \
     -p:PublishSingleFile=true \
     --self-contained true
     
-  zip -r "${ASSET_PATH}.${RUNTIME_IDENTIFIER}.zip" "${OUTPUT_PATH}"
+   pushd "${OUTPUT_PATH}" || exit
+    zip -rm "../${ASSET_PATH}.${RUNTIME_IDENTIFIER}.zip" -- *
+   popd 
 }
 
 function publish_app() {
