@@ -74,7 +74,7 @@ function dotnet_publish() {
     --self-contained true
     
    pushd "${OUTPUT_PATH}" || exit
-    zip -rm "../${ASSET_PATH}.${RUNTIME_IDENTIFIER}.zip" -- *
+    zip -rm "../../${ASSET_PATH}.${RUNTIME_IDENTIFIER}.zip" -- *
    popd 
 }
 
