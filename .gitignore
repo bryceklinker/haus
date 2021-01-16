@@ -20,3 +20,4 @@ coverage.*
 coveragereport/
 .DS_Store
 **/haus.db
+**/Logs/

@@ -1,7 +1,7 @@
-import {SignalrHubConnection} from "./signalr-hub.connection";
 import {HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
 import {Injectable, Injector} from "@angular/core";
 import {AuthService} from "@auth0/auth0-angular";
+import {SignalrHubConnection} from "./signalr-hub.connection";
 import {fromObservableToPromise} from "../observable-extensions";
 
 @Injectable()

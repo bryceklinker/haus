@@ -2,13 +2,6 @@
 
 :host {
   @extend .fill;
-  flex-direction: column;
-
-  :first-child {
-    flex: 0.75;
-  }
-  :nth-child(2) {
-    flex: 0.25;
-    margin-top: 0.5rem;
-  }
+  flex-direction: row;
+  align-content: space-evenly;
 }
