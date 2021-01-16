@@ -30,16 +30,24 @@ export class HealthCheckWidgetComponent {
     return this.check ? this.check.status : 'N/A';
   }
 
+  get hasDescription(): boolean {
+    return !!this.check && !!this.check.description;
+  }
+
   get description() {
-    return this.check ? this.check.description : 'N/A';
+    return this.hasDescription ? this.check?.description : 'N/A';
   }
 
   get checkDuration() {
     return this.check ? `${this.check.durationOfCheckInSeconds} seconds` : 'N/A';
   }
 
+  get hasExceptionMessage(): boolean {
+    return !!this.check && !!this.check.exceptionMessage;
+  }
+
   get exceptionMessage() {
-    return this.check ? this.check.exceptionMessage : 'N/A';
+    return this.hasExceptionMessage ? this.check?.exceptionMessage : 'N/A';
   }
 
   get tags() {

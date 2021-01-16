@@ -19,3 +19,4 @@ publish/
 coverage.*
 coveragereport/
 .DS_Store
+**/haus.db

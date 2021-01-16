@@ -1,17 +1,17 @@
 <mat-card data-testid="health-dashboard" *ngIf="hasReport else waiting">
   <mat-card-header>
-    <div mat-card-avatar data-testid="error-indicator" *ngIf="isError">
-      <mat-icon color="warn">error</mat-icon>
-    </div>
-    <div mat-card-avatar *ngIf="isOk">
-      <mat-icon class="success-color">check_circle</mat-icon>
-    </div>
-    <mat-card-title>Haus Health</mat-card-title>
+    <mat-card-title [class.warning-color]="isWarning"
+                    [class.success-color]="isOk"
+                    [class.error-color]="isError">
+      <mat-icon color="warn" data-testid="error-indicator" *ngIf="isError">error</mat-icon>
+      <mat-icon class="success-color" data-testid="ok-indicator" *ngIf="isOk">check_circle</mat-icon>
+      <mat-icon class="warning-color" data-testid="warning-indicator" *ngIf="isWarning">warning</mat-icon>
+      Haus Health
+    </mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <health-check-widget *ngFor="let check of checks"
+    <health-check-widget *ngFor="let check of checks; trackBy: trackChecksBy"
                          [check]="check">
-
     </health-check-widget>
   </mat-card-content>
 </mat-card>

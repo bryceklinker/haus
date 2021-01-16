@@ -125,7 +125,7 @@ function createDiscovery(model: Partial<DiscoveryModel> = {}): DiscoveryModel {
 
 function createHealthCheckModel(model: Partial<HausHealthCheckModel> = {}): HausHealthCheckModel {
   return {
-    description: model.description || uuid(),
+    description: model.description,
     durationOfCheckInMilliseconds: model.durationOfCheckInMilliseconds || 500,
     durationOfCheckInSeconds: model.durationOfCheckInSeconds || 0.5,
     isError: model.isError !== undefined ? model.isError : false,

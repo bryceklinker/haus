@@ -1,6 +1,7 @@
 import {HealthCheckWidgetHarness} from "./health-check-widget.harness";
 import {ModelFactory} from "../../../../testing";
 import {HealthStatus} from "../../../shared/models";
+import {H} from "@angular/cdk/keycodes";
 
 describe('HealthCheckWidgetComponent', () => {
   it('should show error status for health check', async () => {
@@ -68,5 +69,36 @@ describe('HealthCheckWidgetComponent', () => {
     expect(await harness.getExceptionMessage()).toContain('This is not good');
     expect(await harness.getStatus()).toContain(HealthStatus.Healthy);
     expect(await harness.getTagsText()).toContain('Taggy');
+  })
+
+  it('should hide exception message if not available', async () => {
+    const check = ModelFactory.createHealthCheckModel({
+      durationOfCheckInSeconds: 6.5,
+      name: 'Good stuff',
+      description: 'Something good is happening',
+      status: HealthStatus.Healthy,
+      tags: [
+        'Taggy'
+      ]
+    });
+
+    const harness = await HealthCheckWidgetHarness.render({check});
+
+    expect(harness.showingExceptionMessage).toEqual(false);
+  })
+
+  it('should hide description if not available', async () => {
+    const check = ModelFactory.createHealthCheckModel({
+      durationOfCheckInSeconds: 6.5,
+      name: 'Good stuff',
+      status: HealthStatus.Healthy,
+      tags: [
+        'Taggy'
+      ]
+    });
+
+    const harness = await HealthCheckWidgetHarness.render({check});
+
+    expect(harness.showingDescription).toEqual(false);
   })
 })

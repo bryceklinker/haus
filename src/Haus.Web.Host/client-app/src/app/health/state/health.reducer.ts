@@ -7,7 +7,10 @@ const initialState: HealthState = {
   report: null
 };
 const reducer = createReducer(initialState,
-  on(HealthActions.healthReceived, (state, {payload}) => ({...state, report: payload}))
+  on(HealthActions.healthReceived, (state, {payload}) => ({
+    ...state,
+    report: payload
+  }))
 );
 
 export function healthReducer(state: HealthState | undefined, action: Action): HealthState {

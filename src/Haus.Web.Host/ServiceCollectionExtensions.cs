@@ -100,7 +100,8 @@ namespace Haus.Web.Host
         {
             services
                 .AddHealthChecks()
-                .AddHausMqttHealthChecks();
+                .AddHausMqttHealthChecks()
+                .AddDbContextCheck<HausDbContext>();
             
             services.AddSingleton<ILastKnownHealthCache, LastKnownHealthCache>()
                 .AddMemoryCache(opts => opts.ExpirationScanFrequency = TimeSpan.FromMinutes(1));

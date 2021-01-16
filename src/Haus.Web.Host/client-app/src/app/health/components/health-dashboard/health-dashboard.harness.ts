@@ -15,12 +15,16 @@ export class HealthDashboardHarness extends HausComponentHarness<HealthDashboard
     return screen.queryAllByTestId('waiting-for-report').length > 0;
   }
 
-  get hasErrors() {
+  get isError() {
     return screen.queryAllByTestId('error-indicator').length > 0;
   }
 
+  get isWarning() {
+    return screen.queryAllByTestId('warning-indicator').length > 0;
+  }
+
   get isOk() {
-    return !this.hasErrors;
+    return screen.queryAllByTestId('ok-indicator').length > 0;
   }
 
   get checks() {

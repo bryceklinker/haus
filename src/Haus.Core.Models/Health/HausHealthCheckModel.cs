@@ -19,6 +19,7 @@ namespace Haus.Core.Models.Health
 
         public double DurationOfCheckInSeconds => TimeSpan.FromMilliseconds(DurationOfCheckInMilliseconds).TotalSeconds;
 
+        [OptionalGeneration] public string Description { get; } = Description;
         [OptionalGeneration] public string ExceptionMessage { get; } = ExceptionMessage;
 
         public static HausHealthCheckModel FromHealthReportEntry(KeyValuePair<string, HealthReportEntry> entry)

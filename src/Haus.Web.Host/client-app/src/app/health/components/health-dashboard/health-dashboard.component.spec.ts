@@ -12,7 +12,23 @@ describe('HealthDashboardComponent', () => {
 
     const harness = await HealthDashboardHarness.render({report});
 
-    expect(harness.hasErrors).toEqual(true);
+    expect(harness.isError).toEqual(true);
+    expect(harness.isWarning).toEqual(false);
+    expect(harness.isOk).toEqual(false);
+  })
+
+  it('should show warning status when report is warning', async () => {
+    const report = ModelFactory.createHealthReportModel({
+      isOk: false,
+      isError: false,
+      isWarn: true,
+      status: HealthStatus.Degraded
+    });
+
+    const harness = await HealthDashboardHarness.render({report});
+
+    expect(harness.isWarning).toEqual(true);
+    expect(harness.isError).toEqual(false);
     expect(harness.isOk).toEqual(false);
   })
 
@@ -25,8 +41,9 @@ describe('HealthDashboardComponent', () => {
 
     const harness = await HealthDashboardHarness.render({report});
 
-    expect(harness.hasErrors).toEqual(false);
     expect(harness.isOk).toEqual(true);
+    expect(harness.isError).toEqual(false);
+    expect(harness.isWarning).toEqual(false);
   })
 
   it('should show each health check', async () => {

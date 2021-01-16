@@ -17,6 +17,14 @@ export class HealthCheckWidgetHarness extends HausComponentHarness<HealthCheckWi
     return screen.queryAllByTestId('warning').length > 0;
   }
 
+  get showingExceptionMessage() {
+    return screen.queryAllByTestId('exception-message').length > 0;
+  }
+
+  get showingDescription() {
+    return screen.queryAllByTestId('description').length > 0;
+  }
+
   getName() {
     return Promise.resolve(screen.queryAllByTestId('name').map(e => e.innerHTML).join(' '));
   }

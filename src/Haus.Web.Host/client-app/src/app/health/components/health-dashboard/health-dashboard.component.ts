@@ -13,6 +13,10 @@ export class HealthDashboardComponent {
     return this.report ? this.report.isError : false;
   }
 
+  get isWarning(): boolean {
+    return this.report ? this.report.isWarn : false;
+  }
+
   get isOk(): boolean {
     return this.report ? this.report.isOk : false;
   }
@@ -23,5 +27,9 @@ export class HealthDashboardComponent {
 
   get checks(): HausHealthCheckModel[] {
     return this.report ? this.report.checks : [];
+  }
+
+  trackChecksBy(index: number, check: HausHealthCheckModel): string {
+    return check.name;
   }
 }
