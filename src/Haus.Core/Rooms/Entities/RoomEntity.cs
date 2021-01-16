@@ -10,8 +10,6 @@ using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.DomainEvents;
 using Haus.Cqrs.DomainEvents;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Haus.Core.Rooms.Entities
 {
@@ -74,9 +72,7 @@ namespace Haus.Core.Rooms.Entities
                 return;
 
             Devices.Add(device);
-            device.AssignToRoom(this);
-            if (device.IsLight)
-                device.ChangeLighting(Lighting, domainEventBus);
+            device.AssignToRoom(this, domainEventBus);
         }
 
         public void AddDevices(IEnumerable<DeviceEntity> devices, IDomainEventBus domainEventBus)
@@ -112,21 +108,6 @@ namespace Haus.Core.Rooms.Entities
             var lightingCopy = LightingEntity.FromEntity(Lighting);
             lightingCopy.State = LightingState.On;
             ChangeLighting(lightingCopy, domainEventBus);
-        }
-    }
-
-    public class RoomEntityConfiguration : IEntityTypeConfiguration<RoomEntity>
-    {
-        public void Configure(EntityTypeBuilder<RoomEntity> builder)
-        {
-            builder.HasKey(r => r.Id);
-            builder.Property(r => r.Name).IsRequired();
-
-            builder.OwnsOne(r => r.Lighting, LightingEntity.Configure);
-
-            builder.Ignore(r => r.Lights);
-            builder.HasMany(r => r.Devices)
-                .WithOne(d => d.Room);
         }
     }
 }

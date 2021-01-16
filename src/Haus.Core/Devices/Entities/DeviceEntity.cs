@@ -12,8 +12,6 @@ using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Rooms.Entities;
 using Haus.Cqrs.DomainEvents;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Haus.Core.Devices.Entities
 {
@@ -150,9 +148,13 @@ namespace Haus.Core.Devices.Entities
                 Metadata.Add(new DeviceMetadataEntity(key, value));
         }
 
-        public void AssignToRoom(RoomEntity room)
+        public void AssignToRoom(RoomEntity room, IDomainEventBus domainEventBus)
         {
             Room = room;
+            if (IsLight)
+            {
+                ChangeLighting(room.Lighting, domainEventBus);
+            }
         }
 
         public void UnassignFromRoom()
@@ -195,24 +197,6 @@ namespace Haus.Core.Devices.Entities
                 return LightType.None;
 
             return lightType == LightType.None ? LightType.Level : lightType;
-        }
-    }
-
-    public class DeviceEntityConfiguration : IEntityTypeConfiguration<DeviceEntity>
-    {
-        public void Configure(EntityTypeBuilder<DeviceEntity> builder)
-        {
-            builder.HasKey(d => d.Id);
-            builder.Property(d => d.Name).IsRequired();
-            builder.Property(d => d.ExternalId).IsRequired();
-            builder.Property(d => d.DeviceType).IsRequired().HasConversion<string>();
-
-            builder.Ignore(d => d.IsLight);
-
-            builder.OwnsOne(d => d.Lighting, LightingEntity.Configure);
-
-            builder.HasMany(d => d.Metadata)
-                .WithOne(m => m.Device);
         }
     }
 }

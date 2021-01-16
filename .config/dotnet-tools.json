@@ -13,6 +13,12 @@
       "commands": [
         "coverlet"
       ]
+    },
+    "dotnet-ef": {
+      "version": "5.0.2",
+      "commands": [
+        "dotnet-ef"
+      ]
     }
   }
 }

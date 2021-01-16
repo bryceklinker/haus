@@ -10,7 +10,6 @@ using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Repositories;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
-using Haus.Cqrs.DomainEvents;
 using MediatR;
 
 namespace Haus.Core.Rooms.Commands
@@ -21,13 +20,11 @@ namespace Haus.Core.Rooms.Commands
     {
         private readonly HausDbContext _context;
         private readonly IRoomCommandRepository _repository;
-        private readonly IDomainEventBus _domainEventBus;
         private readonly IHausBus _hausBus;
 
-        public AssignDevicesToRoomCommandHandler(HausDbContext context, IDomainEventBus domainEventBus, IRoomCommandRepository repository, IHausBus hausBus)
+        public AssignDevicesToRoomCommandHandler(HausDbContext context, IRoomCommandRepository repository, IHausBus hausBus)
         {
             _context = context;
-            _domainEventBus = domainEventBus;
             _repository = repository;
             _hausBus = hausBus;
         }
@@ -38,10 +35,11 @@ namespace Haus.Core.Rooms.Commands
 
             var devices = await EnsureAllDevicesExist(request.DeviceIds, cancellationToken)
                 .ConfigureAwait(false);
-            room.AddDevices(devices, _domainEventBus);
+            room.AddDevices(devices, _hausBus);
             await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(new DevicesAssignedToRoomEvent(request.RoomId, request.DeviceIds)), cancellationToken)
                 .ConfigureAwait(false);
+            await _hausBus.FlushAsync(cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<DeviceEntity[]> EnsureAllDevicesExist(long[] deviceIds, CancellationToken token)

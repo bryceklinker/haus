@@ -1,11 +1,11 @@
 using System;
 using Haus.Core;
+using Haus.Core.Common.Storage;
 using Haus.Core.Models;
 using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Settings;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.Mqtt;
-using Haus.Web.Host.Common.Services;
 using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
 using Haus.Web.Host.Health;
@@ -21,10 +21,18 @@ namespace Haus.Web.Host
 {
     public static class ServiceCollectionExtensions
     {
+        private static readonly string MigrationsAssembly = typeof(HausDbContext).Assembly.GetName().Name;
+        
         public static IServiceCollection AddHausWebHost(this IServiceCollection services, IConfiguration configuration)
         {
             return services
-                .AddHausCore(opts => { opts.UseInMemoryDatabase("Haus"); })
+                .AddHausCore(opts =>
+                {
+                    opts.UseSqlite(configuration["Database:ConnectionString"], sqlite =>
+                    {
+                        sqlite.MigrationsAssembly(MigrationsAssembly);
+                    });
+                })
                 .Configure<AuthOptions>(configuration.GetSection("Auth"))
                 .Configure<HausMqttSettings>(configuration.GetSection("Mqtt"))
                 .AddHausMqtt()
@@ -32,7 +40,6 @@ namespace Haus.Web.Host
                 .AddHostedService<MqttMessageRouter>()
                 .AddHostedService<DiagnosticsMqttListener>()
                 .AddHostedService<DeviceSimulatorStatePublisher>()
-                .AddHostedService<InitializerService>()
                 .AddSingleton<IHealthCheckPublisher, HealthPublisher>();
         }
 

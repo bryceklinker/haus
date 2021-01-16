@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 using Haus.Api.Client;
 using Haus.Api.Client.Options;
 using Haus.Core.Common;
+using Haus.Core.Common.Commands;
 using Haus.Core.Common.Storage;
+using Haus.Core.Common.Storage.Commands;
 using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;
+using Haus.Cqrs;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
@@ -26,6 +29,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Web.Host.Tests.Support
@@ -38,7 +42,17 @@ namespace Haus.Web.Host.Tests.Support
         {
             _clock = new FakeClock();
         }
-        
+
+        protected override IHost CreateHost(IHostBuilder builder)
+        {
+            var host = base.CreateHost(builder);
+            using var scope = host.Services.CreateScope();
+            var hausBus = scope.GetService<IHausBus>();
+            hausBus.ExecuteCommandAsync(new InitializeCommand()).Wait();
+            hausBus.ExecuteCommandAsync(new ClearDatabaseCommand()).Wait();
+            return host;
+        }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureTestServices(services =>
@@ -54,9 +68,7 @@ namespace Haus.Web.Host.Tests.Support
                         opts.DefaultChallengeScheme = TestingAuthenticationHandler.TestingScheme;
                         opts.DefaultScheme = TestingAuthenticationHandler.TestingScheme;
                     })
-                    .AddScheme<AuthenticationSchemeOptions, TestingAuthenticationHandler>(
-                        TestingAuthenticationHandler.TestingScheme, opts => { });
-                services.AddDbContext<HausDbContext>(opts => opts.UseInMemoryDatabase("HausDB"));
+                    .AddScheme<AuthenticationSchemeOptions, TestingAuthenticationHandler>(TestingAuthenticationHandler.TestingScheme, _ => { });
                 services.Configure<HealthCheckPublisherOptions>(opts =>
                 {
                     opts.Delay = TimeSpan.Zero;

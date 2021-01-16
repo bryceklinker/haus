@@ -6,6 +6,8 @@ using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Models.Devices;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Entities;
@@ -90,6 +92,18 @@ namespace Haus.Core.Tests.Rooms.Commands
             await _hausBus.ExecuteCommandAsync(command);
 
             _hausBus.GetPublishedRoutableEvents<DevicesAssignedToRoomEvent>().Should().HaveCount(1);
+        }
+
+        [Fact]
+        public async Task WhenDevicesAreAssignedToRoomThenPublishesDeviceLightingChangedEvent()
+        {
+            var room = _context.AddRoom();
+            var light = _context.AddDevice(deviceType: DeviceType.Light);
+
+            var command = new AssignDevicesToRoomCommand(room.Id, light.Id);
+            await _hausBus.ExecuteCommandAsync(command);
+
+            _hausBus.GetPublishedRoutableEvents<DeviceLightingChangedEvent>().Should().HaveCount(1);
         }
     }
 }
