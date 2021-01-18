@@ -89,7 +89,7 @@ namespace Haus.Core.Logs.Queries
         private static IEnumerable<string> GetFilesFromLogDirectoryInDescendingOrder(string logsDirectory)
         {
             return Directory.GetFiles(logsDirectory)
-                .OrderByDescending(f => new FileInfo(f).LastWriteTime)
+                .OrderByDescending(GetLogFileNumber)
                 .ToArray();
         }
 
@@ -99,6 +99,15 @@ namespace Haus.Core.Logs.Queries
                 return true;
 
             return line.Contains(searchTerm, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static int GetLogFileNumber(string path)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(path);
+            var numberString = fileName.Split('_')[1];
+            return int.TryParse(numberString, out var number)
+                ? number
+                : int.MinValue;
         }
     }
 }
