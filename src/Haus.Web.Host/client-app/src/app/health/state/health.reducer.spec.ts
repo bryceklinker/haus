@@ -8,6 +8,7 @@ describe('healthReducer', () => {
     const state = generateStateFromActions(healthReducer);
 
     expect(state.report).toEqual(null);
+    expect(state.logs).toEqual([]);
   })
 
   it('should update report when health report received', () => {
@@ -18,5 +19,18 @@ describe('healthReducer', () => {
     );
 
     expect(state.report).toEqual(report);
+  })
+
+  it('should have recent logs when logs are loaded successfully', () => {
+    const result = ModelFactory.createListResult(
+      ModelFactory.createLogEntry(),
+      ModelFactory.createLogEntry(),
+      ModelFactory.createLogEntry()
+    )
+    const state = generateStateFromActions(healthReducer,
+      HealthActions.loadRecentLogs.success(result)
+    );
+
+    expect(state.logs).toEqual(result.items);
   })
 })

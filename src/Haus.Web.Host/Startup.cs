@@ -29,6 +29,7 @@ namespace Haus.Web.Host
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddHausLogging()
                 .AddHausWebHost(_configuration)
                 .AddHausAuthentication(_configuration)
                 .AddHausRestApi()

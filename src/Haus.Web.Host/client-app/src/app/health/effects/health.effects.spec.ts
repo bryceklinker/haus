@@ -9,6 +9,7 @@ import {
 import {HealthEffects} from "./health.effects";
 import {KNOWN_HUB_NAMES, SignalrHubConnectionFactory} from "../../shared/signalr";
 import {HealthActions} from "../state";
+import {setupGetLogs} from "../../../testing/fakes/testing-server/setup-logs-api";
 
 describe('HealthEffects', () => {
   let actions$: TestingActionsSubject;
@@ -54,6 +55,19 @@ describe('HealthEffects', () => {
     await eventually(() => {
       signalrHub.triggerMessage("OnHealth", report);
       expect(actions$.publishedActions).toContainEqual(HealthActions.healthReceived(report));
+    })
+  })
+
+  it('should load logs when started', async () => {
+    const log = ModelFactory.createLogEntry();
+    setupGetLogs([log]);
+
+    actions$.next(HealthActions.start());
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(HealthActions.loadRecentLogs.success(
+        ModelFactory.createListResult(log)
+      ))
     })
   })
 })

@@ -2,8 +2,8 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {AppState} from "../../../app.state";
-import {HealthActions, selectHealthReport} from "../../state";
-import {HausEvent, HausHealthReportModel} from "../../../shared/models";
+import {HealthActions, selectHealthReport, selectRecentLogs} from "../../state";
+import {HausEvent, HausHealthReportModel, LogEntryModel} from "../../../shared/models";
 import {selectAllEvents} from "../../../shared/events";
 
 @Component({
@@ -14,10 +14,12 @@ import {selectAllEvents} from "../../../shared/events";
 export class HealthRootComponent implements OnInit, OnDestroy {
   report$: Observable<HausHealthReportModel | null>;
   events$: Observable<Array<HausEvent>>;
+  logs$: Observable<Array<LogEntryModel>>;
 
   constructor(private readonly store: Store<AppState>) {
     this.report$ = this.store.select(selectHealthReport);
     this.events$ = this.store.select(selectAllEvents);
+    this.logs$ = this.store.select(selectRecentLogs);
   }
 
   ngOnInit(): void {

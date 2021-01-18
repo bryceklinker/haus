@@ -12,6 +12,7 @@ import {
   LightingModel,
   LightType,
   ListResult,
+  LogEntryModel,
   MqttDiagnosticsMessageModel,
   RoomModel,
   SimulatedDeviceModel
@@ -103,6 +104,10 @@ export class HausApiClient {
 
   addSimulatedDevice(model: Partial<SimulatedDeviceModel>): Observable<void> {
     return this.execute(HttpMethod.POST, '/api/device-simulator/devices', model);
+  }
+
+  getLogs(): Observable<ListResult<LogEntryModel>> {
+    return this.execute<ListResult<LogEntryModel>>(HttpMethod.GET, '/api/logs');
   }
 
   private execute<T>(method: HttpMethod, url: string, data: any = null): Observable<T> {

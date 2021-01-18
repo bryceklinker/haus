@@ -33,9 +33,9 @@ namespace Haus.Core.Models
             return JsonSerializer.Deserialize<T>(bytes, DefaultOptions);
         }
 
-        public static T Deserialize<T>(string json)
+        public static T Deserialize<T>(string json, JsonSerializerOptions options = null)
         {
-            return JsonSerializer.Deserialize<T>(json, DefaultOptions);
+            return JsonSerializer.Deserialize<T>(json, options ?? DefaultOptions);
         }
 
         public static string Serialize(object value, JsonSerializerOptions options = null)

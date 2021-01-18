@@ -6,6 +6,7 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Repositories;
 using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Diagnostics.Factories;
+using Haus.Core.Logs.Factories;
 using Haus.Core.Rooms.Repositories;
 using Haus.Cqrs;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace Haus.Core
                 .AddTransient(p => p.GetRequiredService<IDeviceSimulatorStore>().Current)
                 .AddSingleton<IDeviceSimulatorStore, DeviceSimulatorStore>()
                 .AddTransient<IRoutableEventFactory, RoutableEventFactory>()
+                .AddTransient<ILogEntryModelFactory, LogEntryModelFactory>()
                 .AddTransient<IMqttDiagnosticsMessageFactory, MqttDiagnosticsMessageFactory>();
         }
     }

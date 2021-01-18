@@ -1,0 +1,7 @@
+{"@t":"2021-01-17T15:27:50.5259120Z","@m":"Application is shutting down...","@i":"90f52c38","SourceContext":"Microsoft.Hosting.Lifetime","Application":"Haus Web"}
+{"@t":"2021-01-17T15:27:50.5592380Z","@m":"Stopped publishing messages.","@i":"ff26024e","@l":"Debug","SourceContext":"Haus.Mqtt.Client.Logging.MqttLogger","Application":"Haus Web"}
+{"@t":"2021-01-17T15:27:50.5615340Z","@m":"Disconnecting [Timeout=00:00:10]","@i":"b5657668","@l":"Debug","0":"00:00:10","SourceContext":"Haus.Mqtt.Client.Logging.MqttLogger","Application":"Haus Web"}
+{"@t":"2021-01-17T15:27:50.5629080Z","@m":"Disconnected from adapter.","@i":"000c0a6c","@l":"Debug","SourceContext":"Haus.Mqtt.Client.Logging.MqttLogger","Application":"Haus Web"}
+{"@t":"2021-01-17T15:27:50.5632560Z","@m":"Stopped receiving packets.","@i":"14333513","@l":"Debug","SourceContext":"Haus.Mqtt.Client.Logging.MqttLogger","Application":"Haus Web"}
+{"@t":"2021-01-17T15:27:50.5659580Z","@m":"Disconnected.","@i":"4b7ae7f6","SourceContext":"Haus.Mqtt.Client.Logging.MqttLogger","Application":"Haus Web"}
+{"@t":"2021-01-17T15:27:50.5660960Z","@m":"Stopped sending keep alive packets.","@i":"72ed61b0","@l":"Debug","SourceContext":"Haus.Mqtt.Client.Logging.MqttLogger","Application":"Haus Web"}

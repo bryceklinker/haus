@@ -1,7 +1,23 @@
 @import "../../../shared/styles/utilities";
 
 :host {
-  @extend .fill;
-  flex-direction: row;
-  align-content: space-evenly;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  grid-gap: 1rem;
+  grid-template-areas:
+    "top-left top-right"
+    "bottom bottom";
+
+  .top-left {
+    grid-area: top-left;
+  }
+
+  .top-right {
+    grid-area: top-right;
+  }
+
+  .bottom {
+    grid-area: bottom;
+  }
 }

@@ -3,6 +3,7 @@ using Haus.Api.Client.Devices;
 using Haus.Api.Client.DeviceSimulator;
 using Haus.Api.Client.Diagnostics;
 using Haus.Api.Client.Discovery;
+using Haus.Api.Client.Logs;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
 using Microsoft.Extensions.Options;
@@ -17,6 +18,7 @@ namespace Haus.Api.Client
         IRoomsApiClient CreateRoomsClient();
         IDeviceSimulatorApiClient CreateDeviceSimulatorClient();
         IDiscoveryApiClient CreateDiscoveryClient();
+        ILogsApiClient CreateLogsClient();
     }
 
     public class HausApiClientFactory : IHausApiClientFactory
@@ -58,6 +60,11 @@ namespace Haus.Api.Client
         public IDiscoveryApiClient CreateDiscoveryClient()
         {
             return new DiscoveryApiClient(_httpClientFactory.CreateClient(), _options);
+        }
+
+        public ILogsApiClient CreateLogsClient()
+        {
+            return new LogsApiClient(_httpClientFactory.CreateClient(), _options);
         }
     }
 }

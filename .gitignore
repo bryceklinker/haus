@@ -1,6 +1,7 @@
 .idea/
 node_modules/
 **/*.log
+!tests/Haus.Core.Tests/Logs/sample-log-files/*.log
 bin/
 obj/
 **/*.cert
@@ -20,4 +21,4 @@ coverage.*
 coveragereport/
 .DS_Store
 **/haus.db
-**/Logs/
+**/haus-logs/

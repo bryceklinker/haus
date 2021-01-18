@@ -1,15 +1,21 @@
 $list-width: 15rem;
 
 .master-detail-container {
-  display: flex;
-  flex: 1;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: $list-width 1fr;
+  grid-template-rows: 1fr;
 
   > :first-child {
-    display: flex;
-    flex-direction: column;
     width: $list-width;
     margin-right: 5rem;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  > :nth-child(3) {
+    margin-top: 0.5rem;
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .mat-display-3 {

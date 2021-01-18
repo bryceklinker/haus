@@ -1,3 +1,7 @@
-<health-dashboard [report]="report$ | async"></health-dashboard>
+<health-dashboard class="top-left" [report]="report$ | async"></health-dashboard>
+<recent-events class="top-right" [events]="events$ | async"></recent-events>
+<recent-logs class="bottom" [logs]="logs$ | async"></recent-logs>
 
-<recent-events [events]="events$ | async"></recent-events>
+
+
+

@@ -15,6 +15,7 @@ namespace Haus.Web.Host.Devices
         public DevicesController(IHausBus hausBus)
             : base(hausBus)
         {
+            
         }
 
         [HttpGet("")]

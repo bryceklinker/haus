@@ -45,4 +45,17 @@ describe('HealthRootComponent', () => {
 
     expect(harness.recentEvents).toHaveLength(3);
   })
+
+  it('should show recent logs', async () => {
+    const harness = await HealthRootHarness.render(
+      HealthActions.loadRecentLogs.success(
+        ModelFactory.createListResult(
+          ModelFactory.createLogEntry(),
+          ModelFactory.createLogEntry(),
+        ),
+      )
+    );
+
+    expect(harness.recentLogs).toHaveLength(2);
+  })
 })

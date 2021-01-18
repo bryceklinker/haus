@@ -4,12 +4,17 @@ import {AppState} from "../../app.state";
 import {HealthActions} from "./actions";
 
 const initialState: HealthState = {
-  report: null
+  report: null,
+  logs: []
 };
 const reducer = createReducer(initialState,
   on(HealthActions.healthReceived, (state, {payload}) => ({
     ...state,
     report: payload
+  })),
+  on(HealthActions.loadRecentLogs.success, (state, {payload}) => ({
+    ...state,
+    logs: payload
   }))
 );
 
@@ -19,3 +24,4 @@ export function healthReducer(state: HealthState | undefined, action: Action): H
 
 const selectHealthState = (state: AppState) => state.health;
 export const selectHealthReport = createSelector(selectHealthState, s => s.report);
+export const selectRecentLogs = createSelector(selectHealthState, s => s.logs);

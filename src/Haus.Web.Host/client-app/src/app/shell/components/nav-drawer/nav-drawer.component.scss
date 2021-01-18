@@ -1,8 +1,8 @@
 :host,
-mat-sidenav-container,
-mat-sidenav-content {
-  display: flex;
-  flex: 1;
+mat-sidenav-container {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr;
 }
 
 .logo {

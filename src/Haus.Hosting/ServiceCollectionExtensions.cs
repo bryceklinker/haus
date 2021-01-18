@@ -7,7 +7,9 @@ namespace Haus.Hosting
     {
         public static IServiceCollection AddHausLogging(this IServiceCollection services)
         {
-            return services.AddLogging(builder => builder.AddSerilog());
+            return services
+                .AddSingleton<ILogsDirectoryProvider, HausLogger>()
+                .AddLogging(builder => builder.AddSerilog());
         }
     }
 }

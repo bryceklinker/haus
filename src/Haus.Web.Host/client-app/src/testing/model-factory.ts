@@ -13,7 +13,7 @@ import {
   LightingModel,
   LightingState,
   LightType,
-  ListResult,
+  ListResult, LogEntryModel,
   MetadataModel,
   RoomModel,
   SimulatedDeviceModel,
@@ -159,6 +159,15 @@ function createHausEvent<T = any>(model: Partial<HausEvent<T>> = {}): HausEvent<
   }
 }
 
+function createLogEntry(model: Partial<LogEntryModel> = {}): LogEntryModel {
+  return {
+    level: model.level || 'Information',
+    timestamp: model.timestamp || new Date().toISOString(),
+    message: model.message || uuid(),
+    value: model.value || {}
+  }
+}
+
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
@@ -174,5 +183,6 @@ export const ModelFactory = {
   createDiscovery,
   createHealthCheckModel,
   createHealthReportModel,
-  createHausEvent
+  createHausEvent,
+  createLogEntry
 };

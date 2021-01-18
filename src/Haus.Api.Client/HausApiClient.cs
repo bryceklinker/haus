@@ -5,6 +5,7 @@ using Haus.Api.Client.Devices;
 using Haus.Api.Client.DeviceSimulator;
 using Haus.Api.Client.Diagnostics;
 using Haus.Api.Client.Discovery;
+using Haus.Api.Client.Logs;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
 using Haus.Core.Models.Common;
@@ -13,6 +14,7 @@ using Haus.Core.Models.DeviceSimulator;
 using Haus.Core.Models.Diagnostics;
 using Haus.Core.Models.Discovery;
 using Haus.Core.Models.Lighting;
+using Haus.Core.Models.Logs;
 using Haus.Core.Models.Rooms;
 using Microsoft.Extensions.Options;
 
@@ -23,7 +25,8 @@ namespace Haus.Api.Client
         IDiagnosticsApiClient, 
         IRoomsApiClient,
         IDeviceSimulatorApiClient,
-        IDiscoveryApiClient
+        IDiscoveryApiClient,
+        ILogsApiClient
     {
         
     }
@@ -36,6 +39,7 @@ namespace Haus.Api.Client
         private IRoomsApiClient RoomsApiClient => _factory.CreateRoomsClient();
         private IDeviceSimulatorApiClient DeviceSimulatorApiClient => _factory.CreateDeviceSimulatorClient();
         private IDiscoveryApiClient DiscoveryApiClient => _factory.CreateDiscoveryClient();
+        private ILogsApiClient LogsApiClient => _factory.CreateLogsClient();
         
         public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
             : base(httpClient, options)
@@ -166,6 +170,11 @@ namespace Haus.Api.Client
         public Task<HttpResponseMessage> ResetDeviceSimulatorAsync()
         {
             return DeviceSimulatorApiClient.ResetDeviceSimulatorAsync();
+        }
+
+        public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null)
+        {
+            return LogsApiClient.GetLogsAsync(parameters);
         }
     }
 }
