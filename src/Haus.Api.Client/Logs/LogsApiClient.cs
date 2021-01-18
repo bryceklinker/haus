@@ -34,7 +34,8 @@ namespace Haus.Api.Client.Logs
             {
                 {"pageSize", parameters.PageSize.ToString()},
                 {"pageNumber", parameters.PageNumber.ToString()},
-                {"search", parameters.SearchTerm}
+                {"search", parameters.SearchTerm},
+                {"level", parameters.Level}
             };
         }
     }

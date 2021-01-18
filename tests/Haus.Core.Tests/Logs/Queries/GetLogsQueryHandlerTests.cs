@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Logs.Queries;
@@ -50,7 +51,7 @@ namespace Haus.Core.Tests.Logs.Queries
         }
 
         [Fact]
-        public async Task WhenQueryContainsSearchTermThenReturnsEntriesWithMatchingText()
+        public async Task WhenQueryContainsSearchTermThenReturnsEntriesWithMessageContainingTerm()
         {
             var parameters = new GetLogsParameters(SearchTerm: "Entity Framework Core");
             var result = await _hausBus.ExecuteQueryAsync(new GetLogsQuery(_logsDirectory, parameters));
@@ -65,6 +66,17 @@ namespace Haus.Core.Tests.Logs.Queries
             var result = await _hausBus.ExecuteQueryAsync(new GetLogsQuery(_logsDirectory, parameters));
 
             result.Items[0].Timestamp.Should().Be("2021-01-17T15:27:45.6356650Z");
+        }
+
+        [Fact]
+        public async Task WhenQueryContainsLevelThenAllReturnedLogsHaveSpecifiedLevel()
+        {
+            var parameters = new GetLogsParameters(Level: "Error");
+
+            var result = await _hausBus.ExecuteQueryAsync(new GetLogsQuery(_logsDirectory, parameters));
+
+            result.Items.Should()
+                .Match(logs => logs.All(l => l.Level == "Error"));
         }
     }
 }

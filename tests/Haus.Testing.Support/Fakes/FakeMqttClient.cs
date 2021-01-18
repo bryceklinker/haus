@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -70,6 +71,9 @@ namespace Haus.Testing.Support.Fakes
         public ISynchronizingSubscriptionsFailedHandler SynchronizingSubscriptionsFailedHandler { get; set; }
         public MqttApplicationMessage[] PublishedMessages => _publishedMessages.ToArray();
         
+        public Exception PingException { get; set; }
+        public Exception ConnectException { get; set; }
+
         public async Task<MqttClientPublishResult> PublishAsync(MqttApplicationMessage applicationMessage, CancellationToken cancellationToken)
         {
             await ApplicationMessageReceivedHandler.HandleApplicationMessageReceivedAsync(
@@ -97,6 +101,9 @@ namespace Haus.Testing.Support.Fakes
 
         public Task<MqttClientAuthenticateResult> ConnectAsync(IMqttClientOptions options, CancellationToken cancellationToken)
         {
+            if (ConnectException != null)
+                throw ConnectException;
+            
             Options = options;
             IsConnected = true;
             return Task.FromResult(new MqttClientAuthenticateResult());
@@ -110,7 +117,10 @@ namespace Haus.Testing.Support.Fakes
 
         Task IMqttClient.PingAsync(CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            if (PingException == null)
+                return Task.CompletedTask;
+
+            throw PingException;
         }
 
         public Task SendExtendedAuthenticationExchangeDataAsync(MqttExtendedAuthenticationExchangeData data,
@@ -131,7 +141,9 @@ namespace Haus.Testing.Support.Fakes
         
         Task IManagedMqttClient.PingAsync(CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            if (PingException == null)
+                return Task.CompletedTask;
+            throw PingException;
         }
 
         public Task SubscribeAsync(IEnumerable<MqttTopicFilter> topicFilters)

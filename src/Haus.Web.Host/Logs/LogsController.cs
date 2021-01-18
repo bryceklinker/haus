@@ -23,11 +23,12 @@ namespace Haus.Web.Host.Logs
         public Task<IActionResult> GetLogs(
             [FromQuery] int pageSize = GetLogsParameters.DefaultPageSize, 
             [FromQuery] int pageNumber = GetLogsParameters.DefaultPageNumber,
-            [FromQuery] string searchTerm = null)
+            [FromQuery] string searchTerm = null,
+            [FromQuery] string level = null)
         {
             var query = new GetLogsQuery(
                 _logsDirectoryProvider.GetLogsDirectory(),
-                new GetLogsParameters(pageNumber, pageSize, searchTerm)
+                new GetLogsParameters(pageNumber, pageSize, searchTerm, level)
             );
             return QueryAsync(query);
         }

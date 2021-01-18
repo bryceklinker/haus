@@ -15,7 +15,7 @@ namespace Haus.Core.Lighting.Entities
             Max = max;
         }
 
-        protected double CalculateTargetValue(LightingRange target)
+        public double CalculateTargetValue(LightingRange target)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));

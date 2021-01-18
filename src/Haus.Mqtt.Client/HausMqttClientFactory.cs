@@ -7,6 +7,7 @@ using MQTTnet;
 using MQTTnet.Diagnostics;
 using MQTTnet.Extensions;
 using MQTTnet.Extensions.ManagedClient;
+using Polly;
 
 namespace Haus.Mqtt.Client
 {
@@ -40,22 +41,32 @@ namespace Haus.Mqtt.Client
 
         public async Task<IHausMqttClient> CreateClient(string url)
         {
-            return await _clients.GetOrAdd(url, CreateMqttClient).ConfigureAwait(false);
+            return await _clients.GetOrAdd(url, CreateMqttClientWithRetry).ConfigureAwait(false);
+        }
+
+        private async Task<IHausMqttClient> CreateMqttClientWithRetry(string url)
+        {
+            var client = await CreateMqttClient(url);
+            var retryCount = 1;
+            while (!client.IsConnected && retryCount < 5)
+            {
+                await Task.Delay(10 * retryCount);
+                retryCount++;
+            }
+
+            return client;
         }
 
         private async Task<IHausMqttClient> CreateMqttClient(string url)
         {
             var client = _mqttFactory.CreateManagedMqttClient(_logger);
             var options = new ManagedMqttClientOptionsBuilder()
-                .WithClientOptions(opts =>
-                {
-                    opts.WithConnectionUri(new Uri(url));
-                })
+                .WithClientOptions(opts => { opts.WithConnectionUri(new Uri(url)); })
                 .Build();
             await client.StartAsync(options).ConfigureAwait(false);
             return new HausMqttClient(client, _options);
         }
-        
+
         public async ValueTask DisposeAsync()
         {
             foreach (var client in _clients) 

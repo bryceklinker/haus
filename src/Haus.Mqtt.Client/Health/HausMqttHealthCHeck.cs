@@ -21,10 +21,9 @@ namespace Haus.Mqtt.Client.Health
                 var client = await _clientFactory.CreateClient();
                 await client.PingAsync(cancellationToken);
                 
-                if (client.IsStarted && client.IsConnected)
-                    return HealthCheckResult.Healthy("Mqtt client is health and working as expected");
-
-                return HealthCheckResult.Unhealthy("Mqtt client is not connected or not started");
+                return client.IsConnected 
+                    ? HealthCheckResult.Healthy("Mqtt client is health and working as expected") 
+                    : HealthCheckResult.Unhealthy("Mqtt client is not connected");
             }
             catch (Exception e)
             {

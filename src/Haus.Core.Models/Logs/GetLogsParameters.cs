@@ -3,7 +3,8 @@ namespace Haus.Core.Models.Logs
     public record GetLogsParameters(
         int? PageNumber = GetLogsParameters.DefaultPageNumber,
         int? PageSize = GetLogsParameters.DefaultPageSize,
-        string SearchTerm = null
+        string SearchTerm = null,
+        string Level = null
     )
     {
         public const int DefaultPageNumber = 1;
