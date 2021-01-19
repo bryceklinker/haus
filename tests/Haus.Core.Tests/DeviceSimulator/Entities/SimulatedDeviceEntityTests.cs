@@ -21,7 +21,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
 
             entity.Id.Should().NotBeNullOrWhiteSpace();
             entity.DeviceType.Should().Be(DeviceType.Light);
-            entity.Metadata.Should().Contain(new Metadata("simulated", "true"));
+            entity.Metadata.Should().ContainEquivalentOf(new Metadata("simulated", "true"));
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
 
             var entity = SimulatedDeviceEntity.Create(model);
 
-            entity.Metadata.Should().Contain(new Metadata("one", "three"));
+            entity.Metadata.Should().ContainEquivalentOf(new Metadata("one", "three"));
         }
 
         [Fact]

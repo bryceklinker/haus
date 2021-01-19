@@ -31,7 +31,8 @@ function run_dotnet_test() {
     --merge-with "${COVERAGE_FILE_PATH}" \
     --format cobertura \
     --format json \
-    --exclude "[Haus.Testing.*]*"
+    --exclude "[Haus.Testing.*]*" \
+    --exclude "[*]Haus.Core.Common.Storage.Migrations*"
 }
 
 function generate_typescript_models() {

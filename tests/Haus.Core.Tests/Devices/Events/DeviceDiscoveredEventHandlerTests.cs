@@ -36,7 +36,7 @@ namespace Haus.Core.Tests.Devices.Events
         [Fact]
         public async Task WhenDeviceDiscoveredMultipleTimesThenDeviceIsUpdatedFromEvent()
         {
-            _context.AddDevice("three");
+            var device = _context.AddDevice("three");
 
             var @event = RoutableEvent.FromEvent(new DeviceDiscoveredEvent("three", Metadata: new[]
             {
@@ -46,7 +46,8 @@ namespace Haus.Core.Tests.Devices.Events
 
             _context.Set<DeviceEntity>().Should().HaveCount(1);
             _context.Set<DeviceEntity>().Single().Metadata
-                .Should().ContainEquivalentOf(new DeviceMetadataEntity("Model", "Help"));
+                .Should().ContainEquivalentOf(new DeviceMetadataEntity("Model", "Help"), opts =>
+                    opts.Excluding(m => m.Device).Excluding(m => m.Id));
         }
 
         [Fact]
