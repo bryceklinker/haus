@@ -45,6 +45,7 @@ function run_tests() {
   
   run_dotnet_test "Haus.Core.Tests"
   run_dotnet_test "Haus.Utilities.Tests"
+  run_dotnet_test "Haus.Mqtt.Client.Tests"
   run_dotnet_test "Haus.Web.Host.Tests"
   run_dotnet_test "Haus.Zigbee.Host.Tests"
   

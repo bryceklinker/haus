@@ -18,28 +18,10 @@ namespace Haus.Core.Common.Entities
         {
             return new(Key, Value);
         }
-        
+
         public static Metadata FromModel(MetadataModel model)
         {
             return new(model.Key, model.Value);
-        }
-        
-        protected bool Equals(Metadata other)
-        {
-            return Key == other.Key && Value == other.Value;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Metadata) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Key, Value);
         }
     }
 }

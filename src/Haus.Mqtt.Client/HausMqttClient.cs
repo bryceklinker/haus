@@ -23,7 +23,6 @@ namespace Haus.Mqtt.Client
         Task PublishAsync(MqttApplicationMessage message);
         Task PublishAsync(string topic, object payload);
         Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string topicName = null);
-        Task PublishHausCommandAsync<T>(IHausCommandCreator<T> creator, string topicName = null);
     }
 
     public class HausMqttClient : IHausMqttClient
@@ -36,7 +35,6 @@ namespace Haus.Mqtt.Client
 
         private string EventsTopic => _settings.Value.EventsTopic;
         private string CommandsTopic => _settings.Value.CommandsTopic;
-
         public bool IsConnected => _mqttClient.IsConnected;
         public bool IsStarted => _mqttClient.IsStarted;
 
@@ -87,11 +85,6 @@ namespace Haus.Mqtt.Client
         public Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string topicName = null)
         {
             return PublishAsync(topicName ?? EventsTopic, creator.AsHausEvent());
-        }
-
-        public Task PublishHausCommandAsync<T>(IHausCommandCreator<T> creator, string topicName = null)
-        {
-            return PublishAsync(topicName ?? CommandsTopic, creator.AsHausCommand());
         }
 
         public ValueTask DisposeAsync()
