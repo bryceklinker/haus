@@ -36,6 +36,8 @@ namespace Haus.Web.Host
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
                 .UseHausLogging("Haus Web")
+                .UseSystemd()
+                .UseWindowsService()
                 .ConfigureWebHostDefaults(web =>
                 {
                     web.UseStartup<Startup>();

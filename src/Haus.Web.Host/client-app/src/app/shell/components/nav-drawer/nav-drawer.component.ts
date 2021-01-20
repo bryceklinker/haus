@@ -3,6 +3,8 @@ import {DestroyableSubject} from "../../../shared/destroyable-subject";
 import {NavigationService} from "../../services";
 import {NavigationLinkModel} from "../../models";
 import {Observable} from "rxjs";
+import {SettingsService} from "../../../shared/settings";
+import {map} from "rxjs/operators";
 
 type RouteLink = {name: string, path: string};
 
@@ -17,9 +19,14 @@ export class NavDrawerComponent {
   @Output() drawerClosed = new EventEmitter();
 
   links$: Observable<Array<NavigationLinkModel>>
+  version$: Observable<string>;
 
-  constructor(private service: NavigationService) {
-    this.links$ = service.links$;
+  constructor(private readonly navigationService: NavigationService,
+              private readonly settingsService: SettingsService) {
+    this.links$ = navigationService.links$;
+    this.version$ = settingsService.settings$.pipe(
+      map(settings => settings.version)
+    );
   }
 
   handleClosed(isOpen: boolean) {

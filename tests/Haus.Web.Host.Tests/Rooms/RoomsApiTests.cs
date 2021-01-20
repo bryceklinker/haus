@@ -43,7 +43,7 @@ namespace Haus.Web.Host.Tests.Rooms
 
             var result = await response.Content.ReadFromJsonAsync<RoomModel>();
 
-            response.Headers.Location.Should().Be($"{_apiClient.BaseUrl}/rooms/{result.Id}");
+            response.Headers.Location.Should().Be($"{_apiClient.ApiBaseUrl}/rooms/{result.Id}");
         }
 
         [Fact]

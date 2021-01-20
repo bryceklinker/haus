@@ -1,16 +1,19 @@
 <mat-sidenav-container>
-  <mat-sidenav mode="side" data-testid="nav-drawer" [opened]="isOpen" (openedChange)="handleClosed($event)">
-    <div>
-      <img class="logo" src="assets/logo.png" alt="Logo"/>
+  <mat-sidenav mode="side" data-testid="nav-drawer" [opened]="isOpen" (openedChange)="handleClosed($event)" >
+    <div class="side-nav-container">
+      <div>
+        <img class="logo" src="assets/logo.png" alt="Logo"/>
+      </div>
+      <mat-nav-list>
+        <a *ngFor="let route of links$ | async"
+           mat-list-item
+           [routerLink]="route.path"
+           routerLinkActive="active">
+          {{route.name}}
+        </a>
+      </mat-nav-list>
+      <span class="mat-subheader version">Version: {{version$ | async}}</span>
     </div>
-    <mat-nav-list>
-      <a *ngFor="let route of links$ | async"
-         mat-list-item
-          [routerLink]="route.path"
-         routerLinkActive="active">
-        {{route.name}}
-      </a>
-    </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content>

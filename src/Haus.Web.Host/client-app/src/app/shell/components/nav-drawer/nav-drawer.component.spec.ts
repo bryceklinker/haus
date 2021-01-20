@@ -1,6 +1,8 @@
 import {NavDrawerComponent} from "./nav-drawer.component";
-import {TestingEventEmitter} from "../../../../testing";
+import {TestingEventEmitter, TestingSettingsService} from "../../../../testing";
 import {NavDrawerHarness} from "./nav-drawer.harness";
+import {TestBed} from "@angular/core/testing";
+import {SettingsService} from "../../../shared/settings";
 
 describe('NavDrawerComponent', () => {
   let drawerClosed: TestingEventEmitter;
@@ -31,5 +33,16 @@ describe('NavDrawerComponent', () => {
     expect(harness.container).toHaveTextContent('Diagnostics');
     expect(harness.container).toHaveTextContent('Devices');
     expect(harness.container).toHaveTextContent('Rooms');
+  })
+
+  it('should show version number', async () => {
+    const harness = await NavDrawerHarness.render();
+    const settingsService = TestBed.inject(SettingsService) as TestingSettingsService;
+
+
+    settingsService.updateSettings({...settingsService.settings, version: '9.9.9'});
+    await harness.whenRenderingDone();
+
+    expect(harness.container).toHaveTextContent('9.9.9');
   })
 })

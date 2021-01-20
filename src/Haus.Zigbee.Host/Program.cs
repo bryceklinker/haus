@@ -27,6 +27,8 @@ namespace Haus.Zigbee.Host
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
                 .UseHausLogging("Haus Zigbee")
+                .UseSystemd()
+                .UseWindowsService()
                 .ConfigureServices((ctx, services) =>
                 {
                     services.AddHausZigbee(ctx.Configuration);

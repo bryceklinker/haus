@@ -71,8 +71,6 @@ function dotnet_publish() {
     --output "${OUTPUT_PATH}" \
     --configuration "${CONFIGURATION}" \
     --runtime "${RUNTIME_IDENTIFIER}" \
-    -p:PublishTrimmed=true \
-    -p:PublishSingleFile=true \
     --self-contained true
     
    pushd "${OUTPUT_PATH}" || exit

@@ -36,8 +36,6 @@ namespace Haus.Core.Logs.Queries
             GetLogsQuery request, 
             CancellationToken cancellationToken)
         {
-            var pageSize = request.PageSize;
-            var skipCount = (request.PageNumber - 1) * pageSize;
             var logFiles = GetFilesFromLogDirectoryInDescendingOrder(request.LogsDirectory);
 
             var entries = new List<LogEntryModel>();
@@ -119,7 +117,9 @@ namespace Haus.Core.Logs.Queries
         private static int GetLogFileNumber(string path)
         {
             var fileName = Path.GetFileNameWithoutExtension(path);
-            var numberString = fileName.Split('_')[1];
+            var numberString = fileName.Contains("_")
+                ? fileName.Split('_')[1]
+                : "0";
             return int.TryParse(numberString, out var number)
                 ? number
                 : int.MinValue;

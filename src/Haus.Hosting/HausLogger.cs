@@ -13,7 +13,7 @@ namespace Haus.Hosting
 
     public class HausLogger : ILogsDirectoryProvider
     {
-        private const long LogFileSizeLimit = 1024 * 8;
+        private const long LogFileSizeLimit = 1024 * 1024 *  8;
         private static readonly string LogsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "haus-logs");
         private static string AppName { get; set; }
         private static string LogFilePath => Path.Combine(LogsDirectory, $"{AppName}.log");
@@ -42,7 +42,7 @@ namespace Haus.Hosting
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Application", appName)
                 .WriteTo.Console()
-                .WriteTo.File(new RenderedCompactJsonFormatter(), LogFilePath, fileSizeLimitBytes: LogFileSizeLimit, rollOnFileSizeLimit: true)
+                .WriteTo.File(new RenderedCompactJsonFormatter(), LogFilePath, fileSizeLimitBytes: LogFileSizeLimit, retainedFileCountLimit: 20)
                 .CreateLogger();
         }
     }

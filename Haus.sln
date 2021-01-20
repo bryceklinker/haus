@@ -46,6 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A43D
 	ProjectSection(SolutionItems) = preProject
 		scripts\build.sh = scripts\build.sh
 		scripts\create-ef-migration.sh = scripts\create-ef-migration.sh
+		scripts\linux-install.sh = scripts\linux-install.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Api.Client", "src\Haus.Api.Client\Haus.Api.Client.csproj", "{96B75E58-C1C0-4D3D-9D8E-C4695FC7F13E}"
@@ -57,6 +58,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dependencies", "dependencies", "{84850197-27A6-4181-BEDD-D2AC9240D169}"
 	ProjectSection(SolutionItems) = preProject
 		dependencies\tests.xml = dependencies\tests.xml
+		dependencies\hosting.xml = dependencies\hosting.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{E9A6A742-520C-4D22-BE65-853B85B71509}"

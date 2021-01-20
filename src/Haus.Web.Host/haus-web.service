@@ -1,0 +1,14 @@
+[Unit]
+Description=Haus web application
+
+[Service]
+Type=notify
+WorkingDirectory=/home/bryce/haus/web
+ExecStart=/home/bryce/haus/web/Haus.Web.Host
+SyslogIdentifier=Haus Web
+User=bryce
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

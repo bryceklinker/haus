@@ -1,5 +1,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
+using Haus.Api.Client.ClientSettings;
 using Haus.Api.Client.Common;
 using Haus.Api.Client.Devices;
 using Haus.Api.Client.DeviceSimulator;
@@ -8,6 +9,7 @@ using Haus.Api.Client.Discovery;
 using Haus.Api.Client.Logs;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
+using Haus.Core.Models.ClientSettings;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
@@ -26,7 +28,8 @@ namespace Haus.Api.Client
         IRoomsApiClient,
         IDeviceSimulatorApiClient,
         IDiscoveryApiClient,
-        ILogsApiClient
+        ILogsApiClient,
+        IClientSettingsApiClient
     {
         
     }
@@ -40,6 +43,7 @@ namespace Haus.Api.Client
         private IDeviceSimulatorApiClient DeviceSimulatorApiClient => _factory.CreateDeviceSimulatorClient();
         private IDiscoveryApiClient DiscoveryApiClient => _factory.CreateDiscoveryClient();
         private ILogsApiClient LogsApiClient => _factory.CreateLogsClient();
+        private IClientSettingsApiClient ClientSettingsApiClient => _factory.CreateClientSettingsClient();
         
         public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
             : base(httpClient, options)
@@ -175,6 +179,11 @@ namespace Haus.Api.Client
         public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null)
         {
             return LogsApiClient.GetLogsAsync(parameters);
+        }
+
+        public Task<ClientSettingsModel> GetClientSettingsAsync()
+        {
+            return ClientSettingsApiClient.GetClientSettingsAsync();
         }
     }
 }
