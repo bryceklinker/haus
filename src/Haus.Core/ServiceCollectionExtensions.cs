@@ -6,6 +6,7 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Repositories;
 using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Diagnostics.Factories;
+using Haus.Core.Logs;
 using Haus.Core.Logs.Factories;
 using Haus.Core.Rooms.Repositories;
 using Haus.Cqrs;
@@ -23,6 +24,7 @@ namespace Haus.Core
                 .AddDbContext<HausDbContext>(configureDb)
                 .AddTransient<IRoomCommandRepository, RoomCommandRepository>()
                 .AddTransient<IDeviceCommandRepository, DeviceCommandRepository>()
+                .AddTransient<ILogEntryFilterer, LogEntryFilterer>()
                 .AddValidatorsFromAssembly(coreAssembly)
                 .AddHausCqrs(coreAssembly)
                 .AddTransient(p => p.GetRequiredService<IDeviceSimulatorStore>().Current)

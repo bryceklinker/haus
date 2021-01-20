@@ -19,17 +19,17 @@ namespace Haus.Core.Logs.Queries
         public int PageSize => Parameters?.PageSize ?? GetLogsParameters.DefaultPageSize;
         public int PageNumber => Parameters?.PageNumber ?? GetLogsParameters.DefaultPageNumber;
         public int SkipCount => (PageNumber - 1) * PageSize;
-        public string SearchTerm => Parameters?.SearchTerm;
-        public string Level => Parameters?.Level;
     }
 
     internal class GetLogsQueryHandler : IQueryHandler<GetLogsQuery, ListResult<LogEntryModel>>
     {
         private readonly ILogEntryModelFactory _logEntryFactory;
+        private readonly ILogEntryFilterer _logEntryFilterer;
 
-        public GetLogsQueryHandler(ILogEntryModelFactory logEntryFactory)
+        public GetLogsQueryHandler(ILogEntryModelFactory logEntryFactory, ILogEntryFilterer logEntryFilterer)
         {
             _logEntryFactory = logEntryFactory;
+            _logEntryFilterer = logEntryFilterer;
         }
 
         public async Task<ListResult<LogEntryModel>> Handle(
@@ -79,10 +79,8 @@ namespace Haus.Core.Logs.Queries
             CancellationToken token)
         {
             var lines = await File.ReadAllLinesAsync(filePath, token).ConfigureAwait(false);
-            return lines
-                .Select(_logEntryFactory.CreateFromLine)
-                .Where(e => DoesEntryMatchQuery(e, query))
-                .OrderByDescending(e => e.Timestamp);
+            var matchingEntries = _logEntryFilterer.Filter(lines.Select(_logEntryFactory.CreateFromLine), query.Parameters);
+            return matchingEntries.OrderByDescending(e => e.Timestamp);
         }
         
         private static IEnumerable<string> GetFilesFromLogDirectoryInDescendingOrder(string logsDirectory)
@@ -92,34 +90,13 @@ namespace Haus.Core.Logs.Queries
                 .ToArray();
         }
 
-        private static bool DoesEntryMatchQuery(LogEntryModel entry, GetLogsQuery query)
-        {
-            return DoesEntryMatchLevel(entry, query.Level)
-                   && DoesEntryContainSearchTerm(entry, query.SearchTerm);
-        }
-
-        private static bool DoesEntryContainSearchTerm(LogEntryModel entry, string searchTerm)
-        {
-            if (string.IsNullOrWhiteSpace(searchTerm))
-                return true;
-
-            return entry.Message.Contains(searchTerm, StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static bool DoesEntryMatchLevel(LogEntryModel entry, string level)
-        {
-            if (string.IsNullOrWhiteSpace(level))
-                return true;
-
-            return entry.Level.Equals(level, StringComparison.OrdinalIgnoreCase);
-        }
-
         private static int GetLogFileNumber(string path)
         {
             var fileName = Path.GetFileNameWithoutExtension(path);
             var numberString = fileName.Contains("_")
                 ? fileName.Split('_')[1]
                 : "0";
+            
             return int.TryParse(numberString, out var number)
                 ? number
                 : int.MinValue;
