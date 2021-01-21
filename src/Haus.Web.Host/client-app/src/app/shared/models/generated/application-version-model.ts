@@ -5,4 +5,5 @@ export interface ApplicationVersionModel {
 	isOfficialRelease: boolean;
 	isNewer: boolean;
 	creationDate: string;
+	description: string;
 }

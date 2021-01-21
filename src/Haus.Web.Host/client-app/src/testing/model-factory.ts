@@ -174,7 +174,8 @@ function createApplicationVersion(model: Partial<ApplicationVersionModel> = {}):
     creationDate: model.creationDate || new Date().toISOString(),
     isNewer: model.isNewer !== undefined ? model.isNewer : false,
     isOfficialRelease: model.isOfficialRelease !== undefined ? model.isOfficialRelease : false,
-    version: model.version || '0.0.0'
+    version: model.version || '0.0.0',
+    description: model.description || uuid()
   }
 }
 
