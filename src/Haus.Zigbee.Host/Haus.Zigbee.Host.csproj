@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
   <Import Project="../../dependencies/hosting.xml" />
+  <Import Project="../../dependencies/version.xml" />
   
   <PropertyGroup>
     <OutputType>Exe</OutputType>

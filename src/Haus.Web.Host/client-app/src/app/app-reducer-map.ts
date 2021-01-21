@@ -8,6 +8,7 @@ import {deviceSimulatorReducer} from "./device-simulator/state";
 import {discoveryReducer} from "./shared/discovery";
 import {healthReducer} from "./health/state";
 import {eventsReducer} from "./shared/events";
+import {shellReducer} from "./shell/state";
 
 export const appReducerMap: ActionReducerMap<AppState> = {
   devices: devicesReducer,
@@ -19,5 +20,6 @@ export const appReducerMap: ActionReducerMap<AppState> = {
   discovery: discoveryReducer,
   lightTypes: lightTypesReducer,
   health: healthReducer,
-  events: eventsReducer
+  events: eventsReducer,
+  shell: shellReducer
 };

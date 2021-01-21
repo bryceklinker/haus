@@ -1,10 +1,13 @@
 using System;
 using Haus.Core;
+using Haus.Core.Application;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models;
 using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Settings;
+using Haus.Web.Host.Application;
 using Haus.Web.Host.Auth;
+using Haus.Web.Host.Common.GitHub;
 using Haus.Web.Host.Common.Mqtt;
 using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
@@ -35,8 +38,14 @@ namespace Haus.Web.Host
                 })
                 .Configure<AuthOptions>(configuration.GetSection("Auth"))
                 .Configure<HausMqttSettings>(configuration.GetSection("Mqtt"))
+                .Configure<GitHubSettings>(opts =>
+                {
+                    configuration.Bind("GitHub", opts);
+                    opts.PersonalAccessToken = configuration["GITHUB_TOKEN"];
+                })
                 .AddHausMqtt()
                 .AddMediatR(typeof(ServiceCollectionExtensions).Assembly)
+                .AddTransient<ILatestReleaseProvider, GithubLatestReleaseProvider>()
                 .AddHostedService<MqttMessageRouter>()
                 .AddHostedService<DiagnosticsMqttListener>()
                 .AddHostedService<DeviceSimulatorStatePublisher>()

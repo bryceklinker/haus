@@ -8,7 +8,7 @@ namespace Haus.Hosting
     {
         public static IHostBuilder UseHausLogging(this IHostBuilder builder, string appName)
         {
-            HausLogger.Configure(appName);
+            HausLogger.ConfigureDefaultLogging(appName);
             return builder.UseSerilog();
         }
     }

@@ -1,5 +1,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
+using Haus.Api.Client.Application;
 using Haus.Api.Client.ClientSettings;
 using Haus.Api.Client.Common;
 using Haus.Api.Client.Devices;
@@ -9,6 +10,7 @@ using Haus.Api.Client.Discovery;
 using Haus.Api.Client.Logs;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
+using Haus.Core.Models.Application;
 using Haus.Core.Models.ClientSettings;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
@@ -29,7 +31,8 @@ namespace Haus.Api.Client
         IDeviceSimulatorApiClient,
         IDiscoveryApiClient,
         ILogsApiClient,
-        IClientSettingsApiClient
+        IClientSettingsApiClient,
+        IApplicationApiClient
     {
         
     }
@@ -44,6 +47,7 @@ namespace Haus.Api.Client
         private IDiscoveryApiClient DiscoveryApiClient => _factory.CreateDiscoveryClient();
         private ILogsApiClient LogsApiClient => _factory.CreateLogsClient();
         private IClientSettingsApiClient ClientSettingsApiClient => _factory.CreateClientSettingsClient();
+        private IApplicationApiClient ApplicationApiClient => _factory.CreateApplicationClient();
         
         public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
             : base(httpClient, options)
@@ -184,6 +188,21 @@ namespace Haus.Api.Client
         public Task<ClientSettingsModel> GetClientSettingsAsync()
         {
             return ClientSettingsApiClient.GetClientSettingsAsync();
+        }
+
+        public Task<ApplicationVersionModel> GetLatestVersionAsync()
+        {
+            return ApplicationApiClient.GetLatestVersionAsync();
+        }
+
+        public Task<ListResult<ApplicationPackageModel>> GetLatestPackagesAsync()
+        {
+            return ApplicationApiClient.GetLatestPackagesAsync();
+        }
+
+        public Task<HttpResponseMessage> DownloadLatestPackageAsync(int packageId)
+        {
+            return ApplicationApiClient.DownloadLatestPackageAsync(packageId);
         }
     }
 }

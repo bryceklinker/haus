@@ -33,17 +33,29 @@ namespace Haus.Hosting
             Log.CloseAndFlush();
         }
 
-        public static void Configure(string appName)
+        public static void ConfigureDefaultLogging(string appName)
         {
             AppName = appName;
-            Log.Logger = new LoggerConfiguration()
+            Log.Logger = CreateDefaultLoggerConfiguration(appName)
+                .WriteTo.File(new RenderedCompactJsonFormatter(), LogFilePath, fileSizeLimitBytes: LogFileSizeLimit, retainedFileCountLimit: 20)
+                .CreateLogger();
+        }
+
+        public static void ConfigureConsoleOnly(string appName)
+        {
+            AppName = appName;
+            Log.Logger = CreateDefaultLoggerConfiguration(appName)
+                .CreateLogger();
+        }
+
+        private static LoggerConfiguration CreateDefaultLoggerConfiguration(string appName)
+        {
+            return new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Application", appName)
-                .WriteTo.Console()
-                .WriteTo.File(new RenderedCompactJsonFormatter(), LogFilePath, fileSizeLimitBytes: LogFileSizeLimit, retainedFileCountLimit: 20)
-                .CreateLogger();
+                .WriteTo.Console();
         }
     }
 }

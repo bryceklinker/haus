@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="../../dependencies/version.xml" />
+  
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
@@ -13,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Haus.Cqrs\Haus.Cqrs.csproj" />
     <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
     <ProjectReference Include="..\Haus.Zigbee.Host\Haus.Zigbee.Host.csproj" />
   </ItemGroup>

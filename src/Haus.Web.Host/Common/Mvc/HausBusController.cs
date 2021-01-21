@@ -15,16 +15,16 @@ namespace Haus.Web.Host.Common.Mvc
     [ApiController]
     public abstract class HausBusController : Controller
     {
-        private readonly IHausBus _hausBus;
+        protected IHausBus Bus { get; }
 
         protected HausBusController(IHausBus hausBus)
         {
-            _hausBus = hausBus;
+            Bus = hausBus;
         }
 
         protected async Task<IActionResult> QueryAsync<TResult>(IQuery<TResult> query)
         {
-            var result = await _hausBus.ExecuteQueryAsync(query).ConfigureAwait(false);
+            var result = await Bus.ExecuteQueryAsync(query).ConfigureAwait(false);
             return OkOrNotFound(result);
         }
 
@@ -32,7 +32,7 @@ namespace Haus.Web.Host.Common.Mvc
         {
             try
             {
-                await _hausBus.ExecuteCommandAsync(command).ConfigureAwait(false);
+                await Bus.ExecuteCommandAsync(command).ConfigureAwait(false);
                 return NoContent();
             }
             catch (HausValidationException e)
@@ -45,7 +45,7 @@ namespace Haus.Web.Host.Common.Mvc
         {
             try
             {
-                var result = await _hausBus.ExecuteCommandAsync(command).ConfigureAwait(false);
+                var result = await Bus.ExecuteCommandAsync(command).ConfigureAwait(false);
                 var routeValues = createRouteValues(result);
                 return CreatedAtRoute(routeName, routeValues, result);
             }

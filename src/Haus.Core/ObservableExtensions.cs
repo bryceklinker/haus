@@ -13,7 +13,7 @@ namespace Haus.Core
                 .SelectMany(async value =>
                 {
                     await observer(value).ConfigureAwait(false);
-                    return Task.FromResult(Unit.Default);
+                    return Unit.Default;
                 })
                 .Subscribe();
         }

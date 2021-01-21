@@ -1,5 +1,5 @@
 <mat-sidenav-container>
-  <mat-sidenav mode="side" data-testid="nav-drawer" [opened]="isOpen" (openedChange)="handleClosed($event)" >
+  <mat-sidenav mode="side" data-testid="nav-drawer" [opened]="isOpen" (openedChange)="handleClosed($event)">
     <div class="side-nav-container">
       <div>
         <img class="logo" src="assets/logo.png" alt="Logo"/>
@@ -12,7 +12,13 @@
           {{route.name}}
         </a>
       </mat-nav-list>
-      <span class="mat-subheader version">Version: {{version$ | async}}</span>
+      <span class="mat-subheader version">
+          Version: {{version$ | async}}
+        <mat-icon data-testid="update-available" *ngIf="isUpdateAvailable$ | async">
+          upgrade
+        </mat-icon>
+      </span>
+
     </div>
   </mat-sidenav>
 

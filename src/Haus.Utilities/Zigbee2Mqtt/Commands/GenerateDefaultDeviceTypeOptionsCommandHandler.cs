@@ -7,17 +7,19 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models;
+using Haus.Cqrs.Commands;
 using Haus.Utilities.Common.Cli;
+using Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 using Haus.Zigbee.Host.Configuration;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions
+namespace Haus.Utilities.Zigbee2Mqtt.Commands
 {
     [Command("zigbee2mqtt", "generate-device-type-defaults")]
-    public record GenerateDefaultDeviceTypeOptionsCommand : IRequest;
+    public record GenerateDefaultDeviceTypeOptionsCommand : ICommand;
     
-    public class GenerateDefaultDeviceTypeOptionsCommandHandler : AsyncRequestHandler<GenerateDefaultDeviceTypeOptionsCommand>
+    public class GenerateDefaultDeviceTypeOptionsCommandHandler : AsyncRequestHandler<GenerateDefaultDeviceTypeOptionsCommand>, ICommandHandler<GenerateDefaultDeviceTypeOptionsCommand>
     {
         private const string SupportedDevicesPage = "https://www.zigbee2mqtt.io/information/supported_devices.html";
         private static readonly string DefaultDeviceTypeOptionsPath = Path.GetFullPath(Path.Combine("..", "Haus.Zigbee.Host", "Zigbee2Mqtt", "Resolvers", "DefaultDeviceTypeOptions.json"));

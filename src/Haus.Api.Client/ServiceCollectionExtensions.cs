@@ -17,6 +17,7 @@ namespace Haus.Api.Client
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDiagnosticsClient())
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateRoomsClient())
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDeviceSimulatorClient())
+                .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateApplicationClient())
                 .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().Create());
         }
     }

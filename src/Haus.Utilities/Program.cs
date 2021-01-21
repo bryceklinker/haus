@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Haus.Cqrs;
 using Haus.Hosting;
 using Haus.Utilities.Common.Cli;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Haus.Utilities
@@ -11,10 +11,11 @@ namespace Haus.Utilities
     {
         public static async Task<int> Main(string[] args)
         {
-            HausLogger.Configure("Haus Utilities");
+            HausLogger.ConfigureConsoleOnly("Haus Utilities");
             try
             {
-                await ExecuteCommand(args);
+                var bus = BuildHausBus();
+                await bus.ExecuteCommandAsync(new ExecuteCommand(args));
                 return 0;
             }
             catch (Exception e)
@@ -28,19 +29,13 @@ namespace Haus.Utilities
             }
         }
 
-        private static async Task ExecuteCommand(string[] args)
-        {
-            var provider = BuildServiceProvider();
-            using var scope = provider.CreateScope();
-            var command = scope.ServiceProvider.GetRequiredService<ICommandFactory>().Create(args);
-            await scope.ServiceProvider.GetRequiredService<IMediator>().Send(command);
-        }
-
-        private static IServiceProvider BuildServiceProvider()
+        private static IHausBus BuildHausBus()
         {
             return new ServiceCollection()
                 .AddHausUtilities()
-                .BuildServiceProvider();
+                .AddHausCqrs(typeof(Program).Assembly)
+                .BuildServiceProvider()
+                .GetRequiredService<IHausBus>();
         }
     }
 }

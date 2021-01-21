@@ -1,5 +1,6 @@
 using System;
 using Haus.Utilities.Common.Cli;
+using Haus.Utilities.Zigbee2Mqtt.Commands;
 using Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;

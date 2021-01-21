@@ -1,4 +1,5 @@
 using System.Net.Http;
+using Haus.Api.Client.Application;
 using Haus.Api.Client.ClientSettings;
 using Haus.Api.Client.Devices;
 using Haus.Api.Client.DeviceSimulator;
@@ -21,6 +22,7 @@ namespace Haus.Api.Client
         IDiscoveryApiClient CreateDiscoveryClient();
         ILogsApiClient CreateLogsClient();
         IClientSettingsApiClient CreateClientSettingsClient();
+        IApplicationApiClient CreateApplicationClient();
     }
 
     public class HausApiClientFactory : IHausApiClientFactory
@@ -72,6 +74,11 @@ namespace Haus.Api.Client
         public IClientSettingsApiClient CreateClientSettingsClient()
         {
             return new ClientSettingsApiClient(_httpClientFactory.CreateClient(), _options);
+        }
+
+        public IApplicationApiClient CreateApplicationClient()
+        {
+            return new ApplicationApiClient(_httpClientFactory.CreateClient(), _options);
         }
     }
 }

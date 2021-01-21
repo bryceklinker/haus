@@ -7,3 +7,4 @@ export * from './setup-devices-api';
 export * from './setup-diagnostics-api';
 export * from './setup-rooms-api';
 export * from './setup-device-simulator-api';
+export * from './setup-application-api';

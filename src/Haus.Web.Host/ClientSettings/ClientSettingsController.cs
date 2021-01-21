@@ -1,3 +1,4 @@
+using Haus.Core;
 using Haus.Core.Models.ClientSettings;
 using Haus.Web.Host.Auth;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +16,7 @@ namespace Haus.Web.Host.ClientSettings
         private string Domain => _authOptions.Value.Domain;
         private string ClientId => _authOptions.Value.ClientId;
         private string Audience => _authOptions.Value.Audience;
-        private string Version => typeof(Startup).Assembly.GetName().Version?.ToString(3);
+        private string Version => typeof(Startup).Assembly.GetName().Version?.ToSemanticVersion();
         
         public ClientSettingsController(IOptions<AuthOptions> authOptions)
         {

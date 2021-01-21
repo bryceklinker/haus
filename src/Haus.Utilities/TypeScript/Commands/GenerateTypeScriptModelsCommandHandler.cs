@@ -5,18 +5,17 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models;
+using Haus.Cqrs.Commands;
 using Haus.Utilities.Common.Cli;
+using Haus.Utilities.TypeScript.GenerateModels;
 using MediatR;
 
-namespace Haus.Utilities.TypeScript.GenerateModels
+namespace Haus.Utilities.TypeScript.Commands
 {
     [Command("typescript", "generate-models")]
-    public record GenerateTypeScriptModelsCommand : IRequest
-    {
-        
-    }
+    public record GenerateTypeScriptModelsCommand : ICommand;
     
-    public class GenerateTypeScriptModelsCommandHandler : AsyncRequestHandler<GenerateTypeScriptModelsCommand>
+    public class GenerateTypeScriptModelsCommandHandler : AsyncRequestHandler<GenerateTypeScriptModelsCommand>, ICommandHandler<GenerateTypeScriptModelsCommand>
     {
         private static readonly string ModelsDirectory = Path.Combine(
             Directory.GetCurrentDirectory(), "..", "Haus.Web.Host", "client-app", "src", "app", "shared", "models", "generated");

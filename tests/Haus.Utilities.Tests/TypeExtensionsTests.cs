@@ -10,6 +10,7 @@ namespace Haus.Utilities.Tests
     {
         [Theory]
         [InlineData(typeof(DateTime), "string")]
+        [InlineData(typeof(DateTimeOffset), "string")]
         [InlineData(typeof(Guid), "string")]
         [InlineData(typeof(long), "number")]
         [InlineData(typeof(int), "number")]

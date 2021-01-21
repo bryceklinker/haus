@@ -1,5 +1,6 @@
 import {v4 as uuid} from 'uuid';
 import {
+  ApplicationVersionModel,
   ColorLightingModel,
   DeviceModel,
   DeviceType,
@@ -168,6 +169,15 @@ function createLogEntry(model: Partial<LogEntryModel> = {}): LogEntryModel {
   }
 }
 
+function createApplicationVersion(model: Partial<ApplicationVersionModel> = {}): ApplicationVersionModel {
+  return {
+    creationDate: model.creationDate || new Date().toISOString(),
+    isNewer: model.isNewer !== undefined ? model.isNewer : false,
+    isOfficialRelease: model.isOfficialRelease !== undefined ? model.isOfficialRelease : false,
+    version: model.version || '0.0.0'
+  }
+}
+
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
@@ -184,5 +194,6 @@ export const ModelFactory = {
   createHealthCheckModel,
   createHealthReportModel,
   createHausEvent,
-  createLogEntry
+  createLogEntry,
+  createApplicationVersion
 };

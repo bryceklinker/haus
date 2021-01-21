@@ -1,5 +1,6 @@
 using System;
 using FluentValidation;
+using Haus.Core.Application;
 using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;

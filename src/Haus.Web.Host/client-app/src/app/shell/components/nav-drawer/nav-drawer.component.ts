@@ -5,6 +5,9 @@ import {NavigationLinkModel} from "../../models";
 import {Observable} from "rxjs";
 import {SettingsService} from "../../../shared/settings";
 import {map} from "rxjs/operators";
+import {AppState} from "../../../app.state";
+import {Store} from "@ngrx/store";
+import {selectIsUpdateAvailable, ShellActions} from "../../state";
 
 type RouteLink = {name: string, path: string};
 
@@ -13,16 +16,19 @@ type RouteLink = {name: string, path: string};
   templateUrl: './nav-drawer.component.html',
   styleUrls: ['./nav-drawer.component.scss']
 })
-export class NavDrawerComponent {
+export class NavDrawerComponent implements OnInit {
   @Input() isOpen: boolean = false;
 
   @Output() drawerClosed = new EventEmitter();
 
   links$: Observable<Array<NavigationLinkModel>>
   version$: Observable<string>;
+  isUpdateAvailable$: Observable<boolean>;
 
   constructor(private readonly navigationService: NavigationService,
-              private readonly settingsService: SettingsService) {
+              private readonly settingsService: SettingsService,
+              private readonly store: Store<AppState>) {
+    this.isUpdateAvailable$ = store.select(selectIsUpdateAvailable);
     this.links$ = navigationService.links$;
     this.version$ = settingsService.settings$.pipe(
       map(settings => settings.version)
@@ -34,5 +40,9 @@ export class NavDrawerComponent {
       return;
 
     this.drawerClosed.emit();
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(ShellActions.loadLatestVersion.request());
   }
 }

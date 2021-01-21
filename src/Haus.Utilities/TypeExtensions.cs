@@ -26,6 +26,7 @@ namespace Haus.Utilities
             {typeof(string), String},
             {typeof(Guid), String},
             {typeof(DateTime), String},
+            {typeof(DateTimeOffset), String},
             {typeof(object), Object},
             {typeof(bool), Boolean},
         };

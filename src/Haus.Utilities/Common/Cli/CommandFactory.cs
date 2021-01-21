@@ -2,19 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Haus.Cqrs.Commands;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Utilities.Common.Cli
 {
     public interface ICommandFactory
     {
-        object Create(string[] args);
+        ICommand Create(string[] args);
     }
 
     public class CommandFactory : ICommandFactory
     {
         private readonly ILogger<CommandFactory> _logger;
-        private static readonly Lazy<KnownCommand[]> KnownCommands = new Lazy<KnownCommand[]>(DiscoverKnownCommands);
+        private static readonly Lazy<KnownCommand[]> KnownCommands = new(DiscoverKnownCommands);
 
         private IEnumerable<KnownCommand> Commands => KnownCommands.Value;
 
@@ -23,14 +24,14 @@ namespace Haus.Utilities.Common.Cli
             _logger = logger;
         }
 
-        public object Create(string[] args)
+        public ICommand Create(string[] args)
         {
             _logger.LogInformation("Args: {args}", string.Join(" ", args));
             var groupName = args[0];
             var commandName = args[1];
             var command = Commands.SingleOrDefault(c => c.Matches(groupName, commandName));
             if (command != null)
-                return Activator.CreateInstance(command.CommandType);
+                return Activator.CreateInstance(command.CommandType) as ICommand;
 
             throw new CommandNotFoundException();
         }

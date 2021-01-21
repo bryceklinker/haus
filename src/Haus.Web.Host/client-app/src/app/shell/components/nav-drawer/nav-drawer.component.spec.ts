@@ -1,8 +1,9 @@
 import {NavDrawerComponent} from "./nav-drawer.component";
-import {TestingEventEmitter, TestingSettingsService} from "../../../../testing";
+import {ModelFactory, TestingEventEmitter, TestingSettingsService} from "../../../../testing";
 import {NavDrawerHarness} from "./nav-drawer.harness";
 import {TestBed} from "@angular/core/testing";
 import {SettingsService} from "../../../shared/settings";
+import {ShellActions} from "../../state";
 
 describe('NavDrawerComponent', () => {
   let drawerClosed: TestingEventEmitter;
@@ -39,10 +40,22 @@ describe('NavDrawerComponent', () => {
     const harness = await NavDrawerHarness.render();
     const settingsService = TestBed.inject(SettingsService) as TestingSettingsService;
 
-
     settingsService.updateSettings({...settingsService.settings, version: '9.9.9'});
     await harness.whenRenderingDone();
 
     expect(harness.container).toHaveTextContent('9.9.9');
+  })
+
+  it('should request to load latest version', async () => {
+    const harness = await NavDrawerHarness.render();
+
+    expect(harness.dispatchedActions).toContainEqual(ShellActions.loadLatestVersion.request());
+  })
+
+  it('should show that an update is available', async () => {
+    const latestVersion = ModelFactory.createApplicationVersion({isNewer: true});
+    const harness = await NavDrawerHarness.render({}, ShellActions.loadLatestVersion.success(latestVersion));
+
+    expect(harness.isUpdateAvailable).toEqual(true);
   })
 })

@@ -5,6 +5,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
 
 import {
+  ApplicationVersionModel,
   DeviceModel,
   DeviceType,
   DiscoveryModel,
@@ -108,6 +109,10 @@ export class HausApiClient {
 
   getLogs(): Observable<ListResult<LogEntryModel>> {
     return this.execute<ListResult<LogEntryModel>>(HttpMethod.GET, '/api/logs');
+  }
+
+  getLatestVersion(): Observable<ApplicationVersionModel> {
+    return this.execute<ApplicationVersionModel>(HttpMethod.GET, '/api/application/latest-version');
   }
 
   private execute<T>(method: HttpMethod, url: string, data: any = null): Observable<T> {
