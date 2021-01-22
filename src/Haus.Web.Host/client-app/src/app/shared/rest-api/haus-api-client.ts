@@ -3,8 +3,10 @@ import {HttpClient} from "@angular/common/http";
 import {map, tap} from "rxjs/operators";
 import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
+import {saveAs} from 'file-saver';
 
 import {
+  ApplicationPackageModel,
   ApplicationVersionModel,
   DeviceModel,
   DeviceType,
@@ -113,6 +115,18 @@ export class HausApiClient {
 
   getLatestVersion(): Observable<ApplicationVersionModel> {
     return this.execute<ApplicationVersionModel>(HttpMethod.GET, '/api/application/latest-version');
+  }
+
+  getLatestPackages(): Observable<ListResult<ApplicationPackageModel>> {
+    return this.execute<ListResult<ApplicationPackageModel>>(HttpMethod.GET, '/api/application/latest-version/packages');
+  }
+
+  downloadPackage(model: ApplicationPackageModel): Observable<void> {
+    const url = `/api/application/latest-version/packages/${model.id}/download`;
+    return this.http.get(url, {responseType: 'blob'}).pipe(
+      tap(blob => saveAs(blob, model.name)),
+      map(() => {})
+    )
   }
 
   private execute<T>(method: HttpMethod, url: string, data: any = null): Observable<T> {

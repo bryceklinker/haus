@@ -1,6 +1,7 @@
 import {AuthGuard} from "@auth0/auth0-angular";
 import {MainContentComponent} from "./shell/components/main-content/main-content.component";
 import {Route} from "@angular/router";
+import {LatestVersionDetailsRootComponent} from "./shell/components/latest-version-details-root/latest-version-details-root.component";
 
 export const MAIN_ROUTE: Route = {
   path: '',
@@ -26,6 +27,10 @@ export const MAIN_ROUTE: Route = {
     {
       path: 'health',
       loadChildren: () => import('./health/health.module').then(m => m.HealthModule)
+    },
+    {
+      path: 'latest-version',
+      component: LatestVersionDetailsRootComponent
     }
   ]
 }

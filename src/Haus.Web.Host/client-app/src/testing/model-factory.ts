@@ -1,5 +1,6 @@
 import {v4 as uuid} from 'uuid';
 import {
+  ApplicationPackageModel,
   ApplicationVersionModel,
   ColorLightingModel,
   DeviceModel,
@@ -179,6 +180,13 @@ function createApplicationVersion(model: Partial<ApplicationVersionModel> = {}):
   }
 }
 
+function createApplicationPackage(model: Partial<ApplicationPackageModel> = {}): ApplicationPackageModel {
+  return {
+    id: model.id || 76,
+    name: model.name || uuid()
+  }
+}
+
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
@@ -196,5 +204,6 @@ export const ModelFactory = {
   createHealthReportModel,
   createHausEvent,
   createLogEntry,
-  createApplicationVersion
+  createApplicationVersion,
+  createApplicationPackage
 };

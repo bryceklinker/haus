@@ -1,7 +1,7 @@
 import {
   createAppTestingService,
   eventually,
-  ModelFactory,
+  ModelFactory, setupGetLatestPackages,
   setupGetLatestVersion,
   TestingActionsSubject
 } from "../../../testing";
@@ -23,6 +23,21 @@ describe('ShellEffects', () => {
     actions$.next(ShellActions.loadLatestVersion.request());
     await eventually(() => {
       expect(actions$.publishedActions).toContainEqual(ShellActions.loadLatestVersion.success(expected));
+    })
+  })
+
+  it('should get latest packages from api', async () => {
+    const packages = [
+      ModelFactory.createApplicationPackage(),
+      ModelFactory.createApplicationPackage(),
+      ModelFactory.createApplicationPackage()
+    ];
+    setupGetLatestPackages(packages);
+
+    actions$.next(ShellActions.loadLatestPackages.request());
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(ShellActions.loadLatestPackages.success(ModelFactory.createListResult(...packages)));
     })
   })
 })

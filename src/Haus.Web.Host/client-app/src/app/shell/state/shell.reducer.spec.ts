@@ -12,4 +12,18 @@ describe('shellReducer', () => {
 
     expect(state.latestVersion).toEqual(version);
   })
+
+  it('should update latest packages', () => {
+    const result = ModelFactory.createListResult(
+      ModelFactory.createApplicationPackage(),
+      ModelFactory.createApplicationPackage(),
+      ModelFactory.createApplicationPackage()
+    );
+
+    const state = generateStateFromActions(shellReducer,
+      ShellActions.loadLatestPackages.success(result)
+    );
+
+    expect(state.latestPackages).toEqual(result.items);
+  })
 })

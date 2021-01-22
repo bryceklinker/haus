@@ -13,6 +13,20 @@ export class ShellEffects {
     ))
   ));
 
+  loadLatestPackages$ = createEffect(() => this.actions$.pipe(
+    ofType(ShellActions.loadLatestPackages.request),
+    mergeMap(() => this.api.getLatestPackages().pipe(
+      map(result => ShellActions.loadLatestPackages.success(result))
+    ))
+  ))
+
+  downloadPackage$ = createEffect(() => this.actions$.pipe(
+    ofType(ShellActions.downloadPackage.request),
+    mergeMap(({payload}) => this.api.downloadPackage(payload).pipe(
+      map(() => ShellActions.downloadPackage.success())
+    ))
+  ))
+
   constructor(private actions$: Actions,
               private api: HausApiClient) {
   }

@@ -7,6 +7,7 @@ import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
 import {MatSliderHarness} from "@angular/material/slider/testing";
 import {MatSelectHarness} from "@angular/material/select/testing";
 import {By} from "@angular/platform-browser";
+import {MatListItemHarness} from "@angular/material/list/testing";
 
 export abstract class HausComponentHarness<TComponent> {
   protected get matHarness() {
