@@ -1,31 +1,37 @@
 <mat-card data-testid="latest-version-details">
   <mat-card-header>
-    <mat-card-title data-testid="version">{{versionNumber}}</mat-card-title>
+    <mat-card-title data-testid="version">Release Version: {{versionNumber}}</mat-card-title>
   </mat-card-header>
-  <mat-card-content>
-    <div>
+  <mat-card-content class="content">
+    <div class="info-group">
       <mat-label>Is Official Release?</mat-label>
       <mat-slide-toggle [checked]="isStableRelease" data-testid="is-official" disabled></mat-slide-toggle>
     </div>
-    <div>
+    <div class="info-group">
       <mat-label>Is Newer Release?</mat-label>
       <mat-slide-toggle [checked]="isNewerVersion" data-testid="is-newer" disabled></mat-slide-toggle>
     </div>
-    <mat-form-field appearance="fill">
+    <div class="info-group">
       <mat-label>Release Date</mat-label>
-      <input matInput data-testid="release-date" [value]="releaseDate" disabled/>
-    </mat-form-field>
-    <p class="mat-body-1" data-testid="description">{{description}}</p>
+      <span>{{releaseDate}}</span>
+    </div>
+    <div>
+      <h3>Release Notes</h3>
+      <p class="mat-body-1" data-testid="description">{{description}}</p>
+    </div>
 
-    <h3>Packages</h3>
-    <mat-divider></mat-divider>
-    <mat-action-list>
-      <button *ngFor="let model of packages"
-              mat-list-item
-              data-testid="application-package"
-              (click)="onDownloadPackage(model)">
-        {{model.name}}
-      </button>
-    </mat-action-list>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Packages</mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-action-list>
+        <button *ngFor="let model of packages"
+                mat-list-item
+                data-testid="application-package"
+                (click)="onDownloadPackage(model)">
+          {{model.name}}
+        </button>
+      </mat-action-list>
+    </mat-expansion-panel>
   </mat-card-content>
 </mat-card>

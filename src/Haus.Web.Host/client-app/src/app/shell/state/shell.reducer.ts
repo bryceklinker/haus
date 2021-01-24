@@ -13,8 +13,9 @@ const initialState: ShellState = {
 };
 
 const reducer = createReducer(initialState,
-  on(ShellActions.loadLatestVersion.success, (state, {payload}) => ({...state, latestVersion: payload})),
-  on(ShellActions.loadLatestPackages.success, (state, {payload}) => ({...state, latestPackages: payload})),
+  on(ShellActions.loadLatestVersion.success, (state, {payload}) => ({...state, latestVersion: payload, loadVersionError: null})),
+  on(ShellActions.loadLatestPackages.success, (state, {payload}) => ({...state, latestPackages: payload, loadPackagesError: null})),
+  on(ShellActions.downloadPackage.success, (state) => ({...state, downloadPackageError: null})),
   on(ShellActions.loadLatestVersion.failed, (state, {payload}) => ({...state, loadVersionError: payload})),
   on(ShellActions.loadLatestPackages.failed, (state, {payload}) => ({...state, loadPackagesError: payload})),
   on(ShellActions.downloadPackage.failed, (state, {payload}) => ({...state, downloadPackageError: payload})),
@@ -31,6 +32,4 @@ export const selectHasLatestVersionError = createSelector(selectShellState, s =>
 export const selectHasLatestVersion = createSelector(selectShellState, s => s.latestVersion !== null && s.loadVersionError === null);
 export const selectLatestPackages = createSelector(selectShellState, s => s.latestPackages || []);
 export const selectLatestVersionError = createSelector(selectShellState, s => s.loadVersionError);
-export const selectLatestPackagesError = createSelector(selectShellState, s => s.loadPackagesError);
-export const selectDownloadPackageError = createSelector(selectShellState, s => s.downloadPackageError);
 export const selectIsDownloadingPackage = selectIsLoading(ShellActions.downloadPackage.request);

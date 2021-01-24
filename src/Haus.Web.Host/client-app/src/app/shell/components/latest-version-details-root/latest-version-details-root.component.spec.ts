@@ -1,6 +1,7 @@
 import {LatestVersionDetailsRootHarness} from "./latest-version-details-root.harness";
 import {ShellActions} from "../../state";
 import {ModelFactory} from "../../../../testing";
+import {DownloadingPackageDialogComponent} from "../downloading-package-dialog/downloading-package-dialog.component";
 
 describe('LatestVersionDetailsComponent', () => {
   it('should show latest version information', async () => {
@@ -40,6 +41,7 @@ describe('LatestVersionDetailsComponent', () => {
     await harness.downloadPackage();
 
     expect(harness.dispatchedActions).toContainEqual(ShellActions.downloadPackage.request(packageModel));
+    expect(harness.dialog.open).toHaveBeenCalledWith(DownloadingPackageDialogComponent, {data: packageModel});
   })
 
   it('should show latest version error when latest version failed to load', async () => {

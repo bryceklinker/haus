@@ -53,4 +53,37 @@ describe('shellReducer', () => {
 
     expect(state.downloadPackageError).toEqual(error);
   })
+
+  it('should clear error when getting latest version successful', () => {
+    const error = new Error('idk');
+
+    const state = generateStateFromActions(shellReducer,
+      ShellActions.loadLatestVersion.failed(error),
+      ShellActions.loadLatestVersion.success(ModelFactory.createApplicationVersion())
+    );
+
+    expect(state.loadVersionError).toEqual(null);
+  })
+
+  it('should clear error when getting latest packages successful', () => {
+    const error = new Error('idk');
+
+    const state = generateStateFromActions(shellReducer,
+      ShellActions.loadLatestPackages.failed(error),
+      ShellActions.loadLatestPackages.success(ModelFactory.createListResult())
+    );
+
+    expect(state.loadPackagesError).toEqual(null);
+  })
+
+  it('should clear error when downloading package successful', () => {
+    const error = new Error('idk');
+
+    const state = generateStateFromActions(shellReducer,
+      ShellActions.downloadPackage.failed(error),
+      ShellActions.downloadPackage.success()
+    );
+
+    expect(state.downloadPackageError).toEqual(null);
+  })
 })

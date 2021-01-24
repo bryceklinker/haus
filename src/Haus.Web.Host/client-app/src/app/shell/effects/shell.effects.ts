@@ -10,7 +10,8 @@ export class ShellEffects {
   loadLatestVersion$ = createEffect(() => this.actions$.pipe(
     ofType(ShellActions.loadLatestVersion.request),
     mergeMap(() => this.api.getLatestVersion().pipe(
-      map(version => ShellActions.loadLatestVersion.success(version))
+      map(version => ShellActions.loadLatestVersion.success(version)),
+      catchError(err => of(ShellActions.loadLatestVersion.failed(err)))
     ))
   ));
 
@@ -25,7 +26,8 @@ export class ShellEffects {
   downloadPackage$ = createEffect(() => this.actions$.pipe(
     ofType(ShellActions.downloadPackage.request),
     mergeMap(({payload}) => this.api.downloadPackage(payload).pipe(
-      map(() => ShellActions.downloadPackage.success())
+      map(() => ShellActions.downloadPackage.success()),
+      catchError(err => of(ShellActions.downloadPackage.failed(err)))
     ))
   ));
 

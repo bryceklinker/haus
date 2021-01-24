@@ -5,6 +5,7 @@ import {ShellComponent} from "./shell/shell.component";
 import {LatestVersionDetailsRootComponent} from "./latest-version-details-root/latest-version-details-root.component";
 import {LatestVersionDetailsComponent} from "./latest-version-details/latest-version-details.component";
 import {LatestVersionErrorComponent} from "./latest-version-error/latest-version-error.component";
+import {DownloadingPackageDialogComponent} from "./downloading-package-dialog/downloading-package-dialog.component";
 
 export const SHELL_COMPONENTS = [
   HeaderComponent,
@@ -13,5 +14,6 @@ export const SHELL_COMPONENTS = [
   ShellComponent,
   LatestVersionDetailsRootComponent,
   LatestVersionDetailsComponent,
-  LatestVersionErrorComponent
+  LatestVersionErrorComponent,
+  DownloadingPackageDialogComponent
 ]

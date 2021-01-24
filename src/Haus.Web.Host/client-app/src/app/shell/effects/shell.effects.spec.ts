@@ -1,7 +1,7 @@
 import {
   createAppTestingService,
   eventually,
-  ModelFactory, setupFailedLatestPackages, setupGetLatestPackages,
+  ModelFactory, setupFailedDownloadPackage, setupFailedLatestPackages, setupFailedLatestVersion, setupGetLatestPackages,
   setupGetLatestVersion,
   TestingActionsSubject
 } from "../../../testing";
@@ -52,4 +52,29 @@ describe('ShellEffects', () => {
       }))
     })
   })
+
+  it('should notify getting latest version failed', async () => {
+    setupFailedLatestVersion();
+
+    actions$.next(ShellActions.loadLatestVersion.request());
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(expect.objectContaining({
+        type: ShellActions.loadLatestVersion.failed.type
+      }))
+    })
+  })
+
+  it('should notify downloading package failed', async () => {
+    setupFailedDownloadPackage(12);
+
+    actions$.next(ShellActions.downloadPackage.request(ModelFactory.createApplicationPackage({id: 12})));
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(expect.objectContaining({
+        type: ShellActions.downloadPackage.failed.type
+      }))
+    })
+  })
+
 })
