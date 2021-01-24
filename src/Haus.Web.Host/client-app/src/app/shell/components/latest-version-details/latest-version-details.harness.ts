@@ -21,16 +21,16 @@ export class LatestVersionDetailsHarness extends HausComponentHarness<LatestVers
     return screen.queryAllByTestId('application-package');
   }
 
+  get releaseDate() {
+    return screen.getByTestId('release-date');
+  }
+
   async getIsNewerRelease() {
     return await this.isSlideToggleCheckedByTestId('is-newer');
   }
 
   async getIsOfficialRelease() {
     return await this.isSlideToggleCheckedByTestId('is-official');
-  }
-
-  async getReleaseDate() {
-    return await this.getInputValueByTestId('release-date');
   }
 
   async downloadPackage() {
