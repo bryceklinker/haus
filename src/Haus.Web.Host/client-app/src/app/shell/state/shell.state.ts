@@ -3,4 +3,7 @@ import {ApplicationPackageModel, ApplicationVersionModel} from "../../shared/mod
 export interface ShellState {
   latestVersion: ApplicationVersionModel | null;
   latestPackages: Array<ApplicationPackageModel>;
+  loadVersionError: any;
+  loadPackagesError: any;
+  downloadPackageError: any;
 }

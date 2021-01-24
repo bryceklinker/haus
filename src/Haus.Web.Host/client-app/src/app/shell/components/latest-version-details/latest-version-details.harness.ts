@@ -4,6 +4,11 @@ import {LatestVersionDetailsComponent} from "./latest-version-details.component"
 import userEvent from "@testing-library/user-event";
 
 export class LatestVersionDetailsHarness extends HausComponentHarness<LatestVersionDetailsComponent> {
+
+  get isShowing() {
+    return screen.queryAllByTestId('latest-version-details').length > 0;
+  }
+
   get versionElement() {
     return screen.getByTestId('version');
   }

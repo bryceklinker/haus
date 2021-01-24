@@ -3,7 +3,13 @@ import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 import {ApplicationPackageModel, ApplicationVersionModel} from "../../../shared/models";
-import {selectLatestPackages, selectLatestVersion, ShellActions} from "../../state";
+import {
+  selectHasLatestVersion,
+  selectHasLatestVersionError,
+  selectLatestPackages,
+  selectLatestVersion, selectLatestVersionError,
+  ShellActions
+} from "../../state";
 
 @Component({
   selector: 'latest-version-details-root',
@@ -13,10 +19,14 @@ import {selectLatestPackages, selectLatestVersion, ShellActions} from "../../sta
 export class LatestVersionDetailsRootComponent implements OnInit {
   latestVersion$: Observable<ApplicationVersionModel | null>;
   latestPackage$: Observable<Array<ApplicationPackageModel>>;
+  hasLatestVersion$: Observable<boolean>;
+  latestVersionError$: Observable<any>;
 
   constructor(private readonly store: Store<AppState>) {
     this.latestVersion$ = store.select(selectLatestVersion);
     this.latestPackage$ = store.select(selectLatestPackages);
+    this.hasLatestVersion$ = store.select(selectHasLatestVersion);
+    this.latestVersionError$ = store.select(selectLatestVersionError);
   }
 
   ngOnInit(): void {
@@ -25,5 +35,10 @@ export class LatestVersionDetailsRootComponent implements OnInit {
 
   onDownloadPackage(model: ApplicationPackageModel) {
     this.store.dispatch(ShellActions.downloadPackage.request(model));
+  }
+
+  onRetry() {
+    this.store.dispatch(ShellActions.loadLatestVersion.request());
+    this.store.dispatch(ShellActions.loadLatestPackages.request());
   }
 }

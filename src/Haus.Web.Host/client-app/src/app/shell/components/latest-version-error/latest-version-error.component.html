@@ -1,0 +1,22 @@
+<mat-card data-testid="latest-version-error">
+  <mat-card-header>
+    <mat-card-title>Failed to get latest version</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      We failed to get the latest version from GitHub.
+      Have you configured a Personal Access Token for the application to use?
+      To retry manually <button mat-button (click)="onRetry()" data-testid="retry-btn">click here</button>
+    </p>
+
+    <mat-expansion-panel data-testid="error-message">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Error Message</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <p class="mat-body-1">
+        {{errorMessage}}
+      </p>
+    </mat-expansion-panel>
+  </mat-card-content>
+</mat-card>

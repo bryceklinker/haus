@@ -12,10 +12,13 @@
           {{route.name}}
         </a>
       </mat-nav-list>
-      <a class="mat-subheader version" routerLink="latest-version">
+      <a mat-menu-item class="mat-subheader version" routerLink="latest-version">
           Version: {{version$ | async}}
         <mat-icon data-testid="update-available" *ngIf="isUpdateAvailable$ | async">
           upgrade
+        </mat-icon>
+        <mat-icon data-testid="update-error" *ngIf="hasUpdateError$ | async">
+          warning
         </mat-icon>
       </a>
     </div>

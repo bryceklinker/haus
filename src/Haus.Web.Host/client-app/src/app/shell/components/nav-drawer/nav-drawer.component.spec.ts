@@ -56,6 +56,12 @@ describe('NavDrawerComponent', () => {
     const latestVersion = ModelFactory.createApplicationVersion({isNewer: true});
     const harness = await NavDrawerHarness.render({}, ShellActions.loadLatestVersion.success(latestVersion));
 
-    expect(harness.isUpdateAvailable).toEqual(true);
+    expect(harness.isShowingUpdateAvailable).toEqual(true);
+  })
+
+  it('should show update error when load latest version failed', async () => {
+    const harness = await NavDrawerHarness.render({}, ShellActions.loadLatestVersion.failed(new Error('idk')));
+
+    expect(harness.isShowingUpdateError).toEqual(true);
   })
 })

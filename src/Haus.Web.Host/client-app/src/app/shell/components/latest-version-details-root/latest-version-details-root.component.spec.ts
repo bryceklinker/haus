@@ -23,7 +23,9 @@ describe('LatestVersionDetailsComponent', () => {
   })
 
   it('should request application packages', async () => {
-    const harness = await LatestVersionDetailsRootHarness.render();
+    const harness = await LatestVersionDetailsRootHarness.render(
+      ShellActions.loadLatestVersion.success(ModelFactory.createApplicationVersion())
+    );
 
     expect(harness.dispatchedActions).toContainEqual(ShellActions.loadLatestPackages.request());
   })
@@ -32,10 +34,41 @@ describe('LatestVersionDetailsComponent', () => {
     const packageModel = ModelFactory.createApplicationPackage({id: 88});
 
     const harness = await LatestVersionDetailsRootHarness.render(
+      ShellActions.loadLatestVersion.success(ModelFactory.createApplicationVersion()),
       ShellActions.loadLatestPackages.success(ModelFactory.createListResult(packageModel))
     );
     await harness.downloadPackage();
 
     expect(harness.dispatchedActions).toContainEqual(ShellActions.downloadPackage.request(packageModel));
+  })
+
+  it('should show latest version error when latest version failed to load', async () => {
+    const harness = await LatestVersionDetailsRootHarness.render(
+      ShellActions.loadLatestVersion.failed(new Error('idk'))
+    );
+
+    expect(harness.errorElement).toHaveTextContent('idk');
+    expect(harness.isShowingLatestError).toEqual(true);
+    expect(harness.isShowingLatestVersionDetails).toEqual(false);
+  })
+
+  it('should dispatch load latest version when retrying', async () => {
+    const harness = await LatestVersionDetailsRootHarness.render(
+      ShellActions.loadLatestVersion.failed(new Error('huh?'))
+    );
+
+    await harness.retry();
+
+    expect(harness.dispatchedActions).toContainEqual(ShellActions.loadLatestVersion.request());
+  })
+
+  it('should dispatch load latest packages when retrying', async () => {
+    const harness = await LatestVersionDetailsRootHarness.render(
+      ShellActions.loadLatestVersion.failed(new Error('huh?'))
+    );
+
+    await harness.retry();
+
+    expect(harness.dispatchedActions).toContainEqual(ShellActions.loadLatestPackages.request());
   })
 })

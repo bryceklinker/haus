@@ -8,6 +8,7 @@ import {HausApiClient} from "./rest-api";
 import {SHARED_COMPONENTS} from "./components";
 import {SignalrHubConnectionFactory, SignalrServiceFactory, SignalrEffectsFactory} from "./signalr";
 import {MaterialModule} from "./material.module";
+import {SaveFileService} from "./save-file.service";
 
 @NgModule({
   providers: [
@@ -16,7 +17,8 @@ import {MaterialModule} from "./material.module";
     HausApiClient,
     SignalrServiceFactory,
     SignalrHubConnectionFactory,
-    SignalrEffectsFactory
+    SignalrEffectsFactory,
+    SaveFileService
   ],
   imports: [
     MaterialModule,

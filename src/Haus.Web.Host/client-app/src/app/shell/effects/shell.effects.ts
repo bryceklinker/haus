@@ -2,7 +2,8 @@ import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {HausApiClient} from "../../shared/rest-api";
 import {ShellActions} from "../state";
-import {map, mergeMap} from "rxjs/operators";
+import {catchError, map, mergeMap} from "rxjs/operators";
+import {of} from "rxjs";
 
 @Injectable()
 export class ShellEffects {
@@ -16,7 +17,8 @@ export class ShellEffects {
   loadLatestPackages$ = createEffect(() => this.actions$.pipe(
     ofType(ShellActions.loadLatestPackages.request),
     mergeMap(() => this.api.getLatestPackages().pipe(
-      map(result => ShellActions.loadLatestPackages.success(result))
+      map(result => ShellActions.loadLatestPackages.success(result)),
+      catchError(err => of(ShellActions.loadLatestPackages.failed(err)))
     ))
   ))
 
@@ -25,9 +27,10 @@ export class ShellEffects {
     mergeMap(({payload}) => this.api.downloadPackage(payload).pipe(
       map(() => ShellActions.downloadPackage.success())
     ))
-  ))
+  ));
 
   constructor(private actions$: Actions,
               private api: HausApiClient) {
+
   }
 }

@@ -3,7 +3,6 @@ import {HttpClient} from "@angular/common/http";
 import {map, tap} from "rxjs/operators";
 import {BehaviorSubject, Observable} from "rxjs";
 import {v4 as uuid} from 'uuid';
-import {saveAs} from 'file-saver';
 
 import {
   ApplicationPackageModel,
@@ -21,6 +20,7 @@ import {
   SimulatedDeviceModel
 } from "../models";
 import {HttpMethod} from "./http-method";
+import {SaveFileService} from "../save-file.service";
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +38,8 @@ export class HausApiClient {
     );
   }
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private saveFileService: SaveFileService) {
   }
 
   getDevices(): Observable<ListResult<DeviceModel>> {
@@ -124,7 +125,7 @@ export class HausApiClient {
   downloadPackage(model: ApplicationPackageModel): Observable<void> {
     const url = `/api/application/latest-version/packages/${model.id}/download`;
     return this.http.get(url, {responseType: 'blob'}).pipe(
-      tap(blob => saveAs(blob, model.name)),
+      tap(blob => this.saveFileService.saveAs(blob, model.name)),
       map(() => {})
     )
   }

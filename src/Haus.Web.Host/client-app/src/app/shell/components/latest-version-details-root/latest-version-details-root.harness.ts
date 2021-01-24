@@ -2,9 +2,24 @@ import {HausComponentHarness, renderAppComponent, RenderComponentResult} from ".
 import {LatestVersionDetailsRootComponent} from "./latest-version-details-root.component";
 import {Action} from "@ngrx/store";
 import {LatestVersionDetailsHarness} from "../latest-version-details/latest-version-details.harness";
+import {screen} from "@testing-library/dom";
+import {LatestVersionErrorHarness} from "../latest-version-error/latest-version-error.harness";
 
 export class LatestVersionDetailsRootHarness extends HausComponentHarness<LatestVersionDetailsRootComponent> {
   private readonly _latestVersionDetailsHarness: LatestVersionDetailsHarness;
+  private readonly _latestVersionErrorHarness: LatestVersionErrorHarness;
+
+  get errorElement() {
+    return this._latestVersionErrorHarness.errorElement;
+  }
+
+  get isShowingLatestVersionDetails() {
+    return this._latestVersionDetailsHarness.isShowing;
+  }
+
+  get isShowingLatestError() {
+    return screen.queryAllByTestId('latest-version-error').length > 0;
+  }
 
   get descriptionElement() {
     return this._latestVersionDetailsHarness.descriptionElement;
@@ -22,10 +37,15 @@ export class LatestVersionDetailsRootHarness extends HausComponentHarness<Latest
     await this._latestVersionDetailsHarness.downloadPackage();
   }
 
+  async retry() {
+    await this._latestVersionErrorHarness.retry();
+  }
+
   constructor(result: RenderComponentResult<any>) {
     super(result);
 
     this._latestVersionDetailsHarness = LatestVersionDetailsHarness.fromResult(result);
+    this._latestVersionErrorHarness = LatestVersionErrorHarness.fromResult(result);
   }
 
   static fromResult(result: RenderComponentResult<any>) {

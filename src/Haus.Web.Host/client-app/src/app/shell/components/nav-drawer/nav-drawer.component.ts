@@ -7,7 +7,7 @@ import {SettingsService} from "../../../shared/settings";
 import {map} from "rxjs/operators";
 import {AppState} from "../../../app.state";
 import {Store} from "@ngrx/store";
-import {selectIsUpdateAvailable, ShellActions} from "../../state";
+import {selectHasLatestVersionError, selectIsUpdateAvailable, ShellActions} from "../../state";
 
 type RouteLink = {name: string, path: string};
 
@@ -24,11 +24,14 @@ export class NavDrawerComponent implements OnInit {
   links$: Observable<Array<NavigationLinkModel>>
   version$: Observable<string>;
   isUpdateAvailable$: Observable<boolean>;
+  hasUpdateError$: Observable<boolean>
 
   constructor(private readonly navigationService: NavigationService,
               private readonly settingsService: SettingsService,
               private readonly store: Store<AppState>) {
     this.isUpdateAvailable$ = store.select(selectIsUpdateAvailable);
+    this.hasUpdateError$ = store.select(selectHasLatestVersionError);
+
     this.links$ = navigationService.links$;
     this.version$ = settingsService.settings$.pipe(
       map(settings => settings.version)

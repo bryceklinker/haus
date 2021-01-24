@@ -8,7 +8,7 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog
 
 import {
   TestingActionsSubject,
-  TestingAuthService,
+  TestingAuthService, TestingSaveFileService,
   TestingSettingsService,
   TestingSignalrHubConnectionFactory
 } from "./fakes";
@@ -30,6 +30,7 @@ import {appReducerMap} from "../app/app-reducer-map";
 import {AppState} from "../app/app.state";
 import {APP_EFFECTS} from "../app/app-effects";
 import {Provider} from "@angular/core";
+import {SaveFileService} from "../app/shared/save-file.service";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   routes?: Routes;
@@ -104,6 +105,7 @@ export function getTestingProviders(dialogData: any) {
     {provide: SettingsService, useClass: TestingSettingsService},
     {provide: ActionsSubject, useClass: TestingActionsSubject},
     {provide: Store, useClass: TestingStore},
+    {provide: SaveFileService, useClass: TestingSaveFileService}
   ];
 
   if (dialogData) {

@@ -1,4 +1,14 @@
-<latest-version-details [packages]="latestPackage$ | async"
+<latest-version-details *ngIf="hasLatestVersion$ | async else latestVersionError"
+                        [packages]="latestPackage$ | async"
                         [version]="latestVersion$ | async"
                         (downloadPackage)="onDownloadPackage($event)">
 </latest-version-details>
+
+
+<ng-template #latestVersionError>
+  <latest-version-error [error]="latestVersionError$ | async"
+                        (retry)="onRetry()">
+
+  </latest-version-error>
+</ng-template>
+

@@ -26,4 +26,31 @@ describe('shellReducer', () => {
 
     expect(state.latestPackages).toEqual(result.items);
   })
+
+  it('should have error when loading latest version fails', () => {
+    const error = new Error('Something bad happened');
+    const state = generateStateFromActions(shellReducer,
+      ShellActions.loadLatestVersion.failed(error)
+    )
+
+    expect(state.loadVersionError).toEqual(error);
+  })
+
+  it('should have error when loading latest packages fails', () => {
+    const error = new Error('Something bad happened');
+    const state = generateStateFromActions(shellReducer,
+      ShellActions.loadLatestPackages.failed(error)
+    )
+
+    expect(state.loadPackagesError).toEqual(error);
+  })
+
+  it('should have error when downloading package fails', () => {
+    const error = new Error('Something bad happened');
+    const state = generateStateFromActions(shellReducer,
+      ShellActions.downloadPackage.failed(error)
+    )
+
+    expect(state.downloadPackageError).toEqual(error);
+  })
 })
