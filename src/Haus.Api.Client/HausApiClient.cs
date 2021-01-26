@@ -170,6 +170,11 @@ namespace Haus.Api.Client
             return RoomsApiClient.TurnRoomOffAsync(roomId);
         }
 
+        public Task<HttpResponseMessage> TriggerOccupancyChange(string simulatorId)
+        {
+            return DeviceSimulatorApiClient.TriggerOccupancyChange(simulatorId);
+        }
+
         public Task<HttpResponseMessage> AddSimulatedDeviceAsync(SimulatedDeviceModel model)
         {
             return DeviceSimulatorApiClient.AddSimulatedDeviceAsync(model);

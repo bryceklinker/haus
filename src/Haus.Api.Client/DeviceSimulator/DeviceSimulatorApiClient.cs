@@ -9,6 +9,7 @@ namespace Haus.Api.Client.DeviceSimulator
 {
     public interface IDeviceSimulatorApiClient
     {
+        Task<HttpResponseMessage> TriggerOccupancyChange(string simulatorId);
         Task<HttpResponseMessage> AddSimulatedDeviceAsync(SimulatedDeviceModel model);
         Task<HttpResponseMessage> ResetDeviceSimulatorAsync();
     }
@@ -18,6 +19,11 @@ namespace Haus.Api.Client.DeviceSimulator
         public DeviceSimulatorApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) 
             : base(httpClient, options)
         {
+        }
+
+        public Task<HttpResponseMessage> TriggerOccupancyChange(string simulatorId)
+        {
+            return PostEmptyContentAsync($"device-simulator/devices/{simulatorId}/trigger-occupancy-change");
         }
 
         public Task<HttpResponseMessage> AddSimulatedDeviceAsync(SimulatedDeviceModel model)

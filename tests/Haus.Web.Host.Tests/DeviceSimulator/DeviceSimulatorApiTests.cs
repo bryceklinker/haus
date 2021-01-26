@@ -1,3 +1,5 @@
+using System;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Api.Client;
@@ -5,6 +7,8 @@ using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.DeviceSimulator;
+using Haus.Core.Models.Lighting;
+using Haus.Core.Models.Rooms;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -54,6 +58,24 @@ namespace Haus.Web.Host.Tests.DeviceSimulator
             Eventually.Assert(() =>
             {
                 state.Devices.Should().BeEmpty();
+            });
+        }
+
+        [Fact]
+        public async Task WhenTriggeringOccupancyChangeForDeviceInRoomThenRoomIsTurnedOn()
+        {
+            var simulator = new SimulatedDeviceModel($"{Guid.NewGuid()}", DeviceType.MotionSensor);
+            await _client.AddSimulatedDeviceAsync(simulator);
+            var device = await _factory.WaitForDeviceToBeDiscovered(simulator.DeviceType, simulator.Id);
+            var room = await (await _client.CreateRoomAsync(new RoomModel(Name: $"{Guid.NewGuid()}"))).Content.ReadFromJsonAsync<RoomModel>();
+            await _client.AddDevicesToRoomAsync(room.Id, device.Id);
+            
+            await _client.TriggerOccupancyChange(simulator.Id);
+
+            await Eventually.AssertAsync(async () =>
+            {
+                var updatedRoom = await _client.GetRoomAsync(room.Id);
+                updatedRoom.Lighting.State.Should().Be(LightingState.On);
             });
         }
     }

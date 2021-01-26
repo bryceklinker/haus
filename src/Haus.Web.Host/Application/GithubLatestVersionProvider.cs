@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Haus.Core.Application;
@@ -63,18 +62,6 @@ namespace Haus.Web.Host.Application
         private Task<Release> GetLatestGitHubRelease()
         {
             return _githubClient.Repository.Release.GetLatest(GithubRepositoryOwner, GithubRepository);
-        }
-
-        private HttpClient CreateGithubHttpClient()
-        {
-            return new()
-            {
-                DefaultRequestHeaders =
-                {
-                    Authorization =
-                        new AuthenticationHeaderValue("token", GithubPersonalAccessToken)
-                }
-            };
         }
     }
 }

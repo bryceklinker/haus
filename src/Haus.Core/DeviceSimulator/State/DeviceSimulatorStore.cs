@@ -1,13 +1,15 @@
 using System;
 using System.Reactive.Subjects;
+using Haus.Core.DeviceSimulator.Entities;
 
 namespace Haus.Core.DeviceSimulator.State
 {
     public interface IDeviceSimulatorStore : IObservable<IDeviceSimulatorState>
     {
         IDeviceSimulatorState Current { get; }
-        void Publish(IDeviceSimulatorState state);
 
+        SimulatedDeviceEntity GetDeviceById(string deviceId);
+        void Publish(IDeviceSimulatorState state);
         void PublishNext(Func<IDeviceSimulatorState, IDeviceSimulatorState> generateNextState);
     }
     
@@ -20,6 +22,11 @@ namespace Haus.Core.DeviceSimulator.State
         public DeviceSimulatorStore()
         {
             _subject = new BehaviorSubject<IDeviceSimulatorState>(DeviceSimulatorState.Initial);
+        }
+
+        public SimulatedDeviceEntity GetDeviceById(string deviceId)
+        {
+            return Current.GetDeviceById(deviceId);
         }
 
         public void Publish(IDeviceSimulatorState state)

@@ -21,6 +21,12 @@ namespace Haus.Web.Host.DeviceSimulator
             return CommandAsync(new CreateSimulatedDeviceCommand(model));
         }
 
+        [HttpPost("devices/{id}/trigger-occupancy-change")]
+        public Task<IActionResult> TriggerOccupancyChange([FromRoute] string id)
+        {
+            return CommandAsync(new TriggerOccupancyChangedCommand(id));
+        }
+
         [HttpPost("reset")]
         public Task<IActionResult> Reset()
         {

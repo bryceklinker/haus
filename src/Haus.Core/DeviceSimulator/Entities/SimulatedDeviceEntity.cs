@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text.Json.Serialization;
 using Haus.Core.Common.Entities;
-using Haus.Core.Devices.Entities;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
@@ -13,7 +10,12 @@ using Haus.Core.Models.Lighting;
 
 namespace Haus.Core.DeviceSimulator.Entities
 {
-    public record SimulatedDeviceEntity(string Id = null, DeviceType DeviceType = DeviceType.Unknown, ImmutableArray<Metadata> Metadata = default, LightingModel Lighting = null)
+    public record SimulatedDeviceEntity(
+        string Id = null, 
+        DeviceType DeviceType = DeviceType.Unknown,
+        bool IsOccupied = false,
+        ImmutableArray<Metadata> Metadata = default, 
+        LightingModel Lighting = null)
     {
         private static readonly ImmutableArray<Metadata> StandardMetadata = new[]
         {
@@ -22,7 +24,7 @@ namespace Haus.Core.DeviceSimulator.Entities
 
         public string Id { get; } = string.IsNullOrEmpty(Id) ? $"{Guid.NewGuid()}" : Id;
         public ImmutableArray<Metadata> Metadata { get; } = Metadata.IsDefaultOrEmpty ? ImmutableArray<Metadata>.Empty : Metadata;
-        public LightingModel Lighting { get; } = DeviceType == DeviceType.Light ? Lighting : null;
+        public LightingModel Lighting { get; private init; } = DeviceType == DeviceType.Light ? Lighting : null;
 
         public static SimulatedDeviceEntity Create(SimulatedDeviceModel model)
         {
@@ -30,13 +32,13 @@ namespace Haus.Core.DeviceSimulator.Entities
                 .Select(Common.Entities.Metadata.FromModel)
                 .Concat(StandardMetadata)
                 .ToImmutableArray();
-            return new SimulatedDeviceEntity(model.Id, model.DeviceType, metadata);
+            return new SimulatedDeviceEntity(model.Id, model.DeviceType, Metadata: metadata);
         }
 
         public SimulatedDeviceModel ToModel()
         {
             var metadataModels = Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray();
-            return new SimulatedDeviceModel(Id, DeviceType, metadataModels, Lighting);
+            return new SimulatedDeviceModel(Id, DeviceType, IsOccupied, metadataModels, Lighting);
         }
 
         public DeviceDiscoveredEvent ToDeviceDiscoveredModel()
@@ -47,7 +49,12 @@ namespace Haus.Core.DeviceSimulator.Entities
 
         public SimulatedDeviceEntity ChangeLighting(LightingModel model)
         {
-            return new(Id, DeviceType, Metadata, model);
+            return this with {Lighting = model};
+        }
+
+        public SimulatedDeviceEntity ChangeOccupancy()
+        {
+            return this with {IsOccupied = !IsOccupied};
         }
     }
 }

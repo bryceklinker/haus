@@ -64,5 +64,26 @@ namespace Haus.Core.Tests.DeviceSimulator.State
 
             state.Devices.Should().HaveCount(1);
         }
+
+        [Fact]
+        public void WhenDeviceOccupancyChangedThenReturnsStateWithUpdatedDevice()
+        {
+            var deviceId = $"{Guid.NewGuid()}";
+            var state = DeviceSimulatorState.Initial
+                .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel(deviceId, DeviceType.MotionSensor)))
+                .ChangeOccupancy(deviceId);
+
+            state.Devices.Should().HaveCount(1)
+                .And.OnlyContain(e => e.Id == deviceId && e.IsOccupied);
+        }
+
+        [Fact]
+        public void WhenDeviceOccupancyChangedForMissingDeviceThenReturnsUnchangedState()
+        {
+            var state = DeviceSimulatorState.Initial
+                .ChangeOccupancy($"{Guid.NewGuid()}");
+
+            state.Should().BeSameAs(DeviceSimulatorState.Initial);
+        }
     }
 }

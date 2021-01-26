@@ -5,6 +5,7 @@ using Haus.Core.Common.Commands;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Queries;
 using Haus.Core.Common.Storage;
+using Haus.Core.DeviceSimulator.State;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
@@ -27,6 +28,11 @@ namespace Haus.Testing.Support
                 .GetRequiredService<IHausBus>();
         }
 
+        public static CapturingHausBus CreateCapturingBus(IDeviceSimulatorStore simulatorStore)
+        {
+            return CreateCapturingBus(configureServices: services => services.AddSingleton(simulatorStore));
+        }
+        
         public static CapturingHausBus CreateCapturingBus(HausDbContext context = null, Action<IServiceCollection> configureServices = null)
         {
             var services = CreateServicesCollection(context, configureServices);

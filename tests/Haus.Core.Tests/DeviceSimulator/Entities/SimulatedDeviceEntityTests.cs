@@ -49,7 +49,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
         [Fact]
         public void WhenConvertedToModelThenReturnsSimulatedDeviceModel()
         {
-            var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel($"{Guid.NewGuid()}", DeviceType.Light, new []
+            var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel($"{Guid.NewGuid()}", DeviceType.Light, true, new []
             {
                 new MetadataModel("one", "three")
             }));
@@ -58,6 +58,7 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
 
             model.Id.Should().Be(entity.Id);
             model.DeviceType.Should().Be(DeviceType.Light);
+            model.IsOccupied.Should().BeFalse();
             model.Metadata.Should().HaveCount(2)
                 .And.ContainEquivalentOf(new MetadataModel("one", "three"));
         }
@@ -70,6 +71,24 @@ namespace Haus.Core.Tests.DeviceSimulator.Entities
             var model = entity.ToModel();
 
             model.Lighting.Should().BeEquivalentTo(new LightingModel());
+        }
+
+        [Fact]
+        public void WhenSimulatorIsMotionSensorAndOccupancyIsChangedThenIsOccupied()
+        {
+            var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor)
+                .ChangeOccupancy();
+
+            entity.IsOccupied.Should().BeTrue();
+        }
+
+        [Fact]
+        public void WhenSimulatorIsMotionSensorAndOccupiedAndOccupancyIsChangedThenIsVacant()
+        {
+            var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor, IsOccupied: true)
+                .ChangeOccupancy();
+
+            entity.IsOccupied.Should().BeFalse();
         }
     }
 }
