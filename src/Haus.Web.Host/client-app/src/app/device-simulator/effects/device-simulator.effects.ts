@@ -19,6 +19,13 @@ export class DeviceSimulatorEffects {
     ))
   ))
 
+  triggerOccupancyChange$ = createEffect(() => this.actions$.pipe(
+    ofType(DeviceSimulatorActions.triggerOccupancyChange.request),
+    mergeMap(({payload}) => this.api.triggerOccupancyChange(payload.id).pipe(
+      map(() => DeviceSimulatorActions.triggerOccupancyChange.success())
+    ))
+  ))
+
   constructor(private readonly actionsSubject: ActionsSubject,
               private readonly signalrEffectsFactory: SignalrEffectsFactory,
               private readonly actions$: Actions,

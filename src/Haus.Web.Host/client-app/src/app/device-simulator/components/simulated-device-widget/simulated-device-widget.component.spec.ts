@@ -1,7 +1,6 @@
-import {ModelFactory, renderFeatureComponent} from "../../../../testing";
-import {DeviceSimulatorModule} from "../../device-simulator.module";
+import {ModelFactory, TestingEventEmitter} from "../../../../testing";
 import {SimulatedDeviceWidgetComponent} from "./simulated-device-widget.component";
-import {DeviceType} from "../../../shared/models";
+import {DeviceType, SimulatedDeviceModel} from "../../../shared/models";
 import {SimulatedDeviceWidgetHarness} from "./simulated-device-widget.harness";
 
 describe('SimulatedDeviceWidgetComponent', () => {
@@ -57,10 +56,21 @@ describe('SimulatedDeviceWidgetComponent', () => {
     expect(harness.container).toHaveTextContent('N/A');
   })
 
-  function renderWidget(props: Partial<SimulatedDeviceWidgetComponent>) {
-    return renderFeatureComponent(SimulatedDeviceWidgetComponent, {
-      imports: [DeviceSimulatorModule],
-      componentProperties: props
-    })
-  }
+  it('should notify to trigger occupancy change', async () => {
+    const emitter = new TestingEventEmitter<SimulatedDeviceModel>();
+    const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor});
+
+    const harness = await SimulatedDeviceWidgetHarness.render({simulatedDevice, occupancyChange: emitter});
+    await harness.triggerOccupancyChange();
+
+    expect(emitter.emit).toHaveBeenCalledWith(simulatedDevice);
+  })
+
+  it('should show if device is occupied', async () => {
+    const harness = await SimulatedDeviceWidgetHarness.render({
+      simulatedDevice: ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor, isOccupied: true})
+    });
+
+    expect(await harness.getIsOccupied()).toEqual(true);
+  })
 })

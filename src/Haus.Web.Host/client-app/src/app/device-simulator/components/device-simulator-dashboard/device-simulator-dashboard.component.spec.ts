@@ -1,6 +1,7 @@
 import {DeviceSimulatorDashboardComponent} from "./device-simulator-dashboard.component";
-import {ModelFactory} from "../../../../testing";
+import {ModelFactory, TestingEventEmitter} from "../../../../testing";
 import {DeviceSimulatorDashboardHarness} from "./device-simulator-dashboard.harness";
+import {DeviceType, SimulatedDeviceModel} from "../../../shared/models";
 
 describe('DeviceSimulatorDashboardComponent', () => {
   it('should show connected when is connected', async () => {
@@ -26,5 +27,18 @@ describe('DeviceSimulatorDashboardComponent', () => {
     });
 
     expect(harness.simulatedDevices).toHaveLength(3);
+  })
+
+  it('should notify to change occupancy', async () => {
+    const emitter = new TestingEventEmitter<SimulatedDeviceModel>();
+    const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor});
+    const harness = await DeviceSimulatorDashboardHarness.render({
+      simulatedDevices: [simulatedDevice],
+      occupancyChange: emitter
+    });
+
+    await harness.triggerOccupancyChange();
+
+    expect(emitter.emit).toHaveBeenCalledWith(simulatedDevice);
   })
 })

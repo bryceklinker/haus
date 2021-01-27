@@ -19,12 +19,24 @@ export class SimulatedDeviceWidgetHarness extends HausComponentHarness<Simulated
     return screen.queryAllByTestId('simulated-metadata-item');
   }
 
+  async triggerOccupancyChange() {
+    await this.clickButtonByTestId('trigger-occupancy-change-btn');
+  }
+
+  async getIsOccupied() {
+    return this.isSlideToggleCheckedByTestId('is-occupied-toggle');
+  }
+
+
   private constructor(result: RenderComponentResult<SimulatedDeviceWidgetComponent>) {
     super(result);
 
     this._lightingHarness = LightingHarness.fromResult(result);
   }
 
+  static fromResult(result: RenderComponentResult<any>) {
+    return new SimulatedDeviceWidgetHarness(result);
+  }
 
   static async render(props: Partial<SimulatedDeviceWidgetComponent>) {
     const result = await renderFeatureComponent(SimulatedDeviceWidgetComponent, {
@@ -32,6 +44,6 @@ export class SimulatedDeviceWidgetHarness extends HausComponentHarness<Simulated
       componentProperties: props
     });
 
-    return new SimulatedDeviceWidgetHarness(result);
+    return SimulatedDeviceWidgetHarness.fromResult(result);
   }
 }

@@ -9,9 +9,12 @@
 </mat-toolbar>
 
 <div class="dashboard">
-  <div *ngFor="let simulatedDevice of simulatedDevices"
+  <div *ngFor="let simulatedDevice of simulatedDevices; trackBy: trackDevicesBy"
        data-testid="simulated-device-item"
        class="widget">
-    <simulated-device-widget [simulatedDevice]="simulatedDevice"></simulated-device-widget>
+    <simulated-device-widget [simulatedDevice]="simulatedDevice"
+                             (occupancyChange)="onOccupancyChange($event)">
+
+    </simulated-device-widget>
   </div>
 </div>

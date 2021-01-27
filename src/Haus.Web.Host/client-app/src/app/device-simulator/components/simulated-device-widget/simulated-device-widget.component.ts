@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, Output, EventEmitter} from "@angular/core";
 import {toTitleCase} from "../../../shared/humanize";
 import {DeviceType, LightingModel, MetadataModel, SimulatedDeviceModel} from "../../../shared/models";
 
@@ -9,6 +9,7 @@ import {DeviceType, LightingModel, MetadataModel, SimulatedDeviceModel} from "..
 })
 export class SimulatedDeviceWidgetComponent {
   @Input() simulatedDevice: SimulatedDeviceModel | null = null;
+  @Output() occupancyChange = new EventEmitter<SimulatedDeviceModel>();
 
   get id(): string {
     return this.simulatedDevice ? this.simulatedDevice.id  : 'N/A';
@@ -16,6 +17,10 @@ export class SimulatedDeviceWidgetComponent {
 
   get isLight(): boolean {
     return this.deviceType === DeviceType.Light;
+  }
+
+  get isMotionSensor(): boolean {
+    return !!this.simulatedDevice && this.simulatedDevice.deviceType === DeviceType.MotionSensor;
   }
 
   get deviceType(): string {
@@ -28,5 +33,17 @@ export class SimulatedDeviceWidgetComponent {
 
   get metadata(): Array<MetadataModel> {
     return this.simulatedDevice ? this.simulatedDevice.metadata : [];
+  }
+
+  get isOccupied(): boolean {
+    return !!this.simulatedDevice && this.simulatedDevice.isOccupied;
+  }
+
+  onOccupancyChange() {
+    if (!this.simulatedDevice) {
+      return;
+    }
+
+    this.occupancyChange.emit(this.simulatedDevice);
   }
 }

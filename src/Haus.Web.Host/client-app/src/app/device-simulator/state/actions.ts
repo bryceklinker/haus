@@ -16,5 +16,12 @@ export const DeviceSimulatorActions = {
     (model: Partial<SimulatedDeviceModel>) => ({payload: model}),
     () => ({payload: 'ignore'}),
     (err: any) => ({payload: err})
+  ),
+
+  triggerOccupancyChange: createAsyncActionSet(
+    '[Device Simulator] Trigger Occupancy Change',
+    (model: SimulatedDeviceModel) => ({payload: model}),
+    () => ({payload: 'ignore'}),
+    (err: any) => ({payload: err})
   )
 }

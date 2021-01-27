@@ -5,6 +5,7 @@ import {
   eventually,
   ModelFactory,
   setupAddSimulatedDevice,
+  setupTriggerSimulatedDeviceOccupancyChange,
   TestingActionsSubject,
   TestingSignalrHubConnection,
   TestingSignalrHubConnectionFactory
@@ -73,6 +74,17 @@ describe('DeviceSimulatorEffects', () => {
 
     await eventually(() => {
       expect(actions$.publishedActions).toContainEqual(DeviceSimulatorActions.addSimulatedDevice.success());
+    })
+  })
+
+  it('should trigger occupancy change for simulated device when requested', async () => {
+    setupTriggerSimulatedDeviceOccupancyChange('my-super-device');
+    const model = ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor, id: 'my-super-device'});
+
+    actions$.next(DeviceSimulatorActions.triggerOccupancyChange.request(model));
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(DeviceSimulatorActions.triggerOccupancyChange.success());
     })
   })
 })

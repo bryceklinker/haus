@@ -3,15 +3,4 @@
   grid-template-columns: 1fr;
 
   grid-template-rows: auto auto auto auto 1fr;
-
-  .info-group  {
-    display: grid;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    align-content: center;
-
-    mat-label {
-      padding-right: 1rem;
-    }
-  }
 }

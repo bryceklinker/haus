@@ -17,6 +17,21 @@
       </mat-list>
     </mat-expansion-panel>
 
+    <mat-expansion-panel *ngIf="isMotionSensor">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Occupancy</mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="toggle-group">
+        <mat-label>Is Occupied?</mat-label>
+        <mat-slide-toggle [checked]="isOccupied" data-testid="is-occupied-toggle" disabled></mat-slide-toggle>
+      </div>
+      <button mat-button
+              data-testid="trigger-occupancy-change-btn"
+              (click)="onOccupancyChange()">
+        Trigger Occupancy Change
+      </button>
+    </mat-expansion-panel>
+
     <mat-expansion-panel *ngIf="isLight">
       <mat-expansion-panel-header>
         <mat-panel-title>Lighting</mat-panel-title>

@@ -1,4 +1,5 @@
 <device-simulator-dashboard [simulatedDevices]="simulatedDevices$ | async"
-                            [isConnected]="isConnected$ | async">
+                            [isConnected]="isConnected$ | async"
+                            (occupancyChange)="onOccupancyChange($event)">
 
 </device-simulator-dashboard>

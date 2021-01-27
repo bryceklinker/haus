@@ -3,15 +3,15 @@
     <mat-card-title data-testid="version">Release Version: {{versionNumber}}</mat-card-title>
   </mat-card-header>
   <mat-card-content class="content">
-    <div class="info-group">
+    <div class="toggle-group">
       <mat-label>Is Official Release?</mat-label>
       <mat-slide-toggle [checked]="isStableRelease" data-testid="is-official" disabled></mat-slide-toggle>
     </div>
-    <div class="info-group">
+    <div class="toggle-group">
       <mat-label>Is Newer Release?</mat-label>
       <mat-slide-toggle [checked]="isNewerVersion" data-testid="is-newer" disabled></mat-slide-toggle>
     </div>
-    <div class="info-group">
+    <div class="toggle-group">
       <mat-label>Release Date</mat-label>
       <span data-testid="release-date">{{releaseDate}}</span>
     </div>

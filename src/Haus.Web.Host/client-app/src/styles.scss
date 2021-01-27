@@ -53,5 +53,16 @@ body {
   font-size:48px !important;
 }
 
+.toggle-group {
+  display: grid;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  align-content: center;
+
+  mat-label {
+    padding-right: 1rem;
+  }
+}
+
 @import './app/shared/styles/master-detail';
 @import './app/shared/styles/colors';

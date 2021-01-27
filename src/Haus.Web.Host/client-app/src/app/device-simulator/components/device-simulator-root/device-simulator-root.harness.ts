@@ -1,4 +1,3 @@
-import {screen} from "@testing-library/dom";
 import {Action} from "@ngrx/store";
 
 import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
@@ -11,6 +10,10 @@ export class DeviceSimulatorRootHarness extends HausComponentHarness<DeviceSimul
 
   get simulatedDevices() {
     return this._deviceSimulatorDashboardHarness.simulatedDevices;
+  }
+
+  async triggerOccupancyChange() {
+    await this._deviceSimulatorDashboardHarness.triggerOccupancyChange();
   }
 
   private constructor(result: RenderComponentResult<DeviceSimulatorRootComponent>) {

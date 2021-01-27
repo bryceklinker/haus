@@ -5,8 +5,6 @@ mat-sidenav-container {
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr;
-
-
 }
 
 .side-nav-container {
@@ -24,4 +22,5 @@ mat-sidenav-container {
 
 .version {
   justify-self: end;
+  text-decoration: none;
 }

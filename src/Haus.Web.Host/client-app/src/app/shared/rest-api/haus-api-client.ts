@@ -110,6 +110,10 @@ export class HausApiClient {
     return this.execute(HttpMethod.POST, '/api/device-simulator/devices', model);
   }
 
+  triggerOccupancyChange(deviceId: string): Observable<void> {
+    return this.execute(HttpMethod.POST, `/api/device-simulator/devices/${deviceId}/trigger-occupancy-change`);
+  }
+
   getLogs(): Observable<ListResult<LogEntryModel>> {
     return this.execute<ListResult<LogEntryModel>>(HttpMethod.GET, '/api/logs');
   }

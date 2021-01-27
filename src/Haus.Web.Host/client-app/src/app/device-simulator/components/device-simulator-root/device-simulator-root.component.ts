@@ -27,4 +27,8 @@ export class DeviceSimulatorRootComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.store.dispatch(DeviceSimulatorActions.stop());
   }
+
+  onOccupancyChange(model: SimulatedDeviceModel) {
+    this.store.dispatch(DeviceSimulatorActions.triggerOccupancyChange.request(model));
+  }
 }

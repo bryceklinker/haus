@@ -2,6 +2,7 @@ import {ModelFactory} from "../../../../testing";
 import {DeviceSimulatorRootComponent} from "./device-simulator-root.component";
 import {DeviceSimulatorActions} from "../../state";
 import {DeviceSimulatorRootHarness} from "./device-simulator-root.harness";
+import {DeviceType} from "../../../shared/models";
 
 describe('DeviceSimulatorRootComponent', () => {
   it('should start connection to device simulator', async () => {
@@ -36,5 +37,18 @@ describe('DeviceSimulatorRootComponent', () => {
     harness.destroy();
 
     expect(harness.dispatchedActions).toContainEqual(DeviceSimulatorActions.stop());
+  })
+
+  it('should trigger occupancy request when occupancy changes', async () => {
+    const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor});
+    const harness = await DeviceSimulatorRootHarness.render(
+      DeviceSimulatorActions.stateReceived({
+        devices: [simulatedDevice]
+      })
+    );
+
+    await harness.triggerOccupancyChange();
+
+    expect(harness.dispatchedActions).toContainEqual(DeviceSimulatorActions.triggerOccupancyChange.request(simulatedDevice));
   })
 })

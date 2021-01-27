@@ -69,6 +69,7 @@ function createSimulatedDevice(model: Partial<SimulatedDeviceModel> = {}): Simul
     deviceType: model.deviceType || DeviceType.Unknown,
     id: model.id || uuid(),
     lighting: model.lighting || createLighting(),
+    isOccupied: model.isOccupied !== undefined ? model.isOccupied : false,
     metadata: [
       ...(model.metadata || []),
     ]
