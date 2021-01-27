@@ -31,6 +31,8 @@ import {AppState} from "../app/app.state";
 import {APP_EFFECTS} from "../app/app-effects";
 import {Provider} from "@angular/core";
 import {SaveFileService} from "../app/shared/save-file.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {TestingSnackBar} from "./fakes/testing-snack-bar";
 
 export interface TestModuleOptions extends TestModuleMetadata {
   routes?: Routes;
@@ -105,7 +107,8 @@ export function getTestingProviders(dialogData: any) {
     {provide: SettingsService, useClass: TestingSettingsService},
     {provide: ActionsSubject, useClass: TestingActionsSubject},
     {provide: Store, useClass: TestingStore},
-    {provide: SaveFileService, useClass: TestingSaveFileService}
+    {provide: SaveFileService, useClass: TestingSaveFileService},
+    {provide: MatSnackBar, useClass: TestingSnackBar}
   ];
 
   if (dialogData) {

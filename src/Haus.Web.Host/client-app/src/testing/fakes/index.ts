@@ -7,3 +7,4 @@ export * from './testing-activated-route';
 export * from './testing-settings.service';
 export * from "./testing-signalr-hub.connection";
 export * from './testing-save-file.service';
+export * from './testing-snack-bar';

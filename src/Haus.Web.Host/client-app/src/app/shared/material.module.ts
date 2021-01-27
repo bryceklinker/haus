@@ -49,6 +49,7 @@ const MATERIAL_MODULES = [
   MatGridListModule,
   MatRippleModule,
   MatSliderModule,
+  MatSnackBarModule,
   DragDropModule,
   ScrollingModule
 ]

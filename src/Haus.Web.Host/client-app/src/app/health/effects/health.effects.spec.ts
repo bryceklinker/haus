@@ -4,22 +4,28 @@ import {
   createAppTestingService, eventually, ModelFactory,
   TestingActionsSubject,
   TestingSignalrHubConnection,
-  TestingSignalrHubConnectionFactory
+  TestingSignalrHubConnectionFactory,
+  TestingSnackBar,
+  setupGetLogs,
+  setupGetLogsFailure
 } from "../../../testing";
 import {HealthEffects} from "./health.effects";
 import {KNOWN_HUB_NAMES, SignalrHubConnectionFactory} from "../../shared/signalr";
 import {HealthActions} from "../state";
-import {setupGetLogs} from "../../../testing/fakes/testing-server/setup-logs-api";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 describe('HealthEffects', () => {
   let actions$: TestingActionsSubject;
-  let signalrHub: TestingSignalrHubConnection
+  let signalrHub: TestingSignalrHubConnection;
+  let snackBar: TestingSnackBar;
 
   beforeEach(() => {
     const {actionsSubject} = createAppTestingService(HealthEffects);
     actions$ = actionsSubject;
+
     signalrHub = (TestBed.inject(SignalrHubConnectionFactory) as TestingSignalrHubConnectionFactory)
       .getTestingHub(KNOWN_HUB_NAMES.health);
+    snackBar = TestBed.inject(MatSnackBar) as TestingSnackBar;
   })
 
   it('should start listening for health updates', async () => {
@@ -68,6 +74,28 @@ describe('HealthEffects', () => {
       expect(actions$.publishedActions).toContainEqual(HealthActions.loadRecentLogs.success(
         ModelFactory.createListResult(log)
       ))
+    })
+  })
+
+  it('should notify when loading logs fails', async () => {
+    setupGetLogsFailure();
+
+    actions$.next(HealthActions.loadRecentLogs.request());
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(expect.objectContaining({
+        type: HealthActions.loadRecentLogs.failed.type
+      }))
+    })
+  })
+
+  it('should show snack bar when logs fail to load', async () => {
+    setupGetLogs();
+
+    actions$.next(HealthActions.loadRecentLogs.failed(new Error('Bad Things')));
+
+    await eventually(() => {
+      expect(snackBar.open).toHaveBeenCalled();
     })
   })
 })
