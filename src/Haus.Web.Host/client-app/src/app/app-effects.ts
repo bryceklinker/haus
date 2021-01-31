@@ -8,6 +8,7 @@ import {DiscoveryEffects} from "./shared/discovery";
 import {LightTypesEffects} from "./devices/effects/light-types.effects";
 import {HealthEffects} from "./health/effects/health.effects";
 import {ShellEffects} from "./shell/effects/shell.effects";
+import {AuthEffects} from "./shared/auth/effects/auth.effects";
 
 export const APP_EFFECTS = [
   DevicesEffects,
@@ -19,5 +20,6 @@ export const APP_EFFECTS = [
   DiscoveryEffects,
   LightTypesEffects,
   HealthEffects,
+  AuthEffects,
   ShellEffects
 ]

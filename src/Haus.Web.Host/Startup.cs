@@ -1,3 +1,4 @@
+using System.IO;
 using Haus.Hosting;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.Events;
@@ -34,7 +35,7 @@ namespace Haus.Web.Host
                 .AddHausAuthentication(_configuration)
                 .AddHausRestApi()
                 .AddHausRealtimeApi()
-                .AddHausSpa(ClientAppRoot)
+                .AddHausSpa(Path.Combine(ClientAppRoot, "dist"))
                 .AddHausHealthChecks();
         }
 

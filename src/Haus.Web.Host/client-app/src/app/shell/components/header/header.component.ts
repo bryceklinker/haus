@@ -1,5 +1,6 @@
-import {Component, EventEmitter, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {ThemeService} from "../../../shared/theming/theme.service";
+import {UserModel} from "../../../shared/auth";
 
 @Component({
   selector: 'shell-header',
@@ -7,16 +8,26 @@ import {ThemeService} from "../../../shared/theming/theme.service";
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  @Output() menuClick = new EventEmitter<void>();
+  @Input() user: UserModel | null = null;
+  @Output() toggleMenu = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
+
+  get profilePicture(): string | null {
+    return this.user ? this.user.picture : null;
+  }
 
   constructor(private themeService: ThemeService) {
   }
 
-  handleMenuClick() {
-    this.menuClick.emit();
+  onToggleMenu() {
+    this.toggleMenu.emit();
   }
 
   toggleTheme() {
     this.themeService.toggleTheme();
+  }
+
+  onLogout() {
+    this.logout.emit();
   }
 }

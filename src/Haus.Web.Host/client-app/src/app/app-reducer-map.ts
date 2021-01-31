@@ -9,6 +9,7 @@ import {discoveryReducer} from "./shared/discovery";
 import {healthReducer} from "./health/state";
 import {eventsReducer} from "./shared/events";
 import {shellReducer} from "./shell/state";
+import {authReducer} from "./shared/auth/state";
 
 export const appReducerMap: ActionReducerMap<AppState> = {
   devices: devicesReducer,
@@ -21,5 +22,6 @@ export const appReducerMap: ActionReducerMap<AppState> = {
   lightTypes: lightTypesReducer,
   health: healthReducer,
   events: eventsReducer,
-  shell: shellReducer
+  shell: shellReducer,
+  auth: authReducer,
 };

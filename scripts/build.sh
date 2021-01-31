@@ -10,6 +10,7 @@ PUBLISH_DIRECTORY="${WORKING_DIRECTORY}/publish"
 COVERAGE_FILE_PATH="${WORKING_DIRECTORY}/coverage.json"
 REPORT_COVERAGE_FILE_PATH="${WORKING_DIRECTORY}/coverage.cobertura.xml"
 
+ACCEPTANCE_TESTS_DIRECTORY="${WORKING_DIRECTORY}/tests/Haus.Acceptance.Tests"
 UTILITIES_DIRECTORY="${WORKING_DIRECTORY}/src/Haus.Utilities"
 FRONT_END_DIRECTORY="${WORKING_DIRECTORY}/src/Haus.Web.Host/client-app"
 WEB_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Web.Host/Haus.Web.Host.csproj"
@@ -61,6 +62,13 @@ function run_tests() {
   popd || exit
 }
 
+function run_acceptance_tests() {
+  pushd "${ACCEPTANCE_TESTS_DIRECTORY}" || exit
+    yarn install
+    yarn test
+  popd || exit
+}
+
 function dotnet_publish() {
   RUNTIME_IDENTIFIER=$1
   PROJECT_PATH=$2
@@ -88,13 +96,12 @@ function publish_app() {
     dotnet_publish "win-x64" "${ZIGBEE_HOST_PROJECT}" "${PUBLISH_DIRECTORY}/zigbee_host" "${ZIGBEE_HOST_BASE_ASSET_PATH}"
     dotnet_publish "osx-x64" "${ZIGBEE_HOST_PROJECT}" "${PUBLISH_DIRECTORY}/zigbee_host" "${ZIGBEE_HOST_BASE_ASSET_PATH}"
   fi
-  
-  
 }
 
 function main() {
   build_solution
   run_tests
+  run_acceptance_tests
   publish_app
 }
 

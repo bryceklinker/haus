@@ -1,4 +1,9 @@
-<shell-header [classList]="themeClass$ | async" (menuClick)="onMenuClicked()"></shell-header>
+<shell-header [classList]="themeClass$ | async"
+              [user]="user$ | async"
+              (toggleMenu)="onToggleMenu()"
+              (logout)="onLogout()">
+
+</shell-header>
 
 <shell-nav-drawer [classList]="themeClass$ | async" [isOpen]="isSidenavOpen" (drawerClosed)="handleDrawerClosed()">
   <router-outlet></router-outlet>

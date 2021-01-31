@@ -6,11 +6,13 @@ import {SHELL_COMPONENTS} from "../app/shell/components";
 import {SharedModule} from "../app/shared/shared.module";
 import {CommonModule} from "@angular/common";
 import {ActionsSubject} from "@ngrx/store";
-import {TestingActionsSubject} from "./fakes";
+import {TestingActionsSubject, TestingAuthService} from "./fakes";
+import {AuthService} from "@auth0/auth0-angular";
 
 export interface TestServiceResult<T> {
   service: T,
   actionsSubject: TestingActionsSubject,
+  authService: TestingAuthService
 }
 export function createFeatureTestingService<T>(service: Type<T>, options: TestModuleOptions): TestServiceResult<T> {
   TestBed.configureTestingModule(createTestingModule(options))
@@ -31,6 +33,7 @@ function createServiceResult<T>(service: Type<T>): TestServiceResult<T> {
   }
   return {
     service: instance,
-    actionsSubject: TestBed.inject(ActionsSubject) as TestingActionsSubject
+    actionsSubject: TestBed.inject(ActionsSubject) as TestingActionsSubject,
+    authService: TestBed.inject(AuthService) as TestingAuthService
   }
 }

@@ -1,8 +1,12 @@
-import {HausComponentHarness, renderAppComponent} from "../../../../testing";
+import {HausComponentHarness, renderAppComponent, RenderComponentResult} from "../../../../testing";
 import {ShellComponent} from "./shell.component";
 import {screen} from "@testing-library/dom";
+import {Action} from "@ngrx/store";
+import {HeaderHarness} from "../header/header.harness";
 
 export class ShellHarness extends HausComponentHarness<ShellComponent> {
+  private readonly _headerHarness: HeaderHarness;
+
   get headerElement() {
     return this.container.querySelector('shell-header');
   }
@@ -15,12 +19,28 @@ export class ShellHarness extends HausComponentHarness<ShellComponent> {
     return screen.getByTestId('nav-drawer').getAttribute('style');
   }
 
+  get userMenu() {
+    return this._headerHarness.userMenu;
+  }
+
   async clickMenu() {
     await this.clickButtonByTestId('menu-btn');
   }
 
-  static async render() {
-    const result = await renderAppComponent(ShellComponent);
+  async logout() {
+    return this._headerHarness.logout();
+  }
+
+  constructor(result: RenderComponentResult<ShellComponent>) {
+    super(result);
+
+    this._headerHarness = HeaderHarness.fromResult(result);
+  }
+
+  static async render(...actions: Action[]) {
+    const result = await renderAppComponent(ShellComponent, {
+      actions
+    });
 
     return new ShellHarness(result);
   }

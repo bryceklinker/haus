@@ -1,9 +1,12 @@
 import {Component, OnInit} from "@angular/core";
-import {ThemeService} from "../../../shared/theming/theme.service";
-import {Observable, Subscription} from "rxjs";
-import {AppState} from "../../../app.state";
+import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
+
+import {ThemeService} from "../../../shared/theming/theme.service";
+import {AppState} from "../../../app.state";
 import {SharedActions} from "../../../shared/actions";
+import {AuthActions, UserModel} from "../../../shared/auth";
+import {selectUser} from "../../../shared/auth/state";
 
 @Component({
   selector: 'app-shell',
@@ -12,6 +15,7 @@ import {SharedActions} from "../../../shared/actions";
 })
 export class ShellComponent implements OnInit{
   isSidenavOpen: boolean = false;
+  user$: Observable<UserModel | null>;
 
   get themeClass$(): Observable<string> {
     return this.themeService.themeClass$;
@@ -19,18 +23,22 @@ export class ShellComponent implements OnInit{
 
   constructor(private readonly themeService: ThemeService,
               private readonly store: Store<AppState>) {
-
+    this.user$ = store.select(selectUser);
   }
 
   ngOnInit(): void {
     this.store.dispatch(SharedActions.initApp());
   }
 
-  onMenuClicked() {
+  onToggleMenu() {
     this.isSidenavOpen = !this.isSidenavOpen;
   }
 
   handleDrawerClosed() {
     this.isSidenavOpen = false;
+  }
+
+  onLogout() {
+    this.store.dispatch(AuthActions.logout());
   }
 }

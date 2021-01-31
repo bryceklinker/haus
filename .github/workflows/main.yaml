@@ -49,6 +49,8 @@ jobs:
           IS_RELEASE: ${{ github.event.inputs.is_release || false }}
           VERSION: ${{ steps.tag_version.outputs.new_tag }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
+          AUTH_CLIENT_SECRET: ${{ secrets.AUTH_CLIENT_SECRET }}
       
       - name: Create Release
         id: create_release

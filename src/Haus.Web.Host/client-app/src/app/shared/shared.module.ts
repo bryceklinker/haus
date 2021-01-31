@@ -9,6 +9,7 @@ import {SHARED_COMPONENTS} from "./components";
 import {SignalrHubConnectionFactory, SignalrServiceFactory, SignalrEffectsFactory} from "./signalr";
 import {MaterialModule} from "./material.module";
 import {SaveFileService} from "./save-file.service";
+import {UserRequiredGuard} from "./auth";
 
 @NgModule({
   providers: [
@@ -18,7 +19,8 @@ import {SaveFileService} from "./save-file.service";
     SignalrServiceFactory,
     SignalrHubConnectionFactory,
     SignalrEffectsFactory,
-    SaveFileService
+    SaveFileService,
+    UserRequiredGuard
   ],
   imports: [
     MaterialModule,

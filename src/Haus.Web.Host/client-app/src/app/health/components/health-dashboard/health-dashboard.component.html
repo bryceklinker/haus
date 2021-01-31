@@ -1,4 +1,4 @@
-<mat-card data-testid="health-dashboard" *ngIf="hasReport else waiting">
+<mat-card *ngIf="hasReport else waiting">
   <mat-card-header>
     <mat-card-title [class.warning-color]="isWarning"
                     [class.success-color]="isOk"

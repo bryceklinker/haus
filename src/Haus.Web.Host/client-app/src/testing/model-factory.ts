@@ -22,6 +22,7 @@ import {
   TemperatureLightingModel,
   UiMqttDiagnosticsMessageModel
 } from "../app/shared/models";
+import {UserModel} from "../app/shared/auth";
 
 let id = 0;
 
@@ -188,6 +189,14 @@ function createApplicationPackage(model: Partial<ApplicationPackageModel> = {}):
   }
 }
 
+function createUser(model: Partial<UserModel> = {}): UserModel {
+  return {
+    name: model.name || uuid(),
+    email: model.email || `${uuid()}@haus.com`,
+    picture: model.picture || `https://${uuid()}.png`
+  }
+}
+
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
@@ -206,5 +215,6 @@ export const ModelFactory = {
   createHausEvent,
   createLogEntry,
   createApplicationVersion,
-  createApplicationPackage
+  createApplicationPackage,
+  createUser
 };

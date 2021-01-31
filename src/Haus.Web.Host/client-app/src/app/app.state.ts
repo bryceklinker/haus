@@ -9,6 +9,7 @@ import {LightTypesState} from "./devices/state/light-types.state";
 import {HealthState} from "./health/state";
 import {EventsState} from "./shared/events";
 import {ShellState} from "./shell/state";
+import {AuthState} from "./shared/auth/state";
 
 export interface AppState {
   devices: DevicesState;
@@ -22,4 +23,5 @@ export interface AppState {
   health: HealthState;
   events: EventsState;
   shell: ShellState;
+  auth: AuthState;
 }

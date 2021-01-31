@@ -2,6 +2,8 @@ import {ShellComponent} from "./shell.component";
 import {DARK_THEME_CLASS_NAME} from "../../../shared/theming/theme-palettes";
 import {SharedActions} from "../../../shared/actions";
 import {ShellHarness} from "./shell.harness";
+import {AuthActions} from "../../../shared/auth";
+import {ModelFactory} from "../../../../testing";
 
 describe('ShellComponent', () => {
   it('should open side nav when menu clicked', async () => {
@@ -32,5 +34,19 @@ describe('ShellComponent', () => {
     const harness = await ShellHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(SharedActions.initApp());
+  })
+
+  it('should show user when logged in', async () => {
+    const harness = await ShellHarness.render(AuthActions.userLoggedIn(ModelFactory.createUser()));
+
+    expect(harness.userMenu).toBeInTheDocument();
+  })
+
+  it('should dispatch logout when user logs out', async () => {
+    const harness = await ShellHarness.render(AuthActions.userLoggedIn(ModelFactory.createUser()));
+
+    await harness.logout();
+
+    expect(harness.dispatchedActions).toContainEqual(AuthActions.logout());
   })
 })

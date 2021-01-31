@@ -1,11 +1,11 @@
-import {AuthGuard} from "@auth0/auth0-angular";
 import {MainContentComponent} from "./shell/components/main-content/main-content.component";
 import {Route} from "@angular/router";
 import {LatestVersionDetailsRootComponent} from "./shell/components/latest-version-details-root/latest-version-details-root.component";
+import {UserRequiredGuard} from "./shared/auth";
 
 export const MAIN_ROUTE: Route = {
   path: '',
-  canActivate: [AuthGuard],
+  canActivate: [UserRequiredGuard],
   component: MainContentComponent,
   children: [
     {

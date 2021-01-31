@@ -1,7 +1,7 @@
 import {AuthService} from "@auth0/auth0-angular";
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {Injectable} from "@angular/core";
-import {filter, map} from "rxjs/operators";
+import {filter, map, skip} from "rxjs/operators";
 
 interface AuthProperties {
   isLoading: boolean,
@@ -37,20 +37,20 @@ export class TestingAuthService extends AuthService {
     this.isLoading$ = this.properties.pipe(map(p => p.isLoading));
     this.isAuthenticated$ = this.properties.pipe(map(p => p.isAuthenticated));
     this.accessToken$ = <any>this.properties.pipe(
-      map(p => p.accessToken),
-      filter(p => !!p)
+      skip(1),
+      map(p => p.accessToken)
     )
     this.user$ = this.properties.pipe(
-      map(p => p.user),
-      filter(p => !!p)
+      skip(1),
+      map(p => p.user)
     );
     this.idTokenClaims$ = this.properties.pipe(
+      skip(1),
       map(p => p.idTokenClaims),
-      filter(p => !!p)
     );
     this.error$ = <any>this.properties.pipe(
-      map(p => p.error),
-      filter(p => !!p)
+      skip(1),
+      map(p => p.error)
     );
 
     spyOn(this, 'loginWithRedirect').and.callThrough();
