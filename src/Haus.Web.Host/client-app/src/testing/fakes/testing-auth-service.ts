@@ -84,17 +84,17 @@ export class TestingAuthService extends AuthService {
     return this.accessToken$;
   }
 
-  setAccessToken(accessToken: string) {
-    this.properties.next({
-      ...this.properties.value,
-      accessToken
-    });
-  }
-
   setUser(user: any) {
     this.properties.next({
       ...this.properties.value,
       user
+    })
+  }
+
+  setIsLoading(isLoading: boolean) {
+    this.properties.next({
+      ...this.properties.value,
+      isLoading
     })
   }
 }

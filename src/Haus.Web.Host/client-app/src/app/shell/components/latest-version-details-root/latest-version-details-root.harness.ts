@@ -4,6 +4,7 @@ import {Action} from "@ngrx/store";
 import {LatestVersionDetailsHarness} from "../latest-version-details/latest-version-details.harness";
 import {screen} from "@testing-library/dom";
 import {LatestVersionErrorHarness} from "../latest-version-error/latest-version-error.harness";
+import {ShellActions} from "../../state";
 
 export class LatestVersionDetailsRootHarness extends HausComponentHarness<LatestVersionDetailsRootComponent> {
   private readonly _latestVersionDetailsHarness: LatestVersionDetailsHarness;
@@ -39,6 +40,10 @@ export class LatestVersionDetailsRootHarness extends HausComponentHarness<Latest
 
   async retry() {
     await this._latestVersionErrorHarness.retry();
+  }
+
+  simulateDownloadComplete() {
+    this.actionsSubject.next(ShellActions.downloadPackage.success());
   }
 
   constructor(result: RenderComponentResult<any>) {

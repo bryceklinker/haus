@@ -7,11 +7,14 @@
       <span>HAUS</span>
       <span class="spacer"></span>
       <mat-slide-toggle data-testid="theme-toggle" (toggleChange)="toggleTheme()"></mat-slide-toggle>
-      <div *ngIf="user" data-testid="user-menu">
+      <div *ngIf="user" class="user-menu" data-testid="user-menu">
         <img data-testid="profile-img"
              alt="User's Profile Picture"
+             class="user-picture"
              [src]="profilePicture"/>
-        <button mat-icon-button [matMenuTriggerFor]="menu" data-testid="user-menu-btn">
+        <button mat-icon-button
+                data-testid="user-menu-btn"
+                [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">

@@ -1,7 +1,7 @@
 import {LatestVersionDetailsRootHarness} from "./latest-version-details-root.harness";
 import {ShellActions} from "../../state";
-import {ModelFactory} from "../../../../testing";
-import {DownloadingPackageDialogComponent} from "../downloading-package-dialog/downloading-package-dialog.component";
+import {eventually, ModelFactory} from "../../../../testing";
+import {LoadingDialogComponent} from "../../../shared/components";
 
 describe('LatestVersionDetailsComponent', () => {
   it('should show latest version information', async () => {
@@ -32,7 +32,7 @@ describe('LatestVersionDetailsComponent', () => {
   })
 
   it('should request package download when package is clicked', async () => {
-    const packageModel = ModelFactory.createApplicationPackage({id: 88});
+    const packageModel = ModelFactory.createApplicationPackage({id: 88, name: 'Big.zip'});
 
     const harness = await LatestVersionDetailsRootHarness.render(
       ShellActions.loadLatestVersion.success(ModelFactory.createApplicationVersion()),
@@ -41,7 +41,36 @@ describe('LatestVersionDetailsComponent', () => {
     await harness.downloadPackage();
 
     expect(harness.dispatchedActions).toContainEqual(ShellActions.downloadPackage.request(packageModel));
-    expect(harness.dialog.open).toHaveBeenCalledWith(DownloadingPackageDialogComponent, {data: packageModel});
+    expect(harness.dialog.open).toHaveBeenCalledWith(LoadingDialogComponent, {data: expect.objectContaining({text: 'Downloading Big.zip...'})});
+  })
+
+  it('should use download success as close for downloading dialog', async () => {
+    const packageModel = ModelFactory.createApplicationPackage({id: 88, name: 'Big.zip'});
+
+    const harness = await LatestVersionDetailsRootHarness.render(
+      ShellActions.loadLatestVersion.success(ModelFactory.createApplicationVersion()),
+      ShellActions.loadLatestPackages.success(ModelFactory.createListResult(packageModel))
+    );
+    await harness.downloadPackage();
+    harness.simulateDownloadComplete();
+
+    await eventually(async () => {
+      expect(harness.dialog.dialogRef?.close).toHaveBeenCalled();
+    })
+  })
+
+  it('should not close dialog when component is destroyed', async () => {
+    const packageModel = ModelFactory.createApplicationPackage({id: 88, name: 'Big.zip'});
+
+    const harness = await LatestVersionDetailsRootHarness.render(
+      ShellActions.loadLatestVersion.success(ModelFactory.createApplicationVersion()),
+      ShellActions.loadLatestPackages.success(ModelFactory.createListResult(packageModel))
+    );
+    await harness.downloadPackage();
+    harness.destroy();
+    harness.simulateDownloadComplete();
+
+    expect(harness.dialog.dialogRef?.close).not.toHaveBeenCalled();
   })
 
   it('should show latest version error when latest version failed to load', async () => {

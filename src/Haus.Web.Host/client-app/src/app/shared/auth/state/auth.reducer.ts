@@ -4,12 +4,14 @@ import {AuthActions} from "../actions";
 import {AppState} from "../../../app.state";
 
 const initialState: AuthState = {
-  user: null
+  user: null,
+  isLoading: true,
 };
 
 const reducer = createReducer(initialState,
   on(AuthActions.userLoggedIn, (state, {payload}) => ({...state, user: payload})),
-  on(AuthActions.userLoggedOut, (state) => ({...state, user: null}))
+  on(AuthActions.userLoggedOut, (state) => ({...state, user: null})),
+  on(AuthActions.isLoading, (state, {payload}) => ({...state, isLoading: payload}))
 );
 
 export function authReducer(state: AuthState | undefined, action: Action): AuthState {
@@ -18,3 +20,4 @@ export function authReducer(state: AuthState | undefined, action: Action): AuthS
 
 const selectAuthState = (state: AppState) => state.auth;
 export const selectUser = createSelector(selectAuthState, s => s.user);
+export const selectIsAuthLoading = createSelector(selectAuthState, s => s.isLoading);

@@ -1,4 +1,6 @@
 export * from './testing-server';
+export * from './testing-mat-dialog-ref';
+export * from './testing-mat-dialog';
 export * from './testing-actions-subject';
 export * from './testing-auth-service';
 export * from './testing-event-emitter';

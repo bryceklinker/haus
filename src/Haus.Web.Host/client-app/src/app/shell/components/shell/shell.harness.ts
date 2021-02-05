@@ -23,6 +23,10 @@ export class ShellHarness extends HausComponentHarness<ShellComponent> {
     return this._headerHarness.userMenu;
   }
 
+  get isLoading() {
+    return screen.queryAllByTestId('loading-indicator').length > 0;
+  }
+
   async clickMenu() {
     await this.clickButtonByTestId('menu-btn');
   }

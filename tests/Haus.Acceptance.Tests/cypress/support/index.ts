@@ -1,5 +1,9 @@
 import './commands'
+import {INTERCEPTORS} from "./interceptors";
 
 before(() => {
-    (cy as any).login();
-})
+    Object.keys(INTERCEPTORS)
+        .forEach(key => cy.intercept(INTERCEPTORS[key].url).as(INTERCEPTORS[key].name));
+    
+    cy.login();
+});

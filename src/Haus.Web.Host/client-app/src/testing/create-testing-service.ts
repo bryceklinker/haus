@@ -8,11 +8,14 @@ import {CommonModule} from "@angular/common";
 import {ActionsSubject} from "@ngrx/store";
 import {TestingActionsSubject, TestingAuthService} from "./fakes";
 import {AuthService} from "@auth0/auth0-angular";
+import {MatDialog} from "@angular/material/dialog";
+import {TestingMatDialog} from "./fakes/testing-mat-dialog";
 
 export interface TestServiceResult<T> {
   service: T,
   actionsSubject: TestingActionsSubject,
-  authService: TestingAuthService
+  authService: TestingAuthService,
+  matDialog: TestingMatDialog
 }
 export function createFeatureTestingService<T>(service: Type<T>, options: TestModuleOptions): TestServiceResult<T> {
   TestBed.configureTestingModule(createTestingModule(options))
@@ -34,6 +37,7 @@ function createServiceResult<T>(service: Type<T>): TestServiceResult<T> {
   return {
     service: instance,
     actionsSubject: TestBed.inject(ActionsSubject) as TestingActionsSubject,
-    authService: TestBed.inject(AuthService) as TestingAuthService
+    authService: TestBed.inject(AuthService) as TestingAuthService,
+    matDialog: TestBed.inject(MatDialog) as TestingMatDialog,
   }
 }

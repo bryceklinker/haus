@@ -7,6 +7,7 @@ import {AppState} from "../../../app.state";
 import {SharedActions} from "../../../shared/actions";
 import {AuthActions, UserModel} from "../../../shared/auth";
 import {selectUser} from "../../../shared/auth/state";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-shell',
@@ -16,6 +17,12 @@ import {selectUser} from "../../../shared/auth/state";
 export class ShellComponent implements OnInit{
   isSidenavOpen: boolean = false;
   user$: Observable<UserModel | null>;
+
+  get isLoading$(): Observable<boolean> {
+    return this.user$.pipe(
+      map(user => user === null || user === undefined)
+    )
+  }
 
   get themeClass$(): Observable<string> {
     return this.themeService.themeClass$;

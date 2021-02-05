@@ -49,4 +49,10 @@ describe('ShellComponent', () => {
 
     expect(harness.dispatchedActions).toContainEqual(AuthActions.logout());
   })
+
+  it('should be loading until user is logged in', async () => {
+    const harness = await ShellHarness.render();
+
+    expect(harness.isLoading).toEqual(true);
+  })
 })

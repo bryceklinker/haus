@@ -22,7 +22,7 @@ export abstract class HausComponentHarness<TComponent> {
     return this.result.fixture;
   }
 
-  protected get actionsSubject() {
+  get actionsSubject() {
     return this.result.actionsSubject;
   }
 

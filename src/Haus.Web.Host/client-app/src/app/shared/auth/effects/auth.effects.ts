@@ -1,13 +1,26 @@
-import {Injectable} from "@angular/core";
+import {Injectable, Injector} from "@angular/core";
 import {AuthService} from "@auth0/auth0-angular";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {map} from "rxjs/operators";
+import {map, mergeMap} from "rxjs/operators";
 
 import {AuthActions} from "../actions";
+import {ShellActions} from "../../../shell/state";
+import {SharedActions} from "../../actions";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthEffects {
-  userLoggedIn$ = createEffect(() => this.auth.user$.pipe(
+  isAuthLoading$ = createEffect(() => this.actions$.pipe(
+    ofType(SharedActions.initApp),
+    map(() => this.injector.get(AuthService)),
+    mergeMap(auth => auth.isLoading$),
+    map(isLoading => AuthActions.isLoading(isLoading))
+  ))
+  userLoggedIn$ = createEffect(() => this.actions$.pipe(
+    ofType(SharedActions.initApp),
+    map(() => this.injector.get(AuthService)),
+    mergeMap(auth => auth.user$),
     map(user => {
       return user
         ? AuthActions.userLoggedIn(user)
@@ -17,10 +30,11 @@ export class AuthEffects {
 
   logout$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.logout),
-    map(() => this.auth.logout())
+    map(() => this.injector.get(AuthService)),
+    map(auth => auth.logout())
   ), {dispatch: false});
 
-  constructor(private readonly auth: AuthService,
-              private readonly actions$: Actions) {
+  constructor(private readonly actions$: Actions,
+              private readonly injector: Injector) {
   }
 }

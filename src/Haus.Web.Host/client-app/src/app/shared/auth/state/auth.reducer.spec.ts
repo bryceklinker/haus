@@ -8,6 +8,7 @@ describe('authReducer', () => {
     const state = generateStateFromActions(authReducer)
 
     expect(state.user).toBeNull();
+    expect(state.isLoading).toEqual(true);
   })
 
   it('should have user when user logged in', () => {
@@ -27,5 +28,13 @@ describe('authReducer', () => {
     );
 
     expect(state.user).toBeNull();
+  })
+
+  it('should be done loading when auth is loading false received', () => {
+    const state = generateStateFromActions(authReducer,
+      AuthActions.isLoading(false)
+    );
+
+    expect(state.isLoading).toEqual(false);
   })
 })

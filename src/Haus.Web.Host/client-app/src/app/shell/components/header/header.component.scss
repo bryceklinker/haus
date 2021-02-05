@@ -1,1 +1,13 @@
+.user-menu {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto;
+  align-items: center;
+  margin-left: 1rem;
 
+  .user-picture {
+    height: 2rem;
+    width: 2rem;
+    border-radius: 1rem;
+  }
+}

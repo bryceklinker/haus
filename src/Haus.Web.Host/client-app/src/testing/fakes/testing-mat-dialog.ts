@@ -10,6 +10,7 @@ export class TestingMatDialog extends MatDialog {
   get dialogRef(): TestingMatDialogRef | null {
     return this._dialogRef;
   }
+
   constructor() {
     super(<any>jest.fn(), <any>jest.fn(), <any>jest.fn(), <any>jest.fn(), jest.fn(), <any>jest.fn(), <any>jest.fn());
     spyOn(this, "open").and.callThrough();

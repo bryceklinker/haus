@@ -6,5 +6,6 @@
 </shell-header>
 
 <shell-nav-drawer [classList]="themeClass$ | async" [isOpen]="isSidenavOpen" (drawerClosed)="handleDrawerClosed()">
+  <app-loading-indicator [show]="isLoading$ | async"></app-loading-indicator>
   <router-outlet></router-outlet>
 </shell-nav-drawer>
