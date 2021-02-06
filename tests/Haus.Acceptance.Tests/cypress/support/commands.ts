@@ -1,6 +1,7 @@
 import {AUTH_SETTINGS} from "./auth-settings";
 import {testIdSelector} from "./test-id-selector";
 import {INTERCEPTORS} from "./interceptors";
+const DEFAULT_WAIT_TIME_IN_MS = 1000;
 
 Cypress.Commands.add('getByTestId', (testId: string) => cy.get(testIdSelector(testId)));
 
@@ -13,6 +14,7 @@ Cypress.Commands.add('login', () => {
             return;
         }
         
+        cy.wait(DEFAULT_WAIT_TIME_IN_MS);
         cy.get('[name="email"]').type(AUTH_SETTINGS.username);
         cy.get('[name="password"]').type(AUTH_SETTINGS.password);
         cy.get('[name="submit"]').click();
@@ -33,6 +35,6 @@ Cypress.Commands.add('isUserLoggedIn', () => {
 
 Cypress.Commands.add('waitForAppToBeReady', () => {
     cy.wait(INTERCEPTORS.settings.alias);
-    cy.wait(1000);
+    cy.wait(DEFAULT_WAIT_TIME_IN_MS);
     cy.getByTestId('loading-indicator').should('not.exist')
 });
