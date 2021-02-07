@@ -1,5 +1,6 @@
-<health-dashboard class="top-left" [report]="report$ | async"></health-dashboard>
-<recent-events class="top-right" [events]="events$ | async"></recent-events>
+<health-header class="header"></health-header>
+<health-dashboard class="mid-left" [report]="report$ | async"></health-dashboard>
+<recent-events class="mid-right" [events]="events$ | async"></recent-events>
 <recent-logs class="bottom" [logs]="logs$ | async"></recent-logs>
 
 

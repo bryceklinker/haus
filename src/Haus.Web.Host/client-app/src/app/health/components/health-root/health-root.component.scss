@@ -3,18 +3,23 @@
 :host {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   grid-gap: 1rem;
   grid-template-areas:
-    "top-left top-right"
+    "header" "header"
+    "mid-left mid-right"
     "bottom bottom";
 
+  .header {
+    grid-area: header;
+  }
+
   .top-left {
-    grid-area: top-left;
+    grid-area: mid-left;
   }
 
   .top-right {
-    grid-area: top-right;
+    grid-area: mid-right;
   }
 
   .bottom {

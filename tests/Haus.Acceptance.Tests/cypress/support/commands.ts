@@ -23,6 +23,11 @@ Cypress.Commands.add('login', () => {
     cy.waitForAppToBeReady();
 })
 
+Cypress.Commands.add('logout', () => {
+    cy.getByTestId('user-menu-btn').click();
+    cy.getByTestId('logout-btn').click();
+})
+
 Cypress.Commands.add('navigate', (text: string) => {
     cy.getByTestId('menu-btn').click();
     cy.getByTestId('nav-link').contains(text).click();

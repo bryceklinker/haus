@@ -9,12 +9,13 @@
     "clean:haus": "rimraf ./haus-web",
     "prebuild:haus": "yarn clean:haus",
     "build:haus": "dotnet publish ../../src/Haus.Web.Host/Haus.Web.Host.csproj --configuration Release --output ./haus-web",
-    "start:haus": "cd ./haus-web && dotnet ./Haus.Web.Host.dll",
-    "stop:haus": "kill-port 5001",
+    "start:haus": "cd ./haus-web && dotnet ./Haus.Web.Host.dll || true",
+    "stop:haus": "kill-port 5001 || true",
+    "wait:haus": "wait-on tcp:5001",
     "pretest": "yarn build:haus",
-    "test": "concurrently \"yarn start:haus\" \"node test-runner.js && yarn stop:haus || (yarn stop:haus && false)\"",
+    "test": "concurrently \"yarn start:haus\" \"yarn wait:haus && cypress run && yarn stop:haus || (yarn stop:haus && false)\"",
     "pretest:dev": "yarn build:haus",
-    "test:dev": "concurrently \"yarn start:haus\" \"node test-runner.js open && yarn stop:haus || (yarn stop:haus && false)\""
+    "test:dev": "concurrently \"yarn start:haus\" \"yarn wait:haus && cypress open && yarn stop:haus || (yarn stop:haus && false)\""
   },
   "devDependencies": {
     "concurrently": "5.3.0",
