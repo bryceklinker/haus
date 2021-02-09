@@ -1,28 +1,17 @@
-using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Haus.Mqtt.Client.Settings;
-using Haus.Testing.Support.Fakes;
-using Microsoft.Extensions.Options;
-using MQTTnet.Diagnostics;
+using Haus.Mqtt.Client.Tests.Support;
 using Xunit;
 
 namespace Haus.Mqtt.Client.Tests
 {
     public class HausMqttClientFactoryTests
     {
-        private readonly FakeMqttClientFactory _fakeClientFactory;
-        private readonly HausMqttClientFactory _hausClientFactory;
+        private readonly IHausMqttClientFactory _hausClientFactory;
 
         public HausMqttClientFactoryTests()
         {
-            var options = Options.Create(new HausMqttSettings
-            {
-                Server = "mqtt://localhost"
-            });
-
-            _fakeClientFactory = new FakeMqttClientFactory();
-            _hausClientFactory = new HausMqttClientFactory(options, _fakeClientFactory, new MqttNetLogger());
+            _hausClientFactory = new SupportFactory().CreateFactory();
         }
 
         [Fact]

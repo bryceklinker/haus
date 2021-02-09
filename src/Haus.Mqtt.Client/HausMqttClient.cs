@@ -25,7 +25,7 @@ namespace Haus.Mqtt.Client
         Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string topicName = null);
     }
 
-    public class HausMqttClient : IHausMqttClient
+    internal class HausMqttClient : IHausMqttClient
     {
         private const string AllTopicsFilter = "#";
         private readonly IManagedMqttClient _mqttClient;

@@ -2,11 +2,9 @@ using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Mqtt.Client.Health;
-using Haus.Mqtt.Client.Settings;
+using Haus.Mqtt.Client.Tests.Support;
 using Haus.Testing.Support.Fakes;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Options;
-using MQTTnet.Diagnostics;
 using Xunit;
 
 namespace Haus.Mqtt.Client.Tests.Health
@@ -18,14 +16,10 @@ namespace Haus.Mqtt.Client.Tests.Health
         
         public HausMqttHealthCheckTests()
         {
-            var options = Options.Create(new HausMqttSettings
-            {
-                Server = "mqtt://localhost"
-            });
-            var fakeMqttClientFactory = new FakeMqttClientFactory();
-            _mqttClient = fakeMqttClientFactory.Client;
+            var supportFactory = new SupportFactory();
+            _mqttClient = supportFactory.FakeClient;
             
-            var hausMqttClientFactory = new HausMqttClientFactory(options, fakeMqttClientFactory, new MqttNetLogger());
+            var hausMqttClientFactory = supportFactory.CreateFactory();
             _healthCheck = new HausMqttHealthCHeck(hausMqttClientFactory);
         }
 

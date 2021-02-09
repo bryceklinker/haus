@@ -1,12 +1,8 @@
 using System.Threading.Tasks;
 using FluentAssertions;
-using Haus.Mqtt.Client.Settings;
-using Haus.Mqtt.Client.Subscriptions;
+using Haus.Mqtt.Client.Tests.Support;
 using Haus.Testing.Support;
-using Haus.Testing.Support.Fakes;
-using Microsoft.Extensions.Options;
 using MQTTnet;
-using MQTTnet.Diagnostics;
 using Xunit;
 
 namespace Haus.Mqtt.Client.Tests
@@ -17,13 +13,7 @@ namespace Haus.Mqtt.Client.Tests
 
         public async Task InitializeAsync()
         {
-            var options = Options.Create(new HausMqttSettings
-            {
-                Server = "mqtt://localhost"
-            });
-
-            var factory = new HausMqttClientFactory(options, new FakeMqttClientFactory(), new MqttNetLogger());
-            _client = await factory.CreateClient();
+            _client = await new SupportFactory().CreateClient();
         }
 
         [Fact]

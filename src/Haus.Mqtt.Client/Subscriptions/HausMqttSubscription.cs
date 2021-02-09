@@ -39,7 +39,7 @@ namespace Haus.Mqtt.Client.Subscriptions
 
         public async Task UnsubscribeAsync()
         {
-            await _unsubscribe.Invoke(this);
+            await _unsubscribe.Invoke(this).ConfigureAwait(false);
         }
     }
 }

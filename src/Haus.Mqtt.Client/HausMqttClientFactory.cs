@@ -17,7 +17,7 @@ namespace Haus.Mqtt.Client
         Task<IHausMqttClient> CreateClient(string url);
     }
 
-    public class HausMqttClientFactory : IHausMqttClientFactory
+    internal class HausMqttClientFactory : IHausMqttClientFactory
     {
         private readonly IOptions<HausMqttSettings> _options;
         private readonly IMqttFactory _mqttFactory;

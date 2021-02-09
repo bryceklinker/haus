@@ -1,25 +1,25 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Haus.Mqtt.Client.Settings;
+using Haus.Mqtt.Client.Tests.Support;
 using Haus.Testing.Support.Fakes;
-using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using Xunit;
 
 namespace Haus.Mqtt.Client.Tests
 {
-    public class HausMqttClientTest
+    public class HausMqttClientTest : IAsyncLifetime
     {
-        private readonly HausMqttClient _client;
-        private readonly FakeMqttClient _fakeMqttClient;
+        private FakeMqttClient _fakeMqttClient;
+        private IHausMqttClient _client;
 
-        public HausMqttClientTest()
+        public async Task InitializeAsync()
         {
-            _fakeMqttClient = new FakeMqttClient();
-            var options = Options.Create(new HausMqttSettings());
-            _client = new HausMqttClient(_fakeMqttClient, options);
+            var supportFactory = new SupportFactory();
+            _fakeMqttClient = supportFactory.FakeClient;
+
+            _client = await supportFactory.CreateClient();
         }
 
         [Fact]
@@ -55,6 +55,11 @@ namespace Haus.Mqtt.Client.Tests
 
             await _fakeMqttClient.PublishAsync(new MqttApplicationMessage());
             actuals.Should().HaveCount(2);
+        }
+
+        public Task DisposeAsync()
+        {
+            return Task.CompletedTask;
         }
     }
 }
