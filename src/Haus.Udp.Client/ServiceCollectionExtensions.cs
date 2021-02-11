@@ -8,8 +8,7 @@ namespace Haus.Udp.Client
         {
             return services
                 .AddSingleton<IHausUdpFactory, HausUdpFactory>()
-                .AddTransient(p => p.GetRequiredService<IHausUdpFactory>().GetBroadcaster())
-                .AddTransient(p => p.GetRequiredService<IHausUdpFactory>().GetSubscriber());
+                .AddTransient(p => p.GetRequiredService<IHausUdpFactory>().CreateClient());
         }
     }
 }

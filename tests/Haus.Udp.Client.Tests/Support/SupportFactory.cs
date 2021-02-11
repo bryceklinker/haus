@@ -20,14 +20,9 @@ namespace Haus.Udp.Client.Tests.Support
                 .CreateScope();
         }
         
-        public IHausUdpBroadcaster CreateBroadcaster()
+        public IHausUdpClient CreateClient()
         {
-            return _scope.ServiceProvider.GetRequiredService<IHausUdpBroadcaster>();
-        }
-
-        public IHausUdpSubscriber CreateSubscriber()
-        {
-            return _scope.ServiceProvider.GetRequiredService<IHausUdpSubscriber>();
+            return _scope.ServiceProvider.GetRequiredService<IHausUdpClient>();
         }
 
         public void Dispose()
