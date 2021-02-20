@@ -4,7 +4,7 @@ Description=Haus web application
 [Service]
 Type=notify
 WorkingDirectory=/home/bryce/haus/web
-ExecStart=/home/bryce/haus/web/Haus.Web.Host
+ExecStart=/home/bryce/haus/web/Haus.Web.Host --urls "http://0.0.0.0:5000;https://0.0.0.0:5001"
 SyslogIdentifier=Haus Web
 User=bryce
 Restart=always
