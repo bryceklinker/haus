@@ -2,57 +2,59 @@
 # yarn lockfile v1
 
 
-"@angular-devkit/architect@0.1101.1":
-  version "0.1101.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/architect/-/@angular-devkit/architect-0.1101.1.tgz#3d5c2f49c669643b907166a6418a7b5979a418d8"
-  integrity sha1-PVwvScZpZDuQcWamQYp7WXmkGNg=
+"@angular-devkit/architect@0.1102.1":
+  version "0.1102.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/architect/-/@angular-devkit/architect-0.1102.1.tgz#28245cd96d8bbb52546d23c9d96be85480b5d3b2"
+  integrity sha1-KCRc2W2Lu1JUbSPJ2WvoVIC107I=
   dependencies:
-    "@angular-devkit/core" "11.1.1"
+    "@angular-devkit/core" "11.2.1"
     rxjs "6.6.3"
 
-"@angular-devkit/build-angular@0.1101.1":
-  version "0.1101.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/build-angular/-/@angular-devkit/build-angular-0.1101.1.tgz#9d58dc3751c10cb999024c529cb165d4125be966"
-  integrity sha1-nVjcN1HBDLmZAkxSnLFl1BJb6WY=
+"@angular-devkit/build-angular@0.1102.1":
+  version "0.1102.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/build-angular/-/@angular-devkit/build-angular-0.1102.1.tgz#39a8f136cbf4fb47274435d83889f33f20e3de65"
+  integrity sha1-OajxNsv0+0cnRDXYOInzPyDj3mU=
   dependencies:
-    "@angular-devkit/architect" "0.1101.1"
-    "@angular-devkit/build-optimizer" "0.1101.1"
-    "@angular-devkit/build-webpack" "0.1101.1"
-    "@angular-devkit/core" "11.1.1"
+    "@angular-devkit/architect" "0.1102.1"
+    "@angular-devkit/build-optimizer" "0.1102.1"
+    "@angular-devkit/build-webpack" "0.1102.1"
+    "@angular-devkit/core" "11.2.1"
     "@babel/core" "7.12.10"
     "@babel/generator" "7.12.11"
+    "@babel/plugin-transform-async-to-generator" "7.12.1"
     "@babel/plugin-transform-runtime" "7.12.10"
     "@babel/preset-env" "7.12.11"
     "@babel/runtime" "7.12.5"
     "@babel/template" "7.12.7"
     "@jsdevtools/coverage-istanbul-loader" "3.0.5"
-    "@ngtools/webpack" "11.1.1"
+    "@ngtools/webpack" "11.2.1"
     ansi-colors "4.1.1"
-    autoprefixer "10.2.1"
+    autoprefixer "10.2.4"
     babel-loader "8.2.2"
     browserslist "^4.9.1"
     cacache "15.0.5"
     caniuse-lite "^1.0.30001032"
     circular-dependency-plugin "5.2.2"
     copy-webpack-plugin "6.3.2"
-    core-js "3.8.2"
-    critters "0.0.6"
+    core-js "3.8.3"
+    critters "0.0.7"
     css-loader "5.0.1"
     cssnano "4.1.10"
     file-loader "6.2.0"
     find-cache-dir "3.3.1"
     glob "7.1.6"
+    https-proxy-agent "5.0.0"
     inquirer "7.3.3"
     jest-worker "26.6.2"
     karma-source-map-support "1.4.0"
-    less "4.1.0"
+    less "4.1.1"
     less-loader "7.3.0"
     license-webpack-plugin "2.3.11"
     loader-utils "2.0.0"
-    mini-css-extract-plugin "1.3.3"
+    mini-css-extract-plugin "1.3.5"
     minimatch "3.0.4"
-    open "7.3.1"
-    ora "5.2.0"
+    open "7.4.0"
+    ora "5.3.0"
     parse5-html-rewriting-stream "6.0.1"
     pnp-webpack-plugin "1.6.4"
     postcss "8.2.4"
@@ -62,34 +64,34 @@
     regenerator-runtime "0.13.7"
     resolve-url-loader "3.1.2"
     rimraf "3.0.2"
-    rollup "2.36.1"
+    rollup "2.38.4"
     rxjs "6.6.3"
-    sass "1.32.4"
+    sass "1.32.6"
     sass-loader "10.1.1"
     semver "7.3.4"
     source-map "0.7.3"
     source-map-loader "1.1.3"
     source-map-support "0.5.19"
-    speed-measure-webpack-plugin "1.3.3"
+    speed-measure-webpack-plugin "1.4.2"
     style-loader "2.0.0"
     stylus "0.54.8"
-    stylus-loader "4.3.2"
+    stylus-loader "4.3.3"
     terser "5.5.1"
     terser-webpack-plugin "4.2.3"
     text-table "0.2.0"
     tree-kill "1.2.2"
     webpack "4.44.2"
     webpack-dev-middleware "3.7.2"
-    webpack-dev-server "3.11.1"
+    webpack-dev-server "3.11.2"
     webpack-merge "5.7.3"
     webpack-sources "2.2.0"
     webpack-subresource-integrity "1.5.2"
     worker-plugin "5.0.0"
 
-"@angular-devkit/build-optimizer@0.1101.1":
-  version "0.1101.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/build-optimizer/-/@angular-devkit/build-optimizer-0.1101.1.tgz#f930c4852bb95bb7bbdebff7639316d202891512"
-  integrity sha1-+TDEhSu5W7e73r/3Y5MW0gKJFRI=
+"@angular-devkit/build-optimizer@0.1102.1":
+  version "0.1102.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/build-optimizer/-/@angular-devkit/build-optimizer-0.1102.1.tgz#239ae1498c43bdc469e6886bd8dd0bd80f132ae2"
+  integrity sha1-I5rhSYxDvcRp5ohr2N0L2A8TKuI=
   dependencies:
     loader-utils "2.0.0"
     source-map "0.7.3"
@@ -97,19 +99,19 @@
     typescript "4.1.3"
     webpack-sources "2.2.0"
 
-"@angular-devkit/build-webpack@0.1101.1":
-  version "0.1101.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/build-webpack/-/@angular-devkit/build-webpack-0.1101.1.tgz#8925fa977bfaf183bec8b92ee2ce90beb9d236cd"
-  integrity sha1-iSX6l3v68YO+yLku4s6QvrnSNs0=
+"@angular-devkit/build-webpack@0.1102.1":
+  version "0.1102.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/build-webpack/-/@angular-devkit/build-webpack-0.1102.1.tgz#b62b76c67760bfba17aad77c2bc9375b201716ac"
+  integrity sha1-tit2xndgv7oXqtd8K8k3WyAXFqw=
   dependencies:
-    "@angular-devkit/architect" "0.1101.1"
-    "@angular-devkit/core" "11.1.1"
+    "@angular-devkit/architect" "0.1102.1"
+    "@angular-devkit/core" "11.2.1"
     rxjs "6.6.3"
 
-"@angular-devkit/core@11.1.1":
-  version "11.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/core/-/@angular-devkit/core-11.1.1.tgz#9b3d036e5ac84a72b784cb7fc29ca3405747b3b4"
-  integrity sha1-mz0DblrISnK3hMt/wpyjQFdHs7Q=
+"@angular-devkit/core@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/core/-/@angular-devkit/core-11.2.1.tgz#e3738a991025094e6fbc1e508a963fdd1a07e502"
+  integrity sha1-43OKmRAlCU5vvB5QipY/3RoH5QI=
   dependencies:
     ajv "6.12.6"
     fast-json-stable-stringify "2.1.0"
@@ -117,41 +119,41 @@
     rxjs "6.6.3"
     source-map "0.7.3"
 
-"@angular-devkit/schematics@11.1.1":
-  version "11.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/schematics/-/@angular-devkit/schematics-11.1.1.tgz#323643a3d2c57abcc7c34f0674d5b43cd64717ff"
-  integrity sha1-MjZDo9LFerzHw08GdNW0PNZHF/8=
+"@angular-devkit/schematics@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular-devkit/schematics/-/@angular-devkit/schematics-11.2.1.tgz#f1420d3233d07c4df21991fd7c2f12895a204137"
+  integrity sha1-8UINMjPQfE3yGZH9fC8SiVogQTc=
   dependencies:
-    "@angular-devkit/core" "11.1.1"
-    ora "5.2.0"
+    "@angular-devkit/core" "11.2.1"
+    ora "5.3.0"
     rxjs "6.6.3"
 
-"@angular/animations@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/animations/-/@angular/animations-11.1.0.tgz#d71c6b11dc79bafdf927e69f6222f3899aa911d8"
-  integrity sha1-1xxrEdx5uv35J+afYiLziZqpEdg=
+"@angular/animations@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/animations/-/@angular/animations-11.2.1.tgz#970d79add4c2a4abc0ed91e6cf5920c65dda2d99"
+  integrity sha1-lw15rdTCpKvA7ZHmz1kgxl3aLZk=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/cdk@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/cdk/-/@angular/cdk-11.1.0.tgz#35a5f60b79265cbd340c9ed1519b5c460ee5d6da"
-  integrity sha1-NaX2C3kmXL00DJ7RUZtcRg7l1to=
+"@angular/cdk@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/cdk/-/@angular/cdk-11.2.1.tgz#c06aa5b0ac76706240a4851ff704d70cbc6f3bf5"
+  integrity sha1-wGqlsKx2cGJApIUf9wTXDLxvO/U=
   dependencies:
     tslib "^2.0.0"
   optionalDependencies:
     parse5 "^5.0.0"
 
-"@angular/cli@11.1.1":
-  version "11.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/cli/-/@angular/cli-11.1.1.tgz#897dd3273434f5092cbcde515737d6c72612eae7"
-  integrity sha1-iX3TJzQ09QksvN5RVzfWxyYS6uc=
+"@angular/cli@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/cli/-/@angular/cli-11.2.1.tgz#5b7d1b3608c63b6a08b66275a830798d36613ff5"
+  integrity sha1-W30bNgjGO2oItmJ1qDB5jTZhP/U=
   dependencies:
-    "@angular-devkit/architect" "0.1101.1"
-    "@angular-devkit/core" "11.1.1"
-    "@angular-devkit/schematics" "11.1.1"
-    "@schematics/angular" "11.1.1"
-    "@schematics/update" "0.1101.1"
+    "@angular-devkit/architect" "0.1102.1"
+    "@angular-devkit/core" "11.2.1"
+    "@angular-devkit/schematics" "11.2.1"
+    "@schematics/angular" "11.2.1"
+    "@schematics/update" "0.1102.1"
     "@yarnpkg/lockfile" "1.1.0"
     ansi-colors "4.1.1"
     debug "4.3.1"
@@ -160,8 +162,9 @@
     jsonc-parser "3.0.0"
     npm-package-arg "8.1.0"
     npm-pick-manifest "6.1.0"
-    open "7.3.1"
-    pacote "11.1.14"
+    open "7.4.0"
+    ora "5.3.0"
+    pacote "11.2.4"
     resolve "1.19.0"
     rimraf "3.0.2"
     semver "7.3.4"
@@ -169,17 +172,17 @@
     universal-analytics "0.4.23"
     uuid "8.3.2"
 
-"@angular/common@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/common/-/@angular/common-11.1.0.tgz#c1163981c79e34c72ab0bbc385edf4c30abcc98e"
-  integrity sha1-wRY5gceeNMcqsLvDhe30wwq8yY4=
+"@angular/common@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/common/-/@angular/common-11.2.1.tgz#4952cf1ae4734b1436dc262bf6d6b3338610b896"
+  integrity sha1-SVLPGuRzSxQ23CYr9tazM4YQuJY=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/compiler-cli@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/compiler-cli/-/@angular/compiler-cli-11.1.0.tgz#111f420a9ab9274947f805b9f41ddce8f24070ea"
-  integrity sha1-ER9CCpq5J0lH+AW59B3c6PJAcOo=
+"@angular/compiler-cli@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/compiler-cli/-/@angular/compiler-cli-11.2.1.tgz#7eb3c8d0b685c61a88ac665067043c90129df573"
+  integrity sha1-frPI0LaFxhqIrGZQZwQ8kBKd9XM=
   dependencies:
     "@babel/core" "^7.8.6"
     "@babel/types" "^7.8.6"
@@ -197,10 +200,10 @@
     tslib "^2.0.0"
     yargs "^16.1.1"
 
-"@angular/compiler@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/compiler/-/@angular/compiler-11.1.0.tgz#0e2e18fe0cb64ec696986f12f80debcbdccc8d20"
-  integrity sha1-Di4Y/gy2TsaWmG8S+A3ry9zMjSA=
+"@angular/compiler@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/compiler/-/@angular/compiler-11.2.1.tgz#3ccca59b5075b2162525e31e0f2423c54d200986"
+  integrity sha1-PMylm1B1shYlJeMeDyQjxU0gCYY=
   dependencies:
     tslib "^2.0.0"
 
@@ -209,10 +212,10 @@
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/compiler/-/@angular/compiler-9.0.0.tgz#87e0bef4c369b6cadae07e3a4295778fc93799d5"
   integrity sha1-h+C+9MNptsra4H46QpV3j8k3mdU=
 
-"@angular/core@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/core/-/@angular/core-11.1.0.tgz#724c13c53e4afb6d4ef4d9236d50f0be956f57ca"
-  integrity sha1-ckwTxT5K+21O9NkjbVDwvpVvV8o=
+"@angular/core@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/core/-/@angular/core-11.2.1.tgz#d0bfd48cfe0d9e5340614ae364cba20c4cb084ac"
+  integrity sha1-0L/UjP4NnlNAYUrjZMuiDEywhKw=
   dependencies:
     tslib "^2.0.0"
 
@@ -221,38 +224,38 @@
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/core/-/@angular/core-9.0.0.tgz#227dc53e1ac81824f998c6e76000b7efc522641e"
   integrity sha1-In3FPhrIGCT5mMbnYAC378UiZB4=
 
-"@angular/forms@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/forms/-/@angular/forms-11.1.0.tgz#6ab2e81df80dc9a9d0898d2a57270de5d9eb30e5"
-  integrity sha1-arLoHfgNyanQiY0qVycN5dnrMOU=
+"@angular/forms@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/forms/-/@angular/forms-11.2.1.tgz#c08d942a47e80f44f612447a8d1794ab1f0dd65d"
+  integrity sha1-wI2UKkfoD0T2EkR6jReUqx8N1l0=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/material@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/material/-/@angular/material-11.1.0.tgz#2f68f55efc049fa9b036cb2bb3b4f4aae0f67fa2"
-  integrity sha1-L2j1XvwEn6mwNssrs7T0quD2f6I=
+"@angular/material@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/material/-/@angular/material-11.2.1.tgz#f8fe426787219bfe9bd6d2fedb6337de015b0264"
+  integrity sha1-+P5CZ4chm/6b1tL+22M33gFbAmQ=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/platform-browser-dynamic@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/platform-browser-dynamic/-/@angular/platform-browser-dynamic-11.1.0.tgz#dc0d5a669c3cbe40b9f7442fca9c5335fc735f80"
-  integrity sha1-3A1aZpw8vkC590QvypxTNfxzX4A=
+"@angular/platform-browser-dynamic@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/platform-browser-dynamic/-/@angular/platform-browser-dynamic-11.2.1.tgz#0b4e80f29d477a0ce6ae840d4a0e9c5d920b316d"
+  integrity sha1-C06A8p1HegzmroQNSg6cXZILMW0=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/platform-browser@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/platform-browser/-/@angular/platform-browser-11.1.0.tgz#4c538d0bffdac02d8529bdb6247ae06a7685c3bf"
-  integrity sha1-TFONC//awC2FKb22JHrganaFw78=
+"@angular/platform-browser@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/platform-browser/-/@angular/platform-browser-11.2.1.tgz#0b03c025a8e86d139dcd0301a4c3fb203e46d320"
+  integrity sha1-CwPAJajobROdzQMBpMP7ID5G0yA=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/router@11.1.0":
-  version "11.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/router/-/@angular/router-11.1.0.tgz#62523ab838cf37ce911edaf3bfd3e2a4edb11675"
-  integrity sha1-YlI6uDjPN86RHtrzv9PipO2xFnU=
+"@angular/router@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@angular/router/-/@angular/router-11.2.1.tgz#7f7d62f312af5a578cee28d595559f9120e766ac"
+  integrity sha1-f31i8xKvWleM7ijVlVWfkSDnZqw=
   dependencies:
     tslib "^2.0.0"
 
@@ -827,7 +830,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
 
-"@babel/plugin-transform-async-to-generator@^7.12.1":
+"@babel/plugin-transform-async-to-generator@7.12.1", "@babel/plugin-transform-async-to-generator@^7.12.1":
   version "7.12.1"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@babel/plugin-transform-async-to-generator/-/@babel/plugin-transform-async-to-generator-7.12.1.tgz#3849a49cc2a22e9743cbd6b52926d30337229af1"
   integrity sha1-OEmknMKiLpdDy9a1KSbTAzcimvE=
@@ -1464,41 +1467,41 @@
     node-fetch "^2.6.0"
     ws "^6.0.0"
 
-"@ngrx/effects@10.1.2":
-  version "10.1.2"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/effects/-/@ngrx/effects-10.1.2.tgz#f1c9daa2e3e13aeb6af272cb52f6dff73d364d68"
-  integrity sha1-8cnaouPhOutq8nLLUvbf9z02TWg=
+"@ngrx/effects@11.0.1":
+  version "11.0.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/effects/-/@ngrx/effects-11.0.1.tgz#54d272e7bca411eaad5de144c67876beaba99b5f"
+  integrity sha1-VNJy57ykEeqtXeFExnh2vqupm18=
   dependencies:
     tslib "^2.0.0"
 
-"@ngrx/entity@10.1.2":
-  version "10.1.2"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/entity/-/@ngrx/entity-10.1.2.tgz#17c93af662de3083a6914af7400182f75924d61f"
-  integrity sha1-F8k69mLeMIOmkUr3QAGC91kk1h8=
+"@ngrx/entity@11.0.1":
+  version "11.0.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/entity/-/@ngrx/entity-11.0.1.tgz#422fe1db4e16ec0483d171c540d7d47abbbbc6a2"
+  integrity sha1-Qi/h204W7ASD0XHFQNfUeru7xqI=
   dependencies:
     tslib "^2.0.0"
 
-"@ngrx/store-devtools@10.1.2":
-  version "10.1.2"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store-devtools/-/@ngrx/store-devtools-10.1.2.tgz#1dba8c84df4b56a2b15d6abc01c3c378d1518830"
-  integrity sha1-HbqMhN9LVqKxXWq8AcPDeNFRiDA=
+"@ngrx/store-devtools@11.0.1":
+  version "11.0.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store-devtools/-/@ngrx/store-devtools-11.0.1.tgz#64b332f64e73538e7facb9d9d7e5f66c7ff1b834"
+  integrity sha1-ZLMy9k5zU45/rLnZ1+X2bH/xuDQ=
   dependencies:
     tslib "^2.0.0"
 
-"@ngrx/store@10.1.2":
-  version "10.1.2"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store/-/@ngrx/store-10.1.2.tgz#a41aee81ea7b7e4a9f927be560e6024830211efb"
-  integrity sha1-pBrugep7fkqfknvlYOYCSDAhHvs=
+"@ngrx/store@11.0.1":
+  version "11.0.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngrx/store/-/@ngrx/store-11.0.1.tgz#fd229b704bb9847ddd2c299cf26eb19017aa7f9a"
+  integrity sha1-/SKbcEu5hH3dLCmc8m6xkBeqf5o=
   dependencies:
     tslib "^2.0.0"
 
-"@ngtools/webpack@11.1.1":
-  version "11.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngtools/webpack/-/@ngtools/webpack-11.1.1.tgz#435916df27ead534f2a78f0a32f6c8d97c2912b9"
-  integrity sha1-Q1kW3yfq1TTyp48KMvbI2XwpErk=
+"@ngtools/webpack@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@ngtools/webpack/-/@ngtools/webpack-11.2.1.tgz#6e922f2809854c898a3c62ea882a9cc0f43ecf0d"
+  integrity sha1-bpIvKAmFTImKPGLqiCqcwPQ+zw0=
   dependencies:
-    "@angular-devkit/core" "11.1.1"
-    enhanced-resolve "5.6.0"
+    "@angular-devkit/core" "11.2.1"
+    enhanced-resolve "5.7.0"
     webpack-sources "2.2.0"
 
 "@nodelib/fs.scandir@2.1.3":
@@ -1595,26 +1598,26 @@
   dependencies:
     esquery "^1.0.1"
 
-"@schematics/angular@11.1.1":
-  version "11.1.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@schematics/angular/-/@schematics/angular-11.1.1.tgz#3f641c0fd841dee78ca8efc10700c5cfff34ec63"
-  integrity sha1-P2QcD9hB3ueMqO/BBwDFz/807GM=
+"@schematics/angular@11.2.1":
+  version "11.2.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@schematics/angular/-/@schematics/angular-11.2.1.tgz#0eb0cae03fb62bcabd944e2cc4a784655836859b"
+  integrity sha1-DrDK4D+2K8q9lE4sxKeEZVg2hZs=
   dependencies:
-    "@angular-devkit/core" "11.1.1"
-    "@angular-devkit/schematics" "11.1.1"
+    "@angular-devkit/core" "11.2.1"
+    "@angular-devkit/schematics" "11.2.1"
     jsonc-parser "3.0.0"
 
-"@schematics/update@0.1101.1":
-  version "0.1101.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@schematics/update/-/@schematics/update-0.1101.1.tgz#878d1072b50620b89db529695ab8b9681f500df4"
-  integrity sha1-h40QcrUGILidtSlpWri5aB9QDfQ=
+"@schematics/update@0.1102.1":
+  version "0.1102.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@schematics/update/-/@schematics/update-0.1102.1.tgz#9ffef98a931d640ed76cf22b4d2083d24455ed91"
+  integrity sha1-n/75ipMdZA7XbPIrTSCD0kRV7ZE=
   dependencies:
-    "@angular-devkit/core" "11.1.1"
-    "@angular-devkit/schematics" "11.1.1"
+    "@angular-devkit/core" "11.2.1"
+    "@angular-devkit/schematics" "11.2.1"
     "@yarnpkg/lockfile" "1.1.0"
     ini "2.0.0"
     npm-package-arg "^8.0.0"
-    pacote "11.1.14"
+    pacote "11.2.4"
     semver "7.3.4"
     semver-intersect "1.4.0"
 
@@ -1632,20 +1635,20 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@testing-library/angular@10.3.1":
-  version "10.3.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@testing-library/angular/-/@testing-library/angular-10.3.1.tgz#71696c2c0ea6fd691505e1c6c4966ef45419e012"
-  integrity sha1-cWlsLA6m/WkVBeHGxJZu9FQZ4BI=
+"@testing-library/angular@10.3.2":
+  version "10.3.2"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@testing-library/angular/-/@testing-library/angular-10.3.2.tgz#5ae47abc34c01e8fe12e1ebf7093ba21f886965e"
+  integrity sha1-WuR6vDTAHo/hLh6/cJO6IfiGll4=
   dependencies:
     "@phenomnomnominal/tsquery" "^4.1.1"
     "@testing-library/dom" "^7.18.1"
     tslib "^2.0.0"
     tslint "^5.16.0"
 
-"@testing-library/dom@7.29.4":
-  version "7.29.4"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@testing-library/dom/-/@testing-library/dom-7.29.4.tgz#1647c2b478789621ead7a50614ad81ab5ae5b86c"
-  integrity sha1-FkfCtHh4liHq16UGFK2Bq1rluGw=
+"@testing-library/dom@7.29.6":
+  version "7.29.6"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@testing-library/dom/-/@testing-library/dom-7.29.6.tgz#eb37844fb431186db7960a7ff6749ea65a19617c"
+  integrity sha1-6zeET7QxGG23lgp/9nSeploZYXw=
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.12.5"
@@ -1684,10 +1687,10 @@
     lodash "^4.17.15"
     redent "^3.0.0"
 
-"@testing-library/user-event@12.6.2":
-  version "12.6.2"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@testing-library/user-event/-/@testing-library/user-event-12.6.2.tgz#accce6be0353be38e07bce55b31232d89ae10bc2"
-  integrity sha1-rMzmvgNTvjjge85VsxIy2JrhC8I=
+"@testing-library/user-event@12.7.1":
+  version "12.7.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@testing-library/user-event/-/@testing-library/user-event-12.7.1.tgz#e1ce931c04a1c65faf28618442d56ba8da887f2c"
+  integrity sha1-4c6THAShxl+vKGGEQtVrqNqIfyw=
   dependencies:
     "@babel/runtime" "^7.12.5"
 
@@ -1793,6 +1796,11 @@
   dependencies:
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
+
+"@types/js-levenshtein@^1.1.0":
+  version "1.1.0"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/@types/js-levenshtein/-/@types/js-levenshtein-1.1.0.tgz#9541eec4ad6e3ec5633270a3a2b55d981edc44a9"
+  integrity sha1-lUHuxK1uPsVjMnCjorVdmB7cRKk=
 
 "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.6":
   version "7.0.6"
@@ -2389,13 +2397,13 @@ atob@^2.1.2:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha1-bZUX654DDSQ2ZmZR6GvZ9vE1M8k=
 
-autoprefixer@10.2.1:
-  version "10.2.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/autoprefixer/-/autoprefixer-10.2.1.tgz#ce96870df6ddd9ba4c9bbba56c54b9ef4b00a962"
-  integrity sha1-zpaHDfbd2bpMm7ulbFS570sAqWI=
+autoprefixer@10.2.4:
+  version "10.2.4"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/autoprefixer/-/autoprefixer-10.2.4.tgz#c0e7cf24fcc6a1ae5d6250c623f0cb8beef2f7e1"
+  integrity sha1-wOfPJPzGoa5dYlDGI/DLi+7y9+E=
   dependencies:
     browserslist "^4.16.1"
-    caniuse-lite "^1.0.30001173"
+    caniuse-lite "^1.0.30001181"
     colorette "^1.2.1"
     fraction.js "^4.0.13"
     normalize-range "^0.1.2"
@@ -2931,6 +2939,11 @@ caniuse-lite@^1.0.30001173:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/caniuse-lite/-/caniuse-lite-1.0.30001179.tgz#b0803883b4471a6c62066fb1752756f8afc699c8"
   integrity sha1-sIA4g7RHGmxiBm+xdSdW+K/Gmcg=
 
+caniuse-lite@^1.0.30001181:
+  version "1.0.30001190"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/caniuse-lite/-/caniuse-lite-1.0.30001190.tgz#acc6d4a53c68be16cfc314d55c9cab637e558cba"
+  integrity sha1-rMbUpTxovhbPwxTVXJyrY35VjLo=
+
 canonical-path@1.0.0:
   version "1.0.0"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/canonical-path/-/canonical-path-1.0.0.tgz#fcb470c23958def85081856be7a86e904f180d1d"
@@ -2948,7 +2961,7 @@ caseless@~0.12.0:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
-chalk@^2.0.0, chalk@^2.0.1, chalk@^2.3.0, chalk@^2.4.1, chalk@^2.4.2:
+chalk@^2.0.0, chalk@^2.3.0, chalk@^2.4.1, chalk@^2.4.2:
   version "2.4.2"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/chalk/-/chalk-2.4.2.tgz#cd42541677a54333cf541a49108c1432b44c9424"
   integrity sha1-zUJUFnelQzPPVBpJEIwUMrRMlCQ=
@@ -3404,10 +3417,10 @@ core-js-pure@^3.0.0:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/core-js-pure/-/core-js-pure-3.7.0.tgz#28a57c861d5698e053f0ff36905f7a3301b4191e"
   integrity sha1-KKV8hh1WmOBT8P82kF96MwG0GR4=
 
-core-js@3.8.2:
-  version "3.8.2"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/core-js/-/core-js-3.8.2.tgz#0a1fd6709246da9ca8eff5bb0cbd15fba9ac7044"
-  integrity sha1-Ch/WcJJG2pyo7/W7DL0V+6mscEQ=
+core-js@3.8.3:
+  version "3.8.3"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/core-js/-/core-js-3.8.3.tgz#c21906e1f14f3689f93abcc6e26883550dd92dd0"
+  integrity sha1-whkG4fFPNon5OrzG4miDVQ3ZLdA=
 
 core-js@^3.7.0:
   version "3.7.0"
@@ -3476,10 +3489,10 @@ create-require@^1.1.0:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha1-wdfo8eX2z8n/ZfnNNS03NIdWwzM=
 
-critters@0.0.6:
-  version "0.0.6"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/critters/-/critters-0.0.6.tgz#b71384113d8b5f5c82f3aeba80c122437f195d8c"
-  integrity sha1-txOEET2LX1yC8666gMEiQ38ZXYw=
+critters@0.0.7:
+  version "0.0.7"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/critters/-/critters-0.0.7.tgz#548b470360f4f3c51e622de3b7aa733c8f0b17bf"
+  integrity sha1-VItHA2D088UeYi3jt6pzPI8LF78=
   dependencies:
     chalk "^4.1.0"
     css "^3.0.0"
@@ -4146,10 +4159,10 @@ end-of-stream@^1.0.0, end-of-stream@^1.1.0:
   dependencies:
     once "^1.4.0"
 
-enhanced-resolve@5.6.0:
-  version "5.6.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/enhanced-resolve/-/enhanced-resolve-5.6.0.tgz#ad19a1665f230a6e384724a30acf3f7332b2b3f0"
-  integrity sha1-rRmhZl8jCm44RySjCs8/czKys/A=
+enhanced-resolve@5.7.0:
+  version "5.7.0"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/enhanced-resolve/-/enhanced-resolve-5.7.0.tgz#525c5d856680fbd5052de453ac83e32049958b5c"
+  integrity sha1-UlxdhWaA+9UFLeRTrIPjIEmVi1w=
   dependencies:
     graceful-fs "^4.2.4"
     tapable "^2.2.0"
@@ -4810,6 +4823,11 @@ fsevents@~2.1.2:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/fsevents/-/fsevents-2.1.3.tgz#fb738703ae8d2f9fe900c33836ddebee8b97f23e"
   integrity sha1-+3OHA66NL5/pAMM4Nt3r7ouX8j4=
 
+fsevents@~2.3.1:
+  version "2.3.2"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
+  integrity sha1-ilJveLj99GI7cJ4Ll1xSwkwC/Ro=
+
 function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
@@ -5204,7 +5222,7 @@ https-browserify@^1.0.0:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
 
-https-proxy-agent@^5.0.0:
+https-proxy-agent@5.0.0, https-proxy-agent@^5.0.0:
   version "5.0.0"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/https-proxy-agent/-/https-proxy-agent-5.0.0.tgz#e2a90542abb68a762e0a0850f6c9edadfd8506b2"
   integrity sha1-4qkFQqu2inYuCghQ9sntrf2FBrI=
@@ -6156,6 +6174,11 @@ jest@26.6.3:
     import-local "^3.0.2"
     jest-cli "^26.6.3"
 
+js-levenshtein@^1.1.6:
+  version "1.1.6"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"
+  integrity sha1-xs7ljrNVA3LfjeuF+tXOZs4B1Z0=
+
 js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -6342,10 +6365,10 @@ less-loader@7.3.0:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
 
-less@4.1.0:
-  version "4.1.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/less/-/less-4.1.0.tgz#a12708d1951239db1c9d7eaa405f1ebac9a75b8d"
-  integrity sha1-oScI0ZUSOdscnX6qQF8eusmnW40=
+less@4.1.1:
+  version "4.1.1"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/less/-/less-4.1.1.tgz#15bf253a9939791dc690888c3ff424f3e6c7edba"
+  integrity sha1-Fb8lOpk5eR3GkIiMP/Qk8+bH7bo=
   dependencies:
     copy-anything "^2.0.1"
     parse-node-version "^1.0.1"
@@ -6689,10 +6712,10 @@ min-indent@^1.0.0:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/min-indent/-/min-indent-1.0.1.tgz#a63f681673b30571fbe8bc25686ae746eefa9869"
   integrity sha1-pj9oFnOzBXH76LwlaGrnRu76mGk=
 
-mini-css-extract-plugin@1.3.3:
-  version "1.3.3"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/mini-css-extract-plugin/-/mini-css-extract-plugin-1.3.3.tgz#7802e62b34199aa7d1a62e654395859a836486a0"
-  integrity sha1-eALmKzQZmqfRpi5lQ5WFmoNkhqA=
+mini-css-extract-plugin@1.3.5:
+  version "1.3.5"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/mini-css-extract-plugin/-/mini-css-extract-plugin-1.3.5.tgz#252166e78879c106e0130f229d44e0cbdfcebed3"
+  integrity sha1-JSFm54h5wQbgEw8inUTgy9/OvtM=
   dependencies:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
@@ -6845,18 +6868,20 @@ ms@2.1.2, ms@^2.0.0, ms@^2.1.1:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha1-0J0fNXtEP0kzgqjrPM0YOHKuYAk=
 
-msw@0.26.0:
-  version "0.26.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/msw/-/msw-0.26.0.tgz#10a61e0ecf6cd9bbb6583f45d5532bee54649a50"
-  integrity sha1-EKYeDs9s2bu2WD9F1VMr7lRkmlA=
+msw@0.26.2:
+  version "0.26.2"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/msw/-/msw-0.26.2.tgz#198d9947c6470aeccad02b42acbcbd455f7830f7"
+  integrity sha1-GY2ZR8ZHCuzK0CtCrLy9RV94MPc=
   dependencies:
     "@open-draft/until" "^1.0.3"
     "@types/cookie" "^0.4.0"
+    "@types/js-levenshtein" "^1.1.0"
     chalk "^4.1.0"
     chokidar "^3.4.2"
     cookie "^0.4.1"
     graphql "^15.4.0"
     headers-utils "^1.2.0"
+    js-levenshtein "^1.1.6"
     node-fetch "^2.6.1"
     node-match-path "^0.6.1"
     node-request-interceptor "^0.6.3"
@@ -7296,10 +7321,10 @@ onetime@^5.1.0:
   dependencies:
     mimic-fn "^2.1.0"
 
-open@7.3.1:
-  version "7.3.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/open/-/open-7.3.1.tgz#111119cb919ca1acd988f49685c4fdd0f4755356"
-  integrity sha1-EREZy5GcoazZiPSWhcT90PR1U1Y=
+open@7.4.0:
+  version "7.4.0"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/open/-/open-7.4.0.tgz#ad95b98f871d9acb0ec8fecc557082cc9986626b"
+  integrity sha1-rZW5j4cdmssOyP7MVXCCzJmGYms=
   dependencies:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
@@ -7323,10 +7348,10 @@ optionator@^0.8.1:
     type-check "~0.3.2"
     word-wrap "~1.2.3"
 
-ora@5.2.0:
-  version "5.2.0"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/ora/-/ora-5.2.0.tgz#de10bfd2d15514384af45f3fa9d9b1aaf344fda1"
-  integrity sha1-3hC/0tFVFDhK9F8/qdmxqvNE/aE=
+ora@5.3.0:
+  version "5.3.0"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/ora/-/ora-5.3.0.tgz#fb832899d3a1372fe71c8b2c534bbfe74961bb6f"
+  integrity sha1-+4MomdOhNy/nHIssU0u/50lhu28=
   dependencies:
     bl "^4.0.3"
     chalk "^4.1.0"
@@ -7416,10 +7441,10 @@ p-try@^2.0.0:
   resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha1-yyhoVA4xPWHeWPr741zpAE1VQOY=
 
-pacote@11.1.14:
-  version "11.1.14"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/pacote/-/pacote-11.1.14.tgz#c60b9849ab05488d3f9ccd644c8a42543f2f36d6"
-  integrity sha1-xguYSasFSI0/nM1kTIpCVD8vNtY=
+pacote@11.2.4:
+  version "11.2.4"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/pacote/-/pacote-11.2.4.tgz#dc7ca740a573ed86a3bf863511d22c1d413ec82f"
+  integrity sha1-3HynQKVz7Yajv4Y1EdIsHUE+yC8=
   dependencies:
     "@npmcli/git" "^2.0.1"
     "@npmcli/installed-package-contents" "^1.0.5"
@@ -8600,12 +8625,12 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rollup@2.36.1:
-  version "2.36.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/rollup/-/rollup-2.36.1.tgz#2174f0c25c7b400d57b05628d0e732c7ae8d2178"
-  integrity sha1-IXTwwlx7QA1XsFYo0Ocyx66NIXg=
+rollup@2.38.4:
+  version "2.38.4"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/rollup/-/rollup-2.38.4.tgz#1b84ea8728c73b1a00a6a6e9c630ec8c3fe48cea"
+  integrity sha1-G4TqhyjHOxoApqbpxjDsjD/kjOo=
   optionalDependencies:
-    fsevents "~2.1.2"
+    fsevents "~2.3.1"
 
 rsvp@^4.8.4:
   version "4.8.5"
@@ -8684,10 +8709,10 @@ sass-loader@10.1.1:
     schema-utils "^3.0.0"
     semver "^7.3.2"
 
-sass@1.32.4:
-  version "1.32.4"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/sass/-/sass-1.32.4.tgz#308bf29dd7f53d44ae4f06580e9a910ad9aa411e"
-  integrity sha1-MIvyndf1PUSuTwZYDpqRCtmqQR4=
+sass@1.32.6:
+  version "1.32.6"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/sass/-/sass-1.32.6.tgz#e3646c8325cd97ff75a8a15226007f3ccd221393"
+  integrity sha1-42RsgyXNl/91qKFSJgB/PM0iE5M=
   dependencies:
     chokidar ">=2.0.0 <4.0.0"
 
@@ -9126,12 +9151,12 @@ spdy@^4.0.2:
     select-hose "^2.0.0"
     spdy-transport "^3.0.0"
 
-speed-measure-webpack-plugin@1.3.3:
-  version "1.3.3"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/speed-measure-webpack-plugin/-/speed-measure-webpack-plugin-1.3.3.tgz#6ff894fc83e8a6310dde3af863a0329cd79da4f5"
-  integrity sha1-b/iU/IPopjEN3jr4Y6AynNedpPU=
+speed-measure-webpack-plugin@1.4.2:
+  version "1.4.2"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/speed-measure-webpack-plugin/-/speed-measure-webpack-plugin-1.4.2.tgz#1608e62d3bdb45f01810010e1b5bfedefedfa58f"
+  integrity sha1-FgjmLTvbRfAYEAEOG1v+3v7fpY8=
   dependencies:
-    chalk "^2.0.1"
+    chalk "^4.1.0"
 
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
@@ -9391,10 +9416,10 @@ stylehacks@^4.0.0:
     postcss "^7.0.0"
     postcss-selector-parser "^3.0.0"
 
-stylus-loader@4.3.2:
-  version "4.3.2"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/stylus-loader/-/stylus-loader-4.3.2.tgz#d3577e7f5ff65ea3f9516e1a0f1f16aea706d3f0"
-  integrity sha1-01d+f1/2XqP5UW4aDx8WrqcG0/A=
+stylus-loader@4.3.3:
+  version "4.3.3"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/stylus-loader/-/stylus-loader-4.3.3.tgz#381bb6341272ac50bcdfd0b877707eac99b6b757"
+  integrity sha1-OBu2NBJyrFC839C4d3B+rJm2t1c=
   dependencies:
     fast-glob "^3.2.4"
     klona "^2.0.4"
@@ -10191,10 +10216,10 @@ webpack-dev-middleware@3.7.2, webpack-dev-middleware@^3.7.2:
     range-parser "^1.2.1"
     webpack-log "^2.0.0"
 
-webpack-dev-server@3.11.1:
-  version "3.11.1"
-  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/webpack-dev-server/-/webpack-dev-server-3.11.1.tgz#c74028bf5ba8885aaf230e48a20e8936ab8511f0"
-  integrity sha1-x0Aov1uoiFqvIw5Iog6JNquFEfA=
+webpack-dev-server@3.11.2:
+  version "3.11.2"
+  resolved "https://www.myget.org/F/igor/auth/4900d5c4-435f-4656-be5f-9ddd124116ee/npm/webpack-dev-server/-/webpack-dev-server-3.11.2.tgz#695ebced76a4929f0d5de7fd73fafe185fe33708"
+  integrity sha1-aV687Xakkp8NXef9c/r+GF/jNwg=
   dependencies:
     ansi-html "0.0.7"
     bonjour "^3.5.0"
