@@ -31,10 +31,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="haus-logs" />
-  </ItemGroup>
 
   <Target Name="RunBundler" AfterTargets="ComputeFilesToPublish">
     <Exec Command="yarn install" WorkingDirectory="./client-app" />

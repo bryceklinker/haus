@@ -44,8 +44,8 @@ namespace Haus.Web.Host
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseHausRequestLogging()
-                .UseCors()
                 .UseHttpsRedirection()
+                .UseCors()
                 .UseStaticFiles()
                 .UseSpaStaticFiles();
 
