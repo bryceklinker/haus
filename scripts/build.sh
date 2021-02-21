@@ -21,6 +21,10 @@ ZIGBEE_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Zigbee.Host/Haus.Zigbee.Host.
 WEB_HOST_BASE_ASSET_PATH="Haus.Web.Host"
 ZIGBEE_HOST_BASE_ASSET_PATH="Haus.Zigbee.Host"
 
+function build_solution() {
+  dotnet build /p:Version="${VERSION}"
+}
+
 function run_dotnet_test() {
   PROJECT_NAME=$1
   PROJECT_PATH="${WORKING_DIRECTORY}/tests/${PROJECT_NAME}"
@@ -49,6 +53,7 @@ function run_tests() {
   run_dotnet_test "Haus.Mqtt.Client.Tests"
   run_dotnet_test "Haus.Web.Host.Tests"
   run_dotnet_test "Haus.Zigbee.Host.Tests"
+  
   
   dotnet reportgenerator \
     "-reports:${REPORT_COVERAGE_FILE_PATH}" \
@@ -99,6 +104,7 @@ function publish_app() {
 }
 
 function main() {
+  build_solution
   run_tests
   run_acceptance_tests
   publish_app
