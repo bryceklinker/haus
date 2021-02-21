@@ -31,6 +31,17 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <Target Name="BundleZigbee2MQTT" AfterTargets="ComputeFilesToPublish">
+    <Exec Command="yarn install --prod" />
+    <ItemGroup>
+      <NodeModules Include="node_modules/**" />
+      <ResolvedFiletoPublish Include="@(NodeModules->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(NodeModules.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFiletoPublish>
+    </ItemGroup>
+  </Target>
+  
   <ItemGroup>
     <None Update="haus-zigbee.service">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

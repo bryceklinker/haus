@@ -17,7 +17,7 @@ namespace Haus.Web.Host.Health
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
-            await Clients.Caller.SendAsync("OnHealth", _lastKnownHealthCache.LastKnownHealth);
+            await Clients.Caller.SendAsync("OnHealth", _lastKnownHealthCache.GetLatestReport());
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Node
 {
     public interface INodeZigbeeProcess : IDisposable
     {
+        bool IsRunning { get; }
         void Start();
         void Stop();
     }
@@ -20,6 +21,9 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Node
         private readonly Process _process;
 
         private ZigbeeOptions Options => _options.Value;
+
+        private bool HasStarted { get; set; }
+        public bool IsRunning => !_process.HasExited && HasStarted;
 
         public NodeZigbeeProcess(IOptions<ZigbeeOptions> options, ILogger<NodeZigbeeProcess> logger)
         {
@@ -38,6 +42,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Node
             _process.Start();
             _process.BeginErrorReadLine();
             _process.BeginOutputReadLine();
+            HasStarted = true;
         }
 
         public void Stop()

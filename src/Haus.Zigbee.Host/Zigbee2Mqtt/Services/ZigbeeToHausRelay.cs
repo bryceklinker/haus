@@ -11,7 +11,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
 {
     public class ZigbeeToHausRelay : BackgroundService
     {
-        private readonly IMqttClientFactory _mqttFactory;
+        private readonly IZigbeeMqttClientFactory _zigbeeMqttFactory;
         private readonly ILogger<ZigbeeToHausRelay> _logger;
         private readonly IMqttMessageMapper _mqttMessageMapper;
         
@@ -19,20 +19,20 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
         private IHausMqttClient HausMqttClient { get; set; }
         
         public ZigbeeToHausRelay(IMqttMessageMapper mqttMessageMapper,
-            IMqttClientFactory mqttFactory,
+            IZigbeeMqttClientFactory zigbeeMqttFactory,
             ILogger<ZigbeeToHausRelay> logger)
         {
             _mqttMessageMapper = mqttMessageMapper;
-            _mqttFactory = mqttFactory;
+            _zigbeeMqttFactory = zigbeeMqttFactory;
             _logger = logger;
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
-            ZigbeeMqttClient = await _mqttFactory.CreateZigbeeClient();
+            ZigbeeMqttClient = await _zigbeeMqttFactory.CreateZigbeeClient();
             await ZigbeeMqttClient.SubscribeAsync("#", ZigbeeMessageHandler);
             
-            HausMqttClient = await _mqttFactory.CreateHausClient();
+            HausMqttClient = await _zigbeeMqttFactory.CreateHausClient();
             await HausMqttClient.SubscribeAsync("#", HausMessageHandler);
             await base.StartAsync(cancellationToken);
         }
@@ -72,7 +72,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
             {
                 _logger.LogInformation("Sending message to {@Topic}...", message.Topic);
                 await targetMqtt.PublishAsync(message).ConfigureAwait(false);
-                _logger.LogInformation("Sent message to {@Topic}.", message.Topic);    
+                _logger.LogInformation("Sent message to {@Topic}", message.Topic);    
             }
         }
     }

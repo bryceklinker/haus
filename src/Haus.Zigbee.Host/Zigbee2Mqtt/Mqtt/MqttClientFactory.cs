@@ -6,13 +6,13 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mqtt
 {
-    public interface IMqttClientFactory
+    public interface IZigbeeMqttClientFactory
     {
         Task<IHausMqttClient> CreateZigbeeClient();
         Task<IHausMqttClient> CreateHausClient();
     }
     
-    public class MqttClientFactory : IMqttClientFactory
+    public class ZigbeeMqttClientFactory : IZigbeeMqttClientFactory
     {
         private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
         private readonly IOptions<HausOptions> _hausOptions;
@@ -21,7 +21,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mqtt
         private string ZigbeeMqttUrl => _zigbeeOptions.Value.Config.Mqtt.Server;
         private string HausMqttUrl => _hausOptions.Value.Server;
         
-        public MqttClientFactory(IOptions<ZigbeeOptions> zigbeeOptions, IOptions<HausOptions> hausOptions, IHausMqttClientFactory mqttFactory)
+        public ZigbeeMqttClientFactory(IOptions<ZigbeeOptions> zigbeeOptions, IOptions<HausOptions> hausOptions, IHausMqttClientFactory mqttFactory)
         {
             _zigbeeOptions = zigbeeOptions;
             _hausOptions = hausOptions;

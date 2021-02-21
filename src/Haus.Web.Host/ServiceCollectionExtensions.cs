@@ -49,6 +49,7 @@ namespace Haus.Web.Host
                 .AddHostedService<MqttMessageRouter>()
                 .AddHostedService<DiagnosticsMqttListener>()
                 .AddHostedService<DeviceSimulatorStatePublisher>()
+                .AddHostedService<HealthListener>()
                 .AddSingleton<IHealthCheckPublisher, HealthPublisher>();
         }
 

@@ -5,7 +5,8 @@ namespace Haus.Web.Host.Health
 {
     public interface ILastKnownHealthCache
     {
-        HausHealthReportModel LastKnownHealth { get; set; }
+        HausHealthReportModel GetLatestReport();
+        void UpdateLatestReport(HausHealthReportModel report);
     }
 
     public class LastKnownHealthCache : ILastKnownHealthCache
@@ -13,15 +14,19 @@ namespace Haus.Web.Host.Health
         private const string CacheKey = "last-known-health";
         private readonly IMemoryCache _cache;
 
-        public HausHealthReportModel LastKnownHealth
-        {
-            get => _cache.TryGetValue(CacheKey, out HausHealthReportModel value) ? value : null;
-            set => _cache.Set(CacheKey, value);
-        }
-
         public LastKnownHealthCache(IMemoryCache cache)
         {
             _cache = cache;
+        }
+
+        public HausHealthReportModel GetLatestReport()
+        {
+            return _cache.TryGetValue(CacheKey, out HausHealthReportModel value) ? value : null;
+        }
+        
+        public void UpdateLatestReport(HausHealthReportModel report)
+        {
+            _cache.Set(CacheKey, report);
         }
     }
 }

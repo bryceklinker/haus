@@ -2,9 +2,11 @@ using System;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Discovery.Entities;
+using Haus.Core.Health.Entities;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Discovery;
 using Haus.Core.Rooms.Entities;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Haus.Testing.Support
 {
@@ -40,6 +42,21 @@ namespace Haus.Testing.Support
             var entity = new DiscoveryEntity(state: state);
             context.AddAndSave(entity);
             return entity;
+        }
+
+        public static HealthCheckEntity AddHealthCheck(this HausDbContext context, 
+            string name = null,
+            Action<HealthCheckEntity> configure = null)
+        {
+            var check = new HealthCheckEntity
+            {
+                Name = name ?? $"{Guid.NewGuid()}",
+                Status = HealthStatus.Healthy,
+                DurationOfCheckInMilliseconds = 0
+            };
+            configure?.Invoke(check);
+            context.AddAndSave(check);
+            return check;
         }
         
         private static void AddAndSave<T>(this HausDbContext context, T entity)
