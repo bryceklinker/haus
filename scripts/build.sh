@@ -47,7 +47,7 @@ function generate_typescript_models() {
 function run_tests() {
   dotnet tool restore
   
-  run_dotnet_test "Haus.Core.Model.Tests"
+  run_dotnet_test "Haus.Core.Models.Tests"
   run_dotnet_test "Haus.Core.Tests"
   run_dotnet_test "Haus.Utilities.Tests"
   run_dotnet_test "Haus.Mqtt.Client.Tests"
