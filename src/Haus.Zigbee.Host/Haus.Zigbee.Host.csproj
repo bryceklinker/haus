@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <Target Name="BundleZigbee2MQTT" AfterTargets="ComputeFilesToPublish">
-    <Exec Command="yarn install --prod" />
+    <Exec Command="yarn install" />
     <ItemGroup>
       <NodeModules Include="node_modules/**" />
       <ResolvedFiletoPublish Include="@(NodeModules->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">

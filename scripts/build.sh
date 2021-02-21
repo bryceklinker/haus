@@ -21,10 +21,6 @@ ZIGBEE_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Zigbee.Host/Haus.Zigbee.Host.
 WEB_HOST_BASE_ASSET_PATH="Haus.Web.Host"
 ZIGBEE_HOST_BASE_ASSET_PATH="Haus.Zigbee.Host"
 
-function build_solution() {
-  dotnet build /p:Version="${VERSION}"
-}
-
 function run_dotnet_test() {
   PROJECT_NAME=$1
   PROJECT_PATH="${WORKING_DIRECTORY}/tests/${PROJECT_NAME}"
@@ -47,6 +43,7 @@ function generate_typescript_models() {
 function run_tests() {
   dotnet tool restore
   
+  run_dotnet_test "Haus.Core.Model.Tests"
   run_dotnet_test "Haus.Core.Tests"
   run_dotnet_test "Haus.Utilities.Tests"
   run_dotnet_test "Haus.Mqtt.Client.Tests"
@@ -81,7 +78,8 @@ function dotnet_publish() {
     --output "${OUTPUT_PATH}" \
     --configuration "${CONFIGURATION}" \
     --runtime "${RUNTIME_IDENTIFIER}" \
-    --self-contained true
+    --self-contained true \
+    -p:Version="${VERSION}"
     
    pushd "${OUTPUT_PATH}" || exit
     zip -rm "../../${ASSET_PATH}.${RUNTIME_IDENTIFIER}.zip" -- *
@@ -101,7 +99,6 @@ function publish_app() {
 }
 
 function main() {
-  build_solution
   run_tests
   run_acceptance_tests
   publish_app
