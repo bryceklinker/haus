@@ -1,13 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../../dependencies/version.xml" />
-  
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+  <Import Project="../../dependencies/framework-version.xml" />
   
   <ItemGroup>
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftPackageVersion)" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
-
+  <Import Project="../../dependencies/framework-version.xml" />
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\Haus.Core\Haus.Core.csproj" />
     <ProjectReference Include="..\..\src\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj" />
@@ -11,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion)" />
     <PackageReference Include="Polly" Version="7.2.2" />
   </ItemGroup>
 

@@ -38,7 +38,6 @@ function create_zigbee2mqtt_linux_package() {
 }
 
 function main() {
-  create_zigbee2mqtt_linux_package
   if [ "$IS_RELEASE" = "true" ]; then
     dotnet_publish "linux-x64" "${WEB_HOST_PROJECT}" "${PUBLISH_DIRECTORY}/web_host" "${WEB_HOST_BASE_ASSET_PATH}"
     dotnet_publish "win-x64" "${WEB_HOST_PROJECT}" "${PUBLISH_DIRECTORY}/web_host" "${WEB_HOST_BASE_ASSET_PATH}"

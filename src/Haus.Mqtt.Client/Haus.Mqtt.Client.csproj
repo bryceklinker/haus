@@ -1,13 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../../dependencies/version.xml" />
-  
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+  <Import Project="../../dependencies/framework-version.xml" />
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="5.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftPackageVersion)" />
     <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.1.0" />
     <PackageReference Include="Polly" Version="7.2.2" />
   </ItemGroup>

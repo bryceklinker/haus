@@ -1,16 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../dependencies/framework-version.xml" />
   <Import Project="../../dependencies/version.xml" />
   
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Haus.Core.Models\Haus.Core.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="$(MicrosoftPackageVersion)" />
   </ItemGroup>
 
 </Project>

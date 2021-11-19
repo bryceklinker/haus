@@ -1,14 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../../dependencies/tests.xml" />
+  <Import Project="../../dependencies/framework-version.xml" />
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.2" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Haus.Zigbee.Host\Haus.Zigbee.Host.csproj" />

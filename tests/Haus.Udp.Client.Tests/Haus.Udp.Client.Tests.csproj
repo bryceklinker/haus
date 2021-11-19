@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../../dependencies/tests.xml" />
+  <Import Project="../../dependencies/framework-version.xml" />
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>

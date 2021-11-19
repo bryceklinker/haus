@@ -64,6 +64,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dependencies", "dependencie
 		dependencies\tests.xml = dependencies\tests.xml
 		dependencies\hosting.xml = dependencies\hosting.xml
 		dependencies\version.xml = dependencies\version.xml
+		dependencies\framework-version.xml = dependencies\framework-version.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{E9A6A742-520C-4D22-BE65-853B85B71509}"

@@ -1,6 +1,7 @@
 <Project>
+    <Import Project="./framework-version.xml" />
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="$(MicrosoftPackageVersion)" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="$(MicrosoftPackageVersion)" />
     </ItemGroup>
 </Project>
