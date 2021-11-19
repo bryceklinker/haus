@@ -19,6 +19,10 @@ ZIGBEE_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Zigbee.Host/Haus.Zigbee.Host.
 WEB_HOST_BASE_ASSET_PATH="Haus.Web.Host"
 ZIGBEE_HOST_BASE_ASSET_PATH="Haus.Zigbee.Host"
 
+function install_node_packages() {
+  yarn install
+}
+
 function build_solution() {
   dotnet build /p:Version="${VERSION}"
 }
@@ -115,6 +119,7 @@ function publish_app() {
 }
 
 function main() {
+  install_node_packages
   build_solution
   run_tests
   run_acceptance_tests
