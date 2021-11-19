@@ -87,6 +87,13 @@ ProjectSection(SolutionItems) = preProject
 	zigbee2mqtt\haus-zigbee2mqtt.service = zigbee2mqtt\haus-zigbee2mqtt.service
 EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tasks", ".tasks", "{3E214AA9-481D-4ACE-AF3F-D9F521BE0F39}"
+ProjectSection(SolutionItems) = preProject
+	yarn.lock = yarn.lock
+	package.json = package.json
+	.env-cmdrc.json = .env-cmdrc.json
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

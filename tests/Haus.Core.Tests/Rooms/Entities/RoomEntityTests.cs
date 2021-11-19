@@ -116,7 +116,7 @@ namespace Haus.Core.Tests.Rooms.Entities
             var lighting = new LightingEntity {State = LightingState.On};
             room.ChangeLighting(lighting, new FakeDomainEventBus());
 
-            room.Lighting.State.Should().BeEquivalentTo(LightingState.On);
+            room.Lighting.State.Should().Be(LightingState.On);
         }
 
         [Fact]

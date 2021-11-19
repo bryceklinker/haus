@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using Haus.Mqtt.Client.Settings;
 using Microsoft.Extensions.Options;
 using MQTTnet;
-using MQTTnet.Diagnostics;
+using MQTTnet.Diagnostics.Logger;
 using MQTTnet.Extensions;
 using MQTTnet.Extensions.ManagedClient;
-using Polly;
 
 namespace Haus.Mqtt.Client
 {

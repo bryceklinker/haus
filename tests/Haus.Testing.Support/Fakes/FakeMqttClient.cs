@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,12 +14,13 @@ using MQTTnet.Client.Receiving;
 using MQTTnet.Client.Subscribing;
 using MQTTnet.Client.Unsubscribing;
 using MQTTnet.Extensions.ManagedClient;
+using MQTTnet.Packets;
 
 namespace Haus.Testing.Support.Fakes
 {
     public class FakeMqttClient : IManagedMqttClient, IMqttClient
     {
-        private readonly List<MqttApplicationMessage> _publishedMessages = new List<MqttApplicationMessage>();
+        private readonly List<MqttApplicationMessage> _publishedMessages = new();
         public bool IsDisposed { get; private set; }
         public bool IsStarted { get; private set; }
         public IMqttApplicationMessageReceivedHandler ApplicationMessageReceivedHandler { get; set; }
@@ -77,7 +77,7 @@ namespace Haus.Testing.Support.Fakes
         public async Task<MqttClientPublishResult> PublishAsync(MqttApplicationMessage applicationMessage, CancellationToken cancellationToken)
         {
             await ApplicationMessageReceivedHandler.HandleApplicationMessageReceivedAsync(
-                new MqttApplicationMessageReceivedEventArgs("", applicationMessage));
+                new MqttApplicationMessageReceivedEventArgs("", applicationMessage, new MqttPublishPacket(), (_, _) => Task.CompletedTask));
             return new MqttClientPublishResult();
         }
 
@@ -99,14 +99,14 @@ namespace Haus.Testing.Support.Fakes
             return Task.CompletedTask;
         }
 
-        public Task<MqttClientAuthenticateResult> ConnectAsync(IMqttClientOptions options, CancellationToken cancellationToken)
+        public Task<MqttClientConnectResult> ConnectAsync(IMqttClientOptions options, CancellationToken cancellationToken)
         {
             if (ConnectException != null)
                 throw ConnectException;
             
             Options = options;
             IsConnected = true;
-            return Task.FromResult(new MqttClientAuthenticateResult());
+            return Task.FromResult(new MqttClientConnectResult());
         }
 
         public Task DisconnectAsync(MqttClientDisconnectOptions options, CancellationToken cancellationToken)

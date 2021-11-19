@@ -23,3 +23,4 @@ coveragereport/
 **/haus.db
 **/haus-logs/
 .vs/
+.env-cmdrc.json

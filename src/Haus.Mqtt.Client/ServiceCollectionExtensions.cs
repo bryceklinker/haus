@@ -2,7 +2,7 @@ using Haus.Mqtt.Client.Health;
 using Haus.Mqtt.Client.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using MQTTnet;
-using MQTTnet.Diagnostics;
+using MQTTnet.Diagnostics.Logger;
 
 namespace Haus.Mqtt.Client
 {

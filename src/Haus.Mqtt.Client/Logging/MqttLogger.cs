@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using MQTTnet.Diagnostics;
+using MQTTnet.Diagnostics.Logger;
 
 namespace Haus.Mqtt.Client.Logging
 {
@@ -12,11 +12,6 @@ namespace Haus.Mqtt.Client.Logging
         public MqttLogger(ILogger<MqttLogger> logger)
         {
             _logger = logger;
-        }
-
-        public IMqttNetScopedLogger CreateScopedLogger(string source)
-        {
-            return new MqttNetScopedLogger(this, source);
         }
 
         public void Publish(MqttNetLogLevel level, string source, string message, object[] parameters, Exception exception)

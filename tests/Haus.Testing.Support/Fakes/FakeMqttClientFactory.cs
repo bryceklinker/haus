@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MQTTnet;
 using MQTTnet.Adapter;
 using MQTTnet.Client;
-using MQTTnet.Diagnostics;
+using MQTTnet.Diagnostics.Logger;
 using MQTTnet.LowLevelClient;
 using MQTTnet.Server;
 
