@@ -1,5 +1,6 @@
 [Unit]
 Description=Haus web application
+After=network.target
 
 [Service]
 Type=notify

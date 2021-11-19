@@ -81,6 +81,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Udp.Client.Tests", "te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Core.Models.Tests", "tests\Haus.Core.Models.Tests\Haus.Core.Models.Tests.csproj", "{812B4F15-2016-40F4-AB84-D3BF773590AA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "zigbee2mqtt", "zigbee2mqtt", "{267DD5D9-EE8C-4767-A188-2B21826ED635}"
+ProjectSection(SolutionItems) = preProject
+	zigbee2mqtt\configuration.yaml = zigbee2mqtt\configuration.yaml
+	zigbee2mqtt\haus-zigbee2mqtt.service = zigbee2mqtt\haus-zigbee2mqtt.service
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

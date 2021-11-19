@@ -1,0 +1,14 @@
+[Unit]
+Description=haus-zigbee2mqtt
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/npm start
+WorkingDirectory=/home/bryce/haus/zigbee2mqtt
+SyslogIdentifier=Haus Zigbee2Mqtt
+User=bryce
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

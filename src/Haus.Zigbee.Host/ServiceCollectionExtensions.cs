@@ -12,7 +12,6 @@ using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Resolvers;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mqtt;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Node;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,14 +34,11 @@ namespace Haus.Zigbee.Host
                 .AddTransient<IDeviceTypeResolver, DeviceTypeResolver>()
                 .AddHausToZigbeeMappers()
                 .AddZigbeeToHausMappers()
-                .AddTransient<IZigbee2MqttConfigurationWriter, Zigbee2MqttConfigurationWriter>()
                 .Configure<ZigbeeOptions>(config.GetSection("ZigBee"))
                 .Configure<HausOptions>(config.GetSection("Haus"))
                 .Configure<HausMqttSettings>(config.GetSection("Haus"))
                 .AddHausMqtt()
-                .AddSingleton<INodeZigbeeProcess, NodeZigbeeProcess>()
                 .AddSingleton<IHealthCheckPublisher, ZigbeeHostHealthPublisher>()
-                .AddHostedService<NodeZigbeeBackgroundService>()
                 .AddHostedService<ZigbeeToHausRelay>()
                 .Configure<HealthCheckPublisherOptions>(opts =>
                 {
