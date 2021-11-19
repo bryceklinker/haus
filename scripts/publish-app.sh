@@ -30,7 +30,7 @@ function create_zigbee2mqtt_linux_package() {
   npm ci
   mkdir -p "${ZIGBEE_2_MQTT_PACKAGE_DIRECTORY}/data"
   cp "${WORKING_DIRECTORY}/zigbee2mqtt/configuration.yaml" "${ZIGBEE_2_MQTT_PACKAGE_DIRECTORY}/configuration.yaml"
-  cp "${WORKING_DIRECTORY}/zigbee2mqtt/zigbee2mqtt.service" "${ZIGBEE_2_MQTT_PACKAGE_DIRECTORY}/zigbee2mqtt.service"
+  cp "${WORKING_DIRECTORY}/zigbee2mqtt/haus-zigbee2mqtt.service" "${ZIGBEE_2_MQTT_PACKAGE_DIRECTORY}/haus-zigbee2mqtt.service"
   
   pushd "${ZIGBEE_2_MQTT_PACKAGE_DIRECTORY}" || exit 
     zip -rm "../haus-linux-zigbee2mqtt.zip" -- *
