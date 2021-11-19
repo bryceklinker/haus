@@ -17,6 +17,12 @@ jobs:
   continuous_integration:
     name: Continuous Integration
     runs-on: ubuntu-20.04
+    env:
+      IS_RELEASE: ${{ github.event.inputs.is_release || false }}
+      VERSION: ${{ steps.tag_version.outputs.new_tag }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
+      AUTH_USERNAME: ${{ secrets.AUTH_USERNAME }}
     steps:
       - name: Clone
         uses: actions/checkout@v2
@@ -43,15 +49,18 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: ${{ github.event.inputs.version_bump || 'patch' }}
 
-      - name: Run Build Script
-        run: ./scripts/build.sh
-        env:
-          IS_RELEASE: ${{ github.event.inputs.is_release || false }}
-          VERSION: ${{ steps.tag_version.outputs.new_tag }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
-          AUTH_USERNAME: ${{ secrets.AUTH_USERNAME }}
-      
+      - name: Prepare Build
+        run: ./scripts/prepare-build.sh
+
+      - name: Run Unit Tests
+        run: ./scripts/run-unit-tests.sh
+
+      - name: Run Acceptance Tests
+        run: ./scripts/run-acceptance-tests.sh
+
+      - name: Publish App
+        run: ./scripts/publish-app.sh
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
