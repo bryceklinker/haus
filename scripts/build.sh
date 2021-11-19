@@ -12,9 +12,7 @@ PUBLISH_DIRECTORY="${WORKING_DIRECTORY}/publish"
 COVERAGE_FILE_PATH="${WORKING_DIRECTORY}/coverage.json"
 REPORT_COVERAGE_FILE_PATH="${WORKING_DIRECTORY}/coverage.cobertura.xml"
 
-ACCEPTANCE_TESTS_DIRECTORY="${WORKING_DIRECTORY}/tests/Haus.Acceptance.Tests"
 UTILITIES_DIRECTORY="${WORKING_DIRECTORY}/src/Haus.Utilities"
-FRONT_END_DIRECTORY="${WORKING_DIRECTORY}/src/Haus.Web.Host/client-app"
 WEB_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Web.Host/Haus.Web.Host.csproj"
 ZIGBEE_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Zigbee.Host/Haus.Zigbee.Host.csproj"
 
@@ -60,17 +58,11 @@ function run_tests() {
     "-targetdir:coveragereport" \
     "-reporttypes:Html"
     
-  pushd "${FRONT_END_DIRECTORY}" || exit
-    yarn install
-    yarn test
-  popd || exit
+  yarn web_host_client:test
 }
 
 function run_acceptance_tests() {
-  pushd "${ACCEPTANCE_TESTS_DIRECTORY}" || exit
-    yarn install
-    yarn test
-  popd || exit
+  yarn acceptance_tests:test
 }
 
 function dotnet_publish() {
@@ -92,6 +84,8 @@ function dotnet_publish() {
 }
 
 function create_zigbee2mqtt_linux_package() {
+  sudo apt-get install -y make g++ gcc
+  
   ZIGBEE_2_MQTT_PACKAGE_DIRECTORY="${PUBLISH_DIRECTORY}/zigbee2mqtt"
   git clone https://github.com/Koenkk/zigbee2mqtt.git "${ZIGBEE_2_MQTT_PACKAGE_DIRECTORY}"
   cd "${ZIGBEE_2_MQTT_PACKAGE_DIRECTORY}"
