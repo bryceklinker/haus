@@ -6,7 +6,7 @@ source ./scripts/variables.sh
 function run_dotnet_test() {
   PROJECT_NAME=$1
   PROJECT_PATH="${WORKING_DIRECTORY}/tests/${PROJECT_NAME}"
-  dotnet coverlet "${PROJECT_PATH}/bin/Debug/net5.0/${PROJECT_NAME}.dll" \
+  dotnet coverlet "${PROJECT_PATH}/bin/Debug/net6.0/${PROJECT_NAME}.dll" \
     --target "dotnet" \
     --targetargs "test ${PROJECT_PATH} --no-build" \
     --merge-with "${COVERAGE_FILE_PATH}" \
