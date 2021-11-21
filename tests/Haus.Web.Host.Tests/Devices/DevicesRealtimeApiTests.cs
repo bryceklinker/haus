@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Models.Devices;
@@ -28,11 +29,11 @@ namespace Haus.Web.Host.Tests.Devices
             hub.On<HausEvent<DeviceLightingChangedEvent>>("OnEvent", e => change = e);
 
             var (_, device) = await _factory.AddRoomWithDevice("my-room", DeviceType.Light);
-            
+
             Eventually.Assert(() =>
             {
                 change.Payload.Device.Id.Should().Be(device.Id);
-            });
+            }, 10000, 200);
         }
     }
 }

@@ -1,12 +1,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Events;
+using Haus.Cqrs.Events;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Haus.Web.Host.Common.Events
 {
-    internal class RoutableEventsToSignalrHandler<T> : INotificationHandler<T>
+    internal class RoutableEventsToSignalrHandler<T> : IEventHandler<T>
         where T : RoutableEvent
     {
         private readonly IHubContext<EventsHub> _hub;
