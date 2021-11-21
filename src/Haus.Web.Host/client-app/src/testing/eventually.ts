@@ -8,7 +8,7 @@ export async function eventually(expectation: Expectation, timeout: number = 400
       await expectation();
       return;
     } catch (error) {
-      expectationException = error;
+      expectationException = error as Error;
       await sleep(delay);
     }
   }
