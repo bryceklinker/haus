@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build --configuration production",
     "test": "jest --maxWorkers 50%",
-    "test:watch": "yarn test --watch"
+    "test:watch": "yarn test --watch",
+    "postinstall": "ngcc --properties es2015 browser main --first-only --create-ivy-entry-points"
   },
   "private": true,
   "dependencies": {
@@ -22,10 +23,10 @@
     "@angular/router": "13.0.2",
     "@auth0/auth0-angular": "1.8.0",
     "@microsoft/signalr": "6.0.0",
-    "@ngrx/effects": "12.5.1",
-    "@ngrx/entity": "12.5.1",
-    "@ngrx/store": "12.5.1",
-    "@ngrx/store-devtools": "12.5.1",
+    "@ngrx/effects": "13.0.1",
+    "@ngrx/entity": "13.0.1",
+    "@ngrx/store": "13.0.1",
+    "@ngrx/store-devtools": "13.0.1",
     "file-saver": "2.0.5",
     "rxjs": "6.6.3",
     "tslib": "2.0.3",

@@ -1,5 +1,6 @@
 import 'zone.js';
 import 'zone.js/testing';
+import '@angular/compiler';
 import 'jest-preset-angular';
 import '@testing-library/jest-dom';
 import {TestingServer} from "./testing";

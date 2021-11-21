@@ -1,5 +1,7 @@
+import { Injectable } from "@angular/core";
 import {SaveFileService} from "../../app/shared/save-file.service";
 
+@Injectable()
 export class TestingSaveFileService extends SaveFileService {
 
   constructor() {

@@ -1,7 +1,9 @@
 import {SignalrHubConnection} from "../../app/shared/signalr";
 import {SignalrHubConnectionFactory} from "../../app/shared/signalr";
 import {TestingSignalrHubConnection} from "./testing-signalr-hub.connection";
+import {Injectable} from "@angular/core";
 
+@Injectable()
 export class TestingSignalrHubConnectionFactory extends SignalrHubConnectionFactory {
   private _connections: {[hubName: string]: TestingSignalrHubConnection} = {};
 

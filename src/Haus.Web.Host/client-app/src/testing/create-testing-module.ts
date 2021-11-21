@@ -2,7 +2,7 @@ import {TestModuleMetadata} from "@angular/core/testing";
 import {ActivatedRoute, Routes} from "@angular/router";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterTestingModule} from "@angular/router/testing";
-import {AuthModule, AuthService} from "@auth0/auth0-angular";
+import {AuthService} from "@auth0/auth0-angular";
 import {SpyLocation} from "@angular/common/testing";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 
@@ -12,8 +12,8 @@ import {
   TestingSettingsService,
   TestingSignalrHubConnectionFactory
 } from "./fakes";
-import {TestingMatDialog} from "./fakes/testing-mat-dialog";
-import {TestingMatDialogRef} from "./fakes/testing-mat-dialog-ref";
+import {TestingMatDialog} from "./fakes";
+import {TestingMatDialogRef} from "./fakes";
 import {SignalrHubConnectionFactory} from "../app/shared/signalr";
 import {TestingActivatedRoute} from "./fakes";
 import {HttpClientModule} from "@angular/common/http";
@@ -91,8 +91,7 @@ export function getTestingImports(routes: Routes, actions: Action[]) {
     NoopAnimationsModule,
     RouterTestingModule.withRoutes(routes),
     StoreModule.forRoot<AppState>(appReducerMap, {initialState}),
-    EffectsModule.forRoot(APP_EFFECTS),
-    AuthModule
+    EffectsModule.forRoot(APP_EFFECTS)
   ];
 }
 
