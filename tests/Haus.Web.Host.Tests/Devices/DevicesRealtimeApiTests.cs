@@ -30,7 +30,10 @@ namespace Haus.Web.Host.Tests.Devices
         {
             var hub = await _factory.CreateHubConnection("events");
             HausEvent<DeviceLightingChangedEvent> change = null;
-            hub.On<HausEvent<DeviceLightingChangedEvent>>("OnEvent", e => change = e);
+            hub.On<HausEvent<DeviceLightingChangedEvent>>("OnEvent", e =>
+            {
+                if (e?.Payload?.Device != null) change = e;
+            });
 
             var (_, device) = await _factory.AddRoomWithDevice("my-room", DeviceType.Light);
 
@@ -40,7 +43,7 @@ namespace Haus.Web.Host.Tests.Devices
                 _output.WriteLine($"{HausJsonSerializer.Serialize(change)}");
                 _output.WriteLine("**************************************");
                 change.Payload.Device.Id.Should().Be(device.Id);
-            }, 10000, 200);
+            });
         }
     }
 }
