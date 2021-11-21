@@ -6,6 +6,7 @@ import {AddSimulatedDeviceComponent} from "./add-simulated-device.component";
 import {DeviceSimulatorModule} from "../../device-simulator.module";
 import {DeviceSimulatorActions} from "../../state";
 import {DeviceType} from "../../../shared/models";
+import {DeviceSimulatorDashboardComponent} from "../device-simulator-dashboard/device-simulator-dashboard.component";
 
 export class AddSimulatedDeviceHarness extends HausComponentHarness<AddSimulatedDeviceComponent> {
 
@@ -50,7 +51,10 @@ export class AddSimulatedDeviceHarness extends HausComponentHarness<AddSimulated
   static async render(...actions: Action[]) {
     const result = await renderFeatureComponent(AddSimulatedDeviceComponent, {
       imports: [DeviceSimulatorModule],
-      actions: actions
+      actions: actions,
+      routes: [
+        {path: 'device-simulator', component: DeviceSimulatorDashboardComponent}
+      ]
     });
 
     return new AddSimulatedDeviceHarness(result);
