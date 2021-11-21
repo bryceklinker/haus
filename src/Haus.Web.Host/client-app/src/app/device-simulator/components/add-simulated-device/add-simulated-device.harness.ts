@@ -16,7 +16,7 @@ export class AddSimulatedDeviceHarness extends HausComponentHarness<AddSimulated
   constructor(result: RenderComponentResult<AddSimulatedDeviceComponent>) {
     super(result);
 
-    spyOn(this.router, 'navigateByUrl');
+    jest.spyOn(this.router, 'navigateByUrl');
   }
 
   async enterMetadataKey(key: string) {

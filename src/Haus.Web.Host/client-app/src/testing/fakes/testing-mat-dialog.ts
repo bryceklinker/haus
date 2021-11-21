@@ -13,7 +13,7 @@ export class TestingMatDialog extends MatDialog {
 
   constructor() {
     super(<any>jest.fn(), <any>jest.fn(), <any>jest.fn(), <any>jest.fn(), jest.fn(), <any>jest.fn(), <any>jest.fn());
-    spyOn(this, "open").and.callThrough();
+    jest.spyOn(this as TestingMatDialog, "open");
   }
 
 

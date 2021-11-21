@@ -18,8 +18,8 @@ export class TestingSignalrHubConnection extends SignalrHubConnection {
 
         this._startSubject.pipe(tap(() => this._state = HubConnectionState.Connected));
         this._stopSubject.pipe(tap(() => this._state = HubConnectionState.Disconnected));
-        spyOn(this, 'start').and.callThrough();
-        spyOn(this, 'stop').and.callThrough();
+        jest.spyOn(this as TestingSignalrHubConnection, 'start');
+        jest.spyOn(this as TestingSignalrHubConnection, 'stop');
     }
 
     start() {

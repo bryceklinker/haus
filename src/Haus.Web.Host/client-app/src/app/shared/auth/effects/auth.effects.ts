@@ -4,8 +4,8 @@ import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {map, mergeMap} from "rxjs/operators";
 
 import {AuthActions} from "../actions";
-import {ShellActions} from "../../../shell/state";
 import {SharedActions} from "../../actions";
+import { UserModel } from "../user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class AuthEffects {
     mergeMap(auth => auth.user$),
     map(user => {
       return user
-        ? AuthActions.userLoggedIn(user)
+        ? AuthActions.userLoggedIn(user as UserModel)
         : AuthActions.userLoggedOut();
     })
   ));

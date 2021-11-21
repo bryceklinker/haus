@@ -1,12 +1,18 @@
+import 'zone.js';
+import 'zone.js/testing';
 import 'jest-preset-angular';
 import '@testing-library/jest-dom';
 import {TestingServer} from "./testing";
+import { TestBed } from '@angular/core/testing';
+import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from "@angular/platform-browser-dynamic/testing";
 
 beforeAll(() => {
   TestingServer.start();
 });
 
 beforeEach(() => {
+  TestBed.resetTestEnvironment();
+  TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
   TestingServer.reset();
 })
 

@@ -2,6 +2,7 @@ import {AuthService} from "@auth0/auth0-angular";
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {Injectable} from "@angular/core";
 import {filter, map, skip} from "rxjs/operators";
+import {GetTokenSilentlyOptions, GetTokenSilentlyVerboseResponse} from "@auth0/auth0-spa-js";
 
 interface AuthProperties {
   isLoading: boolean,
@@ -32,8 +33,10 @@ export class TestingAuthService extends AuthService {
     super(
       <any>{isAuthenticated: jest.fn().mockReturnValue(of(false))},
       <any>{get: jest.fn().mockReturnValue({})},
-      <any>{path: jest.fn().mockReturnValue('')},
-      <any>{navigateByUrl: jest.fn()});
+      <any>{path: jest.fn().mockReturnValue(''), navigateByUrl: jest.fn()},
+      <any>{setError: jest.fn(), setIsLoading: jest.fn()}
+    );
+
     this.isLoading$ = this.properties.pipe(map(p => p.isLoading));
     this.isAuthenticated$ = this.properties.pipe(map(p => p.isAuthenticated));
     this.accessToken$ = <any>this.properties.pipe(
@@ -53,16 +56,27 @@ export class TestingAuthService extends AuthService {
       map(p => p.error)
     );
 
-    spyOn(this, 'loginWithRedirect').and.callThrough();
-    spyOn(this, 'loginWithPopup').and.callThrough();
-    spyOn(this, 'logout').and.callThrough();
-    spyOn(this, 'getAccessTokenWithPopup').and.callThrough();
-    spyOn(this, 'getAccessTokenSilently').and.callThrough();
+    jest.spyOn(this as TestingAuthService, 'loginWithRedirect');
+    jest.spyOn(this as TestingAuthService, 'loginWithPopup');
+    jest.spyOn(this as TestingAuthService, 'logout');
+    jest.spyOn(this as TestingAuthService, 'getAccessTokenWithPopup');
+    jest.spyOn(this as TestingAuthService, 'getAccessTokenSilently');
   }
 
-
-  getAccessTokenSilently(options?: any): Observable<string> {
-    return this.accessToken$;
+  getAccessTokenSilently(options?: GetTokenSilentlyOptions): Observable<string>;
+  getAccessTokenSilently(options?: GetTokenSilentlyOptions & {detailedResponse : true}): Observable<GetTokenSilentlyVerboseResponse>;
+  getAccessTokenSilently(options?: GetTokenSilentlyOptions & {detailedResponse : true}): Observable<string | GetTokenSilentlyVerboseResponse>{
+    if (options?.detailedResponse) {
+      return this.accessToken$.pipe(
+        map(token => ({
+          access_token: token,
+          id_token: token,
+          expires_in: 100
+        }))
+      )
+    } else {
+      return this.accessToken$;
+    }
   }
 
   ngOnDestroy() {

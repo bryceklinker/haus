@@ -4,10 +4,18 @@ import {Injectable} from "@angular/core";
 @Injectable()
 export class TestingSnackBar extends MatSnackBar {
   constructor() {
-    super(<any>jest.fn(), <any>jest.fn(), <any>jest.fn(), <any>jest.fn(), <any>jest.fn(), <any>jest.fn());
+    super(<any>{
+      position: jest.fn()
+    },
+      <any>jest.fn(),
+      <any>jest.fn(),
+      <any>jest.fn(),
+      <any>jest.fn(),
+      <any>jest.fn()
+    );
 
-    spyOn(this, 'open');
-    spyOn(this, 'openFromComponent');
-    spyOn(this, 'openFromTemplate');
+    jest.spyOn(this as TestingSnackBar, 'open');
+    jest.spyOn(this  as TestingSnackBar, 'openFromComponent');
+    jest.spyOn(this  as TestingSnackBar, 'openFromTemplate');
   }
 }

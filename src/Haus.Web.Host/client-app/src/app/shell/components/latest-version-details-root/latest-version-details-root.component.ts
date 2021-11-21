@@ -12,7 +12,7 @@ import {
   selectLatestVersion, selectLatestVersionError,
   ShellActions
 } from "../../state";
-import {LoadingDialogService} from "../../../shared/components/loading-dialog/loading-dialog.service";
+import {LoadingDialogService} from "../../../shared/components/loading-dialog";
 import {DestroyableSubject} from "../../../shared/destroyable-subject";
 
 @Component({

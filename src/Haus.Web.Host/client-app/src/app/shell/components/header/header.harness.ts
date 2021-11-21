@@ -36,7 +36,7 @@ export class HeaderHarness extends HausComponentHarness<HeaderComponent> {
     super(result);
 
     this.themeService = TestBed.inject(ThemeService);
-    spyOn(this.themeService, 'toggleTheme').and.callThrough();
+    jest.spyOn(this.themeService, 'toggleTheme');
   }
 
   static fromResult(result: RenderComponentResult<any>) {

@@ -5,7 +5,7 @@ export class TestingSaveFileService extends SaveFileService {
   constructor() {
     super();
 
-    spyOn(this, 'saveAs');
+    jest.spyOn(this as TestingSaveFileService, 'saveAs');
   }
 
   saveAs(blob: Blob | string, filename: string) {

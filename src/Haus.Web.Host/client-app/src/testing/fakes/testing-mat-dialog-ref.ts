@@ -11,7 +11,7 @@ export class TestingMatDialogRef<T = any, R = any> extends MatDialogRef<T, R> {
 
   constructor() {
     super(new TestingOverlayRef(), new TestingContainerInstance(), uuid());
-    spyOn(this, 'close').and.callThrough();
+    jest.spyOn(this as TestingMatDialogRef, 'close');
 
     this.afterClosed$ = new Subject<void>();
   }

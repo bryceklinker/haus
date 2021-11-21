@@ -1,20 +1,20 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
-@include mat-core();
+@include mat.core();
 
-$client-app-primary: mat-palette($mat-orange);
-$client-app-accent: mat-palette($mat-yellow, A200, A100, A400);
+$client-app-primary: mat.define-palette(mat.$orange-palette);
+$client-app-accent: mat.define-palette(mat.$yellow-palette, A200, A100, A400);
 
-$client-app-warn: mat-palette($mat-red);
+$client-app-warn: mat.define-palette(mat.$red-palette);
 
-$client-dark-theme: mat-dark-theme((
+$client-dark-theme: mat.define-dark-theme((
   color: (
     primary: $client-app-primary,
     accent: $client-app-accent,
     warn: $client-app-warn,
   )
 ));
-$client-light-theme: mat-light-theme((
+$client-light-theme: mat.define-light-theme((
   color: (
     primary: $client-app-primary,
     accent: $client-app-accent,
@@ -22,7 +22,7 @@ $client-light-theme: mat-light-theme((
   )
 ));
 
-@include angular-material-theme($client-dark-theme);
+@include mat.all-component-themes($client-dark-theme);
 
 html, body {
   height: 100%;
@@ -36,7 +36,7 @@ body {
 }
 
 .light-theme {
-  @include angular-material-color($client-light-theme);
+  @include mat.all-component-colors($client-light-theme);
 }
 
 .spacer {
@@ -44,7 +44,7 @@ body {
 }
 
 .active {
-  color: mat-color($client-app-primary) !important;
+  color: mat.get-color-from-palette($client-app-primary) !important;
 }
 
 .large-icon {

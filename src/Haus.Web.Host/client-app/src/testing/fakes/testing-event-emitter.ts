@@ -10,7 +10,7 @@ export class TestingEventEmitter<T = any> extends EventEmitter<T> {
   constructor() {
     super();
     this._emittedEvents = [];
-    spyOn(this, 'emit').and.callThrough();
+    jest.spyOn(this as TestingEventEmitter, 'emit');
   }
 
   emit(value: T) {

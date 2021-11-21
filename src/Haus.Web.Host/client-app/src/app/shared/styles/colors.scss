@@ -1,12 +1,12 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
-$success_color: mat-color($mat-green, A400);
-$error_color: mat-color($mat-red, A400);
-$warning_color: mat-color($mat-deep-orange, A400);
+$success_color: mat.get-color-from-palette(mat.$green-palette, A400);
+$error_color: mat.get-color-from-palette(mat.$red-palette, A400);
+$warning_color: mat.get-color-from-palette(mat.$deep-orange-palette, A400);
 
 @mixin colored-background($color) {
   background-color: $color !important;
-  color: $light-primary-text !important;
+  color: white !important;
 }
 
 .success-color {
