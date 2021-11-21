@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 
 $success_color: mat.get-color-from-palette(mat.$green-palette, A400);
 $error_color: mat.get-color-from-palette(mat.$red-palette, A400);
