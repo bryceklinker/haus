@@ -14,7 +14,8 @@ export class SignalrHubConnectionFactory {
     const authService = this.injector.get(AuthService);
     const connection = new HubConnectionBuilder()
       .withUrl(`/hubs/${hubName}`, {
-        accessTokenFactory: () => fromObservableToPromise(authService.getAccessTokenSilently())
+        accessTokenFactory: () => fromObservableToPromise(authService.getAccessTokenSilently()),
+        withCredentials: false,
       })
       .configureLogging(LogLevel.Information)
       .build();

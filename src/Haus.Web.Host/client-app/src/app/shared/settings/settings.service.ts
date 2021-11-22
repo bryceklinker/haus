@@ -44,6 +44,7 @@ export class SettingsService {
   private static createAuthConfig(settings: ClientSettingsModel): AuthConfig {
     return {
       ...settings.auth,
+      useRefreshTokens: true,
       redirectUri: window.location.origin,
       httpInterceptor: {
         allowedList: [

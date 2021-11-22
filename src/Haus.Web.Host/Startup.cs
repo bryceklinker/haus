@@ -3,6 +3,7 @@ using Haus.Hosting;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.Events;
 using Haus.Web.Host.Common.Mqtt;
+using Haus.Web.Host.Common.SignalR;
 using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
 using Haus.Web.Host.Health;
@@ -54,10 +55,10 @@ namespace Haus.Web.Host
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapHub<DiagnosticsHub>("/hubs/diagnostics");
-                    endpoints.MapHub<DeviceSimulatorHub>("/hubs/device-simulator");
-                    endpoints.MapHub<EventsHub>("/hubs/events");
-                    endpoints.MapHub<HealthHub>("/hubs/health");
+                    endpoints.MapHub<DiagnosticsHub>(HubPatterns.DiagnosticsHub);
+                    endpoints.MapHub<DeviceSimulatorHub>(HubPatterns.DeviceSimulatorHub);
+                    endpoints.MapHub<EventsHub>(HubPatterns.EventsHub);
+                    endpoints.MapHub<HealthHub>(HubPatterns.HealthHub);
                     endpoints.MapControllers();
                 });
             

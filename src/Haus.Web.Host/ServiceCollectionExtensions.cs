@@ -9,6 +9,7 @@ using Haus.Web.Host.Application;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.GitHub;
 using Haus.Web.Host.Common.Mqtt;
+using Haus.Web.Host.Common.SignalR;
 using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
 using Haus.Web.Host.Health;
@@ -69,6 +70,10 @@ namespace Haus.Web.Host
             {
                 opts.Audience = configuration.GetValue<string>("Auth:Audience");
                 opts.Authority = $"https://{configuration.GetValue<string>("Auth:Domain")}";
+                opts.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = JwtAuthEventHandlers.HandleMessageReceived
+                };
             });
             return services.AddAuthorization(opts => { opts.DefaultPolicy = authenticatedUserPolicy; });
         }

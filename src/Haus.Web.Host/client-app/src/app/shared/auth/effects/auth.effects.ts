@@ -5,7 +5,7 @@ import {map, mergeMap} from "rxjs/operators";
 
 import {AuthActions} from "../actions";
 import {SharedActions} from "../../actions";
-import { UserModel } from "../user.model";
+import {UserModel} from "../user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,7 @@ export class AuthEffects {
     mergeMap(auth => auth.isLoading$),
     map(isLoading => AuthActions.isLoading(isLoading))
   ))
+
   userLoggedIn$ = createEffect(() => this.actions$.pipe(
     ofType(SharedActions.initApp),
     map(() => this.injector.get(AuthService)),
