@@ -27,12 +27,12 @@ Cypress.Commands.add('logout', () => {
 
 Cypress.Commands.add('navigate', (text: string) => {
     cy.findByTestId('menu-btn').click();
-    cy.findByTestId('nav-link').contains(text).click();
+    cy.findAllByTestId('nav-link').contains(text).click();
     return cy.findByTestId('menu-btn').click();
 })
 
 Cypress.Commands.add('isUserLoggedIn', () => {
-    return cy.findAllByTestId("user-menu").then(elements => elements.length > 0);
+    return cy.get('body').then(body => body.find('[data-testid="user-menu"]').length > 0);
 })
 
 Cypress.Commands.add('waitForAppToBeReady', () => {

@@ -19,14 +19,13 @@
     "pretest": "yarn haus:build",
     "test": "concurrently --kill-others --success \"first\" \"npm:*:start\" \"yarn haus_web:wait && cypress run\"",
     "pretest:dev": "yarn haus:build",
-    "test:dev": "concurrently --kill-others --success \"first\" \"npm:*:start\" \"yarn haus_web:wait && cypress open\""
+    "test:dev": "env-cmd -e acceptance concurrently --kill-others --success \"first\" \"npm:*:start\" \"yarn haus_web:wait && cypress open\""
   },
   "devDependencies": {
     "@testing-library/cypress": "8.0.2",
     "concurrently": "6.4.0",
-    "cross-env": "7.0.3",
-    "cross-port-killer": "1.3.0",
     "cypress": "9.0.0",
+    "env-cmd": "10.1.0",
     "rimraf": "3.0.2",
     "typescript": "4.5.2",
     "uuid": "8.3.2",
