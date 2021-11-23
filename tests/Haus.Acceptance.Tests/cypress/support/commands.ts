@@ -1,9 +1,6 @@
 import {AUTH_SETTINGS} from "./auth-settings";
-import {testIdSelector} from "./test-id-selector";
 import {INTERCEPTORS} from "./interceptors";
 const DEFAULT_WAIT_TIME_IN_MS = 1000;
-
-Cypress.Commands.add('getByTestId', (testId: string) => cy.get(testIdSelector(testId)));
 
 Cypress.Commands.add('login', () => {
     cy.visit('/');
@@ -20,26 +17,26 @@ Cypress.Commands.add('login', () => {
         cy.get('[name="submit"]').click();
     });
     
-    cy.waitForAppToBeReady();
+    return cy.waitForAppToBeReady();
 })
 
 Cypress.Commands.add('logout', () => {
-    cy.getByTestId('user-menu-btn').click();
-    cy.getByTestId('logout-btn').click();
+    cy.findByTestId('user-menu-btn').click();
+    return cy.findByTestId('logout-btn').click();
 })
 
 Cypress.Commands.add('navigate', (text: string) => {
-    cy.getByTestId('menu-btn').click();
-    cy.getByTestId('nav-link').contains(text).click();
-    cy.getByTestId('menu-btn').click();
+    cy.findByTestId('menu-btn').click();
+    cy.findByTestId('nav-link').contains(text).click();
+    return cy.findByTestId('menu-btn').click();
 })
 
 Cypress.Commands.add('isUserLoggedIn', () => {
-    return cy.get('body').then(body => body.find(testIdSelector('user-menu')).length > 0);
+    return cy.findAllByTestId("user-menu").then(elements => elements.length > 0);
 })
 
 Cypress.Commands.add('waitForAppToBeReady', () => {
     cy.wait(INTERCEPTORS.settings.alias);
     cy.wait(DEFAULT_WAIT_TIME_IN_MS);
-    cy.getByTestId('loading-indicator').should('not.exist')
+    return cy.findByTestId('loading-indicator').should('not.exist')
 });

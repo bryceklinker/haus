@@ -3,19 +3,19 @@ describe('Navigation', () => {
         cy.login();
         
         cy.navigate('Diagnostics');
-        cy.getByTestId('diagnostics-header').should('be.visible');
+        cy.findByTestId('diagnostics-header').should('be.visible');
         
         cy.navigate('Devices');
-        cy.getByTestId('devices-header').should('be.visible');
+        cy.findByTestId('devices-header').should('be.visible');
         
         cy.navigate('Rooms');
-        cy.getByTestId('rooms-header').should('be.visible');
+        cy.findByTestId('rooms-header').should('be.visible');
         
         cy.navigate('Device Simulator');
-        cy.getByTestId('device-simulator-header').should('be.visible');
+        cy.findByTestId('device-simulator-header').should('be.visible');
         
         cy.navigate('Health');
-        cy.getByTestId('health-header').should('be.visible');
+        cy.findByTestId('health-header').should('be.visible');
         
         cy.logout();
     })

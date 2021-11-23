@@ -6,24 +6,30 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "clean:haus": "rimraf ./haus-web",
-    "prebuild:haus": "yarn clean:haus",
-    "build:haus": "dotnet publish ../../src/Haus.Web.Host/Haus.Web.Host.csproj --configuration Release --output ./haus-web",
-    "start:haus": "cd ./haus-web && dotnet ./Haus.Web.Host.dll || true",
-    "stop:haus": "kill-port 5001 || true",
-    "wait:haus": "wait-on tcp:5001",
-    "pretest": "yarn build:haus",
-    "test": "concurrently \"yarn start:haus\" \"yarn wait:haus && cypress run && yarn stop:haus || (yarn stop:haus && false)\"",
-    "pretest:dev": "yarn build:haus",
-    "test:dev": "concurrently \"yarn start:haus\" \"yarn wait:haus && cypress open && yarn stop:haus || (yarn stop:haus && false)\""
+    "haus_web:clean": "rimraf ./haus-web",
+    "prehaus_web:build": "yarn haus_web:clean",
+    "haus_web:build": "dotnet publish ../../src/Haus.Web.Host/Haus.Web.Host.csproj --configuration Release --output ./haus-web",
+    "haus_web:start": "cd ./haus-web && dotnet ./Haus.Web.Host.dll",
+    "haus_web:wait": "wait-on tcp:5001",
+    "haus_zigbee:clean": "rimraf ./haus-zigbee",
+    "prehaus_zigbee:build": "yarn haus_zigbee:clean",
+    "haus_zigbee:build": "dotnet publish ../../src/Haus.Zigbee.Host/Haus.Zigbee.Host.csproj --configuration Release --output ./haus-zigbee",
+    "haus_zigbee:start": "cd ./haus-zigbee && dotnet ./Haus.Zigbee.Host.dll",
+    "haus:build": "yarn haus_web:build && yarn haus_zigbee:build",
+    "pretest": "yarn haus:build",
+    "test": "concurrently --kill-others --success \"first\" \"npm:*:start\" \"yarn haus_web:wait && cypress run\"",
+    "pretest:dev": "yarn haus:build",
+    "test:dev": "concurrently --kill-others --success \"first\" \"npm:*:start\" \"yarn haus_web:wait && cypress open\""
   },
   "devDependencies": {
-    "concurrently": "5.3.0",
+    "@testing-library/cypress": "8.0.2",
+    "concurrently": "6.4.0",
+    "cross-env": "7.0.3",
     "cross-port-killer": "1.3.0",
-    "cypress": "6.4.0",
+    "cypress": "9.0.0",
     "rimraf": "3.0.2",
-    "typescript": "4.1.3",
+    "typescript": "4.5.2",
     "uuid": "8.3.2",
-    "wait-on": "5.2.1"
+    "wait-on": "6.0.0"
   }
 }
