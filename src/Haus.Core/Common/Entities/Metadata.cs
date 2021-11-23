@@ -3,7 +3,7 @@ using Haus.Core.Models.Common;
 
 namespace Haus.Core.Common.Entities
 {
-    public class Metadata
+    public record Metadata
     {
         public string Key { get; set; }
         public string Value { get; set; }

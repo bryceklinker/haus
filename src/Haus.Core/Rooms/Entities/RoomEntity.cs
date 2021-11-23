@@ -13,7 +13,7 @@ using Haus.Cqrs.DomainEvents;
 
 namespace Haus.Core.Rooms.Entities
 {
-    public class RoomEntity : Entity
+    public record RoomEntity : Entity
     {
         public static readonly Expression<Func<RoomEntity, RoomModel>> ToModelExpression =
             r => new RoomModel(

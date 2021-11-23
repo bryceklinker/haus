@@ -5,7 +5,7 @@ using Haus.Core.Models.Discovery;
 
 namespace Haus.Core.Discovery.Entities
 {
-    public class DiscoveryEntity : Entity
+    public record DiscoveryEntity : Entity
     {
         public static readonly Expression<Func<DiscoveryEntity, DiscoveryModel>> ToModelExpression = d => new DiscoveryModel(d.State);
         public static readonly Lazy<Func<DiscoveryEntity, DiscoveryModel>> ToModelFunc = new(ToModelExpression.Compile);

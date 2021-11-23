@@ -46,10 +46,10 @@ namespace Haus.Utilities.Zigbee2Mqtt.Commands
             var html = await GetHtml(cancellationToken);
             var existingOptions = await ReadExistingOptions();
             var options = _parser.Parse(html).ToArray();
-            _logger.LogInformation("Generated {number} device type options from html", options.Length);
+            _logger.LogInformation("Generated {Number} device type options from html", options.Length);
             
             var merged = _merger.Merge(existingOptions, options).ToArray();
-            _logger.LogInformation("Merged {number} device type options", merged.Length);
+            _logger.LogInformation("Merged {Number} device type options", merged.Length);
 
             await WriteDefaultsOptions(merged);
         }
@@ -62,10 +62,10 @@ namespace Haus.Utilities.Zigbee2Mqtt.Commands
 
         private async Task<DeviceTypeOptions[]> ReadExistingOptions()
         {
-            _logger.LogInformation("Reading defaults from {filePath}", DefaultDeviceTypeOptionsPath);
+            _logger.LogInformation("Reading defaults from {FilePath}", DefaultDeviceTypeOptionsPath);
             if (!File.Exists(DefaultDeviceTypeOptionsPath))
             {
-                _logger.LogInformation("Could not find defaults file at {filePath}", DefaultDeviceTypeOptionsPath);
+                _logger.LogInformation("Could not find defaults file at {FilePath}", DefaultDeviceTypeOptionsPath);
                 return Array.Empty<DeviceTypeOptions>();
             }
             var defaultsJson = await File.ReadAllTextAsync(DefaultDeviceTypeOptionsPath);
@@ -74,7 +74,7 @@ namespace Haus.Utilities.Zigbee2Mqtt.Commands
 
         private async Task WriteDefaultsOptions(IEnumerable<DeviceTypeOptions> options)
         {
-            _logger.LogInformation("Writing defaults to {filePath}", DefaultDeviceTypeOptionsPath);
+            _logger.LogInformation("Writing defaults to {FilePath}", DefaultDeviceTypeOptionsPath);
             var json = HausJsonSerializer.Serialize(options, new JsonSerializerOptions
             {
                 WriteIndented = true

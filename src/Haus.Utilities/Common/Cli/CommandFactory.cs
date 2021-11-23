@@ -26,7 +26,7 @@ namespace Haus.Utilities.Common.Cli
 
         public ICommand Create(string[] args)
         {
-            _logger.LogInformation("Args: {args}", string.Join(" ", args));
+            _logger.LogInformation("Args: {Args}", string.Join(" ", args));
             var groupName = args[0];
             var commandName = args[1];
             var command = Commands.SingleOrDefault(c => c.Matches(groupName, commandName));

@@ -4,7 +4,7 @@ namespace Haus.Core.Common.Entities
     {
         long Id { get; }
     }
-    public abstract class Entity : IEntity
+    public abstract record Entity : IEntity
     {
         public long Id { get; set; }
     }

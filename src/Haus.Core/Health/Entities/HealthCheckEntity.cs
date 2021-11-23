@@ -6,7 +6,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Haus.Core.Health.Entities
 {
-    public class HealthCheckEntity : Entity
+    public record HealthCheckEntity : Entity
     {
         private static DateTimeOffset OneHourAgo() => DateTimeOffset.UtcNow.AddHours(-1);
         public static readonly Expression<Func<HealthCheckEntity, HausHealthCheckModel>> ToModelExpression =

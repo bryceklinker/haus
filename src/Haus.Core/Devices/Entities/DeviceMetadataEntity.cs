@@ -2,7 +2,7 @@ using Haus.Core.Common.Entities;
 
 namespace Haus.Core.Devices.Entities
 {
-    public class DeviceMetadataEntity : Metadata
+    public record DeviceMetadataEntity : Metadata
     {
         public long Id { get; set; }
         public DeviceEntity Device { get; set; }

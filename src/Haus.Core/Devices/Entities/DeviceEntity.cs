@@ -15,7 +15,7 @@ using Haus.Cqrs.DomainEvents;
 
 namespace Haus.Core.Devices.Entities
 {
-    public class DeviceEntity : Entity
+    public record DeviceEntity : Entity
     {
         public static readonly Expression<Func<DeviceEntity, DeviceModel>> ToModelExpression =
             d => new DeviceModel(

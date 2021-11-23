@@ -1,4 +1,3 @@
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models
