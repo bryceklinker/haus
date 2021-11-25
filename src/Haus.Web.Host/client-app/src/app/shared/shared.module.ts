@@ -10,7 +10,8 @@ import {SignalrHubConnectionFactory, SignalrServiceFactory, SignalrEffectsFactor
 import {MaterialModule} from "./material.module";
 import {SaveFileService} from "./save-file.service";
 import {UserRequiredGuard} from "./auth";
-import {LoadingDialogService} from "./components/loading-dialog/loading-dialog.service";
+import {LoadingDialogService} from './components/loading-dialog';
+import {HausAuthService} from './auth/services';
 
 @NgModule({
   providers: [
@@ -22,7 +23,8 @@ import {LoadingDialogService} from "./components/loading-dialog/loading-dialog.s
     SignalrEffectsFactory,
     SaveFileService,
     UserRequiredGuard,
-    LoadingDialogService
+    LoadingDialogService,
+    HausAuthService
   ],
   imports: [
     MaterialModule,

@@ -5,6 +5,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {AuthConfig} from "@auth0/auth0-angular/lib/auth.config";
 import {filter, map} from "rxjs/operators";
 import {ClientSettingsModel} from "../models";
+import {HausAuthService} from '../auth/services';
 
 @Injectable()
 export class SettingsService {
@@ -35,8 +36,8 @@ export class SettingsService {
       const http = new HttpClient(httpBackend);
       return http.get<ClientSettingsModel>('/client-settings').toPromise()
         .then(settings => {
+          HausAuthService.initialize(settings, config);
           SettingsService._settingsSubject.next(settings);
-          config.set(SettingsService.createAuthConfig(settings));
         })
     }
   }

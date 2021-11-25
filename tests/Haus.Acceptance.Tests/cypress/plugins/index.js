@@ -15,7 +15,31 @@
 /**
  * @type {Cypress.PluginConfig}
  */
+const {connect} = require('mqtt');
+
+let mqttClient = null;
+
+function getMqttClient(config) {
+    if (mqttClient) {
+        return mqttClient;
+    }
+    
+    return mqttClient = connect(config.env['MQTT_SERVER'])
+}
+
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
+  on('task', {
+      publishToMqtt({topic, json}) {
+          return new Promise((resolve, reject) => {
+              const client = getMqttClient(config);
+              client.publish(topic, json, (err) => {
+                if(err) {
+                    reject(err);
+                } else {
+                    resolve(null);
+                }
+              });
+          });
+      }
+  })
 }

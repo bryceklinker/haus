@@ -18,6 +18,7 @@ import {appReducerMap} from "./app-reducer-map";
 import {APP_EFFECTS} from "./app-effects";
 import {StoreDevtools, StoreDevtoolsModule} from "@ngrx/store-devtools";
 import {environment} from "../environments/environment";
+import {HausAuthInterceptor} from './shared/auth/services/haus-auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,7 @@ import {environment} from "../environments/environment";
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: AuthHttpInterceptor,
+      useClass: HausAuthInterceptor,
       multi: true,
     },
     ...SHELL_PROVIDERS

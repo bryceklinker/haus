@@ -1,23 +1,70 @@
+import * as jwt from 'jsonwebtoken'
 import {AUTH_SETTINGS} from "./auth-settings";
 import {INTERCEPTORS} from "./interceptors";
+import {JwtPayload} from "jsonwebtoken";
+
 const DEFAULT_WAIT_TIME_IN_MS = 1000;
 
-Cypress.Commands.add('login', () => {
-    cy.visit('/');
-    
-    cy.waitForAppToBeReady();
-    cy.isUserLoggedIn().then(isLoggedIn => {
-        if (isLoggedIn) {
-            return;
-        }
-        
-        cy.wait(DEFAULT_WAIT_TIME_IN_MS);
-        cy.get('[name="email"]').type(AUTH_SETTINGS.username);
-        cy.get('[name="password"]').type(AUTH_SETTINGS.password);
-        cy.get('[name="submit"]').click();
+Cypress.Commands.add('getToken', (username = AUTH_SETTINGS.username, password = AUTH_SETTINGS.password) => {
+    const {domain, audience, client_id, client_secret} = AUTH_SETTINGS;
+    Cypress.log({
+        displayName: 'Getting Token',
+        message: `Retrieving token from ${domain}`
     });
-    
-    return cy.waitForAppToBeReady();
+    return cy.request<Cypress.TokenResponse>({
+        method: 'POST',
+        url: `https://${domain}/oauth/token`,
+        body: {
+            grant_type: 'password',
+            username,
+            password,
+            audience,
+            scope: 'openid profile',
+            client_id,
+            client_secret
+        }
+    })
+})
+
+Cypress.Commands.add('login', (username = AUTH_SETTINGS.username, password = AUTH_SETTINGS.password) => {
+    return cy.getToken(username, password).then(({body}) => {
+        const {audience, client_id} = AUTH_SETTINGS;
+        const claims = jwt.decode(body.id_token) as JwtPayload;
+        const {
+            nickname,
+            name,
+            picture,
+            updated_at,
+            email,
+            email_verified,
+            sub,
+            exp,
+        } = claims;
+
+        const item = {
+            body: {
+                ...body,
+                decodedToken: {
+                    claims,
+                    user: {
+                        nickname,
+                        name,
+                        picture,
+                        updated_at,
+                        email,
+                        email_verified,
+                        sub,
+                    },
+                    audience,
+                    client_id,
+                },
+            },
+            expiresAt: exp,
+        };
+
+        window.localStorage.setItem('auth0-cypress', JSON.stringify(item));
+        cy.visit('/');
+    })    
 })
 
 Cypress.Commands.add('logout', () => {

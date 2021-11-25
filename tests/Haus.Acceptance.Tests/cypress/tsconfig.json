@@ -5,6 +5,7 @@
     "types": [
       "cypress",
       "@testing-library/cypress",
+      "node",
       "./index.d.ts"
     ]
   },

@@ -1,11 +1,12 @@
 import {Injectable, Injector} from "@angular/core";
 import {AuthService} from "@auth0/auth0-angular";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {map, mergeMap} from "rxjs/operators";
+import {map, mergeMap, switchMap} from 'rxjs/operators';
 
 import {AuthActions} from "../actions";
 import {SharedActions} from "../../actions";
 import {UserModel} from "../user.model";
+import {HausAuthService} from '../services';
 
 @Injectable({
   providedIn: 'root'
@@ -13,15 +14,13 @@ import {UserModel} from "../user.model";
 export class AuthEffects {
   isAuthLoading$ = createEffect(() => this.actions$.pipe(
     ofType(SharedActions.initApp),
-    map(() => this.injector.get(AuthService)),
-    mergeMap(auth => auth.isLoading$),
+    mergeMap(() => this.authService.isLoading$),
     map(isLoading => AuthActions.isLoading(isLoading))
   ))
 
   userLoggedIn$ = createEffect(() => this.actions$.pipe(
     ofType(SharedActions.initApp),
-    map(() => this.injector.get(AuthService)),
-    mergeMap(auth => auth.user$),
+    mergeMap(() => this.authService.user$),
     map(user => {
       return user
         ? AuthActions.userLoggedIn(user as UserModel)
@@ -31,11 +30,10 @@ export class AuthEffects {
 
   logout$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.logout),
-    map(() => this.injector.get(AuthService)),
-    map(auth => auth.logout())
+    mergeMap(() => this.authService.logout())
   ), {dispatch: false});
 
   constructor(private readonly actions$: Actions,
-              private readonly injector: Injector) {
+              private readonly authService: HausAuthService) {
   }
 }

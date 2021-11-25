@@ -1,8 +1,8 @@
-import {AuthService} from "@auth0/auth0-angular";
-import {BehaviorSubject, Observable, of} from "rxjs";
-import {Injectable} from "@angular/core";
-import {filter, map, skip} from "rxjs/operators";
-import {GetTokenSilentlyOptions, GetTokenSilentlyVerboseResponse} from "@auth0/auth0-spa-js";
+import {AuthService} from '@auth0/auth0-angular';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {filter, map, skip} from 'rxjs/operators';
+import {GetTokenSilentlyOptions, GetTokenSilentlyVerboseResponse} from '@auth0/auth0-spa-js';
 
 interface AuthProperties {
   isLoading: boolean,
@@ -16,7 +16,7 @@ interface AuthProperties {
 const INITIAL_AUTH_PROPERTIES: AuthProperties = {
   isLoading: false,
   isAuthenticated: false
-}
+};
 
 @Injectable()
 export class TestingAuthService extends AuthService {
@@ -25,9 +25,9 @@ export class TestingAuthService extends AuthService {
   isLoading$: Observable<boolean>;
   isAuthenticated$: Observable<boolean>;
   user$: Observable<any>;
-  idTokenClaims$: Observable<import("@auth0/auth0-spa-js").IdToken>;
+  idTokenClaims$: Observable<import('@auth0/auth0-spa-js').IdToken>;
   error$: Observable<Error>;
-  accessToken$: Observable<string>
+  accessToken$: Observable<string>;
 
   constructor() {
     super(
@@ -42,7 +42,7 @@ export class TestingAuthService extends AuthService {
     this.accessToken$ = <any>this.properties.pipe(
       skip(1),
       map(p => p.accessToken)
-    )
+    );
     this.user$ = this.properties.pipe(
       skip(1),
       map(p => p.user)
@@ -64,8 +64,8 @@ export class TestingAuthService extends AuthService {
   }
 
   getAccessTokenSilently(options?: GetTokenSilentlyOptions): Observable<string>;
-  getAccessTokenSilently(options?: GetTokenSilentlyOptions & {detailedResponse : true}): Observable<GetTokenSilentlyVerboseResponse>;
-  getAccessTokenSilently(options?: GetTokenSilentlyOptions & {detailedResponse : true}): Observable<string | GetTokenSilentlyVerboseResponse>{
+  getAccessTokenSilently(options?: GetTokenSilentlyOptions & { detailedResponse: true }): Observable<GetTokenSilentlyVerboseResponse>;
+  getAccessTokenSilently(options?: GetTokenSilentlyOptions & { detailedResponse: true }): Observable<string | GetTokenSilentlyVerboseResponse> {
     if (options?.detailedResponse) {
       return this.accessToken$.pipe(
         map(token => ({
@@ -73,7 +73,7 @@ export class TestingAuthService extends AuthService {
           id_token: token,
           expires_in: 100
         }))
-      )
+      );
     } else {
       return this.accessToken$;
     }
@@ -98,17 +98,31 @@ export class TestingAuthService extends AuthService {
     return this.accessToken$;
   }
 
+  setIsAuthenticated(value: boolean) {
+    this.properties.next({
+      ...this.properties.value,
+      isAuthenticated: value,
+    });
+  }
+
+  setAccessToken(token?: string) {
+    this.properties.next({
+      ...this.properties.value,
+      accessToken: token
+    });
+  }
+
   setUser(user: any) {
     this.properties.next({
       ...this.properties.value,
       user
-    })
+    });
   }
 
   setIsLoading(isLoading: boolean) {
     this.properties.next({
       ...this.properties.value,
       isLoading
-    })
+    });
   }
 }

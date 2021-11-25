@@ -1,5 +1,8 @@
 {
   "baseUrl": "https://localhost:5001",
   "chromeWebSecurity": false,
-  "defaultCommandTimeout": 10000
+  "defaultCommandTimeout": 10000,
+  "env": {
+    "MQTT_SERVER": "mqtt://localhost"
+  }
 }
