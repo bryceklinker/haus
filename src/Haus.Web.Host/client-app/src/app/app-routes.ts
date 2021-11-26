@@ -2,12 +2,17 @@ import {MainContentComponent} from "./shell/components/main-content/main-content
 import {Route} from "@angular/router";
 import {LatestVersionDetailsRootComponent} from "./shell/components/latest-version-details-root/latest-version-details-root.component";
 import {UserRequiredGuard} from "./shared/auth";
+import {WelcomeComponent} from './shell/components/welcome/welcome.component';
 
 export const MAIN_ROUTE: Route = {
   path: '',
   canActivate: [UserRequiredGuard],
   component: MainContentComponent,
   children: [
+    {
+      path: 'welcome',
+      component: WelcomeComponent
+    },
     {
       path: 'diagnostics',
       loadChildren: () => import('./diagnostics/diagnostics.module').then(m => m.DiagnosticsModule)
@@ -31,6 +36,10 @@ export const MAIN_ROUTE: Route = {
     {
       path: 'latest-version',
       component: LatestVersionDetailsRootComponent
+    },
+    {
+      path: '**',
+      redirectTo: '/welcome'
     }
   ]
 }

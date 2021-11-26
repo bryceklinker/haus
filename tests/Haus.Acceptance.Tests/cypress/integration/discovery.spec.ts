@@ -10,6 +10,6 @@ describe('Discovery', () => {
         const deviceId = uuid();
         MQTT_CLIENT.publishZigbee2MqttMessage(Zigbee2MqttMessageFactory.interviewSuccessful(deviceId));
 
-        DeviceDiscoveryPage.findUnassignedDevices().should('have.length', 1);
+        DeviceDiscoveryPage.findUnassignedDevices().should('contain.text', deviceId);
     })
 })

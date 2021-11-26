@@ -31,7 +31,7 @@ export class HausAuthService {
 
   get isLoading$(): Observable<boolean> {
     return this.authService$.pipe(
-      switchMap(service => service.isLoading$)
+      switchMap(service => HausAuthService.checkIfLoading(service))
     );
   }
 
@@ -67,11 +67,9 @@ export class HausAuthService {
   }
 
   private static checkIfAuthenticated(authService: AuthService): Observable<boolean> {
-    const cypressAuth = HausAuthService.cypressAuth;
-    if (cypressAuth) {
-      return of(true);
-    }
-    return authService.isAuthenticated$;
+    return HausAuthService.cypressAuth
+      ? of(true)
+      : authService.isAuthenticated$;
   }
 
   private static getAccessToken(authService: AuthService): Observable<string> {
@@ -80,6 +78,12 @@ export class HausAuthService {
       return of(cypressAuth.body.access_token);
     }
     return authService.getAccessTokenSilently();
+  }
+
+  private static checkIfLoading(authService: AuthService): Observable<boolean> {
+    return HausAuthService.cypressAuth
+      ? of(true)
+      : authService.isLoading$;
   }
 
   private createAuthService(): AuthService {

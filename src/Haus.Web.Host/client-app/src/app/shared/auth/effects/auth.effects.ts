@@ -1,7 +1,6 @@
-import {Injectable, Injector} from "@angular/core";
-import {AuthService} from "@auth0/auth0-angular";
+import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {map, mergeMap, switchMap} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
 
 import {AuthActions} from "../actions";
 import {SharedActions} from "../../actions";

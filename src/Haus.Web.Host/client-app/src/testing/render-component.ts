@@ -8,7 +8,7 @@ import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed'
 
 import {createAppTestingModule, createTestingModule} from "./create-testing-module";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {TestingMatDialog} from "./fakes";
+import {TestingAuthService, TestingMatDialog} from './fakes';
 import {TestingMatDialogRef} from "./fakes";
 import {
   TestingSettingsService,

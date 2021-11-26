@@ -22,6 +22,7 @@ export class NavigationService {
   private static createNavigationLinks(routes: Array<Route>): Array<NavigationLinkModel> {
     return routes
       .filter(r => !!r.path)
+      .filter(r => !r.redirectTo)
       .map(route => NavigationService.createNavigationLink(route as any));
   }
 

@@ -1,20 +1,19 @@
 import {HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
-import {Injectable, Injector} from "@angular/core";
-import {AuthService} from "@auth0/auth0-angular";
+import {Injectable} from "@angular/core";
 import {SignalrHubConnection} from "./signalr-hub.connection";
 import {fromObservableToPromise} from "../observable-extensions";
+import {HausAuthService} from '../auth/services';
 
 @Injectable()
 export class SignalrHubConnectionFactory {
-  constructor(private injector: Injector) {
+  constructor(private authService: HausAuthService) {
 
   }
 
   create(hubName: string): SignalrHubConnection {
-    const authService = this.injector.get(AuthService);
     const connection = new HubConnectionBuilder()
       .withUrl(`/hubs/${hubName}`, {
-        accessTokenFactory: () => fromObservableToPromise(authService.getAccessTokenSilently()),
+        accessTokenFactory: () => fromObservableToPromise(this.authService.token$),
         withCredentials: false,
       })
       .configureLogging(LogLevel.Information)
