@@ -22,6 +22,10 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
       AUTH_USERNAME: ${{ secrets.AUTH_USERNAME }}
+      AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN }}
+      AUTH_CLIENT_ID: ${{ secrets.AUTH_CLIENT_ID }}
+      AUTH_CLIENT_SECRET: ${{ secrets.AUTH_CLIENT_SECRET }}
+      AUTH_AUDIENCE: ${{ secrets.AUTH_AUDIENCE }}
     steps:
       - name: Clone
         uses: actions/checkout@v2
