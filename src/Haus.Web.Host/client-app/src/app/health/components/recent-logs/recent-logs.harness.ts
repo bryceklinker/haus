@@ -6,11 +6,11 @@ import {screen} from "@testing-library/dom";
 export class RecentLogsHarness extends HausComponentHarness<RecentLogsComponent> {
 
   get logs() {
-    return screen.queryAllByTestId('log-entry');
+    return screen.queryAllByLabelText('log entry');
   }
 
   get isLoading() {
-    return screen.queryAllByTestId('loading-indicator').length > 0;
+    return screen.queryAllByLabelText('loading indicator').length > 0;
   }
 
   static fromResult(result: RenderComponentResult<any>) {

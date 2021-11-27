@@ -12,11 +12,11 @@ export class DiagnosticsRootHarness extends HausComponentHarness<DiagnosticsRoot
   private _diagnosticsMessagesHarness: DiagnosticsMessagesHarness;
 
   get messages() {
-    return screen.queryAllByTestId('diagnostic-message');
+    return screen.queryAllByLabelText('diagnostic message');
   }
 
   get connectionStatus() {
-    return screen.queryByTestId('connection-status');
+    return screen.queryByLabelText('connection status');
   }
 
   private constructor(result: RenderComponentResult<DiagnosticsRootComponent>) {

@@ -2,7 +2,6 @@ import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} fro
 import {DevicesRootComponent} from "./devices-root.component";
 import {Action} from "@ngrx/store";
 import {DevicesModule} from "../../devices.module";
-import {screen} from "@testing-library/dom";
 import {DevicesListHarness} from "../devices-list/devices-list.harness";
 
 export class DevicesRootHarness extends HausComponentHarness<DevicesRootComponent> {

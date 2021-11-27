@@ -5,7 +5,7 @@ import {screen} from "@testing-library/dom";
 
 export class DiagnosticsMessagesHarness extends HausComponentHarness<DiagnosticsMessagesComponent> {
   get messages() {
-    return screen.queryAllByTestId('diagnostic-message')
+    return screen.queryAllByLabelText('diagnostic message')
   }
 
   get firstMessage() {
@@ -13,11 +13,11 @@ export class DiagnosticsMessagesHarness extends HausComponentHarness<Diagnostics
   }
 
   get replayMessageElement() {
-     return screen.getByTestId('replay-message-btn');
+     return screen.getByRole('button', {name: 'replay message'});
   }
 
   async replayMessage() {
-    await this.clickButtonByTestId('replay-message-btn');
+    await this.clickButtonByLabel('replay message');
   }
 
   static fromResult(result: RenderComponentResult<any>) {

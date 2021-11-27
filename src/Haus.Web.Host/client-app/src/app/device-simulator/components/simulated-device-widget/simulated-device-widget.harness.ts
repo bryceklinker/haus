@@ -12,19 +12,19 @@ export class SimulatedDeviceWidgetHarness extends HausComponentHarness<Simulated
   }
 
   get lighting() {
-    return screen.getByTestId('lighting')
+    return screen.getByLabelText('lighting')
   }
 
   get simulatedMetadata() {
-    return screen.queryAllByTestId('simulated-metadata-item');
+    return screen.queryAllByLabelText('simulated metadata item');
   }
 
   async triggerOccupancyChange() {
-    await this.clickButtonByTestId('trigger-occupancy-change-btn');
+    await this.clickButtonByLabel('trigger occupancy change');
   }
 
   async getIsOccupied() {
-    return this.isSlideToggleCheckedByTestId('is-occupied-toggle');
+    return this.isSlideToggleCheckedByLabel('is occupied toggle');
   }
 
 

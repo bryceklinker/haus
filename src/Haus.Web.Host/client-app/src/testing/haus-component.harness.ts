@@ -7,7 +7,8 @@ import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
 import {MatSliderHarness} from "@angular/material/slider/testing";
 import {MatSelectHarness} from "@angular/material/select/testing";
 import {By} from "@angular/platform-browser";
-import {MatListItemHarness} from "@angular/material/list/testing";
+import userEvent from '@testing-library/user-event';
+import {screen} from '@testing-library/angular';
 
 export abstract class HausComponentHarness<TComponent> {
   protected get matHarness() {
@@ -54,8 +55,8 @@ export abstract class HausComponentHarness<TComponent> {
 
   }
 
-  getMatHarnessByTestId<T extends ComponentHarness>(locator: (options?: BaseHarnessFilters) => HarnessPredicate<T>, testId: string): Promise<T> {
-    return this.matHarness.getHarness(locator({selector: `[data-testid="${testId}"]`}));
+  getMatHarnessByLabel<T extends ComponentHarness>(locator: (options?: BaseHarnessFilters) => HarnessPredicate<T>, label: string): Promise<T> {
+    return this.matHarness.getHarness(locator({selector: `[aria-label="${label}"]`}));
   }
 
   detectChanges() {
@@ -77,100 +78,103 @@ export abstract class HausComponentHarness<TComponent> {
     this.result.fixture.destroy();
   }
 
-  protected async getButtonByTestId(testId: string) {
-    return await this.getMatHarnessByTestId(MatButtonHarness.with, testId);
+  protected async getButtonByLabel(label: string) {
+    return await this.getMatHarnessByLabel(MatButtonHarness.with, label);
   }
 
-  protected async isButtonDisabledByTestId(testId: string) {
-    const button = await this.getButtonByTestId(testId);
+  protected async isButtonDisabledByLabel(label: string) {
+    const button = await this.getButtonByLabel(label);
     return await button.isDisabled();
   }
 
-  protected async clickButtonByTestId(testId: string) {
-    const button = await this.getButtonByTestId(testId);
+  protected async clickButtonByLabel(label: string) {
+    const button = await this.getButtonByLabel(label);
     await button.click();
   }
 
-  protected async getInputByTestId(testId: string) {
-    return await this.getMatHarnessByTestId(MatInputHarness.with, testId);
+  protected async getInputByLabel(testId: string) {
+    return await this.getMatHarnessByLabel(MatInputHarness.with, testId);
   }
 
-  protected async getInputValueByTestId(testId: string) {
-    const input = await this.getInputByTestId(testId);
+  protected async getInputValueByLabel(label: string) {
+    const input = await this.getInputByLabel(label);
     return await input.getValue();
   }
 
-  protected async changeInputByTestId(value: string, testId: string) {
-    const input = await this.getInputByTestId(testId);
+  protected async changeInputByLabel(value: string, label: string) {
+    const input = await this.getInputByLabel(label);
     await input.setValue(value);
   }
 
-  protected async isInputDisabledByTestId(testId: string) {
-    const input = await this.getInputByTestId(testId);
+  protected async isInputDisabledByLabel(label: string) {
+    const input = await this.getInputByLabel(label);
     return await input.isDisabled();
   }
 
-  protected async getSelectByTestId(testId: string) {
-    return await this.getMatHarnessByTestId(MatSelectHarness.with, testId);
+  protected async getSelectByLabel(label: string) {
+    return await this.getMatHarnessByLabel(MatSelectHarness.with, label);
   }
 
-  protected async getSliderByTestId(testId: string) {
-    return this.getMatHarnessByTestId(MatSliderHarness.with, testId);
+  protected async getSliderByLabel(label: string) {
+    return this.getMatHarnessByLabel(MatSliderHarness.with, label);
   }
 
-  protected async changeSelectedOptionByTestId(text: string, testId: string) {
-    const select = await this.getSelectByTestId(testId);
+  protected async changeSelectedOptionByLabel(text: string, label: string) {
+    const select = await this.getSelectByLabel(label);
     await select.open();
     await select.clickOptions({text});
   }
 
-  protected async getSelectOptionsByTestId(testId: string) {
-    const select = await this.getSelectByTestId(testId);
+  protected async getSelectOptionsByLabel(label: string) {
+    const select = await this.getSelectByLabel(label);
     await select.open();
     return await select.getOptions();
   }
 
-  protected async getSlideToggleByTestId(testId: string) {
-    return await this.getMatHarnessByTestId(MatSlideToggleHarness.with, testId);
+  protected async getSlideToggleByLabel(label: string) {
+    return await this.getMatHarnessByLabel(MatSlideToggleHarness.with, label);
   }
 
-  protected async checkSlideToggleByTestId(testId: string) {
-    const toggle = await this.getSlideToggleByTestId(testId);
-    await toggle.check();
+  protected async toggleSlideByLabel(label: string) {
+    // const toggle = await this.getSlideToggleByLabel(label);
+    // await toggle.check();
+    userEvent.click(screen.getByRole('switch', {name: label}));
   }
 
-  protected async isSlideToggleCheckedByTestId(testId: string) {
-    const toggle = await this.getSlideToggleByTestId(testId);
-    return await toggle.isChecked();
+  protected async isSlideToggleCheckedByLabel(label: string) {
+    return Boolean(screen.getByRole('switch', {name: label}).getAttribute('aria-checked'));
+    // const toggle = await this.getSlideToggleByLabel(label);
+    // return await toggle.isChecked();
   }
 
-  protected async isSlideToggleDisabledByTestId(testId: string) {
-    const toggle = await this.getSlideToggleByTestId(testId);
-    return await toggle.isDisabled();
+  protected async isSlideToggleDisabledByLabel(label: string) {
+    return screen.getByRole('switch', {name: label}).hasAttribute('disabled');
+    // const toggle = await this.getSlideToggleByLabel(label);
+    // return await toggle.isDisabled();
   }
 
-  protected async isSliderDisabledByTestId(testId: string) {
-    const slider = await this.getSliderByTestId(testId);
+  protected async isSliderDisabledByLabel(label: string) {
+    const slider = await this.getSliderByLabel(label);
     return await slider.isDisabled();
   }
 
-  protected async getSliderValueByTestId(testId: string) {
-    const slider = await this.getSliderByTestId(testId);
+  protected async getSliderValueByLabel(label: string) {
+    const slider = await this.getSliderByLabel(label);
     return await slider.getValue();
   }
 
-  protected async getSliderMinByTestId(testId: string) {
-    const slider = await this.getSliderByTestId(testId);
+  protected async getSliderMinByLabel(label: string) {
+    const slider = await this.getSliderByLabel(label);
     return await slider.getMinValue();
   }
 
-  protected async getSliderMaxByTestId(testId: string) {
-    const slider = await this.getSliderByTestId(testId);
+  protected async getSliderMaxByLabel(label: string) {
+    const slider = await this.getSliderByLabel(label);
     return await slider.getMaxValue();
   }
 
-  protected async changeSliderValueByTestId(value: number, testId: string) {
-    this.fixture.debugElement.query(By.css(`[data-testid="${testId}"]`))
+  protected async changeSliderValueByLabel(value: number, label: string) {
+    this.fixture.debugElement.query(By.css(`[aria-label="${label}"]`))
       .triggerEventHandler('input', {value});
 
     await this.whenRenderingDone();

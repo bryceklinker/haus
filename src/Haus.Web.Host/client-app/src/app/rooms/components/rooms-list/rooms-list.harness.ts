@@ -6,11 +6,11 @@ import {RoomsModule} from "../../rooms.module";
 
 export class RoomsListHarness extends HausComponentHarness<RoomsListComponent> {
   get rooms() {
-    return screen.queryAllByTestId('room-item');
+    return screen.queryAllByLabelText('room item');
   }
 
   async addRoom() {
-    await this.clickButtonByTestId('add-room-btn');
+    await this.clickButtonByLabel('add room');
   }
 
   static fromResult(result: RenderComponentResult<any>) {

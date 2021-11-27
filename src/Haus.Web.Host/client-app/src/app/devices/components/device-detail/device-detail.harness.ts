@@ -7,47 +7,47 @@ import {LightType} from "../../../shared/models";
 
 export class DeviceDetailHarness extends HausComponentHarness<DeviceDetailComponent> {
   get nameField() {
-    return screen.getByTestId('device-name-field');
+    return screen.getByRole('textbox', {name: 'device name'});
   }
 
   get externalIdField() {
-    return screen.getByTestId('device-external-id-field');
+    return screen.getByRole('textbox', {name: 'device external id'});
   }
 
   get deviceTypeField() {
-    return screen.getByTestId('device-type-field');
+    return screen.getByRole('textbox', {name: 'device type'});
   }
 
   get metadata() {
-    return screen.queryAllByTestId('device-metadata');
+    return screen.queryAllByLabelText('device metadata');
   }
 
   get lighting() {
-    return screen.queryByTestId('lighting');
+    return screen.queryByLabelText('lighting');
   }
 
   get lightingConstraints() {
-    return screen.queryByTestId('lighting-constraints');
+    return screen.queryByLabelText('lighting constraints');
   }
 
   get lightTypeSelect() {
-    return screen.queryByTestId('light-type-select');
+    return screen.queryByRole('select', {name: 'select light type'});
   }
 
   async saveConstraints() {
-    await this.clickButtonByTestId('save-constraints-btn');
+    await this.clickButtonByLabel('save constraints');
   }
 
   async saveDevice() {
-    await this.clickButtonByTestId('save-device-btn');
+    await this.clickButtonByLabel('save device');
   }
 
   async selectLightType(lightType: LightType) {
-    await this.changeSelectedOptionByTestId(lightType, 'light-type-select');
+    await this.changeSelectedOptionByLabel(lightType, 'select light type');
   }
 
   async getLightTypesOptions() {
-    return await this.getSelectOptionsByTestId('light-type-select');
+    return await this.getSelectOptionsByLabel('select light type');
   }
 
   static fromResult(result: RenderComponentResult<any>) {

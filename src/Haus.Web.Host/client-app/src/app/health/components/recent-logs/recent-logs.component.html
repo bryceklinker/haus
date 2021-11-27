@@ -1,4 +1,4 @@
-<mat-card data-testid="recent-logs">
+<mat-card aria-label="recent logs">
   <mat-card-header>
     <mat-card-title>Recent Logs</mat-card-title>
   </mat-card-header>
@@ -6,7 +6,7 @@
     <app-loading-indicator [show]="isLoading"></app-loading-indicator>
     <mat-list *ngIf="hasLogs">
       <mat-list-item *ngFor="let log of logs; trackBy: trackByTimestamp"
-                     data-testid="log-entry">
+                     aria-label="log entry">
         <mat-icon mat-list-icon>{{getIcon(log)}}</mat-icon>
         <div mat-line>[{{log.level}}] {{log.timestamp}}</div>
         <div mat-line>{{log.message}}</div>

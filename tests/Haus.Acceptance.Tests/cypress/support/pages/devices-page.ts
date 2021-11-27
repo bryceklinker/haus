@@ -1,4 +1,4 @@
 export const DevicesPage = {
     navigate: () => cy.navigate('Devices'),
-    findHeader: () => cy.findByTestId('devices-header')
+    findHeader: () => cy.findByLabelText('devices header')
 }

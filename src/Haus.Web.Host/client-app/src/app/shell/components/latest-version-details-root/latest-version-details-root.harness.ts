@@ -19,7 +19,7 @@ export class LatestVersionDetailsRootHarness extends HausComponentHarness<Latest
   }
 
   get isShowingLatestError() {
-    return screen.queryAllByTestId('latest-version-error').length > 0;
+    return screen.queryAllByLabelText('latest version error').length > 0;
   }
 
   get descriptionElement() {

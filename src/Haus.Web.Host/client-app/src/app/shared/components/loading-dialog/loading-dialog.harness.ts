@@ -11,7 +11,7 @@ import {LoadingDialogOptions} from "./loading-dialog.options";
 export class LoadingDialogHarness extends HausComponentHarness<LoadingDialogComponent> {
 
   get loadingElement() {
-    return screen.getByTestId('loading-indicator');
+    return screen.getByLabelText('loading indicator');
   }
 
   get isClosingDialogDisabled() {

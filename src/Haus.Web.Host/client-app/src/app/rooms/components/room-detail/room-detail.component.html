@@ -1,4 +1,4 @@
-<mat-card data-testid="room-detail">
+<mat-card aria-label="room detail">
   <mat-card-header>
     <mat-card-title>{{name}}</mat-card-title>
   </mat-card-header>
@@ -8,9 +8,9 @@
       <mat-expansion-panel-header>
         <mat-panel-title>{{name}} Lighting</mat-panel-title>
       </mat-expansion-panel-header>
+
       <lighting [lighting]="lighting"
                 (change)="onLightingChanged($event)">
-
       </lighting>
     </mat-expansion-panel>
 
@@ -21,12 +21,12 @@
       <mat-list>
         <a *ngFor="let device of devices"
            mat-list-item
-           data-testid="room-device-item"
+           aria-label="room device item"
            [routerLink]="['/devices', device.id]">
           ({{device.deviceType}}) {{device.name}}
         </a>
       </mat-list>
-      <button mat-fab data-testid="assign-devices-btn" (click)="onAssignDevices()">
+      <button mat-fab aria-label="assign devices" (click)="onAssignDevices()">
         <mat-icon>add</mat-icon>
       </button>
     </mat-expansion-panel>

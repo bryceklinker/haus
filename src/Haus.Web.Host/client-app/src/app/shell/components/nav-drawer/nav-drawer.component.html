@@ -1,5 +1,5 @@
 <mat-sidenav-container>
-  <mat-sidenav mode="side" data-testid="nav-drawer" [opened]="isOpen" (openedChange)="handleClosed($event)">
+  <mat-sidenav mode="side" aria-label="nav drawer" [opened]="isOpen" (openedChange)="handleClosed($event)">
     <div class="side-nav-container">
       <div>
         <img class="logo" src="assets/logo.png" alt="Logo"/>
@@ -7,7 +7,7 @@
       <mat-nav-list>
         <a *ngFor="let route of links$ | async"
            mat-list-item
-           data-testid="nav-link"
+           aria-label="nav link"
            [routerLink]="route.path"
            routerLinkActive="active">
           {{route.name}}
@@ -15,10 +15,10 @@
       </mat-nav-list>
       <a mat-menu-item class="mat-subheader version" routerLink="latest-version">
           Version: {{version$ | async}}
-        <mat-icon data-testid="update-available" *ngIf="isUpdateAvailable$ | async">
+        <mat-icon aria-label="update available" *ngIf="isUpdateAvailable$ | async">
           upgrade
         </mat-icon>
-        <mat-icon data-testid="update-error" *ngIf="hasUpdateError$ | async">
+        <mat-icon aria-label="update error" *ngIf="hasUpdateError$ | async">
           warning
         </mat-icon>
       </a>

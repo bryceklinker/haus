@@ -6,10 +6,10 @@ import {screen} from "@testing-library/dom";
 
 export class NavDrawerHarness extends HausComponentHarness<NavDrawerComponent> {
   get isShowingUpdateError() {
-    return screen.queryAllByTestId('update-error').length > 0;
+    return screen.queryAllByLabelText('update error').length > 0;
   }
   get isShowingUpdateAvailable() {
-    return screen.queryAllByTestId('update-available').length > 0;
+    return screen.queryAllByLabelText('update available').length > 0;
   }
 
   async closeDrawer() {

@@ -1,4 +1,4 @@
-<mat-toolbar data-testid="device-simulator-header">
+<mat-toolbar aria-label="device simulator header">
   <mat-toolbar-row>
     <a mat-button routerLink="add-simulated-device">
       Add Simulated Device
@@ -10,7 +10,7 @@
 
 <div class="dashboard">
   <div *ngFor="let simulatedDevice of simulatedDevices; trackBy: trackDevicesBy"
-       data-testid="simulated-device-item"
+       aria-label="simulated device item"
        class="widget">
     <simulated-device-widget [simulatedDevice]="simulatedDevice"
                              (occupancyChange)="onOccupancyChange($event)">

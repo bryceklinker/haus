@@ -9,7 +9,7 @@ export class DeviceSimulatorDashboardHarness extends HausComponentHarness<Device
   private readonly _simulatedDeviceHarness: SimulatedDeviceWidgetHarness;
 
   get simulatedDevices() {
-    return screen.queryAllByTestId('simulated-device-item')
+    return screen.queryAllByLabelText('simulated device item')
   }
 
   async triggerOccupancyChange() {

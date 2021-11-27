@@ -13,7 +13,7 @@ export class DiscoveryRoomHarness extends HausComponentHarness<DiscoveryRoomComp
   }
 
   get assignedDevices() {
-    return screen.queryAllByTestId('assigned-device-item');
+    return screen.queryAllByLabelText('assigned device item');
   }
 
   async dropDeviceOnRoom(device: DeviceModel) {

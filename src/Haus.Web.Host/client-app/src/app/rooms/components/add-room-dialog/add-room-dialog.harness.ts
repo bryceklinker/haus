@@ -1,18 +1,18 @@
-import {Action} from "@ngrx/store";
-import {screen} from "@testing-library/dom";
+import {Action} from '@ngrx/store';
+import {screen} from '@testing-library/dom';
 
-import {HausComponentHarness, ModelFactory, renderFeatureComponent} from "../../../../testing";
-import {AddRoomDialogComponent} from "./add-room-dialog.component";
-import {RoomsActions} from "../../state";
-import {RoomsModule} from "../../rooms.module";
+import {HausComponentHarness, ModelFactory, renderFeatureComponent} from '../../../../testing';
+import {AddRoomDialogComponent} from './add-room-dialog.component';
+import {RoomsActions} from '../../state';
+import {RoomsModule} from '../../rooms.module';
 
 export class AddRoomDialogHarness extends HausComponentHarness<AddRoomDialogComponent> {
   get loadingIndicator() {
-    return screen.queryByTestId('loading-indicator');
+    return screen.queryByLabelText('loading indicator');
   }
 
   get saveElement() {
-    return screen.getByTestId('save-room-btn');
+    return screen.getByRole('button', {name: 'save room'});
   }
 
   simulateAddSuccess() {
@@ -20,15 +20,15 @@ export class AddRoomDialogHarness extends HausComponentHarness<AddRoomDialogComp
   }
 
   async enterName(name: string) {
-    await this.changeInputByTestId(name, 'room-name-field');
+    await this.changeInputByLabel(name, 'room name');
   }
 
   async save() {
-    await this.clickButtonByTestId('save-room-btn');
+    await this.clickButtonByLabel('save room');
   }
 
   async cancel() {
-    await this.clickButtonByTestId('cancel-room-btn');
+    await this.clickButtonByLabel('cancel room');
   }
 
   static async render(...actions: Action[]) {

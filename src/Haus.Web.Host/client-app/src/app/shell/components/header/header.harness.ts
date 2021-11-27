@@ -10,26 +10,25 @@ export class HeaderHarness extends HausComponentHarness<HeaderComponent> {
   themeService: ThemeService;
 
   get profileImage() {
-    return screen.queryByTestId('profile-img');
+    return screen.queryByLabelText('profile img');
   }
 
   get userMenu() {
-    return screen.queryByTestId('user-menu');
+    return screen.queryByRole('button', {name: 'user menu'});
   }
 
   async clickMenu() {
-    await this.clickButtonByTestId('menu-btn');
+    await this.clickButtonByLabel('menu');
   }
 
   async logout() {
-    const menu = await this.getMatHarnessByTestId(MatMenuHarness.with, 'user-menu-btn');
+    const menu = await this.getMatHarnessByLabel(MatMenuHarness.with, 'user menu');
     await menu.open();
-    await menu.clickItem({selector: '[data-testid="logout-btn"]'});
+    await menu.clickItem({selector: '[aria-label="logout"]'});
   }
 
   async toggleTheme() {
-    const toggle = await this.getSlideToggleByTestId('theme-toggle');
-    await toggle.toggle();
+    await this.toggleSlideByLabel('theme toggle');
   }
 
   private constructor(result: RenderComponentResult<HeaderComponent>) {

@@ -6,31 +6,31 @@ import {DiagnosticsModule} from "../../diagnostics.module";
 
 export class DiagnosticsHeaderHarness extends HausComponentHarness<DiagnosticsHeaderComponent> {
   get connectionIcon() {
-    return screen.getByTestId('connection-icon');
+    return screen.getByLabelText('connection icon');
   }
 
   get connectionStatus() {
-    return screen.getByTestId('connection-status');
+    return screen.getByLabelText('connection status');
   }
 
   get startDiscoveryElement() {
-    return screen.getByTestId('start-discovery-btn');
+    return screen.getByRole('button', {name: 'start discovery'});
   }
 
   get stopDiscoveryElement() {
-    return screen.getByTestId('stop-discovery-btn');
+    return screen.getByRole('button', {name: 'stop discovery'});
   }
 
   async startDiscovery() {
-    await this.clickButtonByTestId('start-discovery-btn');
+    await this.clickButtonByLabel('start discovery');
   }
 
   async stopDiscovery() {
-    await this.clickButtonByTestId('stop-discovery-btn');
+    await this.clickButtonByLabel('stop discovery');
   }
 
   async syncDiscovery() {
-    await this.clickButtonByTestId('sync-discovery-btn');
+    await this.clickButtonByLabel('sync discovery');
   }
 
   static fromResult(result: RenderComponentResult<any>) {

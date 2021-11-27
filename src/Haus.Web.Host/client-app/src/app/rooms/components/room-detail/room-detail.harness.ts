@@ -6,23 +6,23 @@ import {RoomsModule} from "../../rooms.module";
 
 export class RoomDetailHarness extends HausComponentHarness<RoomDetailComponent> {
   get roomDetail() {
-    return screen.getByTestId('room-detail');
+    return screen.getByLabelText('room detail');
   }
 
   get devices() {
-    return screen.queryAllByTestId('room-device-item');
+    return screen.queryAllByLabelText('room device item');
   }
 
   get lighting() {
-    return screen.queryByTestId('lighting')
+    return screen.queryByLabelText('lighting')
   }
 
   async turnRoomOn() {
-    await this.checkSlideToggleByTestId('state-input');
+    await this.toggleSlideByLabel('state');
   }
 
   async assignDevices() {
-    await this.clickButtonByTestId('assign-devices-btn');
+    await this.clickButtonByLabel('assign devices');
   }
 
   static fromResult(result: RenderComponentResult<any>) {

@@ -6,7 +6,7 @@
     <form [formGroup]="form">
       <mat-form-field appearance="fill">
         <mat-label>Device Type</mat-label>
-        <mat-select formControlName="deviceType" data-testid="device-type-select">
+        <mat-select formControlName="deviceType" aria-label="select device type">
           <mat-option *ngFor="let deviceType of deviceTypes$ | async"
                       [value]="deviceType">
             {{humanize(deviceType)}}
@@ -19,7 +19,8 @@
       <h4 class="mat-display-1">
         Metadata
         <span class="spacer"></span>
-        <button mat-icon-button data-testid="add-metadata-btn"
+        <button mat-icon-button
+                aria-label="add metadata"
                 color="accent"
                 tabindex="-1"
                 (click)="onAddMetadata()">
@@ -30,11 +31,11 @@
         <mat-list-item *ngFor="let metaGroup of metadataGroups">
           <mat-form-field appearance="fill">
             <mat-label>Key</mat-label>
-            <input matInput [formControl]="getFormControl(metaGroup, 'key')" data-testid="metadata-key-input">
+            <input matInput [formControl]="getFormControl(metaGroup, 'key')" aria-label="metadata key">
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Value</mat-label>
-            <input matInput [formControl]="getFormControl(metaGroup, 'value')" data-testid="metadata-value-input">
+            <input matInput [formControl]="getFormControl(metaGroup, 'value')" aria-label="metadata value">
           </mat-form-field>
         </mat-list-item>
       </div>
@@ -42,11 +43,13 @@
   </mat-card-content>
   <mat-card-actions>
     <span class="spacer"></span>
-    <button mat-button data-testid="cancel-simulated-device-btn"
+    <button mat-button
+            aria-label="cancel simulated device"
             (click)="onCancel()">
       Cancel
     </button>
-    <button mat-raised-button data-testid="save-simulated-device-btn"
+    <button mat-raised-button
+            aria-label="save simulated device"
             color="primary"
             (click)="onSave()"
             [disabled]="form.invalid">

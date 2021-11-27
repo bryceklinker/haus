@@ -1,8 +1,8 @@
-<div class="lighting-color" data-testid="lighting-color">
-  <span data-testid="rgb-value">Lighting Color (RGB): ({{red}}, {{green}}, {{blue}})</span>
+<div class="lighting-color" aria-label="lighting color">
+  <span aria-label="rgb value">Lighting Color (RGB): ({{red}}, {{green}}, {{blue}})</span>
   <div class="color-selectors">
     <div class="color-selector">
-      <mat-slider data-testid="red-input"
+      <mat-slider aria-label="red"
                   min="0"
                   max="255"
                   [value]="red"
@@ -14,7 +14,7 @@
     </div>
 
     <div class="color-selector">
-      <mat-slider data-testid="green-input"
+      <mat-slider aria-label="green"
                   min="0"
                   max="255"
                   [value]="green"
@@ -26,7 +26,7 @@
     </div>
 
     <div class="color-selector">
-      <mat-slider data-testid="blue-input"
+      <mat-slider aria-label="blue"
                   min="0"
                   max="255"
                   [value]="blue"
@@ -41,7 +41,7 @@
       <div class="lighting-color-sample" [style]="{'background-color': colorSample}">
       </div>
       <div class="lighting-color-values">
-        <span data-testid="hex-value">Hex: {{colorSample}}</span>
+        <span aria-label="hex value">Hex: {{colorSample}}</span>
       </div>
     </div>
 

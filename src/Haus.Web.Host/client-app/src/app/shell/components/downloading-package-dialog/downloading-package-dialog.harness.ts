@@ -7,7 +7,7 @@ import {ShellActions} from "../../state";
 export class DownloadingPackageDialogHarness extends HausComponentHarness<DownloadingPackageDialogComponent> {
 
   get loadingElement() {
-    return screen.getByTestId('loading-indicator');
+    return screen.queryByLabelText('loading indicator');
   }
 
   get isClosingDialogDisabled() {

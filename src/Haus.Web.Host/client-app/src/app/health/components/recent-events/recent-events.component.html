@@ -1,11 +1,11 @@
-<mat-card data-testid="recent-events">
+<mat-card aria-label="recent events">
   <mat-card-header>
     <mat-card-title>Recent Events</mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <mat-expansion-panel
       *ngFor="let event of events"
-      data-testid="haus-event">
+      aria-label="haus event">
       <mat-expansion-panel-header>
         <mat-panel-title>{{event.type}}<span class="spacer"></span>{{event.timestamp}}</mat-panel-title>
       </mat-expansion-panel-header>

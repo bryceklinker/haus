@@ -1,25 +1,25 @@
-import {screen} from "@testing-library/dom";
+import {screen} from '@testing-library/dom';
 
-import {HausComponentHarness, renderFeatureComponent} from "../../../../testing";
-import {LightingConstraintsComponent} from "./lighting-constraints.component";
-import {SharedModule} from "../../shared.module";
+import {HausComponentHarness, renderFeatureComponent} from '../../../../testing';
+import {LightingConstraintsComponent} from './lighting-constraints.component';
+import {SharedModule} from '../../shared.module';
 
-const TEST_IDS = {
-  MIN_LEVEL: 'min-level-input',
-  MAX_LEVEL: 'max-level-input',
-  MIN_TEMPERATURE: 'min-temperature-input',
-  MAX_TEMPERATURE: 'max-temperature-input',
-  SAVE: 'save-constraints-btn',
-  CANCEL: 'cancel-constraints-btn'
-}
+const LABELS = {
+  MIN_LEVEL: 'min level',
+  MAX_LEVEL: 'max level',
+  MIN_TEMPERATURE: 'min temperature',
+  MAX_TEMPERATURE: 'max temperature',
+  SAVE: 'save constraints',
+  CANCEL: 'cancel constraints'
+};
 
 export class LightingConstraintsHarness extends HausComponentHarness<LightingConstraintsComponent> {
   get minTemperatureElement() {
-    return screen.queryByTestId(TEST_IDS.MIN_TEMPERATURE);
+    return screen.queryByRole('textbox', {name: LABELS.MIN_TEMPERATURE});
   }
 
   get maxTemperatureElement() {
-    return screen.queryByTestId(TEST_IDS.MAX_TEMPERATURE);
+    return screen.queryByRole('textbox', {name: LABELS.MAX_TEMPERATURE});
   }
 
   get invalid() {
@@ -27,71 +27,71 @@ export class LightingConstraintsHarness extends HausComponentHarness<LightingCon
   }
 
   get cancelElement() {
-    return screen.queryByTestId(TEST_IDS.CANCEL);
+    return screen.queryByRole('button', {name: LABELS.CANCEL});
   }
 
   async minLevelValue() {
-    return await this.getInputValueByTestId(TEST_IDS.MIN_LEVEL);
+    return await this.getInputValueByLabel(LABELS.MIN_LEVEL);
   }
 
   async changeMinLevel(value: number) {
-    await this.changeInputByTestId(`${value}`, TEST_IDS.MIN_LEVEL);
+    await this.changeInputByLabel(`${value}`, LABELS.MIN_LEVEL);
   }
 
   async isMinLevelDisabled() {
-    return await this.isInputDisabledByTestId(TEST_IDS.MIN_LEVEL)
+    return await this.isInputDisabledByLabel(LABELS.MIN_LEVEL);
   }
 
   async maxLevelValue() {
-    return await this.getInputValueByTestId(TEST_IDS.MAX_LEVEL);
+    return await this.getInputValueByLabel(LABELS.MAX_LEVEL);
   }
 
   async changeMaxLevel(value: number) {
-    await this.changeInputByTestId(`${value}`, TEST_IDS.MAX_LEVEL);
+    await this.changeInputByLabel(`${value}`, LABELS.MAX_LEVEL);
   }
 
   async isMaxLevelDisabled() {
-    return await this.isInputDisabledByTestId(TEST_IDS.MAX_LEVEL)
+    return await this.isInputDisabledByLabel(LABELS.MAX_LEVEL);
   }
 
   async minTemperatureValue() {
-    return await this.getInputValueByTestId(TEST_IDS.MIN_TEMPERATURE);
+    return await this.getInputValueByLabel(LABELS.MIN_TEMPERATURE);
   }
 
   async changeMinTemperature(value: number) {
-    await this.changeInputByTestId(`${value}`, TEST_IDS.MIN_TEMPERATURE);
+    await this.changeInputByLabel(`${value}`, LABELS.MIN_TEMPERATURE);
   }
 
   async isMinTemperatureDisabled() {
-    return await this.isInputDisabledByTestId(TEST_IDS.MIN_TEMPERATURE)
+    return await this.isInputDisabledByLabel(LABELS.MIN_TEMPERATURE);
   }
 
   async maxTemperatureValue() {
-    return await this.getInputValueByTestId(TEST_IDS.MAX_TEMPERATURE);
+    return await this.getInputValueByLabel(LABELS.MAX_TEMPERATURE);
   }
 
   async changeMaxTemperature(value: number) {
-    await this.changeInputByTestId(`${value}`, TEST_IDS.MAX_TEMPERATURE);
+    await this.changeInputByLabel(`${value}`, LABELS.MAX_TEMPERATURE);
   }
 
   async isMaxTemperatureDisabled() {
-    return await this.isInputDisabledByTestId(TEST_IDS.MAX_TEMPERATURE)
+    return await this.isInputDisabledByLabel(LABELS.MAX_TEMPERATURE);
   }
 
   async save() {
-    await this.clickButtonByTestId(TEST_IDS.SAVE);
+    await this.clickButtonByLabel(LABELS.SAVE);
   }
 
   async isSaveDisabled() {
-    return await this.isButtonDisabledByTestId(TEST_IDS.SAVE);
+    return await this.isButtonDisabledByLabel(LABELS.SAVE);
   }
 
   async cancel() {
-    await this.clickButtonByTestId(TEST_IDS.CANCEL);
+    await this.clickButtonByLabel(LABELS.CANCEL);
   }
 
   async isCancelDisabled() {
-    return await this.isButtonDisabledByTestId(TEST_IDS.CANCEL);
+    return await this.isButtonDisabledByLabel(LABELS.CANCEL);
   }
 
   static async render(props: Partial<LightingConstraintsComponent>) {

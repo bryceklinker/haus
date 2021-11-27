@@ -1,23 +1,23 @@
-<mat-card data-testid="latest-version-details">
+<mat-card aria-label="latest version details">
   <mat-card-header>
-    <mat-card-title data-testid="version">Release Version: {{versionNumber}}</mat-card-title>
+    <mat-card-title aria-label="version">Release Version: {{versionNumber}}</mat-card-title>
   </mat-card-header>
   <mat-card-content class="content">
     <div class="toggle-group">
       <mat-label>Is Official Release?</mat-label>
-      <mat-slide-toggle [checked]="isStableRelease" data-testid="is-official" disabled></mat-slide-toggle>
+      <mat-slide-toggle [checked]="isStableRelease" aria-label="is official" disabled></mat-slide-toggle>
     </div>
     <div class="toggle-group">
       <mat-label>Is Newer Release?</mat-label>
-      <mat-slide-toggle [checked]="isNewerVersion" data-testid="is-newer" disabled></mat-slide-toggle>
+      <mat-slide-toggle [checked]="isNewerVersion" aria-label="is newer" disabled></mat-slide-toggle>
     </div>
     <div class="toggle-group">
       <mat-label>Release Date</mat-label>
-      <span data-testid="release-date">{{releaseDate}}</span>
+      <span aria-label="release date">{{releaseDate}}</span>
     </div>
     <div>
       <h3>Release Notes</h3>
-      <p class="mat-body-1" data-testid="description">{{description}}</p>
+      <p class="mat-body-1" aria-label="description">{{description}}</p>
     </div>
 
     <mat-expansion-panel>
@@ -27,7 +27,7 @@
       <mat-action-list>
         <button *ngFor="let model of packages"
                 mat-list-item
-                data-testid="application-package"
+                aria-label="application package"
                 (click)="onDownloadPackage(model)">
           {{model.name}}
         </button>

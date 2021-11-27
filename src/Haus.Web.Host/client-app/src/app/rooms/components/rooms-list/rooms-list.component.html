@@ -1,12 +1,12 @@
 <mat-nav-list>
   <a *ngFor="let room of rooms"
-     data-testid="room-item"
+     aria-label="room item"
      routerLink="{{room.id}}"
      [routerLinkActive]="'active'"
      mat-list-item>
     {{room.name}}
   </a>
-  <button mat-fab (click)="onAddRoom()" data-testid="add-room-btn">
+  <button mat-fab (click)="onAddRoom()" aria-label="add room">
     <mat-icon>add</mat-icon>
   </button>
 </mat-nav-list>

@@ -8,27 +8,27 @@ export class HealthDashboardHarness extends HausComponentHarness<HealthDashboard
   private readonly _healthCheckHarness: HealthCheckWidgetHarness;
 
   get isVisible() {
-    return screen.queryAllByTestId('health-dashboard').length > 0;
+    return screen.queryAllByLabelText('health dashboard').length > 0;
   }
 
   get isWaiting() {
-    return screen.queryAllByTestId('waiting-for-report').length > 0;
+    return screen.queryAllByLabelText('waiting for report').length > 0;
   }
 
   get isError() {
-    return screen.queryAllByTestId('error-indicator').length > 0;
+    return screen.queryAllByLabelText('error indicator').length > 0;
   }
 
   get isWarning() {
-    return screen.queryAllByTestId('warning-indicator').length > 0;
+    return screen.queryAllByLabelText('warning indicator').length > 0;
   }
 
   get isOk() {
-    return screen.queryAllByTestId('ok-indicator').length > 0;
+    return screen.queryAllByLabelText('ok indicator').length > 0;
   }
 
   get checks() {
-    return screen.queryAllByTestId('health-check');
+    return screen.queryAllByLabelText('health check');
   }
 
   async getCheckName() {

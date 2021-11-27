@@ -1,24 +1,24 @@
-<mat-card data-testid="device-detail">
+<mat-card aria-label="device detail">
   <mat-card-header>
     <mat-card-title>{{name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content [formGroup]="form">
     <mat-form-field appearance="fill">
       <mat-label>Name</mat-label>
-      <input matInput formControlName="name" data-testid="device-name-field"/>
+      <input matInput formControlName="name" aria-label="device name" type="text"/>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>External Id</mat-label>
-      <input matInput formControlName="externalId" data-testid="device-external-id-field"/>
+      <input matInput formControlName="externalId" aria-label="device external id" type="text"/>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Device Type</mat-label>
-      <input matInput formControlName="deviceType" data-testid="device-type-field"/>
+      <input matInput formControlName="deviceType" aria-label="device type" type="text"/>
     </mat-form-field>
 
     <mat-form-field appearance="fill" *ngIf="isLight">
       <mat-label>Light Type</mat-label>
-      <mat-select formControlName="lightType" data-testid="light-type-select">
+      <mat-select formControlName="lightType" aria-label="select light type">
         <mat-option *ngFor="let lightType of lightTypes"
                     [value]="lightType">
           {{humanize(lightType)}}
@@ -51,7 +51,7 @@
         <mat-panel-title>Metadata</mat-panel-title>
       </mat-expansion-panel-header>
       <mat-list>
-        <mat-list-item *ngFor="let meta of metadata" data-testid="device-metadata">
+        <mat-list-item *ngFor="let meta of metadata" aria-label="device metadata">
           <p>{{meta.key}}</p>
           <span class="spacer"></span>
           <p>{{meta.value}}</p>
@@ -61,7 +61,7 @@
   </mat-card-content>
   <mat-card-actions>
     <span class="spacer"></span>
-    <button mat-button data-testid="save-device-btn" (click)="onSaveDevice()">
+    <button mat-button aria-label="save device" (click)="onSaveDevice()">
       Save Device
     </button>
   </mat-card-actions>

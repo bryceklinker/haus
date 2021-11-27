@@ -9,7 +9,7 @@
         <mat-panel-title>Metadata</mat-panel-title>
       </mat-expansion-panel-header>
       <mat-list>
-        <mat-list-item *ngFor="let meta of metadata" data-testid="simulated-metadata-item">
+        <mat-list-item *ngFor="let meta of metadata" aria-label="simulated metadata item">
           {{meta.key}}
           <span class="spacer"></span>
           {{meta.value}}
@@ -23,10 +23,10 @@
       </mat-expansion-panel-header>
       <div class="toggle-group">
         <mat-label>Is Occupied?</mat-label>
-        <mat-slide-toggle [checked]="isOccupied" data-testid="is-occupied-toggle" disabled></mat-slide-toggle>
+        <mat-slide-toggle [checked]="isOccupied" aria-label="is occupied toggle" disabled></mat-slide-toggle>
       </div>
       <button mat-button
-              data-testid="trigger-occupancy-change-btn"
+              aria-label="trigger occupancy change"
               (click)="onOccupancyChange()">
         Trigger Occupancy Change
       </button>

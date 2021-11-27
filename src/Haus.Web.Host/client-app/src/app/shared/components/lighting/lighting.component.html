@@ -1,7 +1,7 @@
-<div data-testid="lighting" *ngIf="hasLighting; else noLightingFound">
+<div aria-label="lighting" *ngIf="hasLighting; else noLightingFound">
   <div class="lighting-field">
-    <span data-testid="state-value" class="label">State: {{lightingState}}</span>
-    <mat-slide-toggle data-testid="state-input"
+    <span aria-label="state value" class="label">State: {{lightingState}}</span>
+    <mat-slide-toggle aria-label="state"
                       [checked]="state"
                       (change)="onStateChange($event)"
                       [disabled]="readonly">
@@ -9,8 +9,8 @@
   </div>
 
   <div class="lighting-field">
-    <span data-testid="level-value" class="label">Level: {{level}}</span>
-    <mat-slider data-testid="level-input"
+    <span aria-label="level value" class="label">Level: {{level}}</span>
+    <mat-slider aria-label="level"
                 [min]="minLevel"
                 [max]="maxLevel"
                 [value]="level"
@@ -20,8 +20,8 @@
   </div>
 
   <div class="lighting-field" *ngIf="temperatureLighting">
-    <span data-testid="temperature-value" class="label">Temperature (K): {{temperature}}</span>
-    <mat-slider data-testid="temperature-input"
+    <span aria-label="temperature value" class="label">Temperature (K): {{temperature}}</span>
+    <mat-slider aria-label="temperature"
                 [min]="minTemperature"
                 [max]="maxTemperature"
                 [value]="temperature"

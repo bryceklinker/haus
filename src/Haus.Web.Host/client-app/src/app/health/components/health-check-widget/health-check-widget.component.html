@@ -1,36 +1,36 @@
-<mat-expansion-panel class="health-widget" data-testid="health-check">
+<mat-expansion-panel class="health-widget" aria-label="health check">
   <mat-expansion-panel-header [class.success-background-color]="isOk" [class.warning-background-color]="isWarning" [class.error-background-color]="isError">
-    <mat-panel-title data-testid="name">
-        <mat-icon data-testid="error" *ngIf="isError">error</mat-icon>
-        <mat-icon data-testid="ok" *ngIf="isOk">check_circle</mat-icon>
-        <mat-icon data-testid="warning" *ngIf="isWarning">warning</mat-icon>
+    <mat-panel-title aria-label="name">
+        <mat-icon aria-label="error" *ngIf="isError">error</mat-icon>
+        <mat-icon aria-label="ok" *ngIf="isOk">check_circle</mat-icon>
+        <mat-icon aria-label="warning" *ngIf="isWarning">warning</mat-icon>
         {{name}}
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div class="details">
     <mat-form-field>
       <mat-label>Status</mat-label>
-      <input matInput [value]="status" readonly data-testid="status"/>
+      <input matInput [value]="status" readonly aria-label="status"/>
     </mat-form-field>
 
     <mat-form-field>
       <mat-label>Check Duration</mat-label>
-      <input matInput [value]="checkDuration" readonly data-testid="check-duration"/>
+      <input matInput [value]="checkDuration" readonly aria-label="check duration"/>
     </mat-form-field>
 
     <mat-form-field *ngIf="hasDescription">
       <mat-label>Description</mat-label>
-      <input matInput [value]="description" readonly data-testid="description"/>
+      <input matInput [value]="description" readonly aria-label="description"/>
     </mat-form-field>
 
     <mat-form-field *ngIf="hasExceptionMessage">
       <mat-label>Exception Message</mat-label>
-      <input matInput [value]="exceptionMessage" readonly data-testid="exception-message"/>
+      <input matInput [value]="exceptionMessage" readonly aria-label="exception message"/>
     </mat-form-field>
 
     <mat-form-field>
       <mat-label>Tags</mat-label>
-      <input matInput [value]="tags" readonly data-testid="tags"/>
+      <input matInput [value]="tags" readonly aria-label="tags"/>
     </mat-form-field>
   </div>
 </mat-expansion-panel>

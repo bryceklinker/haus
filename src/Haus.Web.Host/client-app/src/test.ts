@@ -6,12 +6,18 @@ import '@testing-library/jest-dom';
 import {TestingServer} from "./testing";
 import { TestBed } from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from "@angular/platform-browser-dynamic/testing";
+import {configure} from '@testing-library/angular';
 
 beforeAll(() => {
   TestingServer.start();
 });
 
 beforeEach(() => {
+  configure({
+    dom: {
+      defaultHidden: true,
+    }
+  })
   TestBed.resetTestEnvironment();
   TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
   TestingServer.reset();

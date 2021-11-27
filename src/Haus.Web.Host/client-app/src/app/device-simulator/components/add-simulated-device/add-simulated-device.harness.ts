@@ -1,17 +1,17 @@
-import {screen} from "@testing-library/dom";
-import {Action} from "@ngrx/store";
+import {screen} from '@testing-library/dom';
+import {Action} from '@ngrx/store';
 
-import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
-import {AddSimulatedDeviceComponent} from "./add-simulated-device.component";
-import {DeviceSimulatorModule} from "../../device-simulator.module";
-import {DeviceSimulatorActions} from "../../state";
-import {DeviceType} from "../../../shared/models";
-import {DeviceSimulatorDashboardComponent} from "../device-simulator-dashboard/device-simulator-dashboard.component";
+import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from '../../../../testing';
+import {AddSimulatedDeviceComponent} from './add-simulated-device.component';
+import {DeviceSimulatorModule} from '../../device-simulator.module';
+import {DeviceSimulatorActions} from '../../state';
+import {DeviceType} from '../../../shared/models';
+import {DeviceSimulatorDashboardComponent} from '../device-simulator-dashboard/device-simulator-dashboard.component';
 
 export class AddSimulatedDeviceHarness extends HausComponentHarness<AddSimulatedDeviceComponent> {
 
   get saveButton() {
-    return screen.getByTestId('save-simulated-device-btn');
+    return screen.getByRole('button', {name: 'save simulated device'});
   }
 
   constructor(result: RenderComponentResult<AddSimulatedDeviceComponent>) {
@@ -21,27 +21,27 @@ export class AddSimulatedDeviceHarness extends HausComponentHarness<AddSimulated
   }
 
   async enterMetadataKey(key: string) {
-    await this.changeInputByTestId('something', 'metadata-key-input');
+    await this.changeInputByLabel('something', 'metadata key');
   }
 
   async enterMetadataValue(value: string) {
-    await this.changeInputByTestId('else', 'metadata-value-input');
+    await this.changeInputByLabel('else', 'metadata value');
   }
 
   async addMetadata() {
-    await this.clickButtonByTestId('add-metadata-btn');
+    await this.clickButtonByLabel('add metadata');
   }
 
   async selectDeviceType(deviceType: DeviceType) {
-    await this.changeSelectedOptionByTestId(deviceType, 'device-type-select');
+    await this.changeSelectedOptionByLabel(deviceType, 'select device type');
   }
 
   async save() {
-    await this.clickButtonByTestId('save-simulated-device-btn')
+    await this.clickButtonByLabel('save simulated device');
   }
 
   async cancel() {
-    await this.clickButtonByTestId('cancel-simulated-device-btn');
+    await this.clickButtonByLabel('cancel simulated device');
   }
 
   async simulateAddSuccess() {

@@ -8,7 +8,7 @@ import {DevicesModule} from "../../devices.module";
 
 export class DiscoveryUnassignedDevicesHarness extends HausComponentHarness<DiscoveryUnassignedDevicesComponent> {
   get unassignedDevices() {
-    return screen.queryAllByTestId('unassigned-device-item');
+    return screen.queryAllByLabelText('unassigned device item');
   }
 
   get draggableDevices() {

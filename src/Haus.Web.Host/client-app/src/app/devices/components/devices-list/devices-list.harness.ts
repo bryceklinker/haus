@@ -6,7 +6,7 @@ import {DevicesModule} from "../../devices.module";
 
 export class DevicesListHarness extends HausComponentHarness<DevicesListComponent>{
   get deviceItems() {
-    return screen.queryAllByTestId('device-item');
+    return screen.queryAllByLabelText('device item');
   }
 
   static fromResult(result: RenderComponentResult<any>) {

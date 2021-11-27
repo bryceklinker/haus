@@ -1,25 +1,25 @@
 <header>
   <mat-toolbar color="primary">
     <mat-toolbar-row>
-      <button mat-icon-button data-testid="menu-btn" (click)="onToggleMenu()">
+      <button mat-icon-button aria-label="menu" (click)="onToggleMenu()">
         <mat-icon>menu</mat-icon>
       </button>
       <span>HAUS</span>
       <span class="spacer"></span>
-      <mat-slide-toggle data-testid="theme-toggle" (toggleChange)="toggleTheme()"></mat-slide-toggle>
-      <div *ngIf="user" class="user-menu" data-testid="user-menu">
-        <img data-testid="profile-img"
+      <mat-slide-toggle aria-label="theme toggle" (toggleChange)="toggleTheme()"></mat-slide-toggle>
+      <div *ngIf="user" class="user-menu" aria-label="user menu">
+        <img aria-label="profile img"
              alt="User's Profile Picture"
              class="user-picture"
              [src]="profilePicture"/>
         <button mat-icon-button
-                data-testid="user-menu-btn"
+                aria-label="user menu"
                 [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item
-                  data-testid="logout-btn"
+                  aria-label="logout"
                   (click)="onLogout()">
             <mat-icon>logout</mat-icon>
             <span>Logout</span>

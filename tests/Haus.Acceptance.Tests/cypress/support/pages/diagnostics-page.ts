@@ -1,4 +1,4 @@
 export const DiagnosticsPage = {
     navigate: () => cy.navigate('Diagnostics'),
-    findHeader: () => cy.findByTestId('diagnostics-header')
+    findHeader: () => cy.findByLabelText('diagnostics header')
 }

@@ -4,7 +4,7 @@ import {screen} from "@testing-library/dom";
 
 export class LatestVersionErrorHarness extends HausComponentHarness<LatestVersionErrorComponent>{
   get errorElement() {
-    return screen.getByTestId('error-message');
+    return screen.getByLabelText('error message');
   }
 
   static fromResult(result: RenderComponentResult<any>) {
@@ -19,6 +19,6 @@ export class LatestVersionErrorHarness extends HausComponentHarness<LatestVersio
   }
 
   async retry() {
-    await this.clickButtonByTestId('retry-btn');
+    await this.clickButtonByLabel('retry');
   }
 }

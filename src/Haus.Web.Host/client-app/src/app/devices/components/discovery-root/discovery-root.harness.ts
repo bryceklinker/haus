@@ -21,7 +21,7 @@ export class DiscoveryRootHarness extends HausComponentHarness<DiscoveryRootComp
   }
 
   get rooms() {
-    return screen.queryAllByTestId('discovery-room');
+    return screen.queryAllByLabelText('discovery room');
   }
 
   private constructor(result: RenderComponentResult<DiscoveryRootComponent>) {

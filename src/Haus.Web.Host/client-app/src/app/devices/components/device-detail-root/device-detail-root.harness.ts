@@ -11,7 +11,7 @@ export class DeviceDetailRootHarness extends HausComponentHarness<DeviceDetailRo
   private _deviceDetailHarness: DeviceDetailHarness;
 
   get deviceDetail() {
-    return screen.getByTestId('device-detail');
+    return screen.getByLabelText('device detail');
   }
 
   private constructor(result: RenderComponentResult<DeviceDetailRootComponent>) {

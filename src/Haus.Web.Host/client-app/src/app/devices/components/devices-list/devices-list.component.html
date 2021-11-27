@@ -1,6 +1,6 @@
 <mat-nav-list>
   <a *ngFor="let device of devices"
-     data-testid="device-item"
+     aria-label="device item"
      routerLink="{{device.id}}"
      [routerLinkActive]="'active'"
      mat-list-item>

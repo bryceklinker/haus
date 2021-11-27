@@ -16,7 +16,7 @@ export class ShellHarness extends HausComponentHarness<ShellComponent> {
   }
 
   get navDrawerStyle() {
-    return screen.getByTestId('nav-drawer').getAttribute('style');
+    return screen.getByLabelText('nav drawer').getAttribute('style');
   }
 
   get userMenu() {
@@ -24,11 +24,11 @@ export class ShellHarness extends HausComponentHarness<ShellComponent> {
   }
 
   get isLoading() {
-    return screen.queryAllByTestId('loading-indicator').length > 0;
+    return screen.queryAllByLabelText('loading indicator').length > 0;
   }
 
   async clickMenu() {
-    await this.clickButtonByTestId('menu-btn');
+    await this.clickButtonByLabel('menu');
   }
 
   async logout() {

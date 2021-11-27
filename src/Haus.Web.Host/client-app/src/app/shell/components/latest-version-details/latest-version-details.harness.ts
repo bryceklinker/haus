@@ -6,35 +6,35 @@ import userEvent from "@testing-library/user-event";
 export class LatestVersionDetailsHarness extends HausComponentHarness<LatestVersionDetailsComponent> {
 
   get isShowing() {
-    return screen.queryAllByTestId('latest-version-details').length > 0;
+    return screen.queryAllByLabelText('latest version details').length > 0;
   }
 
   get versionElement() {
-    return screen.getByTestId('version');
+    return screen.getByLabelText('version');
   }
 
   get descriptionElement() {
-    return screen.getByTestId('description');
+    return screen.getByLabelText('description');
   }
 
   get packages() {
-    return screen.queryAllByTestId('application-package');
+    return screen.queryAllByLabelText('application package');
   }
 
   get releaseDate() {
-    return screen.getByTestId('release-date');
+    return screen.getByLabelText('release date');
   }
 
   async getIsNewerRelease() {
-    return await this.isSlideToggleCheckedByTestId('is-newer');
+    return await this.isSlideToggleCheckedByLabel('is newer');
   }
 
   async getIsOfficialRelease() {
-    return await this.isSlideToggleCheckedByTestId('is-official');
+    return await this.isSlideToggleCheckedByLabel('is official');
   }
 
   async downloadPackage() {
-    userEvent.click(screen.getByTestId('application-package'));
+    userEvent.click(screen.getByRole('button', {name: 'application package'}));
     await this.whenRenderingDone();
   }
 

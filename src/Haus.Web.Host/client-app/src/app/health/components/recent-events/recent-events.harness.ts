@@ -6,7 +6,7 @@ import {screen} from "@testing-library/dom";
 export class RecentEventsHarness extends HausComponentHarness<RecentEventsComponent> {
 
   get events() {
-    return screen.queryAllByTestId('haus-event');
+    return screen.queryAllByLabelText('haus event');
   }
 
   static fromResult(result: RenderComponentResult<any>) {

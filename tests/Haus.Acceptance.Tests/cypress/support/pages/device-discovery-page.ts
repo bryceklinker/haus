@@ -3,7 +3,7 @@ import {DevicesPage} from "./devices-page";
 export const DeviceDiscoveryPage = {
     navigate: () => {
         DevicesPage.navigate();
-        cy.findByTestId('discovery').click();
+        cy.findByRole('button', {name: 'discovery'}).click();
     },
-    findUnassignedDevices: () => cy.findAllByTestId('unassigned-device-item')
+    findUnassignedDevices: () => cy.findAllByLabelText('unassigned device item')
 }

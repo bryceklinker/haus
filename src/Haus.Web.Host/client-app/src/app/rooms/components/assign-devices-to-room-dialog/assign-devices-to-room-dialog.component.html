@@ -2,7 +2,7 @@
 <mat-dialog-content>
   <mat-selection-list>
     <mat-list-option *ngFor="let device of unassignedDevices$ | async"
-                     data-testid="unassigned-device-item"
+                     aria-label="unassigned device item"
                      (click)="onChecked(device)">
       ({{humanize(device.deviceType)}}) {{device.name}}
     </mat-list-option>
@@ -11,12 +11,12 @@
 <mat-dialog-actions>
   <button mat-button
           (click)="onCancelAssignDevices()"
-          data-testid="cancel-assign-devices-btn">
+          aria-label="cancel assign devices">
     Cancel
   </button>
   <button mat-button
           (click)="onAssignDevicesToRoom()"
-          data-testid="assign-devices-to-room-btn"
+          aria-label="assign devices to room"
           [disabled]="hasEmptySelection">
     Assign
   </button>

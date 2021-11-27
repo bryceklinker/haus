@@ -1,7 +1,7 @@
 <mat-list cdkDropList
           [cdkDropListConnectedTo]="roomStringIds">
   <mat-list-item *ngFor="let device of devices"
-                 data-testid="unassigned-device-item"
+                 aria-label="unassigned device item"
                  cdkDrag
                  [cdkDragData]="device">
     {{getDeviceText(device)}}

@@ -1,11 +1,11 @@
-<mat-card data-testid="health-dashboard" *ngIf="hasReport else waiting">
+<mat-card aria-label="health dashboard" *ngIf="hasReport else waiting">
   <mat-card-header>
     <mat-card-title [class.warning-color]="isWarning"
                     [class.success-color]="isOk"
                     [class.error-color]="isError">
-      <mat-icon color="warn" data-testid="error-indicator" *ngIf="isError">error</mat-icon>
-      <mat-icon class="success-color" data-testid="ok-indicator" *ngIf="isOk">check_circle</mat-icon>
-      <mat-icon class="warning-color" data-testid="warning-indicator" *ngIf="isWarning">warning</mat-icon>
+      <mat-icon color="warn" aria-label="error indicator" *ngIf="isError">error</mat-icon>
+      <mat-icon class="success-color" aria-label="ok indicator" *ngIf="isOk">check_circle</mat-icon>
+      <mat-icon class="warning-color" aria-label="warning indicator" *ngIf="isWarning">warning</mat-icon>
       Haus Health
     </mat-card-title>
   </mat-card-header>
@@ -17,5 +17,5 @@
 </mat-card>
 
 <ng-template #waiting>
-  <h3 data-testid="waiting-for-report" class="mat-title">Waiting for health report</h3>
+  <h3 aria-label="waiting for report" class="mat-title">Waiting for health report</h3>
 </ng-template>
