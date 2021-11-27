@@ -42,7 +42,7 @@ describe('LightingConstraintsComponent', () => {
     await harness.changeMaxLevel(65);
     await harness.changeMinTemperature(3000)
     await harness.changeMaxTemperature(5000)
-    await harness.save();
+    harness.save();
 
     expect(emitter.emit).toHaveBeenCalledWith({
       minLevel: 54,
@@ -59,7 +59,7 @@ describe('LightingConstraintsComponent', () => {
     const harness = await LightingConstraintsHarness.render({level, save: emitter});
     await harness.changeMinLevel(54);
     await harness.changeMaxLevel(65);
-    await harness.save();
+    harness.save();
 
     expect(emitter.emit).toHaveBeenCalledWith({
       minLevel: 54,
@@ -83,7 +83,7 @@ describe('LightingConstraintsComponent', () => {
     const harness = await LightingConstraintsHarness.render({level});
     await harness.changeMinLevel(1000);
 
-    expect(await harness.isSaveDisabled()).toEqual(true);
+    expect(harness.isSaveDisabled()).toEqual(true);
   })
 
   it('should be invalid when min level is greater or equal to max level', async () => {
@@ -136,8 +136,8 @@ describe('LightingConstraintsComponent', () => {
     expect(await harness.isMaxLevelDisabled()).toEqual(true);
     expect(await harness.isMinTemperatureDisabled()).toEqual(true);
     expect(await harness.isMaxTemperatureDisabled()).toEqual(true);
-    expect(await harness.isSaveDisabled()).toEqual(true);
-    expect(await harness.isCancelDisabled()).toEqual(true);
+    expect(harness.isSaveDisabled()).toEqual(true);
+    expect(harness.isCancelDisabled()).toEqual(true);
   })
 
   it('should hide cancel when cancel is hidden', async () => {

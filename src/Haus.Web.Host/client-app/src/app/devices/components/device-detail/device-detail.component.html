@@ -26,7 +26,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-expansion-panel *ngIf="isLight">
+    <mat-expansion-panel *ngIf="isLight" aria-label="lighting panel">
       <mat-expansion-panel-header>
         <mat-panel-title>Lighting</mat-panel-title>
       </mat-expansion-panel-header>
@@ -35,7 +35,7 @@
       </lighting>
     </mat-expansion-panel>
 
-    <mat-expansion-panel *ngIf="isLight">
+    <mat-expansion-panel *ngIf="isLight" aria-label="lighting constraints panel">
       <mat-expansion-panel-header>
         <mat-panel-title>Lighting Constraints</mat-panel-title>
       </mat-expansion-panel-header>

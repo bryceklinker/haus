@@ -12,8 +12,8 @@ export class DeviceSimulatorDashboardHarness extends HausComponentHarness<Device
     return screen.queryAllByLabelText('simulated device item')
   }
 
-  async triggerOccupancyChange() {
-    await this._simulatedDeviceHarness.triggerOccupancyChange();
+  triggerOccupancyChange() {
+    this._simulatedDeviceHarness.triggerOccupancyChange();
   }
 
   constructor(result: RenderComponentResult<DeviceSimulatorDashboardComponent>) {

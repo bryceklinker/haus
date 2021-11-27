@@ -92,8 +92,8 @@ function createColorLighting(model: Partial<ColorLightingModel> = {}): ColorLigh
 function createLevelLighting(model: Partial<LevelLightingModel> = {}): LevelLightingModel {
   return {
     value: model.value === undefined ? 100 : model.value,
-    min: model.min === undefined ? 100 : model.min,
-    max: model.max === undefined ? 0 : model.max
+    min: model.min === undefined ? 0 : model.min,
+    max: model.max === undefined ? 100 : model.max
   }
 }
 

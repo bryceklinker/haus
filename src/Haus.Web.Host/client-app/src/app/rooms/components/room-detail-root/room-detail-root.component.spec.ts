@@ -5,7 +5,7 @@ import {LightingState, RoomModel} from "../../../shared/models";
 import {AssignDevicesToRoomDialogComponent} from "../assign-devices-to-room-dialog/assign-devices-to-room-dialog.component";
 import {RoomDetailRootHarness} from "./room-detail-root.harness";
 
-describe('DeviceDetailRootComponent', () => {
+describe('RoomDetailRootComponent', () => {
   let room: RoomModel;
 
   beforeEach(() => {
@@ -47,7 +47,7 @@ describe('DeviceDetailRootComponent', () => {
   it('should request lighting change when room lighting changed', async () => {
     const harness = await RoomDetailRootHarness.render(room.id, RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
 
-    await harness.turnRoomOn();
+    harness.turnRoomOn();
 
     expect(harness.dispatchedActions).toContainEqual(RoomsActions.changeRoomLighting.request({
       room: room,

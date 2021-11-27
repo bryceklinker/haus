@@ -71,6 +71,6 @@ describe('SimulatedDeviceWidgetComponent', () => {
       simulatedDevice: ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor, isOccupied: true})
     });
 
-    expect(await harness.getIsOccupied()).toEqual(true);
+    expect(harness.getIsOccupied()).toEqual(true);
   })
 })

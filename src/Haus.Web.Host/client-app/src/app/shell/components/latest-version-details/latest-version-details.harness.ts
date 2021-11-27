@@ -25,12 +25,12 @@ export class LatestVersionDetailsHarness extends HausComponentHarness<LatestVers
     return screen.getByLabelText('release date');
   }
 
-  async getIsNewerRelease() {
-    return await this.isSlideToggleCheckedByLabel('is newer');
+  getIsNewerRelease() {
+    return this.isSlideToggleCheckedByLabel('is newer');
   }
 
-  async getIsOfficialRelease() {
-    return await this.isSlideToggleCheckedByLabel('is official');
+  getIsOfficialRelease() {
+    return this.isSlideToggleCheckedByLabel('is official');
   }
 
   async downloadPackage() {

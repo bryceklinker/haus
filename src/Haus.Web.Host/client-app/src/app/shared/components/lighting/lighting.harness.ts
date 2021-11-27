@@ -47,8 +47,8 @@ export class LightingHarness extends HausComponentHarness<LightingComponent> {
     this._colorHarness = LightingColorHarness.fromResult(result);
   }
 
-  async isStateOn() {
-    return await this.isSlideToggleCheckedByLabel(TEST_IDS.STATE_INPUT);
+  isStateOn() {
+    return this.isSlideToggleCheckedByLabel(TEST_IDS.STATE_INPUT);
   }
 
   async isLevelDisabled() {
@@ -59,8 +59,8 @@ export class LightingHarness extends HausComponentHarness<LightingComponent> {
     return await this.isSliderDisabledByLabel(TEST_IDS.TEMPERATURE_INPUT);
   }
 
-  async isStateDisabled() {
-    return await this.isSlideToggleDisabledByLabel(TEST_IDS.STATE_INPUT)
+  isStateDisabled() {
+    return this.isSlideToggleDisabledByLabel(TEST_IDS.STATE_INPUT)
   }
 
   async levelValue() {

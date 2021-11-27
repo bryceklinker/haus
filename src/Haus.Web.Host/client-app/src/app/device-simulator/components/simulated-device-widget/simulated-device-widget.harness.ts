@@ -19,11 +19,11 @@ export class SimulatedDeviceWidgetHarness extends HausComponentHarness<Simulated
     return screen.queryAllByLabelText('simulated metadata item');
   }
 
-  async triggerOccupancyChange() {
-    await this.clickButtonByLabel('trigger occupancy change');
+  triggerOccupancyChange() {
+    this.clickButtonByLabel('trigger occupancy change');
   }
 
-  async getIsOccupied() {
+  getIsOccupied() {
     return this.isSlideToggleCheckedByLabel('is occupied toggle');
   }
 

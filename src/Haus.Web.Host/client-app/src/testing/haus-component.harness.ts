@@ -1,11 +1,10 @@
 import {RenderComponentResult} from "./render-component";
 import {BaseHarnessFilters, ComponentHarness, HarnessPredicate} from "@angular/cdk/testing";
 import {Type} from "@angular/core";
-import {MatButtonHarness} from "@angular/material/button/testing";
 import {MatInputHarness} from "@angular/material/input/testing";
-import {MatSlideToggleHarness} from "@angular/material/slide-toggle/testing";
 import {MatSliderHarness} from "@angular/material/slider/testing";
 import {MatSelectHarness} from "@angular/material/select/testing";
+import {MatExpansionPanelHarness} from '@angular/material/expansion/testing';
 import {By} from "@angular/platform-browser";
 import userEvent from '@testing-library/user-event';
 import {screen} from '@testing-library/angular';
@@ -78,22 +77,21 @@ export abstract class HausComponentHarness<TComponent> {
     this.result.fixture.destroy();
   }
 
-  protected async getButtonByLabel(label: string) {
-    return await this.getMatHarnessByLabel(MatButtonHarness.with, label);
+  protected getButtonByLabel(label: string) {
+    return screen.getByRole('button', {name: label});
   }
 
-  protected async isButtonDisabledByLabel(label: string) {
-    const button = await this.getButtonByLabel(label);
-    return await button.isDisabled();
+  protected isButtonDisabledByLabel(label: string) {
+    return this.getButtonByLabel(label)
+      .hasAttribute('disabled');
   }
 
-  protected async clickButtonByLabel(label: string) {
-    const button = await this.getButtonByLabel(label);
-    await button.click();
+  protected clickButtonByLabel(label: string) {
+    userEvent.click(this.getButtonByLabel(label));
   }
 
-  protected async getInputByLabel(testId: string) {
-    return await this.getMatHarnessByLabel(MatInputHarness.with, testId);
+  protected async getInputByLabel(label: string) {
+    return await this.getMatHarnessByLabel(MatInputHarness.with, label);
   }
 
   protected async getInputValueByLabel(label: string) {
@@ -131,26 +129,20 @@ export abstract class HausComponentHarness<TComponent> {
     return await select.getOptions();
   }
 
-  protected async getSlideToggleByLabel(label: string) {
-    return await this.getMatHarnessByLabel(MatSlideToggleHarness.with, label);
+  protected getSlideToggleByLabel(label: string) {
+    return screen.getByRole('switch', {name: label});
   }
 
-  protected async toggleSlideByLabel(label: string) {
-    // const toggle = await this.getSlideToggleByLabel(label);
-    // await toggle.check();
-    userEvent.click(screen.getByRole('switch', {name: label}));
+  protected toggleSlideByLabel(label: string) {
+    userEvent.click(this.getSlideToggleByLabel(label));
   }
 
-  protected async isSlideToggleCheckedByLabel(label: string) {
-    return Boolean(screen.getByRole('switch', {name: label}).getAttribute('aria-checked'));
-    // const toggle = await this.getSlideToggleByLabel(label);
-    // return await toggle.isChecked();
+  protected isSlideToggleCheckedByLabel(label: string) {
+    return Boolean(this.getSlideToggleByLabel(label).getAttribute('aria-checked'));
   }
 
-  protected async isSlideToggleDisabledByLabel(label: string) {
-    return screen.getByRole('switch', {name: label}).hasAttribute('disabled');
-    // const toggle = await this.getSlideToggleByLabel(label);
-    // return await toggle.isDisabled();
+  protected isSlideToggleDisabledByLabel(label: string) {
+    return this.getSlideToggleByLabel(label).hasAttribute('disabled');
   }
 
   protected async isSliderDisabledByLabel(label: string) {
@@ -178,5 +170,14 @@ export abstract class HausComponentHarness<TComponent> {
       .triggerEventHandler('input', {value});
 
     await this.whenRenderingDone();
+  }
+
+  protected async getExpansionPanelByLabel(label: string) {
+    return await this.getMatHarnessByLabel(MatExpansionPanelHarness.with, label);
+  }
+
+  protected async expandExpansionPanelByLabel(label: string) {
+    const harness = await this.getExpansionPanelByLabel(label);
+    await harness.expand();
   }
 }

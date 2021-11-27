@@ -78,20 +78,20 @@ export class LightingConstraintsHarness extends HausComponentHarness<LightingCon
     return await this.isInputDisabledByLabel(LABELS.MAX_TEMPERATURE);
   }
 
-  async save() {
-    await this.clickButtonByLabel(LABELS.SAVE);
+  save() {
+    this.clickButtonByLabel(LABELS.SAVE);
   }
 
-  async isSaveDisabled() {
-    return await this.isButtonDisabledByLabel(LABELS.SAVE);
+  isSaveDisabled() {
+    return this.isButtonDisabledByLabel(LABELS.SAVE);
   }
 
-  async cancel() {
-    await this.clickButtonByLabel(LABELS.CANCEL);
+  cancel() {
+    this.clickButtonByLabel(LABELS.CANCEL);
   }
 
-  async isCancelDisabled() {
-    return await this.isButtonDisabledByLabel(LABELS.CANCEL);
+  isCancelDisabled() {
+    return this.isButtonDisabledByLabel(LABELS.CANCEL);
   }
 
   static async render(props: Partial<LightingConstraintsComponent>) {

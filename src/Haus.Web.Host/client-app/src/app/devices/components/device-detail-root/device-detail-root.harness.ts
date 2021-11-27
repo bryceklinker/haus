@@ -24,12 +24,12 @@ export class DeviceDetailRootHarness extends HausComponentHarness<DeviceDetailRo
     return await this._deviceDetailHarness.getLightTypesOptions();
   }
 
-  async saveDevice() {
-    await this._deviceDetailHarness.saveDevice();
+  saveDevice() {
+    this._deviceDetailHarness.saveDevice();
   }
 
-  async saveConstraints() {
-    await this._deviceDetailHarness.saveConstraints();
+  saveConstraints() {
+    this._deviceDetailHarness.saveConstraints();
   }
 
   static async render(device: DeviceModel, ...actions: Action[]) {

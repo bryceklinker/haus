@@ -17,12 +17,12 @@ export class RoomDetailHarness extends HausComponentHarness<RoomDetailComponent>
     return screen.queryByLabelText('lighting')
   }
 
-  async turnRoomOn() {
-    await this.toggleSlideByLabel('state');
+  turnRoomOn() {
+    this.toggleSlideByLabel('state');
   }
 
-  async assignDevices() {
-    await this.clickButtonByLabel('assign devices');
+  assignDevices() {
+    this.clickButtonByLabel('assign devices');
   }
 
   static fromResult(result: RenderComponentResult<any>) {

@@ -37,7 +37,7 @@ describe('DeviceSimulatorDashboardComponent', () => {
       occupancyChange: emitter
     });
 
-    await harness.triggerOccupancyChange();
+    harness.triggerOccupancyChange();
 
     expect(emitter.emit).toHaveBeenCalledWith(simulatedDevice);
   })

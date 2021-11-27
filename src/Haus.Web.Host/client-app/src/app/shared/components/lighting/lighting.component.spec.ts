@@ -119,7 +119,7 @@ describe('LightingComponent', () => {
     const harness = await LightingHarness.render({lighting, readonly: true});
 
     expect(await harness.isLevelDisabled()).toEqual(true);
-    expect(await harness.isStateDisabled()).toEqual(true);
+    expect(harness.isStateDisabled()).toEqual(true);
     expect(await harness.isTemperatureDisabled()).toEqual(true);
   })
 

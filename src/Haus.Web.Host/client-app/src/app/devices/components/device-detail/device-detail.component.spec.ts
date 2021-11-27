@@ -83,7 +83,7 @@ describe('DeviceDetailComponent', () => {
     const emitter = new TestingEventEmitter<DeviceLightingConstraintsModel>();
 
     const harness = await DeviceDetailHarness.render({device, saveConstraints: emitter});
-    await harness.saveConstraints();
+    harness.saveConstraints();
 
     expect(emitter.emit).toHaveBeenCalledWith({
       device,
@@ -110,7 +110,7 @@ describe('DeviceDetailComponent', () => {
 
     const harness = await DeviceDetailHarness.render({device, lightTypes, saveDevice: emitter});
     await harness.selectLightType(LightType.Level);
-    await harness.saveDevice();
+    harness.saveDevice();
 
     expect(emitter.emit).toHaveBeenCalledWith(expect.objectContaining({
       lightType: LightType.Level
@@ -123,7 +123,7 @@ describe('DeviceDetailComponent', () => {
     const emitter = new TestingEventEmitter<DeviceModel>();
 
     const harness = await DeviceDetailHarness.render({device, lightTypes, saveDevice: emitter});
-    await harness.saveDevice();
+    harness.saveDevice();
 
     expect(emitter.emit).toHaveBeenCalledWith(device);
   })

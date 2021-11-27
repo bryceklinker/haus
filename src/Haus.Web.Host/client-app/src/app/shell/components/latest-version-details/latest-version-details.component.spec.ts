@@ -14,8 +14,8 @@ describe('LatestVersionDetailsComponent', () => {
     const harness = await LatestVersionDetailsHarness.render({version});
 
     expect(harness.descriptionElement).toHaveTextContent('big release');
-    expect(await harness.getIsNewerRelease()).toEqual(true);
-    expect(await harness.getIsOfficialRelease()).toEqual(true);
+    expect(harness.getIsNewerRelease()).toEqual(true);
+    expect(harness.getIsOfficialRelease()).toEqual(true);
     expect(harness.releaseDate).toHaveTextContent('2020-09-23T12:34:89.123Z');
     expect(harness.versionElement).toHaveTextContent('7.5.1');
   })

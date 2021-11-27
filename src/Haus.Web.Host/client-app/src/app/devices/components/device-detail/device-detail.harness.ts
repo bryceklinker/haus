@@ -34,12 +34,16 @@ export class DeviceDetailHarness extends HausComponentHarness<DeviceDetailCompon
     return screen.queryByRole('select', {name: 'select light type'});
   }
 
-  async saveConstraints() {
-    await this.clickButtonByLabel('save constraints');
+  async expandConstraints() {
+    await this.expandExpansionPanelByLabel('lighting constraints panel');
   }
 
-  async saveDevice() {
-    await this.clickButtonByLabel('save device');
+  saveConstraints() {
+    this.clickButtonByLabel('save constraints');
+  }
+
+  saveDevice() {
+    this.clickButtonByLabel('save device');
   }
 
   async selectLightType(lightType: LightType) {

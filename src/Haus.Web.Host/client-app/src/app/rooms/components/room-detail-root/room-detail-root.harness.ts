@@ -18,8 +18,8 @@ export class RoomDetailRootHarness extends HausComponentHarness<RoomDetailRootCo
     this._roomDetailHarness = RoomDetailHarness.fromResult(result);
   }
 
-  async turnRoomOn() {
-    await this._roomDetailHarness.turnRoomOn();
+  turnRoomOn() {
+    this._roomDetailHarness.turnRoomOn();
   }
 
   async assignDevices() {

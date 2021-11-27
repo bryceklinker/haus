@@ -49,7 +49,7 @@ describe('RoomDetailComponent', () => {
     const emitter = new TestingEventEmitter<RoomLightingChangedEvent>();
 
     const harness = await RoomDetailHarness.render({room, lightingChange: emitter});
-    await harness.turnRoomOn();
+    harness.turnRoomOn();
 
     expect(emitter.emit).toHaveBeenCalledWith({
       room: room,
