@@ -6,6 +6,7 @@ declare namespace Cypress {
         navigate(text: string): Chainable;
         isUserLoggedIn(): Chainable<boolean>;
         waitForAppToBeReady(): Chainable;
-        publishZigbeeMessage(message: import('./support/models').Zigbee2MqttMessage): Chainable<any>
+        publishZigbeeMessage(message: import('./support/models').Zigbee2MqttMessage): Chainable<any>;
+        waitForApi(alias: string): Chainable<any>;
     }
 }

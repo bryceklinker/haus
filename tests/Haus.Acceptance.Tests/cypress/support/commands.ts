@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken'
 import {AUTH_SETTINGS} from "./auth-settings";
-import {INTERCEPTORS} from "./interceptors";
+import {API_ALIASES, INTERCEPTORS} from './interceptors';
 import {JwtPayload} from "jsonwebtoken";
 import {Zigbee2MqttMessage, TokenResponse} from './models';
 import {MQTT_CLIENT} from './mqtt-client';
@@ -92,4 +92,8 @@ Cypress.Commands.add('waitForAppToBeReady', () => {
 
 Cypress.Commands.add('publishZigbeeMessage', (message: Zigbee2MqttMessage) => {
     return MQTT_CLIENT.publishZigbee2MqttMessage(message);
+})
+
+Cypress.Commands.add('waitForApi', (alias: string) => {
+    return cy.wait(alias);
 })
