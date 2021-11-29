@@ -55,6 +55,13 @@ function stop_service() {
   sudo systemctl stop "${SERVICE_NAME}" || true 
 }
 
+function install_node_dependencies() {
+  DIRECTORY="$1"
+  pushd "${DIRECTORY}" || exit 1
+  npm ci
+  popd
+}
+
 function main() {
   stop_service "${WEB_SERVICE_NAME}"
   stop_service "${ZIGBEE_SERVICE_NAME}"
@@ -63,6 +70,8 @@ function main() {
   extract_zip_file "${WEB_SERVICE_ZIP_FILE}" "${WEB_SERVICE_LOCATION}"
   extract_zip_file "${ZIGBEE_SERVICE_ZIP_FILE}" "${ZIGBEE_SERVICE_LOCATION}"
   extract_zip_file "${ZIGBEE_2_MQTTT_SERVICE_ZIP_FILE}" "${ZIGBEE_2_MQTTT_SERVICE_LOCATION}"
+  
+  install_node_dependencies "${ZIGBEE_2_MQTTT_SERVICE_LOCATION}"
   
   copy_service_definition "${WEB_SERVICE_LOCATION}" "${WEB_SERVICE_DEFINITION_FILE_NAME}"
   copy_service_definition "${ZIGBEE_SERVICE_LOCATION}" "${ZIGBEE_SERVICE_DEFINITION_FILE_NAME}"
