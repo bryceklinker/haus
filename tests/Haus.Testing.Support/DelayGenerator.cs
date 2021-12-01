@@ -5,7 +5,7 @@ namespace Haus.Testing.Support
 {
     public static class DelayGenerator
     {
-        public static IEnumerable<TimeSpan> Generate(int timeout, int delay)
+        public static IEnumerable<TimeSpan> Generate(double timeout, int delay)
         {
             var endTime = DateTime.UtcNow.AddMilliseconds(timeout);
             while (endTime >= DateTime.UtcNow)

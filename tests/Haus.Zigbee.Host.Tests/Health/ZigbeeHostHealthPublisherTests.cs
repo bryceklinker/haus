@@ -5,6 +5,7 @@ using FluentAssertions;
 using Haus.Core.Models.Health;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
+using Haus.Testing.Support.Fakes;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Health;
 using Haus.Zigbee.Host.Tests.Support;
@@ -23,7 +24,7 @@ namespace Haus.Zigbee.Host.Tests.Health
         
         public async Task InitializeAsync()
         {
-            var provider = ServiceProviderFactory.Create();
+            var provider = ServiceProviderFactory.Create(mqttFactory: new FakeMqttClientFactory());
             var zigbeeMqttFactory = provider.GetRequiredService<IZigbeeMqttClientFactory>();
             _mqttClient = await zigbeeMqttFactory.CreateHausClient();
             
@@ -38,7 +39,6 @@ namespace Haus.Zigbee.Host.Tests.Health
             await _mqttClient.SubscribeToHausHealthAsync(r => actual = r);
             
             var report = new HealthReport(new Dictionary<string, HealthReportEntry>(), HealthStatus.Healthy, TimeSpan.FromMilliseconds(200));
-
             await _publisher.PublishAsync(report);
 
             Eventually.Assert(() =>
