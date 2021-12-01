@@ -75,7 +75,7 @@ namespace Haus.Web.Host.Tests.DeviceSimulator
             {
                 var updatedRoom = await _client.GetRoomAsync(room.Id);
                 updatedRoom.Lighting.State.Should().Be(LightingState.On);
-            });
+            }, TimeSpan.FromSeconds(10).TotalMilliseconds);
         }
     }
 }
