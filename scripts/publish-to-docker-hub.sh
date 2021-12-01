@@ -21,3 +21,5 @@ function main() {
   build_docker_image "${WEB_HOST_PUBLISH_DIRECTORY}" "haus-web"
   build_docker_image "${ZIGBEE_HOST_PUBLISH_DIRECTORY}" "haus-zigbee"
 }
+
+main
