@@ -10,16 +10,25 @@ function login() {
 function build_docker_image() {
   PUBLISH_DIRECTORY="${1}"
   APPLICATION_NAME="${2}"
-  docker build --tag "haus/${APPLICATION_NAME}:${VERSION}" \
+  docker build --tag "${APPLICATION_NAME}-${VERSION}" \
     --file "${APPLICATION_NAME}-dockerfile" \
     --build-arg PUBLISH_DIR="${PUBLISH_DIRECTORY}" \
     .
 }
 
+function publish_docker_image() {
+  APPLICATION_NAME="${1}"
+  docker push "${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}:${APPLICATION_NAME}-${VERSION}"
+}
+
 function main() {
   login
+  
   build_docker_image "publish/haus-web" "haus-web"
   build_docker_image "publish/haus-zigbee" "haus-zigbee"
+  
+  publish_docker_image "haus-web"
+  publish_docker_image "haus-zigbee"
 }
 
 main
