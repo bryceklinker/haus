@@ -14,11 +14,18 @@ function build_docker_image() {
     --file "${APPLICATION_NAME}-dockerfile" \
     --build-arg PUBLISH_DIR="${PUBLISH_DIRECTORY}" \
     .
+  
+  docker build --tag "${APPLICATION_NAME}-latest" \
+      --file "${APPLICATION_NAME}-dockerfile" \
+      --build-arg PUBLISH_DIR="${PUBLISH_DIRECTORY}" \
+      .
 }
 
 function publish_docker_image() {
   APPLICATION_NAME="${1}"
+  
   docker push "${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}:${APPLICATION_NAME}-${VERSION}"
+  docker push "${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}:${APPLICATION_NAME}-latest"
 }
 
 function main() {
