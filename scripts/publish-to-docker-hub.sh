@@ -10,12 +10,12 @@ function login() {
 function build_docker_image() {
   PUBLISH_DIRECTORY="${1}"
   APPLICATION_NAME="${2}"
-  docker build --tag "${APPLICATION_NAME}-${VERSION}" \
+  docker build --tag "${DOCKER_HUB_REPO}/${APPLICATION_NAME}-${VERSION}" \
     --file "${APPLICATION_NAME}-dockerfile" \
     --build-arg PUBLISH_DIR="${PUBLISH_DIRECTORY}" \
     .
   
-  docker build --tag "${APPLICATION_NAME}-latest" \
+  docker build --tag "${DOCKER_HUB_REPO}/${APPLICATION_NAME}-latest" \
       --file "${APPLICATION_NAME}-dockerfile" \
       --build-arg PUBLISH_DIR="${PUBLISH_DIRECTORY}" \
       .
