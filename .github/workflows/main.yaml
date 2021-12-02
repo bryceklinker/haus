@@ -70,7 +70,7 @@ jobs:
         run: ./scripts/publish-app.sh
         env:
           VERSION: ${{ steps.tag_version.outputs.new_tag }}
-          
+      
       - name: Publish to Docker Hub
         run: ./scripts/publish-to-docker-hub.sh
         env:

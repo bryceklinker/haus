@@ -10,22 +10,18 @@ function login() {
 function build_docker_image() {
   PUBLISH_DIRECTORY="${1}"
   APPLICATION_NAME="${2}"
-  docker build --tag "${DOCKER_HUB_REPO}/${APPLICATION_NAME}-${VERSION}" \
+  docker build \
+    --tag "${DOCKER_HUB_REPO}/${APPLICATION_NAME}:${VERSION}" \
+    --tag "${DOCKER_HUB_REPO}/${APPLICATION_NAME}:latest" \
     --file "${APPLICATION_NAME}-dockerfile" \
     --build-arg PUBLISH_DIR="${PUBLISH_DIRECTORY}" \
-    .
-  
-  docker build --tag "${DOCKER_HUB_REPO}/${APPLICATION_NAME}-latest" \
-      --file "${APPLICATION_NAME}-dockerfile" \
-      --build-arg PUBLISH_DIR="${PUBLISH_DIRECTORY}" \
-      .
+    . 
 }
 
 function publish_docker_image() {
   APPLICATION_NAME="${1}"
   
-  docker push "${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}:${APPLICATION_NAME}-${VERSION}"
-  docker push "${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}:${APPLICATION_NAME}-latest"
+  docker push --all-tags "${DOCKER_HUB_REPO}/${APPLICATION_NAME}"
 }
 
 function main() {
