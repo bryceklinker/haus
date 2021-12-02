@@ -18,8 +18,8 @@ function build_docker_image() {
 
 function main() {
   login
-  build_docker_image "${WEB_HOST_PUBLISH_DIRECTORY}" "haus-web"
-  build_docker_image "${ZIGBEE_HOST_PUBLISH_DIRECTORY}" "haus-zigbee"
+  build_docker_image "publish/haus-web" "haus-web"
+  build_docker_image "publish/haus-zigbee" "haus-zigbee"
 }
 
 main
