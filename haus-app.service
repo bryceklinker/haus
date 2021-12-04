@@ -1,0 +1,14 @@
+[Unit]
+Description=Haus app docker compose service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+WorkingDirectory=/home/bryce/haus
+ExecStart=/usr/bin/docker-compse up -d --remove-orphans
+ExecStop=/usr/bin/docker-compose down
+
+[Install]
+WantedBy=multi-user.target

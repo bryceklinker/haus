@@ -13,9 +13,23 @@ function dotnet_publish() {
     -p:Version="${VERSION}"
 }
 
+function package_service() {
+  mkdir -p "${PUBLISH_DIRECTORY}/installer"
+  
+  cp "${WORKING_DIRECTORY}/haus-app.service" "${PUBLISH_DIRECTORY}/installer/"
+  cp "${WORKING_DIRECTORY}/docker-compose.yml" "${PUBLISH_DIRECTORY}/installer/"
+  cp "${WORKING_DIRECTORY}/zigbee2mqtt/configuration.yaml" "${PUBLISH_DIRECTORY}/installer/"
+  
+  pushd "${PUBLISH_DIRECTORY}/installer" || exit 1
+    zip -rm "../service_package.zip" -- *
+  popd || exit 1
+}
+
 function main() {
   dotnet_publish "${WEB_HOST_PROJECT}" "${WEB_HOST_PUBLISH_DIRECTORY}"
   dotnet_publish "${ZIGBEE_HOST_PROJECT}" "${ZIGBEE_HOST_PUBLISH_DIRECTORY}"
+  
+  package_service
 }
 
 main

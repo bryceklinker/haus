@@ -86,3 +86,14 @@ jobs:
           release_name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
         if: ${{ github.event.inputs.is_release }}
+
+      - name: Service Package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/service_package.zip
+          asset_name: service_package.zip
+          asset_content_type: application/zip
+        if: ${{ github.event.inputs.is_release }}

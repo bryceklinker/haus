@@ -91,7 +91,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "zigbee2mqtt", "zigbee2mqtt", "{267DD5D9-EE8C-4767-A188-2B21826ED635}"
 	ProjectSection(SolutionItems) = preProject
 		zigbee2mqtt\configuration.yaml = zigbee2mqtt\configuration.yaml
-		zigbee2mqtt\haus-zigbee2mqtt.service = zigbee2mqtt\haus-zigbee2mqtt.service
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tasks", ".tasks", "{3E214AA9-481D-4ACE-AF3F-D9F521BE0F39}"
@@ -106,6 +105,8 @@ ProjectSection(SolutionItems) = preProject
 	global.json = global.json
 	haus-web-dockerfile = haus-web-dockerfile
 	haus-zigbee-dockerfile = haus-zigbee-dockerfile
+	docker-compose.yml = docker-compose.yml
+	haus-app.service = haus-app.service
 EndProjectSection
 EndProject
 Global

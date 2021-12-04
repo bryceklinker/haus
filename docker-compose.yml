@@ -1,0 +1,52 @@
+version: "3.9"
+services:
+  haus_mqtt:
+    container_name: haus_mqtt
+    image: eclipse-mosquitto:latest
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "8883:8883"
+    volumes:
+      - ./data/mosquitto-data:/mosquitto/data
+      - ./data/mosquitto-logs:/mosquitto/logs
+      - ./data/mosquitto-conf:/mosquitto/config
+
+  haus_zigbee:
+    container_name: haus_zigbee
+    restart: always
+    image: bryceklinker/personal:haus-zigbee-latest
+    environment:
+      - "Haus:Server=mqtt://192.168.1.100:1883"
+      - "Zigbee:Config:Mqtt:Server=haus_mqtt"
+    links:
+      - haus_mqtt
+    
+  haus_web:
+    container_name: haus_web
+    restart: always
+    image: bryceklinker/personal:haus-web-latest
+    ports:
+      - "5000:80"
+    volumes:
+      - ./data:/app
+    environment:
+      - "Mqtt:Server=mqtt://192.168.1.100:1883"
+    links:
+      - haus_mqtt
+  
+  zigbee2mqtt:
+    container_name: haus_zigbee2mqtt
+    image: koenkk/zigbee2mqtt:latest
+    restart: always
+    environment:
+      - TZ=America/Chicago
+    links:
+      - haus_mqtt
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    volumes:
+      - ./data:/app/data
+      - /run/udev:/runudev:ro
+    group_add:
+      - dialout

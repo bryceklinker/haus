@@ -24,12 +24,6 @@
     <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
     <ProjectReference Include="..\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <None Update="haus-web.service">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 
   <Target Name="RunBundler" AfterTargets="ComputeFilesToPublish">
     <Exec Command="yarn install" WorkingDirectory="./client-app" />
