@@ -8,20 +8,21 @@ services:
       - "1883:1883"
       - "8883:8883"
     volumes:
-      - ./data/mosquitto-data:/mosquitto/data
-      - ./data/mosquitto-logs:/mosquitto/logs
-      - ./data/mosquitto-conf:/mosquitto/config
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
 
   haus_zigbee:
     container_name: haus_zigbee
     restart: always
     image: bryceklinker/personal:haus-zigbee-latest
     environment:
-      - "Haus:Server=mqtt://192.168.1.100:1883"
-      - "Zigbee:Config:Mqtt:Server=haus_mqtt"
+      - "Haus:Server=mqtt://haus_mqtt:1883"
+      - "Zigbee:Config:Mqtt:Server=mqtt://haus_mqtt:1883"
     links:
       - haus_mqtt
-    
+
   haus_web:
     container_name: haus_web
     restart: always
@@ -31,10 +32,10 @@ services:
     volumes:
       - ./data:/app
     environment:
-      - "Mqtt:Server=mqtt://192.168.1.100:1883"
+      - "Mqtt:Server=mqtt://haus_mqtt:1883"
     links:
       - haus_mqtt
-  
+
   zigbee2mqtt:
     container_name: haus_zigbee2mqtt
     image: koenkk/zigbee2mqtt:latest
@@ -47,6 +48,5 @@ services:
       - /dev/ttyACM0:/dev/ttyACM0
     volumes:
       - ./data:/app/data
+      - ./configuration.yaml:/app/data/configuration.yaml
       - /run/udev:/runudev:ro
-    group_add:
-      - dialout

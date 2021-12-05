@@ -1,5 +1,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
 ARG PUBLISH_DIR
+ARG ENTRY_FILE
+
 COPY $PUBLISH_DIR/ /app/
 WORKDIR /app
-ENTRYPOINT ["dotnet", "Haus.Web.Host.dll"]
+ENTRYPOINT ["dotnet", "$ENTRY_FILE"]

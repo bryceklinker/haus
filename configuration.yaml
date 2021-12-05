@@ -2,6 +2,7 @@ homeassistant: false
 permit_join: false
 mqtt:
   base_topic: zigbee2mqtt
-  server: 'mqtt://192.168.1.100:1883'
+  server: 'mqtt://haus_mqtt:1883'
 serial:
   adapter: deconz
+  port: /dev/ttyACM0

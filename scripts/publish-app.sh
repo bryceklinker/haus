@@ -14,13 +14,15 @@ function dotnet_publish() {
 }
 
 function package_service() {
-  mkdir -p "${PUBLISH_DIRECTORY}/installer"
+  PACKAGE_DIRECTORY="${PUBLISH_DIRECTORY}/installer"
+  mkdir -p "${PACKAGE_DIRECTORY}"
   
-  cp "${WORKING_DIRECTORY}/haus-app.service" "${PUBLISH_DIRECTORY}/installer/"
-  cp "${WORKING_DIRECTORY}/docker-compose.yml" "${PUBLISH_DIRECTORY}/installer/"
-  cp "${WORKING_DIRECTORY}/zigbee2mqtt/configuration.yaml" "${PUBLISH_DIRECTORY}/installer/"
+  cp "${WORKING_DIRECTORY}/haus-app.service" "${PACKAGE_DIRECTORY}/"
+  cp "${WORKING_DIRECTORY}/docker-compose.yml" "${PACKAGE_DIRECTORY}/"
+  cp "${WORKING_DIRECTORY}/configuration.yaml" "${PACKAGE_DIRECTORY}/"
+  cp "${WORKING_DIRECTORY}/mosquitto.conf" "${PACKAGE_DIRECTORY}/"
   
-  pushd "${PUBLISH_DIRECTORY}/installer" || exit 1
+  pushd "${PACKAGE_DIRECTORY}" || exit 1
     zip -rm "../service_package.zip" -- *
   popd || exit 1
 }
