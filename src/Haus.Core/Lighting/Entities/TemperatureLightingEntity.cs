@@ -54,9 +54,9 @@ namespace Haus.Core.Lighting.Entities
         public static void Configure<TEntity>(OwnedNavigationBuilder<TEntity, TemperatureLightingEntity> builder) 
             where TEntity : class
         {
-            builder.Property(t => t.Value);
-            builder.Property(t => t.Min);
-            builder.Property(t => t.Max);
+            builder.Property(t => t.Value).IsRequired();
+            builder.Property(t => t.Min).IsRequired();
+            builder.Property(t => t.Max).IsRequired();
         }
     }
 }

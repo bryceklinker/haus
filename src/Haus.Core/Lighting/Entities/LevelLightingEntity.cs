@@ -52,9 +52,9 @@ namespace Haus.Core.Lighting.Entities
         public static void Configure<TEntity>(OwnedNavigationBuilder<TEntity, LevelLightingEntity> builder) 
             where TEntity : class
         {
-            builder.Property(l => l.Value);
-            builder.Property(l => l.Min);
-            builder.Property(l => l.Max);
+            builder.Property(l => l.Value).IsRequired();
+            builder.Property(l => l.Min).IsRequired();
+            builder.Property(l => l.Max).IsRequired();
         }
     }
 }

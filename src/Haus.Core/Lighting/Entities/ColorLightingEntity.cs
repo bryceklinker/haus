@@ -74,9 +74,9 @@ namespace Haus.Core.Lighting.Entities
         public static void Configure<TEntity>(OwnedNavigationBuilder<TEntity, ColorLightingEntity> builder) 
             where TEntity : class
         {
-            builder.Property(c => c.Red);
-            builder.Property(c => c.Green);
-            builder.Property(c => c.Blue);
+            builder.Property(c => c.Red).IsRequired();
+            builder.Property(c => c.Green).IsRequired();
+            builder.Property(c => c.Blue).IsRequired();
         }
     }
 }

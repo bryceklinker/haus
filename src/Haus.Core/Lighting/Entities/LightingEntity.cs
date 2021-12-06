@@ -61,7 +61,7 @@ namespace Haus.Core.Lighting.Entities
 
         public static LightingEntity FromModel(LightingModel model)
         {
-            return new(
+            return new LightingEntity(
                 model.State,
                 LevelLightingEntity.FromModel(model.Level),
                 TemperatureLightingEntity.FromModel(model.Temperature),
