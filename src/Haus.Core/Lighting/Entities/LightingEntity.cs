@@ -97,7 +97,7 @@ namespace Haus.Core.Lighting.Entities
         public static void Configure<TEntity>(OwnedNavigationBuilder<TEntity, LightingEntity> builder)
             where TEntity : class
         {
-            builder.Property(l => l.State).HasConversion<string>();
+            builder.Property(l => l.State).HasConversion<string>().IsRequired();
             builder.OwnsOne(l => l.Level, LevelLightingEntity.Configure);
             builder.OwnsOne(l => l.Temperature, TemperatureLightingEntity.Configure);
             builder.OwnsOne(l => l.Color, ColorLightingEntity.Configure);
