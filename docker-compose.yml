@@ -9,9 +9,9 @@ services:
       - "8883:8883"
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - ./mosquitto/config:/mosquitto/config
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
+      - ./haus_mqtt/config:/mosquitto/config
+      - ./haus_mqtt/data:/mosquitto/data
+      - ./haus_mqtt/log:/mosquitto/log
 
   haus_zigbee:
     container_name: haus_zigbee
@@ -22,6 +22,9 @@ services:
       - "Zigbee:Config:Mqtt:Server=mqtt://haus_mqtt:1883"
     links:
       - haus_mqtt
+    volumes:
+      - ./haus_zigbee2mqtt:/app/data
+      - ./haus_zigbee2mqtt/logs:/app/haus-logs
 
   haus_web:
     container_name: haus_web
@@ -30,9 +33,11 @@ services:
     ports:
       - "5000:80"
     volumes:
-      - ./data:/app
+      - ./haus_web:/app/data
+      - ./haus_web/logs:/app/haus-logs
     environment:
       - "Mqtt:Server=mqtt://haus_mqtt:1883"
+      - "Database:ConnectionString='Data Source=./data/haus.db;'"
     links:
       - haus_mqtt
 
@@ -47,6 +52,6 @@ services:
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
     volumes:
-      - ./data:/app/data
+      - ./haus_zigbee2mqtt:/app/data
       - ./configuration.yaml:/app/data/configuration.yaml
       - /run/udev:/runudev:ro

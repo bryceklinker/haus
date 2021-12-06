@@ -75,6 +75,7 @@ jobs:
         run: ./scripts/publish-to-docker-hub.sh
         env:
           VERSION: ${{ steps.tag_version.outputs.new_tag }}
+        if: ${{ github.event.inputs.is_release }}
 
       - name: Create Release
         id: create_release
