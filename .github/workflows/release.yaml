@@ -1,0 +1,79 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      is_release:
+        description: 'Is this a release?'
+        required: false
+        default: 'false'
+      version_bump:
+        description: 'What kind of release is this?'
+        required: false
+        default: 'patch'
+jobs:
+  continuous_integration:
+    name: Continuous Integration
+    runs-on: ubuntu-20.04
+    env:
+      IS_RELEASE: ${{ github.event.inputs.is_release || false }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
+      AUTH_USERNAME: ${{ secrets.AUTH_USERNAME }}
+      AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN }}
+      AUTH_CLIENT_ID: ${{ secrets.AUTH_CLIENT_ID }}
+      AUTH_CLIENT_SECRET: ${{ secrets.AUTH_CLIENT_SECRET }}
+      AUTH_AUDIENCE: ${{ secrets.AUTH_AUDIENCE }}
+      DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_REPO: personal
+      LOG_LEVEL: Warning
+    steps:
+      - name: Clone
+        uses: actions/checkout@v2
+      
+      - name: Install .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.17.x'
+
+      - name: Bump version and Push Tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: ${{ github.event.inputs.version_bump || 'patch' }}
+
+      - name: Publish App
+        run: ./scripts/publish-app.sh
+        env:
+          VERSION: ${{ steps.tag_version.outputs.new_tag }}
+      
+      - name: Publish to Docker Hub
+        run: ./scripts/publish-to-docker-hub.sh
+        env:
+          VERSION: ${{ steps.tag_version.outputs.new_tag }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+
+      - name: Service Package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/service_package.zip
+          asset_name: service_package.zip
+          asset_content_type: application/zip
