@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {HttpBackend, HttpClient} from "@angular/common/http";
 import {AuthClientConfig} from "@auth0/auth0-angular";
 import {BehaviorSubject, Observable} from "rxjs";
-import {AuthConfig} from "@auth0/auth0-angular/lib/auth.config";
 import {filter, map} from "rxjs/operators";
 import {ClientSettingsModel} from "../models";
 import {HausAuthService} from '../auth/services';
@@ -36,23 +35,12 @@ export class SettingsService {
       const http = new HttpClient(httpBackend);
       return http.get<ClientSettingsModel>('/client-settings').toPromise()
         .then(settings => {
+          if (!settings) {
+            return;
+          }
           HausAuthService.initialize(settings, config);
-          SettingsService._settingsSubject.next(settings);
+          SettingsService._settingsSubject.next(settings || null);
         })
     }
-  }
-
-  private static createAuthConfig(settings: ClientSettingsModel): AuthConfig {
-    return {
-      ...settings.auth,
-      useRefreshTokens: true,
-      redirectUri: window.location.origin,
-      httpInterceptor: {
-        allowedList: [
-          '/api/*',
-          'api/*'
-        ]
-      }
-    };
   }
 }

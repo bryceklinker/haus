@@ -1,6 +1,5 @@
 import {HubConnection, HubConnectionState} from "@microsoft/signalr";
-import {Observable} from "rxjs";
-import {fromPromise} from "rxjs/internal-compatibility";
+import {Observable, from} from "rxjs";
 
 export class SignalrHubConnection {
   get state(): HubConnectionState {
@@ -11,11 +10,11 @@ export class SignalrHubConnection {
   }
 
   start(): Observable<void> {
-    return fromPromise(this.connection.start());
+    return from(this.connection.start());
   }
 
   stop(): Observable<void> {
-    return fromPromise(this.connection.stop());
+    return from(this.connection.stop());
   }
 
   on(methodName: string, handler: (...args: any[]) => void): void {
