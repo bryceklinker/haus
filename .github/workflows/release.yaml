@@ -11,8 +11,8 @@ on:
         required: false
         default: 'patch'
 jobs:
-  continuous_integration:
-    name: Continuous Integration
+  generate_release:
+    name: Generate Release
     runs-on: ubuntu-20.04
     env:
       IS_RELEASE: ${{ github.event.inputs.is_release || false }}
