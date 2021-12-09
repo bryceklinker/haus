@@ -7,7 +7,7 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=true
 WorkingDirectory=/home/bryce/haus
-ExecStart=/usr/bin/docker-compose up -d --remove-orphans
+ExecStart=/usr/bin/docker-compose up -d --remove-orphans --env-file /home/bryce/haus/.env
 ExecStop=/usr/bin/docker-compose down
 
 [Install]

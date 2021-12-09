@@ -6,6 +6,9 @@ HAUS_APP_SERVICE_NAME="haus-app"
 HAUS_APP_SERVICE_DEFINITION_FILE_NAME="${HAUS_LOCATION}/${HAUS_APP_SERVICE_NAME}.service"
 HAUS_APP_ZIP_FILE_LOCATION="${1}"
 SERVICE_DEFINITION_DIRECTORY="/etc/systemd/system"
+HTTPS_CERT_PATH="${HAUS_LOCATION}/cert.pfx"
+HTTPS_CERT_PASSWORD="$(uuidgen)"
+ENV_FILE_PATH="${HAUS_LOCATION}/.env"
 
 function copy_service_definition() {
   SOURCE="${HAUS_APP_SERVICE_DEFINITION_FILE_NAME}"
@@ -33,6 +36,13 @@ function extract_zip_file() {
 
 function stop_service() {
   sudo systemctl stop "${HAUS_APP_SERVICE_NAME}" || true 
+}
+
+function generate_https_cert() {
+    dotnet dev-certs https --export-path "${HTTPS_CERT_PATH}" --password "${HTTPS_CERT_PASSWORD}"
+    
+    rm "${ENV_FILE_PATH}" || true
+    echo "HTTPS_CERT_PASSWORD=${HTTPS_CERT_PASSWORD}" >> "${ENV_FILE_PATH}"
 }
 
 function create_data_directory {
