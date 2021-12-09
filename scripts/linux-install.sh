@@ -50,6 +50,7 @@ function create_data_directory {
 }
 
 function main() {
+  generate_https_cert
   extract_zip_file
   create_data_directory
   stop_service
