@@ -2,6 +2,12 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 
 ARG PUBLISH_DIR
 ARG ENTRY_FILE
+ARG HTTPS_CERT_PASSWORD
+
+ENV ASPNETCORE_URLS="https://+;http://+"
+ENV ASPNETCORE_HTTPS_PORT=443
+ENV ASNETCORE_Kestrel__Certificates__Default__Password="$HTTPS_CERT_PASSWORD"
+ENV ASNETCORE_Kestrel__Certificates__Default__Path="/app/cert.pfx"
 
 COPY $PUBLISH_DIR/ /app/
 WORKDIR /app
