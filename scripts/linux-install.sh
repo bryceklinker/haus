@@ -6,7 +6,9 @@ HAUS_APP_SERVICE_NAME="haus-app"
 HAUS_APP_SERVICE_DEFINITION_FILE_NAME="${HAUS_LOCATION}/${HAUS_APP_SERVICE_NAME}.service"
 HAUS_APP_ZIP_FILE_LOCATION="${1}"
 SERVICE_DEFINITION_DIRECTORY="/etc/systemd/system"
-HTTPS_CERT_PATH="${HAUS_LOCATION}/cert.pfx"
+HTTPS_CERT_PFX_PATH="${HAUS_LOCATION}/cert.pfx"
+HTTPS_CERT_KEY_PATH="${HAUS_LOCATION}/cert.key"
+HTTPS_CERT_CRT_PATH="${HAUS_LOCATION}/cert.crt"
 HTTPS_CERT_PASSWORD="$(uuidgen)"
 ENV_FILE_PATH="${HAUS_LOCATION}/.env"
 
@@ -39,10 +41,15 @@ function stop_service() {
 }
 
 function generate_https_cert() {
-    dotnet dev-certs https --export-path "${HTTPS_CERT_PATH}" --password "${HTTPS_CERT_PASSWORD}"
+    dotnet dev-certs https --export-path "${HTTPS_CERT_PFX_PATH}" --password "${HTTPS_CERT_PASSWORD}"
     
     rm "${ENV_FILE_PATH}" || true
     echo "HTTPS_CERT_PASSWORD=${HTTPS_CERT_PASSWORD}" >> "${ENV_FILE_PATH}"
+    
+    openssl pkcs12 -in "${HTTPS_CERT_PFX_PATH}" -nocerts -out "${HTTPS_CERT_KEY_PATH}" -password "${HTTPS_CERT_PASSWORD}"
+    openssl pkcs12 -in "${HTTPS_CERT_PFX_PATH}" -clcerts -nokeys -out "${HTTPS_CERT_CRT_PATH}" -password "${HTTPS_CERT_PASSWORD}"
+    sudo cp "${HTTPS_CERT_CRT_PATH}" /usr/local/share/ca-certificates
+    sudo update-ca-certificates
 }
 
 function create_data_directory {
