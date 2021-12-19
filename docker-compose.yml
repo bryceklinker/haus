@@ -31,18 +31,20 @@ services:
     restart: always
     image: bryceklinker/personal:haus-web-latest
     ports:
-      - "5000:5000"
-      - "5001:5001"
+      - "5000:80"
+      - "5001:443"
     volumes:
       - ./haus_web:/app/data
       - ./haus_web/logs:/app/haus-logs
-      - ./cert.pfx:/app/cert.pfx
+      - ./cert.pfx:/https/cert.pfx
     environment:
       - "Mqtt:Server=mqtt://haus_mqtt:1883"
       - "Database:ConnectionString=Data Source=./data/haus.db;"
-      - "ASPNETCORE_URLS=https://+:5001;http://+:5000"
-      - "ASNETCORE_Kestrel__Certificates__Default__Password=${HTTPS_CERT_PASSWORD}"
-      - "ASNETCORE_Kestrel__Certificates__Default__Path=/app/cert.pfx"
+      - "ASPNETCORE_URLS=https://+;http://+"
+      - "ASPNETCORE_HTTPS_PORT=443"
+      - "ASPNETCORE_ENVIRONMENT=Production"
+      - "ASPNETCORE_Kestrel__Certificates__Default__Password=password"
+      - "ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx"
     links:
       - haus_mqtt
 

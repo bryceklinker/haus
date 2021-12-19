@@ -40,6 +40,7 @@ namespace Haus.Web.Host
                 .UseWindowsService()
                 .ConfigureWebHostDefaults(web =>
                 {
+                    web.UseKestrel();
                     web.UseStartup<Startup>();
                 });
     }

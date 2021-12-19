@@ -9,7 +9,7 @@ SERVICE_DEFINITION_DIRECTORY="/etc/systemd/system"
 HTTPS_CERT_PFX_PATH="${HAUS_LOCATION}/cert.pfx"
 HTTPS_CERT_KEY_PATH="${HAUS_LOCATION}/cert.key"
 HTTPS_CERT_CRT_PATH="${HAUS_LOCATION}/cert.crt"
-HTTPS_CERT_PASSWORD="$(uuidgen)"
+HTTPS_CERT_PASSWORD="password"
 ENV_FILE_PATH="${HAUS_LOCATION}/.env"
 
 function copy_service_definition() {
@@ -42,9 +42,6 @@ function stop_service() {
 
 function generate_https_cert() {
     dotnet dev-certs https --export-path "${HTTPS_CERT_PFX_PATH}" --password "${HTTPS_CERT_PASSWORD}"
-    
-    rm "${ENV_FILE_PATH}" || true
-    echo "HTTPS_CERT_PASSWORD=${HTTPS_CERT_PASSWORD}" >> "${ENV_FILE_PATH}"
     
     openssl pkcs12 -in "${HTTPS_CERT_PFX_PATH}" -nocerts -out "${HTTPS_CERT_KEY_PATH}" -password "${HTTPS_CERT_PASSWORD}"
     openssl pkcs12 -in "${HTTPS_CERT_PFX_PATH}" -clcerts -nokeys -out "${HTTPS_CERT_CRT_PATH}" -password "${HTTPS_CERT_PASSWORD}"
