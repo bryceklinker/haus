@@ -43,8 +43,21 @@ function stop_service() {
 function generate_https_cert() {
     dotnet dev-certs https --export-path "${HTTPS_CERT_PFX_PATH}" --password "${HTTPS_CERT_PASSWORD}"
     
-    openssl pkcs12 -in "${HTTPS_CERT_PFX_PATH}" -nocerts -out "${HTTPS_CERT_KEY_PATH}" -password "${HTTPS_CERT_PASSWORD}"
-    openssl pkcs12 -in "${HTTPS_CERT_PFX_PATH}" -clcerts -nokeys -out "${HTTPS_CERT_CRT_PATH}" -password "${HTTPS_CERT_PASSWORD}"
+    openssl pkcs12 -in "${HTTPS_CERT_PFX_PATH}" \
+      -nocerts \
+      -out "${HTTPS_CERT_KEY_PATH}" \
+      -password pass:"${HTTPS_CERT_PASSWORD}" \
+      -passin pass:"${HTTPS_CERT_PASSWORD}" \
+      -passout pass:"${HTTPS_CERT_PASSWORD}"
+      
+    openssl pkcs12 -in "${HTTPS_CERT_PFX_PATH}" \
+      -clcerts \
+      -nokeys \
+      -out "${HTTPS_CERT_CRT_PATH}" \
+      -password pass:"${HTTPS_CERT_PASSWORD}" \
+      -passin pass:"${HTTPS_CERT_PASSWORD}" \
+      -passout pass:"${HTTPS_CERT_PASSWORD}"
+      
     sudo cp "${HTTPS_CERT_CRT_PATH}" /usr/local/share/ca-certificates
     sudo update-ca-certificates
 }
