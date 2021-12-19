@@ -1,7 +1,7 @@
 import {AuthService} from '@auth0/auth0-angular';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {Injectable} from '@angular/core';
-import {filter, map, skip} from 'rxjs/operators';
+import {map, skip} from 'rxjs/operators';
 import {GetTokenSilentlyOptions, GetTokenSilentlyVerboseResponse} from '@auth0/auth0-spa-js';
 
 interface AuthProperties {
