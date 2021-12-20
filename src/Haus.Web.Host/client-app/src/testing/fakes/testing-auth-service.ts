@@ -1,5 +1,5 @@
 import {AuthService} from '@auth0/auth0-angular';
-import {BehaviorSubject, Observable, of} from 'rxjs';
+import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {map, skip} from 'rxjs/operators';
 import {GetTokenSilentlyOptions, GetTokenSilentlyVerboseResponse} from '@auth0/auth0-spa-js';
@@ -83,11 +83,11 @@ export class TestingAuthService extends AuthService {
   }
 
   loginWithRedirect(options?: any): Observable<void> {
-    return of();
+    return from(Promise.resolve());
   }
 
   loginWithPopup(options?: any, config?: any): Observable<void> {
-    return of();
+    return from(Promise.resolve());
   }
 
   logout(options?: any) {

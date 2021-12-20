@@ -24,7 +24,7 @@ beforeEach(() => {
     platformBrowserDynamicTesting(),
     {
       teardown: {
-        destroyAfterEach: true
+        destroyAfterEach: false
       }
     }
   );

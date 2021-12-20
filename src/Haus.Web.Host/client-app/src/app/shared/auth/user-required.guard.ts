@@ -1,5 +1,4 @@
-import {Injectable} from "@angular/core";
-import {AuthGuard} from "@auth0/auth0-angular";
+import {Injectable} from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
@@ -8,13 +7,13 @@ import {
   Route,
   RouterStateSnapshot,
   UrlSegment
-} from "@angular/router";
-import {Observable} from "rxjs";
+} from '@angular/router';
+import {Observable, of} from 'rxjs';
 import {HausAuthService} from './services';
-import {take, tap} from 'rxjs/operators';
+import {map, switchMap, take} from 'rxjs/operators';
 
 @Injectable()
-export class UserRequiredGuard implements CanActivate, CanLoad, CanActivateChild{
+export class UserRequiredGuard implements CanActivate, CanLoad, CanActivateChild {
   constructor(private readonly authService: HausAuthService) {
 
   }
@@ -33,15 +32,15 @@ export class UserRequiredGuard implements CanActivate, CanLoad, CanActivateChild
 
   private redirectIfUnauthenticated(state: RouterStateSnapshot): Observable<boolean> {
     return this.authService.isAuthenticated$.pipe(
-      tap(isAuthenticated => {
+      switchMap(isAuthenticated => {
         if (isAuthenticated) {
-          return;
+          return of(true);
         }
 
-        this.authService.loginWithRedirect({
-          appState: {target: state.url}
-        })
+        return this.authService.loginWithRedirect({appState: {target: state.url}}).pipe(
+          map(() => false)
+        );
       })
-    )
+    );
   }
 }
