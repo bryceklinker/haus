@@ -4,6 +4,7 @@ ARG PUBLISH_DIR
 ARG ENTRY_FILE
 
 ENV entry_point="${ENTRY_FILE}"
+
 COPY $PUBLISH_DIR/ /app/
 WORKDIR /app
-ENTRYPOINT ["dotnet", "$entry_point"]
+ENTRYPOINT dotnet "${entry_point}"
