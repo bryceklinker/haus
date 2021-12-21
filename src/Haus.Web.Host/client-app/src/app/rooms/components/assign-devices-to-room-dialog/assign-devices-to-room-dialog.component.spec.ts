@@ -28,15 +28,15 @@ describe('AssignDevicesToRoomDialogComponent', () => {
     );
   })
 
-  it('should show all unassigned devices', () => {
+  test('should show all unassigned devices', () => {
     expect(harness.unassignedDevices).toHaveLength(3);
   })
 
-  it('should disallow assignment when no devices have been selected', () => {
+  test('should disallow assignment when no devices have been selected', () => {
     expect(harness.assignDevicesElement).toBeDisabled();
   })
 
-  it('should request to assign devices to room when assign triggered', async () => {
+  test('should request to assign devices to room when assign triggered', async () => {
     await harness.selectDevice(unassignedDevices[0]);
 
     await harness.assignDevices();
@@ -47,7 +47,7 @@ describe('AssignDevicesToRoomDialogComponent', () => {
     }))
   })
 
-  it('should only add devices that have been selected when assigning devices is triggered', async () => {
+  test('should only add devices that have been selected when assigning devices is triggered', async () => {
     await harness.selectDevice(unassignedDevices[1]);
     await harness.selectDevice(unassignedDevices[0]);
     await harness.selectDevice(unassignedDevices[1]);
@@ -61,7 +61,7 @@ describe('AssignDevicesToRoomDialogComponent', () => {
     }))
   })
 
-  it('should close dialog when assignment is successful', async () => {
+  test('should close dialog when assignment is successful', async () => {
     harness.simulateAssignDevicesSuccess(54);
 
     await eventually(() => {
@@ -69,7 +69,7 @@ describe('AssignDevicesToRoomDialogComponent', () => {
     })
   })
 
-  it('should close dialog when assignment is cancelled', async () => {
+  test('should close dialog when assignment is cancelled', async () => {
     await harness.cancel()
 
     expect(harness.dialogRef.close).toHaveBeenCalled();

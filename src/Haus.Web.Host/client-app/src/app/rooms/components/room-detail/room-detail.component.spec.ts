@@ -4,7 +4,7 @@ import {DeviceType, LightingState, RoomLightingChangedEvent, RoomModel} from "..
 import {RoomDetailHarness} from "./room-detail.harness";
 
 describe('RoomDetailComponent', () => {
-  it('should show room name', async () => {
+  test('should show room name', async () => {
     const room = ModelFactory.createRoomModel({name: 'new hotness'});
 
     const harness = await RoomDetailHarness.render({room});
@@ -12,7 +12,7 @@ describe('RoomDetailComponent', () => {
     expect(harness.roomDetail).toHaveTextContent('new hotness');
   })
 
-  it('should show each device', async () => {
+  test('should show each device', async () => {
     const devices = [
       ModelFactory.createDeviceModel(),
       ModelFactory.createDeviceModel()
@@ -23,7 +23,7 @@ describe('RoomDetailComponent', () => {
     expect(harness.devices).toHaveLength(2);
   })
 
-  it('should show each device\'s info', async () => {
+  test('should show each device\'s info', async () => {
     const devices = [
       ModelFactory.createDeviceModel({name: 'bob', deviceType: DeviceType.Light})
     ];
@@ -34,7 +34,7 @@ describe('RoomDetailComponent', () => {
     expect(harness.container).toHaveTextContent(/Light/g);
   })
 
-  it('should show room lighting', async () => {
+  test('should show room lighting', async () => {
     const room = ModelFactory.createRoomModel();
 
     const harness = await RoomDetailHarness.render({room});
@@ -42,7 +42,7 @@ describe('RoomDetailComponent', () => {
     expect(harness.lighting).toBeInTheDocument();
   })
 
-  it('should notify when lighting changed', async () => {
+  test('should notify when lighting changed', async () => {
     const room = ModelFactory.createRoomModel({
       lighting: ModelFactory.createLighting({state: LightingState.Off})
     });
@@ -57,7 +57,7 @@ describe('RoomDetailComponent', () => {
     })
   })
 
-  it('should notify when assigning devices to room', async () => {
+  test('should notify when assigning devices to room', async () => {
     const room = ModelFactory.createRoomModel();
     const emitter = new TestingEventEmitter<RoomModel>();
 

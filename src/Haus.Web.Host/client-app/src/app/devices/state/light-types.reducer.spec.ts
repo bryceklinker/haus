@@ -5,7 +5,7 @@ import {lightTypesReducer} from "./light-types.reducer";
 import {LightTypesActions} from "./actions";
 
 describe('lightTypesReducer', () => {
-  it('should populate light types in ascending order', () => {
+  test('should populate light types in ascending order', () => {
     const result = ModelFactory.createListResult(
       LightType.Temperature,
       LightType.Color,

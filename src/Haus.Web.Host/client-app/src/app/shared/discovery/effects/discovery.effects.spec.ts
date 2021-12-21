@@ -20,7 +20,7 @@ describe('DiscoveryEffects', () => {
     actions$ = actionsSubject;
   })
 
-  it('should start discovery when start discovery is requested', async () => {
+  test('should start discovery when start discovery is requested', async () => {
     setupStartDiscovery();
 
     actions$.next(DiscoveryActions.startDiscovery.request());
@@ -30,7 +30,7 @@ describe('DiscoveryEffects', () => {
     })
   })
 
-  it('should stop discovery when stop discovery is requested', async () => {
+  test('should stop discovery when stop discovery is requested', async () => {
     setupStopDiscovery();
 
     actions$.next(DiscoveryActions.stopDiscovery.request());
@@ -40,7 +40,7 @@ describe('DiscoveryEffects', () => {
     })
   })
 
-  it('should sync discovery when sync discovery is requested', async () => {
+  test('should sync discovery when sync discovery is requested', async () => {
     setupSyncDiscovery();
 
     actions$.next(DiscoveryActions.syncDiscovery.request());
@@ -50,7 +50,7 @@ describe('DiscoveryEffects', () => {
     })
   })
 
-  it('should notify that get discovery is successful', async () => {
+  test('should notify that get discovery is successful', async () => {
     const model = ModelFactory.createDiscovery({state: DiscoveryState.Enabled});
     setupGetDiscovery(model);
 

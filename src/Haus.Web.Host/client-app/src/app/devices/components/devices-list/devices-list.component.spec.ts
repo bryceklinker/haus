@@ -3,7 +3,7 @@ import {DevicesListComponent} from "./devices-list.component";
 import {DevicesListHarness} from "./devices-list.harness";
 
 describe('DevicesListComponent', () => {
-  it('should show each device name', async () => {
+  test('should show each device name', async () => {
     const devices = [
       ModelFactory.createDeviceModel(),
       ModelFactory.createDeviceModel(),

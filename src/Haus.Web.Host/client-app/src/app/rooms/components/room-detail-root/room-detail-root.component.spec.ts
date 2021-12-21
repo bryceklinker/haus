@@ -15,7 +15,7 @@ describe('RoomDetailRootComponent', () => {
   })
 
 
-  it('should show room name', async () => {
+  test('should show room name', async () => {
     const harness = await RoomDetailRootHarness.render(room.id, RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
 
     await eventually(() => {
@@ -23,13 +23,13 @@ describe('RoomDetailRootComponent', () => {
     })
   })
 
-  it('should load devices when rendered', async () => {
+  test('should load devices when rendered', async () => {
     const harness = await RoomDetailRootHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(DevicesActions.loadDevices.request());
   })
 
-  it('should show devices in room', async () => {
+  test('should show devices in room', async () => {
     const harness = await RoomDetailRootHarness.render(
       room.id,
       RoomsActions.loadRooms.success(ModelFactory.createListResult(room)),
@@ -44,7 +44,7 @@ describe('RoomDetailRootComponent', () => {
     })
   })
 
-  it('should request lighting change when room lighting changed', async () => {
+  test('should request lighting change when room lighting changed', async () => {
     const harness = await RoomDetailRootHarness.render(room.id, RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
 
     harness.turnRoomOn();
@@ -55,7 +55,7 @@ describe('RoomDetailRootComponent', () => {
     }));
   })
 
-  it('should open assign devices dialog when assign devices triggered', async () => {
+  test('should open assign devices dialog when assign devices triggered', async () => {
     const harness = await RoomDetailRootHarness.render(room.id, RoomsActions.loadRooms.success(ModelFactory.createListResult(room)));
 
     await harness.assignDevices();

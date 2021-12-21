@@ -21,7 +21,7 @@ describe('AuthEffects', () => {
     actions$.next(SharedActions.initApp());
   });
 
-  it('should notify user logged in when user logs in', async () => {
+  test('should notify user logged in when user logs in', async () => {
     const user = ModelFactory.createUser();
 
     testingAuthService.setUser(user);
@@ -31,7 +31,7 @@ describe('AuthEffects', () => {
     });
   });
 
-  it('should notify user logged out when user is no longer available', async () => {
+  test('should notify user logged out when user is no longer available', async () => {
     testingAuthService.setUser(null);
 
     await eventually(() => {
@@ -39,7 +39,7 @@ describe('AuthEffects', () => {
     });
   });
 
-  it('should trigger logout when log out action received', async () => {
+  test('should trigger logout when log out action received', async () => {
     actions$.next(AuthActions.logout());
 
     await eventually(() => {
@@ -48,7 +48,7 @@ describe('AuthEffects', () => {
     });
   });
 
-  it('should be loading while auth is loading', async () => {
+  test('should be loading while auth is loading', async () => {
     testingAuthService.setIsLoading(true);
 
     await eventually(() => {
@@ -56,7 +56,7 @@ describe('AuthEffects', () => {
     });
   });
 
-  it('should not be loading when auth is done loading', async () => {
+  test('should not be loading when auth is done loading', async () => {
     testingAuthService.setIsLoading(true);
     testingAuthService.setIsLoading(false);
 

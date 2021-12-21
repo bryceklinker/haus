@@ -6,19 +6,19 @@ import {DeviceType} from "../../../shared/models";
 import {AddSimulatedDeviceHarness} from "./add-simulated-device.harness";
 
 describe('AddSimulatedDeviceComponent', () => {
-  it('should request device types to be loaded', async () => {
+  test('should request device types to be loaded', async () => {
     const harness = await AddSimulatedDeviceHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(DeviceTypesActions.loadDeviceTypes.request());
   })
 
-  it('should disable save when form is not valid', async () => {
+  test('should disable save when form is not valid', async () => {
     const harness = await AddSimulatedDeviceHarness.render();
 
     expect(harness.saveButton).toBeDisabled();
   })
 
-  it('should save simulated device using values from form', async () => {
+  test('should save simulated device using values from form', async () => {
     const deviceTypes = ModelFactory.createListResult(DeviceType.MotionSensor, DeviceType.Light);
     const harness = await AddSimulatedDeviceHarness.render(DeviceTypesActions.loadDeviceTypes.success(deviceTypes));
 
@@ -36,7 +36,7 @@ describe('AddSimulatedDeviceComponent', () => {
     }))
   })
 
-  it('should navigate to device simulator dashboard when add succeeds', async () => {
+  test('should navigate to device simulator dashboard when add succeeds', async () => {
     const harness = await AddSimulatedDeviceHarness.render();
 
     await harness.simulateAddSuccess();
@@ -46,7 +46,7 @@ describe('AddSimulatedDeviceComponent', () => {
     })
   })
 
-  it('should navigate to device simulator dashboard when cancelled', async () => {
+  test('should navigate to device simulator dashboard when cancelled', async () => {
     const harness = await AddSimulatedDeviceHarness.render();
 
     await harness.cancel();

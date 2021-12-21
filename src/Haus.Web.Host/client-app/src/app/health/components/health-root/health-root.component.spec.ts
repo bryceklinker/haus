@@ -4,13 +4,13 @@ import {ModelFactory} from "../../../../testing";
 import {EventsActions} from "../../../shared/events";
 
 describe('HealthRootComponent', () => {
-  it('should start health monitoring', async () => {
+  test('should start health monitoring', async () => {
     const harness = await HealthRootHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(HealthActions.start());
   })
 
-  it('should stop health monitoring when destroyed', async () => {
+  test('should stop health monitoring when destroyed', async () => {
     const harness = await HealthRootHarness.render();
 
     harness.destroy();
@@ -18,7 +18,7 @@ describe('HealthRootComponent', () => {
     expect(harness.dispatchedActions).toContainEqual(HealthActions.stop());
   })
 
-  it('should show dashboard', async () => {
+  test('should show dashboard', async () => {
     const report = ModelFactory.createHealthReportModel({
       isError: true,
       durationOfCheckInSeconds: 1.4
@@ -29,14 +29,14 @@ describe('HealthRootComponent', () => {
     expect(harness.hasDashboard).toEqual(true);
   })
 
-  it('should show waiting for health report when health report has not been received', async () => {
+  test('should show waiting for health report when health report has not been received', async () => {
     const harness = await HealthRootHarness.render();
 
     expect(harness.hasDashboard).toEqual(false);
     expect(harness.isWaitingForReport).toEqual(true);
   })
 
-  it('should show recent events', async () => {
+  test('should show recent events', async () => {
     const harness = await HealthRootHarness.render(
       EventsActions.fromHausEvent({type: '', payload: null, timestamp: ''}),
       EventsActions.fromHausEvent({type: '', payload: null, timestamp: ''}),
@@ -46,7 +46,7 @@ describe('HealthRootComponent', () => {
     expect(harness.recentEvents).toHaveLength(3);
   })
 
-  it('should show recent logs', async () => {
+  test('should show recent logs', async () => {
     const harness = await HealthRootHarness.render(
       HealthActions.loadRecentLogs.success(
         ModelFactory.createListResult(

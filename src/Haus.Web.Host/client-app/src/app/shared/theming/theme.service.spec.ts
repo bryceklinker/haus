@@ -9,14 +9,14 @@ describe('ThemeService', () => {
     service = createFeatureTestingService(ThemeService, {imports: [SharedModule]}).service;
   })
 
-  it('should default to dark theme', done => {
+  test('should default to dark theme', done => {
     service.isDarkTheme$.subscribe(isDarkTheme => {
       expect(isDarkTheme).toEqual(true);
       done();
     })
   })
 
-  it('should be in light mode when toggled', done => {
+  test('should be in light mode when toggled', done => {
     service.toggleTheme();
     service.isDarkTheme$.subscribe(isDarkTheme => {
       expect(isDarkTheme).toEqual(false);
@@ -24,7 +24,7 @@ describe('ThemeService', () => {
     })
   })
 
-  it('should toggle back to dark mode', done => {
+  test('should toggle back to dark mode', done => {
     service.toggleTheme();
     service.toggleTheme();
     service.isDarkTheme$.subscribe(isDarkTheme => {

@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {DiagnosticsFilterParams} from '../../models';
 
 @Component({
   selector: 'diagnostics-header',
@@ -8,9 +9,11 @@ import {Component, EventEmitter, Input, Output} from "@angular/core";
 export class DiagnosticsHeaderComponent {
   @Input() isConnected: boolean | null = false;
   @Input() allowDiscovery: boolean | null = false;
+  @Input() filterParams: DiagnosticsFilterParams | null = null;
   @Output() stopDiscovery = new EventEmitter<void>();
   @Output() startDiscovery = new EventEmitter<void>();
   @Output() syncDiscovery = new EventEmitter<void>();
+  @Output() filterChange = new EventEmitter<DiagnosticsFilterParams>();
 
   get status(): string {
     return this.isConnected ? 'connected' : 'disconnected';
@@ -28,6 +31,10 @@ export class DiagnosticsHeaderComponent {
     return !this.allowDiscovery;
   }
 
+  get topic(): string {
+    return this.filterParams?.topic ? this.filterParams.topic : '';
+  }
+
   onStartDiscovery(): void {
     this.startDiscovery.emit();
   }
@@ -38,5 +45,10 @@ export class DiagnosticsHeaderComponent {
 
   onSyncDiscovery(): void {
     this.syncDiscovery.emit();
+  }
+
+  onTopicChange($event: KeyboardEvent) {
+    const target = $event.target as HTMLInputElement;
+    this.filterChange.emit({...this.filterParams, topic: target.value});
   }
 }

@@ -19,7 +19,7 @@ describe('RoomsEffects', () => {
     actions$ = actionsSubject;
   })
 
-  it('should get rooms from api', async () => {
+  test('should get rooms from api', async () => {
     const expected = ModelFactory.createListResult(
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
@@ -34,7 +34,7 @@ describe('RoomsEffects', () => {
     })
   })
 
-  it('should add room to api', async () => {
+  test('should add room to api', async () => {
     const expected = ModelFactory.createRoomModel();
     setupAddRoom(expected);
 
@@ -45,7 +45,7 @@ describe('RoomsEffects', () => {
     })
   })
 
-  it('should change room lighting when change room lighting requested', async () => {
+  test('should change room lighting when change room lighting requested', async () => {
     setupChangeRoomLighting(54);
 
     const lighting = ModelFactory.createLighting();
@@ -57,7 +57,7 @@ describe('RoomsEffects', () => {
     })
   })
 
-  it('should assign devices to room when assign devices to room requested', async () => {
+  test('should assign devices to room when assign devices to room requested', async () => {
     setupAssignDevicesToRoom(65);
 
     const deviceIds = [12, 5, 6];

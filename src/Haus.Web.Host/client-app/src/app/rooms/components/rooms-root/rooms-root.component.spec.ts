@@ -7,13 +7,13 @@ import {AddRoomDialogComponent} from "../add-room-dialog/add-room-dialog.compone
 import {RoomsRootHarness} from "./rooms-root.harness";
 
 describe('RoomsRootComponent', () => {
-  it('should load rooms when rendered', async () => {
+  test('should load rooms when rendered', async () => {
     const harness = await RoomsRootHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(RoomsActions.loadRooms.request());
   })
 
-  it('should show rooms when rendered', async () => {
+  test('should show rooms when rendered', async () => {
     const rooms = [
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
@@ -25,7 +25,7 @@ describe('RoomsRootComponent', () => {
     expect(harness.rooms).toHaveLength(3);
   })
 
-  it('should open add dialog when add room clicked', async () => {
+  test('should open add dialog when add room clicked', async () => {
     const harness = await RoomsRootHarness.render();
 
     await harness.addRoom();

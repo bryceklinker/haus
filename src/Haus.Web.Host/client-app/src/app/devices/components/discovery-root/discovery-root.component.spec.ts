@@ -7,25 +7,25 @@ import {DevicesActions} from "../../state";
 import {DiscoveryRootHarness} from "./discovery-root.harness";
 
 describe('DiscoveryRootComponent', () => {
-  it('should start discovery when rendered', async () => {
+  test('should start discovery when rendered', async () => {
     const harness = await DiscoveryRootHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(DiscoveryActions.startDiscovery.request());
   })
 
-  it('should load rooms when rendered', async () => {
+  test('should load rooms when rendered', async () => {
     const harness = await DiscoveryRootHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(RoomsActions.loadRooms.request());
   })
 
-  it('should load devices when rendered', async () => {
+  test('should load devices when rendered', async () => {
     const harness = await DiscoveryRootHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(DevicesActions.loadDevices.request());
   })
 
-  it('should stop discovery when destroyed', async () => {
+  test('should stop discovery when destroyed', async () => {
     const harness = await DiscoveryRootHarness.render();
 
     harness.destroy();
@@ -33,7 +33,7 @@ describe('DiscoveryRootComponent', () => {
     expect(harness.dispatchedActions).toContainEqual(DiscoveryActions.stopDiscovery.request());
   })
 
-  it('should show unassigned devices', async () => {
+  test('should show unassigned devices', async () => {
     const harness = await DiscoveryRootHarness.render(
       EventsActions.deviceCreated({device: ModelFactory.createDeviceModel({roomId: undefined})}),
       EventsActions.deviceCreated({device: ModelFactory.createDeviceModel({roomId: 1})}),
@@ -44,7 +44,7 @@ describe('DiscoveryRootComponent', () => {
     expect(harness.unassignedDevices).toHaveLength(2);
   })
 
-  it('should show all rooms', async () => {
+  test('should show all rooms', async () => {
     const harness = await DiscoveryRootHarness.render(
       EventsActions.roomCreated({room: ModelFactory.createRoomModel()}),
       EventsActions.roomCreated({room: ModelFactory.createRoomModel()}),
@@ -54,7 +54,7 @@ describe('DiscoveryRootComponent', () => {
     expect(harness.rooms).toHaveLength(3);
   })
 
-  it('should show assigned devices', async () => {
+  test('should show assigned devices', async () => {
     const room = ModelFactory.createRoomModel();
     const device = ModelFactory.createDeviceModel({roomId: room.id});
     const harness = await DiscoveryRootHarness.render(
@@ -66,7 +66,7 @@ describe('DiscoveryRootComponent', () => {
     expect(harness.assignedDevices).toHaveLength(1);
   })
 
-  it('should notify when device is assigned to room', async () => {
+  test('should notify when device is assigned to room', async () => {
     const room = ModelFactory.createRoomModel();
     const device = ModelFactory.createDeviceModel();
     const harness = await DiscoveryRootHarness.render(

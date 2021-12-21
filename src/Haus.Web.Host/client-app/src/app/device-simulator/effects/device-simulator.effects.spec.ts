@@ -26,7 +26,7 @@ describe('DeviceSimulatorEffects', () => {
       .getTestingHub(KNOWN_HUB_NAMES.deviceSimulator);
   })
 
-  it('should start hub connection when simulator started', async () => {
+  test('should start hub connection when simulator started', async () => {
     actions$.next(DeviceSimulatorActions.start());
 
     await eventually(() => {
@@ -36,7 +36,7 @@ describe('DeviceSimulatorEffects', () => {
     })
   })
 
-  it('should stop hub connection when simulator stopped', async () => {
+  test('should stop hub connection when simulator stopped', async () => {
     actions$.next(DeviceSimulatorActions.stop());
 
     await eventually(() => {
@@ -46,7 +46,7 @@ describe('DeviceSimulatorEffects', () => {
     })
   })
 
-  it('should notify when state received', async () => {
+  test('should notify when state received', async () => {
     const expected: DeviceSimulatorState = {
       devices: [
         ModelFactory.createSimulatedDevice(),
@@ -63,7 +63,7 @@ describe('DeviceSimulatorEffects', () => {
     })
   })
 
-  it('should add simulated device when add simulated device requested', async () => {
+  test('should add simulated device when add simulated device requested', async () => {
     setupAddSimulatedDevice();
 
     const model: Partial<SimulatedDeviceModel> = {
@@ -77,7 +77,7 @@ describe('DeviceSimulatorEffects', () => {
     })
   })
 
-  it('should trigger occupancy change for simulated device when requested', async () => {
+  test('should trigger occupancy change for simulated device when requested', async () => {
     setupTriggerSimulatedDeviceOccupancyChange('my-super-device');
     const model = ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor, id: 'my-super-device'});
 

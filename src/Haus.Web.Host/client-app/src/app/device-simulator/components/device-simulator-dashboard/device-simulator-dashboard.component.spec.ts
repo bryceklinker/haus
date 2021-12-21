@@ -4,20 +4,20 @@ import {DeviceSimulatorDashboardHarness} from "./device-simulator-dashboard.harn
 import {DeviceType, SimulatedDeviceModel} from "../../../shared/models";
 
 describe('DeviceSimulatorDashboardComponent', () => {
-  it('should show connected when is connected', async () => {
+  test('should show connected when is connected', async () => {
     const harness = await DeviceSimulatorDashboardHarness.render({isConnected: true});
 
     expect(harness.container).toHaveTextContent('connected');
     expect(harness.container).not.toHaveTextContent('disconnected');
   })
 
-  it('should show disconnected when is not connected', async () => {
+  test('should show disconnected when is not connected', async () => {
     const harness = await DeviceSimulatorDashboardHarness.render({isConnected: false});
 
     expect(harness.container).toHaveTextContent('disconnected');
   })
 
-  it('should show each simulated device', async () => {
+  test('should show each simulated device', async () => {
     const harness = await DeviceSimulatorDashboardHarness.render({
       simulatedDevices: [
         ModelFactory.createSimulatedDevice(),
@@ -29,7 +29,7 @@ describe('DeviceSimulatorDashboardComponent', () => {
     expect(harness.simulatedDevices).toHaveLength(3);
   })
 
-  it('should notify to change occupancy', async () => {
+  test('should notify to change occupancy', async () => {
     const emitter = new TestingEventEmitter<SimulatedDeviceModel>();
     const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor});
     const harness = await DeviceSimulatorDashboardHarness.render({

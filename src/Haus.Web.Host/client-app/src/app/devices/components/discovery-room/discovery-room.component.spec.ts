@@ -4,7 +4,7 @@ import {DevicesAssignedToRoomEvent} from "../../../shared/models";
 import {DiscoveryRoomHarness} from "./discovery-room.harness";
 
 describe('DiscoveryRoomComponent', () => {
-  it('should show room name', async () => {
+  test('should show room name', async () => {
     const room = ModelFactory.createRoomModel();
 
     const harness = await DiscoveryRoomHarness.render({room});
@@ -12,7 +12,7 @@ describe('DiscoveryRoomComponent', () => {
     expect(harness.container).toHaveTextContent(room.name);
   })
 
-  it('should set the id of drop zone', async () => {
+  test('should set the id of drop zone', async () => {
     const room = ModelFactory.createRoomModel();
 
     const harness = await DiscoveryRoomHarness.render({room});
@@ -20,7 +20,7 @@ describe('DiscoveryRoomComponent', () => {
     expect(harness.room).toBeInTheDocument();
   })
 
-  it('should show devices in room', async () => {
+  test('should show devices in room', async () => {
     const room = ModelFactory.createRoomModel();
     const devices = [
       ModelFactory.createDeviceModel({roomId: room.id}),
@@ -35,7 +35,7 @@ describe('DiscoveryRoomComponent', () => {
     expect(harness.container).not.toHaveTextContent(devices[1].name);
   })
 
-  it('should notify when device is assigned to room', async () => {
+  test('should notify when device is assigned to room', async () => {
     const room = ModelFactory.createRoomModel();
     const device = ModelFactory.createDeviceModel();
     const eventEmitter = new TestingEventEmitter<DevicesAssignedToRoomEvent>()

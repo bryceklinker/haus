@@ -4,14 +4,14 @@ import {AuthActions} from "../actions";
 import {ModelFactory} from "../../../../testing";
 
 describe('authReducer', () => {
-  it('should not have a user when initialized', () => {
+  test('should not have a user when initialized', () => {
     const state = generateStateFromActions(authReducer)
 
     expect(state.user).toBeNull();
     expect(state.isLoading).toEqual(true);
   })
 
-  it('should have user when user logged in', () => {
+  test('should have user when user logged in', () => {
     const user = ModelFactory.createUser();
 
     const state = generateStateFromActions(authReducer,
@@ -21,7 +21,7 @@ describe('authReducer', () => {
     expect(state.user).toEqual(user);
   })
 
-  it('should not have user when user logged out', () => {
+  test('should not have user when user logged out', () => {
     const state = generateStateFromActions(authReducer,
       AuthActions.userLoggedIn(ModelFactory.createUser()),
       AuthActions.userLoggedOut()
@@ -30,7 +30,7 @@ describe('authReducer', () => {
     expect(state.user).toBeNull();
   })
 
-  it('should be done loading when auth is loading false received', () => {
+  test('should be done loading when auth is loading false received', () => {
     const state = generateStateFromActions(authReducer,
       AuthActions.isLoading(false)
     );

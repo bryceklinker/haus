@@ -4,7 +4,7 @@ import {HeaderHarness} from "./header.harness";
 
 describe('HeaderComponent', () => {
 
-  it('should notify when menu clicked', async () => {
+  test('should notify when menu clicked', async () => {
     const menuClick = new TestingEventEmitter();
 
     const harness = await HeaderHarness.render({toggleMenu: menuClick});
@@ -13,7 +13,7 @@ describe('HeaderComponent', () => {
     expect(menuClick.emit).toHaveBeenCalled();
   })
 
-  it('should toggle theme when theme toggle clicked', async () => {
+  test('should toggle theme when theme toggle clicked', async () => {
     const harness = await HeaderHarness.render();
 
     await harness.toggleTheme();
@@ -21,7 +21,7 @@ describe('HeaderComponent', () => {
     expect(harness.themeService.toggleTheme).toHaveBeenCalled();
   })
 
-  it('should show current user', async () => {
+  test('should show current user', async () => {
     const user = ModelFactory.createUser();
 
     const harness = await HeaderHarness.render({user});
@@ -29,14 +29,14 @@ describe('HeaderComponent', () => {
     expect(harness.profileImage).toHaveAttribute('src', user.picture);
   })
 
-  it('should hide current user', async () => {
+  test('should hide current user', async () => {
     const harness = await HeaderHarness.render();
 
     expect(harness.profileImage).not.toBeInTheDocument();
     expect(harness.userMenu).not.toBeInTheDocument();
   })
 
-  it('should notify when user logs out', async () => {
+  test('should notify when user logs out', async () => {
     const user = ModelFactory.createUser();
     const emitter = new TestingEventEmitter<void>();
 

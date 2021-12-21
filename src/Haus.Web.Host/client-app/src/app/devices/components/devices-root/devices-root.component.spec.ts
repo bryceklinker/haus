@@ -4,13 +4,13 @@ import {DevicesActions} from "../../state";
 import {DevicesRootHarness} from "./devices-root.harness";
 
 describe('DevicesRootComponent', () => {
-  it('should get all devices when rendered', async () => {
+  test('should get all devices when rendered', async () => {
     const harness = await DevicesRootHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(DevicesActions.loadDevices.request());
   })
 
-  it('should show all devices', async () => {
+  test('should show all devices', async () => {
     const devices = [
       ModelFactory.createDeviceModel(),
       ModelFactory.createDeviceModel(),

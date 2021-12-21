@@ -4,7 +4,7 @@ import {DeviceType, SimulatedDeviceModel} from "../../../shared/models";
 import {SimulatedDeviceWidgetHarness} from "./simulated-device-widget.harness";
 
 describe('SimulatedDeviceWidgetComponent', () => {
-  it('should show device information', async () => {
+  test('should show device information', async () => {
     const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.LightSensor});
 
     const harness = await SimulatedDeviceWidgetHarness.render({simulatedDevice});
@@ -13,7 +13,7 @@ describe('SimulatedDeviceWidgetComponent', () => {
     expect(harness.container).toHaveTextContent('Light Sensor');
   })
 
-  it('should show device metadata', async () => {
+  test('should show device metadata', async () => {
     const simulatedDevice = ModelFactory.createSimulatedDevice({
       metadata: [
         ModelFactory.createMetadata('simulated', 'true'),
@@ -33,7 +33,7 @@ describe('SimulatedDeviceWidgetComponent', () => {
     expect(harness.container).toHaveTextContent('2000');
   })
 
-  it('should show lighting when simulator is a light', async () => {
+  test('should show lighting when simulator is a light', async () => {
     const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.Light});
 
     const harness = await SimulatedDeviceWidgetHarness.render({simulatedDevice});
@@ -41,7 +41,7 @@ describe('SimulatedDeviceWidgetComponent', () => {
     expect(harness.lighting).toBeInTheDocument();
   })
 
-  it('should show no lighting when simulator is missing lighting', async () => {
+  test('should show no lighting when simulator is missing lighting', async () => {
     const simulatedDevice = ModelFactory.createSimulatedDevice();
     simulatedDevice.lighting = null as any;
 
@@ -50,13 +50,13 @@ describe('SimulatedDeviceWidgetComponent', () => {
     expect(harness.lightingExists).toEqual(false);
   })
 
-  it('should show empty data when simulated device is missing', async () => {
+  test('should show empty data when simulated device is missing', async () => {
     const harness = await SimulatedDeviceWidgetHarness.render({simulatedDevice: undefined});
 
     expect(harness.container).toHaveTextContent('N/A');
   })
 
-  it('should notify to trigger occupancy change', async () => {
+  test('should notify to trigger occupancy change', async () => {
     const emitter = new TestingEventEmitter<SimulatedDeviceModel>();
     const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor});
 
@@ -66,7 +66,7 @@ describe('SimulatedDeviceWidgetComponent', () => {
     expect(emitter.emit).toHaveBeenCalledWith(simulatedDevice);
   })
 
-  it('should show if device is occupied', async () => {
+  test('should show if device is occupied', async () => {
     const harness = await SimulatedDeviceWidgetHarness.render({
       simulatedDevice: ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor, isOccupied: true})
     });

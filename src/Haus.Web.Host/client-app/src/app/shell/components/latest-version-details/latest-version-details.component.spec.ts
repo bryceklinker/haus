@@ -3,7 +3,7 @@ import {ModelFactory, TestingEventEmitter} from "../../../../testing";
 import {ApplicationPackageModel} from "../../../shared/models";
 
 describe('LatestVersionDetailsComponent', () => {
-  it('should show version details', async () => {
+  test('should show version details', async () => {
     const version = ModelFactory.createApplicationVersion({
       isNewer: true,
       isOfficialRelease: true,
@@ -20,7 +20,7 @@ describe('LatestVersionDetailsComponent', () => {
     expect(harness.versionElement).toHaveTextContent('7.5.1');
   })
 
-  it('should show packages', async () => {
+  test('should show packages', async () => {
     const packages = [
       ModelFactory.createApplicationPackage(),
       ModelFactory.createApplicationPackage(),
@@ -32,7 +32,7 @@ describe('LatestVersionDetailsComponent', () => {
     expect(harness.packages).toHaveLength(3);
   })
 
-  it('should notify when package is downloaded', async () => {
+  test('should notify when package is downloaded', async () => {
     const packages = [
       ModelFactory.createApplicationPackage({id: 77})
     ];

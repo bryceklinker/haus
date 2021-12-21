@@ -19,7 +19,7 @@ describe('DevicesEffects', () => {
     actions$ = actionsSubject;
   })
 
-  it('should get devices from api when load devices requested', async () => {
+  test('should get devices from api when load devices requested', async () => {
     const devices = [
       ModelFactory.createDeviceModel(),
       ModelFactory.createDeviceModel(),
@@ -33,7 +33,7 @@ describe('DevicesEffects', () => {
     })
   })
 
-  it('should turn device off when turn off device requested', async () => {
+  test('should turn device off when turn off device requested', async () => {
     setupDeviceTurnOff(4);
 
     actions$.next(DevicesActions.turnOffDevice.request(4));
@@ -43,7 +43,7 @@ describe('DevicesEffects', () => {
     })
   })
 
-  it('should turn device on when turn on device requested', async () => {
+  test('should turn device on when turn on device requested', async () => {
     setupDeviceTurnOn(7);
 
     actions$.next(DevicesActions.turnOnDevice.request(7));
@@ -53,7 +53,7 @@ describe('DevicesEffects', () => {
     })
   })
 
-  it('should change lighting constraints when change lighting constraints requested', async () => {
+  test('should change lighting constraints when change lighting constraints requested', async () => {
     const device = ModelFactory.createDeviceModel();
     const constraints = ModelFactory.createLightingConstraints();
     setupChangeDeviceLightingConstraints(device.id);
@@ -65,7 +65,7 @@ describe('DevicesEffects', () => {
     })
   })
 
-  it('should update device when device update requested', async () => {
+  test('should update device when device update requested', async () => {
     const device = ModelFactory.createDeviceModel();
     setupUpdateDevice(device.id);
 

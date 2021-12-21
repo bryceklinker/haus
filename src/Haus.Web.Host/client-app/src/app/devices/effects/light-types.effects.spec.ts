@@ -17,7 +17,7 @@ describe('LightTypesEffects', () => {
     actions$ = actionsSubject;
   })
 
-  it('should get light types from api when load light types requested', async () => {
+  test('should get light types from api when load light types requested', async () => {
     const expected = [LightType.Level, LightType.Color];
     setupGetAllLightTypes(expected);
 

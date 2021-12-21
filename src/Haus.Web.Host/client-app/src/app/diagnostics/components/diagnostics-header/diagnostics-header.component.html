@@ -1,16 +1,25 @@
 <mat-toolbar aria-label="diagnostics header">
-  <button mat-button (click)="onSyncDiscovery()" aria-label="sync discovery">
-    Sync Discovery
-  </button>
-  <button mat-button (click)="onStartDiscovery()" [disabled]="canStartDiscovery" aria-label="start discovery">
-    Start Discovery
-  </button>
-  <button mat-button (click)="onStopDiscovery()" [disabled]="canStopDiscovery" aria-label="stop discovery">
-    Stop Discovery
-  </button>
-  <span class="spacer"></span>
-  <mat-icon aria-label="connection icon">
-    {{icon}}
-  </mat-icon>
-  <span aria-label="connection status">{{status}}</span>
+  <mat-toolbar-row>
+    <button mat-button (click)="onSyncDiscovery()" aria-label="sync discovery">
+      Sync Discovery
+    </button>
+    <button mat-button (click)="onStartDiscovery()" [disabled]="canStartDiscovery" aria-label="start discovery">
+      Start Discovery
+    </button>
+    <button mat-button (click)="onStopDiscovery()" [disabled]="canStopDiscovery" aria-label="stop discovery">
+      Stop Discovery
+    </button>
+    <span class="spacer"></span>
+    <mat-icon aria-label="connection icon">
+      {{icon}}
+    </mat-icon>
+    <span aria-label="connection status">{{status}}</span>
+  </mat-toolbar-row>
+
+  <mat-toolbar-row>
+    <mat-form-field class="full-width">
+      <input matInput aria-label="topic" type="text" (keyup)="onTopicChange($event)"/>
+    </mat-form-field>
+    <mat-icon>search</mat-icon>
+  </mat-toolbar-row>
 </mat-toolbar>

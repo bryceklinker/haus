@@ -5,7 +5,7 @@ import {ModelFactory} from "../../../testing";
 import {DeviceType} from "../../shared/models";
 
 describe('deviceTypesReducer', () => {
-  it('should populate device types in ascending order', () => {
+  test('should populate device types in ascending order', () => {
     const result = ModelFactory.createListResult(
       DeviceType.LightSensor,
       DeviceType.MotionSensor,

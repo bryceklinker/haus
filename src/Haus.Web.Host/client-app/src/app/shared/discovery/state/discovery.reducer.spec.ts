@@ -5,7 +5,7 @@ import {EventsActions} from "../../events";
 import {DiscoveryState} from "../../models";
 
 describe('discoveryReducer', () => {
-  it('should allow discovery when discovery started successfully', () => {
+  test('should allow discovery when discovery started successfully', () => {
     const state = generateStateFromActions(discoveryReducer,
       DiscoveryActions.startDiscovery.success()
     );
@@ -13,7 +13,7 @@ describe('discoveryReducer', () => {
     expect(state.isDiscoveryAllowed).toEqual(true);
   })
 
-  it('should not allow discovery when discovery stopped successfully', () => {
+  test('should not allow discovery when discovery stopped successfully', () => {
     const state = generateStateFromActions(discoveryReducer,
       DiscoveryActions.startDiscovery.success(),
       DiscoveryActions.stopDiscovery.success()
@@ -22,7 +22,7 @@ describe('discoveryReducer', () => {
     expect(state.isDiscoveryAllowed).toEqual(false);
   })
 
-  it('should allow discovery when discovery started event received', () => {
+  test('should allow discovery when discovery started event received', () => {
     const state = generateStateFromActions(discoveryReducer,
       EventsActions.discoveryStarted({})
     );
@@ -30,7 +30,7 @@ describe('discoveryReducer', () => {
     expect(state.isDiscoveryAllowed).toEqual(true);
   })
 
-  it('should not allow discovery when discovery stopped event received', () => {
+  test('should not allow discovery when discovery stopped event received', () => {
     const state = generateStateFromActions(discoveryReducer,
       EventsActions.discoveryStopped({})
     );
@@ -38,7 +38,7 @@ describe('discoveryReducer', () => {
     expect(state.isDiscoveryAllowed).toEqual(false);
   })
 
-  it('should allow discovery when get discovery successful has enabled state', () => {
+  test('should allow discovery when get discovery successful has enabled state', () => {
     const state = generateStateFromActions(discoveryReducer,
       DiscoveryActions.getDiscovery.success({state: DiscoveryState.Enabled})
     );
@@ -46,7 +46,7 @@ describe('discoveryReducer', () => {
     expect(state.isDiscoveryAllowed).toEqual(true);
   })
 
-  it('should not allow discovery when get discovery successful has disabled state', () => {
+  test('should not allow discovery when get discovery successful has disabled state', () => {
     const state = generateStateFromActions(discoveryReducer,
       DiscoveryActions.getDiscovery.success({state: DiscoveryState.Enabled}),
       DiscoveryActions.getDiscovery.success({state: DiscoveryState.Disabled}),

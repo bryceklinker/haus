@@ -27,7 +27,7 @@ describe('HausApiClient', () => {
     api.isLoading$.subscribe(l => isLoading = l);
   })
 
-  it('should be loading while getting data', async () => {
+  test('should be loading while getting data', async () => {
     setupGetAllRooms([], {delay: 3000});
 
     api.getRooms().subscribe();
@@ -37,7 +37,7 @@ describe('HausApiClient', () => {
     })
   })
 
-  it('should be loading while requests are inflight', async () => {
+  test('should be loading while requests are inflight', async () => {
     setupGetAllRooms([]);
     setupGetAllDevices([], {delay: 200});
     setupAddRoom();
@@ -49,7 +49,7 @@ describe('HausApiClient', () => {
     expect(isLoading).toEqual(true);
   })
 
-  it('should be loading until all requests finish', async () => {
+  test('should be loading until all requests finish', async () => {
     setupGetAllRooms([], {delay: 100});
     setupGetAllDevices([], {delay: 200});
     setupAddRoom(ModelFactory.createRoomModel(), {delay: 300});
@@ -65,7 +65,7 @@ describe('HausApiClient', () => {
     })
   })
 
-  it('should save blob from api to package name file', async () => {
+  test('should save blob from api to package name file', async () => {
     const blob = new Blob();
     setupDownloadPackage(44, blob);
 

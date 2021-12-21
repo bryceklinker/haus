@@ -3,7 +3,7 @@ import {RoomsListComponent} from "./rooms-list.component";
 import {RoomsListHarness} from "./rooms-list.harness";
 
 describe('RoomsListComponent', () => {
-  it('should show rooms', async () => {
+  test('should show rooms', async () => {
     const rooms = [
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
@@ -15,7 +15,7 @@ describe('RoomsListComponent', () => {
     expect(harness.rooms).toHaveLength(3);
   })
 
-  it('should notify when room is added', async () => {
+  test('should notify when room is added', async () => {
     const emitter = new TestingEventEmitter();
 
     const harness = await RoomsListHarness.render({addRoom: emitter});

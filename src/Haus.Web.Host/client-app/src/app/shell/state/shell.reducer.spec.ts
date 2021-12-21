@@ -4,7 +4,7 @@ import {ShellActions} from "./actions";
 import {ModelFactory} from "../../../testing";
 
 describe('shellReducer', () => {
-  it('should update latest version', () => {
+  test('should update latest version', () => {
     const version = ModelFactory.createApplicationVersion();
     const state = generateStateFromActions(shellReducer,
       ShellActions.loadLatestVersion.success(version)
@@ -13,7 +13,7 @@ describe('shellReducer', () => {
     expect(state.latestVersion).toEqual(version);
   })
 
-  it('should update latest packages', () => {
+  test('should update latest packages', () => {
     const result = ModelFactory.createListResult(
       ModelFactory.createApplicationPackage(),
       ModelFactory.createApplicationPackage(),
@@ -27,7 +27,7 @@ describe('shellReducer', () => {
     expect(state.latestPackages).toEqual(result.items);
   })
 
-  it('should have error when loading latest version fails', () => {
+  test('should have error when loading latest version fails', () => {
     const error = new Error('Something bad happened');
     const state = generateStateFromActions(shellReducer,
       ShellActions.loadLatestVersion.failed(error)
@@ -36,7 +36,7 @@ describe('shellReducer', () => {
     expect(state.loadVersionError).toEqual(error);
   })
 
-  it('should have error when loading latest packages fails', () => {
+  test('should have error when loading latest packages fails', () => {
     const error = new Error('Something bad happened');
     const state = generateStateFromActions(shellReducer,
       ShellActions.loadLatestPackages.failed(error)
@@ -45,7 +45,7 @@ describe('shellReducer', () => {
     expect(state.loadPackagesError).toEqual(error);
   })
 
-  it('should have error when downloading package fails', () => {
+  test('should have error when downloading package fails', () => {
     const error = new Error('Something bad happened');
     const state = generateStateFromActions(shellReducer,
       ShellActions.downloadPackage.failed(error)
@@ -54,7 +54,7 @@ describe('shellReducer', () => {
     expect(state.downloadPackageError).toEqual(error);
   })
 
-  it('should clear error when getting latest version successful', () => {
+  test('should clear error when getting latest version successful', () => {
     const error = new Error('idk');
 
     const state = generateStateFromActions(shellReducer,
@@ -65,7 +65,7 @@ describe('shellReducer', () => {
     expect(state.loadVersionError).toEqual(null);
   })
 
-  it('should clear error when getting latest packages successful', () => {
+  test('should clear error when getting latest packages successful', () => {
     const error = new Error('idk');
 
     const state = generateStateFromActions(shellReducer,
@@ -76,7 +76,7 @@ describe('shellReducer', () => {
     expect(state.loadPackagesError).toEqual(null);
   })
 
-  it('should clear error when downloading package successful', () => {
+  test('should clear error when downloading package successful', () => {
     const error = new Error('idk');
 
     const state = generateStateFromActions(shellReducer,

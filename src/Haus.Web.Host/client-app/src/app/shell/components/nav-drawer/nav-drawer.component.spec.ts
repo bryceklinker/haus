@@ -12,7 +12,7 @@ describe('NavDrawerComponent', () => {
     drawerClosed = new TestingEventEmitter();
   })
 
-  it('should notify when sidenav closes', async () => {
+  test('should notify when sidenav closes', async () => {
     const harness = await NavDrawerHarness.render({drawerClosed});
 
     await harness.closeDrawer();
@@ -20,7 +20,7 @@ describe('NavDrawerComponent', () => {
     expect(drawerClosed.emit).toHaveBeenCalled()
   });
 
-  it('should not notify sidenav closed when opened', async () => {
+  test('should not notify sidenav closed when opened', async () => {
     const harness = await NavDrawerHarness.render({drawerClosed});
 
     await harness.openDrawer();
@@ -28,7 +28,7 @@ describe('NavDrawerComponent', () => {
     expect(drawerClosed.emit).not.toHaveBeenCalled()
   })
 
-  it('should show available routes only', async () => {
+  test('should show available routes only', async () => {
     const harness = await NavDrawerHarness.render();
 
     expect(harness.container).toHaveTextContent('Diagnostics');
@@ -36,7 +36,7 @@ describe('NavDrawerComponent', () => {
     expect(harness.container).toHaveTextContent('Rooms');
   })
 
-  it('should show version number', async () => {
+  test('should show version number', async () => {
     const harness = await NavDrawerHarness.render();
     const settingsService = TestBed.inject(SettingsService) as TestingSettingsService;
 
@@ -46,20 +46,20 @@ describe('NavDrawerComponent', () => {
     expect(harness.container).toHaveTextContent('9.9.9');
   })
 
-  it('should request to load latest version', async () => {
+  test('should request to load latest version', async () => {
     const harness = await NavDrawerHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(ShellActions.loadLatestVersion.request());
   })
 
-  it('should show that an update is available', async () => {
+  test('should show that an update is available', async () => {
     const latestVersion = ModelFactory.createApplicationVersion({isNewer: true});
     const harness = await NavDrawerHarness.render({}, ShellActions.loadLatestVersion.success(latestVersion));
 
     expect(harness.isShowingUpdateAvailable).toEqual(true);
   })
 
-  it('should show update error when load latest version failed', async () => {
+  test('should show update error when load latest version failed', async () => {
     const harness = await NavDrawerHarness.render({}, ShellActions.loadLatestVersion.failed(new Error('idk')));
 
     expect(harness.isShowingUpdateError).toEqual(true);

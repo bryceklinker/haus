@@ -1,11 +1,14 @@
 <diagnostics-header [isConnected]="isConnected$ | async"
                     [allowDiscovery]="allowDiscovery$ | async"
+                    [filterParams]="filterParams"
                     (startDiscovery)="onStartDiscovery()"
                     (stopDiscovery)="onStopDiscovery()"
-                    (syncDiscovery)="onSyncDiscovery()">
+                    (syncDiscovery)="onSyncDiscovery()"
+                    (filterChange)="onFilterChange($event)">
 
 </diagnostics-header>
 <diagnostics-messages [messages]="messages$ | async"
+                      [filterParams]="filterParams"
                       (replayMessage)="onReplayMessage($event)">
 
 </diagnostics-messages>

@@ -6,7 +6,7 @@ import {EventsActions} from "../../shared/events";
 import {RoomsActions} from "../../rooms/state";
 
 describe('devicesReducer', () => {
-  it('should add all devices to state when load devices finishes', () => {
+  test('should add all devices to state when load devices finishes', () => {
     const devices = ModelFactory.createListResult(
       ModelFactory.createDeviceModel(),
       ModelFactory.createDeviceModel(),
@@ -20,7 +20,7 @@ describe('devicesReducer', () => {
     expect(state.entities[devices.items[2].id]).toEqual(devices.items[2]);
   })
 
-  it('should add device when device created event received', () => {
+  test('should add device when device created event received', () => {
     const device = ModelFactory.createDeviceModel();
 
     const state = generateStateFromActions(devicesReducer,
@@ -30,7 +30,7 @@ describe('devicesReducer', () => {
     expect(state.entities[device.id]).toEqual(device);
   })
 
-  it('should update device when device updated event received', () => {
+  test('should update device when device updated event received', () => {
     const updated = ModelFactory.createDeviceModel({id: 7});
 
     const state = generateStateFromActions(devicesReducer,
@@ -41,7 +41,7 @@ describe('devicesReducer', () => {
     expect(state.entities[7]).toEqual(updated);
   })
 
-  it('should update room id for devices when devices assigned to room is successful', () => {
+  test('should update room id for devices when devices assigned to room is successful', () => {
     const device = ModelFactory.createDeviceModel();
 
     const state = generateStateFromActions(devicesReducer,
@@ -52,7 +52,7 @@ describe('devicesReducer', () => {
     expect(state.entities[device.id]?.roomId).toEqual(66);
   })
 
-  it('should update room id for devices when devices assigned to room event received', () => {
+  test('should update room id for devices when devices assigned to room event received', () => {
     const existing = ModelFactory.createDeviceModel();
 
     const state = generateStateFromActions(devicesReducer,
@@ -63,7 +63,7 @@ describe('devicesReducer', () => {
     expect(state.entities[existing.id]?.roomId).toEqual(76);
   })
 
-  it('should update device lighting when device lighting changed event received', () => {
+  test('should update device lighting when device lighting changed event received', () => {
     const original = ModelFactory.createDeviceModel();
     const lighting = ModelFactory.createLighting({level: ModelFactory.createLevelLighting({value: 98})});
 

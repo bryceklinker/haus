@@ -4,14 +4,14 @@ import {HealthActions} from "./actions";
 import {ModelFactory} from "../../../testing";
 
 describe('healthReducer', () => {
-  it('should have null report when initialized', () => {
+  test('should have null report when initialized', () => {
     const state = generateStateFromActions(healthReducer);
 
     expect(state.report).toEqual(null);
     expect(state.logs).toEqual([]);
   })
 
-  it('should update report when health report received', () => {
+  test('should update report when health report received', () => {
     const report = ModelFactory.createHealthReportModel();
 
     const state = generateStateFromActions(healthReducer,
@@ -21,7 +21,7 @@ describe('healthReducer', () => {
     expect(state.report).toEqual(report);
   })
 
-  it('should have recent logs when logs are loaded successfully', () => {
+  test('should have recent logs when logs are loaded successfully', () => {
     const result = ModelFactory.createListResult(
       ModelFactory.createLogEntry(),
       ModelFactory.createLogEntry(),

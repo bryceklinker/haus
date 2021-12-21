@@ -50,4 +50,8 @@ export class DiagnosticsRootHarness extends HausComponentHarness<DiagnosticsRoot
 
     return new DiagnosticsRootHarness(result);
   }
+
+  enterFilterTopic(topic: string) {
+    this._diagnosticsHeaderHarness.enterFilterTopic(topic);
+  }
 }

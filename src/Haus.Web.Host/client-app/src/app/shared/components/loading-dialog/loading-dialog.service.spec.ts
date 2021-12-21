@@ -13,7 +13,7 @@ describe('LoadingDialogService', () => {
     matDialog = result.matDialog;
   })
 
-  it('should open loading dialog when opened', () => {
+  test('should open loading dialog when opened', () => {
     const options = {text: 'hello'};
 
     service.open(options);

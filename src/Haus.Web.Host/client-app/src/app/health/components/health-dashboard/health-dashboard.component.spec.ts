@@ -3,7 +3,7 @@ import {ModelFactory} from "../../../../testing";
 import {HealthStatus} from "../../../shared/models";
 
 describe('HealthDashboardComponent', () => {
-  it('should show error status when report is down', async () => {
+  test('should show error status when report is down', async () => {
     const report = ModelFactory.createHealthReportModel({
       isOk: false,
       isError: true,
@@ -17,7 +17,7 @@ describe('HealthDashboardComponent', () => {
     expect(harness.isOk).toEqual(false);
   })
 
-  it('should show warning status when report is warning', async () => {
+  test('should show warning status when report is warning', async () => {
     const report = ModelFactory.createHealthReportModel({
       isOk: false,
       isError: false,
@@ -32,7 +32,7 @@ describe('HealthDashboardComponent', () => {
     expect(harness.isOk).toEqual(false);
   })
 
-  it('should show good status when report is ok', async () => {
+  test('should show good status when report is ok', async () => {
     const report = ModelFactory.createHealthReportModel({
       isOk: true,
       isError: false,
@@ -46,7 +46,7 @@ describe('HealthDashboardComponent', () => {
     expect(harness.isWarning).toEqual(false);
   })
 
-  it('should show each health check', async () => {
+  test('should show each health check', async () => {
     const report = ModelFactory.createHealthReportModel({
       checks: [
         ModelFactory.createHealthCheckModel({name: 'bob'}),

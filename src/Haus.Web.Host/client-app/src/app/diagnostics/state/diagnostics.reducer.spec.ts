@@ -4,7 +4,7 @@ import {DiagnosticsActions} from "./actions";
 import {ModelFactory} from "../../../testing";
 
 describe('diagnosticsReducer', () => {
-  it('should add message when message is received', () => {
+  test('should add message when message is received', () => {
     const message = ModelFactory.createMqttDiagnosticsMessage();
 
     const state = generateStateFromActions(diagnosticsReducer, DiagnosticsActions.messageReceived(message));
@@ -12,7 +12,7 @@ describe('diagnosticsReducer', () => {
     expect(state.entities[message.id]).toEqual(message);
   })
 
-  it('should mark message as being replayed when message reply is requested', () => {
+  test('should mark message as being replayed when message reply is requested', () => {
     const message = ModelFactory.createMqttDiagnosticsMessage();
 
     const state = generateStateFromActions(
@@ -23,7 +23,7 @@ describe('diagnosticsReducer', () => {
     expect(state.entities[message.id]?.isReplaying).toEqual(true);
   })
 
-  it('should mark message as not replaying when message replay is successful', () => {
+  test('should mark message as not replaying when message replay is successful', () => {
     const message = ModelFactory.createMqttDiagnosticsMessage();
 
     const state = generateStateFromActions(
@@ -35,14 +35,14 @@ describe('diagnosticsReducer', () => {
     expect(state.entities[message.id]?.isReplaying).toEqual(false);
   })
 
-  it('should be connected', () => {
+  test('should be connected', () => {
     const state = generateStateFromActions(diagnosticsReducer,
       DiagnosticsActions.connected());
 
     expect(state.isConnected).toEqual(true);
   })
 
-  it('should be disconnected', () => {
+  test('should be disconnected', () => {
     const state = generateStateFromActions(diagnosticsReducer,
       DiagnosticsActions.connected(),
       DiagnosticsActions.disconnected());

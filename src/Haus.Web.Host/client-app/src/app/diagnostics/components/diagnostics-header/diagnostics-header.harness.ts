@@ -3,6 +3,7 @@ import {screen} from "@testing-library/dom";
 import {HausComponentHarness, RenderComponentResult, renderFeatureComponent} from "../../../../testing";
 import {DiagnosticsHeaderComponent} from "./diagnostics-header.component";
 import {DiagnosticsModule} from "../../diagnostics.module";
+import userEvent from "@testing-library/user-event";
 
 export class DiagnosticsHeaderHarness extends HausComponentHarness<DiagnosticsHeaderComponent> {
   get connectionIcon() {
@@ -31,6 +32,10 @@ export class DiagnosticsHeaderHarness extends HausComponentHarness<DiagnosticsHe
 
   async syncDiscovery() {
     await this.clickButtonByLabel('sync discovery');
+  }
+
+  enterFilterTopic(topic: string) {
+    userEvent.type(screen.getByRole('textbox', {name: 'topic'}), topic);
   }
 
   static fromResult(result: RenderComponentResult<any>) {

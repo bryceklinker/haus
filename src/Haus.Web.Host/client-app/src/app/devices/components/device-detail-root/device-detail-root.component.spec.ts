@@ -6,7 +6,7 @@ import {DeviceType, LightType} from '../../../shared/models';
 import {DeviceDetailRootHarness} from './device-detail-root.harness';
 
 describe('DeviceDetailRootComponent', () => {
-  it('should show device detail when rendered', async () => {
+  test('should show device detail when rendered', async () => {
     const device = ModelFactory.createDeviceModel();
     const action = DevicesActions.loadDevices.success(ModelFactory.createListResult(device));
 
@@ -17,7 +17,7 @@ describe('DeviceDetailRootComponent', () => {
     });
   });
 
-  it('should load light types when rendered', async () => {
+  test('should load light types when rendered', async () => {
     const device = ModelFactory.createDeviceModel();
     const action = DevicesActions.loadDevices.success(ModelFactory.createListResult(device));
 
@@ -28,7 +28,7 @@ describe('DeviceDetailRootComponent', () => {
     });
   });
 
-  it('should show light types when rendered', async () => {
+  test('should show light types when rendered', async () => {
     const device = ModelFactory.createDeviceModel({deviceType: DeviceType.Light});
     const actions = [
       LightTypesActions.loadLightTypes.success(ModelFactory.createListResult(LightType.Level, LightType.Temperature)),
@@ -42,7 +42,7 @@ describe('DeviceDetailRootComponent', () => {
     });
   });
 
-  it('should notify change device lighting constraints', async () => {
+  test('should notify change device lighting constraints', async () => {
     const lighting = ModelFactory.createLighting();
     const device = ModelFactory.createDeviceModel({deviceType: DeviceType.Light, lighting});
     const action = EventsActions.deviceCreated({device});
@@ -61,7 +61,7 @@ describe('DeviceDetailRootComponent', () => {
     expect(page.dispatchedActions).toContainEqual(expectedAction);
   });
 
-  it('should notify update device when device is saved', async () => {
+  test('should notify update device when device is saved', async () => {
     const device = ModelFactory.createDeviceModel();
     const action = EventsActions.deviceCreated({device});
 

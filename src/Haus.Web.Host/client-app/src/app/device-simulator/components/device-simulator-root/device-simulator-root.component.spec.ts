@@ -5,13 +5,13 @@ import {DeviceSimulatorRootHarness} from "./device-simulator-root.harness";
 import {DeviceType} from "../../../shared/models";
 
 describe('DeviceSimulatorRootComponent', () => {
-  it('should start connection to device simulator', async () => {
+  test('should start connection to device simulator', async () => {
     const harness = await DeviceSimulatorRootHarness.render();
 
     expect(harness.dispatchedActions).toContainEqual(DeviceSimulatorActions.start());
   })
 
-  it('should show all simulated devices', async () => {
+  test('should show all simulated devices', async () => {
     const harness = await DeviceSimulatorRootHarness.render(
       DeviceSimulatorActions.stateReceived({
         devices: [
@@ -25,13 +25,13 @@ describe('DeviceSimulatorRootComponent', () => {
     expect(harness.simulatedDevices).toHaveLength(3);
   })
 
-  it('should show connection status of device simulator', async () => {
+  test('should show connection status of device simulator', async () => {
     const harness = await DeviceSimulatorRootHarness.render(DeviceSimulatorActions.connected());
 
     expect(harness.container).toHaveTextContent('connected');
   })
 
-  it('should stop connection when destroyed', async () => {
+  test('should stop connection when destroyed', async () => {
     const harness = await DeviceSimulatorRootHarness.render();
 
     harness.destroy();
@@ -39,7 +39,7 @@ describe('DeviceSimulatorRootComponent', () => {
     expect(harness.dispatchedActions).toContainEqual(DeviceSimulatorActions.stop());
   })
 
-  it('should trigger occupancy request when occupancy changes', async () => {
+  test('should trigger occupancy request when occupancy changes', async () => {
     const simulatedDevice = ModelFactory.createSimulatedDevice({deviceType: DeviceType.MotionSensor});
     const harness = await DeviceSimulatorRootHarness.render(
       DeviceSimulatorActions.stateReceived({

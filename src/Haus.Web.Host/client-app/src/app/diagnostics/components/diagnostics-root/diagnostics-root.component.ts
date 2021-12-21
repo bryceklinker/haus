@@ -10,6 +10,7 @@ import {
 } from "../../state";
 import {UiMqttDiagnosticsMessageModel} from "../../../shared/models";
 import {DiscoveryActions, selectIsDiscoveryAllowed} from "../../../shared/discovery";
+import { DiagnosticsFilterParams } from "../../models";
 
 @Component({
   selector: 'diagnostics-root',
@@ -18,6 +19,7 @@ import {DiscoveryActions, selectIsDiscoveryAllowed} from "../../../shared/discov
 })
 export class DiagnosticsRootComponent implements OnInit, OnDestroy {
   messages$: Observable<UiMqttDiagnosticsMessageModel[]>;
+  filterParams: DiagnosticsFilterParams | null = null;
   isConnected$: Observable<boolean>;
   allowDiscovery$: Observable<boolean>;
 
@@ -49,5 +51,9 @@ export class DiagnosticsRootComponent implements OnInit, OnDestroy {
 
   onReplayMessage($event: UiMqttDiagnosticsMessageModel) {
     this.store.dispatch(DiagnosticsActions.replayMessage.request($event));
+  }
+
+  onFilterChange(params: DiagnosticsFilterParams) {
+    this.filterParams = params;
   }
 }

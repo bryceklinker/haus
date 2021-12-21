@@ -4,7 +4,7 @@ import {LightingConstraintsModel} from "../../models";
 import {LightingConstraintsHarness} from "./lighting-constraints.harness";
 
 describe('LightingConstraintsComponent', () => {
-  it('should show level values', async () => {
+  test('should show level values', async () => {
     const level = ModelFactory.createLevelLighting({min: 25, max: 90});
 
     const harness = await LightingConstraintsHarness.render({level});
@@ -13,7 +13,7 @@ describe('LightingConstraintsComponent', () => {
     expect(await harness.maxLevelValue()).toEqual('90');
   })
 
-  it('should show temperature when temperature is provided', async () => {
+  test('should show temperature when temperature is provided', async () => {
     const level = ModelFactory.createLevelLighting();
     const temperature = ModelFactory.createTemperatureLighting({min: 0, max: 255});
 
@@ -23,7 +23,7 @@ describe('LightingConstraintsComponent', () => {
     expect(await harness.maxTemperatureValue()).toEqual('255');
   })
 
-  it('should hide temperature controls when temperature is missing', async () => {
+  test('should hide temperature controls when temperature is missing', async () => {
     const level = ModelFactory.createLevelLighting();
 
     const harness = await LightingConstraintsHarness.render({level});
@@ -32,7 +32,7 @@ describe('LightingConstraintsComponent', () => {
     expect(harness.maxTemperatureElement).not.toBeInTheDocument();
   })
 
-  it('should notify when saved', async () => {
+  test('should notify when saved', async () => {
     const level = ModelFactory.createLevelLighting();
     const temperature = ModelFactory.createTemperatureLighting();
     const emitter = new TestingEventEmitter<LightingConstraintsModel>();
@@ -52,7 +52,7 @@ describe('LightingConstraintsComponent', () => {
     });
   })
 
-  it('should only notify with level changes when saved', async () => {
+  test('should only notify with level changes when saved', async () => {
     const level = ModelFactory.createLevelLighting();
     const emitter = new TestingEventEmitter<LightingConstraintsModel>();
 
@@ -67,7 +67,7 @@ describe('LightingConstraintsComponent', () => {
     })
   })
 
-  it('should notify when cancelled', async () => {
+  test('should notify when cancelled', async () => {
     const level = ModelFactory.createLevelLighting();
     const emitter = new TestingEventEmitter();
 
@@ -77,7 +77,7 @@ describe('LightingConstraintsComponent', () => {
     expect(emitter.emit).toHaveBeenCalled();
   })
 
-  it('should disable save when constraints are invalid', async () => {
+  test('should disable save when constraints are invalid', async () => {
     const level = ModelFactory.createLevelLighting();
 
     const harness = await LightingConstraintsHarness.render({level});
@@ -86,7 +86,7 @@ describe('LightingConstraintsComponent', () => {
     expect(harness.isSaveDisabled()).toEqual(true);
   })
 
-  it('should be invalid when min level is greater or equal to max level', async () => {
+  test('should be invalid when min level is greater or equal to max level', async () => {
     const level = ModelFactory.createLevelLighting();
 
     const harness = await LightingConstraintsHarness.render({level});
@@ -96,7 +96,7 @@ describe('LightingConstraintsComponent', () => {
     expect(harness.invalid).toEqual(true);
   })
 
-  it('should be invalid when max level is less than or equal to min level', async () => {
+  test('should be invalid when max level is less than or equal to min level', async () => {
     const level = ModelFactory.createLevelLighting();
 
     const harness = await LightingConstraintsHarness.render({level});
@@ -106,7 +106,7 @@ describe('LightingConstraintsComponent', () => {
     expect(harness.invalid).toEqual(true);
   })
 
-  it('should be invalid when min temperature is greater than or equal to max temperature', async () => {
+  test('should be invalid when min temperature is greater than or equal to max temperature', async () => {
     const temperature = ModelFactory.createTemperatureLighting();
 
     const harness = await LightingConstraintsHarness.render({temperature});
@@ -116,7 +116,7 @@ describe('LightingConstraintsComponent', () => {
     expect(harness.invalid).toEqual(true);
   })
 
-  it('should be invalid when max temperature is less than or equal to min temperature', async () => {
+  test('should be invalid when max temperature is less than or equal to min temperature', async () => {
     const temperature = ModelFactory.createTemperatureLighting();
 
     const harness = await LightingConstraintsHarness.render({temperature});
@@ -126,7 +126,7 @@ describe('LightingConstraintsComponent', () => {
     expect(harness.invalid).toEqual(true);
   })
 
-  it('should disable all controls when readonly', async () => {
+  test('should disable all controls when readonly', async () => {
     const level = ModelFactory.createLevelLighting();
     const temperature = ModelFactory.createTemperatureLighting();
 
@@ -140,7 +140,7 @@ describe('LightingConstraintsComponent', () => {
     expect(harness.isCancelDisabled()).toEqual(true);
   })
 
-  it('should hide cancel when cancel is hidden', async () => {
+  test('should hide cancel when cancel is hidden', async () => {
     const level = ModelFactory.createLevelLighting();
 
     const harness = await LightingConstraintsHarness.render({level, hideCancel: true});

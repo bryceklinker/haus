@@ -17,7 +17,7 @@ describe('DeviceTypesEffects', () => {
     actions$ = actionsSubject;
   })
 
-  it('should get device types from api when load device types requested', async () => {
+  test('should get device types from api when load device types requested', async () => {
     const expected = [DeviceType.Light, DeviceType.LightSensor, DeviceType.MotionSensor];
     setupGetAllDeviceTypes(expected);
 

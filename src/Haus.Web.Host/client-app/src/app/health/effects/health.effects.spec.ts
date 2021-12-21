@@ -28,7 +28,7 @@ describe('HealthEffects', () => {
     snackBar = TestBed.inject(MatSnackBar) as TestingSnackBar;
   })
 
-  it('should start listening for health updates', async () => {
+  test('should start listening for health updates', async () => {
     actions$.next(HealthActions.start());
 
     await eventually(() => {
@@ -38,7 +38,7 @@ describe('HealthEffects', () => {
     })
   })
 
-  it('should stop listening for health updates', async () => {
+  test('should stop listening for health updates', async () => {
     actions$.next(HealthActions.stop());
 
     await eventually(() => {
@@ -49,7 +49,7 @@ describe('HealthEffects', () => {
     })
   })
 
-  it('should notify when health received', async () => {
+  test('should notify when health received', async () => {
     const report = ModelFactory.createHealthReportModel({
       checks: [
         ModelFactory.createHealthCheckModel(),
@@ -64,7 +64,7 @@ describe('HealthEffects', () => {
     })
   })
 
-  it('should load logs when started', async () => {
+  test('should load logs when started', async () => {
     const log = ModelFactory.createLogEntry();
     setupGetLogs([log]);
 
@@ -77,7 +77,7 @@ describe('HealthEffects', () => {
     })
   })
 
-  it('should notify when loading logs fails', async () => {
+  test('should notify when loading logs fails', async () => {
     setupGetLogsFailure();
 
     actions$.next(HealthActions.loadRecentLogs.request());
@@ -89,7 +89,7 @@ describe('HealthEffects', () => {
     })
   })
 
-  it('should show snack bar when logs fail to load', async () => {
+  test('should show snack bar when logs fail to load', async () => {
     setupGetLogs();
 
     actions$.next(HealthActions.loadRecentLogs.failed(new Error('Bad Things')));

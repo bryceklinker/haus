@@ -4,7 +4,7 @@ import {ColorLightingModel} from "../../models";
 import {LightingColorHarness} from "./lighting-color.harness";
 
 describe('LightingColorComponent', () => {
-  it('should show color values when rendered', async () => {
+  test('should show color values when rendered', async () => {
     const color = ModelFactory.createColorLighting({red: 7, green: 9, blue: 19});
 
     const harness = await LightingColorHarness.render({color});
@@ -14,7 +14,7 @@ describe('LightingColorComponent', () => {
     expect(await harness.blueValue()).toEqual(color.blue);
   })
 
-  it('should show color values when rendered', async () => {
+  test('should show color values when rendered', async () => {
     const color = ModelFactory.createColorLighting({red: 6, green: 9, blue: 8});
 
     const harness = await LightingColorHarness.render({color});
@@ -25,7 +25,7 @@ describe('LightingColorComponent', () => {
     expect(harness.hexValue).toHaveTextContent('#060908');
   })
 
-  it('should notify of color change when red changes', async () => {
+  test('should notify of color change when red changes', async () => {
     const color = ModelFactory.createColorLighting();
     const emitter = new TestingEventEmitter<ColorLightingModel>();
 
@@ -38,7 +38,7 @@ describe('LightingColorComponent', () => {
     })
   })
 
-  it('should notify of color change when green changes', async () => {
+  test('should notify of color change when green changes', async () => {
     const color = ModelFactory.createColorLighting();
     const emitter = new TestingEventEmitter<ColorLightingModel>();
 
@@ -51,7 +51,7 @@ describe('LightingColorComponent', () => {
     })
   })
 
-  it('should notify of color change when blue changes', async () => {
+  test('should notify of color change when blue changes', async () => {
     const color = ModelFactory.createColorLighting();
     const emitter = new TestingEventEmitter<ColorLightingModel>();
 
@@ -64,7 +64,7 @@ describe('LightingColorComponent', () => {
     })
   })
 
-  it('should disable controls when readonly', async () => {
+  test('should disable controls when readonly', async () => {
     const color = ModelFactory.createColorLighting();
 
     const harness = await LightingColorHarness.render({color, readonly: true});

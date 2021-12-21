@@ -23,7 +23,7 @@ describe('EventsEffects', () => {
       .getTestingHub(KNOWN_HUB_NAMES.events);
   })
 
-  it('should start signalr connection when initialized', async () => {
+  test('should start signalr connection when initialized', async () => {
       actions$.next(SharedActions.initApp());
 
       await eventually(() => {
@@ -31,7 +31,7 @@ describe('EventsEffects', () => {
       })
   })
 
-  it('should dispatch event action when signalr message triggered', async () => {
+  test('should dispatch event action when signalr message triggered', async () => {
     actions$.next(SharedActions.initApp());
     signalrHub.triggerStart();
 

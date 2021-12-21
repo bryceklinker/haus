@@ -21,7 +21,7 @@ describe('DiagnosticsEffects', () => {
       .getTestingHub(KNOWN_HUB_NAMES.diagnostics);
   })
 
-  it('should start signalr connection when diagnostics is started', async () => {
+  test('should start signalr connection when diagnostics is started', async () => {
     actions$.next(DiagnosticsActions.start());
 
     await eventually(() => {
@@ -31,7 +31,7 @@ describe('DiagnosticsEffects', () => {
     })
   })
 
-  it('should stop signalr connection when diagnostics is stopped', async () => {
+  test('should stop signalr connection when diagnostics is stopped', async () => {
     actions$.next(DiagnosticsActions.stop());
 
     await eventually(() => {
@@ -41,7 +41,7 @@ describe('DiagnosticsEffects', () => {
     })
   })
 
-  it('should notify when message received', async () => {
+  test('should notify when message received', async () => {
     const expected = ModelFactory.createMqttDiagnosticsMessage();
     actions$.next(DiagnosticsActions.start());
 
@@ -51,7 +51,7 @@ describe('DiagnosticsEffects', () => {
     })
   })
 
-  it('should replay message through api when replay message is requested', async () => {
+  test('should replay message through api when replay message is requested', async () => {
     setupDiagnosticsReplay();
 
     const expected = ModelFactory.createMqttDiagnosticsMessage();

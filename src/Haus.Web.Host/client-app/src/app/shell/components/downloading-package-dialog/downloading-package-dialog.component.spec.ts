@@ -3,7 +3,7 @@ import {ShellActions} from "../../state";
 import {eventually, ModelFactory} from "../../../../testing";
 
 describe('DownloadingPackageDialogComponent', () => {
-  it('should show downloading package', async () => {
+  test('should show downloading package', async () => {
     const model = ModelFactory.createApplicationPackage();
 
     const harness = await DownloadingPackageDialogHarness.render(model, ShellActions.downloadPackage.request(model));
@@ -12,7 +12,7 @@ describe('DownloadingPackageDialogComponent', () => {
     expect(harness.loadingElement).toBeInTheDocument();
   })
 
-  it('should close when downloading is successful', async () => {
+  test('should close when downloading is successful', async () => {
     const model = ModelFactory.createApplicationPackage();
 
     const harness = await DownloadingPackageDialogHarness.render(model, ShellActions.downloadPackage.request(model));
@@ -24,7 +24,7 @@ describe('DownloadingPackageDialogComponent', () => {
     })
   })
 
-  it('should disable closing dialog', async () => {
+  test('should disable closing dialog', async () => {
     const model = ModelFactory.createApplicationPackage();
 
     const harness = await DownloadingPackageDialogHarness.render(model, ShellActions.downloadPackage.request(model));

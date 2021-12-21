@@ -4,7 +4,7 @@ import {LightingModel, LightingState} from "../../models";
 import {LightingHarness} from "./lighting.harness";
 
 describe('LightingComponent', () => {
-  it('should show lighting values when rendered', async () => {
+  test('should show lighting values when rendered', async () => {
     const lighting = ModelFactory.createLighting({
       state: LightingState.On,
       level: ModelFactory.createLevelLighting({value: 45, min: 5, max: 95}),
@@ -22,7 +22,7 @@ describe('LightingComponent', () => {
     expect(await harness.temperatureMax()).toEqual(1000);
   })
 
-  it('should show lighting values', async () => {
+  test('should show lighting values', async () => {
     const lighting = ModelFactory.createLighting({
       state: LightingState.Off,
       level: ModelFactory.createLevelLighting({value: 45}),
@@ -38,13 +38,13 @@ describe('LightingComponent', () => {
     expect(harness.colorElement).toBeInTheDocument();
   })
 
-  it('should render show lighting not available when lighting is not provided', async () => {
+  test('should render show lighting not available when lighting is not provided', async () => {
     const harness = await LightingHarness.render();
 
     expect(harness.container).toHaveTextContent('No lighting available');
   })
 
-  it('should notify of change when brightness changes', async () => {
+  test('should notify of change when brightness changes', async () => {
     const lighting = ModelFactory.createLighting({
       level: ModelFactory.createLevelLighting(),
       temperature: ModelFactory.createTemperatureLighting(),
@@ -61,7 +61,7 @@ describe('LightingComponent', () => {
     })
   })
 
-  it('should notify of change when temperature changes', async () => {
+  test('should notify of change when temperature changes', async () => {
     const lighting = ModelFactory.createLighting({temperature: ModelFactory.createTemperatureLighting({value: 4500})});
     const changeEmitter = new TestingEventEmitter<LightingModel>();
     const harness = await LightingHarness.render({lighting, change: changeEmitter});
@@ -74,7 +74,7 @@ describe('LightingComponent', () => {
     })
   })
 
-  it('should notify of change when color changes', async () => {
+  test('should notify of change when color changes', async () => {
     const lighting = ModelFactory.createLighting({
       temperature: ModelFactory.createTemperatureLighting(),
       color: ModelFactory.createColorLighting({red: 9})
@@ -93,7 +93,7 @@ describe('LightingComponent', () => {
     })
   })
 
-  it('should notify of change when state changes', async () => {
+  test('should notify of change when state changes', async () => {
     const lighting = ModelFactory.createLighting({
       state: LightingState.Off,
       temperature: ModelFactory.createTemperatureLighting(),
@@ -110,7 +110,7 @@ describe('LightingComponent', () => {
     })
   })
 
-  it('should disable controls when lighting is readonly', async () => {
+  test('should disable controls when lighting is readonly', async () => {
     const lighting = ModelFactory.createLighting({
       temperature: ModelFactory.createTemperatureLighting(),
       color: ModelFactory.createColorLighting()
@@ -123,7 +123,7 @@ describe('LightingComponent', () => {
     expect(await harness.isTemperatureDisabled()).toEqual(true);
   })
 
-  it('should hide color when lighting does not have color', async () => {
+  test('should hide color when lighting does not have color', async () => {
     const lighting = ModelFactory.createLighting();
 
     const harness = await LightingHarness.render({lighting});
@@ -131,7 +131,7 @@ describe('LightingComponent', () => {
     expect(harness.colorElement).not.toBeInTheDocument();
   })
 
-  it('should hide temperature when lighting does not have temperature', async () => {
+  test('should hide temperature when lighting does not have temperature', async () => {
     const lighting = ModelFactory.createLighting();
 
     const harness = await LightingHarness.render({lighting});

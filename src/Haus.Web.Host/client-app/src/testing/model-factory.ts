@@ -197,6 +197,10 @@ function createUser(model: Partial<UserModel> = {}): UserModel {
   }
 }
 
+function createMany<T>(factory: () => T, count: number): Array<T> {
+  return Array.from({length: count}).map(() => factory());
+}
+
 export const ModelFactory = {
   createMqttDiagnosticsMessage,
   createDeviceModel,
@@ -216,5 +220,6 @@ export const ModelFactory = {
   createLogEntry,
   createApplicationVersion,
   createApplicationPackage,
-  createUser
+  createUser,
+  createMany
 };

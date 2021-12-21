@@ -5,7 +5,7 @@ import {ModelFactory} from "../../../testing";
 import {EventsActions} from "../../shared/events";
 
 describe('roomsReducer', () => {
-  it('should have all rooms in state', () => {
+  test('should have all rooms in state', () => {
     const result = ModelFactory.createListResult(
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
@@ -18,7 +18,7 @@ describe('roomsReducer', () => {
     expect(state.entities[result.items[2].id]).toEqual(result.items[2]);
   })
 
-  it('should add room to rooms when add is successful', () => {
+  test('should add room to rooms when add is successful', () => {
     const room = ModelFactory.createRoomModel();
 
     const state = generateStateFromActions(roomsReducer, RoomsActions.addRoom.success(room));
@@ -26,7 +26,7 @@ describe('roomsReducer', () => {
     expect(state.entities[room.id]).toEqual(room);
   })
 
-  it('should update room lighting when room lighting change requested', () => {
+  test('should update room lighting when room lighting change requested', () => {
     const room = ModelFactory.createRoomModel();
     const newLighting = ModelFactory.createLighting({temperature: ModelFactory.createTemperatureLighting()});
 
@@ -38,7 +38,7 @@ describe('roomsReducer', () => {
     expect(state.entities[room.id]?.lighting).toEqual(newLighting);
   })
 
-  it('should update lighting on room when room lighting changed event received', () => {
+  test('should update lighting on room when room lighting changed event received', () => {
     const room = ModelFactory.createRoomModel();
     const lighting = ModelFactory.createLighting({level: ModelFactory.createLevelLighting()});
 
@@ -50,7 +50,7 @@ describe('roomsReducer', () => {
     expect(state.entities[room.id]?.lighting).toEqual(lighting);
   })
 
-  it('should add room when room created event received', () => {
+  test('should add room when room created event received', () => {
     const room = ModelFactory.createRoomModel();
 
     const state = generateStateFromActions(roomsReducer,
@@ -60,7 +60,7 @@ describe('roomsReducer', () => {
     expect(state.entities[room.id]).toEqual(room);
   })
 
-  it('should update room when room updated event received', () => {
+  test('should update room when room updated event received', () => {
     const room = ModelFactory.createRoomModel({id: 88});
 
     const state = generateStateFromActions(roomsReducer,

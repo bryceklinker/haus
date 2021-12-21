@@ -4,7 +4,7 @@ import {HealthStatus} from "../../../shared/models";
 import {H} from "@angular/cdk/keycodes";
 
 describe('HealthCheckWidgetComponent', () => {
-  it('should show error status for health check', async () => {
+  test('should show error status for health check', async () => {
     const check = ModelFactory.createHealthCheckModel({
       isOk: false,
       isError: true,
@@ -19,7 +19,7 @@ describe('HealthCheckWidgetComponent', () => {
     expect(harness.showingWarning).toEqual(false);
   })
 
-  it('should show ok status for health check', async () => {
+  test('should show ok status for health check', async () => {
     const check = ModelFactory.createHealthCheckModel({
       isOk: true,
       isError: false,
@@ -34,7 +34,7 @@ describe('HealthCheckWidgetComponent', () => {
     expect(harness.showingError).toEqual(false);
   })
 
-  it('should show warning status for health check', async () => {
+  test('should show warning status for health check', async () => {
     const check = ModelFactory.createHealthCheckModel({
       isOk: false,
       isError: false,
@@ -49,7 +49,7 @@ describe('HealthCheckWidgetComponent', () => {
     expect(harness.showingWarning).toEqual(true);
   })
 
-  it('should show health check details', async () => {
+  test('should show health check details', async () => {
     const check = ModelFactory.createHealthCheckModel({
       durationOfCheckInSeconds: 6.5,
       name: 'Good stuff',
@@ -71,7 +71,7 @@ describe('HealthCheckWidgetComponent', () => {
     expect(await harness.getTagsText()).toContain('Taggy');
   })
 
-  it('should hide exception message if not available', async () => {
+  test('should hide exception message if not available', async () => {
     const check = ModelFactory.createHealthCheckModel({
       durationOfCheckInSeconds: 6.5,
       name: 'Good stuff',
@@ -87,7 +87,7 @@ describe('HealthCheckWidgetComponent', () => {
     expect(harness.showingExceptionMessage).toEqual(false);
   })
 
-  it('should hide description if not available', async () => {
+  test('should hide description if not available', async () => {
     const check = ModelFactory.createHealthCheckModel({
       durationOfCheckInSeconds: 6.5,
       name: 'Good stuff',
