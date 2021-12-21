@@ -19,25 +19,12 @@ function copy_service_definition() {
   sudo cp "${SOURCE}" "${TARGET}" 
 }
 
-function reload_daemons() {
-  sudo systemctl daemon-reload
-}
-
-function start_service() {
-  sudo systemctl enable "${HAUS_APP_SERVICE_NAME}"
-  sudo systemctl restart "${HAUS_APP_SERVICE_NAME}"
-}
-
-function install_unzip() {
-  sudo apt install unzip
-}
-
 function extract_zip_file() {
   unzip "${HAUS_APP_ZIP_FILE_LOCATION}" -d "${HAUS_LOCATION}"
 }
 
-function stop_service() {
-  sudo systemctl stop "${HAUS_APP_SERVICE_NAME}" || true 
+function install_unzip() {
+  sudo apt install unzip
 }
 
 function generate_https_cert() {
@@ -66,11 +53,32 @@ function create_data_directory {
   mkdir -p "${HAUS_LOCATION}/data"
 }
 
+function pull_latest_docker_images() {
+  pushd "${HAUS_LOCATION}" || exit 1
+  docker-compose rm -f
+  docker-compose pull
+  popd || exit 1
+}
+
+function reload_daemons() {
+  sudo systemctl daemon-reload
+}
+
+function start_service() {
+  sudo systemctl enable "${HAUS_APP_SERVICE_NAME}"
+  sudo systemctl restart "${HAUS_APP_SERVICE_NAME}"
+}
+
+function stop_service() {
+  sudo systemctl stop "${HAUS_APP_SERVICE_NAME}" || true 
+}
+
 function main() {
   generate_https_cert
   extract_zip_file
   create_data_directory
   stop_service
+  pull_latest_docker_images
   copy_service_definition
   reload_daemons
   start_service
