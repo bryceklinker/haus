@@ -23,7 +23,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories
 
         public Zigbee2MqttMessage Create(MqttApplicationMessage message)
         {
-            var payloadAsString = Encoding.UTF8.GetString(message.Payload);
+            var payloadAsString = message.Payload != null ? Encoding.UTF8.GetString(message.Payload) : null;
             return new Zigbee2MqttMessage(message.Topic, payloadAsString, CreateJObjectFromPayload(payloadAsString));
         }
 

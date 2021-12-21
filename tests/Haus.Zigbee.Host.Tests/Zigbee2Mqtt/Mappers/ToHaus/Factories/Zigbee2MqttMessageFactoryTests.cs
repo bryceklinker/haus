@@ -17,6 +17,14 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Factories
         }
 
         [Fact]
+        public void WhenPayloadIsNullThenReturnsMessageWithNullValue()
+        {
+            var message = _factory.Create(new MqttApplicationMessage { Payload = null });
+
+            message.PayloadObject.Should().BeNull();
+        }
+
+        [Fact]
         public void WhenPayloadContainsAJsonObjectThenReturnsMessageWithRootPropertiesAvailable()
         {
             var bytes = Encoding.UTF8.GetBytes("{\"id\": 54}");
