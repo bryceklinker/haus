@@ -3,6 +3,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 ARG PUBLISH_DIR
 ARG ENTRY_FILE
 
+ENV entry_point="${ENTRY_FILE}"
 COPY $PUBLISH_DIR/ /app/
 WORKDIR /app
-ENTRYPOINT ["dotnet", "$ENTRY_FILE"]
+ENTRYPOINT ["dotnet", "$entry_point"]

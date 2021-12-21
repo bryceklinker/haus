@@ -22,7 +22,7 @@
     "postinstall": "yarn web_host:install && yarn acceptance_tests:install",
     "dotnet:test": "dotnet test",
     "test": "env-cmd -e acceptance yarn dotnet:test && yarn web_host_client:test && yarn acceptance_tests:test",
-    "start": "env-cmd -e dev concurrently \"npm:*:start\""
+    "start": "env-cmd -e dev concurrently -c \"green.bold,yellow.bold\" \"npm:*:start\""
   },
   "devDependencies": {
     "concurrently": "6.4.0",
