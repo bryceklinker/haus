@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Haus.Core.Common.Commands;
 using Haus.Cqrs;
 using Haus.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

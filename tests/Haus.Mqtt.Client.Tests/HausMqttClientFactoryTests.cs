@@ -7,6 +7,7 @@ namespace Haus.Mqtt.Client.Tests
 {
     public class HausMqttClientFactoryTests
     {
+        private const string DEFAULT_MQTT_URL = "mqtt://192.168.1.1";
         private readonly IHausMqttClientFactory _hausClientFactory;
 
         public HausMqttClientFactoryTests()
@@ -43,7 +44,7 @@ namespace Haus.Mqtt.Client.Tests
         public async Task WhenClientCratedForASpecificUrlThenReturnsANewClient()
         {
             var standardUrlClient = await _hausClientFactory.CreateClient();
-            var otherUrlClient = await _hausClientFactory.CreateClient("mqtt://192.168.1.1");
+            var otherUrlClient = await _hausClientFactory.CreateClient(DEFAULT_MQTT_URL);
 
             standardUrlClient.Should().NotBeSameAs(otherUrlClient);
         }
@@ -51,11 +52,20 @@ namespace Haus.Mqtt.Client.Tests
         [Fact]
         public async Task WhenClientCreatedForSpecificUrlMultipleTimesThenReturnsTheSameClient()
         {
-            var first = await _hausClientFactory.CreateClient("mqtt://192.168.1.1");
-            var second = await _hausClientFactory.CreateClient("mqtt://192.168.1.1");
+            var first = await _hausClientFactory.CreateClient(DEFAULT_MQTT_URL);
+            var second = await _hausClientFactory.CreateClient(DEFAULT_MQTT_URL);
 
             first.Should().BeSameAs(second);
+        }
 
+        [Fact]
+        public async Task WhenClientCreatedAfterDisposingThenClientIsRecreated()
+        {
+            var first = await _hausClientFactory.CreateClient(DEFAULT_MQTT_URL);
+            await first.DisposeAsync();
+            
+            var second = await _hausClientFactory.CreateClient(DEFAULT_MQTT_URL);
+            first.Should().NotBeSameAs(second);
         }
     }
 }

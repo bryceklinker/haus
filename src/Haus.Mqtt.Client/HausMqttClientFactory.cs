@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Haus.Mqtt.Client.Settings;
 using Microsoft.Extensions.Options;
@@ -43,6 +44,15 @@ namespace Haus.Mqtt.Client
             return await _clients.GetOrAdd(url, CreateMqttClientWithRetry).ConfigureAwait(false);
         }
 
+        public async ValueTask DisposeAsync()
+        {
+            foreach (var (_, task) in _clients)
+            {
+                var client = await task.ConfigureAwait(false);
+                await client.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private async Task<IHausMqttClient> CreateMqttClientWithRetry(string url)
         {
             var client = await CreateMqttClient(url);
@@ -63,13 +73,12 @@ namespace Haus.Mqtt.Client
                 .WithClientOptions(opts => { opts.WithConnectionUri(new Uri(url)); })
                 .Build();
             await client.StartAsync(options).ConfigureAwait(false);
-            return new HausMqttClient(client, _options);
+            return new HausMqttClient(client, _options, () => RemovedDisposedClient(url));
         }
 
-        public async ValueTask DisposeAsync()
+        private void RemovedDisposedClient(string url)
         {
-            foreach (var client in _clients) 
-                await client.Value.Result.DisposeAsync().ConfigureAwait(false);
+            _clients.TryRemove(url, out _);
         }
     }
 }

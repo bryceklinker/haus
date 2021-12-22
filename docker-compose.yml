@@ -18,8 +18,8 @@ services:
     restart: always
     image: bryceklinker/personal:haus-zigbee-latest
     environment:
-      - "Haus:Server=mqtt://haus_mqtt:1883"
-      - "Zigbee:Config:Mqtt:Server=mqtt://haus_mqtt:1883"
+      - "Haus__Server=mqtt://haus_mqtt:1883"
+      - "Zigbee__Config__Mqtt__Server=mqtt://haus_mqtt:1883"
     links:
       - haus_mqtt
     volumes:
@@ -38,8 +38,8 @@ services:
       - ./haus_web/logs:/app/haus-logs
       - ./cert.pfx:/https/cert.pfx
     environment:
-      - "Mqtt:Server=mqtt://haus_mqtt:1883"
-      - "Database:ConnectionString=Data Source=./data/haus.db;"
+      - "Mqtt__Server=mqtt://haus_mqtt:1883"
+      - "Database__ConnectionString=Data Source=./data/haus.db;"
       - "ASPNETCORE_URLS=https://+;http://+"
       - "ASPNETCORE_HTTPS_PORT=443"
       - "ASPNETCORE_ENVIRONMENT=Production"

@@ -41,6 +41,14 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee
 
         private static byte[] CreateLightingPayload(LightingModel lighting)
         {
+            if (lighting.State == LightingState.Off)
+            {
+                return HausJsonSerializer.SerializeToBytes(new
+                {
+                    state = lighting.State.ToString().ToUpperInvariant()
+                });
+            }
+            
             return HausJsonSerializer.SerializeToBytes(new
             {
                 state = lighting.State.ToString().ToUpperInvariant(),

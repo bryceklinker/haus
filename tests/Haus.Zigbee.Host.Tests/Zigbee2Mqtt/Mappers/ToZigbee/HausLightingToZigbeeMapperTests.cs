@@ -51,7 +51,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
         public void WhenLightingModelIsFullyPopulatedThenZigbeeLightingIsPopulated()
         {
             var lightingModel = new LightingModel(
-                LightingState.Off,
+                LightingState.On,
                 new LevelLightingModel(54),
                 new TemperatureLightingModel(67),
                 new ColorLightingModel(98, 54, 234));
@@ -59,7 +59,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
             var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
 
             var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
-            result.Value<string>("state").Should().Be("OFF");
+            result.Value<string>("state").Should().Be("ON");
             result.Value<int>("brightness").Should().Be(54);
             result.Value<int>("color_temp").Should().Be(67);
             result.Value<JObject>("color").Value<int>("b").Should().Be(234);
@@ -107,6 +107,24 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee
             Assert.Equal("ON", result.Value<string>("state"));
         }
 
+        [Fact]
+        public void WhenLightingModelHasOffStateThenReturnsLightingWithStateOnly()
+        {
+            var lightingModel = new LightingModel(
+                LightingState.Off,
+                new LevelLightingModel(54),
+                new TemperatureLightingModel(67),
+                new ColorLightingModel(98, 54, 234));
+            
+            var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
+
+            var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+            result.Value<string>("state").Should().Be("OFF");
+            result.TryGetValue("brightness", out _).Should().BeFalse();
+            result.TryGetValue("color_temp", out _).Should().BeFalse();
+            result.TryGetValue("color", out _).Should().BeFalse();
+        }
+        
         private MqttApplicationMessage CreateMqttMessage(LightingModel lighting)
         {
             return new DeviceLightingChangedEvent(_device, lighting)

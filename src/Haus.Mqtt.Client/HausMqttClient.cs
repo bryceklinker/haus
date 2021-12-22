@@ -30,6 +30,7 @@ namespace Haus.Mqtt.Client
         private const string AllTopicsFilter = "#";
         private readonly IManagedMqttClient _mqttClient;
         private readonly IOptions<HausMqttSettings> _settings;
+        private readonly Action _onDisposed;
         private readonly Lazy<Task> _setupMqttListener;
         private readonly ConcurrentDictionary<Guid, IHausMqttSubscription> _subscriptions;
 
@@ -38,10 +39,11 @@ namespace Haus.Mqtt.Client
         public bool IsConnected => _mqttClient.IsConnected;
         public bool IsStarted => _mqttClient.IsStarted;
 
-        public HausMqttClient(IManagedMqttClient mqttClient, IOptions<HausMqttSettings> settings)
+        public HausMqttClient(IManagedMqttClient mqttClient, IOptions<HausMqttSettings> settings, Action onDisposed = null)
         {
             _mqttClient = mqttClient;
             _settings = settings;
+            _onDisposed = onDisposed;
             _subscriptions = new ConcurrentDictionary<Guid, IHausMqttSubscription>();
             _setupMqttListener = new Lazy<Task>(SetupMqttListenerAsync);
         }
@@ -91,6 +93,7 @@ namespace Haus.Mqtt.Client
         {
             _mqttClient.Dispose();
             GC.SuppressFinalize(this);
+            _onDisposed?.Invoke();
             return ValueTask.CompletedTask;
         }
 
