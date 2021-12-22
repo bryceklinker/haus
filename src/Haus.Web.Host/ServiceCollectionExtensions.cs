@@ -34,7 +34,9 @@ namespace Haus.Web.Host
                 {
                     opts.UseSqlite(configuration["Database:ConnectionString"], sqlite =>
                     {
-                        sqlite.MigrationsAssembly(MigrationsAssembly);
+                        sqlite
+                            .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)
+                            .MigrationsAssembly(MigrationsAssembly);
                     });
                 })
                 .Configure<AuthOptions>(configuration.GetSection("Auth"))
