@@ -11,6 +11,8 @@ namespace Haus.Core.Rooms.Entities
             builder.ToTable("Rooms");
             builder.HasKey(r => r.Id);
             builder.Property(r => r.Name).IsRequired();
+            builder.Property(r => r.OccupancyTimeoutInSeconds).IsRequired().HasDefaultValue(300);
+            builder.Property(r => r.LastOccupiedTime);
 
             builder.OwnsOne(r => r.Lighting, LightingEntity.Configure);
 

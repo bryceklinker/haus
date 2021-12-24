@@ -17,6 +17,8 @@ namespace Haus.Core.Rooms.Validators
             RuleFor(r => r.Name)
                 .Required()
                 .MustAsync(BeUniqueAsync);
+            RuleFor(r => r.OccupancyTimeoutInSeconds)
+                .GreaterThanOrEqualTo(0);
         }
 
         private Task<bool> BeUniqueAsync(RoomModel model, string name, CancellationToken token)

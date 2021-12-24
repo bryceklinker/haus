@@ -3,6 +3,7 @@ using System;
 using Haus.Core.Common.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Haus.Core.Common.Storage.Migrations
 {
     [DbContext(typeof(HausDbContext))]
-    partial class HausDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211223023836_AddOccupancyTimeoutToRooms")]
+    partial class AddOccupancyTimeoutToRooms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
@@ -126,9 +128,6 @@ namespace Haus.Core.Common.Storage.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("LastOccupiedTime")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -136,7 +135,7 @@ namespace Haus.Core.Common.Storage.Migrations
                     b.Property<int>("OccupancyTimeoutInSeconds")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasDefaultValue(300);
+                        .HasDefaultValue(0);
 
                     b.HasKey("Id");
 

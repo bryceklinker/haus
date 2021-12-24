@@ -17,7 +17,7 @@ namespace Haus.Cqrs.DomainEvents
 
         public void Enqueue(IDomainEvent domainEvent)
         {
-            _logger.LogInformation($"Enqueuing domain event {domainEvent.GetType().Name}...");
+            _logger.LogInformation("Enqueuing domain event {EventName}...", domainEvent.GetType().Name);
             _domainEventBus.Enqueue(domainEvent);
         }
 
@@ -25,7 +25,7 @@ namespace Haus.Cqrs.DomainEvents
         {
             _logger.LogInformation("Flushing domain events...");
             await _domainEventBus.FlushAsync(token).ConfigureAwait(false);
-            _logger.LogInformation("Finished flushing domain events.");
+            _logger.LogInformation("Finished flushing domain events");
         }
     }
 }

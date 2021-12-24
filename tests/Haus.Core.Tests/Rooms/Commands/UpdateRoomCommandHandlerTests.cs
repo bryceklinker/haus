@@ -28,11 +28,12 @@ namespace Haus.Core.Tests.Rooms.Commands
         {
             var original = _context.AddRoom();
             
-            var command = new UpdateRoomCommand(new RoomModel(original.Id, "bob"));
+            var command = new UpdateRoomCommand(new RoomModel(original.Id, "bob", 80));
             await _hausBus.ExecuteCommandAsync(command);
 
             var updated = await _context.FindByIdAsync<RoomEntity>(original.Id);
             updated.Name.Should().Be("bob");
+            updated.OccupancyTimeoutInSeconds.Should().Be(80);
         }
 
         [Fact]
@@ -52,7 +53,7 @@ namespace Haus.Core.Tests.Rooms.Commands
             var original = _context.AddRoom();
             var command = new UpdateRoomCommand(new RoomModel(original.Id));
 
-            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+            var act = () => _hausBus.ExecuteCommandAsync(command);
 
             await act.Should().ThrowAsync<HausValidationException>();
         }
@@ -62,7 +63,7 @@ namespace Haus.Core.Tests.Rooms.Commands
         {
             var command = new UpdateRoomCommand(new RoomModel(54, Name: "bob"));
 
-            Func<Task> act = () => _hausBus.ExecuteCommandAsync(command);
+            var act = () => _hausBus.ExecuteCommandAsync(command);
 
             await act.Should().ThrowAsync<EntityNotFoundException<RoomEntity>>();
         }

@@ -27,11 +27,8 @@ namespace Haus.Core.Devices.Events
             if (room == null)
                 return;
 
-            if (notification.Payload.Occupancy)
-                room.TurnOn(_domainEventBus);
-            else
-                room.TurnOff(_domainEventBus);
-
+            room.ChangeOccupancy(notification.Payload, _domainEventBus);
+            
             await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
             await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
         }

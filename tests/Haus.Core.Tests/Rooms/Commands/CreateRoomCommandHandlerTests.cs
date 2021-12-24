@@ -28,13 +28,14 @@ namespace Haus.Core.Tests.Rooms.Commands
         [Fact]
         public async Task WhenRoomCreatedThenReturnsModelWithRoomId()
         {
-            var model = new RoomModel(Name: "Backroom");
+            var model = new RoomModel(Name: "Backroom", OccupancyTimeoutInSeconds: 70);
 
             var result = await _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
 
             var entity = _context.Set<RoomEntity>().Single();
             entity.Id.Should().Be(result.Id);
             entity.Name.Should().Be("Backroom");
+            entity.OccupancyTimeoutInSeconds.Should().Be(70);
         }
 
         [Fact]

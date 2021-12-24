@@ -4,8 +4,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.Entities;
-using Haus.Core.Lighting;
 using Haus.Core.Lighting.Entities;
+using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.DomainEvents;
@@ -19,6 +19,7 @@ namespace Haus.Core.Rooms.Entities
             r => new RoomModel(
                 r.Id,
                 r.Name,
+                r.OccupancyTimeoutInSeconds,
                 new LightingModel(
                     r.Lighting.State,
                     new LevelLightingModel(r.Lighting.Level.Value, r.Lighting.Level.Min, r.Lighting.Level.Max),
@@ -27,10 +28,14 @@ namespace Haus.Core.Rooms.Entities
                 )
             );
 
+
         private static readonly Lazy<Func<RoomEntity, RoomModel>> ToModelFunc = new(ToModelExpression.Compile);
 
         public string Name { get; set; }
+        public int OccupancyTimeoutInSeconds { get; set; }
 
+        public DateTime? LastOccupiedTime { get; set; }
+        
         public LightingEntity Lighting { get; set; }
 
         public ICollection<DeviceEntity> Devices { get; set; }
@@ -45,10 +50,14 @@ namespace Haus.Core.Rooms.Entities
         public RoomEntity(
             long id,
             string name,
+            int occupancyTimeoutInSeconds = RoomDefaults.OccupancyTimeoutInSeconds,
+            DateTime? lastOccupiedTime = null,
             LightingEntity lighting = null,
             ICollection<DeviceEntity> devices = null)
         {
             Id = id;
+            OccupancyTimeoutInSeconds = occupancyTimeoutInSeconds;
+            LastOccupiedTime = lastOccupiedTime;
             Name = name ?? string.Empty;
             Lighting = lighting ?? new LightingEntity(LightingDefaults.State, new LevelLightingEntity(), new TemperatureLightingEntity(), new ColorLightingEntity());
             Devices = devices ?? new List<DeviceEntity>();
@@ -58,12 +67,17 @@ namespace Haus.Core.Rooms.Entities
 
         public static RoomEntity CreateFromModel(RoomModel model)
         {
-            return new() {Name = model.Name};
+            return new RoomEntity
+            {
+                Name = model.Name, 
+                OccupancyTimeoutInSeconds = model.OccupancyTimeoutInSeconds
+            };
         }
 
         public void UpdateFromModel(RoomModel roomModel)
         {
             Name = roomModel.Name;
+            OccupancyTimeoutInSeconds = roomModel.OccupancyTimeoutInSeconds;
         }
 
         public void AddDevice(DeviceEntity device, IDomainEventBus domainEventBus)
@@ -108,6 +122,29 @@ namespace Haus.Core.Rooms.Entities
             var lightingCopy = LightingEntity.FromEntity(Lighting);
             lightingCopy.State = LightingState.On;
             ChangeLighting(lightingCopy, domainEventBus);
+        }
+
+        public void ChangeOccupancy(OccupancyChangedModel model, IDomainEventBus domainEventBus)
+        {
+            if (model.Occupancy) 
+                HandleRoomOccupied(domainEventBus);
+            else
+                HandleRoomVacant(domainEventBus);
+        }
+
+        private void HandleRoomVacant(IDomainEventBus domainEventBus)
+        {
+            var lastOccupied = LastOccupiedTime.GetValueOrDefault();
+            if (lastOccupied.AddSeconds(OccupancyTimeoutInSeconds) > DateTime.UtcNow)
+                return;
+
+            TurnOff(domainEventBus);
+        }
+
+        private void HandleRoomOccupied(IDomainEventBus domainEventBus)
+        {
+            LastOccupiedTime = DateTime.UtcNow;
+            TurnOn(domainEventBus);
         }
     }
 }

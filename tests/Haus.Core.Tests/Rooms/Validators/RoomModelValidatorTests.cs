@@ -57,5 +57,25 @@ namespace Haus.Core.Tests.Rooms.Validators
 
             result.IsValid.Should().BeTrue();
         }
+
+        [Fact]
+        public async Task WhenOccupancyTimeoutIsNegativeThenReturnsInvalid()
+        {
+            var model = new RoomModel(Name: "one", OccupancyTimeoutInSeconds: -1);
+            
+            var result = await _validator.TestValidateAsync(model);
+
+            result.IsValid.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task WhenRequiredPropertiesAreProvidedThenReturnsTrue()
+        {
+            var model = new RoomModel(Name: "bob", OccupancyTimeoutInSeconds: 3);
+
+            var result = await _validator.TestValidateAsync(model);
+
+            result.IsValid.Should().BeTrue();
+        }
     }
 }
