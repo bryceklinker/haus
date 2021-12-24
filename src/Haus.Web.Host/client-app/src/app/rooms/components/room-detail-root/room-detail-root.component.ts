@@ -46,4 +46,8 @@ export class RoomDetailRootComponent implements OnInit {
   onAssignDevices(room: RoomModel) {
     this.dialog.open(AssignDevicesToRoomDialogComponent, {data: room});
   }
+
+  onSaveRoom(room: RoomModel) {
+    this.store.dispatch(RoomsActions.updateRoom.request(room));
+  }
 }

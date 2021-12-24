@@ -26,6 +26,10 @@ export class RoomDetailRootHarness extends HausComponentHarness<RoomDetailRootCo
     await this._roomDetailHarness.assignDevices();
   }
 
+  saveRoom() {
+    this._roomDetailHarness.saveRoom();
+  }
+
   static async render(roomId?: number, ...actions: Action[]) {
     const result = await renderFeatureComponent(RoomDetailRootComponent, {
       imports: [RoomsModule],

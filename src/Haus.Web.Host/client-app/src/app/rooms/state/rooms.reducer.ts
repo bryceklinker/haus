@@ -16,7 +16,7 @@ const adapter = createEntityAdapter<RoomModel>({
 const initialState: RoomsState = adapter.getInitialState();
 const reducer = createReducer(initialState,
   on(RoomsActions.loadRooms.success, (state, {payload}) => adapter.upsertMany(payload, state)),
-  on(RoomsActions.addRoom.success, (state, {payload}) => ({...adapter.upsertOne(payload, state), isAdding: false})),
+  on(RoomsActions.addRoom.success, RoomsActions.updateRoom.request, (state, {payload}) => ({...adapter.upsertOne(payload, state), isAdding: false})),
   on(RoomsActions.changeRoomLighting.request, EventsActions.roomLightingChanged, (state, {payload}) =>
     adapter.updateOne({
       id: payload.room.id,

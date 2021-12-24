@@ -28,25 +28,27 @@ let id = 0;
 
 function createMqttDiagnosticsMessage(model: Partial<UiMqttDiagnosticsMessageModel> = {}): UiMqttDiagnosticsMessageModel {
   return {
-    id: model.id || uuid(),
-    topic: model.topic || uuid(),
-    payload: model.payload || <any>uuid(),
-    timestamp: model.timestamp || new Date().toISOString(),
-    replayError: model.replayError || null,
-    isReplaying: model.isReplaying || false
+    id: uuid(),
+    topic: uuid(),
+    payload: <any>uuid(),
+    timestamp: new Date().toISOString(),
+    replayError: null,
+    isReplaying: false,
+    ...model
   };
 }
 
 function createDeviceModel(model: Partial<DeviceModel> = {}): DeviceModel {
   return {
     id: model.id || ++id,
-    name: model.name || uuid(),
-    externalId: model.externalId || uuid(),
-    metadata: model.metadata || [],
-    deviceType: model.deviceType || DeviceType.Unknown,
-    lightType: model.lightType || LightType.None,
-    roomId: model.roomId || undefined,
-    lighting: model.lighting || createLighting()
+    name: uuid(),
+    externalId: uuid(),
+    metadata: [],
+    deviceType: DeviceType.Unknown,
+    lightType: LightType.None,
+    roomId: undefined,
+    lighting: createLighting(),
+    ...model
   }
 }
 
@@ -60,20 +62,21 @@ function createListResult<T>(...items: Array<T>): ListResult<T> {
 function createRoomModel(model: Partial<RoomModel> = {}): RoomModel {
   return {
     id: model.id || ++id,
-    name: model.name || uuid(),
-    lighting: model.lighting || createLighting()
+    name: uuid(),
+    lighting: createLighting(),
+    occupancyTimeoutInSeconds: 300,
+    ...model
   };
 }
 
 function createSimulatedDevice(model: Partial<SimulatedDeviceModel> = {}): SimulatedDeviceModel {
   return {
-    deviceType: model.deviceType || DeviceType.Unknown,
-    id: model.id || uuid(),
-    lighting: model.lighting || createLighting(),
+    deviceType: DeviceType.Unknown,
+    id: uuid(),
+    lighting: createLighting(),
     isOccupied: model.isOccupied !== undefined ? model.isOccupied : false,
-    metadata: [
-      ...(model.metadata || []),
-    ]
+    metadata: [],
+    ...model,
   }
 }
 
@@ -83,117 +86,126 @@ function createMetadata(key: string, value: string): MetadataModel {
 
 function createColorLighting(model: Partial<ColorLightingModel> = {}): ColorLightingModel {
   return {
-    red: model.red === undefined ? 54 : model.red,
-    green: model.green === undefined ? 12 : model.green,
-    blue: model.blue === undefined ? 89 : model.blue
+    red: 54,
+    green: 12,
+    blue: 89,
+    ...model
   }
 }
 
 function createLevelLighting(model: Partial<LevelLightingModel> = {}): LevelLightingModel {
   return {
-    value: model.value === undefined ? 100 : model.value,
-    min: model.min === undefined ? 0 : model.min,
-    max: model.max === undefined ? 100 : model.max
+    value: 100,
+    min: 0,
+    max: 100,
+    ...model
   }
 }
 
 function createTemperatureLighting(model: Partial<TemperatureLightingModel> = {}): TemperatureLightingModel {
   return {
-    value: model.value === undefined ? 3000 : model.value,
-    min: model.min === undefined ? 2000 : model.min,
-    max: model.max === undefined ? 6000 : model.max
+    value: 3000,
+    min: 2000,
+    max: 6000,
+    ...model
   }
 }
 
 function createLighting(model: Partial<LightingModel> = {}): LightingModel {
   return {
-    state: model.state === undefined ? LightingState.On : model.state,
-    level: model.level || createLevelLighting(),
-    temperature: model.temperature,
-    color: model.color
+    state: LightingState.On,
+    level: createLevelLighting(),
+    ...model,
   }
 }
 
 function createLightingConstraints(model: Partial<LightingConstraintsModel> = {}): LightingConstraintsModel {
   return {
-    minLevel: model.minLevel || 0,
-    maxLevel: model.maxLevel || 100
+    minLevel: 0,
+    maxLevel: 100,
+    ...model
   }
 }
 
 function createDiscovery(model: Partial<DiscoveryModel> = {}): DiscoveryModel {
   return {
-    state: model.state || DiscoveryState.Disabled
+    state: DiscoveryState.Disabled,
+    ...model
   };
 }
 
 function createHealthCheckModel(model: Partial<HausHealthCheckModel> = {}): HausHealthCheckModel {
   return {
-    description: model.description,
-    durationOfCheckInMilliseconds: model.durationOfCheckInMilliseconds || 500,
-    durationOfCheckInSeconds: model.durationOfCheckInSeconds || 0.5,
+    durationOfCheckInMilliseconds: 500,
+    durationOfCheckInSeconds: 0.5,
     isError: model.isError !== undefined ? model.isError : false,
     isWarn: model.isWarn !== undefined ? model.isWarn : false,
     isOk: model.isOk !== undefined ? model.isOk : true,
-    exceptionMessage: model.exceptionMessage,
-    name: model.name || uuid(),
-    status: model.status || HealthStatus.Healthy,
-    tags: model.tags || []
+    name: uuid(),
+    status: HealthStatus.Healthy,
+    tags: [],
+    ...model
   }
 }
 
 function createHealthReportModel(model: Partial<HausHealthReportModel> = {}): HausHealthReportModel {
   return {
-    durationOfCheckInMilliseconds: model.durationOfCheckInMilliseconds || 1000,
-    durationOfCheckInSeconds: model.durationOfCheckInSeconds || 1,
+    durationOfCheckInMilliseconds: 1000,
+    durationOfCheckInSeconds: 1,
     isError: model.isError !== undefined ? model.isError : false,
     isWarn: model.isWarn !== undefined ? model.isWarn : false,
     isOk: model.isOk !== undefined ? model.isOk : true,
-    status: model.status || HealthStatus.Healthy,
-    checks: model.checks || []
+    status: HealthStatus.Healthy,
+    checks: [],
+    ...model
   }
 }
 
 function createHausEvent<T = any>(model: Partial<HausEvent<T>> = {}): HausEvent<T> {
   return {
-    type: model.type || '',
-    timestamp: model.timestamp || new Date().toISOString(),
-    payload: model.payload || null as any,
-    isEvent: model.isEvent === undefined ? model.isEvent : true
+    type: '',
+    timestamp: new Date().toISOString(),
+    payload: null as any,
+    isEvent: model.isEvent === undefined ? model.isEvent : true,
+    ...model
   }
 }
 
 function createLogEntry(model: Partial<LogEntryModel> = {}): LogEntryModel {
   return {
-    level: model.level || 'Information',
-    timestamp: model.timestamp || new Date().toISOString(),
-    message: model.message || uuid(),
-    value: model.value || {}
+    level: 'Information',
+    timestamp: new Date().toISOString(),
+    message: uuid(),
+    value: {},
+    ...model
   }
 }
 
 function createApplicationVersion(model: Partial<ApplicationVersionModel> = {}): ApplicationVersionModel {
   return {
-    creationDate: model.creationDate || new Date().toISOString(),
+    creationDate: new Date().toISOString(),
     isNewer: model.isNewer !== undefined ? model.isNewer : false,
     isOfficialRelease: model.isOfficialRelease !== undefined ? model.isOfficialRelease : false,
-    version: model.version || '0.0.0',
-    description: model.description || uuid()
+    version: '0.0.0',
+    description: uuid(),
+    ...model
   }
 }
 
 function createApplicationPackage(model: Partial<ApplicationPackageModel> = {}): ApplicationPackageModel {
   return {
-    id: model.id || 76,
-    name: model.name || uuid()
+    id: 76,
+    name: uuid(),
+    ...model
   }
 }
 
 function createUser(model: Partial<UserModel> = {}): UserModel {
   return {
-    name: model.name || uuid(),
-    email: model.email || `${uuid()}@haus.com`,
-    picture: model.picture || `https://${uuid()}.png`
+    name: uuid(),
+    email: `${uuid()}@haus.com`,
+    picture: `https://${uuid()}.png`,
+    ...model
   }
 }
 

@@ -3,10 +3,26 @@
     <mat-card-title>{{name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
+    <mat-expansion-panel [formGroup]="form">
+      <mat-expansion-panel-header aria-label="room details">
+        <mat-panel-title>Room Details</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" aria-label="room name" type="text"/>
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Occupancy Timeout</mat-label>
+        <input matInput formControlName="occupancyTimeoutInSeconds" aria-label="occupancy timeout" type="number"/>
+        <mat-label>(s)</mat-label>
+      </mat-form-field>
+    </mat-expansion-panel>
 
     <mat-expansion-panel>
       <mat-expansion-panel-header aria-label="room lighting">
-        <mat-panel-title>{{name}} Lighting</mat-panel-title>
+        <mat-panel-title>Room Lighting</mat-panel-title>
       </mat-expansion-panel-header>
 
       <lighting [lighting]="lighting"
@@ -18,6 +34,7 @@
       <mat-expansion-panel-header aria-label="room devices">
         <mat-panel-title>Room Devices</mat-panel-title>
       </mat-expansion-panel-header>
+
       <mat-list>
         <a *ngFor="let device of devices"
            mat-list-item
@@ -31,4 +48,10 @@
       </button>
     </mat-expansion-panel>
   </mat-card-content>
+  <mat-card-actions>
+    <span class="spacer"></span>
+    <button mat-button aria-label="save room" (click)="onSaveRoom()">
+      Save Room
+    </button>
+  </mat-card-actions>
 </mat-card>

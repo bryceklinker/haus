@@ -94,6 +94,10 @@ export class HausApiClient {
     return this.execute<RoomModel>(HttpMethod.POST, '/api/rooms', room);
   }
 
+  updateRoom(roomId: number, room: Partial<RoomModel>): Observable<RoomModel> {
+    return this.execute<RoomModel>(HttpMethod.PUT, `/api/rooms/${roomId}`, room);
+  }
+
   assignDevicesToRoom(roomId: number, deviceIds: Array<number>): Observable<void> {
     return this.execute(HttpMethod.POST, `/api/rooms/${roomId}/add-devices`, deviceIds);
   }

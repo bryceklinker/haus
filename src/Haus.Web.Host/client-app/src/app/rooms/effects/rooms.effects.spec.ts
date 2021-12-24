@@ -1,4 +1,4 @@
-import {RoomsEffects} from "./rooms.effects";
+import {RoomsEffects} from './rooms.effects';
 import {
   createAppTestingService,
   eventually,
@@ -7,9 +7,10 @@ import {
   setupAssignDevicesToRoom,
   setupChangeRoomLighting,
   setupGetAllRooms,
+  setupUpdateRoom,
   TestingActionsSubject
-} from "../../../testing";
-import {RoomsActions} from "../state";
+} from '../../../testing';
+import {RoomsActions} from '../state';
 
 describe('RoomsEffects', () => {
   let actions$: TestingActionsSubject;
@@ -17,9 +18,9 @@ describe('RoomsEffects', () => {
   beforeEach(() => {
     const {actionsSubject} = createAppTestingService(RoomsEffects);
     actions$ = actionsSubject;
-  })
+  });
 
-  test('should get rooms from api', async () => {
+  test('when load rooms requested then gets rooms from api', async () => {
     const expected = ModelFactory.createListResult(
       ModelFactory.createRoomModel(),
       ModelFactory.createRoomModel(),
@@ -31,10 +32,10 @@ describe('RoomsEffects', () => {
 
     await eventually(() => {
       expect(actions$.publishedActions).toContainEqual(RoomsActions.loadRooms.success(expected));
-    })
-  })
+    });
+  });
 
-  test('should add room to api', async () => {
+  test('when add room requested then adds room to api', async () => {
     const expected = ModelFactory.createRoomModel();
     setupAddRoom(expected);
 
@@ -42,10 +43,21 @@ describe('RoomsEffects', () => {
 
     await eventually(() => {
       expect(actions$.publishedActions).toContainEqual(RoomsActions.addRoom.success(expected));
-    })
-  })
+    });
+  });
 
-  test('should change room lighting when change room lighting requested', async () => {
+  test('when update room requested then updates room on api', async () => {
+    const expected = ModelFactory.createRoomModel({id: 12});
+    setupUpdateRoom(12);
+
+    actions$.next(RoomsActions.updateRoom.request(expected));
+
+    await eventually(() => {
+      expect(actions$.publishedActions).toContainEqual(RoomsActions.updateRoom.success(expected));
+    });
+  });
+
+  test('when room lighting change requested then changes lighting for room', async () => {
     setupChangeRoomLighting(54);
 
     const lighting = ModelFactory.createLighting();
@@ -54,17 +66,20 @@ describe('RoomsEffects', () => {
 
     await eventually(() => {
       expect(actions$.publishedActions).toContainEqual(RoomsActions.changeRoomLighting.success({room, lighting}));
-    })
-  })
+    });
+  });
 
-  test('should assign devices to room when assign devices to room requested', async () => {
+  test('when assign devices to room requested then assigns devices to room', async () => {
     setupAssignDevicesToRoom(65);
 
     const deviceIds = [12, 5, 6];
     actions$.next(RoomsActions.assignDevicesToRoom.request({roomId: 65, deviceIds}));
 
     await eventually(() => {
-      expect(actions$.publishedActions).toContainEqual(RoomsActions.assignDevicesToRoom.success({roomId: 65, deviceIds}));
-    })
-  })
-})
+      expect(actions$.publishedActions).toContainEqual(RoomsActions.assignDevicesToRoom.success({
+        roomId: 65,
+        deviceIds
+      }));
+    });
+  });
+});

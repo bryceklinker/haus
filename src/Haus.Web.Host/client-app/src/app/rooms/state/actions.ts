@@ -17,6 +17,13 @@ export const RoomsActions = {
     (error: any) => ({payload: error})
   ),
 
+  updateRoom: createAsyncActionSet(
+    '[Rooms] Update Room',
+    (room: RoomModel) => ({payload: room}),
+    (room: RoomModel) => ({payload: room}),
+    (error: any) => ({payload: error})
+  ),
+
   changeRoomLighting: createAsyncActionSet(
     '[Rooms] Change Room Lighting',
     (change: RoomLightingChangedEvent) => ({payload: change}),
