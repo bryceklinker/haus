@@ -33,8 +33,7 @@ public class RoomOccupancyTests : IAsyncLifetime
     public async Task InitializeAsync()
     {
         var (room, device) = await _factory.AddRoomWithDevice($"{Guid.NewGuid()}", DeviceType.MotionSensor);
-        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
-            RoomLightingChangedEvent.Type,
+        await _factory.SubscribeToRoomLightingChangedCommandsAsync(
             cmd => _roomLightingCommands.Add(cmd.Payload)
         );
         _room = room;

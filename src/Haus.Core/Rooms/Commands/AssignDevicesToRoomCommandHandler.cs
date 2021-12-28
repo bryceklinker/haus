@@ -44,7 +44,7 @@ namespace Haus.Core.Rooms.Commands
 
         private async Task<DeviceEntity[]> EnsureAllDevicesExist(long[] deviceIds, CancellationToken token)
         {
-            var devices = await _context.FindAllById<DeviceEntity>(deviceIds, token);
+            var devices = await _context.FindAllById<DeviceEntity>(deviceIds, token).ConfigureAwait(false);
             if (devices.Length == deviceIds.Length)
                 return devices;
 

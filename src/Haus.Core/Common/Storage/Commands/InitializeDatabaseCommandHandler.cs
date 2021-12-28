@@ -21,9 +21,9 @@ namespace Haus.Core.Common.Storage.Commands
         protected override async Task Handle(InitializeDatabaseCommand request, CancellationToken cancellationToken)
         {
             var allMigrations = _context.Database.GetMigrations();
-            var appliedMigrations = await _context.Database.GetAppliedMigrationsAsync(cancellationToken);
+            var appliedMigrations = await _context.Database.GetAppliedMigrationsAsync(cancellationToken).ConfigureAwait(false);
             if (allMigrations.Count() != appliedMigrations.Count())
-                await _context.Database.MigrateAsync(cancellationToken);
+                await _context.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

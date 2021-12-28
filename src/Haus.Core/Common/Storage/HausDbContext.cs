@@ -20,13 +20,19 @@ namespace Haus.Core.Common.Storage
         {
             
         }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(HausDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
         }
 
+        public async Task<bool> HaveMigrationsBeenApplied(CancellationToken token = default)
+        {
+            var pendingMigrations = await Database.GetPendingMigrationsAsync(token).ConfigureAwait(false);
+            return !pendingMigrations.Any();
+        }
+        
         public Task<DiscoveryEntity> GetDiscoveryEntityAsync(CancellationToken token) =>
             Set<DiscoveryEntity>().SingleOrDefaultAsync(token);
         

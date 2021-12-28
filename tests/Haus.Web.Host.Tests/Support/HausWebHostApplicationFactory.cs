@@ -15,6 +15,7 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;
+using Haus.Core.Models.Rooms.Events;
 using Haus.Cqrs;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
@@ -150,6 +151,14 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
         await mqttClient.SubscribeToHausEventsAsync(eventType, handler);
     }
 
+    public async Task SubscribeToRoomLightingChangedCommandsAsync(Action<HausCommand<RoomLightingChangedEvent>> handler)
+    {
+        await SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
+            RoomLightingChangedEvent.Type,
+            handler
+        );
+    }
+    
     public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator)
     {
         var client = await GetMqttClient();

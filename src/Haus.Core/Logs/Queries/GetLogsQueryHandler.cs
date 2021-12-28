@@ -53,7 +53,7 @@ namespace Haus.Core.Logs.Queries
             var numberOfEntriesReturned = 0;
             foreach (var filePath in files)
             {
-                var fileEntries = await GetLogEntriesFromFile(filePath, query, token);
+                var fileEntries = await GetLogEntriesFromFile(filePath, query, token).ConfigureAwait(false);
                 foreach (var entry in fileEntries)
                 {
                     if (numberOfLinesSkipped == query.SkipCount)

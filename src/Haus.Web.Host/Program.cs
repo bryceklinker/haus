@@ -19,8 +19,8 @@ namespace Haus.Web.Host
                 var host = CreateHostBuilder(args).Build();
                 using var scope = host.Services.CreateScope();
                 var bus = scope.GetService<IHausBus>();
-                await bus.ExecuteCommandAsync(new InitializeCommand());
-                await host.RunAsync();
+                await bus.ExecuteCommandAsync(new InitializeCommand()).ConfigureAwait(false);
+                await host.RunAsync().ConfigureAwait(false);
                 return 0;
             }
             catch (Exception e)

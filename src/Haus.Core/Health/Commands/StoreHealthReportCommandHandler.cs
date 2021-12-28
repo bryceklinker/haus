@@ -29,7 +29,7 @@ namespace Haus.Core.Health.Commands
         protected override async Task Handle(StoreHealthReportCommand request, CancellationToken cancellationToken)
         {
             foreach (var check in request.Checks) 
-                await AddOrUpdateHealthCheck(check);
+                await AddOrUpdateHealthCheck(check).ConfigureAwait(false);
 
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }

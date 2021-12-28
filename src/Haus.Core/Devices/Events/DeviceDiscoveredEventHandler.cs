@@ -23,11 +23,11 @@ namespace Haus.Core.Devices.Events
         public async Task Handle(RoutableEvent<DeviceDiscoveredEvent> notification,
             CancellationToken cancellationToken = default)
         {
-            var existing = await _repository.GetByExternalId(notification.Payload.Id, cancellationToken);
+            var existing = await _repository.GetByExternalId(notification.Payload.Id, cancellationToken).ConfigureAwait(false);
             if (existing == null)
-                await CreateDeviceAsync(notification.Payload, cancellationToken);
+                await CreateDeviceAsync(notification.Payload, cancellationToken).ConfigureAwait(false);
             else
-                await UpdateDeviceAsync(existing, notification.Payload, cancellationToken);
+                await UpdateDeviceAsync(existing, notification.Payload, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task CreateDeviceAsync(DeviceDiscoveredEvent @event, CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ namespace Haus.Core.Devices.Events
         private async Task UpdateDeviceAsync(DeviceEntity device, DeviceDiscoveredEvent @event, CancellationToken cancellationToken)
         {
             device.UpdateFromDiscoveredDevice(@event, _hausBus);
-            await _repository.SaveAsync(device, cancellationToken);
+            await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
             await _hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceUpdatedEvent(device.ToModel())), cancellationToken)
                 .ConfigureAwait(false);
         }

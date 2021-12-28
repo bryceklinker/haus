@@ -21,9 +21,9 @@ namespace Haus.Core.Common.Storage.Commands
 
         protected override async Task Handle(ClearDatabaseCommand request, CancellationToken cancellationToken)
         {
-            await ClearAllAsync<DeviceMetadataEntity>(cancellationToken);
-            await ClearAllAsync<DeviceEntity>(cancellationToken);
-            await ClearAllAsync<RoomEntity>(cancellationToken);
+            await ClearAllAsync<DeviceMetadataEntity>(cancellationToken).ConfigureAwait(false);
+            await ClearAllAsync<DeviceEntity>(cancellationToken).ConfigureAwait(false);
+            await ClearAllAsync<RoomEntity>(cancellationToken).ConfigureAwait(false);
         }
 
         private async Task ClearAllAsync<T>(CancellationToken token)

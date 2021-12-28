@@ -33,7 +33,7 @@ namespace Haus.Core.Rooms.Commands
             room.ChangeLighting(lighting, _domainEventBus);
             
             await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
-            await _domainEventBus.FlushAsync(cancellationToken);
+            await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

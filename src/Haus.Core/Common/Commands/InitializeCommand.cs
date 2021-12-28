@@ -22,7 +22,8 @@ namespace Haus.Core.Common.Commands
 
         protected override async Task Handle(InitializeCommand request, CancellationToken cancellationToken)
         {
-            await _hausBus.ExecuteCommandAsync(new InitializeDatabaseCommand(), cancellationToken);
+            await _hausBus.ExecuteCommandAsync(new InitializeDatabaseCommand(), cancellationToken)
+                .ConfigureAwait(false);
             await Task.WhenAll(
                 _hausBus.ExecuteCommandAsync(new InitializeDiscoveryCommand(), cancellationToken),
                 _hausBus.ExecuteCommandAsync(new SyncDiscoveryCommand(), cancellationToken)

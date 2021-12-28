@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Models.Common;
@@ -30,11 +31,8 @@ namespace Haus.Web.Host.Tests.Devices
                 DeviceType.MotionSensor | DeviceType.LightSensor | DeviceType.TemperatureSensor;
             var (room, sensor) = await _factory.AddRoomWithDevice("sup", multiSensorDeviceType);
 
-            HausCommand<RoomLightingChangedEvent> hausCommand = null;
-            await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
-                RoomLightingChangedEvent.Type,
-                cmd => hausCommand = cmd
-            );
+            var commands = new ConcurrentBag<HausCommand<RoomLightingChangedEvent>>();
+            await _factory.SubscribeToRoomLightingChangedCommandsAsync(commands.Add);
             await _factory.PublishHausEventAsync(new MultiSensorChanged(
                 sensor.ExternalId,
                 new OccupancyChangedModel(sensor.ExternalId, true)
@@ -42,8 +40,8 @@ namespace Haus.Web.Host.Tests.Devices
 
             Eventually.Assert(() =>
             {
-                hausCommand.Payload.Room.Id.Should().Be(room.Id);
-                hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
+                commands.Should()
+                    .Contain(cmd => cmd.Payload.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On);
             });
         }
     }

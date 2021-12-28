@@ -36,10 +36,7 @@ public class OccupancyChangedTests
         var (room, sensor) = await _factory.AddRoomWithDevice("home", DeviceType.MotionSensor);
 
         var lightingCommands = new ConcurrentBag<HausCommand<RoomLightingChangedEvent>>();
-        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
-            RoomLightingChangedEvent.Type,
-            lightingCommands.Add
-        );
+        await _factory.SubscribeToRoomLightingChangedCommandsAsync(lightingCommands.Add);
         await _factory.PublishHausEventAsync(new OccupancyChangedModel(sensor.ExternalId, true));
 
         Eventually.Assert(() =>
