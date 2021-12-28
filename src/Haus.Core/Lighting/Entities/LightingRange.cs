@@ -2,18 +2,11 @@ using System;
 
 namespace Haus.Core.Lighting.Entities
 {
-    public abstract class LightingRange
+    public abstract record LightingRange(double Value, double Min, double Max)
     {
-        public double Value { get; set; }
-        public double Min { get; set; }
-        public double Max { get; set; }
-
-        protected LightingRange(double value, double min, double max)
-        {
-            Value = value;
-            Min = min;
-            Max = max;
-        }
+        public double Value { get; set; } = Value;
+        public double Min { get; set; } = Min;
+        public double Max { get; set; } = Max;
 
         public double CalculateTargetValue(LightingRange target)
         {

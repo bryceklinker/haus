@@ -62,12 +62,12 @@ public class RoomsApiTests
     public async Task WhenRoomCreatedWithDuplicateNameThenReturnsBadRequest()
     {
         await CreateRoomAsync("create-duplicate");
-            
+
         var response = await _apiClient.CreateRoomAsync(new RoomModel(Name: "create-duplicate"));
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
-        
+
     [Fact]
     public async Task WhenRoomUpdatedWithDuplicateNameThenReturnsBadRequest()
     {
@@ -77,7 +77,7 @@ public class RoomsApiTests
         var response = await _apiClient.UpdateRoomAsync(room.Id, new RoomModel(Name: "duplicate"));
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
-        
+
     [Fact]
     public async Task WhenDeviceAddedToRoomThenRoomHasDevice()
     {
@@ -94,42 +94,48 @@ public class RoomsApiTests
     public async Task WhenRoomLightingIsSetThenRoomLightingEventPublishedToMqtt()
     {
         HausCommand<RoomLightingChangedEvent> hausCommand = null;
-        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(msg => hausCommand = msg);
-            
+        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
+            RoomLightingChangedEvent.Type,
+            msg => hausCommand = msg
+        );
+
         var room = await CreateRoomAsync("room");
         await _apiClient.ChangeRoomLightingAsync(room.Id, new LightingModel(LightingState.On));
-            
-        Eventually.Assert(() =>
-        {
-            hausCommand.Type.Should().Be(RoomLightingChangedEvent.Type);
-        });
+
+        Eventually.Assert(() => { hausCommand.Type.Should().Be(RoomLightingChangedEvent.Type); });
     }
 
     [Fact]
     public async Task WhenRoomIsTurnedOffThenRoomLightingEventPublishedWithStateOff()
     {
         HausCommand<RoomLightingChangedEvent> hausCommand = null;
-        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(msg => hausCommand = msg);
-            
+        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
+            RoomLightingChangedEvent.Type,
+            msg => hausCommand = msg
+        );
+
         var room = await CreateRoomAsync("turn-off");
         await _apiClient.TurnRoomOffAsync(room.Id);
-            
+
         Eventually.Assert(() =>
         {
             hausCommand.Type.Should().Be(RoomLightingChangedEvent.Type);
             hausCommand.Payload.Lighting.State.Should().Be(LightingState.Off);
         });
     }
-        
+
     [Fact]
     public async Task WhenRoomIsTurnedOnThenRoomLightingEventPublishedWithStateOn()
     {
         HausCommand<RoomLightingChangedEvent> hausCommand = null;
-        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(msg => hausCommand = msg);
-            
+        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
+            RoomLightingChangedEvent.Type,
+            msg => hausCommand = msg
+        );
+
         var room = await CreateRoomAsync("turn-on");
         await _apiClient.TurnRoomOnAsync(room.Id);
-            
+
         Eventually.Assert(() =>
         {
             hausCommand.Type.Should().Be(RoomLightingChangedEvent.Type);

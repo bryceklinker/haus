@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Haus.Core.Lighting.Entities
 {
-    public class TemperatureLightingEntity : LightingRange
+    public record TemperatureLightingEntity : LightingRange
     {
         public TemperatureLightingEntity()
             : this(LightingDefaults.Temperature)
@@ -28,6 +28,7 @@ namespace Haus.Core.Lighting.Entities
         {
             if (current == null)
                 return null;
+            
             if (target == null)
                 return FromEntity(current);
 

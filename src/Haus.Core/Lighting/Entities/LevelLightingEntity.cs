@@ -3,14 +3,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Haus.Core.Lighting.Entities
 {
-    public class LevelLightingEntity : LightingRange
+    public record LevelLightingEntity : LightingRange
     {
-        public LevelLightingEntity()
-            : this(LightingDefaults.Level)
-        {
-            
-        }
-        
         public LevelLightingEntity(
             double value = LightingDefaults.Level, 
             double min = LightingDefaults.MinLevel, 

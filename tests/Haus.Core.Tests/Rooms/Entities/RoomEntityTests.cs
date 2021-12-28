@@ -180,11 +180,11 @@ public class RoomEntityTests
         var device = new DeviceEntity
         {
             DeviceType = DeviceType.Light,
-            Lighting = new LightingEntity(level: new LevelLightingEntity(0, 0, 254))
+            Lighting = new LightingEntity(Level: new LevelLightingEntity(0, 0, 254))
         };
         room.AddDevice(device, fakeDomainEventBus);
 
-        room.ChangeLighting(new LightingEntity(level: new LevelLightingEntity(50)), fakeDomainEventBus);
+        room.ChangeLighting(new LightingEntity(Level: new LevelLightingEntity(50)), fakeDomainEventBus);
 
         device.Lighting.Level.Should().BeEquivalentTo(new LevelLightingEntity(127, 0, 254));
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Models.Diagnostics;
@@ -24,22 +25,19 @@ namespace Haus.Web.Host.Tests.Diagnostics
         [Fact]
         public async Task WhenMqttMessagePublishedThenMessageIsRelayedToSignalr()
         {
-            MqttDiagnosticsMessageModel received = null;
             var connection = await _factory.CreateHubConnection("diagnostics");
             var mqttClient = await _factory.GetMqttClient();
-            
-            connection.On<MqttDiagnosticsMessageModel>("OnMqttMessage", arg =>
-            {
-                received = arg;
-            });
+
+            var mqttMessages = new ConcurrentBag<MqttDiagnosticsMessageModel>();
+            connection.On<MqttDiagnosticsMessageModel>("OnMqttMessage", mqttMessages.Add);
 
             await mqttClient.PublishAsync("my-topic", "this is data");
             Eventually.Assert(() =>
             {
-                received.Id.Should().BeAGuid();
-                received.Topic.Should().Be("my-topic");
-                received.Payload.ToString().Should().Be("this is data");
-                received.Timestamp.Should().Be(CurrentTime);
+                mqttMessages.Should()
+                    .Contain(e => e.Topic == "my-topic")
+                    .And.Contain(e => e.Payload.ToString() == "this is data")
+                    .And.Contain(e => e.Timestamp == CurrentTime);
             });
         }
     }

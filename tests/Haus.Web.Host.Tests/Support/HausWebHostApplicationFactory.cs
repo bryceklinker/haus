@@ -8,7 +8,6 @@ using Haus.Api.Client;
 using Haus.Api.Client.Options;
 using Haus.Core.Common;
 using Haus.Core.Common.Commands;
-using Haus.Core.Common.Storage;
 using Haus.Core.Common.Storage.Commands;
 using Haus.Core.Models;
 using Haus.Core.Models.Common;
@@ -25,165 +24,163 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace Haus.Web.Host.Tests.Support
+namespace Haus.Web.Host.Tests.Support;
+
+public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
 {
-    public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
+    private readonly FakeClock _clock;
+
+    public HausWebHostApplicationFactory()
     {
-        private readonly FakeClock _clock;
+        _clock = new FakeClock();
+    }
 
-        public HausWebHostApplicationFactory()
+    protected override IHost CreateHost(IHostBuilder builder)
+    {
+        var host = base.CreateHost(builder);
+        using var scope = host.Services.CreateScope();
+        var hausBus = scope.GetService<IHausBus>();
+        hausBus.ExecuteCommandAsync(new InitializeCommand()).Wait();
+        hausBus.ExecuteCommandAsync(new ClearDatabaseCommand()).Wait();
+        return host;
+    }
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureTestServices(services =>
         {
-            _clock = new FakeClock();
-        }
+            services.AddSingleton<IClock>(_clock);
+            services.AddHausApiClient(opts => { opts.BaseUrl = Server.BaseAddress.ToString(); })
+                .RemoveAll(typeof(IHttpClientFactory))
+                .AddSingleton<IHttpClientFactory>(new FakeHttpClientFactory(CreateHttpClientWithAuth));
 
-        protected override IHost CreateHost(IHostBuilder builder)
-        {
-            var host = base.CreateHost(builder);
-            using var scope = host.Services.CreateScope();
-            var hausBus = scope.GetService<IHausBus>();
-            hausBus.ExecuteCommandAsync(new InitializeCommand()).Wait();
-            hausBus.ExecuteCommandAsync(new ClearDatabaseCommand()).Wait();
-            return host;
-        }
-
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder.ConfigureTestServices(services =>
-            {
-                services.AddSingleton<IClock>(_clock);
-                services.AddHausApiClient(opts => { opts.BaseUrl = Server.BaseAddress.ToString(); })
-                    .RemoveAll(typeof(IHttpClientFactory))
-                    .AddSingleton<IHttpClientFactory>(new FakeHttpClientFactory(CreateHttpClientWithAuth));
-
-                services.AddAuthentication(opts =>
-                    {
-                        opts.DefaultAuthenticateScheme = TestingAuthenticationHandler.TestingScheme;
-                        opts.DefaultChallengeScheme = TestingAuthenticationHandler.TestingScheme;
-                        opts.DefaultScheme = TestingAuthenticationHandler.TestingScheme;
-                    })
-                    .AddScheme<AuthenticationSchemeOptions, TestingAuthenticationHandler>(TestingAuthenticationHandler.TestingScheme, _ => { });
-                services.Configure<HealthCheckPublisherOptions>(opts =>
+            services.AddAuthentication(opts =>
                 {
-                    opts.Delay = TimeSpan.Zero;
-                    opts.Period = TimeSpan.FromSeconds(1);
-                });
-            });
-        }
-
-        public IHausApiClient CreateAuthenticatedClient()
-        {
-            return Services.GetRequiredService<IHausApiClient>();
-        }
-
-        public IHausApiClient CreateUnauthenticatedClient()
-        {
-            var factory = new FakeHttpClientFactory(CreateClient);
-            var options = Services.GetRequiredService<IOptions<HausApiClientSettings>>();
-            return new HausApiClientFactory(factory, options).Create();
-        }
-
-        public async Task<HubConnection> CreateHubConnection(string hub)
-        {
-            CreateClient();
-            var connection = new HubConnectionBuilder()
-                .AddJsonProtocol(opts =>
-                {
-                    opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
+                    opts.DefaultAuthenticateScheme = TestingAuthenticationHandler.TestingScheme;
+                    opts.DefaultChallengeScheme = TestingAuthenticationHandler.TestingScheme;
+                    opts.DefaultScheme = TestingAuthenticationHandler.TestingScheme;
                 })
-                .WithUrl(
-                    $"http://localhost/hubs/{hub}",
-                    o =>
-                    {
-                        o.HttpMessageHandlerFactory = _ => Server.CreateHandler();
-                        o.AccessTokenProvider = () => Task.FromResult(TestingAuthenticationHandler.TestingScheme);
-                    })
-                .Build();
-            await connection.StartAsync();
-            return connection;
-        }
-
-        public async Task<IHausMqttClient> GetMqttClient()
-        {
-            var creator = Services.GetRequiredService<IHausMqttClientFactory>();
-            return await creator.CreateClient();
-        }
-
-        public async Task<(RoomModel, DeviceModel)> AddRoomWithDevice(
-            string roomName,
-            DeviceType deviceType)
-        {
-            var (room, devices) = await AddRoomWithDevices(roomName, deviceType);
-            return (room, devices.Single());
-        }
-        
-        public async Task<(RoomModel, DeviceModel[])> AddRoomWithDevices(
-            string roomName,
-            params DeviceType[] deviceTypes)
-        {
-            var discoverDeviceTasks = deviceTypes
-                .Select(type => WaitForDeviceToBeDiscovered(type));
-            
-            var devices = await Task.WhenAll(discoverDeviceTasks);
-
-            var apiClient = CreateAuthenticatedClient();
-            var createResponse = await apiClient.CreateRoomAsync(new RoomModel(Name: roomName));
-            var room = await createResponse.Content.ReadFromJsonAsync<RoomModel>();
-            await apiClient.AddDevicesToRoomAsync(room.Id, devices.Select(d => d.Id).ToArray());
-
-            return (room, devices);
-        }
-
-        public async Task SubscribeToHausCommandsAsync<T>(Action<HausCommand<T>> handler)
-        {
-            var mqttClient = await GetMqttClient();
-            await mqttClient.SubscribeToHausCommandsAsync(handler);
-        }
-
-        public async Task SubscribeToHausEventsAsync<T>(Action<HausEvent<T>> handler)
-        {
-            var mqttClient = await GetMqttClient();
-            await mqttClient.SubscribeToHausEventsAsync(handler);
-        }
-
-        public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator)
-        {
-            var client = await GetMqttClient();
-            await client.PublishHausEventAsync(creator);
-        }
-
-        public async Task<DeviceModel> WaitForDeviceToBeDiscovered(
-            DeviceType deviceType = DeviceType.Unknown,
-            string externalId = null)
-        {
-            var actualId = string.IsNullOrWhiteSpace(externalId) ? $"{Guid.NewGuid()}" : externalId;
-            await PublishHausEventAsync(new DeviceDiscoveredEvent(actualId, deviceType));
-
-            var apiClient = CreateAuthenticatedClient();
-            return await WaitFor.ResultAsync(async () =>
+                .AddScheme<AuthenticationSchemeOptions, TestingAuthenticationHandler>(TestingAuthenticationHandler.TestingScheme, _ => { });
+            services.Configure<HealthCheckPublisherOptions>(opts =>
             {
-                var devices = await apiClient.GetDevicesAsync(actualId);
-                return devices.Items.Single();
+                opts.Delay = TimeSpan.Zero;
+                opts.Period = TimeSpan.FromSeconds(1);
             });
-        }
+        });
+    }
 
-        public void SetClockTime(DateTime time)
-        {
-            _clock.SetNow(time);
-        }
+    public IHausApiClient CreateAuthenticatedClient()
+    {
+        return Services.GetRequiredService<IHausApiClient>();
+    }
 
-        private HttpClient CreateHttpClientWithAuth()
+    public IHausApiClient CreateUnauthenticatedClient()
+    {
+        var factory = new FakeHttpClientFactory(CreateClient);
+        var options = Services.GetRequiredService<IOptions<HausApiClientSettings>>();
+        return new HausApiClientFactory(factory, options).Create();
+    }
+
+    public async Task<HubConnection> CreateHubConnection(string hub)
+    {
+        CreateClient();
+        var connection = new HubConnectionBuilder()
+            .AddJsonProtocol(opts =>
+            {
+                opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
+            })
+            .WithUrl(
+                $"http://localhost/hubs/{hub}",
+                o =>
+                {
+                    o.HttpMessageHandlerFactory = _ => Server.CreateHandler();
+                    o.AccessTokenProvider = () => Task.FromResult(TestingAuthenticationHandler.TestingScheme);
+                })
+            .Build();
+        await connection.StartAsync();
+        return connection;
+    }
+
+    public async Task<IHausMqttClient> GetMqttClient()
+    {
+        var creator = Services.GetRequiredService<IHausMqttClientFactory>();
+        return await creator.CreateClient();
+    }
+
+    public async Task<(RoomModel, DeviceModel)> AddRoomWithDevice(
+        string roomName,
+        DeviceType deviceType)
+    {
+        var (room, devices) = await AddRoomWithDevices(roomName, deviceType);
+        return (room, devices.Single());
+    }
+        
+    public async Task<(RoomModel, DeviceModel[])> AddRoomWithDevices(
+        string roomName,
+        params DeviceType[] deviceTypes)
+    {
+        var discoverDeviceTasks = deviceTypes
+            .Select(type => WaitForDeviceToBeDiscovered(type));
+            
+        var devices = await Task.WhenAll(discoverDeviceTasks);
+
+        var apiClient = CreateAuthenticatedClient();
+        var createResponse = await apiClient.CreateRoomAsync(new RoomModel(Name: roomName));
+        var room = await createResponse.Content.ReadFromJsonAsync<RoomModel>();
+        await apiClient.AddDevicesToRoomAsync(room.Id, devices.Select(d => d.Id).ToArray());
+
+        return (room, devices);
+    }
+
+    public async Task SubscribeToHausCommandsAsync<T>(string commandType, Action<HausCommand<T>> handler)
+    {
+        var mqttClient = await GetMqttClient();
+        await mqttClient.SubscribeToHausCommandsAsync(commandType, handler);
+    }
+
+    public async Task SubscribeToHausEventsAsync<T>(string eventType, Action<HausEvent<T>> handler)
+    {
+        var mqttClient = await GetMqttClient();
+        await mqttClient.SubscribeToHausEventsAsync(eventType, handler);
+    }
+
+    public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator)
+    {
+        var client = await GetMqttClient();
+        await client.PublishHausEventAsync(creator);
+    }
+
+    public async Task<DeviceModel> WaitForDeviceToBeDiscovered(
+        DeviceType deviceType = DeviceType.Unknown,
+        string externalId = null)
+    {
+        var actualId = string.IsNullOrWhiteSpace(externalId) ? $"{Guid.NewGuid()}" : externalId;
+        await PublishHausEventAsync(new DeviceDiscoveredEvent(actualId, deviceType));
+
+        var apiClient = CreateAuthenticatedClient();
+        return await WaitFor.ResultAsync(async () =>
         {
-            var client = CreateClient();
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue(TestingAuthenticationHandler.TestingScheme);
-            return client;
-        }
+            var devices = await apiClient.GetDevicesAsync(actualId);
+            return devices.Items.Single();
+        });
+    }
+
+    public void SetClockTime(DateTime time)
+    {
+        _clock.SetNow(time);
+    }
+
+    private HttpClient CreateHttpClientWithAuth()
+    {
+        var client = CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue(TestingAuthenticationHandler.TestingScheme);
+        return client;
     }
 }

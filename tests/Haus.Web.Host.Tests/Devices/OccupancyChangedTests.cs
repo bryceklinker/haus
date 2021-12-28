@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -13,38 +14,38 @@ using Haus.Core.Models.Rooms.Events;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
 using Xunit;
+using Xunit.Sdk;
 
-namespace Haus.Web.Host.Tests.Devices
+namespace Haus.Web.Host.Tests.Devices;
+
+[Collection(HausWebHostCollectionFixture.Name)]
+public class OccupancyChangedTests
 {
-    [Collection(HausWebHostCollectionFixture.Name)]
-    public class OccupancyChangedTests
+    private readonly HausWebHostApplicationFactory _factory;
+    private readonly IHausApiClient _apiClient;
+
+    public OccupancyChangedTests(HausWebHostApplicationFactory factory)
     {
-        private readonly HausWebHostApplicationFactory _factory;
-        private readonly IHausApiClient _apiClient;
+        _factory = factory;
+        _apiClient = _factory.CreateAuthenticatedClient();
+    }
 
-        public OccupancyChangedTests(HausWebHostApplicationFactory factory)
+    [Fact]
+    public async Task WhenOccupancyChangedForDeviceInRoomThenRoomLightingChangedPublished()
+    {
+        var (room, sensor) = await _factory.AddRoomWithDevice("home", DeviceType.MotionSensor);
+
+        var lightingCommands = new ConcurrentBag<HausCommand<RoomLightingChangedEvent>>();
+        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
+            RoomLightingChangedEvent.Type,
+            lightingCommands.Add
+        );
+        await _factory.PublishHausEventAsync(new OccupancyChangedModel(sensor.ExternalId, true));
+
+        Eventually.Assert(() =>
         {
-            _factory = factory;
-            _apiClient = _factory.CreateAuthenticatedClient();
-        }
-
-        [Fact]
-        public async Task WhenOccupancyChangedForDeviceInRoomThenRoomLightingChangedPublished()
-        {
-            var sensor = await _factory.WaitForDeviceToBeDiscovered(DeviceType.MotionSensor);
-            var response = await _apiClient.CreateRoomAsync(new RoomModel(Name: "home"));
-            var room = await response.Content.ReadFromJsonAsync<RoomModel>();
-            await _apiClient.AddDevicesToRoomAsync(room.Id, sensor.Id);
-
-            HausCommand<RoomLightingChangedEvent> hausCommand = null;
-            await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(cmd => hausCommand = cmd);
-            await _factory.PublishHausEventAsync(new OccupancyChangedModel(sensor.ExternalId, true));
-            
-            Eventually.Assert(() =>
-            {
-                hausCommand.Payload.Room.Id.Should().Be(room.Id);
-                hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
-            });
-        }
+            lightingCommands.Should()
+                .Contain(cmd => cmd.Payload.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On);
+        });
     }
 }

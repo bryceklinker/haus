@@ -31,7 +31,10 @@ namespace Haus.Web.Host.Tests.Devices
             var (room, sensor) = await _factory.AddRoomWithDevice("sup", multiSensorDeviceType);
 
             HausCommand<RoomLightingChangedEvent> hausCommand = null;
-            await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(cmd => hausCommand = cmd);
+            await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
+                RoomLightingChangedEvent.Type,
+                cmd => hausCommand = cmd
+            );
             await _factory.PublishHausEventAsync(new MultiSensorChanged(
                 sensor.ExternalId,
                 new OccupancyChangedModel(sensor.ExternalId, true)

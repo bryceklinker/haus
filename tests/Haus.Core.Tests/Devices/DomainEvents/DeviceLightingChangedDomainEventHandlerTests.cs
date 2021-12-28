@@ -24,7 +24,7 @@ namespace Haus.Core.Tests.Devices.DomainEvents
         public async Task WhenDeviceLightingChangedThenRoutableCommandIsPublished()
         {
             var device = new DeviceEntity {Id = 123};
-            var lighting = new LightingEntity(level: new LevelLightingEntity(34.12));
+            var lighting = new LightingEntity(Level: new LevelLightingEntity(34.12));
             _hausBus.Enqueue(new DeviceLightingChangedDomainEvent(device, lighting));
 
             await _hausBus.FlushAsync();
@@ -38,7 +38,7 @@ namespace Haus.Core.Tests.Devices.DomainEvents
         public async Task WhenDeviceLightingChangedThenRoutableEventPublished()
         {
             var device = new DeviceEntity {Id = 123};
-            var lighting = new LightingEntity(level: new LevelLightingEntity());
+            var lighting = new LightingEntity(Level: new LevelLightingEntity());
             _hausBus.Enqueue(new DeviceLightingChangedDomainEvent(device, lighting));
 
             await _hausBus.FlushAsync();

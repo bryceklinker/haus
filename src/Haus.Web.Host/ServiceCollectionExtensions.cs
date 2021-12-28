@@ -13,6 +13,7 @@ using Haus.Web.Host.Common.SignalR;
 using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
 using Haus.Web.Host.Health;
+using Haus.Web.Host.Rooms;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -53,6 +54,7 @@ namespace Haus.Web.Host
                 .AddHostedService<DiagnosticsMqttListener>()
                 .AddHostedService<DeviceSimulatorStatePublisher>()
                 .AddHostedService<HealthListener>()
+                .AddHostedService<RoomVacancyBackgroundService>()
                 .AddSingleton<IHealthCheckPublisher, HealthPublisher>();
         }
 

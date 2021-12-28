@@ -228,7 +228,7 @@ public class DeviceEntityTest
         entity.Lighting.Should().BeEquivalentTo(new LightingEntity(
                 LightingDefaults.State,
                 new LevelLightingEntity(),
-                color: new ColorLightingEntity()
+                Color: new ColorLightingEntity()
             )
         );
     }
@@ -319,7 +319,7 @@ public class DeviceEntityTest
     {
         var domainEventBus = new FakeDomainEventBus();
         var light = new DeviceEntity(deviceType: DeviceType.Light);
-        var lighting = new LightingEntity();
+        var lighting = new LightingEntity(LightingState.On);
 
         light.ChangeLighting(lighting, domainEventBus);
 

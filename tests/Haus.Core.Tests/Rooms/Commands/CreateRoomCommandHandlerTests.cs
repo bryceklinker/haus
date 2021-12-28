@@ -12,50 +12,49 @@ using Haus.Core.Rooms.Entities;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Rooms.Commands
+namespace Haus.Core.Tests.Rooms.Commands;
+
+public class CreateRoomCommandHandlerTests
 {
-    public class CreateRoomCommandHandlerTests
+    private readonly HausDbContext _context;
+    private readonly CapturingHausBus _bus;
+
+    public CreateRoomCommandHandlerTests()
     {
-        private readonly HausDbContext _context;
-        private readonly CapturingHausBus _bus;
+        _context = HausDbContextFactory.Create();
+        _bus = HausBusFactory.CreateCapturingBus(_context);
+    }
 
-        public CreateRoomCommandHandlerTests()
-        {
-            _context = HausDbContextFactory.Create();
-            _bus = HausBusFactory.CreateCapturingBus(_context);
-        }
+    [Fact]
+    public async Task WhenRoomCreatedThenReturnsModelWithRoomId()
+    {
+        var model = new RoomModel(Name: "Backroom", OccupancyTimeoutInSeconds: 70);
 
-        [Fact]
-        public async Task WhenRoomCreatedThenReturnsModelWithRoomId()
-        {
-            var model = new RoomModel(Name: "Backroom", OccupancyTimeoutInSeconds: 70);
+        var result = await _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
 
-            var result = await _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
+        var entity = _context.Set<RoomEntity>().Single();
+        entity.Id.Should().Be(result.Id);
+        entity.Name.Should().Be("Backroom");
+        entity.OccupancyTimeoutInSeconds.Should().Be(70);
+    }
 
-            var entity = _context.Set<RoomEntity>().Single();
-            entity.Id.Should().Be(result.Id);
-            entity.Name.Should().Be("Backroom");
-            entity.OccupancyTimeoutInSeconds.Should().Be(70);
-        }
+    [Fact]
+    public async Task WhenRoomCreatedThenPublishesRoomCreatedEvent()
+    {
+        var model = new RoomModel(Name: $"{Guid.NewGuid()}");
 
-        [Fact]
-        public async Task WhenRoomCreatedThenPublishesRoomCreatedEvent()
-        {
-            var model = new RoomModel(Name: $"{Guid.NewGuid()}");
+        await _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
 
-            await _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
+        _bus.GetPublishedRoutableEvents<RoomCreatedEvent>().Should().HaveCount(1);
+    }
 
-            _bus.GetPublishedRoutableEvents<RoomCreatedEvent>().Should().HaveCount(1);
-        }
+    [Fact]
+    public async Task WhenModelIsInvalidThenThrowsValidationException()
+    {
+        var model = new RoomModel();
 
-        [Fact]
-        public async Task WhenModelIsInvalidThenThrowsValidationException()
-        {
-            var model = new RoomModel();
+        Func<Task> act = () => _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
 
-            Func<Task> act = () => _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
-
-            await act.Should().ThrowAsync<HausValidationException>();
-        }
+        await act.Should().ThrowAsync<HausValidationException>();
     }
 }

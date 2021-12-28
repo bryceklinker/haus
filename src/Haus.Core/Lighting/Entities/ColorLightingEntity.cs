@@ -5,38 +5,17 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Haus.Core.Lighting.Entities
 {
-    public class ColorLightingEntity
+    public record ColorLightingEntity(byte Red = LightingDefaults.Red, 
+        byte Green = LightingDefaults.Green,
+        byte Blue = LightingDefaults.Blue)
     {
-        public byte Red { get; set; }
-        public byte Green { get; set; }
-        public byte Blue { get; set; }
+        public byte Red { get; } = Red;
+        public byte Green { get; } = Green;
+        public byte Blue { get; } = Blue;
 
         public ColorLightingEntity()
             : this(LightingDefaults.Red)
         {
-        }
-
-        public ColorLightingEntity(
-            byte red = LightingDefaults.Red, 
-            byte green = LightingDefaults.Green,
-            byte blue = LightingDefaults.Blue)
-        {
-            Red = red;
-            Green = green;
-            Blue = blue;
-        }
-
-        protected bool Equals(ColorLightingEntity other)
-        {
-            return Red == other.Red && Green == other.Green && Blue == other.Blue;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((ColorLightingEntity) obj);
         }
 
         public override int GetHashCode()

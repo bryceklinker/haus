@@ -39,9 +39,9 @@ namespace Haus.Core.Tests.Lighting.Entities
             const double desiredMaxLevelConstraint = 100;
             const double currentMaxLevelConstraint = 2000;
 
-            var current = new LightingEntity(level: new LevelLightingEntity(12, 0, currentMaxLevelConstraint));
+            var current = new LightingEntity(Level: new LevelLightingEntity(12, 0, currentMaxLevelConstraint));
             var desired =
-                new LightingEntity(level: new LevelLightingEntity(desiredLevel, max: desiredMaxLevelConstraint));
+                new LightingEntity(Level: new LevelLightingEntity(desiredLevel, max: desiredMaxLevelConstraint));
 
             var result = current.CalculateTarget(desired);
 
@@ -58,9 +58,9 @@ namespace Haus.Core.Tests.Lighting.Entities
             const double currentMaxTemperatureConstraint = 250;
 
             var current =
-                new LightingEntity(temperature: new TemperatureLightingEntity(0, 0, currentMaxTemperatureConstraint));
+                new LightingEntity(Temperature: new TemperatureLightingEntity(0, 0, currentMaxTemperatureConstraint));
             var desired =
-                new LightingEntity(temperature: new TemperatureLightingEntity(desiredTemperature, 0,
+                new LightingEntity(Temperature: new TemperatureLightingEntity(desiredTemperature, 0,
                     desiredMaxTemperatureConstraint));
 
             var result = current.CalculateTarget(desired);
@@ -75,8 +75,8 @@ namespace Haus.Core.Tests.Lighting.Entities
         public void
             WhenTargetLightingLevelIsCalculatedToBeBelowMinimumLevelThenReturnsMinimumLevelFromCurrentLighting()
         {
-            var current = new LightingEntity(level: new LevelLightingEntity(87, 87, 100));
-            var desired = new LightingEntity(level: new LevelLightingEntity(50, 0, 100));
+            var current = new LightingEntity(Level: new LevelLightingEntity(87, 87, 100));
+            var desired = new LightingEntity(Level: new LevelLightingEntity(50, 0, 100));
 
             var result = current.CalculateTarget(desired);
 
@@ -86,8 +86,8 @@ namespace Haus.Core.Tests.Lighting.Entities
         [Fact]
         public void WhenCalculatingTargetLightingThenLightingRangeIsNotModified()
         {
-            var current = new LightingEntity(level: new LevelLightingEntity(100, 100, 1000));
-            var desired = new LightingEntity(level: new LevelLightingEntity(0, 0, 2000));
+            var current = new LightingEntity(Level: new LevelLightingEntity(100, 100, 1000));
+            var desired = new LightingEntity(Level: new LevelLightingEntity(0, 0, 2000));
 
             var result = current.CalculateTarget(desired);
 
@@ -97,8 +97,8 @@ namespace Haus.Core.Tests.Lighting.Entities
         [Fact]
         public void WhenCurrentLightingIsMissingTemperatureAndTargetHasTemperatureThenReturnsLightingMissingTemperature()
         {
-            var current = new LightingEntity(level: new LevelLightingEntity(45));
-            var target = new LightingEntity(level: new LevelLightingEntity(65), temperature: new TemperatureLightingEntity());
+            var current = new LightingEntity(Level: new LevelLightingEntity(45));
+            var target = new LightingEntity(Level: new LevelLightingEntity(65), Temperature: new TemperatureLightingEntity());
 
             var result = current.CalculateTarget(target);
 
@@ -108,8 +108,8 @@ namespace Haus.Core.Tests.Lighting.Entities
         [Fact]
         public void WhenCurrentLightingIsMissingColorAndTargetHasColorThenReturnsLightingMissingColor()
         {
-            var current = new LightingEntity(level: new LevelLightingEntity(45));
-            var target = new LightingEntity(level: new LevelLightingEntity(65), color: new ColorLightingEntity());
+            var current = new LightingEntity(Level: new LevelLightingEntity(45));
+            var target = new LightingEntity(Level: new LevelLightingEntity(65), Color: new ColorLightingEntity());
 
             var result = current.CalculateTarget(target);
 
@@ -130,7 +130,7 @@ namespace Haus.Core.Tests.Lighting.Entities
         [Fact]
         public void WhenLightingConvertedToRangeWithLevelOnlyThenLevelIsConvertedToNewRange()
         {
-            var current = new LightingEntity(level: new LevelLightingEntity(50));
+            var current = new LightingEntity(Level: new LevelLightingEntity(50));
             var model = new LightingConstraintsModel(1, 251);
 
             var converted = current.ConvertToConstraints(model);
@@ -143,7 +143,7 @@ namespace Haus.Core.Tests.Lighting.Entities
         [Fact]
         public void WhenLightingConvertedToRangeWithTemperatureThenTemperatureIsConvertedToNewRange()
         {
-            var current = new LightingEntity(temperature: new TemperatureLightingEntity(4500));
+            var current = new LightingEntity(Temperature: new TemperatureLightingEntity(4500));
             var model = new LightingConstraintsModel(0, 100, 1, 254);
 
             var converted = current.ConvertToConstraints(model);
@@ -157,8 +157,8 @@ namespace Haus.Core.Tests.Lighting.Entities
         public void WhenLightingConvertedToRangeThenReturnsColorUnchanged()
         {
             var current = new LightingEntity(
-                level: new LevelLightingEntity(50),
-                color: new ColorLightingEntity(123, 123, 123));
+                Level: new LevelLightingEntity(50),
+                Color: new ColorLightingEntity(123, 123, 123));
             
             var model = new LightingConstraintsModel(200, 500);
 

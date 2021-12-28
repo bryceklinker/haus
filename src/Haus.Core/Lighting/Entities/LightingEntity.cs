@@ -5,28 +5,20 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Haus.Core.Lighting.Entities
 {
-    public class LightingEntity
+    public record LightingEntity(
+        LightingState State = LightingDefaults.State,
+        LevelLightingEntity Level = null,
+        TemperatureLightingEntity Temperature = null,
+        ColorLightingEntity Color = null)
     {
-        public LightingState State { get; set; }
-        public LevelLightingEntity Level { get; set; }
-        public TemperatureLightingEntity Temperature { get; set; }
-        public ColorLightingEntity Color { get; set; }
+        public LightingState State { get; set; } = State;
+        public LevelLightingEntity Level { get; set; } = Level;
+        public TemperatureLightingEntity Temperature { get; set; } = Temperature;
+        public ColorLightingEntity Color { get; set; } = Color;
 
         public LightingEntity()
             : this(LightingDefaults.State)
         {
-        }
-
-        public LightingEntity(
-            LightingState state = LightingDefaults.State,
-            LevelLightingEntity level = null,
-            TemperatureLightingEntity temperature = null,
-            ColorLightingEntity color = null)
-        {
-            State = state;
-            Level = level;
-            Temperature = temperature;
-            Color = color;
         }
 
         public static readonly Expression<Func<LightingEntity, LightingModel>> ToModelExpression =
@@ -84,7 +76,8 @@ namespace Haus.Core.Lighting.Entities
         public static LightingEntity CalculateTarget(LightingEntity current, LightingEntity target)
         {
             if (current == null)
-                return null;
+                return target;
+            
             if (target == null)
                 return current;
 
