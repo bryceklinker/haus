@@ -1,7 +1,9 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Devices.Sensors.Motion;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
@@ -25,7 +27,10 @@ public class TurnOffVacantRoomsCommandHandler : AsyncRequestHandler<TurnOffVacan
     
     protected override async Task Handle(TurnOffVacantRoomsCommand request, CancellationToken cancellationToken)
     {
-        var rooms = await _context.GetRoomsIncludeDevices().ToArrayAsync(cancellationToken).ConfigureAwait(false);
+        var rooms = await _context.GetRoomsIncludeDevices()
+            .Where(r => r.Lighting.State == LightingState.On)
+            .Where(r => r.LastOccupiedTime.HasValue)
+            .ToArrayAsync(cancellationToken).ConfigureAwait(false);
         foreach (var room in rooms)
         {
             room.ChangeOccupancy(

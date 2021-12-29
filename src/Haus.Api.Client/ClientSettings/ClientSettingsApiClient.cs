@@ -6,24 +6,23 @@ using Haus.Api.Client.Options;
 using Haus.Core.Models.ClientSettings;
 using Microsoft.Extensions.Options;
 
-namespace Haus.Api.Client.ClientSettings
+namespace Haus.Api.Client.ClientSettings;
+
+public interface IClientSettingsApiClient
 {
-    public interface IClientSettingsApiClient
+    Task<ClientSettingsModel> GetClientSettingsAsync();
+}
+
+public class ClientSettingsApiClient : ApiClient, IClientSettingsApiClient
+{
+    public ClientSettingsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) 
+        : base(httpClient, options)
     {
-        Task<ClientSettingsModel> GetClientSettingsAsync();
     }
 
-    public class ClientSettingsApiClient : ApiClient, IClientSettingsApiClient
+    public Task<ClientSettingsModel> GetClientSettingsAsync()
     {
-        public ClientSettingsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) 
-            : base(httpClient, options)
-        {
-        }
-
-        public Task<ClientSettingsModel> GetClientSettingsAsync()
-        {
-            var url = UrlUtility.Join(null, BaseUrl, "client-settings");
-            return HttpClient.GetFromJsonAsync<ClientSettingsModel>(url);
-        }
+        var url = UrlUtility.Join(null, BaseUrl, "client-settings");
+        return HttpClient.GetFromJsonAsync<ClientSettingsModel>(url);
     }
 }

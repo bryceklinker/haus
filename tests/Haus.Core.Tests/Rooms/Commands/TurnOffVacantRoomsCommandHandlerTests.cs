@@ -2,12 +2,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Common.Storage;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Entities;
+using Haus.Core.Tests.Support;
 using Haus.Testing.Support;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Xunit;
 
 namespace Haus.Core.Tests.Rooms.Commands;
@@ -68,6 +71,30 @@ public class TurnOffVacantRoomsCommandHandlerTests
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().HaveCount(3);
+    }
+
+    [Fact]
+    public async Task WhenRoomLightingIsOffThenRoomLightingIsNotChanged()
+    {
+        _context.AddRoom("off", r =>
+        {
+            r.ChangeLighting(new LightingEntity(), new FakeDomainEventBus());
+            r.ChangeOccupancy(new OccupancyChangedModel("idk", true), new FakeDomainEventBus());
+        });
+
+        await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
+
+        _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task WhenRoomIsMissingLastOccupiedThenRoomLightingIsNotChanged()
+    {
+        _context.AddRoom("off", r => r.ChangeLighting(new LightingEntity(LightingState.On), _bus));
+
+        await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
+
+        _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().BeEmpty();
     }
 
     private RoomEntity AddOccupiedRoom(int occupancyTimeoutInSeconds = 0)
