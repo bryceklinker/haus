@@ -1,9 +1,8 @@
-namespace Haus.Core.Application.Queries
+namespace Haus.Core.Application.Queries;
+
+public enum DownloadStatus
 {
-    public enum DownloadStatus
-    {
-        Ok,
-        NotFound,
-        Error
-    }
+    Ok,
+    NotFound,
+    Error
 }

@@ -5,39 +5,38 @@ using Microsoft.Extensions.Logging;
 using MQTTnet;
 using Newtonsoft.Json.Linq;
 
-namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories
+namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories;
+
+public interface IZigbee2MqttMessageFactory
 {
-    public interface IZigbee2MqttMessageFactory
+    Zigbee2MqttMessage Create(MqttApplicationMessage message);
+}
+
+public class Zigbee2MqttMessageFactory : IZigbee2MqttMessageFactory
+{
+    private readonly ILogger<Zigbee2MqttMessageFactory> _logger;
+
+    public Zigbee2MqttMessageFactory(ILogger<Zigbee2MqttMessageFactory> logger)
     {
-        Zigbee2MqttMessage Create(MqttApplicationMessage message);
+        _logger = logger;
     }
 
-    public class Zigbee2MqttMessageFactory : IZigbee2MqttMessageFactory
+    public Zigbee2MqttMessage Create(MqttApplicationMessage message)
     {
-        private readonly ILogger<Zigbee2MqttMessageFactory> _logger;
+        var payloadAsString = message.Payload != null ? Encoding.UTF8.GetString(message.Payload) : null;
+        return new Zigbee2MqttMessage(message.Topic, payloadAsString, CreateJObjectFromPayload(payloadAsString));
+    }
 
-        public Zigbee2MqttMessageFactory(ILogger<Zigbee2MqttMessageFactory> logger)
+    private JToken CreateJObjectFromPayload(string payload)
+    {
+        try
         {
-            _logger = logger;
+            return JToken.Parse(payload);
         }
-
-        public Zigbee2MqttMessage Create(MqttApplicationMessage message)
+        catch (Exception)
         {
-            var payloadAsString = message.Payload != null ? Encoding.UTF8.GetString(message.Payload) : null;
-            return new Zigbee2MqttMessage(message.Topic, payloadAsString, CreateJObjectFromPayload(payloadAsString));
-        }
-
-        private JToken CreateJObjectFromPayload(string payload)
-        {
-            try
-            {
-                return JToken.Parse(payload);
-            }
-            catch (Exception)
-            {
-                _logger.LogInformation("Failed to turn payload into JObject", new {payload});
-                return null;
-            }
+            _logger.LogInformation("Failed to turn payload into JObject", new { payload });
+            return null;
         }
     }
 }

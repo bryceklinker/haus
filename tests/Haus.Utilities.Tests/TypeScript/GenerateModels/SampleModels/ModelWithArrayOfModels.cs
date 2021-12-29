@@ -1,7 +1,6 @@
-namespace Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels
+namespace Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels;
+
+public class ModelWithArrayOfModels
 {
-    public class ModelWithArrayOfModels
-    {
-        public SimpleModel[] Models { get; set; }
-    }
+    public SimpleModel[] Models { get; set; }
 }

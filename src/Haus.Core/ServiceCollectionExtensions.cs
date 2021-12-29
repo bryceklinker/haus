@@ -1,6 +1,5 @@
 using System;
 using FluentValidation;
-using Haus.Core.Application;
 using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
@@ -14,25 +13,25 @@ using Haus.Cqrs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Haus.Core
+namespace Haus.Core;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddHausCore(this IServiceCollection services,
+        Action<DbContextOptionsBuilder> configureDb)
     {
-        public static IServiceCollection AddHausCore(this IServiceCollection services, Action<DbContextOptionsBuilder> configureDb)
-        {
-            var coreAssembly = typeof(ServiceCollectionExtensions).Assembly;
-            return services.AddSingleton<IClock, Clock>()
-                .AddDbContext<HausDbContext>(configureDb)
-                .AddTransient<IRoomCommandRepository, RoomCommandRepository>()
-                .AddTransient<IDeviceCommandRepository, DeviceCommandRepository>()
-                .AddTransient<ILogEntryFilterer, LogEntryFilterer>()
-                .AddValidatorsFromAssembly(coreAssembly)
-                .AddHausCqrs(coreAssembly)
-                .AddTransient(p => p.GetRequiredService<IDeviceSimulatorStore>().Current)
-                .AddSingleton<IDeviceSimulatorStore, DeviceSimulatorStore>()
-                .AddTransient<IRoutableEventFactory, RoutableEventFactory>()
-                .AddTransient<ILogEntryModelFactory, LogEntryModelFactory>()
-                .AddTransient<IMqttDiagnosticsMessageFactory, MqttDiagnosticsMessageFactory>();
-        }
+        var coreAssembly = typeof(ServiceCollectionExtensions).Assembly;
+        return services.AddSingleton<IClock, Clock>()
+            .AddDbContext<HausDbContext>(configureDb)
+            .AddTransient<IRoomCommandRepository, RoomCommandRepository>()
+            .AddTransient<IDeviceCommandRepository, DeviceCommandRepository>()
+            .AddTransient<ILogEntryFilterer, LogEntryFilterer>()
+            .AddValidatorsFromAssembly(coreAssembly)
+            .AddHausCqrs(coreAssembly)
+            .AddTransient(p => p.GetRequiredService<IDeviceSimulatorStore>().Current)
+            .AddSingleton<IDeviceSimulatorStore, DeviceSimulatorStore>()
+            .AddTransient<IRoutableEventFactory, RoutableEventFactory>()
+            .AddTransient<ILogEntryModelFactory, LogEntryModelFactory>()
+            .AddTransient<IMqttDiagnosticsMessageFactory, MqttDiagnosticsMessageFactory>();
     }
 }

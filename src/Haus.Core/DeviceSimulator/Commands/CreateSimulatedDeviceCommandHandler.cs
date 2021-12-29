@@ -8,27 +8,27 @@ using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 using MediatR;
 
-namespace Haus.Core.DeviceSimulator.Commands
+namespace Haus.Core.DeviceSimulator.Commands;
+
+public record CreateSimulatedDeviceCommand(SimulatedDeviceModel Model) : ICommand;
+
+internal class CreateSimulatedDeviceCommandHandler : AsyncRequestHandler<CreateSimulatedDeviceCommand>,
+    ICommandHandler<CreateSimulatedDeviceCommand>
 {
-    public record CreateSimulatedDeviceCommand(SimulatedDeviceModel Model) : ICommand;
+    private readonly IDeviceSimulatorStore _store;
+    private readonly IHausBus _hausBus;
 
-    internal class CreateSimulatedDeviceCommandHandler : AsyncRequestHandler<CreateSimulatedDeviceCommand>, ICommandHandler<CreateSimulatedDeviceCommand>
+    public CreateSimulatedDeviceCommandHandler(IDeviceSimulatorStore store, IHausBus hausBus)
     {
-        private readonly IDeviceSimulatorStore _store;
-        private readonly IHausBus _hausBus;
+        _store = store;
+        _hausBus = hausBus;
+    }
 
-        public CreateSimulatedDeviceCommandHandler(IDeviceSimulatorStore store, IHausBus hausBus)
-        {
-            _store = store;
-            _hausBus = hausBus;
-        }
-
-        protected override async Task Handle(CreateSimulatedDeviceCommand request, CancellationToken cancellationToken)
-        {
-            var device = SimulatedDeviceEntity.Create(request.Model);
-            _store.Publish(_store.Current.AddSimulatedDevice(device));
-            await _hausBus.PublishAsync(SimulatedEvent.FromEvent(device.ToDeviceDiscoveredModel()), cancellationToken)
-                .ConfigureAwait(false);
-        }
+    protected override async Task Handle(CreateSimulatedDeviceCommand request, CancellationToken cancellationToken)
+    {
+        var device = SimulatedDeviceEntity.Create(request.Model);
+        _store.Publish(_store.Current.AddSimulatedDevice(device));
+        await _hausBus.PublishAsync(SimulatedEvent.FromEvent(device.ToDeviceDiscoveredModel()), cancellationToken)
+            .ConfigureAwait(false);
     }
 }

@@ -8,53 +8,52 @@ using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Common.Storage.Commands
+namespace Haus.Core.Tests.Common.Storage.Commands;
+
+public class ClearDatabaseCommandHandlerTests
 {
-    public class ClearDatabaseCommandHandlerTests
+    private readonly HausDbContext _context;
+    private readonly IHausBus _hausBus;
+
+    public ClearDatabaseCommandHandlerTests()
     {
-        private readonly HausDbContext _context;
-        private readonly IHausBus _hausBus;
+        _context = HausDbContextFactory.Create();
+        _hausBus = HausBusFactory.Create(_context);
+    }
 
-        public ClearDatabaseCommandHandlerTests()
-        {
-            _context = HausDbContextFactory.Create();
-            _hausBus = HausBusFactory.Create(_context);
-        }
+    [Fact]
+    public async Task WhenClearDatabaseExecutedThenAllDeviceMetadataIsDeleted()
+    {
+        _context.AddDevice(configure: config => config.AddOrUpdateMetadata("stuff", "here"));
+        _context.AddDevice(configure: config => config.AddOrUpdateMetadata("stuff", "here"));
+        _context.AddDevice(configure: config => config.AddOrUpdateMetadata("stuff", "here"));
 
-        [Fact]
-        public async Task WhenClearDatabaseExecutedThenAllDeviceMetadataIsDeleted()
-        {
-            _context.AddDevice(configure: config => config.AddOrUpdateMetadata("stuff", "here"));
-            _context.AddDevice(configure: config => config.AddOrUpdateMetadata("stuff", "here"));
-            _context.AddDevice(configure: config => config.AddOrUpdateMetadata("stuff", "here"));
+        await _hausBus.ExecuteCommandAsync(new ClearDatabaseCommand());
 
-            await _hausBus.ExecuteCommandAsync(new ClearDatabaseCommand());
+        _context.Set<DeviceMetadataEntity>().Should().BeEmpty();
+    }
 
-            _context.Set<DeviceMetadataEntity>().Should().BeEmpty();
-        }
+    [Fact]
+    public async Task WhenClearDatabaseExecutedThenAllDevicesAreRemoved()
+    {
+        _context.AddDevice();
+        _context.AddDevice();
+        _context.AddDevice();
 
-        [Fact]
-        public async Task WhenClearDatabaseExecutedThenAllDevicesAreRemoved()
-        {
-            _context.AddDevice();
-            _context.AddDevice();
-            _context.AddDevice();
+        await _hausBus.ExecuteCommandAsync(new ClearDatabaseCommand());
 
-            await _hausBus.ExecuteCommandAsync(new ClearDatabaseCommand());
+        _context.Set<DeviceEntity>().Should().BeEmpty();
+    }
 
-            _context.Set<DeviceEntity>().Should().BeEmpty();
-        }
+    [Fact]
+    public async Task WhenClearDatabaseExecutedThenAllRoomsAreRemoved()
+    {
+        _context.AddRoom();
+        _context.AddRoom();
+        _context.AddRoom();
 
-        [Fact]
-        public async Task WhenClearDatabaseExecutedThenAllRoomsAreRemoved()
-        {
-            _context.AddRoom();
-            _context.AddRoom();
-            _context.AddRoom();
+        await _hausBus.ExecuteCommandAsync(new ClearDatabaseCommand());
 
-            await _hausBus.ExecuteCommandAsync(new ClearDatabaseCommand());
-
-            _context.Set<RoomEntity>().Should().BeEmpty();
-        }
+        _context.Set<RoomEntity>().Should().BeEmpty();
     }
 }

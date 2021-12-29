@@ -6,27 +6,28 @@ using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 using MediatR;
 
-namespace Haus.Core.Devices.Commands
+namespace Haus.Core.Devices.Commands;
+
+public record ChangeDeviceLightingConstraintsCommand(long DeviceId, LightingConstraintsModel Model) : ICommand;
+
+public class ChangeDeviceLightingConstraintsCommandHandler :
+    AsyncRequestHandler<ChangeDeviceLightingConstraintsCommand>, ICommandHandler<ChangeDeviceLightingConstraintsCommand>
 {
-    public record ChangeDeviceLightingConstraintsCommand(long DeviceId, LightingConstraintsModel Model) : ICommand;
+    private readonly IDeviceCommandRepository _repository;
+    private readonly IHausBus _hausBus;
 
-    public class ChangeDeviceLightingConstraintsCommandHandler : AsyncRequestHandler<ChangeDeviceLightingConstraintsCommand>, ICommandHandler<ChangeDeviceLightingConstraintsCommand>
+    public ChangeDeviceLightingConstraintsCommandHandler(IDeviceCommandRepository repository, IHausBus hausBus)
     {
-        private readonly IDeviceCommandRepository _repository;
-        private readonly IHausBus _hausBus;
+        _repository = repository;
+        _hausBus = hausBus;
+    }
 
-        public ChangeDeviceLightingConstraintsCommandHandler(IDeviceCommandRepository repository, IHausBus hausBus)
-        {
-            _repository = repository;
-            _hausBus = hausBus;
-        }
-
-        protected override async Task Handle(ChangeDeviceLightingConstraintsCommand request, CancellationToken cancellationToken)
-        {
-            var device = await _repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
-            device.UpdateFromLightingConstraints(request.Model, _hausBus);
-            await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
-            await _hausBus.FlushAsync(cancellationToken).ConfigureAwait(false);
-        }
+    protected override async Task Handle(ChangeDeviceLightingConstraintsCommand request,
+        CancellationToken cancellationToken)
+    {
+        var device = await _repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
+        device.UpdateFromLightingConstraints(request.Model, _hausBus);
+        await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
+        await _hausBus.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 }

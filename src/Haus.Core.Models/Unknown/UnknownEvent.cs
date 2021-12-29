@@ -1,7 +1,6 @@
-namespace Haus.Core.Models.Unknown
+namespace Haus.Core.Models.Unknown;
+
+public record UnknownEvent
 {
-    public record UnknownEvent
-    {
-        public const string Type = "unknown_event";
-    }
+    public const string Type = "unknown_event";
 }

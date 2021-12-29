@@ -5,71 +5,67 @@ using Haus.Testing.Support;
 using MQTTnet;
 using Xunit;
 
-namespace Haus.Mqtt.Client.Tests
+namespace Haus.Mqtt.Client.Tests;
+
+public class HausMqttSubscriptionTest : IAsyncLifetime
 {
-    public class HausMqttSubscriptionTest : IAsyncLifetime
+    private IHausMqttClient _client;
+
+    public async Task InitializeAsync()
     {
-        private IHausMqttClient _client;
+        _client = await new SupportFactory().CreateClient();
+    }
 
-        public async Task InitializeAsync()
+    [Fact]
+    public async Task WhenExecutedForMessageWithDifferentTopicThenSubscriberIsNotExecuted()
+    {
+        MqttApplicationMessage actual = null;
+        await _client.SubscribeAsync("one", msg =>
         {
-            _client = await new SupportFactory().CreateClient();
-        }
+            actual = msg;
+            return Task.CompletedTask;
+        });
 
-        [Fact]
-        public async Task WhenExecutedForMessageWithDifferentTopicThenSubscriberIsNotExecuted()
+        await _client.PublishAsync(new MqttApplicationMessage { Topic = "other" });
+
+        actual.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task WhenSubscribedToAllTopicsThenExecuteAlwaysInvokesSubscriber()
+    {
+        MqttApplicationMessage actual = null;
+        await _client.SubscribeAsync("#", msg =>
         {
-            MqttApplicationMessage actual = null;
-            await _client.SubscribeAsync("one", msg =>
-            {
-                actual = msg;
-                return Task.CompletedTask;
-            });
+            actual = msg;
+            return Task.CompletedTask;
+        });
 
-            await _client.PublishAsync(new MqttApplicationMessage {Topic = "other"});
+        var expected = new MqttApplicationMessage { Topic = "other" };
+        await _client.PublishAsync(expected);
 
-            actual.Should().BeNull();
-        }
+        Eventually.Assert(() => { actual.Should().BeEquivalentTo(expected); });
+    }
 
-        [Fact]
-        public async Task WhenSubscribedToAllTopicsThenExecuteAlwaysInvokesSubscriber()
+    [Fact]
+    public async Task WhenUnsubscribedThenNoLongerReceivesMessages()
+    {
+        var wasCalled = false;
+        var subscription = await _client.SubscribeAsync("#", _ =>
         {
-            MqttApplicationMessage actual = null;
-            await _client.SubscribeAsync("#", msg =>
-            {
-                actual = msg;
-                return Task.CompletedTask;
-            });
-            
-            var expected = new MqttApplicationMessage{Topic = "other"};
-            await _client.PublishAsync(expected);
+            wasCalled = true;
+            return Task.CompletedTask;
+        });
 
-            Eventually.Assert(() =>
-            {
-                actual.Should().BeEquivalentTo(expected);
-            });
-        }
+        await subscription.UnsubscribeAsync();
+        await _client.PublishAsync(new MqttApplicationMessage { Topic = "idk" });
+        await Task.Delay(1000);
 
-        [Fact]
-        public async Task WhenUnsubscribedThenNoLongerReceivesMessages()
-        {
-            var wasCalled = false;
-            var subscription = await _client.SubscribeAsync("#", _ =>
-            {
-                wasCalled = true;
-                return Task.CompletedTask;
-            });
+        wasCalled.Should().BeFalse();
+    }
 
-            await subscription.UnsubscribeAsync();
-            await _client.PublishAsync(new MqttApplicationMessage {Topic = "idk"});
-            await Task.Delay(1000);
-
-            wasCalled.Should().BeFalse();
-        }
-
-        public async Task DisposeAsync()
-        {
-            await _client.DisposeAsync();
-        }
+    public async Task DisposeAsync()
+    {
+        await _client.DisposeAsync();
     }
 }

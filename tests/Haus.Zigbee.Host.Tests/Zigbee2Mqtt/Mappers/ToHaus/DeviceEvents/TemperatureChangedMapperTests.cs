@@ -3,37 +3,36 @@ using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 using Xunit;
 
-namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
+namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
+
+public class TemperatureChangedMapperTests
 {
-    public class TemperatureChangedMapperTests
+    private readonly TemperatureChangedMapper _mapper;
+
+    public TemperatureChangedMapperTests()
     {
-        private readonly TemperatureChangedMapper _mapper;
+        _mapper = new TemperatureChangedMapper();
+    }
 
-        public TemperatureChangedMapperTests()
-        {
-            _mapper = new TemperatureChangedMapper();
-        }
+    [Fact]
+    public void WhenTemperatureChangedThenReturnsPopulatedTemperatureChanged()
+    {
+        var message = new Zigbee2MqttMessageBuilder()
+            .WithTemperature(65)
+            .WithDeviceTopic("1234")
+            .BuildZigbee2MqttMessage();
 
-        [Fact]
-        public void WhenTemperatureChangedThenReturnsPopulatedTemperatureChanged()
-        {
-            var message = new Zigbee2MqttMessageBuilder()
-                .WithTemperature(65)
-                .WithDeviceTopic("1234")
-                .BuildZigbee2MqttMessage();
+        var model = _mapper.Map(message);
 
-            var model = _mapper.Map(message);
+        model.DeviceId.Should().Be("1234");
+        model.Temperature.Should().Be(65);
+    }
 
-            model.DeviceId.Should().Be("1234");
-            model.Temperature.Should().Be(65);
-        }
+    [Fact]
+    public void WhenTemperatureNotReportedThenReturnsNull()
+    {
+        var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
 
-        [Fact]
-        public void WhenTemperatureNotReportedThenReturnsNull()
-        {
-            var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
-
-            _mapper.Map(message).Should().BeNull();
-        }
+        _mapper.Map(message).Should().BeNull();
     }
 }

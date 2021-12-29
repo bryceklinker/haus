@@ -10,34 +10,34 @@ using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 using MediatR;
 
-namespace Haus.Core.Rooms.Commands
+namespace Haus.Core.Rooms.Commands;
+
+public record UpdateRoomCommand(RoomModel Model) : UpdateEntityCommand<RoomModel>(Model);
+
+internal class UpdateRoomCommandHandler : AsyncRequestHandler<UpdateRoomCommand>, ICommandHandler<UpdateRoomCommand>
 {
-    public record UpdateRoomCommand(RoomModel Model) : UpdateEntityCommand<RoomModel>(Model);
+    private readonly IRoomCommandRepository _repository;
+    private readonly IValidator<RoomModel> _validator;
+    private readonly IHausBus _hausBus;
 
-    internal class UpdateRoomCommandHandler : AsyncRequestHandler<UpdateRoomCommand>, ICommandHandler<UpdateRoomCommand>
+    public UpdateRoomCommandHandler(IValidator<RoomModel> validator, IRoomCommandRepository repository,
+        IHausBus hausBus)
     {
-        private readonly IRoomCommandRepository _repository;
-        private readonly IValidator<RoomModel> _validator;
-        private readonly IHausBus _hausBus;
+        _validator = validator;
+        _repository = repository;
+        _hausBus = hausBus;
+    }
 
-        public UpdateRoomCommandHandler(IValidator<RoomModel> validator, IRoomCommandRepository repository, IHausBus hausBus)
-        {
-            _validator = validator;
-            _repository = repository;
-            _hausBus = hausBus;
-        }
+    protected override async Task Handle(UpdateRoomCommand request, CancellationToken cancellationToken)
+    {
+        await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
+            .ConfigureAwait(false);
 
-        protected override async Task Handle(UpdateRoomCommand request, CancellationToken cancellationToken)
-        {
-            await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
-                .ConfigureAwait(false);
+        var room = await _repository.GetByIdAsync(request.Id, cancellationToken).ConfigureAwait(false);
 
-            var room = await _repository.GetByIdAsync(request.Id, cancellationToken).ConfigureAwait(false);
-            
-            room.UpdateFromModel(request.Model);
-            await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
-            await _hausBus.PublishAsync(RoutableEvent.FromEvent(new RoomUpdatedEvent(room.ToModel())), cancellationToken)
-                .ConfigureAwait(false);
-        }
+        room.UpdateFromModel(request.Model);
+        await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
+        await _hausBus.PublishAsync(RoutableEvent.FromEvent(new RoomUpdatedEvent(room.ToModel())), cancellationToken)
+            .ConfigureAwait(false);
     }
 }

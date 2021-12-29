@@ -1,10 +1,8 @@
 using System;
 
-namespace Haus.Core.Models
+namespace Haus.Core.Models;
+
+[AttributeUsage(AttributeTargets.Property)]
+public class OptionalGenerationAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class OptionalGenerationAttribute : Attribute
-    {
-        
-    }
 }

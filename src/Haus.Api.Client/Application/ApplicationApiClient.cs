@@ -14,11 +14,12 @@ public interface IApplicationApiClient
     Task<ListResult<ApplicationPackageModel>> GetLatestPackagesAsync();
     Task<HttpResponseMessage> DownloadLatestPackageAsync(int packageId);
 }
-    
+
 public class ApplicationApiClient : ApiClient, IApplicationApiClient
 {
     private const string LatestVersionRoute = "application/latest-version";
-    public ApplicationApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) 
+
+    public ApplicationApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
         : base(httpClient, options)
     {
     }

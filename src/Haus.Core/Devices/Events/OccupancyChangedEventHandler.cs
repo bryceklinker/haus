@@ -6,31 +6,30 @@ using Haus.Core.Rooms.Repositories;
 using Haus.Cqrs.DomainEvents;
 using Haus.Cqrs.Events;
 
-namespace Haus.Core.Devices.Events
+namespace Haus.Core.Devices.Events;
+
+internal class OccupancyChangedEventHandler : IEventHandler<RoutableEvent<OccupancyChangedModel>>
 {
-    internal class OccupancyChangedEventHandler : IEventHandler<RoutableEvent<OccupancyChangedModel>>
+    private readonly IRoomCommandRepository _repository;
+    private readonly IDomainEventBus _domainEventBus;
+
+    public OccupancyChangedEventHandler(IDomainEventBus domainEventBus, IRoomCommandRepository repository)
     {
-        private readonly IRoomCommandRepository _repository;
-        private readonly IDomainEventBus _domainEventBus;
+        _domainEventBus = domainEventBus;
+        _repository = repository;
+    }
 
-        public OccupancyChangedEventHandler(IDomainEventBus domainEventBus, IRoomCommandRepository repository)
-        {
-            _domainEventBus = domainEventBus;
-            _repository = repository;
-        }
+    public async Task Handle(RoutableEvent<OccupancyChangedModel> notification, CancellationToken cancellationToken)
+    {
+        var deviceExternalId = notification.Payload.DeviceId;
+        var room = await _repository.GetRoomByDeviceExternalId(deviceExternalId, cancellationToken)
+            .ConfigureAwait(false);
+        if (room == null)
+            return;
 
-        public async Task Handle(RoutableEvent<OccupancyChangedModel> notification, CancellationToken cancellationToken)
-        {
-            var deviceExternalId = notification.Payload.DeviceId;
-            var room = await _repository.GetRoomByDeviceExternalId(deviceExternalId, cancellationToken)
-                .ConfigureAwait(false);
-            if (room == null)
-                return;
+        room.ChangeOccupancy(notification.Payload, _domainEventBus);
 
-            room.ChangeOccupancy(notification.Payload, _domainEventBus);
-            
-            await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
-            await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
-        }
+        await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
+        await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 }

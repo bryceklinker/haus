@@ -4,20 +4,19 @@ using Microsoft.Extensions.DependencyInjection;
 using MQTTnet;
 using MQTTnet.Diagnostics.Logger;
 
-namespace Haus.Mqtt.Client
-{
-    public static class ServiceCollectionExtensions
-    {
-        public static IServiceCollection AddHausMqtt(this IServiceCollection services)
-        {
-            return services.AddTransient<IMqttFactory, MqttFactory>()
-                .AddTransient<IMqttNetLogger, MqttLogger>()
-                .AddSingleton<IHausMqttClientFactory, HausMqttClientFactory>();
-        }
+namespace Haus.Mqtt.Client;
 
-        public static IHealthChecksBuilder AddHausMqttHealthChecks(this IHealthChecksBuilder builder)
-        {
-            return builder.AddCheck<HausMqttHealthCHeck>("haus-mqtt");
-        }
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddHausMqtt(this IServiceCollection services)
+    {
+        return services.AddTransient<IMqttFactory, MqttFactory>()
+            .AddTransient<IMqttNetLogger, MqttLogger>()
+            .AddSingleton<IHausMqttClientFactory, HausMqttClientFactory>();
+    }
+
+    public static IHealthChecksBuilder AddHausMqttHealthChecks(this IHealthChecksBuilder builder)
+    {
+        return builder.AddCheck<HausMqttHealthCHeck>("haus-mqtt");
     }
 }

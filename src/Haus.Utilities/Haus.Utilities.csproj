@@ -1,22 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../dependencies/version.xml" />
-  <Import Project="../../dependencies/framework-version.xml" />
-  
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
+    <Import Project="../../dependencies/version.xml"/>
+    <Import Project="../../dependencies/framework-version.xml"/>
 
-  <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.38" />
-    <PackageReference Include="Humanizer.Core" Version="2.13.14" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftPackageVersion)" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Haus.Cqrs\Haus.Cqrs.csproj" />
-    <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
-    <ProjectReference Include="..\Haus.Zigbee.Host\Haus.Zigbee.Host.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.38"/>
+        <PackageReference Include="Humanizer.Core" Version="2.13.14"/>
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftPackageVersion)"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Haus.Cqrs\Haus.Cqrs.csproj"/>
+        <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj"/>
+        <ProjectReference Include="..\Haus.Zigbee.Host\Haus.Zigbee.Host.csproj"/>
+    </ItemGroup>
 
 </Project>

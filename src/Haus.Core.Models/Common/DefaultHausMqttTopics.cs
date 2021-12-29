@@ -1,10 +1,9 @@
-namespace Haus.Core.Models.Common
+namespace Haus.Core.Models.Common;
+
+public static class DefaultHausMqttTopics
 {
-    public static class DefaultHausMqttTopics
-    {
-        public const string CommandsTopic = "haus/commands";
-        public const string EventsTopic = "haus/events";
-        public const string UnknownTopic = "haus/idk";
-        public const string HealthTopic = "haus/health";
-    }
+    public const string CommandsTopic = "haus/commands";
+    public const string EventsTopic = "haus/events";
+    public const string UnknownTopic = "haus/idk";
+    public const string HealthTopic = "haus/health";
 }

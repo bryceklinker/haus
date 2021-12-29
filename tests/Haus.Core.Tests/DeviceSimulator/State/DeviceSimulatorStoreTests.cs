@@ -6,40 +6,39 @@ using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Models.DeviceSimulator;
 using Xunit;
 
-namespace Haus.Core.Tests.DeviceSimulator.State
+namespace Haus.Core.Tests.DeviceSimulator.State;
+
+public class DeviceSimulatorStoreTests
 {
-    public class DeviceSimulatorStoreTests
+    [Fact]
+    public void WhenCreatedThenInitialState()
     {
-        [Fact]
-        public void WhenCreatedThenInitialState()
-        {
-            var store = new DeviceSimulatorStore();
+        var store = new DeviceSimulatorStore();
 
-            store.Current.Should().Be(DeviceSimulatorState.Initial);
-        }
+        store.Current.Should().Be(DeviceSimulatorState.Initial);
+    }
 
-        [Fact]
-        public void WhenDeviceIsAddedThenStateIsUpdatedToHaveDevice()
-        {
-            var device = SimulatedDeviceEntity.Create(new SimulatedDeviceModel());
+    [Fact]
+    public void WhenDeviceIsAddedThenStateIsUpdatedToHaveDevice()
+    {
+        var device = SimulatedDeviceEntity.Create(new SimulatedDeviceModel());
 
-            var store = new DeviceSimulatorStore();
-            store.Publish(store.Current.AddSimulatedDevice(device));
+        var store = new DeviceSimulatorStore();
+        store.Publish(store.Current.AddSimulatedDevice(device));
 
-            store.Current.Devices.Should().Contain(device);
-        }
+        store.Current.Devices.Should().Contain(device);
+    }
 
-        [Fact]
-        public void WhenPublishNextIsUsedAndNewStateIsUnchangedThenNoUpdatesAreSent()
-        {
-            var publishCount = 0;
-            
-            var store = new DeviceSimulatorStore();
-            store.Skip(1).Subscribe(s => publishCount++);
+    [Fact]
+    public void WhenPublishNextIsUsedAndNewStateIsUnchangedThenNoUpdatesAreSent()
+    {
+        var publishCount = 0;
 
-            store.PublishNext(s => s);
+        var store = new DeviceSimulatorStore();
+        store.Skip(1).Subscribe(s => publishCount++);
 
-            publishCount.Should().Be(0);
-        }
+        store.PublishNext(s => s);
+
+        publishCount.Should().Be(0);
     }
 }

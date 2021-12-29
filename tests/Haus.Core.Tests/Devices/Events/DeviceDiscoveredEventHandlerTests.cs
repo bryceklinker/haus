@@ -10,67 +10,66 @@ using Haus.Core.Models.Devices.Events;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Devices.Events
+namespace Haus.Core.Tests.Devices.Events;
+
+public class DeviceDiscoveredEventHandlerTest
 {
-    public class DeviceDiscoveredEventHandlerTest
+    private readonly HausDbContext _context;
+    private readonly CapturingHausBus _hausBus;
+
+    public DeviceDiscoveredEventHandlerTest()
     {
-        private readonly HausDbContext _context;
-        private readonly CapturingHausBus _hausBus;
+        _context = HausDbContextFactory.Create();
+        _hausBus = HausBusFactory.CreateCapturingBus(_context);
+    }
 
-        public DeviceDiscoveredEventHandlerTest()
+    [Fact]
+    public async Task WhenDeviceDiscoveredEventHandledThenAddsDeviceToDatabase()
+    {
+        var @event = RoutableEvent.FromEvent(new DeviceDiscoveredEvent("This is my external id"));
+
+        await _hausBus.PublishAsync(@event);
+
+        _context.Set<DeviceEntity>().Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task WhenDeviceDiscoveredMultipleTimesThenDeviceIsUpdatedFromEvent()
+    {
+        var device = _context.AddDevice("three");
+
+        var @event = RoutableEvent.FromEvent(new DeviceDiscoveredEvent("three", Metadata: new[]
         {
-            _context = HausDbContextFactory.Create();
-            _hausBus = HausBusFactory.CreateCapturingBus(_context);
-        }
+            new MetadataModel("Model", "Help")
+        }));
+        await _hausBus.PublishAsync(@event);
 
-        [Fact]
-        public async Task WhenDeviceDiscoveredEventHandledThenAddsDeviceToDatabase()
-        {
-            var @event = RoutableEvent.FromEvent(new DeviceDiscoveredEvent("This is my external id"));
+        _context.Set<DeviceEntity>().Should().HaveCount(1);
+        _context.Set<DeviceEntity>().Single().Metadata
+            .Should().ContainEquivalentOf(new DeviceMetadataEntity("Model", "Help"), opts =>
+                opts.Excluding(m => m.Device).Excluding(m => m.Id));
+    }
 
-            await _hausBus.PublishAsync(@event);
+    [Fact]
+    public async Task WhenDeviceDiscoveredCreatesANewDeviceThenDeviceCreatedEventPublished()
+    {
+        var @event = RoutableEvent.FromEvent(new DeviceDiscoveredEvent("idk", DeviceType.Light));
 
-            _context.Set<DeviceEntity>().Should().HaveCount(1);
-        }
+        await _hausBus.PublishAsync(@event);
 
-        [Fact]
-        public async Task WhenDeviceDiscoveredMultipleTimesThenDeviceIsUpdatedFromEvent()
-        {
-            var device = _context.AddDevice("three");
+        _hausBus.GetPublishedRoutableEvents<DeviceCreatedEvent>().Should().HaveCount(1);
+        _hausBus.GetPublishedRoutableEvents<DeviceUpdatedEvent>().Should().BeEmpty();
+    }
 
-            var @event = RoutableEvent.FromEvent(new DeviceDiscoveredEvent("three", Metadata: new[]
-            {
-                new MetadataModel("Model", "Help"),
-            }));
-            await _hausBus.PublishAsync(@event);
+    [Fact]
+    public async Task WhenDeviceDiscoveredUpdatesDeviceThenDeviceUpdatedEventPublished()
+    {
+        _context.AddDevice("idk");
+        var @event = RoutableEvent.FromEvent(new DeviceDiscoveredEvent("idk", DeviceType.Light));
 
-            _context.Set<DeviceEntity>().Should().HaveCount(1);
-            _context.Set<DeviceEntity>().Single().Metadata
-                .Should().ContainEquivalentOf(new DeviceMetadataEntity("Model", "Help"), opts =>
-                    opts.Excluding(m => m.Device).Excluding(m => m.Id));
-        }
+        await _hausBus.PublishAsync(@event);
 
-        [Fact]
-        public async Task WhenDeviceDiscoveredCreatesANewDeviceThenDeviceCreatedEventPublished()
-        {
-            var @event = RoutableEvent.FromEvent(new DeviceDiscoveredEvent("idk", DeviceType.Light));
-
-            await _hausBus.PublishAsync(@event);
-
-            _hausBus.GetPublishedRoutableEvents<DeviceCreatedEvent>().Should().HaveCount(1);
-            _hausBus.GetPublishedRoutableEvents<DeviceUpdatedEvent>().Should().BeEmpty();
-        }
-
-        [Fact]
-        public async Task WhenDeviceDiscoveredUpdatesDeviceThenDeviceUpdatedEventPublished()
-        {
-            _context.AddDevice("idk");
-            var @event = RoutableEvent.FromEvent(new DeviceDiscoveredEvent("idk", DeviceType.Light));
-
-            await _hausBus.PublishAsync(@event);
-
-            _hausBus.GetPublishedRoutableEvents<DeviceUpdatedEvent>().Should().HaveCount(1);
-            _hausBus.GetPublishedRoutableEvents<DeviceCreatedEvent>().Should().BeEmpty();
-        }
+        _hausBus.GetPublishedRoutableEvents<DeviceUpdatedEvent>().Should().HaveCount(1);
+        _hausBus.GetPublishedRoutableEvents<DeviceCreatedEvent>().Should().BeEmpty();
     }
 }

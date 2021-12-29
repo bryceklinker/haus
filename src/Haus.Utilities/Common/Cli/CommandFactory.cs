@@ -5,43 +5,42 @@ using System.Reflection;
 using Haus.Cqrs.Commands;
 using Microsoft.Extensions.Logging;
 
-namespace Haus.Utilities.Common.Cli
+namespace Haus.Utilities.Common.Cli;
+
+public interface ICommandFactory
 {
-    public interface ICommandFactory
+    ICommand Create(string[] args);
+}
+
+public class CommandFactory : ICommandFactory
+{
+    private readonly ILogger<CommandFactory> _logger;
+    private static readonly Lazy<KnownCommand[]> KnownCommands = new(DiscoverKnownCommands);
+
+    private IEnumerable<KnownCommand> Commands => KnownCommands.Value;
+
+    public CommandFactory(ILogger<CommandFactory> logger)
     {
-        ICommand Create(string[] args);
+        _logger = logger;
     }
 
-    public class CommandFactory : ICommandFactory
+    public ICommand Create(string[] args)
     {
-        private readonly ILogger<CommandFactory> _logger;
-        private static readonly Lazy<KnownCommand[]> KnownCommands = new(DiscoverKnownCommands);
+        _logger.LogInformation("Args: {Args}", string.Join(" ", args));
+        var groupName = args[0];
+        var commandName = args[1];
+        var command = Commands.SingleOrDefault(c => c.Matches(groupName, commandName));
+        if (command != null)
+            return Activator.CreateInstance(command.CommandType) as ICommand;
 
-        private IEnumerable<KnownCommand> Commands => KnownCommands.Value;
+        throw new CommandNotFoundException();
+    }
 
-        public CommandFactory(ILogger<CommandFactory> logger)
-        {
-            _logger = logger;
-        }
-
-        public ICommand Create(string[] args)
-        {
-            _logger.LogInformation("Args: {Args}", string.Join(" ", args));
-            var groupName = args[0];
-            var commandName = args[1];
-            var command = Commands.SingleOrDefault(c => c.Matches(groupName, commandName));
-            if (command != null)
-                return Activator.CreateInstance(command.CommandType) as ICommand;
-
-            throw new CommandNotFoundException();
-        }
-
-        private static KnownCommand[] DiscoverKnownCommands()
-        {
-            return typeof(CommandFactory).Assembly.GetExportedTypes()
-                .Where(t => t.GetCustomAttribute<CommandAttribute>() != null)
-                .Select(t => new KnownCommand(t))
-                .ToArray();
-        }
+    private static KnownCommand[] DiscoverKnownCommands()
+    {
+        return typeof(CommandFactory).Assembly.GetExportedTypes()
+            .Where(t => t.GetCustomAttribute<CommandAttribute>() != null)
+            .Select(t => new KnownCommand(t))
+            .ToArray();
     }
 }

@@ -1,9 +1,8 @@
 using Haus.Core.Models.ExternalMessages;
 
-namespace Haus.Core.Models.Common
+namespace Haus.Core.Models.Common;
+
+public interface IHausEventCreator<T>
 {
-    public interface IHausEventCreator<T>
-    {
-        HausEvent<T> AsHausEvent();
-    }
+    HausEvent<T> AsHausEvent();
 }

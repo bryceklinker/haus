@@ -5,23 +5,22 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 
-namespace Haus.Zigbee.Host.Tests.Support
+namespace Haus.Zigbee.Host.Tests.Support;
+
+public static class ServiceProviderFactory
 {
-    public static class ServiceProviderFactory
+    public static IServiceProvider Create(IConfiguration configuration = null, IMqttFactory mqttFactory = null)
     {
-        public static IServiceProvider Create(IConfiguration configuration = null, IMqttFactory mqttFactory = null)
+        var services = new ServiceCollection()
+            .AddLogging(builder => builder.ClearProviders())
+            .AddHausZigbee(configuration ?? ConfigurationFactory.CreateConfig());
+        if (mqttFactory != null)
         {
-            var services = new ServiceCollection()
-                .AddLogging(builder => builder.ClearProviders())
-                .AddHausZigbee(configuration ?? ConfigurationFactory.CreateConfig());
-            if (mqttFactory != null)
-            {
-                services.RemoveAll<IMqttFactory>();
-                services.AddSingleton(mqttFactory);
-            }
-            
-            return services
-                .BuildServiceProvider();
+            services.RemoveAll<IMqttFactory>();
+            services.AddSingleton(mqttFactory);
         }
+
+        return services
+            .BuildServiceProvider();
     }
 }

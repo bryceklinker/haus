@@ -9,52 +9,51 @@ using Haus.Core.Models.Discovery;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Discovery.Commands
+namespace Haus.Core.Tests.Discovery.Commands;
+
+public class StartDiscoveryCommandHandlerTests
 {
-    public class StartDiscoveryCommandHandlerTests
+    private readonly HausDbContext _context;
+    private readonly CapturingHausBus _hausBus;
+
+    public StartDiscoveryCommandHandlerTests()
     {
-        private readonly HausDbContext _context;
-        private readonly CapturingHausBus _hausBus;
+        _context = HausDbContextFactory.Create();
+        _context.AddDiscovery();
 
-        public StartDiscoveryCommandHandlerTests()
-        {
-            _context = HausDbContextFactory.Create();
-            _context.AddDiscovery();
+        _hausBus = HausBusFactory.CreateCapturingBus(_context);
+    }
 
-            _hausBus = HausBusFactory.CreateCapturingBus(_context);
-        }
+    [Fact]
+    public async Task WhenDiscoveryIsStartedThenDiscoveryStateIsEnabled()
+    {
+        var command = new StartDiscoveryCommand();
 
-        [Fact]
-        public async Task WhenDiscoveryIsStartedThenDiscoveryStateIsEnabled()
-        {
-            var command = new StartDiscoveryCommand();
+        await _hausBus.ExecuteCommandAsync(command);
 
-            await _hausBus.ExecuteCommandAsync(command);
+        _context.Set<DiscoveryEntity>().Should().HaveCount(1)
+            .And.ContainEquivalentOf(new DiscoveryEntity(0, DiscoveryState.Enabled),
+                opts => opts.Excluding(d => d.Id));
+    }
 
-            _context.Set<DiscoveryEntity>().Should().HaveCount(1)
-                .And.ContainEquivalentOf(new DiscoveryEntity(0, DiscoveryState.Enabled),
-                    opts => opts.Excluding(d => d.Id));
-        }
-        
-        [Fact]
-        public async Task WhenDiscoveryIsStartedThenStartDiscoveryHausCommandIsPublished()
-        {
-            var command = new StartDiscoveryCommand();
-            
-            await _hausBus.ExecuteCommandAsync(command);
+    [Fact]
+    public async Task WhenDiscoveryIsStartedThenStartDiscoveryHausCommandIsPublished()
+    {
+        var command = new StartDiscoveryCommand();
 
-            var routableCommands = _hausBus.GetPublishedEvents<RoutableCommand>();
-            routableCommands.Should().Contain(r => r.HausCommand.Type == StartDiscoveryModel.Type);
-        }
+        await _hausBus.ExecuteCommandAsync(command);
 
-        [Fact]
-        public async Task WhenDiscoveryStartedThenDiscoveryStartedEventPublished()
-        {
-            var command = new StartDiscoveryCommand();
+        var routableCommands = _hausBus.GetPublishedEvents<RoutableCommand>();
+        routableCommands.Should().Contain(r => r.HausCommand.Type == StartDiscoveryModel.Type);
+    }
 
-            await _hausBus.ExecuteCommandAsync(command);
+    [Fact]
+    public async Task WhenDiscoveryStartedThenDiscoveryStartedEventPublished()
+    {
+        var command = new StartDiscoveryCommand();
 
-            _hausBus.GetPublishedRoutableEvents<DiscoveryStartedEvent>().Should().HaveCount(1);
-        }
+        await _hausBus.ExecuteCommandAsync(command);
+
+        _hausBus.GetPublishedRoutableEvents<DiscoveryStartedEvent>().Should().HaveCount(1);
     }
 }

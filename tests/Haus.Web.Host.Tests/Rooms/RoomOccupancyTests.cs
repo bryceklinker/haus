@@ -85,5 +85,8 @@ public class RoomOccupancyTests : IAsyncLifetime
         });
     }
 
-    public Task DisposeAsync() => Task.CompletedTask;
+    public Task DisposeAsync()
+    {
+        return Task.CompletedTask;
+    }
 }

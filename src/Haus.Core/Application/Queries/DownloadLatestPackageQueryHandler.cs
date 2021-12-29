@@ -5,48 +5,49 @@ using System.Threading.Tasks;
 using Haus.Cqrs.Queries;
 using Microsoft.Extensions.Logging;
 
-namespace Haus.Core.Application.Queries
+namespace Haus.Core.Application.Queries;
+
+public record DownloadLatestPackageQuery(int PackageId) : IQuery<DownloadLatestPackageResult>;
+
+public class DownloadLatestPackageQueryHandler : IQueryHandler<DownloadLatestPackageQuery, DownloadLatestPackageResult>
 {
-    public record DownloadLatestPackageQuery(int PackageId) : IQuery<DownloadLatestPackageResult>;
+    private readonly ILatestReleaseProvider _latestReleaseProvider;
+    private readonly ILogger<DownloadLatestPackageQuery> _logger;
 
-    public class DownloadLatestPackageQueryHandler : IQueryHandler<DownloadLatestPackageQuery, DownloadLatestPackageResult>
+    public DownloadLatestPackageQueryHandler(ILatestReleaseProvider latestReleaseProvider,
+        ILogger<DownloadLatestPackageQuery> logger)
     {
-        private readonly ILatestReleaseProvider _latestReleaseProvider;
-        private readonly ILogger<DownloadLatestPackageQuery> _logger;
+        _latestReleaseProvider = latestReleaseProvider;
+        _logger = logger;
+    }
 
-        public DownloadLatestPackageQueryHandler(ILatestReleaseProvider latestReleaseProvider, ILogger<DownloadLatestPackageQuery> logger)
+    public async Task<DownloadLatestPackageResult> Handle(DownloadLatestPackageQuery request,
+        CancellationToken cancellationToken)
+    {
+        try
         {
-            _latestReleaseProvider = latestReleaseProvider;
-            _logger = logger;
+            var bytes = await _latestReleaseProvider.DownloadLatestPackage(request.PackageId).ConfigureAwait(false);
+            return DownloadLatestPackageResult.Ok(bytes);
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to download package from provider {Type}", _latestReleaseProvider.GetType());
+            return CreatePackageResultFromException(e);
+        }
+    }
 
-        public async Task<DownloadLatestPackageResult> Handle(DownloadLatestPackageQuery request, CancellationToken cancellationToken)
+    private DownloadLatestPackageResult CreatePackageResultFromException(Exception exception)
+    {
+        return exception switch
         {
-            try
-            {
-                var bytes = await _latestReleaseProvider.DownloadLatestPackage(request.PackageId).ConfigureAwait(false);
-                return DownloadLatestPackageResult.Ok(bytes);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Failed to download package from provider {Type}", _latestReleaseProvider.GetType());
-                return CreatePackageResultFromException(e);
-            }
-        }
+            HttpRequestException httpException => CreatePackageResultFromHttpRequestException(httpException),
+            _ => DownloadLatestPackageResult.Error()
+        };
+    }
 
-        private DownloadLatestPackageResult CreatePackageResultFromException(Exception exception)
-        {
-            return exception switch
-            {
-                HttpRequestException httpException => CreatePackageResultFromHttpRequestException(httpException),
-                _ => DownloadLatestPackageResult.Error()
-            };
-        }
-        
-        private DownloadLatestPackageResult CreatePackageResultFromHttpRequestException(HttpRequestException exception)
-        {
-            var status = exception.StatusCode.ToDownloadStatus();
-            return DownloadLatestPackageResult.Error(status);
-        }
+    private DownloadLatestPackageResult CreatePackageResultFromHttpRequestException(HttpRequestException exception)
+    {
+        var status = exception.StatusCode.ToDownloadStatus();
+        return DownloadLatestPackageResult.Error(status);
     }
 }

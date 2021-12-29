@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace Haus.Utilities.Tests.Support
+namespace Haus.Utilities.Tests.Support;
+
+public class SupportedDevicesPageHtmlBuilder
 {
-    public class SupportedDevicesPageHtmlBuilder
-    {
-        private const string Html = @"
+    private const string Html = @"
         <html>
             <head></head>
             <body>
@@ -21,26 +21,25 @@ namespace Haus.Utilities.Tests.Support
         </html>
         ";
 
-        private List<string> _vendors = new List<string>();
+    private List<string> _vendors = new();
 
-        public SupportedDevicesPageHtmlBuilder WithVendor(Action<SupportedVendorHtmlBuilder> configure)
+    public SupportedDevicesPageHtmlBuilder WithVendor(Action<SupportedVendorHtmlBuilder> configure)
+    {
+        var builder = new SupportedVendorHtmlBuilder();
+        configure(builder);
+        _vendors.Add(builder.Build());
+        return this;
+    }
+
+    public string Build()
+    {
+        try
         {
-            var builder = new SupportedVendorHtmlBuilder();
-            configure(builder);
-            _vendors.Add(builder.Build());
-            return this;
+            return Html.Replace("{{vendors}}", string.Join(" ", _vendors));
         }
-        
-        public string Build()
+        finally
         {
-            try
-            {
-                return Html.Replace("{{vendors}}", string.Join(" ", _vendors));
-            }
-            finally
-            {
-                _vendors = new List<string>();
-            }
+            _vendors = new List<string>();
         }
     }
 }

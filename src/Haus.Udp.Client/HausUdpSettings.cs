@@ -1,7 +1,6 @@
-namespace Haus.Udp.Client
+namespace Haus.Udp.Client;
+
+public class HausUdpSettings
 {
-    public class HausUdpSettings
-    {
-        public int Port { get; set; }
-    }
+    public int Port { get; set; }
 }

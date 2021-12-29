@@ -1,12 +1,11 @@
 using FluentValidation;
 
-namespace Haus.Core
+namespace Haus.Core;
+
+public static class RuleBuilderExtensions
 {
-    public static class RuleBuilderExtensions
+    public static IRuleBuilder<T, string> Required<T>(this IRuleBuilder<T, string> builder)
     {
-        public static IRuleBuilder<T, string> Required<T>(this IRuleBuilder<T, string> builder)
-        {
-            return builder.NotNull().NotEmpty();
-        }
+        return builder.NotNull().NotEmpty();
     }
 }

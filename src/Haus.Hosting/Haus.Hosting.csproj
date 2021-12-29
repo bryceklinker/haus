@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../dependencies/version.xml" />
-  <Import Project="../../dependencies/framework-version.xml" />
+    <Import Project="../../dependencies/version.xml"/>
+    <Import Project="../../dependencies/framework-version.xml"/>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftPackageVersion)" />
-    <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftPackageVersion)"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="4.1.0"/>
+    </ItemGroup>
 
 </Project>

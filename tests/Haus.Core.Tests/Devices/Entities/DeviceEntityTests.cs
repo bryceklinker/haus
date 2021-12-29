@@ -1,15 +1,15 @@
 using System;
 using System.Linq;
+using FluentAssertions;
 using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Devices.Entities;
-using Haus.Core.Models.Devices;
-using Haus.Core.Tests.Support;
-using FluentAssertions;
 using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Rooms.Entities;
+using Haus.Core.Tests.Support;
 using Xunit;
 
 namespace Haus.Core.Tests.Devices.Entities;
@@ -22,7 +22,7 @@ public class DeviceEntityTest
         var model = new DeviceDiscoveredEvent("this-id", DeviceType.MotionSensor, new[]
         {
             new MetadataModel("Model", "some model"),
-            new MetadataModel("Vendor", "Vendy"),
+            new MetadataModel("Vendor", "Vendy")
         });
 
         var entity = DeviceEntity.FromDiscoveredDevice(model, new FakeDomainEventBus());
@@ -40,7 +40,7 @@ public class DeviceEntityTest
         var model = new DeviceDiscoveredEvent("this-id", DeviceType.Light, new[]
         {
             new MetadataModel("Model", "some model"),
-            new MetadataModel("Vendor", "Vendy"),
+            new MetadataModel("Vendor", "Vendy")
         });
 
         var entity = DeviceEntity.FromDiscoveredDevice(model, new FakeDomainEventBus());
@@ -139,7 +139,7 @@ public class DeviceEntityTest
     {
         var model = new DeviceDiscoveredEvent("", Metadata: new[]
         {
-            new MetadataModel("Model", "boom"),
+            new MetadataModel("Model", "boom")
         });
         var entity = new DeviceEntity();
 
@@ -153,7 +153,7 @@ public class DeviceEntityTest
     {
         var model = new DeviceDiscoveredEvent("", Metadata: new[]
         {
-            new MetadataModel("Model", "boom"),
+            new MetadataModel("Model", "boom")
         });
         var entity = new DeviceEntity();
         entity.AddOrUpdateMetadata("Model", "old");
@@ -185,7 +185,7 @@ public class DeviceEntityTest
         var model = new DeviceModel(Metadata: new[]
         {
             new MetadataModel("one", "three"),
-            new MetadataModel("three", "two"),
+            new MetadataModel("three", "two")
         });
         var entity = new DeviceEntity();
         entity.AddOrUpdateMetadata("one", "two");
@@ -382,7 +382,7 @@ public class DeviceEntityTest
     {
         var device = new DeviceEntity();
 
-        Action act = () => device.ChangeLighting(new LightingEntity(), new FakeDomainEventBus());
+        var act = () => device.ChangeLighting(new LightingEntity(), new FakeDomainEventBus());
 
         act.Should().Throw<InvalidOperationException>();
     }
@@ -396,7 +396,7 @@ public class DeviceEntityTest
             new TemperatureLightingEntity(12, 0, 2000),
             new ColorLightingEntity(23, 12, 89)
         );
-        var metadata = new[] {new DeviceMetadataEntity("one", "two")};
+        var metadata = new[] { new DeviceMetadataEntity("one", "two") };
         var device = new DeviceEntity(
             12,
             $"{Guid.NewGuid()}",
@@ -423,7 +423,7 @@ public class DeviceEntityTest
     {
         var device = new DeviceEntity(deviceType: DeviceType.Light);
         var model = new LightingConstraintsModel(1, 254);
-            
+
         device.UpdateFromLightingConstraints(model, new FakeDomainEventBus());
 
         device.Lighting.Level.Min.Should().Be(1);

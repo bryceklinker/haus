@@ -1,7 +1,6 @@
-namespace Haus.Core.Models.Common
+namespace Haus.Core.Models.Common;
+
+public interface IdentityModel
 {
-    public interface IdentityModel
-    {
-        long Id { get; }
-    }
+    long Id { get; }
 }

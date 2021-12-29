@@ -3,51 +3,50 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using MQTTnet.Diagnostics.Logger;
 
-namespace Haus.Mqtt.Client.Logging
+namespace Haus.Mqtt.Client.Logging;
+
+public class MqttLogger : IMqttNetLogger
 {
-    public class MqttLogger : IMqttNetLogger
+    private readonly ILogger<MqttLogger> _logger;
+
+    public MqttLogger(ILogger<MqttLogger> logger)
     {
-        private readonly ILogger<MqttLogger> _logger;
+        _logger = logger;
+    }
 
-        public MqttLogger(ILogger<MqttLogger> logger)
+    public void Publish(MqttNetLogLevel level, string source, string message, object[] parameters, Exception exception)
+    {
+        var convertedLogLevel = ConvertLogLevel(level);
+        _logger.Log(convertedLogLevel, exception, message, parameters);
+
+        var logMessagePublishedEvent = LogMessagePublished;
+        if (logMessagePublishedEvent != null)
         {
-            _logger = logger;
-        }
-
-        public void Publish(MqttNetLogLevel level, string source, string message, object[] parameters, Exception exception)
-        {
-            var convertedLogLevel = ConvertLogLevel(level);
-            _logger.Log(convertedLogLevel, exception, message, parameters);
-
-            var logMessagePublishedEvent = LogMessagePublished;
-            if (logMessagePublishedEvent != null)
+            var logMessage = new MqttNetLogMessage
             {
-                var logMessage = new MqttNetLogMessage
-                {
-                    Timestamp = DateTime.UtcNow,
-                    ThreadId = Thread.CurrentThread.ManagedThreadId,
-                    Source = source,
-                    Level = level,
-                    Message = message,
-                    Exception = exception
-                };
-
-                logMessagePublishedEvent.Invoke(this, new MqttNetLogMessagePublishedEventArgs(logMessage));
-            }
-        }
-
-        public event EventHandler<MqttNetLogMessagePublishedEventArgs> LogMessagePublished;
-
-        private static LogLevel ConvertLogLevel(MqttNetLogLevel logLevel)
-        {
-            return logLevel switch
-            {
-                MqttNetLogLevel.Error => LogLevel.Error,
-                MqttNetLogLevel.Warning => LogLevel.Warning,
-                MqttNetLogLevel.Info => LogLevel.Information,
-                MqttNetLogLevel.Verbose => LogLevel.Debug,
-                _ => LogLevel.Debug
+                Timestamp = DateTime.UtcNow,
+                ThreadId = Thread.CurrentThread.ManagedThreadId,
+                Source = source,
+                Level = level,
+                Message = message,
+                Exception = exception
             };
+
+            logMessagePublishedEvent.Invoke(this, new MqttNetLogMessagePublishedEventArgs(logMessage));
         }
+    }
+
+    public event EventHandler<MqttNetLogMessagePublishedEventArgs> LogMessagePublished;
+
+    private static LogLevel ConvertLogLevel(MqttNetLogLevel logLevel)
+    {
+        return logLevel switch
+        {
+            MqttNetLogLevel.Error => LogLevel.Error,
+            MqttNetLogLevel.Warning => LogLevel.Warning,
+            MqttNetLogLevel.Info => LogLevel.Information,
+            MqttNetLogLevel.Verbose => LogLevel.Debug,
+            _ => LogLevel.Debug
+        };
     }
 }

@@ -2,25 +2,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace Haus.Cqrs.Queries
+namespace Haus.Cqrs.Queries;
+
+public interface IQueryBus
 {
-    public interface IQueryBus
+    Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default);
+}
+
+internal class QueryBus : IQueryBus
+{
+    private readonly IMediator _mediator;
+
+    public QueryBus(IMediator mediator)
     {
-        Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default);
+        _mediator = mediator;
     }
 
-    internal class QueryBus : IQueryBus
+    public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default)
     {
-        private readonly IMediator _mediator;
-
-        public QueryBus(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
-        public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default)
-        {
-            return await _mediator.Send(query, token).ConfigureAwait(false);
-        }
+        return await _mediator.Send(query, token).ConfigureAwait(false);
     }
 }

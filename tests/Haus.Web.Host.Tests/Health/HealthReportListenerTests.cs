@@ -9,37 +9,34 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Xunit;
 
-namespace Haus.Web.Host.Tests.Health
+namespace Haus.Web.Host.Tests.Health;
+
+[Collection(HausWebHostCollectionFixture.Name)]
+public class ExternalHealthListenerTests
 {
-    [Collection(HausWebHostCollectionFixture.Name)]
-    public class ExternalHealthListenerTests
+    private readonly HausWebHostApplicationFactory _factory;
+
+    public ExternalHealthListenerTests(HausWebHostApplicationFactory factory)
     {
-        private readonly HausWebHostApplicationFactory _factory;
+        _factory = factory;
+    }
 
-        public ExternalHealthListenerTests(HausWebHostApplicationFactory factory)
+    [Fact]
+    public async Task WhenHealthReportReceivedThenReportChecksAreInHausHealthReport()
+    {
+        HausHealthReportModel report = null;
+        var hub = await _factory.CreateHubConnection("health");
+        hub.On<HausHealthReportModel>("OnHealth", r => report = r);
+
+        var mqttClient = await _factory.GetMqttClient();
+        var publishedChecks = new[]
         {
-            _factory = factory;
-        }
+            new HausHealthCheckModel("External", HealthStatus.Healthy, 66, "External Check", null,
+                Array.Empty<string>())
+        };
+        await mqttClient.PublishAsync(DefaultHausMqttTopics.HealthTopic,
+            new HausHealthReportModel(HealthStatus.Healthy, 55, publishedChecks));
 
-        [Fact]
-        public async Task WhenHealthReportReceivedThenReportChecksAreInHausHealthReport()
-        {
-            HausHealthReportModel report = null;
-            var hub = await _factory.CreateHubConnection("health");
-            hub.On<HausHealthReportModel>("OnHealth", r => report = r);
-
-            var mqttClient = await _factory.GetMqttClient();
-            var publishedChecks = new[]
-            {
-                new HausHealthCheckModel("External", HealthStatus.Healthy, 66, "External Check", null,
-                    Array.Empty<string>())
-            };
-            await mqttClient.PublishAsync(DefaultHausMqttTopics.HealthTopic, new HausHealthReportModel(HealthStatus.Healthy, 55, publishedChecks));
-            
-            Eventually.Assert(() =>
-            {
-                report.Checks.Should().Contain(c => c.Name == "External");
-            });
-        }
+        Eventually.Assert(() => { report.Checks.Should().Contain(c => c.Name == "External"); });
     }
 }

@@ -4,20 +4,19 @@ using Haus.Cqrs;
 using Haus.Web.Host.Common.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Haus.Web.Host.Devices
-{
-    [Route("api/light-types")]
-    public class LightTypesController : HausBusController
-    {
-        public LightTypesController(IHausBus hausBus) 
-            : base(hausBus)
-        {
-        }
+namespace Haus.Web.Host.Devices;
 
-        [HttpGet]
-        public Task<IActionResult> GetAll()
-        {
-            return QueryAsync(new GetLightTypesQuery());
-        }
+[Route("api/light-types")]
+public class LightTypesController : HausBusController
+{
+    public LightTypesController(IHausBus hausBus)
+        : base(hausBus)
+    {
+    }
+
+    [HttpGet]
+    public Task<IActionResult> GetAll()
+    {
+        return QueryAsync(new GetLightTypesQuery());
     }
 }

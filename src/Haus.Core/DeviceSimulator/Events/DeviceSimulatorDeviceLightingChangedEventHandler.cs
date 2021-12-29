@@ -5,23 +5,23 @@ using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Models.Devices.Events;
 using Haus.Cqrs.Events;
 
-namespace Haus.Core.DeviceSimulator.Events
+namespace Haus.Core.DeviceSimulator.Events;
+
+internal class
+    DeviceSimulatorDeviceLightingChangedEventHandler : IEventHandler<RoutableEvent<DeviceLightingChangedEvent>>
 {
-    internal class DeviceSimulatorDeviceLightingChangedEventHandler : IEventHandler<RoutableEvent<DeviceLightingChangedEvent>>
+    private readonly IDeviceSimulatorStore _store;
+
+    public DeviceSimulatorDeviceLightingChangedEventHandler(IDeviceSimulatorStore store)
     {
-        private readonly IDeviceSimulatorStore _store;
+        _store = store;
+    }
 
-        public DeviceSimulatorDeviceLightingChangedEventHandler(IDeviceSimulatorStore store)
-        {
-            _store = store;
-        }
-
-        public Task Handle(RoutableEvent<DeviceLightingChangedEvent> notification, CancellationToken cancellationToken)
-        {
-            var deviceId = notification.Payload.Device.ExternalId;
-            var lighting = notification.Payload.Lighting;
-            _store.PublishNext(s => s.ChangeDeviceLighting(deviceId, lighting));
-            return Task.CompletedTask;
-        }
+    public Task Handle(RoutableEvent<DeviceLightingChangedEvent> notification, CancellationToken cancellationToken)
+    {
+        var deviceId = notification.Payload.Device.ExternalId;
+        var lighting = notification.Payload.Lighting;
+        _store.PublishNext(s => s.ChangeDeviceLighting(deviceId, lighting));
+        return Task.CompletedTask;
     }
 }

@@ -7,26 +7,25 @@ using Haus.Core.Models.Discovery;
 using Haus.Cqrs.Queries;
 using Microsoft.EntityFrameworkCore;
 
-namespace Haus.Core.Discovery.Queries
+namespace Haus.Core.Discovery.Queries;
+
+public class GetDiscoveryQuery : IQuery<DiscoveryModel>
 {
-    public class GetDiscoveryQuery : IQuery<DiscoveryModel>
+}
+
+internal class GetDiscoveryQueryHandler : IQueryHandler<GetDiscoveryQuery, DiscoveryModel>
+{
+    private readonly HausDbContext _context;
+
+    public GetDiscoveryQueryHandler(HausDbContext context)
     {
+        _context = context;
     }
 
-    internal class GetDiscoveryQueryHandler : IQueryHandler<GetDiscoveryQuery, DiscoveryModel>
+    public Task<DiscoveryModel> Handle(GetDiscoveryQuery request, CancellationToken cancellationToken)
     {
-        private readonly HausDbContext _context;
-
-        public GetDiscoveryQueryHandler(HausDbContext context)
-        {
-            _context = context;
-        }
-
-        public Task<DiscoveryModel> Handle(GetDiscoveryQuery request, CancellationToken cancellationToken)
-        {
-            return _context.Set<DiscoveryEntity>()
-                .Select(DiscoveryEntity.ToModelExpression)
-                .SingleOrDefaultAsync(cancellationToken);
-        }
+        return _context.Set<DiscoveryEntity>()
+            .Select(DiscoveryEntity.ToModelExpression)
+            .SingleOrDefaultAsync(cancellationToken);
     }
 }

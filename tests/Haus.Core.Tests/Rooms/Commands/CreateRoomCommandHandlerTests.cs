@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Common;
-using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Models.Rooms.Events;

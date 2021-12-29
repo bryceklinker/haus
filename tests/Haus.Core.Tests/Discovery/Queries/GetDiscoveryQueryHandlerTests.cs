@@ -7,35 +7,34 @@ using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Discovery.Queries
+namespace Haus.Core.Tests.Discovery.Queries;
+
+public class GetDiscoveryQueryHandlerTests
 {
-    public class GetDiscoveryQueryHandlerTests
+    private readonly HausDbContext _context;
+    private readonly IHausBus _hausBus;
+
+    public GetDiscoveryQueryHandlerTests()
     {
-        private readonly HausDbContext _context;
-        private readonly IHausBus _hausBus;
+        _context = HausDbContextFactory.Create();
+        _hausBus = HausBusFactory.Create(_context);
+    }
 
-        public GetDiscoveryQueryHandlerTests()
-        {
-            _context = HausDbContextFactory.Create();
-            _hausBus = HausBusFactory.Create(_context);
-        }
+    [Fact]
+    public async Task WhenGettingDiscoveryThenReturnsDiscoveryFromDatabase()
+    {
+        _context.AddDiscovery(DiscoveryState.Enabled);
 
-        [Fact]
-        public async Task WhenGettingDiscoveryThenReturnsDiscoveryFromDatabase()
-        {
-            _context.AddDiscovery(DiscoveryState.Enabled);
+        var model = await _hausBus.ExecuteQueryAsync(new GetDiscoveryQuery());
 
-            var model = await _hausBus.ExecuteQueryAsync(new GetDiscoveryQuery());
+        model.State.Should().Be(DiscoveryState.Enabled);
+    }
 
-            model.State.Should().Be(DiscoveryState.Enabled);
-        }
+    [Fact]
+    public async Task WhenGettingDiscoveryAndDiscoveryIsMissingThenReturnsNull()
+    {
+        var model = await _hausBus.ExecuteQueryAsync(new GetDiscoveryQuery());
 
-        [Fact]
-        public async Task WhenGettingDiscoveryAndDiscoveryIsMissingThenReturnsNull()
-        {
-            var model = await _hausBus.ExecuteQueryAsync(new GetDiscoveryQuery());
-
-            model.Should().BeNull();
-        }
+        model.Should().BeNull();
     }
 }

@@ -1,9 +1,8 @@
 using Haus.Core.Lighting.Entities;
 
-namespace Haus.Core.Lighting.Generators
+namespace Haus.Core.Lighting.Generators;
+
+public interface IDefaultLightingGenerator
 {
-    public interface IDefaultLightingGenerator
-    {
-        LightingEntity Generate(LightingEntity currentLighting, LightingEntity roomLighting);
-    }
+    LightingEntity Generate(LightingEntity currentLighting, LightingEntity roomLighting);
 }

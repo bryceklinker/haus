@@ -1,40 +1,37 @@
 using System.Threading.Tasks;
 using FluentAssertions;
-using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Rooms.Queries;
-using Haus.Core.Tests.Support;
 using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Rooms.Queries
+namespace Haus.Core.Tests.Rooms.Queries;
+
+public class GetRoomsQueryHandlerTests
 {
-    public class GetRoomsQueryHandlerTests
+    private readonly HausDbContext _context;
+    private readonly IHausBus _hausBus;
+
+    public GetRoomsQueryHandlerTests()
     {
-        private readonly HausDbContext _context;
-        private readonly IHausBus _hausBus;
+        _context = HausDbContextFactory.Create();
+        _hausBus = HausBusFactory.Create(_context);
+    }
 
-        public GetRoomsQueryHandlerTests()
-        {
-            _context = HausDbContextFactory.Create();
-            _hausBus = HausBusFactory.Create(_context);
-        }
+    [Fact]
+    public async Task WhenRetrievingAllRoomsThenReturnsAllRoomsFromTheDatabase()
+    {
+        _context.AddRoom("three");
+        _context.AddRoom("hello");
+        _context.AddRoom("bob");
 
-        [Fact]
-        public async Task WhenRetrievingAllRoomsThenReturnsAllRoomsFromTheDatabase()
-        {
-            _context.AddRoom("three");
-            _context.AddRoom("hello");
-            _context.AddRoom("bob");
+        var result = await _hausBus.ExecuteQueryAsync(new GetRoomsQuery());
 
-            var result = await _hausBus.ExecuteQueryAsync(new GetRoomsQuery());
-
-            result.Count.Should().Be(3);
-            result.Items.Should().HaveCount(3)
-                .And.Contain(r => r.Name == "three")
-                .And.Contain(r => r.Name == "hello")
-                .And.Contain(r => r.Name == "bob");
-        }
+        result.Count.Should().Be(3);
+        result.Items.Should().HaveCount(3)
+            .And.Contain(r => r.Name == "three")
+            .And.Contain(r => r.Name == "hello")
+            .And.Contain(r => r.Name == "bob");
     }
 }

@@ -6,22 +6,22 @@ using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 using MediatR;
 
-namespace Haus.Core.Discovery.Commands
+namespace Haus.Core.Discovery.Commands;
+
+public record SyncDiscoveryCommand : ICommand;
+
+internal class SyncDiscoveryCommandHandler : AsyncRequestHandler<SyncDiscoveryCommand>,
+    ICommandHandler<SyncDiscoveryCommand>
 {
-    public record SyncDiscoveryCommand : ICommand;
+    private readonly IHausBus _hausBus;
 
-    internal class SyncDiscoveryCommandHandler : AsyncRequestHandler<SyncDiscoveryCommand>, ICommandHandler<SyncDiscoveryCommand>
+    public SyncDiscoveryCommandHandler(IHausBus hausBus)
     {
-        private readonly IHausBus _hausBus;
+        _hausBus = hausBus;
+    }
 
-        public SyncDiscoveryCommandHandler(IHausBus hausBus)
-        {
-            _hausBus = hausBus;
-        }
-
-        protected override Task Handle(SyncDiscoveryCommand request, CancellationToken cancellationToken)
-        {
-            return _hausBus.PublishAsync(RoutableCommand.FromEvent(new SyncDiscoveryModel()), cancellationToken);
-        }
+    protected override Task Handle(SyncDiscoveryCommand request, CancellationToken cancellationToken)
+    {
+        return _hausBus.PublishAsync(RoutableCommand.FromEvent(new SyncDiscoveryModel()), cancellationToken);
     }
 }

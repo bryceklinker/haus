@@ -1,3 +1,3 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../dependencies/framework-version.xml" />
+    <Import Project="../../dependencies/framework-version.xml"/>
 </Project>

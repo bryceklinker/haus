@@ -6,37 +6,36 @@ using Haus.Core.Models.Common;
 using Haus.Core.Models.Logs;
 using Microsoft.Extensions.Options;
 
-namespace Haus.Api.Client.Logs
+namespace Haus.Api.Client.Logs;
+
+public interface ILogsApiClient
 {
-    public interface ILogsApiClient
+    Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null);
+}
+
+public class LogsApiClient : ApiClient, ILogsApiClient
+{
+    public LogsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+        : base(httpClient, options)
     {
-        Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null);
     }
-    
-    public class LogsApiClient : ApiClient, ILogsApiClient
+
+    public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null)
     {
-        public LogsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) 
-            : base(httpClient, options)
-        {
-        }
+        return GetAsJsonAsync<ListResult<LogEntryModel>>("logs", ConvertToQueryParameters(parameters));
+    }
 
-        public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null)
-        {
-            return GetAsJsonAsync<ListResult<LogEntryModel>>("logs", ConvertToQueryParameters(parameters));
-        }
+    private static QueryParameters ConvertToQueryParameters(GetLogsParameters parameters)
+    {
+        if (parameters == null)
+            return null;
 
-        private static QueryParameters ConvertToQueryParameters(GetLogsParameters parameters)
+        return new QueryParameters
         {
-            if (parameters == null)
-                return null;
-
-            return new QueryParameters
-            {
-                {"pageSize", parameters.PageSize.ToString()},
-                {"pageNumber", parameters.PageNumber.ToString()},
-                {"search", parameters.SearchTerm},
-                {"level", parameters.Level}
-            };
-        }
+            { "pageSize", parameters.PageSize.ToString() },
+            { "pageNumber", parameters.PageNumber.ToString() },
+            { "search", parameters.SearchTerm },
+            { "level", parameters.Level }
+        };
     }
 }

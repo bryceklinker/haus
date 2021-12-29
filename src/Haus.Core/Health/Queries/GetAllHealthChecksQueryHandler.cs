@@ -7,25 +7,25 @@ using Haus.Core.Models.Common;
 using Haus.Core.Models.Health;
 using Haus.Cqrs.Queries;
 
-namespace Haus.Core.Health.Queries
+namespace Haus.Core.Health.Queries;
+
+public record GetAllHealthChecksQuery : IQuery<ListResult<HausHealthCheckModel>>;
+
+public class GetAllHealthChecksQueryHandler : IQueryHandler<GetAllHealthChecksQuery, ListResult<HausHealthCheckModel>>
 {
-    public record GetAllHealthChecksQuery : IQuery<ListResult<HausHealthCheckModel>>;
+    private readonly HausDbContext _context;
 
-    public class GetAllHealthChecksQueryHandler : IQueryHandler<GetAllHealthChecksQuery, ListResult<HausHealthCheckModel>>
+    public GetAllHealthChecksQueryHandler(HausDbContext context)
     {
-        private readonly HausDbContext _context;
+        _context = context;
+    }
 
-        public GetAllHealthChecksQueryHandler(HausDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<ListResult<HausHealthCheckModel>> Handle(GetAllHealthChecksQuery request, CancellationToken cancellationToken)
-        {
-            return await _context.QueryAll<HealthCheckEntity>()
-                .Select(HealthCheckEntity.ToModelExpression)
-                .ToListResultAsync(cancellationToken)
-                .ConfigureAwait(false);
-        }
+    public async Task<ListResult<HausHealthCheckModel>> Handle(GetAllHealthChecksQuery request,
+        CancellationToken cancellationToken)
+    {
+        return await _context.QueryAll<HealthCheckEntity>()
+            .Select(HealthCheckEntity.ToModelExpression)
+            .ToListResultAsync(cancellationToken)
+            .ConfigureAwait(false);
     }
 }

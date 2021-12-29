@@ -7,73 +7,69 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 
-namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services
+namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services;
+
+public class ZigbeeToHausRelay : BackgroundService
 {
-    public class ZigbeeToHausRelay : BackgroundService
+    private readonly IZigbeeMqttClientFactory _zigbeeMqttFactory;
+    private readonly ILogger<ZigbeeToHausRelay> _logger;
+    private readonly IMqttMessageMapper _mqttMessageMapper;
+
+    private IHausMqttClient ZigbeeMqttClient { get; set; }
+    private IHausMqttClient HausMqttClient { get; set; }
+
+    public ZigbeeToHausRelay(IMqttMessageMapper mqttMessageMapper,
+        IZigbeeMqttClientFactory zigbeeMqttFactory,
+        ILogger<ZigbeeToHausRelay> logger)
     {
-        private readonly IZigbeeMqttClientFactory _zigbeeMqttFactory;
-        private readonly ILogger<ZigbeeToHausRelay> _logger;
-        private readonly IMqttMessageMapper _mqttMessageMapper;
-        
-        private IHausMqttClient ZigbeeMqttClient { get; set; }
-        private IHausMqttClient HausMqttClient { get; set; }
-        
-        public ZigbeeToHausRelay(IMqttMessageMapper mqttMessageMapper,
-            IZigbeeMqttClientFactory zigbeeMqttFactory,
-            ILogger<ZigbeeToHausRelay> logger)
-        {
-            _mqttMessageMapper = mqttMessageMapper;
-            _zigbeeMqttFactory = zigbeeMqttFactory;
-            _logger = logger;
-        }
+        _mqttMessageMapper = mqttMessageMapper;
+        _zigbeeMqttFactory = zigbeeMqttFactory;
+        _logger = logger;
+    }
 
-        public override async Task StartAsync(CancellationToken cancellationToken)
-        {
-            ZigbeeMqttClient = await _zigbeeMqttFactory.CreateZigbeeClient();
-            await ZigbeeMqttClient.SubscribeAsync("#", ZigbeeMessageHandler);
-            
-            HausMqttClient = await _zigbeeMqttFactory.CreateHausClient();
-            await HausMqttClient.SubscribeAsync("#", HausMessageHandler);
-            await base.StartAsync(cancellationToken);
-        }
+    public override async Task StartAsync(CancellationToken cancellationToken)
+    {
+        ZigbeeMqttClient = await _zigbeeMqttFactory.CreateZigbeeClient();
+        await ZigbeeMqttClient.SubscribeAsync("#", ZigbeeMessageHandler);
 
-        public override async Task StopAsync(CancellationToken cancellationToken)
-        {
-            await HausMqttClient.DisposeAsync();
-            await ZigbeeMqttClient.DisposeAsync();
-            await base.StopAsync(cancellationToken);
-        }
+        HausMqttClient = await _zigbeeMqttFactory.CreateHausClient();
+        await HausMqttClient.SubscribeAsync("#", HausMessageHandler);
+        await base.StartAsync(cancellationToken);
+    }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                await Task.Delay(1000, stoppingToken);
-            }
-        }
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await HausMqttClient.DisposeAsync();
+        await ZigbeeMqttClient.DisposeAsync();
+        await base.StopAsync(cancellationToken);
+    }
 
-        private async Task HausMessageHandler(MqttApplicationMessage arg)
-        {
-            await HandleMqttMessage(arg, ZigbeeMqttClient);
-        }
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested) await Task.Delay(1000, stoppingToken);
+    }
 
-        private async Task ZigbeeMessageHandler(MqttApplicationMessage arg)
-        {
-            await HandleMqttMessage(arg, HausMqttClient);
-        }
+    private async Task HausMessageHandler(MqttApplicationMessage arg)
+    {
+        await HandleMqttMessage(arg, ZigbeeMqttClient);
+    }
 
-        private async Task HandleMqttMessage(MqttApplicationMessage mqttMessage, IHausMqttClient targetMqtt)
-        {
-            var messageToSend = _mqttMessageMapper.Map(mqttMessage);
-            if (messageToSend == null)
-                return;
+    private async Task ZigbeeMessageHandler(MqttApplicationMessage arg)
+    {
+        await HandleMqttMessage(arg, HausMqttClient);
+    }
 
-            foreach (var message in messageToSend)
-            {
-                _logger.LogInformation("Sending message to {@Topic}...", message.Topic);
-                await targetMqtt.PublishAsync(message).ConfigureAwait(false);
-                _logger.LogInformation("Sent message to {@Topic}", message.Topic);    
-            }
+    private async Task HandleMqttMessage(MqttApplicationMessage mqttMessage, IHausMqttClient targetMqtt)
+    {
+        var messageToSend = _mqttMessageMapper.Map(mqttMessage);
+        if (messageToSend == null)
+            return;
+
+        foreach (var message in messageToSend)
+        {
+            _logger.LogInformation("Sending message to {@Topic}...", message.Topic);
+            await targetMqtt.PublishAsync(message).ConfigureAwait(false);
+            _logger.LogInformation("Sent message to {@Topic}", message.Topic);
         }
     }
 }

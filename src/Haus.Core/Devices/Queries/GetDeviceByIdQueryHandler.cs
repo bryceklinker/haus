@@ -8,26 +8,25 @@ using Haus.Core.Models.Devices;
 using Haus.Cqrs.Queries;
 using Microsoft.EntityFrameworkCore;
 
-namespace Haus.Core.Devices.Queries
+namespace Haus.Core.Devices.Queries;
+
+public record GetDeviceByIdQuery(long Id) : GetByIdQuery<DeviceModel>(Id);
+
+internal class GetDeviceByIdQueryHandler : IQueryHandler<GetDeviceByIdQuery, DeviceModel>
 {
-    public record GetDeviceByIdQuery(long Id) : GetByIdQuery<DeviceModel>(Id);
+    private readonly HausDbContext _context;
 
-    internal class GetDeviceByIdQueryHandler : IQueryHandler<GetDeviceByIdQuery, DeviceModel>
+    public GetDeviceByIdQueryHandler(HausDbContext context)
     {
-        private readonly HausDbContext _context;
+        _context = context;
+    }
 
-        public GetDeviceByIdQueryHandler(HausDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<DeviceModel> Handle(GetDeviceByIdQuery request, CancellationToken cancellationToken = default)
-        {
-            return await _context.QueryAll<DeviceEntity>()
-                .Where(d => d.Id == request.Id)
-                .Select(DeviceEntity.ToModelExpression)
-                .SingleOrDefaultAsync(cancellationToken)
-                .ConfigureAwait(false);
-        }
+    public async Task<DeviceModel> Handle(GetDeviceByIdQuery request, CancellationToken cancellationToken = default)
+    {
+        return await _context.QueryAll<DeviceEntity>()
+            .Where(d => d.Id == request.Id)
+            .Select(DeviceEntity.ToModelExpression)
+            .SingleOrDefaultAsync(cancellationToken)
+            .ConfigureAwait(false);
     }
 }

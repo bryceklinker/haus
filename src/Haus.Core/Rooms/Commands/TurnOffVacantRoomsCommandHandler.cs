@@ -12,9 +12,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Core.Rooms.Commands;
 
-public record TurnOffVacantRoomsCommand() : ICommand;
+public record TurnOffVacantRoomsCommand : ICommand;
 
-public class TurnOffVacantRoomsCommandHandler : AsyncRequestHandler<TurnOffVacantRoomsCommand>, ICommandHandler<TurnOffVacantRoomsCommand>
+public class TurnOffVacantRoomsCommandHandler : AsyncRequestHandler<TurnOffVacantRoomsCommand>,
+    ICommandHandler<TurnOffVacantRoomsCommand>
 {
     private readonly IDomainEventBus _domainEventBus;
     private readonly HausDbContext _context;
@@ -24,7 +25,7 @@ public class TurnOffVacantRoomsCommandHandler : AsyncRequestHandler<TurnOffVacan
         _domainEventBus = domainEventBus;
         _context = context;
     }
-    
+
     protected override async Task Handle(TurnOffVacantRoomsCommand request, CancellationToken cancellationToken)
     {
         var rooms = await _context.GetRoomsIncludeDevices()
@@ -32,11 +33,9 @@ public class TurnOffVacantRoomsCommandHandler : AsyncRequestHandler<TurnOffVacan
             .Where(r => r.LastOccupiedTime.HasValue)
             .ToArrayAsync(cancellationToken).ConfigureAwait(false);
         foreach (var room in rooms)
-        {
             room.ChangeOccupancy(
                 new OccupancyChangedModel(RoomDefaults.SimulatedOccupancyChangeDeviceId),
                 _domainEventBus);
-        }
 
         await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);

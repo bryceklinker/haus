@@ -1,10 +1,8 @@
 using Haus.Core.Models;
 
-namespace Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels
+namespace Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels;
+
+[SkipGeneration]
+public class Skippable
 {
-    [SkipGeneration]
-    public class Skippable
-    {
-        
-    }
 }

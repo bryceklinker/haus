@@ -5,23 +5,22 @@ using Haus.Api.Client.Options;
 using Haus.Core.Models.Diagnostics;
 using Microsoft.Extensions.Options;
 
-namespace Haus.Api.Client.Diagnostics
-{
-    public interface IDiagnosticsApiClient : IApiClient
-    {
-        Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model);
-    }
-    
-    public class DiagnosticsApiClient : ApiClient, IDiagnosticsApiClient
-    {
-        public DiagnosticsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) 
-            : base(httpClient, options)
-        {
-        }
+namespace Haus.Api.Client.Diagnostics;
 
-        public Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
-        {
-            return PostAsJsonAsync("diagnostics/replay", model);
-        }
+public interface IDiagnosticsApiClient : IApiClient
+{
+    Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model);
+}
+
+public class DiagnosticsApiClient : ApiClient, IDiagnosticsApiClient
+{
+    public DiagnosticsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+        : base(httpClient, options)
+    {
+    }
+
+    public Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
+    {
+        return PostAsJsonAsync("diagnostics/replay", model);
     }
 }

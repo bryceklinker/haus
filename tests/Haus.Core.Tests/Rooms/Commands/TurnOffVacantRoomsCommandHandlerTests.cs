@@ -10,7 +10,6 @@ using Haus.Core.Rooms.Commands;
 using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
 using Haus.Testing.Support;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Xunit;
 
 namespace Haus.Core.Tests.Rooms.Commands;
@@ -30,7 +29,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
     public async Task WhenTurnOffVacantRoomsExecutedAndRoomIsVacantThenChangesRoomLightingToOff()
     {
         var room = AddOccupiedRoom();
-        
+
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var updatedRoom = await _context.FindByIdAsync<RoomEntity>(room.Id);
@@ -41,7 +40,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
     public async Task WhenTurnOffVacantRoomsExecutedAndRoomIsVacantThenPublishesRoomLightingChange()
     {
         var room = AddOccupiedRoom();
-        
+
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var lightingChange = _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();

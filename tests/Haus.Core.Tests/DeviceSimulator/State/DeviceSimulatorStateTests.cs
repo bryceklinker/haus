@@ -7,83 +7,83 @@ using Haus.Core.Models.DeviceSimulator;
 using Haus.Core.Models.Lighting;
 using Xunit;
 
-namespace Haus.Core.Tests.DeviceSimulator.State
+namespace Haus.Core.Tests.DeviceSimulator.State;
+
+public class DeviceSimulatorStateTests
 {
-    public class DeviceSimulatorStateTests
+    [Fact]
+    public void WhenSimulatedDeviceIsAddedThenStateHasSimulatedDevice()
     {
-        [Fact]
-        public void WhenSimulatedDeviceIsAddedThenStateHasSimulatedDevice()
-        {
-            var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel());
-            
-            var state = DeviceSimulatorState.Initial.AddSimulatedDevice(entity);
+        var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel());
 
-            state.Devices.Should().Contain(entity);
-        }
+        var state = DeviceSimulatorState.Initial.AddSimulatedDevice(entity);
 
-        [Fact]
-        public void WhenResetThenReturnsInitialState()
-        {
-            var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel());
+        state.Devices.Should().Contain(entity);
+    }
 
-            var state = DeviceSimulatorState.Initial
-                .AddSimulatedDevice(entity)
-                .Reset();
+    [Fact]
+    public void WhenResetThenReturnsInitialState()
+    {
+        var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel());
 
-            state.Should().Be(DeviceSimulatorState.Initial);
-        }
+        var state = DeviceSimulatorState.Initial
+            .AddSimulatedDevice(entity)
+            .Reset();
 
-        [Fact]
-        public void WhenConvertedToModelThenDevicesAreInModel()
-        {
-            var model = DeviceSimulatorState.Initial
-                .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel()))
-                .ToModel();
+        state.Should().Be(DeviceSimulatorState.Initial);
+    }
 
-            model.Devices.Should().HaveCount(1);
-        }
+    [Fact]
+    public void WhenConvertedToModelThenDevicesAreInModel()
+    {
+        var model = DeviceSimulatorState.Initial
+            .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel()))
+            .ToModel();
 
-        [Fact]
-        public void WhenDeviceLightingIsChangedThenReturnsUpdatedDeviceInState()
-        {
-            var deviceId = $"{Guid.NewGuid()}";
-            var state = DeviceSimulatorState.Initial
-                .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel(deviceId, DeviceType.Light)))
-                .ChangeDeviceLighting(deviceId, new LightingModel(LightingState.On));
+        model.Devices.Should().HaveCount(1);
+    }
 
-            state.Devices.Should().HaveCount(1)
-                .And.OnlyContain(e => e.Id == deviceId && e.Lighting.State == LightingState.On);
-        }
+    [Fact]
+    public void WhenDeviceLightingIsChangedThenReturnsUpdatedDeviceInState()
+    {
+        var deviceId = $"{Guid.NewGuid()}";
+        var state = DeviceSimulatorState.Initial
+            .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel(deviceId, DeviceType.Light)))
+            .ChangeDeviceLighting(deviceId, new LightingModel(LightingState.On));
 
-        [Fact]
-        public void WhenDeviceLightingChangesForDeviceNotInStateThenReturnsUnchangedState()
-        {
-            var state = DeviceSimulatorState.Initial
-                .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel()))
-                .ChangeDeviceLighting($"{Guid.NewGuid()}", new LightingModel());
+        state.Devices.Should().HaveCount(1)
+            .And.OnlyContain(e => e.Id == deviceId && e.Lighting.State == LightingState.On);
+    }
 
-            state.Devices.Should().HaveCount(1);
-        }
+    [Fact]
+    public void WhenDeviceLightingChangesForDeviceNotInStateThenReturnsUnchangedState()
+    {
+        var state = DeviceSimulatorState.Initial
+            .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel()))
+            .ChangeDeviceLighting($"{Guid.NewGuid()}", new LightingModel());
 
-        [Fact]
-        public void WhenDeviceOccupancyChangedThenReturnsStateWithUpdatedDevice()
-        {
-            var deviceId = $"{Guid.NewGuid()}";
-            var state = DeviceSimulatorState.Initial
-                .AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel(deviceId, DeviceType.MotionSensor)))
-                .ChangeOccupancy(deviceId);
+        state.Devices.Should().HaveCount(1);
+    }
 
-            state.Devices.Should().HaveCount(1)
-                .And.OnlyContain(e => e.Id == deviceId && e.IsOccupied);
-        }
+    [Fact]
+    public void WhenDeviceOccupancyChangedThenReturnsStateWithUpdatedDevice()
+    {
+        var deviceId = $"{Guid.NewGuid()}";
+        var state = DeviceSimulatorState.Initial
+            .AddSimulatedDevice(
+                SimulatedDeviceEntity.Create(new SimulatedDeviceModel(deviceId, DeviceType.MotionSensor)))
+            .ChangeOccupancy(deviceId);
 
-        [Fact]
-        public void WhenDeviceOccupancyChangedForMissingDeviceThenReturnsUnchangedState()
-        {
-            var state = DeviceSimulatorState.Initial
-                .ChangeOccupancy($"{Guid.NewGuid()}");
+        state.Devices.Should().HaveCount(1)
+            .And.OnlyContain(e => e.Id == deviceId && e.IsOccupied);
+    }
 
-            state.Should().BeSameAs(DeviceSimulatorState.Initial);
-        }
+    [Fact]
+    public void WhenDeviceOccupancyChangedForMissingDeviceThenReturnsUnchangedState()
+    {
+        var state = DeviceSimulatorState.Initial
+            .ChangeOccupancy($"{Guid.NewGuid()}");
+
+        state.Should().BeSameAs(DeviceSimulatorState.Initial);
     }
 }

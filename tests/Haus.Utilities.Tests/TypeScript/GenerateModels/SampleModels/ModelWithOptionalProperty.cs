@@ -1,13 +1,10 @@
 using Haus.Core.Models;
 
-namespace Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels
+namespace Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels;
+
+public class ModelWithOptionalProperty
 {
-    public class ModelWithOptionalProperty
-    {
-        [OptionalGeneration]
-        public long Id { get; set; }
-        
-        [OptionalGeneration]
-        public double? Value { get; set; }
-    }
+    [OptionalGeneration] public long Id { get; set; }
+
+    [OptionalGeneration] public double? Value { get; set; }
 }

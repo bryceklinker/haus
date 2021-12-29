@@ -4,22 +4,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Cqrs.DomainEvents;
 
-namespace Haus.Core.Tests.Support
+namespace Haus.Core.Tests.Support;
+
+public class FakeDomainEventBus : IDomainEventBus
 {
-    public class FakeDomainEventBus : IDomainEventBus
+    private readonly Queue<IDomainEvent> _queue = new();
+
+    public IEnumerable<IDomainEvent> GetEvents => _queue.AsEnumerable();
+
+    public void Enqueue(IDomainEvent domainEvent)
     {
-        private readonly Queue<IDomainEvent> _queue = new Queue<IDomainEvent>();
+        _queue.Enqueue(domainEvent);
+    }
 
-        public IEnumerable<IDomainEvent> GetEvents => _queue.AsEnumerable();
-        
-        public void Enqueue(IDomainEvent domainEvent)
-        {
-            _queue.Enqueue(domainEvent);
-        }
-
-        public Task FlushAsync(CancellationToken token = default)
-        {
-            return Task.CompletedTask;
-        }
+    public Task FlushAsync(CancellationToken token = default)
+    {
+        return Task.CompletedTask;
     }
 }

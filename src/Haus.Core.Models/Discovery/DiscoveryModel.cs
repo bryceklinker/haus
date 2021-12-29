@@ -1,4 +1,3 @@
-namespace Haus.Core.Models.Discovery
-{
-    public record DiscoveryModel(DiscoveryState State);
-}
+namespace Haus.Core.Models.Discovery;
+
+public record DiscoveryModel(DiscoveryState State);

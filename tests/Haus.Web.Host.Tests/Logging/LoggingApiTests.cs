@@ -1,17 +1,15 @@
 using Haus.Web.Host.Tests.Support;
 using Xunit;
 
-namespace Haus.Web.Host.Tests.Logging
-{
-    [Collection(HausWebHostCollectionFixture.Name)]
-    public class LoggingApiTests
-    {
-        private readonly HausWebHostApplicationFactory _factory;
+namespace Haus.Web.Host.Tests.Logging;
 
-        public LoggingApiTests(HausWebHostApplicationFactory factory)
-        {
-            _factory = factory;
-        }
-        
+[Collection(HausWebHostCollectionFixture.Name)]
+public class LoggingApiTests
+{
+    private readonly HausWebHostApplicationFactory _factory;
+
+    public LoggingApiTests(HausWebHostApplicationFactory factory)
+    {
+        _factory = factory;
     }
 }

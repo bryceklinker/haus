@@ -6,69 +6,62 @@ using Haus.Testing.Support;
 using Haus.Udp.Client.Tests.Support;
 using Xunit;
 
-namespace Haus.Udp.Client.Tests
+namespace Haus.Udp.Client.Tests;
+
+public class HausUdpClientTests : IDisposable
 {
-    public class HausUdpClientTests : IDisposable
+    private readonly IHausUdpClient _client;
+    private readonly SupportFactory _supportFactory;
+
+    public HausUdpClientTests()
     {
-        private readonly IHausUdpClient _client;
-        private readonly SupportFactory _supportFactory;
+        _supportFactory = new SupportFactory();
 
-        public HausUdpClientTests()
+        _client = _supportFactory.CreateClient();
+    }
+
+    [Fact]
+    public async Task WhenBroadcastIsSentThenUdpMessageIsReceived()
+    {
+        ServiceLocationModel model = null;
+        await _client.SubscribeAsync<ServiceLocationModel>(m => model = m);
+
+        await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "192.168.1.1", 5000));
+
+        Eventually.Assert(() => { model.Name.Should().Be(KnownServices.Web); });
+    }
+
+    [Fact]
+    public async Task WhenSubscriberUsesAsyncMethodThenSubscriberReceivesMessages()
+    {
+        ServiceLocationModel model = null;
+        await _client.SubscribeAsync<ServiceLocationModel>(m =>
         {
-            _supportFactory = new SupportFactory();
+            model = m;
+            return Task.CompletedTask;
+        });
 
-            _client = _supportFactory.CreateClient();
-        }
-        
-        [Fact]
-        public async Task WhenBroadcastIsSentThenUdpMessageIsReceived()
-        {
-            ServiceLocationModel model = null;
-            await _client.SubscribeAsync<ServiceLocationModel>(m => model = m);
+        await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "1.1.1.1", 600));
 
-            await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "192.168.1.1", 5000));
-            
-            Eventually.Assert(() =>
-            {
-                model.Name.Should().Be(KnownServices.Web);
-            });
-        }
+        Eventually.Assert(() => { model.Name.Should().Be(KnownServices.Web); });
+    }
 
-        [Fact]
-        public async Task WhenSubscriberUsesAsyncMethodThenSubscriberReceivesMessages()
-        {
-            ServiceLocationModel model = null;
-            await _client.SubscribeAsync<ServiceLocationModel>(m =>
-            {
-                model = m;
-                return Task.CompletedTask;
-            });
+    [Fact]
+    public async Task WhenBroadcastIsSentAfterUnsubscribingThenNoMessageIsReceived()
+    {
+        ServiceLocationModel model = null;
+        var subscription = await _client.SubscribeAsync<ServiceLocationModel>(m => model = m);
+        await subscription.UnsubscribeAsync();
 
-            await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "1.1.1.1", 600));
-            
-            Eventually.Assert(() =>
-            {
-                model.Name.Should().Be(KnownServices.Web);
-            });
-        }
+        await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "192.168.1.1", 777));
+        await Task.Delay(1000);
 
-        [Fact]
-        public async Task WhenBroadcastIsSentAfterUnsubscribingThenNoMessageIsReceived()
-        {
-            ServiceLocationModel model = null;
-            var subscription = await _client.SubscribeAsync<ServiceLocationModel>(m => model = m);
-            await subscription.UnsubscribeAsync();
+        model.Should().BeNull();
+    }
 
-            await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "192.168.1.1", 777));
-            await Task.Delay(1000);
-
-            model.Should().BeNull();
-        }
-
-        public void Dispose()
-        {
-            _supportFactory.Dispose();
-            GC.SuppressFinalize(this);
-        }
+    public void Dispose()
+    {
+        _supportFactory.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

@@ -3,57 +3,56 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Haus.Core.Application;
 
-namespace Haus.Testing.Support.Fakes
+namespace Haus.Testing.Support.Fakes;
+
+public class FakeLatestReleaseProvider : ILatestReleaseProvider
 {
-    public class FakeLatestReleaseProvider : ILatestReleaseProvider
+    private ReleaseModel Latest { get; set; }
+    private ReleasePackageModel[] Packages { get; set; }
+    private Dictionary<int, byte[]> PackageBytes { get; } = new();
+    private Exception Exception { get; set; }
+
+    public Task<ReleaseModel> GetLatestVersionAsync()
     {
-        private ReleaseModel Latest { get; set; }
-        private ReleasePackageModel[] Packages { get; set; }
-        private Dictionary<int, byte[]> PackageBytes { get; set; } = new();
-        private Exception Exception { get; set; }
-        
-        public Task<ReleaseModel> GetLatestVersionAsync()
-        {
-            if (Exception != null)
-                throw Exception;
-            
-            return Task.FromResult(Latest);
-        }
+        if (Exception != null)
+            throw Exception;
 
-        public Task<ReleasePackageModel[]> GetLatestPackages()
-        {
-            if (Exception != null)
-                throw Exception;
+        return Task.FromResult(Latest);
+    }
 
-            return Task.FromResult(Packages);
-        }
+    public Task<ReleasePackageModel[]> GetLatestPackages()
+    {
+        if (Exception != null)
+            throw Exception;
 
-        public Task<byte[]> DownloadLatestPackage(int id)
-        {
-            if (Exception != null)
-                throw Exception;
+        return Task.FromResult(Packages);
+    }
 
-            return Task.FromResult(PackageBytes[id]);
-        }
+    public Task<byte[]> DownloadLatestPackage(int id)
+    {
+        if (Exception != null)
+            throw Exception;
 
-        public void SetupLatestVersion(ReleaseModel model)
-        {
-            Latest = model;
-        }
+        return Task.FromResult(PackageBytes[id]);
+    }
 
-        public void SetupLatestPackages(params ReleasePackageModel[] packages)
-        {
-            Packages = packages;
-        }
+    public void SetupLatestVersion(ReleaseModel model)
+    {
+        Latest = model;
+    }
 
-        public void SetupPackageDownload(int packageId, byte[] bytes)
-        {
-            PackageBytes.Add(packageId, bytes);
-        }
+    public void SetupLatestPackages(params ReleasePackageModel[] packages)
+    {
+        Packages = packages;
+    }
 
-        public void SetupFailure(Exception exception)
-        {
-            Exception = exception;
-        }
+    public void SetupPackageDownload(int packageId, byte[] bytes)
+    {
+        PackageBytes.Add(packageId, bytes);
+    }
+
+    public void SetupFailure(Exception exception)
+    {
+        Exception = exception;
     }
 }

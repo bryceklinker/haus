@@ -4,33 +4,32 @@ using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.ExternalMessages;
 
-namespace Haus.Core.Common.Events
+namespace Haus.Core.Common.Events;
+
+public interface IRoutableEventFactory
 {
-    public interface IRoutableEventFactory
+    RoutableEvent Create(byte[] bytes);
+}
+
+public class RoutableEventFactory : IRoutableEventFactory
+{
+    public RoutableEvent Create(byte[] bytes)
     {
-        RoutableEvent Create(byte[] bytes);
+        if (!HausJsonSerializer.TryDeserialize(bytes, out HausEvent hausEvent))
+            return null;
+
+        return hausEvent.Type switch
+        {
+            DeviceDiscoveredEvent.Type => CreateRoutableEvent<DeviceDiscoveredEvent>(bytes),
+            MultiSensorChanged.Type => CreateRoutableEvent<MultiSensorChanged>(bytes),
+            OccupancyChangedModel.Type => CreateRoutableEvent<OccupancyChangedModel>(bytes),
+            _ => null
+        };
     }
-    
-    public class RoutableEventFactory : IRoutableEventFactory
+
+    private static RoutableEvent CreateRoutableEvent<T>(byte[] bytes)
     {
-        public RoutableEvent Create(byte[] bytes)
-        {
-            if (!HausJsonSerializer.TryDeserialize(bytes, out HausEvent hausEvent))
-                return null;
-            
-            return hausEvent.Type switch
-            {
-                DeviceDiscoveredEvent.Type => CreateRoutableEvent<DeviceDiscoveredEvent>(bytes),
-                MultiSensorChanged.Type => CreateRoutableEvent<MultiSensorChanged>(bytes),
-                OccupancyChangedModel.Type => CreateRoutableEvent<OccupancyChangedModel>(bytes),
-                _ => null
-            };
-        }
-        
-        private static RoutableEvent CreateRoutableEvent<T>(byte[] bytes)
-        {
-            var hausEvent = HausJsonSerializer.Deserialize<HausEvent<T>>(bytes);
-            return new RoutableEvent<T>(hausEvent);
-        }
+        var hausEvent = HausJsonSerializer.Deserialize<HausEvent<T>>(bytes);
+        return new RoutableEvent<T>(hausEvent);
     }
 }

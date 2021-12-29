@@ -3,34 +3,33 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace Haus.Cqrs.DomainEvents
+namespace Haus.Cqrs.DomainEvents;
+
+public interface IDomainEventBus
 {
-    public interface IDomainEventBus
+    void Enqueue(IDomainEvent domainEvent);
+    Task FlushAsync(CancellationToken token = default);
+}
+
+internal class DomainEventBus : IDomainEventBus
+{
+    private readonly ConcurrentQueue<IDomainEvent> _events;
+    private readonly IMediator _mediator;
+
+    public DomainEventBus(IMediator mediator)
     {
-        void Enqueue(IDomainEvent domainEvent);
-        Task FlushAsync(CancellationToken token = default);
+        _mediator = mediator;
+        _events = new ConcurrentQueue<IDomainEvent>();
     }
 
-    internal class DomainEventBus : IDomainEventBus
+    public void Enqueue(IDomainEvent domainEvent)
     {
-        private readonly ConcurrentQueue<IDomainEvent> _events;
-        private readonly IMediator _mediator;
+        _events.Enqueue(domainEvent);
+    }
 
-        public DomainEventBus(IMediator mediator)
-        {
-            _mediator = mediator;
-            _events = new ConcurrentQueue<IDomainEvent>();
-        }
-
-        public void Enqueue(IDomainEvent domainEvent)
-        {
-            _events.Enqueue(domainEvent);
-        }
-
-        public async Task FlushAsync(CancellationToken token = default)
-        {
-            foreach (var domainEvent in _events) 
-                await _mediator.Publish(domainEvent, token);
-        }
+    public async Task FlushAsync(CancellationToken token = default)
+    {
+        foreach (var domainEvent in _events)
+            await _mediator.Publish(domainEvent, token);
     }
 }

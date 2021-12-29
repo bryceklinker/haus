@@ -6,45 +6,45 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Haus.Web.Host.Tests.Support
+namespace Haus.Web.Host.Tests.Support;
+
+public class TestingAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    public class TestingAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    public const string TestingScheme = "Testing";
+
+    public TestingAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger,
+        UrlEncoder encoder, ISystemClock clock)
+        : base(options, logger, encoder, clock)
     {
-        public const string TestingScheme = "Testing";
-        
-        public TestingAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) 
-            : base(options, logger, encoder, clock)
-        {
-        }
+    }
 
-        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
-        {
-            return IsAuthenticatedRequest() 
-                ? CreateSuccessResult() 
-                : CreateFailedResult();
-        }
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    {
+        return IsAuthenticatedRequest()
+            ? CreateSuccessResult()
+            : CreateFailedResult();
+    }
 
-        private static Task<AuthenticateResult> CreateFailedResult()
-        {
-            return Task.FromResult(AuthenticateResult.Fail("You are not authenticated"));
-        }
+    private static Task<AuthenticateResult> CreateFailedResult()
+    {
+        return Task.FromResult(AuthenticateResult.Fail("You are not authenticated"));
+    }
 
-        private static Task<AuthenticateResult> CreateSuccessResult()
+    private static Task<AuthenticateResult> CreateSuccessResult()
+    {
+        var claims = new[]
         {
-            var claims = new[]
-            {
-                new Claim("sub", "me"),
-            };
-            var identity = new ClaimsIdentity(claims, TestingScheme);
-            var principal = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principal, TestingScheme);
-            return Task.FromResult(AuthenticateResult.Success(ticket));
-        }
+            new Claim("sub", "me")
+        };
+        var identity = new ClaimsIdentity(claims, TestingScheme);
+        var principal = new ClaimsPrincipal(identity);
+        var ticket = new AuthenticationTicket(principal, TestingScheme);
+        return Task.FromResult(AuthenticateResult.Success(ticket));
+    }
 
-        private bool IsAuthenticatedRequest()
-        {
-            return Request.Headers.TryGetValue("Authorization", out var value) 
-                   && value.Any(v => v.Contains(TestingScheme));
-        }
+    private bool IsAuthenticatedRequest()
+    {
+        return Request.Headers.TryGetValue("Authorization", out var value)
+               && value.Any(v => v.Contains(TestingScheme));
     }
 }

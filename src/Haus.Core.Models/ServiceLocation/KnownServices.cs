@@ -1,7 +1,6 @@
-namespace Haus.Core.Models.ServiceLocation
+namespace Haus.Core.Models.ServiceLocation;
+
+public static class KnownServices
 {
-    public static class KnownServices
-    {
-        public const string Web = "Haus Web";
-    }
+    public const string Web = "Haus Web";
 }

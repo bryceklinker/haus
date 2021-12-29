@@ -5,28 +5,27 @@ using Haus.Core.Models.Devices;
 using Haus.Web.Host.Tests.Support;
 using Xunit;
 
-namespace Haus.Web.Host.Tests.Devices
+namespace Haus.Web.Host.Tests.Devices;
+
+[Collection(HausWebHostCollectionFixture.Name)]
+public class LightTypesApiTests
 {
-    [Collection(HausWebHostCollectionFixture.Name)]
-    public class LightTypesApiTests
+    private readonly IHausApiClient _client;
+
+    public LightTypesApiTests(HausWebHostApplicationFactory factory)
     {
-        private readonly IHausApiClient _client;
+        _client = factory.CreateAuthenticatedClient();
+    }
 
-        public LightTypesApiTests(HausWebHostApplicationFactory factory)
-        {
-            _client = factory.CreateAuthenticatedClient();
-        }
+    [Fact]
+    public async Task WhenGettingLightTypesThenReturnsAllLightTypes()
+    {
+        var result = await _client.GetLightTypesAsync();
 
-        [Fact]
-        public async Task WhenGettingLightTypesThenReturnsAllLightTypes()
-        {
-            var result = await _client.GetLightTypesAsync();
-
-            result.Count.Should().Be(3);
-            result.Items.Should().HaveCount(3)
-                .And.Contain(LightType.Color)
-                .And.Contain(LightType.Level)
-                .And.Contain(LightType.Temperature);
-        }
+        result.Count.Should().Be(3);
+        result.Items.Should().HaveCount(3)
+            .And.Contain(LightType.Color)
+            .And.Contain(LightType.Level)
+            .And.Contain(LightType.Temperature);
     }
 }

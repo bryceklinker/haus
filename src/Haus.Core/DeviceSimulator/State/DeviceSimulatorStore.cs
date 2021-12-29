@@ -2,50 +2,49 @@ using System;
 using System.Reactive.Subjects;
 using Haus.Core.DeviceSimulator.Entities;
 
-namespace Haus.Core.DeviceSimulator.State
+namespace Haus.Core.DeviceSimulator.State;
+
+public interface IDeviceSimulatorStore : IObservable<IDeviceSimulatorState>
 {
-    public interface IDeviceSimulatorStore : IObservable<IDeviceSimulatorState>
-    {
-        IDeviceSimulatorState Current { get; }
+    IDeviceSimulatorState Current { get; }
 
-        SimulatedDeviceEntity GetDeviceById(string deviceId);
-        void Publish(IDeviceSimulatorState state);
-        void PublishNext(Func<IDeviceSimulatorState, IDeviceSimulatorState> generateNextState);
+    SimulatedDeviceEntity GetDeviceById(string deviceId);
+    void Publish(IDeviceSimulatorState state);
+    void PublishNext(Func<IDeviceSimulatorState, IDeviceSimulatorState> generateNextState);
+}
+
+public class DeviceSimulatorStore : IDeviceSimulatorStore
+{
+    private readonly BehaviorSubject<IDeviceSimulatorState> _subject;
+
+    public IDeviceSimulatorState Current => _subject.Value;
+
+    public DeviceSimulatorStore()
+    {
+        _subject = new BehaviorSubject<IDeviceSimulatorState>(DeviceSimulatorState.Initial);
     }
-    
-    public class DeviceSimulatorStore : IDeviceSimulatorStore
+
+    public SimulatedDeviceEntity GetDeviceById(string deviceId)
     {
-        private readonly BehaviorSubject<IDeviceSimulatorState> _subject;
+        return Current.GetDeviceById(deviceId);
+    }
 
-        public IDeviceSimulatorState Current => _subject.Value;
+    public void Publish(IDeviceSimulatorState state)
+    {
+        _subject.OnNext(state);
+    }
 
-        public DeviceSimulatorStore()
-        {
-            _subject = new BehaviorSubject<IDeviceSimulatorState>(DeviceSimulatorState.Initial);
-        }
+    public void PublishNext(Func<IDeviceSimulatorState, IDeviceSimulatorState> generateNextState)
+    {
+        var next = generateNextState(Current);
+        if (ReferenceEquals(next, Current))
+            return;
 
-        public SimulatedDeviceEntity GetDeviceById(string deviceId)
-        {
-            return Current.GetDeviceById(deviceId);
-        }
+        Publish(next);
+    }
 
-        public void Publish(IDeviceSimulatorState state)
-        {
-            _subject.OnNext(state);
-        }
-
-        public void PublishNext(Func<IDeviceSimulatorState, IDeviceSimulatorState> generateNextState)
-        {
-            var next = generateNextState(Current);
-            if (ReferenceEquals(next, Current)) 
-                return;
-            
-            Publish(next);
-        }
-
-        public IDisposable Subscribe(IObserver<IDeviceSimulatorState> observer)
-        {
-            return _subject.Subscribe(observer);
-        }
+    public IDisposable Subscribe(IObserver<IDeviceSimulatorState> observer)
+    {
+        return _subject.Subscribe(observer);
     }
 }

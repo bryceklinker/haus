@@ -4,15 +4,14 @@ using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace Haus.Core
+namespace Haus.Core;
+
+public static class QueryableExtensions
 {
-    public static class QueryableExtensions
+    public static async Task<ListResult<T>> ToListResultAsync<T>(
+        this IQueryable<T> source,
+        CancellationToken cancellationToken = default)
     {
-        public static async Task<ListResult<T>> ToListResultAsync<T>(
-            this IQueryable<T> source,
-            CancellationToken cancellationToken = default)
-        {
-            return new(await source.ToArrayAsync(cancellationToken).ConfigureAwait(false));
-        }
+        return new ListResult<T>(await source.ToArrayAsync(cancellationToken).ConfigureAwait(false));
     }
 }

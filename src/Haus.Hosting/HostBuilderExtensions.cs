@@ -1,15 +1,13 @@
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Events;
 
-namespace Haus.Hosting
+namespace Haus.Hosting;
+
+public static class HostBuilderExtensions
 {
-    public static class HostBuilderExtensions
+    public static IHostBuilder UseHausLogging(this IHostBuilder builder, string appName)
     {
-        public static IHostBuilder UseHausLogging(this IHostBuilder builder, string appName)
-        {
-            HausLogger.ConfigureDefaultLogging(appName);
-            return builder.UseSerilog();
-        }
+        HausLogger.ConfigureDefaultLogging(appName);
+        return builder.UseSerilog();
     }
 }

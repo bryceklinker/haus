@@ -8,87 +8,87 @@ using Haus.Core.Models.DeviceSimulator;
 using Haus.Core.Models.Lighting;
 using Xunit;
 
-namespace Haus.Core.Tests.DeviceSimulator.Entities
+namespace Haus.Core.Tests.DeviceSimulator.Entities;
+
+public class SimulatedDeviceEntityTests
 {
-    public class SimulatedDeviceEntityTests
+    [Fact]
+    public void WhenCreatedThenSimulatedMetadataIsAdded()
     {
-        [Fact]
-        public void WhenCreatedThenSimulatedMetadataIsAdded()
-        {
-            var model = new SimulatedDeviceModel(DeviceType: DeviceType.Light);
+        var model = new SimulatedDeviceModel(DeviceType: DeviceType.Light);
 
-            var entity = SimulatedDeviceEntity.Create(model);
+        var entity = SimulatedDeviceEntity.Create(model);
 
-            entity.Id.Should().NotBeNullOrWhiteSpace();
-            entity.DeviceType.Should().Be(DeviceType.Light);
-            entity.Metadata.Should().ContainEquivalentOf(new Metadata("simulated", "true"));
-        }
+        entity.Id.Should().NotBeNullOrWhiteSpace();
+        entity.DeviceType.Should().Be(DeviceType.Light);
+        entity.Metadata.Should().ContainEquivalentOf(new Metadata("simulated", "true"));
+    }
 
-        [Fact]
-        public void WhenCreatedWithMetadataThenMetadataIsMappedToSimulatedDevice()
-        {
-            var model = new SimulatedDeviceModel(Metadata: new []{new MetadataModel("one", "three")});
+    [Fact]
+    public void WhenCreatedWithMetadataThenMetadataIsMappedToSimulatedDevice()
+    {
+        var model = new SimulatedDeviceModel(Metadata: new[] { new MetadataModel("one", "three") });
 
-            var entity = SimulatedDeviceEntity.Create(model);
+        var entity = SimulatedDeviceEntity.Create(model);
 
-            entity.Metadata.Should().ContainEquivalentOf(new Metadata("one", "three"));
-        }
+        entity.Metadata.Should().ContainEquivalentOf(new Metadata("one", "three"));
+    }
 
-        [Fact]
-        public void WhenTurnedIntoDeviceDiscoveredThenDeviceDiscoveredIsPopulatedFromSimulatedDevice()
-        {
-            var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel(DeviceType: DeviceType.Light));
+    [Fact]
+    public void WhenTurnedIntoDeviceDiscoveredThenDeviceDiscoveredIsPopulatedFromSimulatedDevice()
+    {
+        var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel(DeviceType: DeviceType.Light));
 
-            var model = entity.ToDeviceDiscoveredModel();
+        var model = entity.ToDeviceDiscoveredModel();
 
-            model.Id.Should().Be(entity.Id);
-            model.DeviceType.Should().Be(entity.DeviceType);
-            model.Metadata.Should().Contain(m => m.Key == "simulated" && m.Value == "true");
-        }
+        model.Id.Should().Be(entity.Id);
+        model.DeviceType.Should().Be(entity.DeviceType);
+        model.Metadata.Should().Contain(m => m.Key == "simulated" && m.Value == "true");
+    }
 
-        [Fact]
-        public void WhenConvertedToModelThenReturnsSimulatedDeviceModel()
-        {
-            var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel($"{Guid.NewGuid()}", DeviceType.Light, true, new []
+    [Fact]
+    public void WhenConvertedToModelThenReturnsSimulatedDeviceModel()
+    {
+        var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel($"{Guid.NewGuid()}", DeviceType.Light, true,
+            new[]
             {
                 new MetadataModel("one", "three")
             }));
 
-            var model = entity.ToModel();
+        var model = entity.ToModel();
 
-            model.Id.Should().Be(entity.Id);
-            model.DeviceType.Should().Be(DeviceType.Light);
-            model.IsOccupied.Should().BeFalse();
-            model.Metadata.Should().HaveCount(2)
-                .And.ContainEquivalentOf(new MetadataModel("one", "three"));
-        }
+        model.Id.Should().Be(entity.Id);
+        model.DeviceType.Should().Be(DeviceType.Light);
+        model.IsOccupied.Should().BeFalse();
+        model.Metadata.Should().HaveCount(2)
+            .And.ContainEquivalentOf(new MetadataModel("one", "three"));
+    }
 
-        [Fact]
-        public void WhenSimulatorIsLightAndConvertedToModelThenLightingIsInModel()
-        {
-            var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.Light, Lighting: new LightingModel());
+    [Fact]
+    public void WhenSimulatorIsLightAndConvertedToModelThenLightingIsInModel()
+    {
+        var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.Light, Lighting: new LightingModel());
 
-            var model = entity.ToModel();
+        var model = entity.ToModel();
 
-            model.Lighting.Should().BeEquivalentTo(new LightingModel());
-        }
+        model.Lighting.Should().BeEquivalentTo(new LightingModel());
+    }
 
-        [Fact]
-        public void WhenSimulatorIsMotionSensorAndOccupancyIsChangedThenIsOccupied()
-        {
-            var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor)
-                .ChangeOccupancy();
+    [Fact]
+    public void WhenSimulatorIsMotionSensorAndOccupancyIsChangedThenIsOccupied()
+    {
+        var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor)
+            .ChangeOccupancy();
 
-            entity.IsOccupied.Should().BeTrue();
-        }
+        entity.IsOccupied.Should().BeTrue();
+    }
 
-        [Fact]
-        public void WhenSimulatorIsMotionSensorAndOccupiedAndOccupancyIsChangedThenIsVacant()
-        {
-            var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor, IsOccupied: true)
-                .ChangeOccupancy();
+    [Fact]
+    public void WhenSimulatorIsMotionSensorAndOccupiedAndOccupancyIsChangedThenIsVacant()
+    {
+        var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor, IsOccupied: true)
+            .ChangeOccupancy();
 
-            entity.IsOccupied.Should().BeFalse();
-        }
+        entity.IsOccupied.Should().BeFalse();
     }
 }

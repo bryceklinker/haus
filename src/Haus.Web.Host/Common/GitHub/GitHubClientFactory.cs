@@ -1,12 +1,9 @@
-namespace Haus.Web.Host.Common.GitHub
-{
-    public interface IGitHubClientFactory
-    {
-        
-    }
+namespace Haus.Web.Host.Common.GitHub;
 
-    public class GitHubClientFactory : IGitHubClientFactory 
-    {
-        
-    }
+public interface IGitHubClientFactory
+{
+}
+
+public class GitHubClientFactory : IGitHubClientFactory
+{
 }

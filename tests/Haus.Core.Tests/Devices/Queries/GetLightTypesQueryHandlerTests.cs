@@ -6,35 +6,34 @@ using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Devices.Queries
+namespace Haus.Core.Tests.Devices.Queries;
+
+public class GetLightTypesQueryHandlerTests
 {
-    public class GetLightTypesQueryHandlerTests
+    private readonly IHausBus _hausBus;
+
+    public GetLightTypesQueryHandlerTests()
     {
-        private readonly IHausBus _hausBus;
+        _hausBus = HausBusFactory.Create();
+    }
 
-        public GetLightTypesQueryHandlerTests()
-        {
-            _hausBus = HausBusFactory.Create();
-        }
+    [Fact]
+    public async Task WhenGettingLightTypesThenReturnsExcludesNone()
+    {
+        var result = await _hausBus.ExecuteQueryAsync(new GetLightTypesQuery());
 
-        [Fact]
-        public async Task WhenGettingLightTypesThenReturnsExcludesNone()
-        {
-            var result = await _hausBus.ExecuteQueryAsync(new GetLightTypesQuery());
+        result.Items.Should().NotContain(LightType.None);
+    }
 
-            result.Items.Should().NotContain(LightType.None);
-        }
+    [Fact]
+    public async Task WhenGettingLightTypesThenReturnsAvailableLightTypes()
+    {
+        var result = await _hausBus.ExecuteQueryAsync(new GetLightTypesQuery());
 
-        [Fact]
-        public async Task WhenGettingLightTypesThenReturnsAvailableLightTypes()
-        {
-            var result = await _hausBus.ExecuteQueryAsync(new GetLightTypesQuery());
-
-            result.Count.Should().Be(3);
-            result.Items.Should().HaveCount(3)
-                .And.Contain(LightType.Color)
-                .And.Contain(LightType.Level)
-                .And.Contain(LightType.Temperature);
-        }
+        result.Count.Should().Be(3);
+        result.Items.Should().HaveCount(3)
+            .And.Contain(LightType.Color)
+            .And.Contain(LightType.Level)
+            .And.Contain(LightType.Temperature);
     }
 }

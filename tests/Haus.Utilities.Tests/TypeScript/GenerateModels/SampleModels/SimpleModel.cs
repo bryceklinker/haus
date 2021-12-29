@@ -1,9 +1,8 @@
-namespace Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels
+namespace Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels;
+
+public class SimpleModel
 {
-    public class SimpleModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public double Value { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public double Value { get; set; }
 }

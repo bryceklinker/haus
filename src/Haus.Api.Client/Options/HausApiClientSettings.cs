@@ -1,7 +1,6 @@
-namespace Haus.Api.Client.Options
+namespace Haus.Api.Client.Options;
+
+public class HausApiClientSettings
 {
-    public class HausApiClientSettings
-    {
-        public string BaseUrl { get; set; }
-    }
+    public string BaseUrl { get; set; }
 }

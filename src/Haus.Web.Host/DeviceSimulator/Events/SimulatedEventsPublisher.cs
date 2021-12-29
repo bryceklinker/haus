@@ -6,25 +6,24 @@ using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Settings;
 using Microsoft.Extensions.Options;
 
-namespace Haus.Web.Host.DeviceSimulator.Events
+namespace Haus.Web.Host.DeviceSimulator.Events;
+
+internal class SimulatedEventsPublisher : IEventHandler<SimulatedEvent>
 {
-    internal class SimulatedEventsPublisher : IEventHandler<SimulatedEvent>
+    private readonly IHausMqttClientFactory _mqttClientFactory;
+    private readonly IOptions<HausMqttSettings> _options;
+
+    public string EventsTopic => _options.Value.EventsTopic;
+
+    public SimulatedEventsPublisher(IHausMqttClientFactory mqttClientFactory, IOptions<HausMqttSettings> options)
     {
-        private readonly IHausMqttClientFactory _mqttClientFactory;
-        private readonly IOptions<HausMqttSettings> _options;
+        _mqttClientFactory = mqttClientFactory;
+        _options = options;
+    }
 
-        public string EventsTopic => _options.Value.EventsTopic;
-        
-        public SimulatedEventsPublisher(IHausMqttClientFactory mqttClientFactory, IOptions<HausMqttSettings> options)
-        {
-            _mqttClientFactory = mqttClientFactory;
-            _options = options;
-        }
-
-        public async Task Handle(SimulatedEvent notification, CancellationToken cancellationToken)
-        {
-            var client = await _mqttClientFactory.CreateClient().ConfigureAwait(false);
-            await client.PublishAsync(EventsTopic, notification.HausEvent).ConfigureAwait(false);
-        }
+    public async Task Handle(SimulatedEvent notification, CancellationToken cancellationToken)
+    {
+        var client = await _mqttClientFactory.CreateClient().ConfigureAwait(false);
+        await client.PublishAsync(EventsTopic, notification.HausEvent).ConfigureAwait(false);
     }
 }

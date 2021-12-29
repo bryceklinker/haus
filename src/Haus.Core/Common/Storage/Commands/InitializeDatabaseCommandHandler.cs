@@ -5,25 +5,26 @@ using Haus.Cqrs.Commands;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Haus.Core.Common.Storage.Commands
+namespace Haus.Core.Common.Storage.Commands;
+
+public record InitializeDatabaseCommand : ICommand;
+
+internal class InitializeDatabaseCommandHandler : AsyncRequestHandler<InitializeDatabaseCommand>,
+    ICommandHandler<InitializeDatabaseCommand>
 {
-    public record InitializeDatabaseCommand : ICommand;
+    private readonly HausDbContext _context;
 
-    internal class InitializeDatabaseCommandHandler : AsyncRequestHandler<InitializeDatabaseCommand>, ICommandHandler<InitializeDatabaseCommand>
+    public InitializeDatabaseCommandHandler(HausDbContext context)
     {
-        private readonly HausDbContext _context;
+        _context = context;
+    }
 
-        public InitializeDatabaseCommandHandler(HausDbContext context)
-        {
-            _context = context;
-        }
-
-        protected override async Task Handle(InitializeDatabaseCommand request, CancellationToken cancellationToken)
-        {
-            var allMigrations = _context.Database.GetMigrations();
-            var appliedMigrations = await _context.Database.GetAppliedMigrationsAsync(cancellationToken).ConfigureAwait(false);
-            if (allMigrations.Count() != appliedMigrations.Count())
-                await _context.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
-        }
+    protected override async Task Handle(InitializeDatabaseCommand request, CancellationToken cancellationToken)
+    {
+        var allMigrations = _context.Database.GetMigrations();
+        var appliedMigrations =
+            await _context.Database.GetAppliedMigrationsAsync(cancellationToken).ConfigureAwait(false);
+        if (allMigrations.Count() != appliedMigrations.Count())
+            await _context.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 }

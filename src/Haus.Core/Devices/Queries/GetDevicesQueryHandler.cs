@@ -7,33 +7,33 @@ using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Cqrs.Queries;
 
-namespace Haus.Core.Devices.Queries
+namespace Haus.Core.Devices.Queries;
+
+public record GetDevicesQuery(string ExternalId = null) : IQuery<ListResult<DeviceModel>>
 {
-    public record GetDevicesQuery(string ExternalId = null) : IQuery<ListResult<DeviceModel>>
+    public bool HasExternalId => !string.IsNullOrWhiteSpace(ExternalId);
+}
+
+internal class GetDevicesQueryHandler : IQueryHandler<GetDevicesQuery, ListResult<DeviceModel>>
+{
+    private readonly HausDbContext _context;
+
+    public GetDevicesQueryHandler(HausDbContext context)
     {
-        public bool HasExternalId => !string.IsNullOrWhiteSpace(ExternalId);
+        _context = context;
     }
 
-    internal class GetDevicesQueryHandler : IQueryHandler<GetDevicesQuery, ListResult<DeviceModel>>
+    public async Task<ListResult<DeviceModel>> Handle(GetDevicesQuery request,
+        CancellationToken cancellationToken = default)
     {
-        private readonly HausDbContext _context;
+        var query = _context.QueryAll<DeviceEntity>();
 
-        public GetDevicesQueryHandler(HausDbContext context)
-        {
-            _context = context;
-        }
+        if (request.HasExternalId)
+            query = query.Where(d => d.ExternalId == request.ExternalId);
 
-        public async Task<ListResult<DeviceModel>> Handle(GetDevicesQuery request, CancellationToken cancellationToken = default)
-        {
-            var query = _context.QueryAll<DeviceEntity>();
-
-            if (request.HasExternalId) 
-                query = query.Where(d => d.ExternalId == request.ExternalId);
-            
-            return await query
-                .Select(DeviceEntity.ToModelExpression)
-                .ToListResultAsync(cancellationToken)
-                .ConfigureAwait(false);
-        }
+        return await query
+            .Select(DeviceEntity.ToModelExpression)
+            .ToListResultAsync(cancellationToken)
+            .ConfigureAwait(false);
     }
 }

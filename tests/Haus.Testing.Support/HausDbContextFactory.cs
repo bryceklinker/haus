@@ -2,17 +2,16 @@ using System;
 using Haus.Core.Common.Storage;
 using Microsoft.EntityFrameworkCore;
 
-namespace Haus.Testing.Support
-{
-    public static class HausDbContextFactory
-    {
-        public static HausDbContext Create()
-        {
-            var options = new DbContextOptionsBuilder<HausDbContext>()
-                .UseInMemoryDatabase($"{Guid.NewGuid()}")
-                .Options;
+namespace Haus.Testing.Support;
 
-            return new HausDbContext(options);
-        }
+public static class HausDbContextFactory
+{
+    public static HausDbContext Create()
+    {
+        var options = new DbContextOptionsBuilder<HausDbContext>()
+            .UseInMemoryDatabase($"{Guid.NewGuid()}")
+            .Options;
+
+        return new HausDbContext(options);
     }
 }

@@ -8,26 +8,25 @@ using Haus.Core.Rooms.Entities;
 using Haus.Cqrs.Queries;
 using Microsoft.EntityFrameworkCore;
 
-namespace Haus.Core.Rooms.Queries
+namespace Haus.Core.Rooms.Queries;
+
+public record GetRoomByIdQuery(long Id) : GetByIdQuery<RoomModel>(Id);
+
+internal class GetRoomByIdQueryHandler : IQueryHandler<GetRoomByIdQuery, RoomModel>
 {
-    public record GetRoomByIdQuery(long Id) : GetByIdQuery<RoomModel>(Id);
+    private readonly HausDbContext _context;
 
-    internal class GetRoomByIdQueryHandler : IQueryHandler<GetRoomByIdQuery, RoomModel>
+    public GetRoomByIdQueryHandler(HausDbContext context)
     {
-        private readonly HausDbContext _context;
+        _context = context;
+    }
 
-        public GetRoomByIdQueryHandler(HausDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<RoomModel> Handle(GetRoomByIdQuery request, CancellationToken cancellationToken)
-        {
-            return await _context.QueryAll<RoomEntity>()
-                .Where(r => r.Id == request.Id)
-                .Select(RoomEntity.ToModelExpression)
-                .SingleOrDefaultAsync(cancellationToken)
-                .ConfigureAwait(false);
-        }
+    public async Task<RoomModel> Handle(GetRoomByIdQuery request, CancellationToken cancellationToken)
+    {
+        return await _context.QueryAll<RoomEntity>()
+            .Where(r => r.Id == request.Id)
+            .Select(RoomEntity.ToModelExpression)
+            .SingleOrDefaultAsync(cancellationToken)
+            .ConfigureAwait(false);
     }
 }

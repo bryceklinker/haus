@@ -7,29 +7,28 @@ using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.DeviceSimulator.Commands
+namespace Haus.Core.Tests.DeviceSimulator.Commands;
+
+public class ResetDeviceSimulatorCommandHandlerTests
 {
-    public class ResetDeviceSimulatorCommandHandlerTests
+    private readonly IDeviceSimulatorStore _store;
+    private readonly IHausBus _hausBus;
+
+    public ResetDeviceSimulatorCommandHandlerTests()
     {
-        private readonly IDeviceSimulatorStore _store;
-        private readonly IHausBus _hausBus;
+        _store = new DeviceSimulatorStore();
+        _hausBus = HausBusFactory.Create(configureServices: services =>
+            services.Replace<IDeviceSimulatorStore>(_store));
+    }
 
-        public ResetDeviceSimulatorCommandHandlerTests()
-        {
-            _store = new DeviceSimulatorStore();
-            _hausBus = HausBusFactory.Create(configureServices: services =>
-                services.Replace<IDeviceSimulatorStore>(_store));
-        }
+    [Fact]
+    public async Task WhenDeviceSimulatorIsResetThenStateIsSetToInitialState()
+    {
+        IDeviceSimulatorState state = null;
+        _store.Subscribe(s => state = s);
 
-        [Fact]
-        public async Task WhenDeviceSimulatorIsResetThenStateIsSetToInitialState()
-        {
-            IDeviceSimulatorState state = null;
-            _store.Subscribe(s => state = s);
+        await _hausBus.ExecuteCommandAsync(new ResetDeviceSimulatorCommand());
 
-            await _hausBus.ExecuteCommandAsync(new ResetDeviceSimulatorCommand());
-
-            state.Devices.Should().BeEmpty();
-        }
+        state.Devices.Should().BeEmpty();
     }
 }

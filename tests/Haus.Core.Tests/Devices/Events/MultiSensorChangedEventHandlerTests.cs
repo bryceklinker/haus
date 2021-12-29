@@ -4,31 +4,29 @@ using FluentAssertions;
 using Haus.Core.Common.Events;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Motion;
-using Haus.Core.Tests.Support;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Devices.Events
+namespace Haus.Core.Tests.Devices.Events;
+
+public class MultiSensorChangedEventHandlerTests
 {
-    public class MultiSensorChangedEventHandlerTests
+    private readonly CapturingHausBus _hausBus;
+
+    public MultiSensorChangedEventHandlerTests()
     {
-        private readonly CapturingHausBus _hausBus;
+        _hausBus = HausBusFactory.CreateCapturingBus();
+    }
 
-        public MultiSensorChangedEventHandlerTests()
-        {
-            _hausBus = HausBusFactory.CreateCapturingBus();
-        }
+    [Fact]
+    public async Task WhenMultiSensorChangedHasOccupancyThenPublishesOccupancyChangedEvent()
+    {
+        var deviceId = $"{Guid.NewGuid()}";
+        var change = new MultiSensorChanged(deviceId, new OccupancyChangedModel(deviceId));
 
-        [Fact]
-        public async Task WhenMultiSensorChangedHasOccupancyThenPublishesOccupancyChangedEvent()
-        {
-            var deviceId = $"{Guid.NewGuid()}";
-            var change = new MultiSensorChanged(deviceId, new OccupancyChangedModel(deviceId));
-            
-            await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
+        await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
-            _hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>()
-                .Should().HaveCount(1);
-        }
+        _hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>()
+            .Should().HaveCount(1);
     }
 }

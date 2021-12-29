@@ -8,29 +8,29 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Rooms.Entities;
 using Haus.Cqrs.Queries;
 
-namespace Haus.Core.Rooms.Queries
+namespace Haus.Core.Rooms.Queries;
+
+public record GetDevicesInRoomQuery(long RoomId) : IQuery<ListResult<DeviceModel>>;
+
+public class GetDevicesInRoomQueryHandler : IQueryHandler<GetDevicesInRoomQuery, ListResult<DeviceModel>>
 {
-    public record GetDevicesInRoomQuery(long RoomId) : IQuery<ListResult<DeviceModel>>;
+    private readonly HausDbContext _context;
 
-    public class GetDevicesInRoomQueryHandler : IQueryHandler<GetDevicesInRoomQuery, ListResult<DeviceModel>>
+    public GetDevicesInRoomQueryHandler(HausDbContext context)
     {
-        private readonly HausDbContext _context;
+        _context = context;
+    }
 
-        public GetDevicesInRoomQueryHandler(HausDbContext context)
-        {
-            _context = context;
-        }
+    public async Task<ListResult<DeviceModel>> Handle(GetDevicesInRoomQuery request,
+        CancellationToken cancellationToken)
+    {
+        if (await _context.IsMissingAsync<RoomEntity>(request.RoomId).ConfigureAwait(false))
+            return null;
 
-        public async Task<ListResult<DeviceModel>> Handle(GetDevicesInRoomQuery request, CancellationToken cancellationToken)
-        {
-            if (await _context.IsMissingAsync<RoomEntity>(request.RoomId).ConfigureAwait(false))
-                return null;
-            
-            return await _context.QueryAll<DeviceEntity>()
-                .Where(d => d.Room.Id == request.RoomId)
-                .Select(DeviceEntity.ToModelExpression)
-                .ToListResultAsync(cancellationToken)
-                .ConfigureAwait(false);
-        }
+        return await _context.QueryAll<DeviceEntity>()
+            .Where(d => d.Room.Id == request.RoomId)
+            .Select(DeviceEntity.ToModelExpression)
+            .ToListResultAsync(cancellationToken)
+            .ConfigureAwait(false);
     }
 }

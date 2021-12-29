@@ -67,7 +67,8 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
                     opts.DefaultChallengeScheme = TestingAuthenticationHandler.TestingScheme;
                     opts.DefaultScheme = TestingAuthenticationHandler.TestingScheme;
                 })
-                .AddScheme<AuthenticationSchemeOptions, TestingAuthenticationHandler>(TestingAuthenticationHandler.TestingScheme, _ => { });
+                .AddScheme<AuthenticationSchemeOptions, TestingAuthenticationHandler>(
+                    TestingAuthenticationHandler.TestingScheme, _ => { });
             services.Configure<HealthCheckPublisherOptions>(opts =>
             {
                 opts.Delay = TimeSpan.Zero;
@@ -92,10 +93,7 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
     {
         CreateClient();
         var connection = new HubConnectionBuilder()
-            .AddJsonProtocol(opts =>
-            {
-                opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
-            })
+            .AddJsonProtocol(opts => { opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions; })
             .WithUrl(
                 $"http://localhost/hubs/{hub}",
                 o =>
@@ -121,14 +119,14 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
         var (room, devices) = await AddRoomWithDevices(roomName, deviceType);
         return (room, devices.Single());
     }
-        
+
     public async Task<(RoomModel, DeviceModel[])> AddRoomWithDevices(
         string roomName,
         params DeviceType[] deviceTypes)
     {
         var discoverDeviceTasks = deviceTypes
             .Select(type => WaitForDeviceToBeDiscovered(type));
-            
+
         var devices = await Task.WhenAll(discoverDeviceTasks);
 
         var apiClient = CreateAuthenticatedClient();
@@ -153,12 +151,12 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
 
     public async Task SubscribeToRoomLightingChangedCommandsAsync(Action<HausCommand<RoomLightingChangedEvent>> handler)
     {
-        await SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
+        await SubscribeToHausCommandsAsync(
             RoomLightingChangedEvent.Type,
             handler
         );
     }
-    
+
     public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator)
     {
         var client = await GetMqttClient();

@@ -4,25 +4,24 @@ using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 using MediatR;
 
-namespace Haus.Utilities.Common.Cli
+namespace Haus.Utilities.Common.Cli;
+
+public record ExecuteCommand(string[] Args) : ICommand;
+
+public class ExecuteCommandHandler : AsyncRequestHandler<ExecuteCommand>, ICommandHandler<ExecuteCommand>
 {
-    public record ExecuteCommand(string[] Args) : ICommand;
-    
-    public class ExecuteCommandHandler : AsyncRequestHandler<ExecuteCommand>, ICommandHandler<ExecuteCommand>
+    private readonly IHausBus _hausBus;
+    private readonly ICommandFactory _commandFactory;
+
+    public ExecuteCommandHandler(IHausBus hausBus, ICommandFactory commandFactory)
     {
-        private readonly IHausBus _hausBus;
-        private readonly ICommandFactory _commandFactory;
+        _hausBus = hausBus;
+        _commandFactory = commandFactory;
+    }
 
-        public ExecuteCommandHandler(IHausBus hausBus, ICommandFactory commandFactory)
-        {
-            _hausBus = hausBus;
-            _commandFactory = commandFactory;
-        }
-
-        protected override async Task Handle(ExecuteCommand request, CancellationToken cancellationToken)
-        {
-            var command = _commandFactory.Create(request.Args);
-            await _hausBus.ExecuteCommandAsync(command, cancellationToken);
-        }
+    protected override async Task Handle(ExecuteCommand request, CancellationToken cancellationToken)
+    {
+        var command = _commandFactory.Create(request.Args);
+        await _hausBus.ExecuteCommandAsync(command, cancellationToken);
     }
 }

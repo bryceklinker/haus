@@ -8,71 +8,70 @@ using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Microsoft.Extensions.Options;
 
-namespace Haus.Api.Client.Rooms
+namespace Haus.Api.Client.Rooms;
+
+public interface IRoomsApiClient : IApiClient
 {
-    public interface IRoomsApiClient : IApiClient
+    Task<ListResult<RoomModel>> GetRoomsAsync();
+    Task<RoomModel> GetRoomAsync(long id);
+    Task<ListResult<DeviceModel>> GetDevicesInRoomAsync(long roomId);
+    Task<HttpResponseMessage> CreateRoomAsync(RoomModel model);
+    Task<HttpResponseMessage> UpdateRoomAsync(long id, RoomModel model);
+    Task<HttpResponseMessage> AddDevicesToRoomAsync(long roomId, params long[] deviceIds);
+    Task<HttpResponseMessage> ChangeRoomLightingAsync(long roomId, LightingModel model);
+    Task<HttpResponseMessage> TurnRoomOnAsync(long roomId);
+    Task<HttpResponseMessage> TurnRoomOffAsync(long roomId);
+}
+
+public class RoomsApiClient : ApiClient, IRoomsApiClient
+{
+    public RoomsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+        : base(httpClient, options)
     {
-        Task<ListResult<RoomModel>> GetRoomsAsync();
-        Task<RoomModel> GetRoomAsync(long id);
-        Task<ListResult<DeviceModel>> GetDevicesInRoomAsync(long roomId);
-        Task<HttpResponseMessage> CreateRoomAsync(RoomModel model);
-        Task<HttpResponseMessage> UpdateRoomAsync(long id, RoomModel model);
-        Task<HttpResponseMessage> AddDevicesToRoomAsync(long roomId, params long[] deviceIds);
-        Task<HttpResponseMessage> ChangeRoomLightingAsync(long roomId, LightingModel model);
-        Task<HttpResponseMessage> TurnRoomOnAsync(long roomId);
-        Task<HttpResponseMessage> TurnRoomOffAsync(long roomId);
     }
-    
-    public class RoomsApiClient : ApiClient, IRoomsApiClient
+
+    public Task<RoomModel> GetRoomAsync(long id)
     {
-        public RoomsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) 
-            : base(httpClient, options)
-        {
-        }
+        return GetAsJsonAsync<RoomModel>($"rooms/{id}");
+    }
 
-        public Task<RoomModel> GetRoomAsync(long id)
-        {
-            return GetAsJsonAsync<RoomModel>($"rooms/{id}");
-        }
+    public Task<ListResult<DeviceModel>> GetDevicesInRoomAsync(long roomId)
+    {
+        return GetAsJsonAsync<ListResult<DeviceModel>>($"rooms/{roomId}/devices");
+    }
 
-        public Task<ListResult<DeviceModel>> GetDevicesInRoomAsync(long roomId)
-        {
-            return GetAsJsonAsync<ListResult<DeviceModel>>($"rooms/{roomId}/devices");
-        }
+    public Task<HttpResponseMessage> CreateRoomAsync(RoomModel model)
+    {
+        return PostAsJsonAsync("rooms", model);
+    }
 
-        public Task<HttpResponseMessage> CreateRoomAsync(RoomModel model)
-        {
-            return PostAsJsonAsync("rooms", model);
-        }
+    public Task<ListResult<RoomModel>> GetRoomsAsync()
+    {
+        return GetAsJsonAsync<ListResult<RoomModel>>("rooms");
+    }
 
-        public Task<ListResult<RoomModel>> GetRoomsAsync()
-        {
-            return GetAsJsonAsync<ListResult<RoomModel>>("rooms");
-        }
+    public Task<HttpResponseMessage> UpdateRoomAsync(long id, RoomModel model)
+    {
+        return PutAsJsonAsync($"rooms/{id}", model);
+    }
 
-        public Task<HttpResponseMessage> UpdateRoomAsync(long id, RoomModel model)
-        {
-            return PutAsJsonAsync($"rooms/{id}", model);
-        }
+    public Task<HttpResponseMessage> AddDevicesToRoomAsync(long roomId, params long[] deviceIds)
+    {
+        return PostAsJsonAsync($"rooms/{roomId}/add-devices", deviceIds);
+    }
 
-        public Task<HttpResponseMessage> AddDevicesToRoomAsync(long roomId, params long[] deviceIds)
-        {
-            return PostAsJsonAsync($"rooms/{roomId}/add-devices", deviceIds);
-        }
+    public Task<HttpResponseMessage> ChangeRoomLightingAsync(long roomId, LightingModel model)
+    {
+        return PutAsJsonAsync($"rooms/{roomId}/lighting", model);
+    }
 
-        public Task<HttpResponseMessage> ChangeRoomLightingAsync(long roomId, LightingModel model)
-        {
-            return PutAsJsonAsync($"rooms/{roomId}/lighting", model);
-        }
+    public Task<HttpResponseMessage> TurnRoomOnAsync(long roomId)
+    {
+        return PostEmptyContentAsync($"rooms/{roomId}/turn-on");
+    }
 
-        public Task<HttpResponseMessage> TurnRoomOnAsync(long roomId)
-        {
-            return PostEmptyContentAsync($"rooms/{roomId}/turn-on");
-        }
-
-        public Task<HttpResponseMessage> TurnRoomOffAsync(long roomId)
-        {
-            return PostEmptyContentAsync($"rooms/{roomId}/turn-off");
-        }
+    public Task<HttpResponseMessage> TurnRoomOffAsync(long roomId)
+    {
+        return PostEmptyContentAsync($"rooms/{roomId}/turn-off");
     }
 }

@@ -1,7 +1,6 @@
-namespace Haus.Core.Models.Devices.Sensors.Light
+namespace Haus.Core.Models.Devices.Sensors.Light;
+
+public record IlluminanceChangedModel(string DeviceId, long Illuminance, long? Lux)
 {
-    public record IlluminanceChangedModel(string DeviceId, long Illuminance, long? Lux)
-    {
-        public const string Type = "illuminance_changed";
-    }
+    public const string Type = "illuminance_changed";
 }

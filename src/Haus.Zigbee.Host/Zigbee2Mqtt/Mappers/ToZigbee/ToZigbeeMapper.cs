@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using MQTTnet;
 
-namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee
+namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
+
+public interface IToZigbeeMapper
 {
-    public interface IToZigbeeMapper
-    {
-        bool IsSupported(string type);
-        IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message);
-    }
+    bool IsSupported(string type);
+    IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message);
 }

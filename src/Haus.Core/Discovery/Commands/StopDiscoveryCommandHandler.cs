@@ -8,34 +8,33 @@ using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 using MediatR;
 
-namespace Haus.Core.Discovery.Commands
+namespace Haus.Core.Discovery.Commands;
+
+public record StopDiscoveryCommand : ICommand;
+
+internal class StopDiscoveryCommandHandler : AsyncRequestHandler<StopDiscoveryCommand>,
+    ICommandHandler<StopDiscoveryCommand>
 {
-    public record StopDiscoveryCommand : ICommand;
+    private readonly HausDbContext _context;
+    private readonly IHausBus _hausBus;
 
-    internal class StopDiscoveryCommandHandler : AsyncRequestHandler<StopDiscoveryCommand>,
-        ICommandHandler<StopDiscoveryCommand>
+    public StopDiscoveryCommandHandler(IHausBus hausBus, HausDbContext context)
     {
-        private readonly HausDbContext _context;
-        private readonly IHausBus _hausBus;
+        _hausBus = hausBus;
+        _context = context;
+    }
 
-        public StopDiscoveryCommandHandler(IHausBus hausBus, HausDbContext context)
-        {
-            _hausBus = hausBus;
-            _context = context;
-        }
+    protected override async Task Handle(StopDiscoveryCommand request, CancellationToken cancellationToken)
+    {
+        var model = new StopDiscoveryModel();
 
-        protected override async Task Handle(StopDiscoveryCommand request, CancellationToken cancellationToken)
-        {
-            var model = new StopDiscoveryModel();
-            
-            var discovery = await _context.GetDiscoveryEntityAsync(cancellationToken).ConfigureAwait(false);
-            discovery.Stop();
-            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            
-            await Task.WhenAll(
-                _hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken),
-                _hausBus.PublishAsync(RoutableEvent.FromEvent(new DiscoveryStoppedEvent()), cancellationToken)
-            ).ConfigureAwait(false);
-        }
+        var discovery = await _context.GetDiscoveryEntityAsync(cancellationToken).ConfigureAwait(false);
+        discovery.Stop();
+        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        await Task.WhenAll(
+            _hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken),
+            _hausBus.PublishAsync(RoutableEvent.FromEvent(new DiscoveryStoppedEvent()), cancellationToken)
+        ).ConfigureAwait(false);
     }
 }

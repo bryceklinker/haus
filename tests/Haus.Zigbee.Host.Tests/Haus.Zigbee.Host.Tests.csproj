@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../dependencies/tests.xml" />
-  <Import Project="../../dependencies/framework-version.xml" />
-  <PropertyGroup>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+    <Import Project="../../dependencies/tests.xml"/>
+    <Import Project="../../dependencies/framework-version.xml"/>
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Haus.Zigbee.Host\Haus.Zigbee.Host.csproj" />
-    <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Haus.Zigbee.Host\Haus.Zigbee.Host.csproj"/>
+        <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj"/>
+    </ItemGroup>
 
 </Project>

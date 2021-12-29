@@ -10,30 +10,30 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MQTTnet;
 
-namespace Haus.Web.Host.Health
+namespace Haus.Web.Host.Health;
+
+public class HealthListener : MqttBackgroundServiceListener
 {
-    public class HealthListener : MqttBackgroundServiceListener
+    private readonly IOptions<HausMqttSettings> _hausMqttSettings;
+
+    private string HealthTopic => _hausMqttSettings.Value.HealthTopic;
+
+    public HealthListener(IHausMqttClientFactory hausMqttClientFactory, IServiceScopeFactory scopeFactory,
+        IOptions<HausMqttSettings> hausMqttSettings)
+        : base(hausMqttClientFactory, scopeFactory)
     {
-        private readonly IOptions<HausMqttSettings> _hausMqttSettings;
+        _hausMqttSettings = hausMqttSettings;
+    }
 
-        private string HealthTopic => _hausMqttSettings.Value.HealthTopic;
-        
-        public HealthListener(IHausMqttClientFactory hausMqttClientFactory, IServiceScopeFactory scopeFactory, IOptions<HausMqttSettings> hausMqttSettings) 
-            : base(hausMqttClientFactory, scopeFactory)
-        {
-            _hausMqttSettings = hausMqttSettings;
-        }
+    protected override async Task OnMessageReceived(MqttApplicationMessage message)
+    {
+        if (message.Topic != HealthTopic)
+            return;
 
-        protected override async Task OnMessageReceived(MqttApplicationMessage message)
-        {
-            if (message.Topic != HealthTopic)
-                return;
 
-            
-            var healthReport = HausJsonSerializer.Deserialize<HausHealthReportModel>(message.Payload);
-            using var scope = CreateScope();
-            var bus = scope.GetService<IHausBus>();
-            await bus.ExecuteCommandAsync(new StoreHealthReportCommand(healthReport));
-        }
+        var healthReport = HausJsonSerializer.Deserialize<HausHealthReportModel>(message.Payload);
+        using var scope = CreateScope();
+        var bus = scope.GetService<IHausBus>();
+        await bus.ExecuteCommandAsync(new StoreHealthReportCommand(healthReport));
     }
 }

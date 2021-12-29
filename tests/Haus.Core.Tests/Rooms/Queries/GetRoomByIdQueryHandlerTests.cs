@@ -1,42 +1,39 @@
 using System.Threading.Tasks;
 using FluentAssertions;
-using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Rooms.Queries;
-using Haus.Core.Tests.Support;
 using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Rooms.Queries
+namespace Haus.Core.Tests.Rooms.Queries;
+
+public class GetRoomByIdQueryHandlerTests
 {
-    public class GetRoomByIdQueryHandlerTests
+    private readonly HausDbContext _context;
+    private readonly IHausBus _hausBus;
+
+    public GetRoomByIdQueryHandlerTests()
     {
-        private readonly HausDbContext _context;
-        private readonly IHausBus _hausBus;
+        _context = HausDbContextFactory.Create();
+        _hausBus = HausBusFactory.Create(_context);
+    }
 
-        public GetRoomByIdQueryHandlerTests()
-        {
-            _context = HausDbContextFactory.Create();
-            _hausBus = HausBusFactory.Create(_context);
-        }
+    [Fact]
+    public async Task WhenRoomWithIdExistsThenReturnsRoom()
+    {
+        var existing = _context.AddRoom("hotel");
 
-        [Fact]
-        public async Task WhenRoomWithIdExistsThenReturnsRoom()
-        {
-            var existing = _context.AddRoom("hotel");
+        var actual = await _hausBus.ExecuteQueryAsync(new GetRoomByIdQuery(existing.Id));
 
-            var actual = await _hausBus.ExecuteQueryAsync(new GetRoomByIdQuery(existing.Id));
+        actual.Name.Should().Be("hotel");
+    }
 
-            actual.Name.Should().Be("hotel");
-        }
+    [Fact]
+    public async Task WhenRoomIsMissingThenReturnsNull()
+    {
+        var actual = await _hausBus.ExecuteQueryAsync(new GetRoomByIdQuery(3234));
 
-        [Fact]
-        public async Task WhenRoomIsMissingThenReturnsNull()
-        {
-            var actual = await _hausBus.ExecuteQueryAsync(new GetRoomByIdQuery(3234));
-
-            actual.Should().BeNull();
-        }
+        actual.Should().BeNull();
     }
 }

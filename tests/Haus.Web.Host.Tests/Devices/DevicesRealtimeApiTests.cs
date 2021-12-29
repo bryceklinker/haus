@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Models;
@@ -11,39 +10,38 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Haus.Web.Host.Tests.Devices
+namespace Haus.Web.Host.Tests.Devices;
+
+[Collection(HausWebHostCollectionFixture.Name)]
+public class DevicesRealtimeApiTests
 {
-    [Collection(HausWebHostCollectionFixture.Name)]
-    public class DevicesRealtimeApiTests
+    private readonly HausWebHostApplicationFactory _factory;
+    private readonly ITestOutputHelper _output;
+
+    public DevicesRealtimeApiTests(HausWebHostApplicationFactory factory, ITestOutputHelper output)
     {
-        private readonly HausWebHostApplicationFactory _factory;
-        private readonly ITestOutputHelper _output;
+        _factory = factory;
+        _output = output;
+    }
 
-        public DevicesRealtimeApiTests(HausWebHostApplicationFactory factory, ITestOutputHelper output)
+    [Fact]
+    public async Task WhenLightIsAddedToRoomThenDeviceLightingChangedEventBroadcast()
+    {
+        var hub = await _factory.CreateHubConnection("events");
+        HausEvent<DeviceLightingChangedEvent> change = null;
+        hub.On<HausEvent<DeviceLightingChangedEvent>>("OnEvent", e =>
         {
-            _factory = factory;
-            _output = output;
-        }
+            if (e?.Payload?.Device != null) change = e;
+        });
 
-        [Fact]
-        public async Task WhenLightIsAddedToRoomThenDeviceLightingChangedEventBroadcast()
+        var (_, device) = await _factory.AddRoomWithDevice("my-room", DeviceType.Light);
+
+        Eventually.Assert(() =>
         {
-            var hub = await _factory.CreateHubConnection("events");
-            HausEvent<DeviceLightingChangedEvent> change = null;
-            hub.On<HausEvent<DeviceLightingChangedEvent>>("OnEvent", e =>
-            {
-                if (e?.Payload?.Device != null) change = e;
-            });
-
-            var (_, device) = await _factory.AddRoomWithDevice("my-room", DeviceType.Light);
-
-            Eventually.Assert(() =>
-            {
-                _output.WriteLine("**************************************");
-                _output.WriteLine($"{HausJsonSerializer.Serialize(change)}");
-                _output.WriteLine("**************************************");
-                change.Payload.Device.Id.Should().Be(device.Id);
-            });
-        }
+            _output.WriteLine("**************************************");
+            _output.WriteLine($"{HausJsonSerializer.Serialize(change)}");
+            _output.WriteLine("**************************************");
+            change.Payload.Device.Id.Should().Be(device.Id);
+        });
     }
 }

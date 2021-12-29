@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Common;
@@ -8,42 +7,42 @@ using Haus.Core.Models.Health;
 using Haus.Cqrs.Commands;
 using MediatR;
 
-namespace Haus.Core.Health.Commands
+namespace Haus.Core.Health.Commands;
+
+public record StoreHealthReportCommand(HausHealthReportModel Report) : ICommand
 {
-    public record StoreHealthReportCommand(HausHealthReportModel Report) : ICommand
+    public HausHealthCheckModel[] Checks => Report.Checks;
+}
+
+internal class StoreHealthReportCommandHandler : AsyncRequestHandler<StoreHealthReportCommand>,
+    ICommandHandler<StoreHealthReportCommand>
+{
+    private readonly HausDbContext _context;
+    private readonly IClock _clock;
+
+    public StoreHealthReportCommandHandler(HausDbContext context, IClock clock)
     {
-        public HausHealthCheckModel[] Checks => Report.Checks;
+        _context = context;
+        _clock = clock;
     }
 
-    internal class StoreHealthReportCommandHandler : AsyncRequestHandler<StoreHealthReportCommand>, ICommandHandler<StoreHealthReportCommand>
+    protected override async Task Handle(StoreHealthReportCommand request, CancellationToken cancellationToken)
     {
-        private readonly HausDbContext _context;
-        private readonly IClock _clock;
+        foreach (var check in request.Checks)
+            await AddOrUpdateHealthCheck(check).ConfigureAwait(false);
 
-        public StoreHealthReportCommandHandler(HausDbContext context, IClock clock)
-        {
-            _context = context;
-            _clock = clock;
-        }
+        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
 
-        protected override async Task Handle(StoreHealthReportCommand request, CancellationToken cancellationToken)
-        {
-            foreach (var check in request.Checks) 
-                await AddOrUpdateHealthCheck(check).ConfigureAwait(false);
+    private async Task AddOrUpdateHealthCheck(HausHealthCheckModel healthCheck)
+    {
+        var timestamp = _clock.UtcNowOffset;
+        var entity = await _context.FindByAsync<HealthCheckEntity>(e => e.Name == healthCheck.Name)
+            .ConfigureAwait(false);
 
-            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        }
-
-        private async Task AddOrUpdateHealthCheck(HausHealthCheckModel healthCheck)
-        {
-            var timestamp = _clock.UtcNowOffset;
-            var entity = await _context.FindByAsync<HealthCheckEntity>(e => e.Name == healthCheck.Name)
-                .ConfigureAwait(false);
-
-            if (entity == null)
-                _context.Add(HealthCheckEntity.FromModel(healthCheck, timestamp));
-            else
-                entity.UpdateFromModel(healthCheck, timestamp);
-        }
+        if (entity == null)
+            _context.Add(HealthCheckEntity.FromModel(healthCheck, timestamp));
+        else
+            entity.UpdateFromModel(healthCheck, timestamp);
     }
 }

@@ -1,170 +1,167 @@
-using System.Drawing;
 using FluentAssertions;
-using Haus.Core.Lighting;
 using Haus.Core.Lighting.Entities;
-using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Xunit;
 
-namespace Haus.Core.Tests.Lighting.Entities
+namespace Haus.Core.Tests.Lighting.Entities;
+
+public class LightingEntityTests
 {
-    public class LightingEntityTests
+    [Fact]
+    public void WhenCreatedFromModelThenLightingIsPopulatedFromModel()
     {
-        [Fact]
-        public void WhenCreatedFromModelThenLightingIsPopulatedFromModel()
-        {
-            var model = new LightingModel(
+        var model = new LightingModel(
+            LightingState.On,
+            new LevelLightingModel(43.12, 10, 90),
+            new TemperatureLightingModel(78, 0, 1000),
+            new ColorLightingModel(12, 3, 6)
+        );
+
+        var lighting = LightingEntity.FromModel(model);
+
+        lighting.Should().BeEquivalentTo(new LightingEntity(
                 LightingState.On,
-                new LevelLightingModel(43.12, 10, 90),
-                new TemperatureLightingModel(78, 0, 1000),
-                new ColorLightingModel(12, 3, 6)
-            );
+                new LevelLightingEntity(43.12, 10, 90),
+                new TemperatureLightingEntity(78, 0, 1000),
+                new ColorLightingEntity(12, 3, 6)
+            )
+        );
+    }
 
-            var lighting = LightingEntity.FromModel(model);
+    [Fact]
+    public void
+        WhenLightingTurnedIntoDesiredLightingThenLevelIsCalculatedBasedOnConstraintsOfTheCurrentLightingAndDesiredLighting()
+    {
+        const double desiredLevel = 45;
+        const double desiredMaxLevelConstraint = 100;
+        const double currentMaxLevelConstraint = 2000;
 
-            lighting.Should().BeEquivalentTo(new LightingEntity(
-                    LightingState.On,
-                    new LevelLightingEntity(43.12, 10, 90),
-                    new TemperatureLightingEntity(78, 0, 1000),
-                    new ColorLightingEntity(12, 3, 6)
-                )
-            );
-        }
+        var current = new LightingEntity(Level: new LevelLightingEntity(12, 0, currentMaxLevelConstraint));
+        var desired =
+            new LightingEntity(Level: new LevelLightingEntity(desiredLevel, max: desiredMaxLevelConstraint));
 
-        [Fact]
-        public void
-            WhenLightingTurnedIntoDesiredLightingThenLevelIsCalculatedBasedOnConstraintsOfTheCurrentLightingAndDesiredLighting()
-        {
-            const double desiredLevel = 45;
-            const double desiredMaxLevelConstraint = 100;
-            const double currentMaxLevelConstraint = 2000;
+        var result = current.CalculateTarget(desired);
 
-            var current = new LightingEntity(Level: new LevelLightingEntity(12, 0, currentMaxLevelConstraint));
-            var desired =
-                new LightingEntity(Level: new LevelLightingEntity(desiredLevel, max: desiredMaxLevelConstraint));
+        const double expected = desiredLevel * currentMaxLevelConstraint / desiredMaxLevelConstraint;
+        result.Level.Should().BeEquivalentTo(new LevelLightingEntity(expected, 0, currentMaxLevelConstraint));
+    }
 
-            var result = current.CalculateTarget(desired);
+    [Fact]
+    public void
+        WhenLightingTurnedIntoDesiredLightingThenTemperatureIsCalculatedBasedOnConstraintsOfTheCurrentLightingAndDesiredLighting()
+    {
+        const double desiredTemperature = 5000;
+        const double desiredMaxTemperatureConstraint = 8000;
+        const double currentMaxTemperatureConstraint = 250;
 
-            const double expected = (desiredLevel * currentMaxLevelConstraint) / desiredMaxLevelConstraint;
-            result.Level.Should().BeEquivalentTo(new LevelLightingEntity(expected, 0, currentMaxLevelConstraint));
-        }
+        var current =
+            new LightingEntity(Temperature: new TemperatureLightingEntity(0, 0, currentMaxTemperatureConstraint));
+        var desired =
+            new LightingEntity(Temperature: new TemperatureLightingEntity(desiredTemperature, 0,
+                desiredMaxTemperatureConstraint));
 
-        [Fact]
-        public void
-            WhenLightingTurnedIntoDesiredLightingThenTemperatureIsCalculatedBasedOnConstraintsOfTheCurrentLightingAndDesiredLighting()
-        {
-            const double desiredTemperature = 5000;
-            const double desiredMaxTemperatureConstraint = 8000;
-            const double currentMaxTemperatureConstraint = 250;
+        var result = current.CalculateTarget(desired);
 
-            var current =
-                new LightingEntity(Temperature: new TemperatureLightingEntity(0, 0, currentMaxTemperatureConstraint));
-            var desired =
-                new LightingEntity(Temperature: new TemperatureLightingEntity(desiredTemperature, 0,
-                    desiredMaxTemperatureConstraint));
+        const double expected = desiredTemperature * currentMaxTemperatureConstraint /
+                                desiredMaxTemperatureConstraint;
+        result.Temperature.Should()
+            .BeEquivalentTo(new TemperatureLightingEntity(expected, 0, currentMaxTemperatureConstraint));
+    }
 
-            var result = current.CalculateTarget(desired);
+    [Fact]
+    public void
+        WhenTargetLightingLevelIsCalculatedToBeBelowMinimumLevelThenReturnsMinimumLevelFromCurrentLighting()
+    {
+        var current = new LightingEntity(Level: new LevelLightingEntity(87, 87));
+        var desired = new LightingEntity(Level: new LevelLightingEntity(50));
 
-            const double expected = (desiredTemperature * currentMaxTemperatureConstraint) /
-                                    desiredMaxTemperatureConstraint;
-            result.Temperature.Should()
-                .BeEquivalentTo(new TemperatureLightingEntity(expected, 0, currentMaxTemperatureConstraint));
-        }
+        var result = current.CalculateTarget(desired);
 
-        [Fact]
-        public void
-            WhenTargetLightingLevelIsCalculatedToBeBelowMinimumLevelThenReturnsMinimumLevelFromCurrentLighting()
-        {
-            var current = new LightingEntity(Level: new LevelLightingEntity(87, 87, 100));
-            var desired = new LightingEntity(Level: new LevelLightingEntity(50, 0, 100));
+        result.Level.Should().BeEquivalentTo(new LevelLightingEntity(87, 87));
+    }
 
-            var result = current.CalculateTarget(desired);
+    [Fact]
+    public void WhenCalculatingTargetLightingThenLightingRangeIsNotModified()
+    {
+        var current = new LightingEntity(Level: new LevelLightingEntity(100, 100, 1000));
+        var desired = new LightingEntity(Level: new LevelLightingEntity(0, 0, 2000));
 
-            result.Level.Should().BeEquivalentTo(new LevelLightingEntity(87, 87, 100));
-        }
+        var result = current.CalculateTarget(desired);
 
-        [Fact]
-        public void WhenCalculatingTargetLightingThenLightingRangeIsNotModified()
-        {
-            var current = new LightingEntity(Level: new LevelLightingEntity(100, 100, 1000));
-            var desired = new LightingEntity(Level: new LevelLightingEntity(0, 0, 2000));
+        result.Level.Should().BeEquivalentTo(new LevelLightingEntity(100, 100, 1000));
+    }
 
-            var result = current.CalculateTarget(desired);
+    [Fact]
+    public void WhenCurrentLightingIsMissingTemperatureAndTargetHasTemperatureThenReturnsLightingMissingTemperature()
+    {
+        var current = new LightingEntity(Level: new LevelLightingEntity(45));
+        var target = new LightingEntity(Level: new LevelLightingEntity(65),
+            Temperature: new TemperatureLightingEntity());
 
-            result.Level.Should().BeEquivalentTo(new LevelLightingEntity(100, 100, 1000));
-        }
+        var result = current.CalculateTarget(target);
 
-        [Fact]
-        public void WhenCurrentLightingIsMissingTemperatureAndTargetHasTemperatureThenReturnsLightingMissingTemperature()
-        {
-            var current = new LightingEntity(Level: new LevelLightingEntity(45));
-            var target = new LightingEntity(Level: new LevelLightingEntity(65), Temperature: new TemperatureLightingEntity());
+        result.Temperature.Should().BeNull();
+    }
 
-            var result = current.CalculateTarget(target);
+    [Fact]
+    public void WhenCurrentLightingIsMissingColorAndTargetHasColorThenReturnsLightingMissingColor()
+    {
+        var current = new LightingEntity(Level: new LevelLightingEntity(45));
+        var target = new LightingEntity(Level: new LevelLightingEntity(65), Color: new ColorLightingEntity());
 
-            result.Temperature.Should().BeNull();
-        }
+        var result = current.CalculateTarget(target);
 
-        [Fact]
-        public void WhenCurrentLightingIsMissingColorAndTargetHasColorThenReturnsLightingMissingColor()
-        {
-            var current = new LightingEntity(Level: new LevelLightingEntity(45));
-            var target = new LightingEntity(Level: new LevelLightingEntity(65), Color: new ColorLightingEntity());
+        result.Color.Should().BeNull();
+    }
 
-            var result = current.CalculateTarget(target);
+    [Fact]
+    public void WhenCalculatingTargetLightingThenReturnsNewLightingInstance()
+    {
+        var current = new LightingEntity();
+        var desired = new LightingEntity();
 
-            result.Color.Should().BeNull();
-        }
+        var result = current.CalculateTarget(desired);
 
-        [Fact]
-        public void WhenCalculatingTargetLightingThenReturnsNewLightingInstance()
-        {
-            var current = new LightingEntity();
-            var desired = new LightingEntity();
+        result.Should().NotBeSameAs(current);
+    }
 
-            var result = current.CalculateTarget(desired);
+    [Fact]
+    public void WhenLightingConvertedToRangeWithLevelOnlyThenLevelIsConvertedToNewRange()
+    {
+        var current = new LightingEntity(Level: new LevelLightingEntity(50));
+        var model = new LightingConstraintsModel(1, 251);
 
-            result.Should().NotBeSameAs(current);
-        }
+        var converted = current.ConvertToConstraints(model);
 
-        [Fact]
-        public void WhenLightingConvertedToRangeWithLevelOnlyThenLevelIsConvertedToNewRange()
-        {
-            var current = new LightingEntity(Level: new LevelLightingEntity(50));
-            var model = new LightingConstraintsModel(1, 251);
+        converted.Level.Value.Should().Be(125.5);
+        converted.Level.Min.Should().Be(1);
+        converted.Level.Max.Should().Be(251);
+    }
 
-            var converted = current.ConvertToConstraints(model);
+    [Fact]
+    public void WhenLightingConvertedToRangeWithTemperatureThenTemperatureIsConvertedToNewRange()
+    {
+        var current = new LightingEntity(Temperature: new TemperatureLightingEntity(4500));
+        var model = new LightingConstraintsModel(0, 100, 1, 254);
 
-            converted.Level.Value.Should().Be(125.5);
-            converted.Level.Min.Should().Be(1);
-            converted.Level.Max.Should().Be(251);
-        }
+        var converted = current.ConvertToConstraints(model);
 
-        [Fact]
-        public void WhenLightingConvertedToRangeWithTemperatureThenTemperatureIsConvertedToNewRange()
-        {
-            var current = new LightingEntity(Temperature: new TemperatureLightingEntity(4500));
-            var model = new LightingConstraintsModel(0, 100, 1, 254);
+        converted.Temperature.Value.Should().Be(190.5);
+        converted.Temperature.Min.Should().Be(1);
+        converted.Temperature.Max.Should().Be(254);
+    }
 
-            var converted = current.ConvertToConstraints(model);
+    [Fact]
+    public void WhenLightingConvertedToRangeThenReturnsColorUnchanged()
+    {
+        var current = new LightingEntity(
+            Level: new LevelLightingEntity(50),
+            Color: new ColorLightingEntity(123, 123, 123));
 
-            converted.Temperature.Value.Should().Be(190.5);
-            converted.Temperature.Min.Should().Be(1);
-            converted.Temperature.Max.Should().Be(254);
-        }
+        var model = new LightingConstraintsModel(200, 500);
 
-        [Fact]
-        public void WhenLightingConvertedToRangeThenReturnsColorUnchanged()
-        {
-            var current = new LightingEntity(
-                Level: new LevelLightingEntity(50),
-                Color: new ColorLightingEntity(123, 123, 123));
-            
-            var model = new LightingConstraintsModel(200, 500);
+        var converted = current.ConvertToConstraints(model);
 
-            var converted = current.ConvertToConstraints(model);
-
-            converted.Color.Should().BeEquivalentTo(new ColorLightingEntity(123, 123, 123));
-        }
+        converted.Color.Should().BeEquivalentTo(new ColorLightingEntity(123, 123, 123));
     }
 }

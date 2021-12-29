@@ -1,12 +1,11 @@
 using System;
 
-namespace Haus.Core
+namespace Haus.Core;
+
+public static class VersionExtensions
 {
-    public static class VersionExtensions
+    public static string ToSemanticVersion(this Version version)
     {
-        public static string ToSemanticVersion(this Version version)
-        {
-            return version.ToString(3);
-        }
+        return version.ToString(3);
     }
 }

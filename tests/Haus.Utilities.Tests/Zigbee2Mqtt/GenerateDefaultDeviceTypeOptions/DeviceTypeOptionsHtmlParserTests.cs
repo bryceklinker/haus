@@ -4,80 +4,79 @@ using Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
-namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions
+namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
+
+public class DeviceTypeOptionsHtmlParserTests
 {
-    public class DeviceTypeOptionsHtmlParserTests
+    private readonly DeviceTypeOptionsHtmlParser _parser;
+
+    public DeviceTypeOptionsHtmlParserTests()
     {
-        private readonly DeviceTypeOptionsHtmlParser _parser;
+        _parser = new DeviceTypeOptionsHtmlParser(new NullLogger<DeviceTypeOptionsHtmlParser>());
+    }
 
-        public DeviceTypeOptionsHtmlParserTests()
-        {
-            _parser = new DeviceTypeOptionsHtmlParser(new NullLogger<DeviceTypeOptionsHtmlParser>());
-        }
-        
-        [Fact]
-        public void WhenHtmlContainsOneVendorWithOneDeviceThenReturnsOneDeviceTypeOption()
-        {
-            var html = new SupportedDevicesPageHtmlBuilder()
-                .WithVendor(vendor =>
-                    vendor.WithName("Philips")
-                        .WithDevice(device =>
-                            device.WithModel("SomeModel")
-                        )
-                )
-                .Build();
+    [Fact]
+    public void WhenHtmlContainsOneVendorWithOneDeviceThenReturnsOneDeviceTypeOption()
+    {
+        var html = new SupportedDevicesPageHtmlBuilder()
+            .WithVendor(vendor =>
+                vendor.WithName("Philips")
+                    .WithDevice(device =>
+                        device.WithModel("SomeModel")
+                    )
+            )
+            .Build();
 
-            var options = _parser.Parse(html).ToArray();
+        var options = _parser.Parse(html).ToArray();
 
-            Assert.Single(options);
-            DeviceTypeOptionsAssert.AssertContains("Philips", "SomeModel", options);
-        }
+        Assert.Single(options);
+        DeviceTypeOptionsAssert.AssertContains("Philips", "SomeModel", options);
+    }
 
-        [Fact]
-        public void WhenHtmlContainsOneVendorWithTwoDevicesThenReturnsTwoDeviceTypeOptions()
-        {
-            var html = new SupportedDevicesPageHtmlBuilder()
-                .WithVendor(vendor => 
-                    vendor.WithName("Jackson")
-                        .WithDevice(device =>
-                            device.WithModel("One")
-                        )
-                        .WithDevice(device =>
-                            device.WithModel("Two")
-                        )
-                )
-                .Build();
-            
-            var options = _parser.Parse(html).ToArray();
+    [Fact]
+    public void WhenHtmlContainsOneVendorWithTwoDevicesThenReturnsTwoDeviceTypeOptions()
+    {
+        var html = new SupportedDevicesPageHtmlBuilder()
+            .WithVendor(vendor =>
+                vendor.WithName("Jackson")
+                    .WithDevice(device =>
+                        device.WithModel("One")
+                    )
+                    .WithDevice(device =>
+                        device.WithModel("Two")
+                    )
+            )
+            .Build();
 
-            Assert.Equal(2, options.Length);
-            DeviceTypeOptionsAssert.AssertContains("Jackson", "One", options);
-            DeviceTypeOptionsAssert.AssertContains("Jackson", "Two", options);
-        }
+        var options = _parser.Parse(html).ToArray();
 
-        [Fact]
-        public void WhenHtmlContainsTwoVendorsWithOneDeviceEachThenReturnsTwoDeviceTypeOptions()
-        {
-            var html = new SupportedDevicesPageHtmlBuilder()
-                .WithVendor(vendor =>
-                    vendor.WithName("IDK")
-                        .WithDevice(device =>
-                            device.WithModel("some")
-                        )
-                )
-                .WithVendor(vendor =>
-                    vendor.WithName("Other")
-                        .WithDevice(device =>
-                            device.WithModel("other")
-                        )
-                )
-                .Build();
+        Assert.Equal(2, options.Length);
+        DeviceTypeOptionsAssert.AssertContains("Jackson", "One", options);
+        DeviceTypeOptionsAssert.AssertContains("Jackson", "Two", options);
+    }
 
-            var options = _parser.Parse(html).ToArray();
-            
-            Assert.Equal(2, options.Length);
-            DeviceTypeOptionsAssert.AssertContains("IDK", "some", options);
-            DeviceTypeOptionsAssert.AssertContains("Other", "other", options);
-        }
+    [Fact]
+    public void WhenHtmlContainsTwoVendorsWithOneDeviceEachThenReturnsTwoDeviceTypeOptions()
+    {
+        var html = new SupportedDevicesPageHtmlBuilder()
+            .WithVendor(vendor =>
+                vendor.WithName("IDK")
+                    .WithDevice(device =>
+                        device.WithModel("some")
+                    )
+            )
+            .WithVendor(vendor =>
+                vendor.WithName("Other")
+                    .WithDevice(device =>
+                        device.WithModel("other")
+                    )
+            )
+            .Build();
+
+        var options = _parser.Parse(html).ToArray();
+
+        Assert.Equal(2, options.Length);
+        DeviceTypeOptionsAssert.AssertContains("IDK", "some", options);
+        DeviceTypeOptionsAssert.AssertContains("Other", "other", options);
     }
 }

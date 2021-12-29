@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Common;
@@ -10,62 +9,61 @@ using Haus.Core.Rooms.Entities;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Rooms.Commands
+namespace Haus.Core.Tests.Rooms.Commands;
+
+public class UpdateRoomCommandHandlerTests
 {
-    public class UpdateRoomCommandHandlerTests
+    private readonly HausDbContext _context;
+    private readonly CapturingHausBus _hausBus;
+
+    public UpdateRoomCommandHandlerTests()
     {
-        private readonly HausDbContext _context;
-        private readonly CapturingHausBus _hausBus;
+        _context = HausDbContextFactory.Create();
+        _hausBus = HausBusFactory.CreateCapturingBus(_context);
+    }
 
-        public UpdateRoomCommandHandlerTests()
-        {
-            _context = HausDbContextFactory.Create();
-            _hausBus = HausBusFactory.CreateCapturingBus(_context);
-        }
+    [Fact]
+    public async Task WhenRoomUpdatedThenRoomIsSavedToDatabase()
+    {
+        var original = _context.AddRoom();
 
-        [Fact]
-        public async Task WhenRoomUpdatedThenRoomIsSavedToDatabase()
-        {
-            var original = _context.AddRoom();
-            
-            var command = new UpdateRoomCommand(new RoomModel(original.Id, "bob", 80));
-            await _hausBus.ExecuteCommandAsync(command);
+        var command = new UpdateRoomCommand(new RoomModel(original.Id, "bob", 80));
+        await _hausBus.ExecuteCommandAsync(command);
 
-            var updated = await _context.FindByIdAsync<RoomEntity>(original.Id);
-            updated.Name.Should().Be("bob");
-            updated.OccupancyTimeoutInSeconds.Should().Be(80);
-        }
+        var updated = await _context.FindByIdAsync<RoomEntity>(original.Id);
+        updated.Name.Should().Be("bob");
+        updated.OccupancyTimeoutInSeconds.Should().Be(80);
+    }
 
-        [Fact]
-        public async Task WhenRoomUpdatedThenRoomUpdatedEventPublished()
-        {
-            var original = _context.AddRoom();
-            
-            var command = new UpdateRoomCommand(new RoomModel(original.Id, "bob"));
-            await _hausBus.ExecuteCommandAsync(command);
+    [Fact]
+    public async Task WhenRoomUpdatedThenRoomUpdatedEventPublished()
+    {
+        var original = _context.AddRoom();
 
-            _hausBus.GetPublishedRoutableEvents<RoomUpdatedEvent>().Should().HaveCount(1);
-        }
+        var command = new UpdateRoomCommand(new RoomModel(original.Id, "bob"));
+        await _hausBus.ExecuteCommandAsync(command);
 
-        [Fact]
-        public async Task WhenRoomModelIsInvalidThenThrowsValidationException()
-        {
-            var original = _context.AddRoom();
-            var command = new UpdateRoomCommand(new RoomModel(original.Id));
+        _hausBus.GetPublishedRoutableEvents<RoomUpdatedEvent>().Should().HaveCount(1);
+    }
 
-            var act = () => _hausBus.ExecuteCommandAsync(command);
+    [Fact]
+    public async Task WhenRoomModelIsInvalidThenThrowsValidationException()
+    {
+        var original = _context.AddRoom();
+        var command = new UpdateRoomCommand(new RoomModel(original.Id));
 
-            await act.Should().ThrowAsync<HausValidationException>();
-        }
+        var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        [Fact]
-        public async Task WhenRoomIsMissingThenThrowsEntityNotFoundException()
-        {
-            var command = new UpdateRoomCommand(new RoomModel(54, Name: "bob"));
+        await act.Should().ThrowAsync<HausValidationException>();
+    }
 
-            var act = () => _hausBus.ExecuteCommandAsync(command);
+    [Fact]
+    public async Task WhenRoomIsMissingThenThrowsEntityNotFoundException()
+    {
+        var command = new UpdateRoomCommand(new RoomModel(54, "bob"));
 
-            await act.Should().ThrowAsync<EntityNotFoundException<RoomEntity>>();
-        }
+        var act = () => _hausBus.ExecuteCommandAsync(command);
+
+        await act.Should().ThrowAsync<EntityNotFoundException<RoomEntity>>();
     }
 }

@@ -1,12 +1,11 @@
 using Haus.Core.Lighting.Entities;
 
-namespace Haus.Core.Lighting.Generators
+namespace Haus.Core.Lighting.Generators;
+
+public class NonLightLightingDefaultGenerator : IDefaultLightingGenerator
 {
-    public class NonLightLightingDefaultGenerator : IDefaultLightingGenerator
+    public LightingEntity Generate(LightingEntity currentLighting, LightingEntity roomLighting)
     {
-        public LightingEntity Generate(LightingEntity currentLighting, LightingEntity roomLighting)
-        {
-            return null;
-        }
+        return null;
     }
 }

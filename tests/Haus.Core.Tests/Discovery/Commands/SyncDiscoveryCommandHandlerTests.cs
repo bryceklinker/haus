@@ -5,23 +5,22 @@ using Haus.Core.Models.Discovery;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Discovery.Commands
+namespace Haus.Core.Tests.Discovery.Commands;
+
+public class SyncDiscoveryCommandHandlerTests
 {
-    public class SyncDiscoveryCommandHandlerTests
+    private readonly CapturingHausBus _hausBus;
+
+    public SyncDiscoveryCommandHandlerTests()
     {
-        private readonly CapturingHausBus _hausBus;
+        _hausBus = HausBusFactory.CreateCapturingBus();
+    }
 
-        public SyncDiscoveryCommandHandlerTests()
-        {
-            _hausBus = HausBusFactory.CreateCapturingBus();
-        }
+    [Fact]
+    public async Task WhenSyncDevicesIsExecutedThenSyncDevicesIsPublished()
+    {
+        await _hausBus.ExecuteCommandAsync(new SyncDiscoveryCommand());
 
-        [Fact]
-        public async Task WhenSyncDevicesIsExecutedThenSyncDevicesIsPublished()
-        {
-            await _hausBus.ExecuteCommandAsync(new SyncDiscoveryCommand());
-
-            _hausBus.GetPublishedHausCommands<SyncDiscoveryModel>().Should().HaveCount(1);
-        }
+        _hausBus.GetPublishedHausCommands<SyncDiscoveryModel>().Should().HaveCount(1);
     }
 }

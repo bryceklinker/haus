@@ -14,7 +14,7 @@
         </a>
       </mat-nav-list>
       <a mat-menu-item class="mat-subheader version" routerLink="latest-version">
-          Version: {{version$ | async}}
+        Version: {{version$ | async}}
         <mat-icon aria-label="update available" *ngIf="isUpdateAvailable$ | async">
           upgrade
         </mat-icon>

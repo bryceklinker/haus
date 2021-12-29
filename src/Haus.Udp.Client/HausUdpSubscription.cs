@@ -2,37 +2,36 @@ using System;
 using System.Threading.Tasks;
 using Haus.Core.Models;
 
-namespace Haus.Udp.Client
+namespace Haus.Udp.Client;
+
+public interface IHausUdpSubscription
 {
-    public interface IHausUdpSubscription
+    Guid Id { get; }
+    Task ExecuteAsync(byte[] bytes);
+    Task UnsubscribeAsync();
+}
+
+internal class HausUdpSubscription<T> : IHausUdpSubscription
+{
+    private readonly Func<T, Task> _handler;
+    private readonly Func<IHausUdpSubscription, Task> _unsubscribe;
+    public Guid Id { get; } = Guid.NewGuid();
+
+    public HausUdpSubscription(Func<T, Task> handler, Func<IHausUdpSubscription, Task> unsubscribe)
     {
-        Guid Id { get; }
-        Task ExecuteAsync(byte[] bytes);
-        Task UnsubscribeAsync();
+        _handler = handler;
+        _unsubscribe = unsubscribe;
     }
 
-    internal class HausUdpSubscription<T> : IHausUdpSubscription
+    public Task ExecuteAsync(byte[] bytes)
     {
-        private readonly Func<T, Task> _handler;
-        private readonly Func<IHausUdpSubscription, Task> _unsubscribe;
-        public Guid Id { get; } = Guid.NewGuid();
+        return HausJsonSerializer.TryDeserialize(bytes, out T value)
+            ? _handler.Invoke(value)
+            : Task.CompletedTask;
+    }
 
-        public HausUdpSubscription(Func<T, Task> handler, Func<IHausUdpSubscription, Task> unsubscribe)
-        {
-            _handler = handler;
-            _unsubscribe = unsubscribe;
-        }
-        
-        public Task ExecuteAsync(byte[] bytes)
-        {
-            return HausJsonSerializer.TryDeserialize(bytes, out T value) 
-                ? _handler.Invoke(value) 
-                : Task.CompletedTask;
-        }
-
-        public Task UnsubscribeAsync()
-        {
-            return _unsubscribe.Invoke(this);
-        }
+    public Task UnsubscribeAsync()
+    {
+        return _unsubscribe.Invoke(this);
     }
 }

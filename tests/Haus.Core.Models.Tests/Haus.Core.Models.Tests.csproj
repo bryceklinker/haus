@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../dependencies/tests.xml" />
-  <Import Project="../../dependencies/framework-version.xml" />
-  
-  <PropertyGroup>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Haus.Core.Models\Haus.Core.Models.csproj" />
-  </ItemGroup>
+    <Import Project="../../dependencies/tests.xml"/>
+    <Import Project="../../dependencies/framework-version.xml"/>
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Haus.Core.Models\Haus.Core.Models.csproj"/>
+    </ItemGroup>
 
 </Project>

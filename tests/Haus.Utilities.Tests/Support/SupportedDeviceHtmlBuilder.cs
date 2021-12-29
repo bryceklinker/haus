@@ -1,31 +1,30 @@
-namespace Haus.Utilities.Tests.Support
+namespace Haus.Utilities.Tests.Support;
+
+public class SupportedDeviceHtmlBuilder
 {
-    public class SupportedDeviceHtmlBuilder
-    {
-        private const string Html = @"<tr>
+    private const string Html = @"<tr>
                             <td><a>{{model}}</a></td>
                             <td>description</td>
                             <td><img src=""some.jpg""></td>
                          </tr>";
-        
-        private string _model;
 
-        public SupportedDeviceHtmlBuilder WithModel(string model)
+    private string _model;
+
+    public SupportedDeviceHtmlBuilder WithModel(string model)
+    {
+        _model = model;
+        return this;
+    }
+
+    public string Build()
+    {
+        try
         {
-            _model = model;
-            return this;
+            return Html.Replace("{{model}}", _model);
         }
-
-        public string Build()
+        finally
         {
-            try
-            {
-                return Html.Replace("{{model}}", _model);
-            }
-            finally
-            {
-                _model = null;
-            }
+            _model = null;
         }
     }
 }

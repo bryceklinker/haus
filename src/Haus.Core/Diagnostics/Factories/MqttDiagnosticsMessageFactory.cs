@@ -4,41 +4,40 @@ using Haus.Core.Common;
 using Haus.Core.Models;
 using Haus.Core.Models.Diagnostics;
 
-namespace Haus.Core.Diagnostics.Factories
+namespace Haus.Core.Diagnostics.Factories;
+
+public interface IMqttDiagnosticsMessageFactory
 {
-    public interface IMqttDiagnosticsMessageFactory
+    MqttDiagnosticsMessageModel Create(string topic, byte[] payload);
+}
+
+public class MqttDiagnosticsMessageFactory : IMqttDiagnosticsMessageFactory
+{
+    private readonly IClock _clock;
+
+    public MqttDiagnosticsMessageFactory(IClock clock)
     {
-        MqttDiagnosticsMessageModel Create(string topic, byte[] payload);
+        _clock = clock;
     }
-    
-    public class MqttDiagnosticsMessageFactory : IMqttDiagnosticsMessageFactory
+
+    public MqttDiagnosticsMessageModel Create(string topic, byte[] payload)
     {
-        private readonly IClock _clock;
-
-        public MqttDiagnosticsMessageFactory(IClock clock)
+        return new MqttDiagnosticsMessageModel
         {
-            _clock = clock;
-        }
+            Id = $"{Guid.NewGuid()}",
+            Timestamp = _clock.LocalNow,
+            Topic = topic,
+            Payload = GetPayloadFromBytes(payload)
+        };
+    }
 
-        public MqttDiagnosticsMessageModel Create(string topic, byte[] payload)
-        {
-            return new()
-            {
-                Id = $"{Guid.NewGuid()}",
-                Timestamp = _clock.LocalNow,
-                Topic = topic,
-                Payload = GetPayloadFromBytes(payload)
-            };
-        }
+    private static object GetPayloadFromBytes(byte[] bytes)
+    {
+        if (bytes == null)
+            return null;
 
-        private static object GetPayloadFromBytes(byte[] bytes)
-        {
-            if (bytes == null)
-                return null;
-
-            return HausJsonSerializer.TryDeserialize(bytes, out object payload) 
-                ? payload 
-                : Encoding.UTF8.GetString(bytes);
-        }
+        return HausJsonSerializer.TryDeserialize(bytes, out object payload)
+            ? payload
+            : Encoding.UTF8.GetString(bytes);
     }
 }

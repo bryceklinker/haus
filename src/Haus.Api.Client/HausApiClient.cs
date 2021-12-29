@@ -22,192 +22,190 @@ using Haus.Core.Models.Logs;
 using Haus.Core.Models.Rooms;
 using Microsoft.Extensions.Options;
 
-namespace Haus.Api.Client
+namespace Haus.Api.Client;
+
+public interface IHausApiClient :
+    IDeviceApiClient,
+    IDiagnosticsApiClient,
+    IRoomsApiClient,
+    IDeviceSimulatorApiClient,
+    IDiscoveryApiClient,
+    ILogsApiClient,
+    IClientSettingsApiClient,
+    IApplicationApiClient
 {
-    public interface IHausApiClient : 
-        IDeviceApiClient, 
-        IDiagnosticsApiClient, 
-        IRoomsApiClient,
-        IDeviceSimulatorApiClient,
-        IDiscoveryApiClient,
-        ILogsApiClient,
-        IClientSettingsApiClient,
-        IApplicationApiClient
+}
+
+public class HausApiClient : ApiClient, IHausApiClient
+{
+    private readonly IHausApiClientFactory _factory;
+    private IDeviceApiClient DeviceApiClient => _factory.CreateDeviceClient();
+    private IDiagnosticsApiClient DiagnosticsApiClient => _factory.CreateDiagnosticsClient();
+    private IRoomsApiClient RoomsApiClient => _factory.CreateRoomsClient();
+    private IDeviceSimulatorApiClient DeviceSimulatorApiClient => _factory.CreateDeviceSimulatorClient();
+    private IDiscoveryApiClient DiscoveryApiClient => _factory.CreateDiscoveryClient();
+    private ILogsApiClient LogsApiClient => _factory.CreateLogsClient();
+    private IClientSettingsApiClient ClientSettingsApiClient => _factory.CreateClientSettingsClient();
+    private IApplicationApiClient ApplicationApiClient => _factory.CreateApplicationClient();
+
+    public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
+        : base(httpClient, options)
     {
-        
+        _factory = factory;
     }
 
-    public class HausApiClient : ApiClient, IHausApiClient
+    public Task<DiscoveryModel> GetDiscoveryStateAsync()
     {
-        private readonly IHausApiClientFactory _factory;
-        private IDeviceApiClient DeviceApiClient => _factory.CreateDeviceClient();
-        private IDiagnosticsApiClient DiagnosticsApiClient => _factory.CreateDiagnosticsClient();
-        private IRoomsApiClient RoomsApiClient => _factory.CreateRoomsClient();
-        private IDeviceSimulatorApiClient DeviceSimulatorApiClient => _factory.CreateDeviceSimulatorClient();
-        private IDiscoveryApiClient DiscoveryApiClient => _factory.CreateDiscoveryClient();
-        private ILogsApiClient LogsApiClient => _factory.CreateLogsClient();
-        private IClientSettingsApiClient ClientSettingsApiClient => _factory.CreateClientSettingsClient();
-        private IApplicationApiClient ApplicationApiClient => _factory.CreateApplicationClient();
-        
-        public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
-            : base(httpClient, options)
-        {
-            _factory = factory;
-        }
+        return DiscoveryApiClient.GetDiscoveryStateAsync();
+    }
 
-        public Task<DiscoveryModel> GetDiscoveryStateAsync()
-        {
-            return DiscoveryApiClient.GetDiscoveryStateAsync();
-        }
+    public Task<HttpResponseMessage> StartDiscoveryAsync()
+    {
+        return DiscoveryApiClient.StartDiscoveryAsync();
+    }
 
-        public Task<HttpResponseMessage> StartDiscoveryAsync()
-        {
-            return DiscoveryApiClient.StartDiscoveryAsync();
-        }
+    public Task<HttpResponseMessage> StopDiscoveryAsync()
+    {
+        return DiscoveryApiClient.StopDiscoveryAsync();
+    }
 
-        public Task<HttpResponseMessage> StopDiscoveryAsync()
-        {
-            return DiscoveryApiClient.StopDiscoveryAsync();
-        }
+    public Task<HttpResponseMessage> SyncDevicesAsync()
+    {
+        return DiscoveryApiClient.SyncDevicesAsync();
+    }
 
-        public Task<HttpResponseMessage> SyncDevicesAsync()
-        {
-            return DiscoveryApiClient.SyncDevicesAsync();
-        }
+    public Task<DeviceModel> GetDeviceAsync(long id)
+    {
+        return DeviceApiClient.GetDeviceAsync(id);
+    }
 
-        public Task<DeviceModel> GetDeviceAsync(long id)
-        {
-            return DeviceApiClient.GetDeviceAsync(id);
-        }
+    public Task<ListResult<DeviceType>> GetDeviceTypesAsync()
+    {
+        return DeviceApiClient.GetDeviceTypesAsync();
+    }
 
-        public Task<ListResult<DeviceType>> GetDeviceTypesAsync()
-        {
-            return DeviceApiClient.GetDeviceTypesAsync();
-        }
+    public Task<ListResult<LightType>> GetLightTypesAsync()
+    {
+        return DeviceApiClient.GetLightTypesAsync();
+    }
 
-        public Task<ListResult<LightType>> GetLightTypesAsync()
-        {
-            return DeviceApiClient.GetLightTypesAsync();
-        }
+    public Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model)
+    {
+        return DeviceApiClient.ChangeDeviceLightingAsync(deviceId, model);
+    }
 
-        public Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model)
-        {
-            return DeviceApiClient.ChangeDeviceLightingAsync(deviceId, model);
-        }
+    public Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model)
+    {
+        return DeviceApiClient.ChangeDeviceLightingConstraintsAsync(deviceId, model);
+    }
 
-        public Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model)
-        {
-            return DeviceApiClient.ChangeDeviceLightingConstraintsAsync(deviceId, model);
-        }
+    public Task<HttpResponseMessage> TurnLightOffAsync(long deviceId)
+    {
+        return DeviceApiClient.TurnLightOffAsync(deviceId);
+    }
 
-        public Task<HttpResponseMessage> TurnLightOffAsync(long deviceId)
-        {
-            return DeviceApiClient.TurnLightOffAsync(deviceId);
-        }
+    public Task<HttpResponseMessage> TurnLightOnAsync(long deviceId)
+    {
+        return DeviceApiClient.TurnLightOnAsync(deviceId);
+    }
 
-        public Task<HttpResponseMessage> TurnLightOnAsync(long deviceId)
-        {
-            return DeviceApiClient.TurnLightOnAsync(deviceId);
-        }
+    public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
+    {
+        return DeviceApiClient.GetDevicesAsync(externalId);
+    }
 
-        public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
-        {
-            return DeviceApiClient.GetDevicesAsync(externalId);
-        }
+    public Task UpdateDeviceAsync(long deviceId, DeviceModel model)
+    {
+        return DeviceApiClient.UpdateDeviceAsync(deviceId, model);
+    }
 
-        public Task UpdateDeviceAsync(long deviceId, DeviceModel model)
-        {
-            return DeviceApiClient.UpdateDeviceAsync(deviceId, model);
-        }
+    public Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
+    {
+        return DiagnosticsApiClient.ReplayDiagnosticsMessageAsync(model);
+    }
 
-        public Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
-        {
-            return DiagnosticsApiClient.ReplayDiagnosticsMessageAsync(model);
-        }
+    public Task<ListResult<DeviceModel>> GetDevicesInRoomAsync(long roomId)
+    {
+        return RoomsApiClient.GetDevicesInRoomAsync(roomId);
+    }
 
-        public Task<ListResult<DeviceModel>> GetDevicesInRoomAsync(long roomId)
-        {
-            return RoomsApiClient.GetDevicesInRoomAsync(roomId);
-        }
+    public Task<HttpResponseMessage> CreateRoomAsync(RoomModel model)
+    {
+        return RoomsApiClient.CreateRoomAsync(model);
+    }
 
-        public Task<HttpResponseMessage> CreateRoomAsync(RoomModel model)
-        {
-            return RoomsApiClient.CreateRoomAsync(model);
-        }
+    public Task<ListResult<RoomModel>> GetRoomsAsync()
+    {
+        return RoomsApiClient.GetRoomsAsync();
+    }
 
-        public Task<ListResult<RoomModel>> GetRoomsAsync()
-        {
-            return RoomsApiClient.GetRoomsAsync();
-        }
+    public Task<RoomModel> GetRoomAsync(long id)
+    {
+        return RoomsApiClient.GetRoomAsync(id);
+    }
 
-        public Task<RoomModel> GetRoomAsync(long id)
-        {
-            return RoomsApiClient.GetRoomAsync(id);
-        }
-        
-        public Task<HttpResponseMessage> UpdateRoomAsync(long id, RoomModel model)
-        {
-            return RoomsApiClient.UpdateRoomAsync(id, model);
-        }
+    public Task<HttpResponseMessage> UpdateRoomAsync(long id, RoomModel model)
+    {
+        return RoomsApiClient.UpdateRoomAsync(id, model);
+    }
 
-        public Task<HttpResponseMessage> AddDevicesToRoomAsync(long roomId, params long[] deviceIds)
-        {
-            return RoomsApiClient.AddDevicesToRoomAsync(roomId, deviceIds);
-        }
+    public Task<HttpResponseMessage> AddDevicesToRoomAsync(long roomId, params long[] deviceIds)
+    {
+        return RoomsApiClient.AddDevicesToRoomAsync(roomId, deviceIds);
+    }
 
-        public Task<HttpResponseMessage> ChangeRoomLightingAsync(long roomId, LightingModel model)
-        {
-            return RoomsApiClient.ChangeRoomLightingAsync(roomId, model);
-        }
+    public Task<HttpResponseMessage> ChangeRoomLightingAsync(long roomId, LightingModel model)
+    {
+        return RoomsApiClient.ChangeRoomLightingAsync(roomId, model);
+    }
 
-        public Task<HttpResponseMessage> TurnRoomOnAsync(long roomId)
-        {
-            return RoomsApiClient.TurnRoomOnAsync(roomId);
-        }
+    public Task<HttpResponseMessage> TurnRoomOnAsync(long roomId)
+    {
+        return RoomsApiClient.TurnRoomOnAsync(roomId);
+    }
 
-        public Task<HttpResponseMessage> TurnRoomOffAsync(long roomId)
-        {
-            return RoomsApiClient.TurnRoomOffAsync(roomId);
-        }
+    public Task<HttpResponseMessage> TurnRoomOffAsync(long roomId)
+    {
+        return RoomsApiClient.TurnRoomOffAsync(roomId);
+    }
 
-        public Task<HttpResponseMessage> TriggerOccupancyChange(string simulatorId)
-        {
-            return DeviceSimulatorApiClient.TriggerOccupancyChange(simulatorId);
-        }
+    public Task<HttpResponseMessage> TriggerOccupancyChange(string simulatorId)
+    {
+        return DeviceSimulatorApiClient.TriggerOccupancyChange(simulatorId);
+    }
 
-        public Task<HttpResponseMessage> AddSimulatedDeviceAsync(SimulatedDeviceModel model)
-        {
-            return DeviceSimulatorApiClient.AddSimulatedDeviceAsync(model);
-        }
+    public Task<HttpResponseMessage> AddSimulatedDeviceAsync(SimulatedDeviceModel model)
+    {
+        return DeviceSimulatorApiClient.AddSimulatedDeviceAsync(model);
+    }
 
-        public Task<HttpResponseMessage> ResetDeviceSimulatorAsync()
-        {
-            return DeviceSimulatorApiClient.ResetDeviceSimulatorAsync();
-        }
+    public Task<HttpResponseMessage> ResetDeviceSimulatorAsync()
+    {
+        return DeviceSimulatorApiClient.ResetDeviceSimulatorAsync();
+    }
 
-        public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null)
-        {
-            return LogsApiClient.GetLogsAsync(parameters);
-        }
+    public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null)
+    {
+        return LogsApiClient.GetLogsAsync(parameters);
+    }
 
-        public Task<ClientSettingsModel> GetClientSettingsAsync()
-        {
-            return ClientSettingsApiClient.GetClientSettingsAsync();
-        }
+    public Task<ClientSettingsModel> GetClientSettingsAsync()
+    {
+        return ClientSettingsApiClient.GetClientSettingsAsync();
+    }
 
-        public Task<ApplicationVersionModel> GetLatestVersionAsync()
-        {
-            return ApplicationApiClient.GetLatestVersionAsync();
-        }
+    public Task<ApplicationVersionModel> GetLatestVersionAsync()
+    {
+        return ApplicationApiClient.GetLatestVersionAsync();
+    }
 
-        public Task<ListResult<ApplicationPackageModel>> GetLatestPackagesAsync()
-        {
-            return ApplicationApiClient.GetLatestPackagesAsync();
-        }
+    public Task<ListResult<ApplicationPackageModel>> GetLatestPackagesAsync()
+    {
+        return ApplicationApiClient.GetLatestPackagesAsync();
+    }
 
-        public Task<HttpResponseMessage> DownloadLatestPackageAsync(int packageId)
-        {
-            return ApplicationApiClient.DownloadLatestPackageAsync(packageId);
-        }
+    public Task<HttpResponseMessage> DownloadLatestPackageAsync(int packageId)
+    {
+        return ApplicationApiClient.DownloadLatestPackageAsync(packageId);
     }
 }

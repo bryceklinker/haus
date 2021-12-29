@@ -23,7 +23,7 @@ public class RoomVacancyBackgroundService : BackgroundService
     {
         while (!await CanStartExecuting(stoppingToken).ConfigureAwait(false))
             await Task.Delay(200, stoppingToken).ConfigureAwait(false);
-        
+
         while (!stoppingToken.IsCancellationRequested)
         {
             await ExecuteTurnOffVacantRooms(stoppingToken).ConfigureAwait(false);

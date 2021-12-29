@@ -1,13 +1,12 @@
 using System.Text.Json.Serialization;
 
-namespace Haus.Core.Models.Devices
+namespace Haus.Core.Models.Devices;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum LightType
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum LightType
-    {
-        None,
-        Level,
-        Temperature,
-        Color
-    }
+    None,
+    Level,
+    Temperature,
+    Color
 }

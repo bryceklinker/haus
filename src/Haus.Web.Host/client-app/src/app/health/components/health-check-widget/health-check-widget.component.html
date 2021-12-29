@@ -1,10 +1,11 @@
 <mat-expansion-panel class="health-widget" aria-label="health check">
-  <mat-expansion-panel-header [class.success-background-color]="isOk" [class.warning-background-color]="isWarning" [class.error-background-color]="isError">
+  <mat-expansion-panel-header [class.success-background-color]="isOk" [class.warning-background-color]="isWarning"
+                              [class.error-background-color]="isError">
     <mat-panel-title aria-label="name">
-        <mat-icon aria-label="error" *ngIf="isError">error</mat-icon>
-        <mat-icon aria-label="ok" *ngIf="isOk">check_circle</mat-icon>
-        <mat-icon aria-label="warning" *ngIf="isWarning">warning</mat-icon>
-        {{name}}
+      <mat-icon aria-label="error" *ngIf="isError">error</mat-icon>
+      <mat-icon aria-label="ok" *ngIf="isOk">check_circle</mat-icon>
+      <mat-icon aria-label="warning" *ngIf="isWarning">warning</mat-icon>
+      {{name}}
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div class="details">

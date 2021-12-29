@@ -1,4 +1,3 @@
-namespace Haus.Core.Models.ServiceLocation
-{
-    public record ServiceLocationRequest;
-}
+namespace Haus.Core.Models.ServiceLocation;
+
+public record ServiceLocationRequest;

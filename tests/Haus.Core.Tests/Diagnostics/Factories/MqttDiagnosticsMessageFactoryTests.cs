@@ -8,69 +8,68 @@ using Haus.Testing.Support.Fakes;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Haus.Core.Tests.Diagnostics.Factories
+namespace Haus.Core.Tests.Diagnostics.Factories;
+
+public class MqttDiagnosticsMessageFactoryTests
 {
-    public class MqttDiagnosticsMessageFactoryTests
+    private readonly FakeClock _clock;
+    private readonly MqttDiagnosticsMessageFactory _factory;
+
+    public MqttDiagnosticsMessageFactoryTests()
     {
-        private readonly FakeClock _clock;
-        private readonly MqttDiagnosticsMessageFactory _factory;
+        _clock = new FakeClock();
+        _factory = new MqttDiagnosticsMessageFactory(_clock);
+    }
 
-        public MqttDiagnosticsMessageFactoryTests()
-        {
-            _clock = new FakeClock();
-            _factory = new MqttDiagnosticsMessageFactory(_clock);
-        }
+    [Fact]
+    public void WhenCreatedWithNullBytesThenReturnsNullPayload()
+    {
+        var model = _factory.Create("something", null);
 
-        [Fact]
-        public void WhenCreatedWithNullBytesThenReturnsNullPayload()
-        {
-            var model = _factory.Create("something", null);
+        model.Topic.Should().Be("something");
+        model.Payload.Should().BeNull();
+    }
 
-            model.Topic.Should().Be("something");
-            model.Payload.Should().BeNull();
-        }
+    [Fact]
+    public void WhenCreatedWithEmptyPayloadThenReturnsEmptyPayload()
+    {
+        var model = _factory.Create("something", Array.Empty<byte>());
 
-        [Fact]
-        public void WhenCreatedWithEmptyPayloadThenReturnsEmptyPayload()
-        {
-            var model = _factory.Create("something", Array.Empty<byte>());
+        model.Topic.Should().Be("something");
+        model.Payload.Should().Be("");
+    }
 
-            model.Topic.Should().Be("something");
-            model.Payload.Should().Be("");
-        }
-        
-        [Fact]
-        public void WhenCreatedThenTopicAndPayloadArePopulated()
-        {
-            var model = _factory.Create("my-topic", HausJsonSerializer.SerializeToBytes(new {id = 45}));
+    [Fact]
+    public void WhenCreatedThenTopicAndPayloadArePopulated()
+    {
+        var model = _factory.Create("my-topic", HausJsonSerializer.SerializeToBytes(new { id = 45 }));
 
-            model.Topic.Should().Be("my-topic");
-            JObject.Parse(model.Payload.ToString()).Value<int>("id").Should().Be(45);
-        }
+        model.Topic.Should().Be("my-topic");
+        JObject.Parse(model.Payload.ToString()).Value<int>("id").Should().Be(45);
+    }
 
-        [Fact]
-        public void WhenCreatedWithSingleValuePayloadThenPayloadIsString()
-        {
-            var model = _factory.Create("my-topic", Encoding.UTF8.GetBytes("hello there"));
+    [Fact]
+    public void WhenCreatedWithSingleValuePayloadThenPayloadIsString()
+    {
+        var model = _factory.Create("my-topic", Encoding.UTF8.GetBytes("hello there"));
 
-            model.Payload.Should().Be("hello there");
-        }
+        model.Payload.Should().Be("hello there");
+    }
 
-        [Fact]
-        public void WhenCreatedThenIdIsAssignedToMessage()
-        {
-            var model = _factory.Create("idk", Array.Empty<byte>());
+    [Fact]
+    public void WhenCreatedThenIdIsAssignedToMessage()
+    {
+        var model = _factory.Create("idk", Array.Empty<byte>());
 
-            model.Id.Should().BeAGuid();
-        }
+        model.Id.Should().BeAGuid();
+    }
 
-        [Fact]
-        public void WhenCreatedThenTimestampIsAssignedToMessage()
-        {
-            _clock.SetNow(new DateTime(2020, 9, 23));
-            var model = _factory.Create("idk", Array.Empty<byte>());
+    [Fact]
+    public void WhenCreatedThenTimestampIsAssignedToMessage()
+    {
+        _clock.SetNow(new DateTime(2020, 9, 23));
+        var model = _factory.Create("idk", Array.Empty<byte>());
 
-            model.Timestamp.Should().Be(new DateTime(2020, 9, 23));
-        }
+        model.Timestamp.Should().Be(new DateTime(2020, 9, 23));
     }
 }

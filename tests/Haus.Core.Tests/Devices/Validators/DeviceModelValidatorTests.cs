@@ -7,39 +7,38 @@ using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Xunit;
 
-namespace Haus.Core.Tests.Devices.Validators
+namespace Haus.Core.Tests.Devices.Validators;
+
+public class DeviceModelValidatorTests
 {
-    public class DeviceModelValidatorTests
+    private readonly IValidator<DeviceModel> _validator;
+
+    public DeviceModelValidatorTests()
     {
-        private readonly IValidator<DeviceModel> _validator;
+        _validator = new DeviceModelValidator();
+    }
 
-        public DeviceModelValidatorTests()
-        {
-            _validator = new DeviceModelValidator();
-        }
+    [Fact]
+    public async Task WhenNameIsNullThenReturnsInvalid()
+    {
+        var result = await _validator.TestValidateAsync(new DeviceModel { Name = null });
+        result.IsValid.Should().BeFalse();
+    }
 
-        [Fact]
-        public async Task WhenNameIsNullThenReturnsInvalid()
-        {
-            var result = await _validator.TestValidateAsync(new DeviceModel {Name = null});
-            result.IsValid.Should().BeFalse();
-        }
+    [Fact]
+    public async Task WhenNameIsEmptyThenReturnsInvalid()
+    {
+        var result = await _validator.TestValidateAsync(new DeviceModel { Name = string.Empty });
+        result.IsValid.Should().BeFalse();
+    }
 
-        [Fact]
-        public async Task WhenNameIsEmptyThenReturnsInvalid()
-        {
-            var result = await _validator.TestValidateAsync(new DeviceModel {Name = string.Empty});
-            result.IsValid.Should().BeFalse();
-        }
+    [Fact]
+    public async Task WhenMetadataHasNullKeyThenReturnsInvalid()
+    {
+        var model = new DeviceModel(Name: "one", Metadata: new[] { new MetadataModel() });
 
-        [Fact]
-        public async Task WhenMetadataHasNullKeyThenReturnsInvalid()
-        {
-            var model = new DeviceModel(Name: "one", Metadata: new[] {new MetadataModel()});
-                
-            var result = await _validator.TestValidateAsync(model);
-            
-            result.IsValid.Should().BeFalse();
-        }
+        var result = await _validator.TestValidateAsync(model);
+
+        result.IsValid.Should().BeFalse();
     }
 }

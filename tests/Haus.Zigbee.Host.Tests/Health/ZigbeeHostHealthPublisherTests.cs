@@ -15,42 +15,42 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace Haus.Zigbee.Host.Tests.Health
+namespace Haus.Zigbee.Host.Tests.Health;
+
+public class ZigbeeHostHealthPublisherTests : IAsyncLifetime
 {
-    public class ZigbeeHostHealthPublisherTests : IAsyncLifetime
+    private ZigbeeHostHealthPublisher _publisher;
+    private IHausMqttClient _mqttClient;
+
+    public async Task InitializeAsync()
     {
-        private ZigbeeHostHealthPublisher _publisher;
-        private IHausMqttClient _mqttClient;
-        
-        public async Task InitializeAsync()
-        {
-            var provider = ServiceProviderFactory.Create(mqttFactory: new FakeMqttClientFactory());
-            var zigbeeMqttFactory = provider.GetRequiredService<IZigbeeMqttClientFactory>();
-            _mqttClient = await zigbeeMqttFactory.CreateHausClient();
-            
-            var hausOptions = provider.GetRequiredService<IOptions<HausOptions>>();
-            _publisher = new ZigbeeHostHealthPublisher(zigbeeMqttFactory, hausOptions);
-        }
+        var provider = ServiceProviderFactory.Create(mqttFactory: new FakeMqttClientFactory());
+        var zigbeeMqttFactory = provider.GetRequiredService<IZigbeeMqttClientFactory>();
+        _mqttClient = await zigbeeMqttFactory.CreateHausClient();
 
-        [Fact]
-        public async Task WhenReceivesHealthyReportThenPublishesHealthReportToMqtt()
-        {
-            HausHealthReportModel actual = null;
-            await _mqttClient.SubscribeToHausHealthAsync(r => actual = r);
-            
-            var report = new HealthReport(new Dictionary<string, HealthReportEntry>(), HealthStatus.Healthy, TimeSpan.FromMilliseconds(200));
-            await _publisher.PublishAsync(report);
+        var hausOptions = provider.GetRequiredService<IOptions<HausOptions>>();
+        _publisher = new ZigbeeHostHealthPublisher(zigbeeMqttFactory, hausOptions);
+    }
 
-            Eventually.Assert(() =>
-            {
-                actual.IsOk.Should().BeTrue();
-                actual.Status.Should().Be(HealthStatus.Healthy);
-            });
-        }
+    [Fact]
+    public async Task WhenReceivesHealthyReportThenPublishesHealthReportToMqtt()
+    {
+        HausHealthReportModel actual = null;
+        await _mqttClient.SubscribeToHausHealthAsync(r => actual = r);
 
-        public async Task DisposeAsync()
+        var report = new HealthReport(new Dictionary<string, HealthReportEntry>(), HealthStatus.Healthy,
+            TimeSpan.FromMilliseconds(200));
+        await _publisher.PublishAsync(report);
+
+        Eventually.Assert(() =>
         {
-            await _mqttClient.DisposeAsync();
-        }
+            actual.IsOk.Should().BeTrue();
+            actual.Status.Should().Be(HealthStatus.Healthy);
+        });
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _mqttClient.DisposeAsync();
     }
 }

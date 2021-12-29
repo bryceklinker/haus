@@ -1,14 +1,14 @@
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Lighting;
 
-namespace Haus.Core.Models.Rooms
+namespace Haus.Core.Models.Rooms;
+
+public record RoomModel(
+    long Id = -1,
+    string Name = null,
+    int OccupancyTimeoutInSeconds = RoomDefaults.OccupancyTimeoutInSeconds,
+    LightingModel Lighting = null) : IdentityModel
 {
-    public record RoomModel(
-        long Id = -1,
-        string Name = null,
-        int OccupancyTimeoutInSeconds = RoomDefaults.OccupancyTimeoutInSeconds,
-        LightingModel Lighting = null) : IdentityModel
-    {
-        public LightingModel Lighting { get; } = Lighting ?? new LightingModel(LightingDefaults.State, new LevelLightingModel(), new TemperatureLightingModel(), new ColorLightingModel());
-    }
+    public LightingModel Lighting { get; } = Lighting ?? new LightingModel(LightingDefaults.State,
+        new LevelLightingModel(), new TemperatureLightingModel(), new ColorLightingModel());
 }

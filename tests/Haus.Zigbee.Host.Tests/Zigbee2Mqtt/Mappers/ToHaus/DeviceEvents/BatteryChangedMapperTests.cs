@@ -3,37 +3,36 @@ using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 using Xunit;
 
-namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents
+namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
+
+public class BatteryChangedMapperTests
 {
-    public class BatteryChangedMapperTests
+    private readonly BatteryChangedMapper _mapper;
+
+    public BatteryChangedMapperTests()
     {
-        private readonly BatteryChangedMapper _mapper;
+        _mapper = new BatteryChangedMapper();
+    }
 
-        public BatteryChangedMapperTests()
-        {
-            _mapper = new BatteryChangedMapper();
-        }
+    [Fact]
+    public void WhenBatteryChangedThenReturnsPopulatedBatteryChanged()
+    {
+        var message = new Zigbee2MqttMessageBuilder()
+            .WithBatteryLevel(43)
+            .WithDeviceTopic("my-device-id")
+            .BuildZigbee2MqttMessage();
 
-        [Fact]
-        public void WhenBatteryChangedThenReturnsPopulatedBatteryChanged()
-        {
-            var message = new Zigbee2MqttMessageBuilder()
-                .WithBatteryLevel(43)
-                .WithDeviceTopic("my-device-id")
-                .BuildZigbee2MqttMessage();
+        var model = _mapper.Map(message);
 
-            var model = _mapper.Map(message);
+        model.BatteryLevel.Should().Be(43);
+        model.DeviceId.Should().Be("my-device-id");
+    }
 
-            model.BatteryLevel.Should().Be(43);
-            model.DeviceId.Should().Be("my-device-id");
-        }
+    [Fact]
+    public void WhenBatteryLevelNotReportedThenReturnsNull()
+    {
+        var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
 
-        [Fact]
-        public void WhenBatteryLevelNotReportedThenReturnsNull()
-        {
-            var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
-
-            _mapper.Map(message).Should().BeNull();
-        }
+        _mapper.Map(message).Should().BeNull();
     }
 }

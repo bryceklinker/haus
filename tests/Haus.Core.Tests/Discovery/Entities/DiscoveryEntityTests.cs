@@ -3,29 +3,28 @@ using Haus.Core.Discovery.Entities;
 using Haus.Core.Models.Discovery;
 using Xunit;
 
-namespace Haus.Core.Tests.Discovery.Entities
+namespace Haus.Core.Tests.Discovery.Entities;
+
+public class DiscoveryEntityTests
 {
-    public class DiscoveryEntityTests
+    [Fact]
+    public void WhenDiscoveryStartedThenDiscoveryIsEnabled()
     {
-        [Fact]
-        public void WhenDiscoveryStartedThenDiscoveryIsEnabled()
-        {
-            var entity = new DiscoveryEntity();
-            
-            entity.Start();
+        var entity = new DiscoveryEntity();
 
-            entity.State.Should().Be(DiscoveryState.Enabled);
-        }
+        entity.Start();
 
-        [Fact]
-        public void WhenDiscoveryStoppedThenDiscoveryIsDisabled()
-        {
-            var entity = new DiscoveryEntity();
+        entity.State.Should().Be(DiscoveryState.Enabled);
+    }
 
-            entity.Start();
-            entity.Stop();
+    [Fact]
+    public void WhenDiscoveryStoppedThenDiscoveryIsDisabled()
+    {
+        var entity = new DiscoveryEntity();
 
-            entity.State.Should().Be(DiscoveryState.Disabled);
-        }
+        entity.Start();
+        entity.Stop();
+
+        entity.State.Should().Be(DiscoveryState.Disabled);
     }
 }

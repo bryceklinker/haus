@@ -15,7 +15,7 @@ public interface IClientSettingsApiClient
 
 public class ClientSettingsApiClient : ApiClient, IClientSettingsApiClient
 {
-    public ClientSettingsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) 
+    public ClientSettingsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
         : base(httpClient, options)
     {
     }

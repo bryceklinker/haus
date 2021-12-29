@@ -6,30 +6,29 @@ using Haus.Cqrs;
 using Haus.Testing.Support;
 using Xunit;
 
-namespace Haus.Core.Tests.Health.Queries
+namespace Haus.Core.Tests.Health.Queries;
+
+public class GetAllHealthChecksQueryHandlerTests
 {
-    public class GetAllHealthChecksQueryHandlerTests
+    private readonly HausDbContext _context;
+    private readonly IHausBus _bus;
+
+    public GetAllHealthChecksQueryHandlerTests()
     {
-        private readonly HausDbContext _context;
-        private readonly IHausBus _bus;
+        _context = HausDbContextFactory.Create();
+        _bus = HausBusFactory.Create(_context);
+    }
 
-        public GetAllHealthChecksQueryHandlerTests()
-        {
-            _context = HausDbContextFactory.Create();
-            _bus = HausBusFactory.Create(_context);
-        }
+    [Fact]
+    public async Task WhenGettingAllHealthChecksThenReturnsAllStoredHealthChecks()
+    {
+        _context.AddHealthCheck();
+        _context.AddHealthCheck();
+        _context.AddHealthCheck();
 
-        [Fact]
-        public async Task WhenGettingAllHealthChecksThenReturnsAllStoredHealthChecks()
-        {
-            _context.AddHealthCheck();
-            _context.AddHealthCheck();
-            _context.AddHealthCheck();
+        var result = await _bus.ExecuteQueryAsync(new GetAllHealthChecksQuery());
 
-            var result = await _bus.ExecuteQueryAsync(new GetAllHealthChecksQuery());
-
-            result.Count.Should().Be(3);
-            result.Items.Should().HaveCount(3);
-        }
+        result.Count.Should().Be(3);
+        result.Items.Should().HaveCount(3);
     }
 }

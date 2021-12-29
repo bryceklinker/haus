@@ -1,15 +1,15 @@
 using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Devices;
+using Haus.Core.Models.Devices.Sensors.Motion;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.DomainEvents;
 using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
-using FluentAssertions;
-using Haus.Core.Lighting.Entities;
-using Haus.Core.Models.Devices.Sensors.Motion;
-using Haus.Core.Models.Lighting;
 using Xunit;
 
 namespace Haus.Core.Tests.Rooms.Entities;
@@ -66,7 +66,7 @@ public class RoomEntityTests
     [Fact]
     public void WhenDeviceIsAlreadyInRoomThenAddingDeviceAgainDoesNothing()
     {
-        var device = new DeviceEntity {Id = 65};
+        var device = new DeviceEntity { Id = 65 };
         var room = new RoomEntity();
         room.AddDevice(device, new FakeDomainEventBus());
 
@@ -114,7 +114,7 @@ public class RoomEntityTests
     {
         var room = new RoomEntity();
 
-        var lighting = new LightingEntity {State = LightingState.On};
+        var lighting = new LightingEntity { State = LightingState.On };
         room.ChangeLighting(lighting, new FakeDomainEventBus());
 
         room.Lighting.State.Should().Be(LightingState.On);
@@ -127,7 +127,7 @@ public class RoomEntityTests
         var room = new RoomEntity();
         room.AddDevice(light, new FakeDomainEventBus());
 
-        var lighting = new LightingEntity {State = LightingState.On};
+        var lighting = new LightingEntity { State = LightingState.On };
         room.ChangeLighting(lighting, new FakeDomainEventBus());
 
         light.Lighting.State.Should().Be(LightingState.On);
@@ -246,7 +246,7 @@ public class RoomEntityTests
     {
         var lighting = new LightingEntity(LightingState.On);
         var room = new RoomEntity(12, "", 1, lighting: lighting);
-            
+
         room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus());
         await Task.Delay(TimeSpan.FromSeconds(2));
         room.ChangeOccupancy(new OccupancyChangedModel(""), new FakeDomainEventBus());

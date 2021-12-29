@@ -8,53 +8,55 @@ using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Core.Models.Lighting;
 
-namespace Haus.Core.DeviceSimulator.Entities
+namespace Haus.Core.DeviceSimulator.Entities;
+
+public record SimulatedDeviceEntity(
+    string Id = null,
+    DeviceType DeviceType = DeviceType.Unknown,
+    bool IsOccupied = false,
+    ImmutableArray<Metadata> Metadata = default,
+    LightingModel Lighting = null)
 {
-    public record SimulatedDeviceEntity(
-        string Id = null, 
-        DeviceType DeviceType = DeviceType.Unknown,
-        bool IsOccupied = false,
-        ImmutableArray<Metadata> Metadata = default, 
-        LightingModel Lighting = null)
+    private static readonly ImmutableArray<Metadata> StandardMetadata = new[]
     {
-        private static readonly ImmutableArray<Metadata> StandardMetadata = new[]
-        {
-            new Metadata("simulated", "true")
-        }.ToImmutableArray();
+        new Metadata("simulated", "true")
+    }.ToImmutableArray();
 
-        public string Id { get; } = string.IsNullOrEmpty(Id) ? $"{Guid.NewGuid()}" : Id;
-        public ImmutableArray<Metadata> Metadata { get; } = Metadata.IsDefaultOrEmpty ? ImmutableArray<Metadata>.Empty : Metadata;
-        public LightingModel Lighting { get; private init; } = DeviceType == DeviceType.Light ? Lighting : null;
+    public string Id { get; } = string.IsNullOrEmpty(Id) ? $"{Guid.NewGuid()}" : Id;
 
-        public static SimulatedDeviceEntity Create(SimulatedDeviceModel model)
-        {
-            var metadata = model.Metadata
-                .Select(Common.Entities.Metadata.FromModel)
-                .Concat(StandardMetadata)
-                .ToImmutableArray();
-            return new SimulatedDeviceEntity(model.Id, model.DeviceType, Metadata: metadata);
-        }
+    public ImmutableArray<Metadata> Metadata { get; } =
+        Metadata.IsDefaultOrEmpty ? ImmutableArray<Metadata>.Empty : Metadata;
 
-        public SimulatedDeviceModel ToModel()
-        {
-            var metadataModels = Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray();
-            return new SimulatedDeviceModel(Id, DeviceType, IsOccupied, metadataModels, Lighting);
-        }
+    public LightingModel Lighting { get; private init; } = DeviceType == DeviceType.Light ? Lighting : null;
 
-        public DeviceDiscoveredEvent ToDeviceDiscoveredModel()
-        {
-            var metadata = Metadata.Select(m => m.ToModel()).ToArray();
-            return new DeviceDiscoveredEvent(Id, DeviceType, metadata);
-        }
+    public static SimulatedDeviceEntity Create(SimulatedDeviceModel model)
+    {
+        var metadata = model.Metadata
+            .Select(Common.Entities.Metadata.FromModel)
+            .Concat(StandardMetadata)
+            .ToImmutableArray();
+        return new SimulatedDeviceEntity(model.Id, model.DeviceType, Metadata: metadata);
+    }
 
-        public SimulatedDeviceEntity ChangeLighting(LightingModel model)
-        {
-            return this with {Lighting = model};
-        }
+    public SimulatedDeviceModel ToModel()
+    {
+        var metadataModels = Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray();
+        return new SimulatedDeviceModel(Id, DeviceType, IsOccupied, metadataModels, Lighting);
+    }
 
-        public SimulatedDeviceEntity ChangeOccupancy()
-        {
-            return this with {IsOccupied = !IsOccupied};
-        }
+    public DeviceDiscoveredEvent ToDeviceDiscoveredModel()
+    {
+        var metadata = Metadata.Select(m => m.ToModel()).ToArray();
+        return new DeviceDiscoveredEvent(Id, DeviceType, metadata);
+    }
+
+    public SimulatedDeviceEntity ChangeLighting(LightingModel model)
+    {
+        return this with { Lighting = model };
+    }
+
+    public SimulatedDeviceEntity ChangeOccupancy()
+    {
+        return this with { IsOccupied = !IsOccupied };
     }
 }

@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../dependencies/version.xml" />
-  <Import Project="../../dependencies/framework-version.xml" />
-  
-  <ItemGroup>
-    <ProjectReference Include="..\Haus.Core.Models\Haus.Core.Models.csproj" />
-    <ProjectReference Include="..\Haus.Cqrs\Haus.Cqrs.csproj" />
-  </ItemGroup>
+    <Import Project="../../dependencies/version.xml"/>
+    <Import Project="../../dependencies/framework-version.xml"/>
 
-  <ItemGroup>
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.3.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftPackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftPackageVersion)" />
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Haus.Core.Models\Haus.Core.Models.csproj"/>
+        <ProjectReference Include="..\Haus.Cqrs\Haus.Cqrs.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.3.4"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftPackageVersion)"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftPackageVersion)"/>
+        <PackageReference Include="System.Reactive" Version="5.0.0"/>
+    </ItemGroup>
 
 </Project>

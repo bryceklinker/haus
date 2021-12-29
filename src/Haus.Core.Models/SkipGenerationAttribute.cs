@@ -1,10 +1,8 @@
 using System;
 
-namespace Haus.Core.Models
+namespace Haus.Core.Models;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class SkipGenerationAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class SkipGenerationAttribute : Attribute
-    {
-        
-    }
 }
