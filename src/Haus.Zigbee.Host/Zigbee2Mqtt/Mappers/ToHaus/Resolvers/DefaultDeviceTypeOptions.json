@@ -1,8 +1,58 @@
 [
   {
+    "Vendor": "A-OK",
+    "Model": "AM25",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Acova",
+    "Model": "PERCALE2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ADEO",
+    "Model": "LDSENK10",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "ADEO",
+    "Model": "LDSENK02F",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "ADEO",
+    "Model": "9CZA-P470T-A1A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "ADEO",
+    "Model": "9CZA-A806ST-Q1Z",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "ADEO",
+    "Model": "9CZA-G1521-Q1A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "ADEO",
+    "Model": "9CZA-A806ST-Q1A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "ADEO",
+    "Model": "9CZA-M350ST-Q1A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "ADEO",
+    "Model": "HR-C99C-Z-C045",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "AduroSmart",
     "Model": "81809/81813",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "AduroSmart",
@@ -10,9 +60,29 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "AduroSmart",
+    "Model": "81848",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "AduroSmart",
+    "Model": "BPU3",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "AduroSmart",
+    "Model": "81855",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "AduroSmart",
+    "Model": "81849",
+    "DeviceType": "Light"
+  },
+  {
     "Vendor": "Airam",
     "Model": "4713407",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Airam",
@@ -27,32 +97,92 @@
   {
     "Vendor": "Airam",
     "Model": "4713406",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Ajax Online",
     "Model": "Aj_Zigbee_Led_Strip",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Ajax Online",
+    "Model": "ZB_A60_RGBCW",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Ajax Online",
+    "Model": "AJ_ZIGPROA60",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Ajax Online",
+    "Model": "AJ_ZB_GU10",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Aldi",
+    "Model": "141L100RC",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aldi",
+    "Model": "C422AC14D41H140.0W",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Aldi",
+    "Model": "C422AC11D41H140.0W",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Aldi",
+    "Model": "F122SB62H22A4.5W",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Aldi",
+    "Model": "L122AA63H11A6.5W",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Aldi",
+    "Model": "L122CB63H11A9.0W",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Aldi",
+    "Model": "L122FF63H11A5.0W",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Alecto",
+    "Model": "SMART-HEAT10",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Anchor",
     "Model": "67200BL",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Atsmart",
+    "Model": "Z6",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Aurora Lighting",
     "Model": "AU-A1GUZBCX5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Aurora Lighting",
     "Model": "AU-A1GUZB5/30",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Aurora Lighting",
     "Model": "AU-A1GUZBRGBW",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Aurora Lighting",
@@ -67,12 +197,12 @@
   {
     "Vendor": "Aurora Lighting",
     "Model": "AU-A1ZBPIRS",
-    "DeviceType": "Unknown"
+    "DeviceType": "LightSensor, MotionSensor"
   },
   {
     "Vendor": "Aurora Lighting",
     "Model": "AU-A1ZBPIAB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Aurora Lighting",
@@ -82,12 +212,77 @@
   {
     "Vendor": "Aurora Lighting",
     "Model": "AU-A1ZB2WDM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Aurora Lighting",
     "Model": "AU-A1ZBPIA",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1VGSZ5E/19",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1VG125Z5E/19",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1ZBDSS",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1GSZ9RGBW_HV-GSCXZB269K",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1ZBR2GW",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Aurora Lighting",
+    "Model": "AU-A1ZBR1GW",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "AVATTO",
+    "Model": "3gang N-ZLWSM01",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "AVATTO",
+    "Model": "2gang N-ZLWSM01",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "AVATTO",
+    "Model": "1gang N-ZLWSM01",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "AVATTO",
+    "Model": "ZGB-WS-EU",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "AwoX",
+    "Model": "33943/33944/33946",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "AwoX",
+    "Model": "33957",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "AwoX",
+    "Model": "33951/33948",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "AXIS",
@@ -97,11 +292,21 @@
   {
     "Vendor": "Bandi",
     "Model": "BDS03G1",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Bega",
+    "Model": "70049",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Belkin",
     "Model": "F7C033",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Benexmart",
+    "Model": "ZM-sui1",
     "DeviceType": "Unknown"
   },
   {
@@ -162,17 +367,17 @@
   {
     "Vendor": "Blaupunkt",
     "Model": "PSM-S1",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "BlitzWolf",
     "Model": "BW-IS3",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "BlitzWolf",
     "Model": "BW-SHP13",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "BlitzWolf",
@@ -180,64 +385,144 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "BlitzWolf",
+    "Model": "BW-SHP15",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "BlitzWolf",
+    "Model": "BW-SS7_2gang",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "BlitzWolf",
+    "Model": "BW-SS7_1gang",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "BlitzWolf",
+    "Model": "BW-IS4",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
     "Vendor": "Bosch",
     "Model": "RADON TriTech ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "Bosch",
     "Model": "ISW-ZPR1-WP13",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Brimate",
+    "Model": "FZB8708HD-S1",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "BSEED",
+    "Model": "TS0003",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "BTicino",
     "Model": "K4003C/L4003C/N4003C/NT4003C",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "BTicino",
+    "Model": "K4027C/L4027C/N4027C/NT4027C",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "BTicino",
+    "Model": "L441C/N4411C/NT4411C",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "BTicino",
+    "Model": "L4531C",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "BTicino",
+    "Model": "F20T60A",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Busch-Jaeger",
     "Model": "6717-84",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Busch-Jaeger",
     "Model": "6735/6736/6737",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "BYUN",
+    "Model": "M415-5C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "BYUN",
+    "Model": "M415-6C",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "Calex",
     "Model": "421786",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Calex",
     "Model": "421792",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Calex",
+    "Model": "421782",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Candeo",
+    "Model": "HK-DIM-A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "CASAIA",
+    "Model": "CCB432",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "CASAIA",
+    "Model": "CTHS-317-ET",
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Centralite",
     "Model": "4256251-RZHAC",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Centralite",
     "Model": "4257050-ZHAC",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Centralite",
     "Model": "4257050-RZHAC",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Centralite",
     "Model": "3323-G",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Centralite",
     "Model": "3420-G",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Centralite",
@@ -247,7 +532,42 @@
   {
     "Vendor": "Centralite",
     "Model": "4200-C",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "4256050-ZHAC",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "3157100-E",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "3200-de",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "3200-fr",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "3310-G",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "3328-G",
+    "DeviceType": "MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Centralite",
+    "Model": "3400-D",
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "CentraLite",
@@ -255,9 +575,19 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "ClickSmart\u002B",
+    "Model": "CMA30035",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "ClickSmart\u002B",
+    "Model": "CMA30036",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "Climax",
     "Model": "PSS-23ZBS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Climax",
@@ -267,17 +597,57 @@
   {
     "Vendor": "Climax",
     "Model": "PSM-29ZBSR",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Climax",
     "Model": "RS-23ZBS",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "PRL-1ZBS-12/24V",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "KP-23EL-ZBS-ACE",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "CO-8ZBS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "WS-15ZBS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "SRAC-23B-ZBSR",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "WLS-15ZBS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Climax",
+    "Model": "SD-8SCZBS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ClimaxTechnology",
+    "Model": "IR-9ZBS-SL",
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Commercial Electric",
     "Model": "53170161",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "CR Smart Home",
@@ -302,7 +672,7 @@
   {
     "Vendor": "CR Smart Home",
     "Model": "TS0111",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "CR Smart Home",
@@ -317,11 +687,21 @@
   {
     "Vendor": "CR Smart Home",
     "Model": "TS0001",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "CR Smart Home",
+    "Model": "TS0202_CR",
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "CREE",
     "Model": "B00TN589ZG",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Current Products Corp",
+    "Model": "CP180335E-01",
     "DeviceType": "Unknown"
   },
   {
@@ -332,37 +712,37 @@
   {
     "Vendor": "Custom devices (DiY)",
     "Model": "ptvo.switch",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Custom devices (DiY)",
     "Model": "DNCKATSD001",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Custom devices (DiY)",
     "Model": "DNCKATSW001",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Custom devices (DiY)",
     "Model": "DNCKATSW002",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Custom devices (DiY)",
     "Model": "DNCKATSW003",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Custom devices (DiY)",
     "Model": "DNCKATSW004",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Custom devices (DiY)",
     "Model": "ZigUP",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Custom devices (DiY)",
@@ -370,13 +750,88 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "EFEKTA_PWS_Max",
+    "DeviceType": "LightSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "EFEKTA_ePWS",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "EFEKTA_THP",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "EFEKTA_eON213wz",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "EFEKTA_eON213z",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "EFEKTA_THP_LR",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "EFEKTA_miniPWS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "EFEKTA_PWS",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "ZeeFlora",
+    "DeviceType": "LightSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "CC2538.ROUTER.V2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "CC2538.ROUTER.V1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Custom devices (DiY)",
+    "Model": "ti.router",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "CY-LIGHTING",
     "Model": "DM A60F",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Danalock",
     "Model": "V3-BTZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Danalock",
+    "Model": "V3-BTZB/V3-BTZBE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Danfoss",
+    "Model": "Icon",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Danfoss",
+    "Model": "014G2461",
     "DeviceType": "Unknown"
   },
   {
@@ -387,82 +842,122 @@
   {
     "Vendor": "databyte.ch",
     "Model": "ED2004-012",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Datek",
+    "Model": "HBR2917E",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Datek",
+    "Model": "HSE2919E",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Datek",
+    "Model": "0402946",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Datek",
+    "Model": "HSE2905E",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Datek",
+    "Model": "HLU2909K",
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-C140-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-B530-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-B540-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-B430-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-S140-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-S240-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-S340-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-S140R-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-S240R-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-S340R-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-S150-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-S250-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-S350-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Dawon DNS",
     "Model": "PM-C150-ZB",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "KB-B540R-ZB",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "KB-HD100-ZB",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Dawon DNS",
+    "Model": "SG-V100-ZB",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Develco",
     "Model": "SPLZB-132",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Develco",
@@ -472,26 +967,86 @@
   {
     "Vendor": "Develco",
     "Model": "SMSZB-120",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Develco",
     "Model": "MOSZB-130",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Develco",
     "Model": "WISZB-120",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Develco",
     "Model": "MOSZB-140",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "Develco",
     "Model": "HMSZB-110",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "KEYZB-110",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "AQSZB-110",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "FLSZB-110",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "SMRZB-143",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "HESZB-120",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "SMRZB-332",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "ZHEMI101",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "MOSZB-141",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "WISZB-121",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "SPLZB-134",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Develco",
+    "Model": "SPLZB-131",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Develco Products A/S",
+    "Model": "SIRZB-110",
     "DeviceType": "Unknown"
   },
   {
@@ -502,7 +1057,7 @@
   {
     "Vendor": "DIYRuZ",
     "Model": "DIYRuZ_R4_5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "DIYRuZ",
@@ -517,7 +1072,7 @@
   {
     "Vendor": "DIYRuZ",
     "Model": "DIYRuZ_rspm",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "DIYRuZ",
@@ -532,26 +1087,81 @@
   {
     "Vendor": "DIYRuZ",
     "Model": "DIYRuZ_R8_8",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "DIYRuZ",
     "Model": "DIYRuZ_RT",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "DIYRuZ",
     "Model": "DIYRuZ_Flower",
+    "DeviceType": "LightSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_Zintercom",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "DIYRuZ_AirSense",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "DIYRuZ",
+    "Model": "FreePad_LeTV_8",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "Dresden Elektronik",
     "Model": "Mega23M12",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Dresden Elektronik",
     "Model": "XVV-Mega23M12",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Earda",
+    "Model": "EDM-1ZAA-EU",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Earda",
+    "Model": "EDM-1ZAB-EU",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Earda",
+    "Model": "EDM-1ZBA-EU",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Earda",
+    "Model": "ESW-2ZAA-EU",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "EasyAccess",
+    "Model": "EasyCode903G2.1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Easyfit by EnOcean",
+    "Model": "EWSxZ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Eaton/Halo LED",
+    "Model": "RL460WHZHA69",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Echostar",
+    "Model": "SAGE206611",
     "DeviceType": "Unknown"
   },
   {
@@ -562,7 +1172,7 @@
   {
     "Vendor": "EcoDim",
     "Model": "Eco-Dim.07",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "EcoDim",
@@ -575,49 +1185,74 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "EcoDim",
+    "Model": "Eco-Dim.05",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "EcoDim",
+    "Model": "ED-10014",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoDim",
+    "Model": "ED-10013",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoDim",
+    "Model": "ED-10010",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EcoDim",
+    "Model": "ED-10015",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "Ecolink",
     "Model": "4655BC0-R",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "EcoSmart",
     "Model": "A9A19A60WESDZ02",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "EcoSmart",
     "Model": "A9BR3065WESDZ02",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "EcoSmart",
     "Model": "D1821",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "EcoSmart",
     "Model": "D1531",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "EcoSmart",
     "Model": "D1532",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "EcoSmart",
     "Model": "D1542",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "EcoSmart",
     "Model": "D1533",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "EcoSmart",
     "Model": "D1523",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "eCozy",
@@ -627,47 +1262,77 @@
   {
     "Vendor": "EDP",
     "Model": "PLUG EDP RE:DY",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "EDP",
     "Model": "SWITCH EDP RE:DY",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Eglo",
+    "Model": "33955",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Elko",
+    "Model": "EKO07144",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Elko",
+    "Model": "EKO07090",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "ELKO",
     "Model": "316GLEDRF",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "ELKO",
+    "Model": "4523430",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "Enbrighten",
     "Model": "43076",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Enbrighten",
     "Model": "43080",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Enbrighten",
     "Model": "43102",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Enbrighten",
     "Model": "43100",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Enbrighten",
     "Model": "43084",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Enbrighten",
     "Model": "43090",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Enbrighten",
+    "Model": "43094",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Enbrighten",
+    "Model": "43082",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "EnOcean",
@@ -675,14 +1340,39 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "EnOcean",
+    "Model": "PTM 216Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EnOcean",
+    "Model": "PTM 215ZE",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "EnOcean",
+    "Model": "PTM 215Z",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "Envilar",
     "Model": "ZG102-BOX-UNIDIM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Envilar",
+    "Model": "2CH-ZG-BOX-RELAY",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Envilar",
+    "Model": "ZG302-BOX-RELAY",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Essentials",
     "Model": "120112",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "ETOP",
@@ -702,7 +1392,7 @@
   {
     "Vendor": "eWeLink",
     "Model": "SA-003-Zigbee",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "eWeLink",
@@ -717,22 +1407,57 @@
   {
     "Vendor": "eWeLink",
     "Model": "RHK08",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "eWeLink",
     "Model": "RHK09",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "eWeLink",
+    "Model": "SWITCH-ZR02",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "eWeLink",
+    "Model": "ZB-SW04",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "eWeLink",
+    "Model": "ZB-SW03",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "eWeLink",
+    "Model": "ZB-SW01",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "eWeLink",
+    "Model": "ZB-SW02",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "eZEX",
     "Model": "ECW-100-A03",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Fantem",
+    "Model": "ZB006-X",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Fantem",
+    "Model": "ZB003-X",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "Feibit",
     "Model": "TZSW22FW-L4",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Feibit",
@@ -742,12 +1467,12 @@
   {
     "Vendor": "Feibit",
     "Model": "SBM01ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Feibit",
     "Model": "STH01ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Feibit",
@@ -777,82 +1502,107 @@
   {
     "Vendor": "Feibit",
     "Model": "SFS01ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Feibit",
     "Model": "SLS301ZB_2",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Feibit",
     "Model": "SLS301ZB_3",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Feibit",
     "Model": "SSS401ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Ferguson",
     "Model": "TH-T_V14",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "FireAngel",
+    "Model": "W2-Module",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "FrankEver",
+    "Model": "FK_V02",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Frient",
+    "Model": "KEPZB-110",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "GE",
     "Model": "PSB19-SW27",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "GE",
     "Model": "22670",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "GE",
     "Model": "PQC19-DY01",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "GE",
     "Model": "45852GE",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "GE",
     "Model": "45853GE",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "GE",
     "Model": "45856GE",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "GE",
     "Model": "45857GE",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "GE",
     "Model": "PTAPT-WH02",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "GE",
+    "Model": "POTLK-WH02",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Gewiss",
     "Model": "GWA1521",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Gewiss",
     "Model": "GWA1522",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Gewiss",
     "Model": "GWA1531",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "GIDERWEL",
+    "Model": "GD-ZCRGB012",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gira",
@@ -865,54 +1615,59 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Girier",
+    "Model": "JR-ZDS01",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "Gledopto",
     "Model": "GL-C-006",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-C-006S",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-C-007-1ID",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-C-007-2ID",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-S-004ZS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-C-007S",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-C-008-2ID",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-C-008-1ID",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-C-008S",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-C-009",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
@@ -922,42 +1677,42 @@
   {
     "Vendor": "Gledopto",
     "Model": "GL-S-004Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-S-007Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-S-007ZS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-S-008Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-B-001Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-B-001ZS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-G-001Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-G-007Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
@@ -967,102 +1722,227 @@
   {
     "Vendor": "Gledopto",
     "Model": "GL-B-007Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-B-007ZS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-B-008Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-B-008ZS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-D-003Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-D-004Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-D-004ZS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-D-005Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-D-005ZS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-S-003Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-S-005Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GD-CZ-006",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-FL-004TZ",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-FL-004TZS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-FL-005TZ",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-FL-006TZ",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-FL-006TZS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-W-001Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Gledopto",
     "Model": "GL-D-003ZS",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-SD-002",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-007P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-006P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-G-002P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-SD-001",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-009P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-FL-006P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-FL-005P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-FL-004P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-S-004P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-009S",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-007P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-G-001ZS",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-MC-001P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-006P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-FL-005TZS",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-005P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-004P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-D-003P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-B-008P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-B-001P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-S-007P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-C-008P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-H-001",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
+    "Model": "GL-G-001P",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "GMY Smart Bulb",
     "Model": "B07KG5KF5R",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "GreenPower",
@@ -1077,16 +1957,36 @@
   {
     "Vendor": "GS",
     "Model": "BDHM8E27W70-I1",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "GS",
+    "Model": "BRHM8E27W70-I1",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "GS",
+    "Model": "SSHM-I1",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hama",
+    "Model": "00176592",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Hampton Bay",
     "Model": "99432",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Hampton Bay",
     "Model": "54668161",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Haozee",
+    "Model": "ESW-OZAA-EU",
     "DeviceType": "Unknown"
   },
   {
@@ -1097,17 +1997,17 @@
   {
     "Vendor": "HEIMAN",
     "Model": "HS3MS",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "HEIMAN",
     "Model": "HS2SK",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "HEIMAN",
     "Model": "HS2SK_nxp",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "HEIMAN",
@@ -1197,27 +2097,27 @@
   {
     "Vendor": "HEIMAN",
     "Model": "SMHM-I1",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "HEIMAN",
     "Model": "HS1HT",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "HEIMAN",
     "Model": "HS1HT-N",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "HEIMAN",
     "Model": "SKHMP30-I1",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "HEIMAN",
     "Model": "HS2ESK-E",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "HEIMAN",
@@ -1227,7 +2127,7 @@
   {
     "Vendor": "HEIMAN",
     "Model": "STHM-I1H",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "HEIMAN",
@@ -1252,7 +2152,7 @@
   {
     "Vendor": "HEIMAN",
     "Model": "HS2AQ-EM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "HEIMAN",
@@ -1262,17 +2162,17 @@
   {
     "Vendor": "HEIMAN",
     "Model": "HS2SW1A/HS2SW1A-N",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "HEIMAN",
     "Model": "HS2SW2A/HS2SW2A-N",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "HEIMAN",
     "Model": "HS2SW3A/HS2SW3A-N",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "HEIMAN",
@@ -1280,79 +2180,119 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "HEIMAN",
+    "Model": "HS2DB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1MS-EF",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1MS-M",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1DS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HM1RC-2-E",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1VS-EF",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1CG-E_3.0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HEIMAN",
+    "Model": "HS1RC-EM",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "Hej",
     "Model": "GLSK3ZB-1711",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Hej",
     "Model": "GLSK3ZB-1712",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Hej",
     "Model": "GLSK3ZB-1713",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Hej",
     "Model": "GLSK6ZB-1714",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Hej",
     "Model": "GLSK6ZB-1715",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Hej",
     "Model": "GLSK6ZB-1716",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "HiHome",
     "Model": "WZB-TRVL",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Hive",
     "Model": "MOT003",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "Hive",
     "Model": "DWS003",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Hive",
     "Model": "HALIGHTDIMWWE27",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Hive",
     "Model": "HALIGHTDIMWWE14",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Hive",
     "Model": "HALIGHTDIMWWB22",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Hive",
     "Model": "HV-GSCXZB229B",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Hive",
     "Model": "1613V",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Hive",
     "Model": "HV-GSCXZB269",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Hive",
@@ -1362,7 +2302,7 @@
   {
     "Vendor": "Hive",
     "Model": "HV-GUCXZB5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Hive",
@@ -1405,29 +2345,119 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Hive",
+    "Model": "SLT3C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "SLR2c",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "SLR1c",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "SLR1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "KEYPAD001",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "HV-CE14CXZB6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "SLR2b",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hive",
+    "Model": "HV-GSCXZB279_HV-GSCXZB229_HV-GSCXZB229K",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "HKGK",
+    "Model": "BAC-002-ALZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "HOCH",
+    "Model": "ZJSBL7-100Z",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Home Control AS",
+    "Model": "HC-SLM-1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hommyn",
+    "Model": "WS-20-Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Hommyn",
+    "Model": "MS-20-Z",
+    "DeviceType": "MotionSensor"
+  },
+  {
     "Vendor": "Honyar",
     "Model": "U86K31ND6",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "HORNBACH",
     "Model": "10011725",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "HORNBACH",
     "Model": "10011722",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "HORNBACH",
+    "Model": "10297665",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "HORNBACH",
+    "Model": "10297667",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "HORNBACH",
+    "Model": "10011724",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "HORNBACH",
+    "Model": "10011723",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "HORNBACH",
+    "Model": "10297666",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "iCasa",
     "Model": "ICZB-IW11D",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "iCasa",
     "Model": "ICZB-IW11SW",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "iCasa",
@@ -1447,32 +2477,47 @@
   {
     "Vendor": "iCasa",
     "Model": "ICZB-B1FC60/B3FC64/B2FC95/B2FC125",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "iCasa",
     "Model": "ICZB-R11D",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "iCasa",
     "Model": "ICZB-R12D",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "iCasa",
+    "Model": "ICZB-KPD12",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iCasa",
+    "Model": "ICZB-DC11",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Idinio",
+    "Model": "0140302",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "iHORN",
     "Model": "LH-32ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "iHORN",
     "Model": "LH-992ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "iHORN",
     "Model": "LH-990ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "iHORN",
@@ -1482,97 +2527,102 @@
   {
     "Vendor": "iHORN",
     "Model": "LH-990F",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "iHORN",
+    "Model": "LH-09521",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1545G12",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "T2011",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1546G12",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1623G12",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1537R6/LED1739R5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1650R5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1536G5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1903C5/LED1835C6",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1837R5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1842G3",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1733G7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1622G12",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1624G9",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1649C5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1732G11",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1836G9",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1736G9",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "T1820",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
@@ -1582,32 +2632,32 @@
   {
     "Vendor": "IKEA",
     "Model": "ICPSHC24-10EU-IL-1",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "ICPSHC24-30EU-IL-1",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "L1527",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "L1529",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "L1528",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "L1531",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
@@ -1632,7 +2682,7 @@
   {
     "Vendor": "IKEA",
     "Model": "E1525/E1745",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "IKEA",
@@ -1657,42 +2707,157 @@
   {
     "Vendor": "IKEA",
     "Model": "T1828",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "T1829",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "IKEA",
     "Model": "LED1738G7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1949C5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1836",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED2005R5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED2002G5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1934G3_E26",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1934G3_E27",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1937T5_E26",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1937T5_E27",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED2003G10",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E2007",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1936G5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E2001/E2002",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1935C3",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1925G6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1603/E1702/E1708",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "ICPSHC24-30-IL44-1",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1924G9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1842",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1841",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "L1530",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "LED1923R5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IKEA",
+    "Model": "E1812",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iLightsIn",
+    "Model": "HLC610",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Iluminize",
     "Model": "511.10",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Iluminize",
     "Model": "511.201",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Iluminize",
     "Model": "511.010",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Iluminize",
     "Model": "511.012",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Iluminize",
     "Model": "511.202",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Iluminize",
@@ -1702,7 +2867,7 @@
   {
     "Vendor": "Iluminize",
     "Model": "511.040",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Iluminize",
@@ -1710,14 +2875,64 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Iluminize",
+    "Model": "5128.10",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "5112.80",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "5110.40",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.541",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "5120.1110",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.050",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "5120.1200",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "5120.1210",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "511.000",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Iluminize",
+    "Model": "5120.1100",
+    "DeviceType": "Light"
+  },
+  {
     "Vendor": "ilux",
     "Model": "900008-WW",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Immax",
     "Model": "07005B",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Immax",
@@ -1727,7 +2942,7 @@
   {
     "Vendor": "Immax",
     "Model": "07008L",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Immax",
@@ -1742,7 +2957,7 @@
   {
     "Vendor": "Immax",
     "Model": "07048L",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Immax",
@@ -1752,262 +2967,352 @@
   {
     "Vendor": "Immax",
     "Model": "07115L",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Immax",
     "Model": "07047L",
-    "DeviceType": "Unknown"
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07502L",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07089L",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07042L",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07073L",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07088L",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Immax",
+    "Model": "07004D/07005L",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "FL 140 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "FL 130 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "FL 120 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "BF 263",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 185 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "BY 185 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 250 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 265",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RF 265",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 278 T",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 285 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "BY 285 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 165",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 162",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 175 W",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 178 T",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "BY 178 T",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RS 122",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RS 125",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RS 225",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RS 128 T",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RS 228 T",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RS 229 T",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RS 230 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 145",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 245",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 248 T",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RB 148 T",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RF 261",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RF 263",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "RF 264",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "BY 165",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "PL 110",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "ST 110",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "UC 110",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "DL 110 N",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "DL 110 W",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "SL 110 N",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "SL 110 M",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "SL 110 W",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "AE 260",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "AE 280 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "SP 120",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Innr",
     "Model": "SP 220",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Innr",
     "Model": "SP 222",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Innr",
     "Model": "SP 224",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Innr",
     "Model": "OFL 120 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "OFL 140 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "OSL 130 C",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Innr",
     "Model": "BE 220",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RS 227 T",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "SP 234",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RCL 240 T",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RC 110",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RSL 110",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "OPL 130 C",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RSL 115",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RCL 110",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RB 172 W",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "RS 226",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "BF 265",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Innr",
+    "Model": "PL 115",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Insta",
@@ -2015,34 +3320,99 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Insta",
+    "Model": "57008000",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Iolloi",
+    "Model": "ID-UK21FW09",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Iolloi",
+    "Model": "ID-EU20FW09",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IOTPerfect",
+    "Model": "PF-PM02D-TYZ",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "Iris",
     "Model": "3210-L",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Iris",
     "Model": "3326-L",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "Iris",
     "Model": "3320-L",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Iris",
     "Model": "3460-L",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Iris",
     "Model": "iL07_1",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "Iris",
     "Model": "27087-03",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Iris",
+    "Model": "IL06_1",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Iris",
+    "Model": "3450-L",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "iStar",
+    "Model": "SCCV2401-1",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "IT Commander",
+    "Model": "ITCMDR_Click",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "IT Commander",
+    "Model": "ITCMDR_Contact",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "J.XUAN",
+    "Model": "SPZ01",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "J.XUAN",
+    "Model": "WSZ01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "J.XUAN",
+    "Model": "DSZ01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "J.XUAN",
+    "Model": "PRZ01",
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "JAVIS",
@@ -2050,9 +3420,24 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "JAVIS",
+    "Model": "JS-MC-SENSOR-ZB",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "JetHome",
+    "Model": "WS7",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "JIAWEN",
     "Model": "K2RGBW01",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "JIAWEN",
+    "Model": "JW-A04-CT",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Jung",
@@ -2075,19 +3460,39 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "KAMI",
+    "Model": "N20",
+    "DeviceType": "MotionSensor"
+  },
+  {
     "Vendor": "Keen Home",
     "Model": "SV01",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Keen Home",
     "Model": "SV02",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Keen Home",
+    "Model": "GW01",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Keen Home",
+    "Model": "RS-THP-MP-1.0",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "KlikAanKlikUit",
+    "Model": "ZCC-3500",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "KMPCIL",
     "Model": "KMPCIL_RES005",
-    "DeviceType": "Unknown"
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor, Switch"
   },
   {
     "Vendor": "Konke",
@@ -2097,12 +3502,12 @@
   {
     "Vendor": "Konke",
     "Model": "2AJZ4KPBS",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Konke",
     "Model": "2AJZ4KPFT",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Konke",
@@ -2115,9 +3520,14 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Konke",
+    "Model": "TW-S1",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "Ksentry Electronics",
     "Model": "KS-SM001",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Kwikset",
@@ -2140,9 +3550,19 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Kwikset",
+    "Model": "99140-031",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lanesto",
+    "Model": "322054",
+    "DeviceType": "Light"
+  },
+  {
     "Vendor": "Larkkey",
     "Model": "ZSTY-SM-1DMZG-EU",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Larkkey",
@@ -2150,49 +3570,139 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Larkkey",
+    "Model": "PS580",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Larkkey",
+    "Model": "PS080",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "LED Trading",
     "Model": "HK-LN-DIM-A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LED Trading",
+    "Model": "9134",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "LEDVANCE",
     "Model": "4058075181472",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "LEDVANCE",
     "Model": "4058075208414",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "LEDVANCE",
     "Model": "4058075208339",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "4058075168572",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "4058075208360",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "AC26940/AC31266",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "4058075208353",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "GPDRPLOP401100CE",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "AC25702",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "AC25704",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "4058075173989",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "4058075208421",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "AC25697",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "4058075485174",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "AC10691",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "AC08560",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "AB3257001NJ",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LEDVANCE",
+    "Model": "AC03360",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Leedarson",
     "Model": "ZM350STW1TCF",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Leedarson",
     "Model": "M350STW1",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Leedarson",
     "Model": "A806S-Q1G",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Leedarson",
     "Model": "A806S-Q1R",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Leedarson",
     "Model": "ZA806SQ1TCF",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Leedarson",
@@ -2202,17 +3712,42 @@
   {
     "Vendor": "Leedarson",
     "Model": "6xy-M350ST-W1Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Leedarson",
     "Model": "5AA-SS-ZA-H0",
-    "DeviceType": "Unknown"
+    "DeviceType": "LightSensor, MotionSensor"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "8A-SS-BA-H0",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "7A-SS-ZABC-H0",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "ZBT-CCTLight-Candle0904",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "ZBT-CCTLight-GLS0904",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Leedarson",
+    "Model": "ZBT-DIMLight-GLS0800",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "LEELKI",
     "Model": "WP33-EU",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Legrand",
@@ -2237,7 +3772,7 @@
   {
     "Vendor": "Legrand",
     "Model": "067771",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Legrand",
@@ -2247,7 +3782,7 @@
   {
     "Vendor": "Legrand",
     "Model": "064888",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Legrand",
@@ -2265,6 +3800,91 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Legrand",
+    "Model": "ZLGP17/ZLGP18",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "ZLGP15",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "067775/741811",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "FC80RC",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "FC80CC",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Legrand",
+    "Model": "067646",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LELLKI",
+    "Model": "WP30-EU",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LELLKI",
+    "Model": "WK34-EU",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LELLKI",
+    "Model": "WP34-EU",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LELLKI",
+    "Model": "XF-EU-S100-1-M",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LELLKI",
+    "Model": "TS011F_plug",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LELLKI",
+    "Model": "CM001",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LELLKI",
+    "Model": "JZ-ZB-002",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LELLKI",
+    "Model": "JZ-ZB-003",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LELLKI",
+    "Model": "JZ-ZB-001",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LELLKI",
+    "Model": "WP33-EU",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Lerlink",
+    "Model": "X706U",
+    "DeviceType": "Light"
+  },
+  {
     "Vendor": "LeTV",
     "Model": "LeTV.8KEY",
     "DeviceType": "Unknown"
@@ -2272,12 +3892,167 @@
   {
     "Vendor": "Leviton",
     "Model": "DL15S-1BZ",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Leviton",
     "Model": "RC-2000WH",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Leviton",
+    "Model": "DG15S-1BW",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Leviton",
+    "Model": "DG15A-1BW",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Leviton",
+    "Model": "DG6HD-1BW",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06620",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "14153905L",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "368308_2010",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06463B",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG07834C",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG07834B",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG07834A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06619",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06462A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06463A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "PSBZS A1",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "14149505L/14149506L",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "14148906L",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06668",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "14147206L",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06492C",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06492B",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06492A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06106C",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06106A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06106B",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06104A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06338",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "FB20-002",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06336",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06335",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06337",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Lidl",
+    "Model": "HG06467",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "LifeControl",
@@ -2292,47 +4067,57 @@
   {
     "Vendor": "LifeControl",
     "Model": "MCLH-02",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "LifeControl",
     "Model": "MCLH-03",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "LifeControl",
     "Model": "MCLH-05",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "LifeControl",
     "Model": "MCLH-08",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "LightSolutions",
+    "Model": "200106V3",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "LightSolutions",
+    "Model": "200403V2-B",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Linkind",
     "Model": "ZL1000100-CCT-US-V1A02",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Linkind",
     "Model": "ZL1000400-CCT-EU-2-V1A02",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Linkind",
     "Model": "ZL1000701-27-EU-V1A02",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Linkind",
     "Model": "ZL1000700-22-EU-V1A02",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Linkind",
     "Model": "ZS1100400-IN-V1A02",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Linkind",
@@ -2347,17 +4132,47 @@
   {
     "Vendor": "Linkind",
     "Model": "ZS190000118",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZS130000078",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "LS21001",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZL100010008",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZS230002",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZS130000178",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Linkind",
+    "Model": "ZL100050004",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "LivingWise",
     "Model": "LVS-ZB500D",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "LivingWise",
     "Model": "LVS-ZB15S",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "LivingWise",
@@ -2367,12 +4182,12 @@
   {
     "Vendor": "LivingWise",
     "Model": "LVS-SN10ZW_SN11",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "LivingWise",
     "Model": "LVS-ZB15R",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "LivingWise",
@@ -2382,17 +4197,37 @@
   {
     "Vendor": "Livolo",
     "Model": "TI0001",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Livolo",
     "Model": "TI0001-switch",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Livolo",
     "Model": "TI0001-socket",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Livolo",
+    "Model": "TI0001-curtain-switch",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Livolo",
+    "Model": "TI0001-cover",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Livolo",
+    "Model": "TI0001-dimmer",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Livolo",
+    "Model": "TI0001-switch-2gang",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lonsonho",
@@ -2402,37 +4237,37 @@
   {
     "Vendor": "Lonsonho",
     "Model": "X711A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lonsonho",
     "Model": "X712A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lonsonho",
     "Model": "X713A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lonsonho",
     "Model": "QS-Zigbee-D02-TRIAC-LN",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Lonsonho",
     "Model": "QS-Zigbee-D02-TRIAC-2C-LN",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Lonsonho",
     "Model": "4000116784070",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lonsonho",
     "Model": "QS-Zigbee-S04-2C-LN",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lonsonho",
@@ -2457,22 +4292,47 @@
   {
     "Vendor": "Lonsonho",
     "Model": "X701",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lonsonho",
     "Model": "X702",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lonsonho",
     "Model": "QS-Zigbee-S05-L",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "QS-Zigbee-D02-TRIAC-2C-L",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "QS-Zigbee-C01",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "QS-Zigbee-D02-TRIAC-L",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "ZB-RGBCW",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Lonsonho",
+    "Model": "QS-Zigbee-S05-LN",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "LoraTap",
     "Model": "RR400ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "LoraTap",
@@ -2483,6 +4343,16 @@
     "Vendor": "LoraTap",
     "Model": "SS600ZB",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "LoraTap",
+    "Model": "SS6400ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Lubeez",
+    "Model": "12AB",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Lupus",
@@ -2497,17 +4367,17 @@
   {
     "Vendor": "Lupus",
     "Model": "12050",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lupus",
     "Model": "12126",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lupus",
     "Model": "12127",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Lutron",
@@ -2520,24 +4390,104 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "LUX",
+    "Model": "KN-Z-WH1-B04",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "M-ELEC",
     "Model": "ML-ST-D200",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "MakeGood",
+    "Model": "MG-ZG04W/B/G",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Matcall",
+    "Model": "ZG430700",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Matcall",
+    "Model": "ZG401224",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "MatSee Plus",
+    "Model": "ATMS1602Z",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Meazon",
     "Model": "MEAZON_BIZY_PLUG",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Meazon",
     "Model": "MEAZON_DINRAIL",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Mercator Iku\u00FC",
+    "Model": "SMD4106W-RGB-ZB",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Mercator Iku\u00FC",
+    "Model": "S9E27LED9W-RGB-Z",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Mercator Iku\u00FC",
+    "Model": "SMI7040",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Mercator Iku\u00FC",
+    "Model": "SSW04",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Mercator Iku\u00FC",
+    "Model": "SSWD01",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Mercator Iku\u00FC",
+    "Model": "SSW01",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Mercator Iku\u00FC",
+    "Model": "SMA02P",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Miboxer",
+    "Model": "FUT038Z",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Miboxer",
+    "Model": "FUT035Z",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Miboxer",
+    "Model": "FUT036Z",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Miboxer",
+    "Model": "FUT039Z",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Moes",
     "Model": "ZK-EU-2U",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Moes",
@@ -2547,12 +4497,12 @@
   {
     "Vendor": "Moes",
     "Model": "WS-EUB1-ZG",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Moes",
     "Model": "HY369RT",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Moes",
@@ -2560,29 +4510,109 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Moes",
+    "Model": "TV01-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "ZTS-EU_4gang",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "HY368",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "AM43-0.45/40-ES-EB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "MS-108ZR",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "ZLD-RCW",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "MS-105B",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "MS-105Z",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "BRT-100-TRV",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "ZSS-ZK-THL",
+    "DeviceType": "LightSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "ZTS-EU_2gang",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "ZTS-EU_3gang",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "ZTS-EU_1gang",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "MS-104BZ",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "MS-104Z",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Moes",
+    "Model": "ZK-CH-2U",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "M\u00FCller Licht",
     "Model": "404023",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "M\u00FCller Licht",
     "Model": "404000/404005/404012",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "M\u00FCller Licht",
     "Model": "404006/404008/404004",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "M\u00FCller Licht",
     "Model": "44435",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "M\u00FCller Licht",
     "Model": "404028",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "M\u00FCller Licht",
@@ -2592,32 +4622,72 @@
   {
     "Vendor": "M\u00FCller Licht",
     "Model": "404021",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "M\u00FCller Licht",
     "Model": "404037",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "M\u00FCller Licht",
     "Model": "404031",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404022",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404017",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404036",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404002",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404001",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "M\u00FCller Licht",
+    "Model": "404024",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Mumubiz",
+    "Model": "ZJSB9-80Z",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Mycket",
+    "Model": "MS-SP-LE27WRGB",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Namron",
     "Model": "4512700",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Namron",
     "Model": "4512704",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Namron",
     "Model": "1402755",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Namron",
@@ -2642,32 +4712,102 @@
   {
     "Vendor": "Namron",
     "Model": "3802964",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "3802961",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "3802967",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512726",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512729",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512705",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "3802962",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "89665",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512719",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Namron",
+    "Model": "4512701",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "Nanoleaf",
     "Model": "NL08-0800",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Nedis",
+    "Model": "ZBHTR10WT",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Nedis",
+    "Model": "ZBRC10WT",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "Neo",
     "Model": "NAS-AB02B0",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Neo",
+    "Model": "NAS-PD07",
+    "DeviceType": "MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Neo",
+    "Model": "NAS-WS02B0",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "NEO",
+    "Model": "NAS-WR01B",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "NET2GRID",
     "Model": "N2G-SP",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Netvox",
     "Model": "Z809A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Niko",
     "Model": "170-33505",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Niko",
@@ -2675,29 +4815,59 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Niko",
+    "Model": "552-80401",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Niko",
+    "Model": "552-80699",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "Ninja Blocks",
     "Model": "Z809AF",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Niviss",
     "Model": "PS-ZIGBEE-SMART-CONTROLER-1CH-DIMMABLE",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "NodOn",
+    "Model": "SIN-4-2-20",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "NodOn",
+    "Model": "SIN-4-1-20",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "NodOn",
+    "Model": "CWS-4-1-01_HUE",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "Nordtronic",
     "Model": "98425031",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Nordtronic",
     "Model": "98423051",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Norklmes",
     "Model": "MKS-CM-W5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Nous",
+    "Model": "E6",
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Nue / 3A",
@@ -2707,107 +4877,107 @@
   {
     "Vendor": "Nue / 3A",
     "Model": "LXN59-2S7LX1.0",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-1S",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-02S",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-045",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "LXZB-02A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-43",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-043",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-44",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-04D / HGZB-4D-UK",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-042",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-42",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-20A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-41",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "MG-AUWS01",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "XY12S-15",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-01A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-02A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-42-UK / HGZB-41 / HGZB-41-UK",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-06A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-20-UK",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "HGZB-DLC4-N12B",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Nue / 3A",
@@ -2822,12 +4992,27 @@
   {
     "Vendor": "Nue / 3A",
     "Model": "3A12S-15",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Nue / 3A",
     "Model": "NUE-ZBFLB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "NUE-AUWZO2",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "WL-SD001-9W",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Nue / 3A",
+    "Model": "HGZB-01",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Nyce",
@@ -2837,22 +5022,42 @@
   {
     "Vendor": "Nyce",
     "Model": "NCZ-3043-HA",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "Nyce",
     "Model": "NCZ-3041-HA",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "Nyce",
     "Model": "NCZ-3045-HA",
+    "DeviceType": "MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Nyce",
+    "Model": "NCZ-3010",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Onesti Products AS",
+    "Model": "easyCodeTouch_v1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Onesti Products AS",
+    "Model": "S4RX-110",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "OpenLumi",
+    "Model": "GWRJN5169",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "Orvibo",
     "Model": "RL804CZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "ORVIBO",
@@ -2862,7 +5067,7 @@
   {
     "Vendor": "ORVIBO",
     "Model": "T18W3Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "ORVIBO",
@@ -2872,32 +5077,32 @@
   {
     "Vendor": "ORVIBO",
     "Model": "RL804QZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "ORVIBO",
     "Model": "ST20",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "ORVIBO",
     "Model": "ST21",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "ORVIBO",
     "Model": "T30W3Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "ORVIBO",
     "Model": "T21W2Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "ORVIBO",
     "Model": "T21W1Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "ORVIBO",
@@ -2907,17 +5112,17 @@
   {
     "Vendor": "ORVIBO",
     "Model": "R11W2Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "ORVIBO",
     "Model": "R20W2Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "ORVIBO",
     "Model": "SN10ZW",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "ORVIBO",
@@ -2935,39 +5140,49 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "ORVIBO",
+    "Model": "SW30",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ORVIBO",
+    "Model": "ST30",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
     "Vendor": "OSRAM",
     "Model": "73699",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "4058075816718",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "4058075816732",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AA69697",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC10787",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC03645",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC03642",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
@@ -2977,117 +5192,117 @@
   {
     "Vendor": "OSRAM",
     "Model": "AC10786-DIM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC03647",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AA70155",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AA68199",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "4058075148338",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AB32840",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "4058075816794",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC03641",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "4052899926158",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AB401130055",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AB3257001NJ",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC10691",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "OSRAM",
     "Model": "4052899926110",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "4058075036185",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "4058075036147",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "4058075047853",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC0363900NJ",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "4052899926127",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AB35996",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC08559",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC08562",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC01353010G",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "OSRAM",
     "Model": "AC03648",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
@@ -3102,12 +5317,57 @@
   {
     "Vendor": "OSRAM",
     "Model": "ST8AU-CON",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "OSRAM",
     "Model": "595UGR22",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4062172044776_4",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4062172044776_3",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4062172044776_2",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "4062172044776_1",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "73741_LIGHTIFY",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC0251100NJ/AC0251600NJ/AC0251700NJ",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "73889",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC16381",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "OSRAM",
+    "Model": "AC08560-DIM",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Oujiabao",
@@ -3117,7 +5377,57 @@
   {
     "Vendor": "OWON",
     "Model": "WSP404",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "OWON",
+    "Model": "THS317-ET",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "OWON",
+    "Model": "THS317",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "OWON",
+    "Model": "AC201",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "OWON",
+    "Model": "PIR313-E",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "OWON",
+    "Model": "CB432",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "OXT",
+    "Model": "SWTZ25",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "OXT",
+    "Model": "SWTZ27",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "OXT",
+    "Model": "SWTZ23",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "OXT",
+    "Model": "SWTZ22",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "OXT",
+    "Model": "SWTZ21",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Paul Neuhaus",
@@ -3127,12 +5437,12 @@
   {
     "Vendor": "Paul Neuhaus",
     "Model": "NLG-CCT light",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paul Neuhaus",
     "Model": "NLG-TW light",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paul Neuhaus",
@@ -3142,47 +5452,57 @@
   {
     "Vendor": "Paul Neuhaus",
     "Model": "NLG-RGBW light",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paul Neuhaus",
     "Model": "NLG-RGB-TW light",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paul Neuhaus",
     "Model": "100.425.90",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Paul Neuhaus",
     "Model": "100.110.51",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paul Neuhaus",
     "Model": "100.075.74",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paul Neuhaus",
     "Model": "100.001.96",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "100.491.61",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Paul Neuhaus",
+    "Model": "NLG-RGBW_light",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paulmann",
     "Model": "50043",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Paulmann",
     "Model": "50044/50045",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paulmann",
     "Model": "500.47",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paulmann",
@@ -3192,32 +5512,32 @@
   {
     "Vendor": "Paulmann",
     "Model": "50064",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paulmann",
     "Model": "371000001",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paulmann",
     "Model": "371000002",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paulmann",
     "Model": "798.15",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paulmann",
     "Model": "500.48",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paulmann",
     "Model": "93999",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Paulmann",
@@ -3225,19 +5545,64 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Paulmann",
+    "Model": "4137",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "501.31",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "50049/500.63",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "929.66",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "929.60",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Paulmann",
+    "Model": "929.63",
+    "DeviceType": "Light"
+  },
+  {
     "Vendor": "PEQ",
     "Model": "3300-P",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Perenio",
+    "Model": "PECMS01",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Perenio",
+    "Model": "PECWS01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Perenio",
+    "Model": "PECLS01",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "Philips",
     "Model": "4034031P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5110131H5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
@@ -3247,487 +5612,487 @@
   {
     "Vendor": "Philips",
     "Model": "3306431P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1746130P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1745630P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5900131C5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "7299760PH",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4090331P9",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "7146060PH",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290022411",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "929002039801",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "929002277501",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290023349",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "7602031P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718696167991",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718696170557",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1744130P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1743830P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1743130P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4090531P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "929001953101",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290022268",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718699688820",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "548727",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "433714",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290011370",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718696153062",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718699673147",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290018215",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290022169",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4090631P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718696449691",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290018195",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "LWG004",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718699688882",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "7299355PH",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "915005106701",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290018187B",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718699703424",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290022890",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290022166",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290012573A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "929002294203",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290002579A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718696485880",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "915005733701",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "464800",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718696695203",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290022944",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290020399",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718696598283",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "929001953301",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290019534",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290011998B",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290022167",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290022267",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718696548738",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "915005587401",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3402831P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3435011P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4503848C5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5996411U5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4090130P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3261030P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3261030P6",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3261031P6",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3261048P6",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4098430P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3261331P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4096730U7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3216131P5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3216131P6",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3216331P5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3216331P6",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3216431P5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4033930P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4023330P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290011370B",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "046677476816",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "7199960PH",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "929002376101",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1742930P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1743030P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1743230P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1746430P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "7099930PH",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4080248P9",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "4080148P9",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5062131P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5062148P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5062231P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5062248P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5062331P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5062348P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5062431P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5062448P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5045148P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5055148P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5055131P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
@@ -3747,102 +6112,102 @@
   {
     "Vendor": "Philips",
     "Model": "9290019758",
-    "DeviceType": "Unknown"
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "Philips",
     "Model": "929002240401",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Philips",
     "Model": "046677552343",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Philips",
     "Model": "8718699689308",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Philips",
     "Model": "9290022408",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Philips",
     "Model": "9290024426",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Philips",
     "Model": "7099860PH",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3216231P5",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "8718696170625",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "17436/30/P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "17435/30/P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1746330P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "1741830P7",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "9290022891",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "929002241201",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "046677551780",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "3115331PH",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "7121131PU",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "5041131P9",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
     "Model": "7531609",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Philips",
@@ -3850,14 +6215,729 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Philips",
+    "Model": "915005986901",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1746447P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929003099001",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1743430P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929003054001",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290030674",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8719514344723",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290030211",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8719514392830",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1746547P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5047131P8",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5047230P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290024785",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1746730V7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1741730V7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290030675",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4080148U9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4080148P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4080248U9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929003099101",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "046677803087",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090231P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290024717",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290024689",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8719514328242",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1740193P0",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1742330P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929003054301",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8719514302235",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290030509",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290024896",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002471901",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290024683",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "6109331C5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "6109231C5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5060931P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002966501",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002966401",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8719514301481",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "92900244777",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8719514301542",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1745430P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002478401",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002477901",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929003050601",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5060731P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3261348P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002471601",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290024684",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002469202",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290018217",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002376301",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5633031P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1746630P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290020400",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022266A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022267A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290024687",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3435731P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002376501",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5111531H5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5063130P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5063131P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4076131P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5309030P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290019532",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5633030P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5047430P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5309230P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5309331P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3418331P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5063430P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5063330P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5063230P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5060830P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1740293P0",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3418931P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3417831P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002422801",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090130P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090631P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1742830P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3261331P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090431P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1742030P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290022943",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090330P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1745530P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002376701",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002376401",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3418631P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3417711P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5995111U5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1741530P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929003017102",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5063431P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5063231P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3418411P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3417931P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3418131P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4034030P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1746230V7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002398602",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290018194",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8718696153055",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1745730V7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5061031P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090230P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002459201",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5063331P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002376201",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4090531P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3216431P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5047131P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5042131P9",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "3216231P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5060730P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1745930P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002376801",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4096730P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5996611U5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5996511U5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002294101",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1743930P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929001821618",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290023351",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "8719514279131",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5045131P7",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4033930P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4507748C5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4505748C5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290018216",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "4034031P6",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "9290024406",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "5996311U5",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002376001",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "929002375901",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "1743730P7",
+    "DeviceType": "Light"
+  },
+  {
     "Vendor": "Piri",
     "Model": "HSIO18008",
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "PLAID SYSTEMS",
+    "Model": "PS-SPRZMS-SLP3",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
     "Vendor": "Plugwise",
     "Model": "160-01",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Popp",
+    "Model": "701721",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Prolight",
+    "Model": "5412748727401",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Prolight",
+    "Model": "5412748727432",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Prolight",
+    "Model": "5412748727388",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Qmotion",
@@ -3870,24 +6950,64 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Revolt",
+    "Model": "NX-4911",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "RGB Genie",
     "Model": "ZGRC-KEY-013",
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "RGB Genie",
+    "Model": "ZB-1026",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "RGB Genie",
+    "Model": "ZB-5122",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "RGB Genie",
+    "Model": "ZB-5001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "RGB Genie",
+    "Model": "ZB-5004",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "RGB Genie",
+    "Model": "ZB-5028",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "RGB Genie",
+    "Model": "ZB-3009",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "RGB Genie",
+    "Model": "ZB-5121",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "ROBB",
     "Model": "ROB_200-004-0",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "ROBB",
     "Model": "ROB_200-003-0",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "ROBB",
     "Model": "ROB_200-014-0",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "ROBB",
@@ -3905,39 +7025,124 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-017-1",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-025-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-017-0",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-006-0",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-009-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-018-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ROBB",
+    "Model": "ROB_200-011-0",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "ROBB smart",
+    "Model": "ROB_200-016-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ROOME",
+    "Model": "HSC1-WD-0",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "RTX",
+    "Model": "ZVG1",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "RTX",
+    "Model": "ZB-RT1",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "Salus Controls",
     "Model": "SPE600",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Salus Controls",
     "Model": "SP600",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Salus Controls",
     "Model": "SR600",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Salus Controls",
+    "Model": "PS600",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Salus Controls",
+    "Model": "RE600",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Salus Controls",
+    "Model": "OS600",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Salus Controls",
+    "Model": "WLS600",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Salus Controls",
+    "Model": "SW600",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "Samotech",
     "Model": "SM308",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Samotech",
     "Model": "SM309",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Samotech",
     "Model": "SM301Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Samotech",
     "Model": "SM311",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Samotech",
+    "Model": "SM323",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Saswell",
@@ -3948,6 +7153,11 @@
     "Vendor": "Saswell",
     "Model": "SEA802-Zigbee",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Saswell",
+    "Model": "SEA801-Zigbee/SEA802-Zigbee",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Schlage",
@@ -3962,22 +7172,22 @@
   {
     "Vendor": "Schneider Electric",
     "Model": "U202DST600ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Schneider Electric",
     "Model": "U201DST600ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Schneider Electric",
     "Model": "U201SRY2KWZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Schneider Electric",
     "Model": "U202SRY2KWZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Schneider Electric",
@@ -3985,14 +7195,139 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Schneider Electric",
+    "Model": "EKO09716",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "EKO09738",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "S520567",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "CCT5015-0001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "WDE002906",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "WDE002386",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "CCT5011-0001/CCT5011-0002/MEG5011-0001",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "550D6001",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "545D6102",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "CCT711119",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "41EPBDWCLMZ/354PBDMBTZ",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "S520530W",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "EER50000",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "EER51000",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "EER53000",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "EER42000",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "EER40030",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "WDE002334",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "CCTFR6400",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "CCTFR6700",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "CCT5010-0001",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Schneider Electric",
+    "Model": "545D6514",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "Schwaiger",
     "Model": "ZHS-15",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Schwaiger",
+    "Model": "HAL500",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Schwaiger",
+    "Model": "HAL600",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Schwaiger",
+    "Model": "HAL300",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Securifi",
     "Model": "PP-WHT-US",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Securifi",
@@ -4002,67 +7337,67 @@
   {
     "Vendor": "Sengled",
     "Model": "E12-N1E",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "E11-G13",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "E11-G23/E11-G33",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "E11-N13/E11-N13A/E11-N14/E11-N14A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "Z01-CIA19NAE26",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "Z01-A19NAE26",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "Z01-A60EAE27",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "E11-N1EA",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "E11-U2E",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "E11-U3E",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "E1F-N5E",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "E12-N14",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
     "Model": "E1ACA4ABE38A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sengled",
@@ -4072,7 +7407,7 @@
   {
     "Vendor": "Sengled",
     "Model": "E1C-NB6",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Sengled",
@@ -4080,64 +7415,199 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Sengled",
+    "Model": "E1F-N9G",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E21-N13A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E13-N11",
+    "DeviceType": "Light, MotionSensor"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E11-N1G",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E1C-NB7",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E21-N1EA",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E1G-G8E",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sengled",
+    "Model": "E11-U21U31",
+    "DeviceType": "Light"
+  },
+  {
     "Vendor": "Sercomm",
     "Model": "SZ-ESW01",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Sercomm",
     "Model": "SZ-ESW01-AU",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Sercomm",
     "Model": "XHS2-SE",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Sercomm",
     "Model": "SZ-DWS04",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Sercomm",
     "Model": "AL-PIR02",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Sercomm",
+    "Model": "SZ-DWS08",
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Shenzhen Homa",
     "Model": "HLD812-Z-SC",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Shenzhen Homa",
     "Model": "HLD503-Z-CT",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Shenzhen Homa",
     "Model": "HLC610-Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Shenzhen Homa",
     "Model": "HLC821-Z-SC",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Shenzhen Homa",
     "Model": "HLC614-ZLL",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Shenzhen Homa",
     "Model": "HLC833-Z-SC",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "PMM-300Z1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "SBM300ZB3",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "SBM300ZB2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "SBM300ZB1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "MSM-300ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "DSM-300ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "TSM-300ZB",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "BSM-300ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "SBM300Z6",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "SBM300Z5",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "SBM300Z4",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "SBM300Z3",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "SBM300Z2",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "SBM300Z1",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "USM-300ZB",
+    "DeviceType": "MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "ShinaSystem",
+    "Model": "CSM-300ZB",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "SHOJZJ",
     "Model": "378RT",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Siglis",
+    "Model": "ZFU-1D-CH",
+    "DeviceType": "Light, Switch"
+  },
+  {
+    "Vendor": "Silvercrest",
+    "Model": "TVR01",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Sinope",
@@ -4185,19 +7655,179 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Sinop\u00E9",
+    "Model": "WL4200S",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinop\u00E9",
+    "Model": "RM3250ZB",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Sinop\u00E9",
+    "Model": "SP2600ZB",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Sinop\u00E9",
+    "Model": "WL4200",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinop\u00E9",
+    "Model": "DM2500ZB",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sinop\u00E9",
+    "Model": "TH1300ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinop\u00E9",
+    "Model": "SW2500ZB",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Sinop\u00E9",
+    "Model": "TH1500ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinop\u00E9",
+    "Model": "TH1400ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinop\u00E9",
+    "Model": "TH1124ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sinop\u00E9",
+    "Model": "TH1123ZB",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "Siterwell",
     "Model": "GS361A-H04",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/37",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/33",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/29",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/28",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/24",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/23",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/22B",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/21B",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/18",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/16",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/14",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/21C",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/26",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/29A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/22A",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/24A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/21A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/34",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/32",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/25",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "SMaBiT (Bitron Video)",
+    "Model": "AV2010/22",
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Smart Home Pty",
     "Model": "HGZB-07A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Smart Home Pty",
     "Model": "HGZB-20-DE",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Smart9",
@@ -4212,12 +7842,12 @@
   {
     "Vendor": "Smartenit",
     "Model": "4040B",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Smartenit",
     "Model": "ZBHT-1",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
@@ -4227,7 +7857,7 @@
   {
     "Vendor": "SmartThings",
     "Model": "STSS-IRM-001",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "SmartThings",
@@ -4242,102 +7872,102 @@
   {
     "Vendor": "SmartThings",
     "Model": "3325-S",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "3321-S",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "F-APP-UK-V2",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "SmartThings",
     "Model": "GP-WOU019BBDWG",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "SmartThings",
     "Model": "IM6001-OTP05",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "SmartThings",
     "Model": "STS-OUT-US-2",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "SmartThings",
     "Model": "IM6001-MTP01",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "STS-IRM-251",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "STS-IRM-250",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "3305-S",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "3300-S",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "F-MLT-US-2",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "IM6001-MPP01",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "3310-S",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "3315-S",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "WTR-UK-V2",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "IM6001-WLP01",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "STS-WTR-250",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "3315-G",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
     "Model": "IM6001-BTP01",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SmartThings",
@@ -4347,12 +7977,32 @@
   {
     "Vendor": "SmartThings",
     "Model": "GP-LBU019BBAWU",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "F-ADT-WTR-1",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "SmartThings",
+    "Model": "7ZA-A806ST-Q1R",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "SMATRUL",
+    "Model": "TMZ02L-16A-W",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "SOHAN Electric",
+    "Model": "RDCBC/Z",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Somgoms",
     "Model": "ZSTY-SM-11ZG-US-W",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Somgoms",
@@ -4362,22 +8012,22 @@
   {
     "Vendor": "Somgoms",
     "Model": "ZSTY-SM-1DMZG-US-W",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Somgoms",
     "Model": "ZSQB-SMB-ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "SONOFF",
     "Model": "BASICZBR3",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "SONOFF",
     "Model": "S31ZB",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "SONOFF",
@@ -4392,12 +8042,27 @@
   {
     "Vendor": "SONOFF",
     "Model": "SNZB-02",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "SONOFF",
     "Model": "SNZB-03",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "SONOFF",
+    "Model": "S26R2ZB",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "SONOFF",
+    "Model": "ZBMINI",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Sprut.device",
+    "Model": "WB-MSW-ZIGBEE v.3",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor, Switch"
   },
   {
     "Vendor": "Stelpro",
@@ -4427,22 +8092,22 @@
   {
     "Vendor": "Sunricher",
     "Model": "ZG192910-4",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sunricher",
     "Model": "ZG9101SAC-HP",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sunricher",
     "Model": "ZG9101SAC-HP-Switch",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Sunricher",
     "Model": "ZG2835RAC",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sunricher",
@@ -4452,12 +8117,92 @@
   {
     "Vendor": "Sunricher",
     "Model": "SR-ZG9001K8-DIM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sunricher",
     "Model": "SR-ZG9001K4-DIM2",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZGP2801K4-DIM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZGP2801K2-DIM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "50208693",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG9001K12-DIM-Z4",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "HK-ZD-CCT-A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG9080A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG9001K2-DIM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "ZG2858A",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "ZG2819S-CCT",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG2835",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG9100A-S",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG9040A-S",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SRP-ZG9105-CC",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG9001K2-DIM2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "HK-ZD-RGBCCT-A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sunricher",
+    "Model": "SR-ZG9040A",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Swann",
@@ -4472,7 +8217,7 @@
   {
     "Vendor": "Swann",
     "Model": "SWO-MOS1PA",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Sylvania",
@@ -4482,107 +8227,132 @@
   {
     "Vendor": "Sylvania",
     "Model": "73742",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "73741",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "73740",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "73739",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "73693",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "73773",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "74283",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "74696",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "72922-A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Sylvania",
     "Model": "71831",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "74282",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "LTFY004",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "74580",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "72569",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "72567",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "75541",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Sylvania",
     "Model": "484719",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "75564",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "74388",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Sylvania",
+    "Model": "73807",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "TCI",
     "Model": "676-00301024955Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "TCI",
     "Model": "151570",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Technicolor",
+    "Model": "XHK1-TC",
+    "DeviceType": "MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Teekar",
+    "Model": "SWP86-01OG",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TERNCY",
     "Model": "TERNCY-DC01",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "TERNCY",
     "Model": "TERNCY-PP01",
-    "DeviceType": "Unknown"
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "TERNCY",
@@ -4590,28 +8360,83 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "TERNCY",
+    "Model": "TERNCY-LS01",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Tesla",
+    "Model": "TSL-TRV-GS361A",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Tesla Smart",
+    "Model": "TSL-TRV-TV01ZG",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "The Light Group",
+    "Model": "S24013",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "The Light Group",
+    "Model": "S57003",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "Third Reality",
     "Model": "3RSS008Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Third Reality",
     "Model": "3RSS007Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Third Reality",
     "Model": "3RSL011Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Third Reality",
     "Model": "3RSL012Z",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Third Reality",
+    "Model": "3RDS17BZ",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Third Reality",
+    "Model": "3RMS16BZ",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Third Reality",
+    "Model": "3RWS18BZ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Third Reality",
+    "Model": "3RSS009Z",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Third Reality",
+    "Model": "3RSP019BZ",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Titan Products",
     "Model": "TPZRCO2HT-Z3",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Trio2sys",
+    "Model": "20020002",
     "DeviceType": "Unknown"
   },
   {
@@ -4627,22 +8452,27 @@
   {
     "Vendor": "Trust",
     "Model": "ZLED-2709",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Trust",
     "Model": "ZLED-TUNE9",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Trust",
     "Model": "ZPIR-8000",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Trust",
     "Model": "ZCTS-808",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Trust",
+    "Model": "ZLED-RGB9",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Tuya",
@@ -4657,7 +8487,7 @@
   {
     "Vendor": "TuYa",
     "Model": "TS0601_dimmer",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "TuYa",
@@ -4677,17 +8507,17 @@
   {
     "Vendor": "TuYa",
     "Model": "TS0601_switch",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0601_switch_2_gang",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0601_switch_3_gang",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
@@ -4697,27 +8527,27 @@
   {
     "Vendor": "TuYa",
     "Model": "TYZS1L",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0502A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0505A_led",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0505A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0201",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "TuYa",
@@ -4742,12 +8572,12 @@
   {
     "Vendor": "TuYa",
     "Model": "TS0001",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0002",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
@@ -4762,7 +8592,7 @@
   {
     "Vendor": "TuYa",
     "Model": "TS0601_thermostat",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
@@ -4772,7 +8602,7 @@
   {
     "Vendor": "TuYa",
     "Model": "TS0121_plug",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
@@ -4787,37 +8617,37 @@
   {
     "Vendor": "TuYa",
     "Model": "RH3040",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0115",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
     "Model": "TT001ZAV20",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0011",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0012",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
     "Model": "TS0013",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
     "Model": "gq8b1uv",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "TuYa",
@@ -4832,7 +8662,7 @@
   {
     "Vendor": "TuYa",
     "Model": "TS0004",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
@@ -4847,7 +8677,7 @@
   {
     "Vendor": "TuYa",
     "Model": "E220-KR4N0Z0-HA",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TuYa",
@@ -4860,34 +8690,359 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "TuYa",
+    "Model": "ERS-10TZBVK-AA",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS1101_dimmer_module_2ch",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS1101_dimmer_module_1ch",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "WSD500A",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0013_switch_module",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0012_switch_module",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0011_switch_module",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TV02-Zigbee",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_illuminance_temperature_humidity_sensor",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_rcbo",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "YSR-MINI-Z",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "MIR-HE200-TY",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_motion_sensor",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS011F_plug_3",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS011F_plug_1",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0111_valve",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_thermostat_1",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_cover",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0004_switch_module",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0003_switch_module",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0002_switch_module",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0001_switch_module",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "SM0201",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0505B",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_air_quality_sensor",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_temperature_humidity_sensor",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "M515EGZT",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "DT82LEMA-1.2N",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "A5C-21F7-01",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "GTZ02",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "LCZ030",
+    "DeviceType": "LightSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0207_water_leak_detector",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS011F_din_smart_relay",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_water_sensor",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "S-LUX-ZB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_smoke",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS011F_plug_2",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0502B",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS011F_circuit_breaker",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS004F",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_din",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS011F_wall_outlet",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_gas_sensor",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "WHD02",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0504B",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "ZN231392",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS011F_2_gang_wall",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0210",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0222",
+    "DeviceType": "LightSensor"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0006",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0504A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0503A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0601_switch_4_gang",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0108",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0101",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0501B",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0503B",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0014",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0215A_remote",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0215A_sos",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS011F_socket_module",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0207_repeater",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0202",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "TuYa",
+    "Model": "TS0203",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "TUYATEC",
     "Model": "GDKES-01TZXD",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TUYATEC",
     "Model": "GDKES-02TZXD",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "TUYATEC",
     "Model": "GDKES-03TZXD",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "TUYATEC",
+    "Model": "GDKES-04TZXD",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Ubisys",
     "Model": "S1",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Ubisys",
     "Model": "S2",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Ubisys",
     "Model": "D1",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Ubisys",
@@ -4900,14 +9055,54 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Ubisys",
+    "Model": "S1-R",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Unitec",
+    "Model": "30946",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "Universal Electronics Inc",
     "Model": "XHS2-UE",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Universal Electronics Inc",
+    "Model": "XHS1-UE",
+    "DeviceType": "MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Universal Electronics Inc",
+    "Model": "XHK1-UE",
+    "DeviceType": "MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Unknown/id3.pl",
+    "Model": "GTZ08",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Unknown/id3.pl",
+    "Model": "GTZ06",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "UseeLink",
     "Model": "SM-SO306E/K/M",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "UseeLink",
+    "Model": "SM-AZ713",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "UseeLink",
+    "Model": "SM-SO306EZ-10",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Viessmann",
@@ -4915,14 +9110,29 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "VIKEFON",
+    "Model": "TS011F",
+    "DeviceType": "Switch"
+  },
+  {
     "Vendor": "Vimar",
     "Model": "14592.0",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Vimar",
+    "Model": "03906",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Vimar",
+    "Model": "14594",
     "DeviceType": "Unknown"
   },
   {
     "Vendor": "Visonic",
     "Model": "MP-841",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Visonic",
@@ -4937,27 +9147,37 @@
   {
     "Vendor": "Visonic",
     "Model": "MCT-340 E",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Visonic",
     "Model": "MCT-340 SMA",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Vizo",
+    "Model": "VZ-222S",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Vrey",
     "Model": "VR-X712U-0013",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Wally",
     "Model": "U02I007C.01",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Waxman",
     "Model": "8840100H",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "WDYK",
+    "Model": "ZJSBL7-100Z",
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Weiser",
@@ -4970,19 +9190,44 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "WETEN",
+    "Model": "1GNNTS",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Woox",
+    "Model": "R7049",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Woox",
+    "Model": "R9077",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Woox",
+    "Model": "R7060",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Woox",
+    "Model": "R7054",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "Xiaomi",
     "Model": "ZNLDP12LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "XDD12LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "XDD13LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Xiaomi",
@@ -5017,42 +9262,42 @@
   {
     "Vendor": "Xiaomi",
     "Model": "WS-USC01",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "WS-USC02",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "WS-USC03",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "WS-USC04",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "QBKG04LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "QBKG11LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "QBKG03LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "QBKG12LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
@@ -5062,57 +9307,57 @@
   {
     "Vendor": "Xiaomi",
     "Model": "QBKG21LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "QBKG22LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "QBKG25LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "QBKG26LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "QBKG23LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "QBKG24LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "WSDCGQ01LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "WSDCGQ11LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "WSDCGQ12LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "RTCGQ01LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "MotionSensor"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "RTCGQ11LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
   },
   {
     "Vendor": "Xiaomi",
@@ -5122,12 +9367,12 @@
   {
     "Vendor": "Xiaomi",
     "Model": "MCCGQ11LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "SJCGQ11LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor"
   },
   {
     "Vendor": "Xiaomi",
@@ -5142,32 +9387,32 @@
   {
     "Vendor": "Xiaomi",
     "Model": "ZNCZ02LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "ZNCZ03LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "ZNCZ04LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "ZNCZ12LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "SP-EUC01",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "QBCZ11LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
@@ -5207,7 +9452,7 @@
   {
     "Vendor": "Xiaomi",
     "Model": "LLKZMK11LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "TemperatureSensor, Switch"
   },
   {
     "Vendor": "Xiaomi",
@@ -5242,22 +9487,237 @@
   {
     "Vendor": "Xiaomi",
     "Model": "GZCGQ01LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "LightSensor"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "ZNTGMK11LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "HLQDQ01LM",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Xiaomi",
     "Model": "SSM-U01",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "MCCGQ13LM",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG17LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG16LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "DLKZMK12LM",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "MCCGQ14LM",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG39LM",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG38LM",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG34LM",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG20LM",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG19LM",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNXNKG02LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "DLKZMK11LM",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNDDMK11LM",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBCZ14LM",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBCZ15LM",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "GZCGQ11LM",
+    "DeviceType": "LightSensor"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNJLBL01LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WS-EUK04",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WS-EUK03",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG31LM",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "MCCGQ12LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG13LM",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG40LM",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNCZ15LM",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "QBKG41LM",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "VOCKQJK11LM",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "SRSC-M01",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNCZ11LM",
+    "DeviceType": "TemperatureSensor, Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WS-EUK02",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WS-EUK01",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "AAQS-S01",
+    "DeviceType": "TemperatureSensor"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "XDD11LM",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WRS-R02",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "ZNCJMB14LM",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "RTCGQ13LM",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "RTCGQ12LM",
+    "DeviceType": "MotionSensor"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "SSM-U02",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG02LM_rev2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG02LM_rev1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG03LM_rev2",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "WXKG03LM_rev1",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "JWDL001A",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Xiaomi",
+    "Model": "JWSP001A",
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Yale",
@@ -5305,9 +9765,44 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "Yale",
+    "Model": "YRL226 TS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YDF40",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YDD-D4F0-TSDB",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YRL226L TS",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yale",
+    "Model": "YRD216-HA2-619",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Ynoa",
+    "Model": "8718801528334",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Yookee",
+    "Model": "D10110",
+    "DeviceType": "Unknown"
+  },
+  {
     "Vendor": "YPHIX",
     "Model": "50208695",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "YSRSAI",
@@ -5320,6 +9815,21 @@
     "DeviceType": "Unknown"
   },
   {
+    "Vendor": "YSRSAI",
+    "Model": "YSR-MINI-01_dimmer",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "YSRSAI",
+    "Model": "YSR-MINI-01_wwcw",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "YSRSAI",
+    "Model": "YSR-MINI-01_rgbcct",
+    "DeviceType": "Light"
+  },
+  {
     "Vendor": "Yushun",
     "Model": "YS-MT750",
     "DeviceType": "Unknown"
@@ -5327,12 +9837,12 @@
   {
     "Vendor": "Zemismart",
     "Model": "LXZB-12A",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Zemismart",
     "Model": "HGZB-DLC4-N15B",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   },
   {
     "Vendor": "Zemismart",
@@ -5342,12 +9852,12 @@
   {
     "Vendor": "Zemismart",
     "Model": "ZM-L03E-Z",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Zemismart",
     "Model": "ZM-CSW002-D_switch",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Zemismart",
@@ -5367,12 +9877,37 @@
   {
     "Vendor": "Zemismart",
     "Model": "ZW-EU-01",
-    "DeviceType": "Unknown"
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Zemismart",
     "Model": "ZW-EU-02",
+    "DeviceType": "Switch"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "ZM-RM02",
     "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "AM43",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "M2805EGBZTN",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "BCM500DS-TYZ",
+    "DeviceType": "Unknown"
+  },
+  {
+    "Vendor": "Zemismart",
+    "Model": "LXN56-SS27LX1.1",
+    "DeviceType": "Switch"
   },
   {
     "Vendor": "Zen",
@@ -5382,6 +9917,6 @@
   {
     "Vendor": "Zipato",
     "Model": "rgbw2.zbee27",
-    "DeviceType": "Unknown"
+    "DeviceType": "Light"
   }
 ]

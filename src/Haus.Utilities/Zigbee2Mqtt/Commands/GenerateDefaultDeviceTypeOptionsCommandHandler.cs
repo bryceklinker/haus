@@ -23,20 +23,20 @@ public class GenerateDefaultDeviceTypeOptionsCommandHandler :
     AsyncRequestHandler<GenerateDefaultDeviceTypeOptionsCommand>,
     ICommandHandler<GenerateDefaultDeviceTypeOptionsCommand>
 {
-    private const string SupportedDevicesPage = "https://www.zigbee2mqtt.io/information/supported_devices.html";
+    private const string SupportedDevicesPage = "https://raw.githubusercontent.com/Koenkk/zigbee2mqtt.io/master/docs/supported-devices/README.md";
 
     private static readonly string DefaultDeviceTypeOptionsPath = Path.GetFullPath(Path.Combine("..",
         "Haus.Zigbee.Host", "Zigbee2Mqtt", "Mappers", "ToHaus", "Resolvers", "DefaultDeviceTypeOptions.json"));
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<GenerateDefaultDeviceTypeOptionsCommandHandler> _logger;
-    private readonly IDeviceTypeOptionsHtmlParser _parser;
+    private readonly IDeviceTypeOptionsParser _parser;
     private readonly IDeviceTypeOptionsMerger _merger;
 
     public GenerateDefaultDeviceTypeOptionsCommandHandler(
         IHttpClientFactory httpClientFactory,
         ILogger<GenerateDefaultDeviceTypeOptionsCommandHandler> logger,
-        IDeviceTypeOptionsHtmlParser parser,
+        IDeviceTypeOptionsParser parser,
         IDeviceTypeOptionsMerger merger)
     {
         _httpClientFactory = httpClientFactory;

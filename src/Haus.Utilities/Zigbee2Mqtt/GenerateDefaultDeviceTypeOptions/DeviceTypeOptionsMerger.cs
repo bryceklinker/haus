@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Models.Devices;
 using Haus.Zigbee.Host.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 
@@ -14,13 +13,6 @@ public interface IDeviceTypeOptionsMerger
 
 public class DeviceTypeOptionsMerger : IDeviceTypeOptionsMerger
 {
-    private readonly ILogger<DeviceTypeOptionsMerger> _logger;
-
-    public DeviceTypeOptionsMerger(ILogger<DeviceTypeOptionsMerger> logger)
-    {
-        _logger = logger;
-    }
-
     public IEnumerable<DeviceTypeOptions> Merge(IEnumerable<DeviceTypeOptions> existing,
         IEnumerable<DeviceTypeOptions> latest)
     {

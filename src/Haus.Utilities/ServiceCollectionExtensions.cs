@@ -15,7 +15,7 @@ public static class ServiceCollectionExtensions
             .AddHttpClient()
             .AddHausLogging()
             .AddTransient<ITypeScriptModelGenerator, TypeScriptModelGenerator>()
-            .AddTransient<IDeviceTypeOptionsHtmlParser, DeviceTypeOptionsHtmlParser>()
+            .AddTransient<IDeviceTypeOptionsParser, DeviceTypeOptionsParser>()
             .AddTransient<IDeviceTypeOptionsMerger, DeviceTypeOptionsMerger>()
             .AddSingleton<ICommandFactory, CommandFactory>();
     }

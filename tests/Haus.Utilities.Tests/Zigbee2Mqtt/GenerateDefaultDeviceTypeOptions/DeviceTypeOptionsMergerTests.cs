@@ -4,7 +4,6 @@ using Haus.Core.Models.Devices;
 using Haus.Utilities.Tests.Support;
 using Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 using Haus.Zigbee.Host.Configuration;
-using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
@@ -15,7 +14,7 @@ public class DeviceTypeOptionsMergerTests
 
     public DeviceTypeOptionsMergerTests()
     {
-        _merger = new DeviceTypeOptionsMerger(new NullLogger<DeviceTypeOptionsMerger>());
+        _merger = new DeviceTypeOptionsMerger();
     }
 
     [Fact]
