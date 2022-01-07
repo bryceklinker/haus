@@ -26,7 +26,7 @@ public class GenerateDefaultDeviceTypeOptionsCommandHandler :
     private const string SupportedDevicesPage = "https://www.zigbee2mqtt.io/information/supported_devices.html";
 
     private static readonly string DefaultDeviceTypeOptionsPath = Path.GetFullPath(Path.Combine("..",
-        "Haus.Zigbee.Host", "Zigbee2Mqtt", "Resolvers", "DefaultDeviceTypeOptions.json"));
+        "Haus.Zigbee.Host", "Zigbee2Mqtt", "Mappers", "ToHaus", "Resolvers", "DefaultDeviceTypeOptions.json"));
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<GenerateDefaultDeviceTypeOptionsCommandHandler> _logger;

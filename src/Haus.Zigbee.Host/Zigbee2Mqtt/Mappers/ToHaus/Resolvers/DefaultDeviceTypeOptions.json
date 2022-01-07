@@ -961,6 +961,11 @@
   },
   {
     "Vendor": "Gledopto",
+    "Model": "GL-B-007P",
+    "DeviceType": "Light"
+  },
+  {
+    "Vendor": "Gledopto",
     "Model": "GL-B-007Z",
     "DeviceType": "Unknown"
   },
