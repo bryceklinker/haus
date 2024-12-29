@@ -14,8 +14,7 @@ namespace Haus.Core.Rooms.Commands;
 
 public record TurnOffVacantRoomsCommand : ICommand;
 
-public class TurnOffVacantRoomsCommandHandler : AsyncRequestHandler<TurnOffVacantRoomsCommand>,
-    ICommandHandler<TurnOffVacantRoomsCommand>
+public class TurnOffVacantRoomsCommandHandler : ICommandHandler<TurnOffVacantRoomsCommand>
 {
     private readonly IDomainEventBus _domainEventBus;
     private readonly HausDbContext _context;
@@ -26,7 +25,7 @@ public class TurnOffVacantRoomsCommandHandler : AsyncRequestHandler<TurnOffVacan
         _context = context;
     }
 
-    protected override async Task Handle(TurnOffVacantRoomsCommand request, CancellationToken cancellationToken)
+    public async Task Handle(TurnOffVacantRoomsCommand request, CancellationToken cancellationToken)
     {
         var rooms = await _context.GetRoomsIncludeDevices()
             .Where(r => r.Lighting.State == LightingState.On)

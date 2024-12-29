@@ -12,8 +12,7 @@ namespace Haus.Core.Devices.Commands;
 
 public record ChangeDeviceLightingCommand(long DeviceId, LightingModel Lighting) : ICommand;
 
-internal class ChangeDeviceLightingCommandHandler : AsyncRequestHandler<ChangeDeviceLightingCommand>,
-    ICommandHandler<ChangeDeviceLightingCommand>
+internal class ChangeDeviceLightingCommandHandler : ICommandHandler<ChangeDeviceLightingCommand>
 {
     private readonly IDeviceCommandRepository _repository;
     private readonly IDomainEventBus _domainEventBus;
@@ -24,7 +23,7 @@ internal class ChangeDeviceLightingCommandHandler : AsyncRequestHandler<ChangeDe
         _repository = repository;
     }
 
-    protected override async Task Handle(ChangeDeviceLightingCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ChangeDeviceLightingCommand request, CancellationToken cancellationToken)
     {
         var device = await _repository.GetById(request.DeviceId, cancellationToken)
             .ConfigureAwait(false);

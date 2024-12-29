@@ -14,8 +14,7 @@ namespace Haus.Core.Devices.Commands;
 
 public record UpdateDeviceCommand(DeviceModel Model) : UpdateEntityCommand<DeviceModel>(Model);
 
-internal class UpdateDeviceCommandHandler : AsyncRequestHandler<UpdateDeviceCommand>,
-    ICommandHandler<UpdateDeviceCommand>
+internal class UpdateDeviceCommandHandler : ICommandHandler<UpdateDeviceCommand>
 {
     private readonly IDeviceCommandRepository _repository;
     private readonly IValidator<DeviceModel> _validator;
@@ -29,7 +28,7 @@ internal class UpdateDeviceCommandHandler : AsyncRequestHandler<UpdateDeviceComm
         _repository = repository;
     }
 
-    protected override async Task Handle(UpdateDeviceCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateDeviceCommand request, CancellationToken cancellationToken)
     {
         await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
             .ConfigureAwait(false);

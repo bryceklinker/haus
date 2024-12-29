@@ -14,7 +14,7 @@ namespace Haus.Core.Rooms.Commands;
 
 public record UpdateRoomCommand(RoomModel Model) : UpdateEntityCommand<RoomModel>(Model);
 
-internal class UpdateRoomCommandHandler : AsyncRequestHandler<UpdateRoomCommand>, ICommandHandler<UpdateRoomCommand>
+internal class UpdateRoomCommandHandler : ICommandHandler<UpdateRoomCommand>
 {
     private readonly IRoomCommandRepository _repository;
     private readonly IValidator<RoomModel> _validator;
@@ -28,7 +28,7 @@ internal class UpdateRoomCommandHandler : AsyncRequestHandler<UpdateRoomCommand>
         _hausBus = hausBus;
     }
 
-    protected override async Task Handle(UpdateRoomCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateRoomCommand request, CancellationToken cancellationToken)
     {
         await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
             .ConfigureAwait(false);

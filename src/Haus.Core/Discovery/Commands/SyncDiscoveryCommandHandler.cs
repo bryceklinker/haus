@@ -10,8 +10,7 @@ namespace Haus.Core.Discovery.Commands;
 
 public record SyncDiscoveryCommand : ICommand;
 
-internal class SyncDiscoveryCommandHandler : AsyncRequestHandler<SyncDiscoveryCommand>,
-    ICommandHandler<SyncDiscoveryCommand>
+internal class SyncDiscoveryCommandHandler : ICommandHandler<SyncDiscoveryCommand>
 {
     private readonly IHausBus _hausBus;
 
@@ -20,7 +19,7 @@ internal class SyncDiscoveryCommandHandler : AsyncRequestHandler<SyncDiscoveryCo
         _hausBus = hausBus;
     }
 
-    protected override Task Handle(SyncDiscoveryCommand request, CancellationToken cancellationToken)
+    public Task Handle(SyncDiscoveryCommand request, CancellationToken cancellationToken)
     {
         return _hausBus.PublishAsync(RoutableCommand.FromEvent(new SyncDiscoveryModel()), cancellationToken);
     }

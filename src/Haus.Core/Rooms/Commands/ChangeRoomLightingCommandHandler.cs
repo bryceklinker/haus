@@ -11,8 +11,7 @@ namespace Haus.Core.Rooms.Commands;
 
 public record ChangeRoomLightingCommand(long RoomId, LightingModel Lighting) : ICommand;
 
-internal class ChangeRoomLightingCommandHandler : AsyncRequestHandler<ChangeRoomLightingCommand>,
-    ICommandHandler<ChangeRoomLightingCommand>
+internal class ChangeRoomLightingCommandHandler : ICommandHandler<ChangeRoomLightingCommand>
 {
     private readonly IRoomCommandRepository _repository;
     private readonly IDomainEventBus _domainEventBus;
@@ -23,7 +22,7 @@ internal class ChangeRoomLightingCommandHandler : AsyncRequestHandler<ChangeRoom
         _repository = repository;
     }
 
-    protected override async Task Handle(ChangeRoomLightingCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ChangeRoomLightingCommand request, CancellationToken cancellationToken)
     {
         var room = await _repository.GetByIdAsync(request.RoomId, cancellationToken).ConfigureAwait(false);
 

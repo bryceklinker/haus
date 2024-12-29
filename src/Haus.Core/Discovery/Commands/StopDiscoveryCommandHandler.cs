@@ -12,8 +12,7 @@ namespace Haus.Core.Discovery.Commands;
 
 public record StopDiscoveryCommand : ICommand;
 
-internal class StopDiscoveryCommandHandler : AsyncRequestHandler<StopDiscoveryCommand>,
-    ICommandHandler<StopDiscoveryCommand>
+internal class StopDiscoveryCommandHandler : ICommandHandler<StopDiscoveryCommand>
 {
     private readonly HausDbContext _context;
     private readonly IHausBus _hausBus;
@@ -24,7 +23,7 @@ internal class StopDiscoveryCommandHandler : AsyncRequestHandler<StopDiscoveryCo
         _context = context;
     }
 
-    protected override async Task Handle(StopDiscoveryCommand request, CancellationToken cancellationToken)
+    public async Task Handle(StopDiscoveryCommand request, CancellationToken cancellationToken)
     {
         var model = new StopDiscoveryModel();
 

@@ -9,8 +9,7 @@ namespace Haus.Core.Devices.Commands;
 
 public record TurnDeviceOnCommand(long DeviceId) : ICommand;
 
-internal class TurnDeviceOnCommandHandler : AsyncRequestHandler<TurnDeviceOnCommand>,
-    ICommandHandler<TurnDeviceOnCommand>
+internal class TurnDeviceOnCommandHandler : ICommandHandler<TurnDeviceOnCommand>
 {
     private readonly IDeviceCommandRepository _repository;
     private readonly IDomainEventBus _domainEventBus;
@@ -21,7 +20,7 @@ internal class TurnDeviceOnCommandHandler : AsyncRequestHandler<TurnDeviceOnComm
         _repository = repository;
     }
 
-    protected override async Task Handle(TurnDeviceOnCommand request, CancellationToken cancellationToken)
+    public async Task Handle(TurnDeviceOnCommand request, CancellationToken cancellationToken)
     {
         var device = await _repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
         device.TurnOn(_domainEventBus);

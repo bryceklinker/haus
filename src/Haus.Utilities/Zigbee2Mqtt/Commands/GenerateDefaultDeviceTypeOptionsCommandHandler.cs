@@ -20,7 +20,6 @@ namespace Haus.Utilities.Zigbee2Mqtt.Commands;
 public record GenerateDefaultDeviceTypeOptionsCommand : ICommand;
 
 public class GenerateDefaultDeviceTypeOptionsCommandHandler :
-    AsyncRequestHandler<GenerateDefaultDeviceTypeOptionsCommand>,
     ICommandHandler<GenerateDefaultDeviceTypeOptionsCommand>
 {
     private const string SupportedDevicesPage = "https://raw.githubusercontent.com/Koenkk/zigbee2mqtt.io/master/docs/supported-devices/README.md";
@@ -45,7 +44,7 @@ public class GenerateDefaultDeviceTypeOptionsCommandHandler :
         _merger = merger;
     }
 
-    protected override async Task Handle(GenerateDefaultDeviceTypeOptionsCommand request,
+    public async Task Handle(GenerateDefaultDeviceTypeOptionsCommand request,
         CancellationToken cancellationToken)
     {
         var html = await GetHtml(cancellationToken);

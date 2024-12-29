@@ -10,7 +10,7 @@ namespace Haus.Core.Common.Commands;
 
 public record InitializeCommand : ICommand;
 
-internal class InitializeCommandHandler : AsyncRequestHandler<InitializeCommand>, ICommandHandler<InitializeCommand>
+internal class InitializeCommandHandler : ICommandHandler<InitializeCommand>
 {
     private readonly IHausBus _hausBus;
 
@@ -19,7 +19,7 @@ internal class InitializeCommandHandler : AsyncRequestHandler<InitializeCommand>
         _hausBus = hausBus;
     }
 
-    protected override async Task Handle(InitializeCommand request, CancellationToken cancellationToken)
+    public async Task Handle(InitializeCommand request, CancellationToken cancellationToken)
     {
         await _hausBus.ExecuteCommandAsync(new InitializeDatabaseCommand(), cancellationToken)
             .ConfigureAwait(false);

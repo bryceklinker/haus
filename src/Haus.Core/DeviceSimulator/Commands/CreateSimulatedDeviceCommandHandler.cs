@@ -12,8 +12,7 @@ namespace Haus.Core.DeviceSimulator.Commands;
 
 public record CreateSimulatedDeviceCommand(SimulatedDeviceModel Model) : ICommand;
 
-internal class CreateSimulatedDeviceCommandHandler : AsyncRequestHandler<CreateSimulatedDeviceCommand>,
-    ICommandHandler<CreateSimulatedDeviceCommand>
+internal class CreateSimulatedDeviceCommandHandler : ICommandHandler<CreateSimulatedDeviceCommand>
 {
     private readonly IDeviceSimulatorStore _store;
     private readonly IHausBus _hausBus;
@@ -24,7 +23,7 @@ internal class CreateSimulatedDeviceCommandHandler : AsyncRequestHandler<CreateS
         _hausBus = hausBus;
     }
 
-    protected override async Task Handle(CreateSimulatedDeviceCommand request, CancellationToken cancellationToken)
+    public async Task Handle(CreateSimulatedDeviceCommand request, CancellationToken cancellationToken)
     {
         var device = SimulatedDeviceEntity.Create(request.Model);
         _store.Publish(_store.Current.AddSimulatedDevice(device));

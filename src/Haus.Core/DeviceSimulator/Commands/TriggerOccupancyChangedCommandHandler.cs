@@ -12,8 +12,7 @@ namespace Haus.Core.DeviceSimulator.Commands;
 
 public record TriggerOccupancyChangedCommand(string SimulatorId) : ICommand;
 
-public class TriggerOccupancyChangedCommandHandler : AsyncRequestHandler<TriggerOccupancyChangedCommand>,
-    ICommandHandler<TriggerOccupancyChangedCommand>
+public class TriggerOccupancyChangedCommandHandler : ICommandHandler<TriggerOccupancyChangedCommand>
 {
     private readonly IDeviceSimulatorStore _store;
     private readonly IHausBus _hausBus;
@@ -24,7 +23,7 @@ public class TriggerOccupancyChangedCommandHandler : AsyncRequestHandler<Trigger
         _hausBus = hausBus;
     }
 
-    protected override async Task Handle(TriggerOccupancyChangedCommand request, CancellationToken cancellationToken)
+    public async Task Handle(TriggerOccupancyChangedCommand request, CancellationToken cancellationToken)
     {
         _store.PublishNext(s => s.ChangeOccupancy(request.SimulatorId));
 

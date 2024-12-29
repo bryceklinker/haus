@@ -10,8 +10,7 @@ namespace Haus.Core.Devices.Commands;
 
 public record ChangeDeviceLightingConstraintsCommand(long DeviceId, LightingConstraintsModel Model) : ICommand;
 
-public class ChangeDeviceLightingConstraintsCommandHandler :
-    AsyncRequestHandler<ChangeDeviceLightingConstraintsCommand>, ICommandHandler<ChangeDeviceLightingConstraintsCommand>
+public class ChangeDeviceLightingConstraintsCommandHandler : ICommandHandler<ChangeDeviceLightingConstraintsCommand>
 {
     private readonly IDeviceCommandRepository _repository;
     private readonly IHausBus _hausBus;
@@ -22,7 +21,7 @@ public class ChangeDeviceLightingConstraintsCommandHandler :
         _hausBus = hausBus;
     }
 
-    protected override async Task Handle(ChangeDeviceLightingConstraintsCommand request,
+    public async Task Handle(ChangeDeviceLightingConstraintsCommand request,
         CancellationToken cancellationToken)
     {
         var device = await _repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);

@@ -11,8 +11,7 @@ public class InitializeDiscoveryCommand : ICommand
 {
 }
 
-public class InitializeDiscoveryCommandHandler : AsyncRequestHandler<InitializeDiscoveryCommand>,
-    ICommandHandler<InitializeDiscoveryCommand>
+public class InitializeDiscoveryCommandHandler : ICommandHandler<InitializeDiscoveryCommand>
 {
     private readonly HausDbContext _context;
 
@@ -21,7 +20,7 @@ public class InitializeDiscoveryCommandHandler : AsyncRequestHandler<InitializeD
         _context = context;
     }
 
-    protected override async Task Handle(InitializeDiscoveryCommand request, CancellationToken cancellationToken)
+    public async Task Handle(InitializeDiscoveryCommand request, CancellationToken cancellationToken)
     {
         var discovery = await _context.GetDiscoveryEntityAsync(cancellationToken);
         if (discovery != null)

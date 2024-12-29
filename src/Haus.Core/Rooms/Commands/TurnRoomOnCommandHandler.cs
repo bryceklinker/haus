@@ -9,7 +9,7 @@ namespace Haus.Core.Rooms.Commands;
 
 public record TurnRoomOnCommand(long RoomId) : ICommand;
 
-internal class TurnRoomOnCommandHandler : AsyncRequestHandler<TurnRoomOnCommand>, ICommandHandler<TurnRoomOnCommand>
+internal class TurnRoomOnCommandHandler : ICommandHandler<TurnRoomOnCommand>
 {
     private readonly IRoomCommandRepository _repository;
     private readonly IDomainEventBus _domainEventBus;
@@ -20,7 +20,7 @@ internal class TurnRoomOnCommandHandler : AsyncRequestHandler<TurnRoomOnCommand>
         _repository = repository;
     }
 
-    protected override async Task Handle(TurnRoomOnCommand request, CancellationToken cancellationToken)
+    public async Task Handle(TurnRoomOnCommand request, CancellationToken cancellationToken)
     {
         var room = await _repository.GetByIdAsync(request.RoomId, cancellationToken).ConfigureAwait(false);
         room.TurnOn(_domainEventBus);

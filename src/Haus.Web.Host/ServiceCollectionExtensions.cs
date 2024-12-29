@@ -14,7 +14,6 @@ using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
 using Haus.Web.Host.Health;
 using Haus.Web.Host.Rooms;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +47,10 @@ public static class ServiceCollectionExtensions
                 opts.PersonalAccessToken = configuration["GITHUB_TOKEN"];
             })
             .AddHausMqtt()
-            .AddMediatR(typeof(ServiceCollectionExtensions).Assembly)
+            .AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
+            })
             .AddTransient<ILatestReleaseProvider, GithubLatestReleaseProvider>()
             .AddHostedService<MqttMessageRouter>()
             .AddHostedService<DiagnosticsMqttListener>()

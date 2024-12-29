@@ -14,8 +14,7 @@ public record StoreHealthReportCommand(HausHealthReportModel Report) : ICommand
     public HausHealthCheckModel[] Checks => Report.Checks;
 }
 
-internal class StoreHealthReportCommandHandler : AsyncRequestHandler<StoreHealthReportCommand>,
-    ICommandHandler<StoreHealthReportCommand>
+internal class StoreHealthReportCommandHandler : ICommandHandler<StoreHealthReportCommand>
 {
     private readonly HausDbContext _context;
     private readonly IClock _clock;
@@ -26,7 +25,7 @@ internal class StoreHealthReportCommandHandler : AsyncRequestHandler<StoreHealth
         _clock = clock;
     }
 
-    protected override async Task Handle(StoreHealthReportCommand request, CancellationToken cancellationToken)
+    public async Task Handle(StoreHealthReportCommand request, CancellationToken cancellationToken)
     {
         foreach (var check in request.Checks)
             await AddOrUpdateHealthCheck(check).ConfigureAwait(false);

@@ -8,7 +8,7 @@ namespace Haus.Utilities.Common.Cli;
 
 public record ExecuteCommand(string[] Args) : ICommand;
 
-public class ExecuteCommandHandler : AsyncRequestHandler<ExecuteCommand>, ICommandHandler<ExecuteCommand>
+public class ExecuteCommandHandler : ICommandHandler<ExecuteCommand>
 {
     private readonly IHausBus _hausBus;
     private readonly ICommandFactory _commandFactory;
@@ -19,7 +19,7 @@ public class ExecuteCommandHandler : AsyncRequestHandler<ExecuteCommand>, IComma
         _commandFactory = commandFactory;
     }
 
-    protected override async Task Handle(ExecuteCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ExecuteCommand request, CancellationToken cancellationToken)
     {
         var command = _commandFactory.Create(request.Args);
         await _hausBus.ExecuteCommandAsync(command, cancellationToken);

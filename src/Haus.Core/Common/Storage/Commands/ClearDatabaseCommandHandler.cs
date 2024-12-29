@@ -10,8 +10,7 @@ namespace Haus.Core.Common.Storage.Commands;
 
 public record ClearDatabaseCommand : ICommand;
 
-internal class ClearDatabaseCommandHandler : AsyncRequestHandler<ClearDatabaseCommand>,
-    ICommandHandler<ClearDatabaseCommand>
+internal class ClearDatabaseCommandHandler : ICommandHandler<ClearDatabaseCommand>
 {
     private readonly HausDbContext _context;
 
@@ -20,7 +19,7 @@ internal class ClearDatabaseCommandHandler : AsyncRequestHandler<ClearDatabaseCo
         _context = context;
     }
 
-    protected override async Task Handle(ClearDatabaseCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ClearDatabaseCommand request, CancellationToken cancellationToken)
     {
         await ClearAllAsync<DeviceMetadataEntity>(cancellationToken).ConfigureAwait(false);
         await ClearAllAsync<DeviceEntity>(cancellationToken).ConfigureAwait(false);

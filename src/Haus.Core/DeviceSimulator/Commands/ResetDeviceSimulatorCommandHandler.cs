@@ -8,8 +8,7 @@ namespace Haus.Core.DeviceSimulator.Commands;
 
 public record ResetDeviceSimulatorCommand : ICommand;
 
-public class ResetDeviceSimulatorCommandHandler : AsyncRequestHandler<ResetDeviceSimulatorCommand>,
-    ICommandHandler<ResetDeviceSimulatorCommand>
+public class ResetDeviceSimulatorCommandHandler : ICommandHandler<ResetDeviceSimulatorCommand>
 {
     private readonly IDeviceSimulatorStore _store;
 
@@ -18,7 +17,7 @@ public class ResetDeviceSimulatorCommandHandler : AsyncRequestHandler<ResetDevic
         _store = store;
     }
 
-    protected override Task Handle(ResetDeviceSimulatorCommand request, CancellationToken cancellationToken)
+    public Task Handle(ResetDeviceSimulatorCommand request, CancellationToken cancellationToken)
     {
         _store.Publish(_store.Current.Reset());
         return Task.CompletedTask;

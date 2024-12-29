@@ -15,8 +15,7 @@ namespace Haus.Utilities.TypeScript.Commands;
 [Command("typescript", "generate-models")]
 public record GenerateTypeScriptModelsCommand : ICommand;
 
-public class GenerateTypeScriptModelsCommandHandler : AsyncRequestHandler<GenerateTypeScriptModelsCommand>,
-    ICommandHandler<GenerateTypeScriptModelsCommand>
+public class GenerateTypeScriptModelsCommandHandler : ICommandHandler<GenerateTypeScriptModelsCommand>
 {
     private static readonly string ModelsDirectory = Path.Combine(
         Directory.GetCurrentDirectory(), "..", "Haus.Web.Host", "client-app", "src", "app", "shared", "models",
@@ -29,7 +28,7 @@ public class GenerateTypeScriptModelsCommandHandler : AsyncRequestHandler<Genera
         _generator = generator;
     }
 
-    protected override Task Handle(GenerateTypeScriptModelsCommand request, CancellationToken cancellationToken)
+    public Task Handle(GenerateTypeScriptModelsCommand request, CancellationToken cancellationToken)
     {
         var context = new TypeScriptGeneratorContext();
         var types = GetAllTypesInCoreModels();

@@ -16,8 +16,7 @@ namespace Haus.Core.Rooms.Commands;
 
 public record AssignDevicesToRoomCommand(long RoomId, params long[] DeviceIds) : ICommand;
 
-internal class AssignDevicesToRoomCommandHandler : AsyncRequestHandler<AssignDevicesToRoomCommand>,
-    ICommandHandler<AssignDevicesToRoomCommand>
+internal class AssignDevicesToRoomCommandHandler : ICommandHandler<AssignDevicesToRoomCommand>
 {
     private readonly HausDbContext _context;
     private readonly IRoomCommandRepository _repository;
@@ -30,7 +29,7 @@ internal class AssignDevicesToRoomCommandHandler : AsyncRequestHandler<AssignDev
         _hausBus = hausBus;
     }
 
-    protected override async Task Handle(AssignDevicesToRoomCommand request, CancellationToken cancellationToken)
+    public async Task Handle(AssignDevicesToRoomCommand request, CancellationToken cancellationToken)
     {
         var room = await _repository.GetByIdAsync(request.RoomId, cancellationToken).ConfigureAwait(false);
 
