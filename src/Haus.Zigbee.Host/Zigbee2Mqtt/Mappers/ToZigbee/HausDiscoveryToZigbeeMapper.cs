@@ -34,7 +34,7 @@ public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
 
     public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
     {
-        var command = HausJsonSerializer.Deserialize<HausCommand>(message.Payload);
+        var command = HausJsonSerializer.Deserialize<HausCommand>(message.PayloadSegment);
         return command.Type switch
         {
             StartDiscoveryModel.Type => CreatePermitJoinMessage(true),
@@ -49,7 +49,7 @@ public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
         yield return new MqttApplicationMessage
         {
             Topic = $"{_options.GetBaseTopic()}/bridge/config/devices/get",
-            Payload = Array.Empty<byte>()
+            PayloadSegment = ArraySegment<byte>.Empty
         };
     }
 
@@ -58,7 +58,7 @@ public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
         yield return new MqttApplicationMessage
         {
             Topic = $"{_options.GetBaseTopic()}/bridge/config/permit_join",
-            Payload = Encoding.UTF8.GetBytes(permitJoin.ToString().ToLowerInvariant())
+            PayloadSegment = Encoding.UTF8.GetBytes(permitJoin.ToString().ToLowerInvariant())
         };
     }
 }

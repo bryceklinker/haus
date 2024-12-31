@@ -153,7 +153,7 @@ public class Zigbee2MqttMessageBuilder
             return new MqttApplicationMessage
             {
                 Topic = $"{_baseTopicName}/{_topicPath}",
-                Payload = Encoding.UTF8.GetBytes(payloadAsString)
+                PayloadSegment = Encoding.UTF8.GetBytes(payloadAsString)
             };
         }
         finally

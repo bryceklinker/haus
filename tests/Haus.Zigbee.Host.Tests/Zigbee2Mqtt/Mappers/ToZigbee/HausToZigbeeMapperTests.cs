@@ -38,7 +38,7 @@ public class HausToZigbeeMapperTests
         var result = _mapper.Map(original).Single();
 
         result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join");
-        result.Payload.Should().BeEncodedString("true");
+        result.PayloadSegment.Should().BeEncodedString("true");
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class HausToZigbeeMapperTests
         var result = _mapper.Map(original).Single();
 
         result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join");
-        result.Payload.Should().BeEncodedString("false");
+        result.PayloadSegment.Should().BeEncodedString("false");
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class HausToZigbeeMapperTests
         var result = _mapper.Map(original).Single();
 
         result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/devices/get");
-        result.Payload.Should().BeEmpty();
+        result.PayloadSegment.Should().BeEmpty();
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class HausToZigbeeMapperTests
 
         var result = _mapper.Map(original).Single();
 
-        var payload = JObject.Parse(Encoding.UTF8.GetString(result.Payload));
+        var payload = JObject.Parse(Encoding.UTF8.GetString(result.PayloadSegment));
         result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/my-ext-id/set");
         payload.Value<string>("state").Should().Be("OFF");
     }

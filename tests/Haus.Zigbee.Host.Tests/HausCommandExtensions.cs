@@ -1,3 +1,4 @@
+using System;
 using Haus.Core.Models;
 using Haus.Core.Models.ExternalMessages;
 using MQTTnet;
@@ -11,11 +12,11 @@ public static class HausCommandExtensions
         return new MqttApplicationMessage
         {
             Topic = topic,
-            Payload = command.ToBytes()
+            PayloadSegment = command.ToBytes()
         };
     }
 
-    private static byte[] ToBytes(this HausCommand command)
+    private static ArraySegment<byte> ToBytes(this HausCommand command)
     {
         return HausJsonSerializer.SerializeToBytes(command);
     }

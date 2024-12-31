@@ -33,7 +33,7 @@ jobs:
           global-json-file: ./global.json
 
       - name: Install Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: '14.17.x'
 

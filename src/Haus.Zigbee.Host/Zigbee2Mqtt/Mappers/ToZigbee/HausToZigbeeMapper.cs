@@ -22,7 +22,7 @@ public class HausToZigbeeMapper : IHausToZigbeeMapper
 
     public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
     {
-        var command = HausJsonSerializer.Deserialize<HausCommand>(message.Payload);
+        var command = HausJsonSerializer.Deserialize<HausCommand>(message.PayloadSegment);
         return _mappers.Where(m => m.IsSupported(command.Type))
             .SelectMany(m => m.Map(message));
     }

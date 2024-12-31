@@ -18,7 +18,7 @@ public static class HausMqttClientExtensions
     {
         await client.SubscribeAsync(topicName, msg =>
         {
-            HausJsonSerializer.TryDeserialize(msg.Payload, out HausEvent<T> evt);
+            HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausEvent<T> evt);
             if (evt?.Type == eventType) handler.Invoke(evt);
         });
     }
@@ -31,7 +31,7 @@ public static class HausMqttClientExtensions
     {
         await client.SubscribeAsync(topicName, msg =>
         {
-            HausJsonSerializer.TryDeserialize(msg.Payload, out HausCommand<T> command);
+            HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausCommand<T> command);
             if (command?.Type == commandType) handler.Invoke(command);
         });
     }
@@ -43,7 +43,7 @@ public static class HausMqttClientExtensions
     {
         await client.SubscribeAsync(topicName, msg =>
         {
-            if (HausJsonSerializer.TryDeserialize(msg.Payload, out HausHealthReportModel report))
+            if (HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausHealthReportModel report))
                 handler.Invoke(report);
         });
     }

@@ -1,3 +1,4 @@
+using System;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Devices.Sensors;
@@ -8,12 +9,12 @@ namespace Haus.Core.Common.Events;
 
 public interface IRoutableEventFactory
 {
-    RoutableEvent Create(byte[] bytes);
+    RoutableEvent Create(ArraySegment<byte> bytes);
 }
 
 public class RoutableEventFactory : IRoutableEventFactory
 {
-    public RoutableEvent Create(byte[] bytes)
+    public RoutableEvent Create(ArraySegment<byte> bytes)
     {
         if (!HausJsonSerializer.TryDeserialize(bytes, out HausEvent hausEvent))
             return null;
@@ -27,7 +28,7 @@ public class RoutableEventFactory : IRoutableEventFactory
         };
     }
 
-    private static RoutableEvent CreateRoutableEvent<T>(byte[] bytes)
+    private static RoutableEvent CreateRoutableEvent<T>(ArraySegment<byte> bytes)
     {
         var hausEvent = HausJsonSerializer.Deserialize<HausEvent<T>>(bytes);
         return new RoutableEvent<T>(hausEvent);

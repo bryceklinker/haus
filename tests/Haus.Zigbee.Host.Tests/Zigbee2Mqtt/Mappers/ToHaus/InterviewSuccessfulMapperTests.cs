@@ -102,7 +102,7 @@ public class InterviewSuccessfulMapperTests
             .BuildZigbee2MqttMessage();
         var result = _mapper.Map(message).Single();
 
-        var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.Payload);
+        var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
         hausEvent.Type.Should().Be(DeviceDiscoveredEvent.Type);
         hausEvent.Payload.Id.Should().Be("this-is-an-id");
         hausEvent.Payload.DeviceType.Should().Be(DeviceType.Unknown);
@@ -129,7 +129,7 @@ public class InterviewSuccessfulMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.Payload);
+        var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
         hausEvent.Payload.DeviceType.Should().Be(DeviceType.Light);
     }
 }

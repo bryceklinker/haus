@@ -58,7 +58,7 @@ public class HausLightingToZigbeeMapperTests
 
         var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
         result.Value<string>("state").Should().Be("ON");
         result.Value<int>("brightness").Should().Be(54);
         result.Value<int>("color_temp").Should().Be(67);
@@ -77,7 +77,7 @@ public class HausLightingToZigbeeMapperTests
 
         var message = _mapper.Map(CreateMqttMessage(lighting)).Single();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
         result.TryGetValue("color_temp", out _).Should().BeFalse();
     }
 
@@ -91,7 +91,7 @@ public class HausLightingToZigbeeMapperTests
 
         var message = _mapper.Map(CreateMqttMessage(lighting)).Single();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
         result.TryGetValue("color", out _).Should().BeFalse();
     }
 
@@ -103,7 +103,7 @@ public class HausLightingToZigbeeMapperTests
         var original = CreateMqttMessage(model);
         var message = _mapper.Map(original).Single();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
         Assert.Equal("ON", result.Value<string>("state"));
     }
 
@@ -118,7 +118,7 @@ public class HausLightingToZigbeeMapperTests
 
         var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
         result.Value<string>("state").Should().Be("OFF");
         result.TryGetValue("brightness", out _).Should().BeFalse();
         result.TryGetValue("color_temp", out _).Should().BeFalse();

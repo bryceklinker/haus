@@ -34,7 +34,7 @@ public class UnknownMessageMapper : IUnknownMessageMapper
         yield return new MqttApplicationMessage
         {
             Topic = UnknownTopicName,
-            Payload = HausJsonSerializer.SerializeToBytes(model)
+            PayloadSegment = HausJsonSerializer.SerializeToBytes(model)
         };
     }
 }

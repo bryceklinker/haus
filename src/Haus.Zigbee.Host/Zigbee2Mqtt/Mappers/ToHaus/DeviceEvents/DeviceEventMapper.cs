@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Sensors;
@@ -42,11 +43,11 @@ public class DeviceEventMapper : ToHausMapperBase
         yield return new MqttApplicationMessage
         {
             Topic = EventTopicName,
-            Payload = MapMessageToPayload(message)
+            PayloadSegment = MapMessageToPayload(message)
         };
     }
 
-    private byte[] MapMessageToPayload(Zigbee2MqttMessage message)
+    private ArraySegment<byte> MapMessageToPayload(Zigbee2MqttMessage message)
     {
         var payload = _sensorChangedMapper.Map(message);
         var type = GetHausEventType(payload);

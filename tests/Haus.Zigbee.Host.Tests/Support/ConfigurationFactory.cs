@@ -24,7 +24,7 @@ public static class ConfigurationFactory
                 new KeyValuePair<string, string>("Zigbee:ConfigFile", "./zigbee_data/configuration.yaml"),
                 new KeyValuePair<string, string>("Zigbee:DataDirectory", "./zigbee_data"),
                 new KeyValuePair<string, string>("Zigbee:Config:Mqtt:BaseTopic", zigbeeBaseTopic),
-                new KeyValuePair<string, string>("Haus:Server", "mqtt://localhost"),
+                new KeyValuePair<string, string>("Haus:Server", "mqtt://localhost:1883"),
                 new KeyValuePair<string, string>("Haus:EventsTopic", hausEventsTopic),
                 new KeyValuePair<string, string>("Haus:CommandsTopic", hausCommandsTopic),
                 new KeyValuePair<string, string>("Haus:UnknownTopic", hausUnknownTopic),

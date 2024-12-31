@@ -41,7 +41,7 @@ public class InterviewSuccessfulMapper : IToHausMapper
         yield return new MqttApplicationMessage
         {
             Topic = EventsTopic,
-            Payload = HausJsonSerializer.SerializeToBytes(new HausEvent<DeviceDiscoveredEvent>
+            PayloadSegment = HausJsonSerializer.SerializeToBytes(new HausEvent<DeviceDiscoveredEvent>
             {
                 Type = DeviceDiscoveredEvent.Type,
                 Payload = new DeviceDiscoveredEvent(

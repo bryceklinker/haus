@@ -139,7 +139,7 @@ public class DeviceEventMapperTests
 
     private static void AssertHausEventTypeIs(string expectedType, MqttApplicationMessage result)
     {
-        var payload = HausJsonSerializer.Deserialize<HausEvent>(result.Payload);
+        var payload = HausJsonSerializer.Deserialize<HausEvent>(result.PayloadSegment);
         payload.Type.Should().Be(expectedType);
     }
 }

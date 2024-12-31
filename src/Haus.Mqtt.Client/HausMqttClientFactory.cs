@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Concurrent;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Haus.Mqtt.Client.Settings;
+using Haus.Mqtt.Client.Wrappers;
 using Microsoft.Extensions.Options;
-using MQTTnet;
-using MQTTnet.Diagnostics.Logger;
-using MQTTnet.Extensions;
+using MQTTnet.Diagnostics;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace Haus.Mqtt.Client;
@@ -67,9 +67,13 @@ internal class HausMqttClientFactory : IHausMqttClientFactory
 
     private async Task<IHausMqttClient> CreateMqttClient(string url)
     {
+        var uri = new Uri(url);
         var client = _mqttFactory.CreateManagedMqttClient(_logger);
         var options = new ManagedMqttClientOptionsBuilder()
-            .WithClientOptions(opts => { opts.WithConnectionUri(new Uri(url)); })
+            .WithClientOptions(opts =>
+            {
+                opts.WithTcpServer(uri.Host, uri.Port, AddressFamily.InterNetwork);
+            })
             .Build();
         await client.StartAsync(options).ConfigureAwait(false);
         return new HausMqttClient(client, _options, () => RemovedDisposedClient(url));

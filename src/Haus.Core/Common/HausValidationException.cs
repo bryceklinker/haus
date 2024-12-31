@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using FluentValidation;
@@ -24,6 +25,7 @@ public class HausValidationException : ValidationException
     {
     }
 
+    [Obsolete("Obsolete")]
     public HausValidationException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }

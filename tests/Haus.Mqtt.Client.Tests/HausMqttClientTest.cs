@@ -33,7 +33,7 @@ public class HausMqttClientTest : IAsyncLifetime
         });
 
         var expected = new MqttApplicationMessage { Topic = "bob" };
-        await _fakeMqttClient.PublishAsync(expected);
+        await _fakeMqttClient.EnqueueAsync(expected);
 
         actual.Should().BeSameAs(expected);
     }
@@ -53,7 +53,7 @@ public class HausMqttClientTest : IAsyncLifetime
             return Task.CompletedTask;
         });
 
-        await _fakeMqttClient.PublishAsync(new MqttApplicationMessage());
+        await _fakeMqttClient.EnqueueAsync(new MqttApplicationMessage());
         actuals.Should().HaveCount(2);
     }
 

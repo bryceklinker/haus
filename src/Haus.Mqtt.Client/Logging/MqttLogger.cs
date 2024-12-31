@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using MQTTnet.Diagnostics.Logger;
+using MQTTnet.Diagnostics;
 
 namespace Haus.Mqtt.Client.Logging;
 
@@ -35,6 +35,8 @@ public class MqttLogger : IMqttNetLogger
             logMessagePublishedEvent.Invoke(this, new MqttNetLogMessagePublishedEventArgs(logMessage));
         }
     }
+
+    public bool IsEnabled { get; } = true;
 
     public event EventHandler<MqttNetLogMessagePublishedEventArgs> LogMessagePublished;
 

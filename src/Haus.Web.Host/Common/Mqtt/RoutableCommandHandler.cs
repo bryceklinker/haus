@@ -29,7 +29,7 @@ internal class RoutableCommandHandler : IEventHandler<RoutableCommand>
         await hausMqttClient.PublishAsync(new MqttApplicationMessage
         {
             Topic = CommandsTopic,
-            Payload = HausJsonSerializer.SerializeToBytes(notification.HausCommand)
+            PayloadSegment = HausJsonSerializer.SerializeToBytes(notification.HausCommand)
         });
     }
 }

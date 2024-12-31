@@ -1,4 +1,5 @@
 using System;
+using Haus.Mqtt.Client.Wrappers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

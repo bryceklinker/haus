@@ -26,7 +26,7 @@ public class MqttMessageRouter : MqttBackgroundServiceListener
     {
         using var scope = CreateScope();
         var eventFactory = scope.GetService<IRoutableEventFactory>();
-        var @event = eventFactory.Create(message.Payload);
+        var @event = eventFactory.Create(message.PayloadSegment);
         if (@event == null)
             return;
 

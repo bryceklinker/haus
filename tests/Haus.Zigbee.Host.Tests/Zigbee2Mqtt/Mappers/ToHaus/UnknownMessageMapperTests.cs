@@ -49,7 +49,7 @@ public class UnknownMessageMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.Payload);
+        var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.PayloadSegment);
         payload.Topic.Should().Be("zigbeetopic");
     }
 
@@ -63,7 +63,7 @@ public class UnknownMessageMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.Payload);
+        var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.PayloadSegment);
         JObject.Parse(payload.Payload).Value<string>("Id").Should().Be("my-id");
     }
 }

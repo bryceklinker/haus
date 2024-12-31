@@ -31,7 +31,7 @@ public class HealthListener : MqttBackgroundServiceListener
             return;
 
 
-        var healthReport = HausJsonSerializer.Deserialize<HausHealthReportModel>(message.Payload);
+        var healthReport = HausJsonSerializer.Deserialize<HausHealthReportModel>(message.PayloadSegment);
         using var scope = CreateScope();
         var bus = scope.GetService<IHausBus>();
         await bus.ExecuteCommandAsync(new StoreHealthReportCommand(healthReport));

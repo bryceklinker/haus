@@ -39,7 +39,7 @@ internal class HausUdpClient : IHausUdpClient
 
     public Task BroadcastAsync<T>(T value)
     {
-        var bytes = HausJsonSerializer.SerializeToBytes(value);
+        var bytes = HausJsonSerializer.SerializeToBytes(value).ToArray();
         return _client.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Broadcast, Port));
     }
 

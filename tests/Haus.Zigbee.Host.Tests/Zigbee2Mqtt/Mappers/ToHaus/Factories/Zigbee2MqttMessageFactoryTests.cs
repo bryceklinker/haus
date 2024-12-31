@@ -19,7 +19,7 @@ public class Zigbee2MqttMessageFactoryTests
     [Fact]
     public void WhenPayloadIsNullThenReturnsMessageWithNullValue()
     {
-        var message = _factory.Create(new MqttApplicationMessage { Payload = null });
+        var message = _factory.Create(new MqttApplicationMessage { PayloadSegment = null });
 
         message.PayloadObject.Should().BeNull();
     }
@@ -29,7 +29,7 @@ public class Zigbee2MqttMessageFactoryTests
     {
         var bytes = Encoding.UTF8.GetBytes("{\"id\": 54}");
 
-        var message = _factory.Create(new MqttApplicationMessage { Payload = bytes });
+        var message = _factory.Create(new MqttApplicationMessage { PayloadSegment = bytes });
 
 
         message.PayloadObject.Value<int>("id").Should().Be(54);
@@ -40,7 +40,7 @@ public class Zigbee2MqttMessageFactoryTests
     {
         var bytes = Encoding.UTF8.GetBytes("[{}, {}, {}]");
 
-        var message = _factory.Create(new MqttApplicationMessage { Payload = bytes });
+        var message = _factory.Create(new MqttApplicationMessage { PayloadSegment = bytes });
 
         message.PayloadArray.Should().HaveCount(3);
     }

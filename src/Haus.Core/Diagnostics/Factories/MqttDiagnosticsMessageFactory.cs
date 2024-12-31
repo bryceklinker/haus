@@ -8,7 +8,7 @@ namespace Haus.Core.Diagnostics.Factories;
 
 public interface IMqttDiagnosticsMessageFactory
 {
-    MqttDiagnosticsMessageModel Create(string topic, byte[] payload);
+    MqttDiagnosticsMessageModel Create(string topic, ArraySegment<byte> payload);
 }
 
 public class MqttDiagnosticsMessageFactory : IMqttDiagnosticsMessageFactory
@@ -20,7 +20,7 @@ public class MqttDiagnosticsMessageFactory : IMqttDiagnosticsMessageFactory
         _clock = clock;
     }
 
-    public MqttDiagnosticsMessageModel Create(string topic, byte[] payload)
+    public MqttDiagnosticsMessageModel Create(string topic, ArraySegment<byte> payload)
     {
         return new MqttDiagnosticsMessageModel
         {
@@ -31,7 +31,7 @@ public class MqttDiagnosticsMessageFactory : IMqttDiagnosticsMessageFactory
         };
     }
 
-    private static object GetPayloadFromBytes(byte[] bytes)
+    private static object GetPayloadFromBytes(ArraySegment<byte> bytes)
     {
         if (bytes == null)
             return null;

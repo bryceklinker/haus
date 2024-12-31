@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Text;
+using FluentAssertions;
 using Haus.Core.Models.Discovery;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
@@ -52,7 +53,7 @@ public class HausDiscoveryToZigbeeMapperTests
         var result = _mapper.Map(original).Single();
 
         Assert.Equal($"{ZigbeeBaseTopic}/bridge/config/permit_join", result.Topic);
-        Assert.Equal("true", Encoding.UTF8.GetString(result.Payload));
+        Assert.Equal("true", Encoding.UTF8.GetString(result.PayloadSegment));
     }
 
     [Fact]
@@ -65,7 +66,7 @@ public class HausDiscoveryToZigbeeMapperTests
         var result = _mapper.Map(original).Single();
 
         Assert.Equal($"{ZigbeeBaseTopic}/bridge/config/permit_join", result.Topic);
-        Assert.Equal("false", Encoding.UTF8.GetString(result.Payload));
+        Assert.Equal("false", Encoding.UTF8.GetString(result.PayloadSegment));
     }
 
     [Fact]
@@ -78,6 +79,6 @@ public class HausDiscoveryToZigbeeMapperTests
         var result = _mapper.Map(original).Single();
 
         Assert.Equal($"{ZigbeeBaseTopic}/bridge/config/devices/get", result.Topic);
-        Assert.Empty(result.Payload);
+        Assert.Equal(0, result.PayloadSegment.Count);
     }
 }

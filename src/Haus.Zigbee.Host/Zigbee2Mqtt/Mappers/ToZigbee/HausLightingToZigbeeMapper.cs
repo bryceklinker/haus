@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Events;
@@ -27,16 +28,16 @@ public class HausLightingToZigbeeMapper : IToZigbeeMapper
 
     public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
     {
-        var command = HausJsonSerializer.Deserialize<HausCommand<DeviceLightingChangedEvent>>(message.Payload);
+        var command = HausJsonSerializer.Deserialize<HausCommand<DeviceLightingChangedEvent>>(message.PayloadSegment);
         var device = command.Payload.Device;
         yield return new MqttApplicationMessage
         {
             Topic = $"{ZigbeeBaseTopic}/{device.ExternalId}/set",
-            Payload = CreateLightingPayload(command.Payload.Lighting)
+            PayloadSegment = CreateLightingPayload(command.Payload.Lighting)
         };
     }
 
-    private static byte[] CreateLightingPayload(LightingModel lighting)
+    private static ArraySegment<byte> CreateLightingPayload(LightingModel lighting)
     {
         if (lighting.State == LightingState.Off)
             return HausJsonSerializer.SerializeToBytes(new

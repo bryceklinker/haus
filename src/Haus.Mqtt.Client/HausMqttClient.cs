@@ -9,6 +9,7 @@ using Haus.Mqtt.Client.Settings;
 using Haus.Mqtt.Client.Subscriptions;
 using Microsoft.Extensions.Options;
 using MQTTnet;
+using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace Haus.Mqtt.Client;
@@ -57,7 +58,7 @@ internal class HausMqttClient : IHausMqttClient
     {
         await _setupMqttListener.Value;
         var subscription = new HausMqttSubscription(topic, handler, Unsubscribe);
-        _subscriptions.GetOrAdd(subscription.Id, id => subscription);
+        _subscriptions.GetOrAdd(subscription.Id, _ => subscription);
         return subscription;
     }
 
@@ -70,23 +71,23 @@ internal class HausMqttClient : IHausMqttClient
         });
     }
 
-    public Task PublishAsync(MqttApplicationMessage message)
+    public async Task PublishAsync(MqttApplicationMessage message)
     {
-        return _mqttClient.PublishAsync(message);
+        await _mqttClient.EnqueueAsync(message);
     }
 
-    public Task PublishAsync(string topic, object payload)
+    public async Task PublishAsync(string topic, object payload)
     {
-        return PublishAsync(new MqttApplicationMessage
+        await PublishAsync(new MqttApplicationMessage
         {
             Topic = topic,
-            Payload = HausJsonSerializer.SerializeToBytes(payload)
+            PayloadSegment = HausJsonSerializer.SerializeToBytes(payload)
         });
     }
 
-    public Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string topicName = null)
+    public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string topicName = null)
     {
-        return PublishAsync(topicName ?? EventsTopic, creator.AsHausEvent());
+        await PublishAsync(topicName ?? EventsTopic, creator.AsHausEvent());
     }
 
     public ValueTask DisposeAsync()
@@ -99,8 +100,8 @@ internal class HausMqttClient : IHausMqttClient
 
     private async Task SetupMqttListenerAsync()
     {
+        _mqttClient.ApplicationMessageReceivedAsync += MqttMessageHandler;
         await _mqttClient.SubscribeAsync(AllTopicsFilter);
-        _mqttClient.UseApplicationMessageReceivedHandler(MqttMessageHandler);
     }
 
     private async Task MqttMessageHandler(MqttApplicationMessageReceivedEventArgs args)

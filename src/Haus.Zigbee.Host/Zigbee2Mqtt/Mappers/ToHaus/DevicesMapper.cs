@@ -42,7 +42,7 @@ public class DevicesMapper : IToHausMapper
             .Select(item => new MqttApplicationMessage
             {
                 Topic = _hausOptions.GetEventsTopic(),
-                Payload = HausJsonSerializer.SerializeToBytes(CreateDeviceDiscoveredEvent(item))
+                PayloadSegment = HausJsonSerializer.SerializeToBytes(CreateDeviceDiscoveredEvent(item))
             });
     }
 

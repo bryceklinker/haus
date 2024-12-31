@@ -74,7 +74,7 @@ public class GetDevicesMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.Payload);
+        var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
         @event.Type.Should().Be(DeviceDiscoveredEvent.Type);
         @event.Payload.Id.Should().Be("hello");
         @event.Payload.Metadata.Should()
@@ -98,7 +98,7 @@ public class GetDevicesMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.Payload);
+        var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
         @event.Payload.DeviceType.Should().Be(DeviceType.Light);
     }
 

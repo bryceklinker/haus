@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   haus_mqtt:
     container_name: haus_mqtt

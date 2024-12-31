@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -14,7 +15,7 @@ public static class HausJsonSerializer
         }
     };
 
-    public static bool TryDeserialize<T>(byte[] bytes, out T value)
+    public static bool TryDeserialize<T>(ArraySegment<byte> bytes, out T value)
     {
         try
         {
@@ -28,7 +29,7 @@ public static class HausJsonSerializer
         }
     }
 
-    public static T Deserialize<T>(byte[] bytes)
+    public static T Deserialize<T>(ArraySegment<byte> bytes)
     {
         return JsonSerializer.Deserialize<T>(bytes, DefaultOptions);
     }
@@ -43,7 +44,7 @@ public static class HausJsonSerializer
         return JsonSerializer.Serialize(value, options ?? DefaultOptions);
     }
 
-    public static byte[] SerializeToBytes(object value)
+    public static ArraySegment<byte> SerializeToBytes(object value)
     {
         return JsonSerializer.SerializeToUtf8Bytes(value, DefaultOptions);
     }

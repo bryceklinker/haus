@@ -22,7 +22,7 @@ public class DiagnosticsMqttListener : MqttBackgroundServiceListener
         using var scope = CreateScope();
         var hub = scope.GetService<IHubContext<DiagnosticsHub>>();
         var messageFactory = scope.GetService<IMqttDiagnosticsMessageFactory>();
-        var model = messageFactory.Create(message.Topic, message.Payload);
+        var model = messageFactory.Create(message.Topic, message.PayloadSegment);
         await hub.BroadcastAsync("OnMqttMessage", model);
     }
 }
