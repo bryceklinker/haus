@@ -7,7 +7,7 @@ namespace Haus.Mqtt.Client.Tests;
 
 public class HausMqttClientFactoryTests
 {
-    private const string DEFAULT_MQTT_URL = "mqtt://192.168.1.1";
+    private const string DEFAULT_MQTT_URL = "mqtt://localhost:1883";
     private readonly IHausMqttClientFactory _hausClientFactory;
 
     public HausMqttClientFactoryTests()
