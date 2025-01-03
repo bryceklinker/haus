@@ -27,9 +27,9 @@
     "start:docker": ""
   },
   "devDependencies": {
-    "concurrently": "6.4.0",
-    "dotenv": "10.0.0",
+    "concurrently": "9.1.2",
+    "dotenv": "16.4.7",
     "env-cmd": "10.1.0",
-    "wait-on": "6.0.0"
+    "wait-on": "8.0.1"
   }
 }

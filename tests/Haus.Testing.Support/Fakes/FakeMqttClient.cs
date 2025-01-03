@@ -95,7 +95,11 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
 
     public Task StartAsync(ManagedMqttClientOptions options)
     {
+        if (ConnectException != null)
+            throw ConnectException;
+        
         IsStarted = true;
+        IsConnected = true;
         Options = options.ClientOptions;
         return Task.CompletedTask;
     }
@@ -103,12 +107,6 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
     public Task StopAsync(bool cleanDisconnect = true)
     {
         throw new NotImplementedException();
-    }
-
-    public Task StopAsync()
-    {
-        IsStarted = false;
-        return Task.CompletedTask;
     }
 
     public Task<MqttClientConnectResult> ConnectAsync(MqttClientOptions options, CancellationToken cancellationToken)
@@ -206,10 +204,5 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
         {
             TopicFilters = topics.ToList()
         }, CancellationToken.None);
-    }
-
-    public async Task PublishAsync(ManagedMqttApplicationMessage applicationMessages)
-    {
-        await PublishAsync(applicationMessages.ApplicationMessage, CancellationToken.None);
     }
 }

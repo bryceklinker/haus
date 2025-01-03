@@ -44,7 +44,7 @@ public class HausMqttClientFactoryTests
     public async Task WhenClientCratedForASpecificUrlThenReturnsANewClient()
     {
         var standardUrlClient = await _hausClientFactory.CreateClient();
-        var otherUrlClient = await _hausClientFactory.CreateClient(DEFAULT_MQTT_URL);
+        var otherUrlClient = await _hausClientFactory.CreateClient("mqtt://127.0.0.1:1883");
 
         standardUrlClient.Should().NotBeSameAs(otherUrlClient);
     }

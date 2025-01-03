@@ -24,3 +24,4 @@ coveragereport/
 **/haus-logs/
 .vs/
 .env-cmdrc.json
+haus_mqtt/
