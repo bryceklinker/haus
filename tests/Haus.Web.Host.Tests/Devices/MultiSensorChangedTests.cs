@@ -14,25 +14,18 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Devices;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class MultiSensorChangedTests
+public class MultiSensorChangedTests(HausWebHostApplicationFactory factory)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-
-    public MultiSensorChangedTests(HausWebHostApplicationFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task WhenMultiSensorChangedWithOccupancyThenRoomLightingChangedPublished()
     {
         const DeviceType multiSensorDeviceType =
             DeviceType.MotionSensor | DeviceType.LightSensor | DeviceType.TemperatureSensor;
-        var (room, sensor) = await _factory.AddRoomWithDevice("sup", multiSensorDeviceType);
+        var (room, sensor) = await factory.AddRoomWithDevice("sup", multiSensorDeviceType);
 
         var commands = new ConcurrentBag<HausCommand<RoomLightingChangedEvent>>();
-        await _factory.SubscribeToRoomLightingChangedCommandsAsync(commands.Add);
-        await _factory.PublishHausEventAsync(new MultiSensorChanged(
+        await factory.SubscribeToRoomLightingChangedCommandsAsync(commands.Add);
+        await factory.PublishHausEventAsync(new MultiSensorChanged(
             sensor.ExternalId,
             new OccupancyChangedModel(sensor.ExternalId, true)
         ));

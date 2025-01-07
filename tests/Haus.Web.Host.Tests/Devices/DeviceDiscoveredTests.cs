@@ -11,24 +11,17 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Devices;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class DeviceDiscoveredTests
+public class DeviceDiscoveredTests(HausWebHostApplicationFactory factory)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-
-    public DeviceDiscoveredTests(HausWebHostApplicationFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task WhenDeviceDiscoveredEventReceivedThenDeviceIsAvailableFromTheApi()
     {
         var deviceType = DeviceType.LightSensor | DeviceType.MotionSensor | DeviceType.TemperatureSensor;
-        await _factory.PublishHausEventAsync(new DeviceDiscoveredEvent("my-new-id", deviceType));
+        await factory.PublishHausEventAsync(new DeviceDiscoveredEvent("my-new-id", deviceType));
 
         await Eventually.AssertAsync(async () =>
         {
-            var client = _factory.CreateAuthenticatedClient();
+            var client = factory.CreateAuthenticatedClient();
             var list = await client.GetDevicesAsync();
             list.Items.Should()
                 .Contain(m => m.ExternalId == "my-new-id" && m.DeviceType == deviceType);
@@ -38,7 +31,7 @@ public class DeviceDiscoveredTests
     [Fact]
     public async Task WhenUnauthorizedThenReturnsUnauthorized()
     {
-        var client = _factory.CreateUnauthenticatedClient();
+        var client = factory.CreateUnauthenticatedClient();
 
         var exception = await Assert.ThrowsAsync<HttpRequestException>(() => client.GetDevicesAsync());
 

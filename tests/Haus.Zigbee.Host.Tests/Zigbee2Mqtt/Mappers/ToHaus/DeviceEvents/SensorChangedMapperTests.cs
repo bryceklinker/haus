@@ -12,12 +12,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class SensorChangedMapperTests
 {
-    private readonly SensorChangedMapper _mapper;
-
-    public SensorChangedMapperTests()
-    {
-        _mapper = new SensorChangedMapper();
-    }
+    private readonly SensorChangedMapper _mapper = new();
 
     [Fact]
     public void WhenMessageIsForLightSensorThenReturnsIlluminanceChanged()

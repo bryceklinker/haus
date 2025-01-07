@@ -35,12 +35,7 @@ namespace Haus.Web.Host.Tests.Support;
 
 public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
 {
-    private readonly FakeClock _clock;
-
-    public HausWebHostApplicationFactory()
-    {
-        _clock = new FakeClock();
-    }
+    private readonly FakeClock _clock = new();
 
     protected override IHost CreateHost(IHostBuilder builder)
     {

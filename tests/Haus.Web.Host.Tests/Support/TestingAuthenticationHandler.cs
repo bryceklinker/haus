@@ -8,15 +8,13 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Web.Host.Tests.Support;
 
-public class TestingAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+public class TestingAuthenticationHandler(
+    IOptionsMonitor<AuthenticationSchemeOptions> options,
+    ILoggerFactory logger,
+    UrlEncoder encoder)
+    : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
     public const string TestingScheme = "Testing";
-
-    public TestingAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger,
-        UrlEncoder encoder)
-        : base(options, logger, encoder)
-    {
-    }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {

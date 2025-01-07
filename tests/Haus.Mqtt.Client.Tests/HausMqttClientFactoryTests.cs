@@ -8,12 +8,7 @@ namespace Haus.Mqtt.Client.Tests;
 public class HausMqttClientFactoryTests
 {
     private const string DEFAULT_MQTT_URL = "mqtt://localhost:1883";
-    private readonly IHausMqttClientFactory _hausClientFactory;
-
-    public HausMqttClientFactoryTests()
-    {
-        _hausClientFactory = new SupportFactory().CreateFactory();
-    }
+    private readonly IHausMqttClientFactory _hausClientFactory = new SupportFactory().CreateFactory();
 
     [Fact]
     public async Task WhenClientCreatedThenClientIsStarted()

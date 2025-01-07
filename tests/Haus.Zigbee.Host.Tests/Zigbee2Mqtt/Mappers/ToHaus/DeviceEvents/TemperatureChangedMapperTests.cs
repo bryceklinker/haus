@@ -7,12 +7,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class TemperatureChangedMapperTests
 {
-    private readonly TemperatureChangedMapper _mapper;
-
-    public TemperatureChangedMapperTests()
-    {
-        _mapper = new TemperatureChangedMapper();
-    }
+    private readonly TemperatureChangedMapper _mapper = new();
 
     [Fact]
     public void WhenTemperatureChangedThenReturnsPopulatedTemperatureChanged()

@@ -19,11 +19,10 @@ public class DeviceEntityTest
     [Fact]
     public void WhenCreatedFromDeviceDiscoveredThenEntityIsPopulatedFromDiscoveredDevice()
     {
-        var model = new DeviceDiscoveredEvent("this-id", DeviceType.MotionSensor, new[]
-        {
+        var model = new DeviceDiscoveredEvent("this-id", DeviceType.MotionSensor, [
             new MetadataModel("Model", "some model"),
             new MetadataModel("Vendor", "Vendy")
-        });
+        ]);
 
         var entity = DeviceEntity.FromDiscoveredDevice(model, new FakeDomainEventBus());
 
@@ -37,11 +36,10 @@ public class DeviceEntityTest
     [Fact]
     public void WhenLightCreatedFromDeviceDiscoveredThenLightTypeIsLevel()
     {
-        var model = new DeviceDiscoveredEvent("this-id", DeviceType.Light, new[]
-        {
+        var model = new DeviceDiscoveredEvent("this-id", DeviceType.Light, [
             new MetadataModel("Model", "some model"),
             new MetadataModel("Vendor", "Vendy")
-        });
+        ]);
 
         var entity = DeviceEntity.FromDiscoveredDevice(model, new FakeDomainEventBus());
 
@@ -137,10 +135,10 @@ public class DeviceEntityTest
     [Fact]
     public void WhenUpdatedFromDiscoveredDeviceThenModelMetadataIsAdded()
     {
-        var model = new DeviceDiscoveredEvent("", Metadata: new[]
-        {
+        var model = new DeviceDiscoveredEvent("", Metadata:
+        [
             new MetadataModel("Model", "boom")
-        });
+        ]);
         var entity = new DeviceEntity();
 
         entity.UpdateFromDiscoveredDevice(model, new FakeDomainEventBus());
@@ -151,10 +149,10 @@ public class DeviceEntityTest
     [Fact]
     public void WhenDeviceHasModelAndUpdatedFromDiscoveredDeviceThenModelMetadataIsUpdated()
     {
-        var model = new DeviceDiscoveredEvent("", Metadata: new[]
-        {
+        var model = new DeviceDiscoveredEvent("", Metadata:
+        [
             new MetadataModel("Model", "boom")
-        });
+        ]);
         var entity = new DeviceEntity();
         entity.AddOrUpdateMetadata("Model", "old");
 
@@ -182,11 +180,11 @@ public class DeviceEntityTest
     [Fact]
     public void WhenDeviceIsUpdatedFromModelThenMetadataForDeviceIsUpdated()
     {
-        var model = new DeviceModel(Metadata: new[]
-        {
+        var model = new DeviceModel(Metadata:
+        [
             new MetadataModel("one", "three"),
             new MetadataModel("three", "two")
-        });
+        ]);
         var entity = new DeviceEntity();
         entity.AddOrUpdateMetadata("one", "two");
 

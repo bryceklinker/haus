@@ -9,12 +9,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Factories;
 
 public class Zigbee2MqttMessageFactoryTests
 {
-    private readonly Zigbee2MqttMessageFactory _factory;
-
-    public Zigbee2MqttMessageFactoryTests()
-    {
-        _factory = new Zigbee2MqttMessageFactory(new NullLogger<Zigbee2MqttMessageFactory>());
-    }
+    private readonly Zigbee2MqttMessageFactory _factory = new(new NullLogger<Zigbee2MqttMessageFactory>());
 
     [Fact]
     public void WhenPayloadIsNullThenReturnsMessageWithNullValue()

@@ -4,16 +4,10 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Zigbee.Host.Tests.Support;
 
-public class OptionsMonitorFake<T> : IOptionsMonitor<T>
+public class OptionsMonitorFake<T>(T value) : IOptionsMonitor<T>
 {
-    private readonly List<OptionsListenerFake<T>> _listeners;
-    public T CurrentValue { get; private set; }
-
-    public OptionsMonitorFake(T value)
-    {
-        CurrentValue = value;
-        _listeners = new List<OptionsListenerFake<T>>();
-    }
+    private readonly List<OptionsListenerFake<T>> _listeners = new();
+    public T CurrentValue { get; private set; } = value;
 
     public T Get(string name)
     {

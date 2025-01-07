@@ -13,34 +13,25 @@ using Xunit.Abstractions;
 namespace Haus.Web.Host.Tests.Devices;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class DevicesRealtimeApiTests
+public class DevicesRealtimeApiTests(HausWebHostApplicationFactory factory, ITestOutputHelper output)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-    private readonly ITestOutputHelper _output;
-
-    public DevicesRealtimeApiTests(HausWebHostApplicationFactory factory, ITestOutputHelper output)
-    {
-        _factory = factory;
-        _output = output;
-    }
-
     [Fact]
     public async Task WhenLightIsAddedToRoomThenDeviceLightingChangedEventBroadcast()
     {
-        var hub = await _factory.CreateHubConnection("events");
+        var hub = await factory.CreateHubConnection("events");
         HausEvent<DeviceLightingChangedEvent> change = null;
         hub.On<HausEvent<DeviceLightingChangedEvent>>("OnEvent", e =>
         {
             if (e?.Payload?.Device != null) change = e;
         });
 
-        var (_, device) = await _factory.AddRoomWithDevice("my-room", DeviceType.Light);
+        var (_, device) = await factory.AddRoomWithDevice("my-room", DeviceType.Light);
 
         Eventually.Assert(() =>
         {
-            _output.WriteLine("**************************************");
-            _output.WriteLine($"{HausJsonSerializer.Serialize(change)}");
-            _output.WriteLine("**************************************");
+            output.WriteLine("**************************************");
+            output.WriteLine($"{HausJsonSerializer.Serialize(change)}");
+            output.WriteLine("**************************************");
             change.Payload.Device.Id.Should().Be(device.Id);
         });
     }

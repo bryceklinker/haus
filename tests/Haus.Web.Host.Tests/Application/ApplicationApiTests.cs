@@ -7,14 +7,9 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Application;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class ApplicationApiTests
+public class ApplicationApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly IHausApiClient _client;
-
-    public ApplicationApiTests(HausWebHostApplicationFactory factory)
-    {
-        _client = factory.CreateAuthenticatedClient();
-    }
+    private readonly IHausApiClient _client = factory.CreateAuthenticatedClient();
 
     [Fact]
     public async Task WhenGettingLatestVersionThenReturnsLatestReleaseOnGithub()

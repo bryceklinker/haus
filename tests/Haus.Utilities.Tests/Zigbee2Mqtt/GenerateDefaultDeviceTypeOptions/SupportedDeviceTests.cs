@@ -15,7 +15,7 @@ public class SupportedDeviceTests
     [InlineData("illuminance", DeviceType.LightSensor)]
     public void WhenConvertedToDeviceTypeOptionThenConvertsExposesToDeviceType(string exposes, DeviceType deviceType)
     {
-        var supportedDevice = new SupportedDevice("", "", new[] { exposes });
+        var supportedDevice = new SupportedDevice("", "", [exposes]);
 
         var deviceOptions = supportedDevice.ToDeviceTypeOption();
 
@@ -25,7 +25,7 @@ public class SupportedDeviceTests
     [Fact]
     public void WhenSupportedDeviceExposesMultipleThenDeviceTypeHasEachFlag()
     {
-        var supportedDevice = new SupportedDevice("", "", new[] { "light", "temperature", "occupancy" });
+        var supportedDevice = new SupportedDevice("", "", ["light", "temperature", "occupancy"]);
 
         var deviceOptions = supportedDevice.ToDeviceTypeOption();
 

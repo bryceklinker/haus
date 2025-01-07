@@ -4,12 +4,7 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Logging;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class LoggingApiTests
+public class LoggingApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-
-    public LoggingApiTests(HausWebHostApplicationFactory factory)
-    {
-        _factory = factory;
-    }
+    private readonly HausWebHostApplicationFactory _factory = factory;
 }

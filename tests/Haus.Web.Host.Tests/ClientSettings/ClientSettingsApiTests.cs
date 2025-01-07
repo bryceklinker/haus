@@ -9,16 +9,10 @@ using Xunit;
 namespace Haus.Web.Host.Tests.ClientSettings;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class ClientSettingsApiTests
+public class ClientSettingsApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly IHausApiClient _client;
-    private readonly IConfiguration _configuration;
-
-    public ClientSettingsApiTests(HausWebHostApplicationFactory factory)
-    {
-        _configuration = factory.Services.GetRequiredService<IConfiguration>();
-        _client = factory.CreateUnauthenticatedClient();
-    }
+    private readonly IHausApiClient _client = factory.CreateUnauthenticatedClient();
+    private readonly IConfiguration _configuration = factory.Services.GetRequiredService<IConfiguration>();
 
     [Fact]
     public async Task WhenGettingClientSettingsThenReturnsAuthSettings()

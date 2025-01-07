@@ -8,12 +8,7 @@ namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 
 public class DeviceTypeOptionsParserTests
 {
-    private readonly DeviceTypeOptionsParser _parser;
-
-    public DeviceTypeOptionsParserTests()
-    {
-        _parser = new DeviceTypeOptionsParser();
-    }
+    private readonly DeviceTypeOptionsParser _parser = new();
 
     [Fact]
     public void WhenGettingDeviceTypeOptionsThenReturnsAllDeviceTypesFromScriptTag()

@@ -11,12 +11,7 @@ namespace Haus.Core.Tests.Devices.Validators;
 
 public class DeviceModelValidatorTests
 {
-    private readonly IValidator<DeviceModel> _validator;
-
-    public DeviceModelValidatorTests()
-    {
-        _validator = new DeviceModelValidator();
-    }
+    private readonly IValidator<DeviceModel> _validator = new DeviceModelValidator();
 
     [Fact]
     public async Task WhenNameIsNullThenReturnsInvalid()

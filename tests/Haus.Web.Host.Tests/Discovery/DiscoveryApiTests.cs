@@ -10,16 +10,9 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Discovery;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class DiscoveryApiTests
+public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-    private readonly IHausApiClient _client;
-
-    public DiscoveryApiTests(HausWebHostApplicationFactory factory)
-    {
-        _factory = factory;
-        _client = factory.CreateAuthenticatedClient();
-    }
+    private readonly IHausApiClient _client = factory.CreateAuthenticatedClient();
 
     [Fact]
     public async Task WhenDiscoveryStartedThenDiscoveryIsEnabled()
@@ -46,7 +39,7 @@ public class DiscoveryApiTests
     public async Task WhenDiscoveryIsStartedThenStartDiscoveryCommandIsPublished()
     {
         HausCommand<StartDiscoveryModel> hausCommand = null;
-        await _factory.SubscribeToHausCommandsAsync<StartDiscoveryModel>(
+        await factory.SubscribeToHausCommandsAsync<StartDiscoveryModel>(
             StartDiscoveryModel.Type,
             cmd => hausCommand = cmd
         );
@@ -60,7 +53,7 @@ public class DiscoveryApiTests
     public async Task WhenDiscoveryStoppedThenStopDiscoveryCommandIsPublished()
     {
         HausCommand<StopDiscoveryModel> hausCommand = null;
-        await _factory.SubscribeToHausCommandsAsync<StopDiscoveryModel>(
+        await factory.SubscribeToHausCommandsAsync<StopDiscoveryModel>(
             StopDiscoveryModel.Type,
             cmd => hausCommand = cmd
         );
@@ -74,12 +67,12 @@ public class DiscoveryApiTests
     public async Task WhenExternalDevicesAreSyncedThenSyncExternalDevicesIsPublished()
     {
         HausCommand<SyncDiscoveryModel> command = null;
-        await _factory.SubscribeToHausCommandsAsync<SyncDiscoveryModel>(
+        await factory.SubscribeToHausCommandsAsync<SyncDiscoveryModel>(
             SyncDiscoveryModel.Type,
             cmd => command = cmd
         );
 
-        var client = _factory.CreateAuthenticatedClient();
+        var client = factory.CreateAuthenticatedClient();
         await client.SyncDevicesAsync();
 
         Eventually.Assert(() => { command.Type.Should().Be(SyncDiscoveryModel.Type); });

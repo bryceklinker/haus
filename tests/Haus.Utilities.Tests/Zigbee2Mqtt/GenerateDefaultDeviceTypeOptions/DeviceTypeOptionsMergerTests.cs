@@ -10,12 +10,7 @@ namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 
 public class DeviceTypeOptionsMergerTests
 {
-    private readonly DeviceTypeOptionsMerger _merger;
-
-    public DeviceTypeOptionsMergerTests()
-    {
-        _merger = new DeviceTypeOptionsMerger();
-    }
+    private readonly DeviceTypeOptionsMerger _merger = new();
 
     [Fact]
     public void WhenExistingOptionsIsEmptyThenReturnsLatestOptions()

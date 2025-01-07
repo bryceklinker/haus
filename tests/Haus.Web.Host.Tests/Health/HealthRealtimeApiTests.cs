@@ -9,19 +9,12 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Health;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class HealthRealtimeApiTests
+public class HealthRealtimeApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-
-    public HealthRealtimeApiTests(HausWebHostApplicationFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task WhenListeningForStatusUpdatesThenServiceHealthIsReceived()
     {
-        var hub = await _factory.CreateHubConnection("health");
+        var hub = await factory.CreateHubConnection("health");
         HausHealthReportModel health = null;
         hub.On<HausHealthReportModel>("OnHealth", h => health = h);
 

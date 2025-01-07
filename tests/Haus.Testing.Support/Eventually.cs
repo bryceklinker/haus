@@ -4,13 +4,8 @@ using Polly;
 
 namespace Haus.Testing.Support;
 
-public class EventuallyException : Exception
-{
-    public EventuallyException(Exception innerException, double timeout)
-        : base($"Eventually failed after {timeout} ms.", innerException)
-    {
-    }
-}
+public class EventuallyException(Exception innerException, double timeout)
+    : Exception($"Eventually failed after {timeout} ms.", innerException);
 
 public static class Eventually
 {

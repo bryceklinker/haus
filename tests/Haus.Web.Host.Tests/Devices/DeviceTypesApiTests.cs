@@ -9,14 +9,9 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Devices;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class DeviceTypesApiTests
+public class DeviceTypesApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly IHausApiClient _client;
-
-    public DeviceTypesApiTests(HausWebHostApplicationFactory factory)
-    {
-        _client = factory.CreateAuthenticatedClient();
-    }
+    private readonly IHausApiClient _client = factory.CreateAuthenticatedClient();
 
     [Fact]
     public async Task WhenGettingDeviceTypesThenAllDeviceTypesAreReturned()

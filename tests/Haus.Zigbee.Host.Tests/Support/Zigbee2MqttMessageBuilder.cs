@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Tests.Support;
 
-public class Zigbee2MqttMessageBuilder
+public class Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOptions.BaseTopic)
 {
     private const string StateTopicPath = "bridge/state";
     private const string LogTopicPath = "bridge/log";
@@ -14,18 +14,10 @@ public class Zigbee2MqttMessageBuilder
     private static readonly string DevicesTopicPath = $"{ConfigPath}/devices";
     private const string InterviewSuccessful = "interview_successful";
     private const string PairingType = "pairing";
-    private readonly string _baseTopicName;
     private string _topicPath;
     private string _state;
-    private JObject _payloadObject;
-    private JArray _payloadArray;
-
-    public Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOptions.BaseTopic)
-    {
-        _baseTopicName = baseTopicName;
-        _payloadObject = new JObject();
-        _payloadArray = new JArray();
-    }
+    private JObject _payloadObject = new();
+    private JArray _payloadArray = new();
 
     public Zigbee2MqttMessageBuilder WithStateTopic()
     {
@@ -152,7 +144,7 @@ public class Zigbee2MqttMessageBuilder
             var payloadAsString = GetRootMessageAsJson();
             return new MqttApplicationMessage
             {
-                Topic = $"{_baseTopicName}/{_topicPath}",
+                Topic = $"{baseTopicName}/{_topicPath}",
                 PayloadSegment = Encoding.UTF8.GetBytes(payloadAsString)
             };
         }
@@ -167,7 +159,7 @@ public class Zigbee2MqttMessageBuilder
     {
         try
         {
-            return Zigbee2MqttMessage.FromJToken($"{_baseTopicName}/{_topicPath}",
+            return Zigbee2MqttMessage.FromJToken($"{baseTopicName}/{_topicPath}",
                 JToken.Parse(GetRootMessageAsJson()));
         }
         finally

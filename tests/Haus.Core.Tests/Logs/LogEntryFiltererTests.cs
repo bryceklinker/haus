@@ -8,12 +8,7 @@ namespace Haus.Core.Tests.Logs;
 
 public class LogEntryFiltererTests
 {
-    private readonly LogEntryFilterer _filterer;
-
-    public LogEntryFiltererTests()
-    {
-        _filterer = new LogEntryFilterer();
-    }
+    private readonly LogEntryFilterer _filterer = new();
 
     [Fact]
     public void WhenEntriesAreFilteredWithNullParametersThenReturnsEntries()

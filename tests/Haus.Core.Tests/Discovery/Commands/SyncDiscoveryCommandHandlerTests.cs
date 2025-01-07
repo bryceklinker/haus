@@ -9,12 +9,7 @@ namespace Haus.Core.Tests.Discovery.Commands;
 
 public class SyncDiscoveryCommandHandlerTests
 {
-    private readonly CapturingHausBus _hausBus;
-
-    public SyncDiscoveryCommandHandlerTests()
-    {
-        _hausBus = HausBusFactory.CreateCapturingBus();
-    }
+    private readonly CapturingHausBus _hausBus = HausBusFactory.CreateCapturingBus();
 
     [Fact]
     public async Task WhenSyncDevicesIsExecutedThenSyncDevicesIsPublished()

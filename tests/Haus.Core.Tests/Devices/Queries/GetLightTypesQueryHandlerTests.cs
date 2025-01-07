@@ -10,12 +10,7 @@ namespace Haus.Core.Tests.Devices.Queries;
 
 public class GetLightTypesQueryHandlerTests
 {
-    private readonly IHausBus _hausBus;
-
-    public GetLightTypesQueryHandlerTests()
-    {
-        _hausBus = HausBusFactory.Create();
-    }
+    private readonly IHausBus _hausBus = HausBusFactory.Create();
 
     [Fact]
     public async Task WhenGettingLightTypesThenReturnsExcludesNone()

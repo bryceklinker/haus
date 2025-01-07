@@ -12,15 +12,8 @@ namespace Haus.Core.Tests.Logs.Queries;
 
 public class GetLogsQueryHandlerTests
 {
-    private readonly string _logsDirectory;
-    private readonly IHausBus _hausBus;
-
-    public GetLogsQueryHandlerTests()
-    {
-        _logsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "Logs", "sample-log-files");
-
-        _hausBus = HausBusFactory.Create();
-    }
+    private readonly string _logsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "Logs", "sample-log-files");
+    private readonly IHausBus _hausBus = HausBusFactory.Create();
 
     [Fact]
     public async Task WhenGettingWithNoParametersThenFirst25LogsAreReturned()

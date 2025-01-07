@@ -11,24 +11,17 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Discovery;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class DiscoveryRealtimeApiTests
+public class DiscoveryRealtimeApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-
-    public DiscoveryRealtimeApiTests(HausWebHostApplicationFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task WhenDiscoveryIsStartedThenEventsGetsNotified()
     {
-        var hub = await _factory.CreateHubConnection("events");
+        var hub = await factory.CreateHubConnection("events");
 
         var events = new List<HausEvent>();
         hub.On<HausEvent>("OnEvent", msg => events.Add(msg));
 
-        await _factory.CreateAuthenticatedClient().StartDiscoveryAsync();
+        await factory.CreateAuthenticatedClient().StartDiscoveryAsync();
         Eventually.Assert(() => { events.Should().Contain(e => e.Type == DiscoveryStartedEvent.Type); });
     }
 }

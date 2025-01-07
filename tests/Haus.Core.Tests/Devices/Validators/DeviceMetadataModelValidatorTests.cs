@@ -10,12 +10,7 @@ namespace Haus.Core.Tests.Devices.Validators;
 
 public class DeviceMetadataModelValidatorTests
 {
-    private readonly IValidator<MetadataModel> _validator;
-
-    public DeviceMetadataModelValidatorTests()
-    {
-        _validator = new DeviceMetadataModelValidator();
-    }
+    private readonly IValidator<MetadataModel> _validator = new DeviceMetadataModelValidator();
 
     [Fact]
     public async Task WhenMetadataHasNullKeyThenReturnsInvalid()

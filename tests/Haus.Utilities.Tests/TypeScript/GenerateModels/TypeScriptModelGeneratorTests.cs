@@ -8,14 +8,8 @@ namespace Haus.Utilities.Tests.TypeScript.GenerateModels;
 
 public class TypeScriptModelGeneratorTests
 {
-    private readonly TypeScriptGeneratorContext _context;
-    private readonly TypeScriptModelGenerator _generator;
-
-    public TypeScriptModelGeneratorTests()
-    {
-        _context = new TypeScriptGeneratorContext();
-        _generator = new TypeScriptModelGenerator();
-    }
+    private readonly TypeScriptGeneratorContext _context = new();
+    private readonly TypeScriptModelGenerator _generator = new();
 
     [Fact]
     public void WhenTypeContainsSimplePropertiesThenReturnsSingleTypeScriptModel()

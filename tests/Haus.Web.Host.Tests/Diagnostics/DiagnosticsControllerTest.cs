@@ -11,19 +11,12 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Diagnostics;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class DiagnosticsControllerTest
+public class DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-
-    public DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task WhenMessageIsReplayedThenMessageIsSentToMqttTopic()
     {
-        var mqtt = await _factory.GetMqttClient();
+        var mqtt = await factory.GetMqttClient();
         MqttApplicationMessage received = null;
         await mqtt.SubscribeAsync("my-topic", msg => received = msg);
 
@@ -32,7 +25,7 @@ public class DiagnosticsControllerTest
             Payload = new { id = 65 },
             Topic = "my-topic"
         };
-        var client = _factory.CreateAuthenticatedClient();
+        var client = factory.CreateAuthenticatedClient();
         await client.ReplayDiagnosticsMessageAsync(model);
 
         Eventually.Assert(() =>
@@ -45,7 +38,7 @@ public class DiagnosticsControllerTest
     [Fact]
     public async Task WhenUnauthenticatedClientReplaysMessageThenRespondsWithUnauthorized()
     {
-        var client = _factory.CreateUnauthenticatedClient();
+        var client = factory.CreateUnauthenticatedClient();
         var response = await client.ReplayDiagnosticsMessageAsync(new MqttDiagnosticsMessageModel());
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

@@ -14,7 +14,7 @@ namespace Haus.Testing.Support.Fakes;
 
 public class FakeMqttClient : IManagedMqttClient, IMqttClient
 {
-    private readonly List<MqttApplicationMessage> _publishedMessages = new();
+    private readonly List<MqttApplicationMessage> _publishedMessages = [];
     private readonly MqttClientEvents _events = new();
 
     public bool IsDisposed { get; private set; }

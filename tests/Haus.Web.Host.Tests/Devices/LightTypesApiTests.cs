@@ -8,14 +8,9 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Devices;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class LightTypesApiTests
+public class LightTypesApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly IHausApiClient _client;
-
-    public LightTypesApiTests(HausWebHostApplicationFactory factory)
-    {
-        _client = factory.CreateAuthenticatedClient();
-    }
+    private readonly IHausApiClient _client = factory.CreateAuthenticatedClient();
 
     [Fact]
     public async Task WhenGettingLightTypesThenReturnsAllLightTypes()

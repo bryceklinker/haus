@@ -13,12 +13,7 @@ namespace Haus.Core.Tests.Rooms.DomainEvents;
 
 public class RoomLightingChangedDomainEventHandlerTests
 {
-    private readonly CapturingHausBus _hausBus;
-
-    public RoomLightingChangedDomainEventHandlerTests()
-    {
-        _hausBus = HausBusFactory.CreateCapturingBus();
-    }
+    private readonly CapturingHausBus _hausBus = HausBusFactory.CreateCapturingBus();
 
     [Fact]
     public async Task WhenRoomLightingChangedThenRoutableCommandIsPublished()

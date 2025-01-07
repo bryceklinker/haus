@@ -11,12 +11,7 @@ namespace Haus.Core.Tests.Devices.Events;
 
 public class MultiSensorChangedEventHandlerTests
 {
-    private readonly CapturingHausBus _hausBus;
-
-    public MultiSensorChangedEventHandlerTests()
-    {
-        _hausBus = HausBusFactory.CreateCapturingBus();
-    }
+    private readonly CapturingHausBus _hausBus = HausBusFactory.CreateCapturingBus();
 
     [Fact]
     public async Task WhenMultiSensorChangedHasOccupancyThenPublishesOccupancyChangedEvent()

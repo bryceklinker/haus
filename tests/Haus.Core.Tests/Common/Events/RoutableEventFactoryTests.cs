@@ -11,12 +11,7 @@ namespace Haus.Core.Tests.Common.Events;
 
 public class RoutableHausEventFactoryTest
 {
-    private readonly RoutableEventFactory _factory;
-
-    public RoutableHausEventFactoryTest()
-    {
-        _factory = new RoutableEventFactory();
-    }
+    private readonly RoutableEventFactory _factory = new();
 
     [Fact]
     public void WhenDeviceDiscoveredEventThenReturnsRoutableEventFromDeviceDiscovered()

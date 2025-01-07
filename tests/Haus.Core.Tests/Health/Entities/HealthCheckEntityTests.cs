@@ -18,7 +18,7 @@ public class HealthCheckEntityTests
             66,
             "What up",
             "not good",
-            new[] { "something" }
+            ["something"]
         );
 
         var entity = HealthCheckEntity.FromModel(model, DateTimeOffset.UtcNow);
@@ -51,7 +51,7 @@ public class HealthCheckEntityTests
             5,
             "good",
             "exception",
-            new[] { "boom" }
+            ["boom"]
         );
 
         var entity = new HealthCheckEntity();
@@ -74,7 +74,7 @@ public class HealthCheckEntityTests
             Name = "Checky",
             Description = "Hola",
             Status = HealthStatus.Healthy,
-            Tags = new[] { "welp" },
+            Tags = ["welp"],
             ExceptionMessage = "failure",
             DurationOfCheckInMilliseconds = 66,
             LastUpdatedTimestamp = DateTimeOffset.UtcNow

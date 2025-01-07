@@ -7,12 +7,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class IlluminanceChangedMapperTests
 {
-    private readonly IlluminanceChangedMapper _mapper;
-
-    public IlluminanceChangedMapperTests()
-    {
-        _mapper = new IlluminanceChangedMapper();
-    }
+    private readonly IlluminanceChangedMapper _mapper = new();
 
     [Fact]
     public void WhenIlluminanceChangedThenReturnsPopulatedIlluminanceChanged()

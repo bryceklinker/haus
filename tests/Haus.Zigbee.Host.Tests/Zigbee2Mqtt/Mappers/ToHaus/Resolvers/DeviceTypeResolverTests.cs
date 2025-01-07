@@ -14,10 +14,10 @@ public class DeviceTypeResolverTests
     public DeviceTypeResolverTests()
     {
         var options = OptionsFactory.CreateHausOptions();
-        options.Value.DeviceTypeOptions = new[]
-        {
+        options.Value.DeviceTypeOptions =
+        [
             new DeviceTypeOptions("Old", "Klinker", DeviceType.Light)
-        };
+        ];
         _resolver = new DeviceTypeResolver(options);
     }
 

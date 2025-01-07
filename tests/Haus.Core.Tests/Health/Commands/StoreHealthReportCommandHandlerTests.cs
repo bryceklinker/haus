@@ -30,10 +30,9 @@ public class StoreHealthReportCommandHandlerTests
     [Fact]
     public async Task WhenHealthReportIsStoredThenReportCheckIsAddedToDatabase()
     {
-        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, new[]
-        {
+        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, [
             new HausHealthCheckModel("NewHotness", HealthStatus.Healthy, 6)
-        });
+        ]);
 
         await _bus.ExecuteCommandAsync(new StoreHealthReportCommand(report));
 
@@ -46,10 +45,9 @@ public class StoreHealthReportCommandHandlerTests
         var now = new DateTimeOffset(2020, 3, 27, 2, 1, 5, TimeSpan.Zero);
         _clock.SetNow(now);
 
-        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, new[]
-        {
+        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, [
             new HausHealthCheckModel("NewHotness", HealthStatus.Healthy, 6)
-        });
+        ]);
         _context.AddHealthCheck("NewHotness");
 
         await _bus.ExecuteCommandAsync(new StoreHealthReportCommand(report));
@@ -62,11 +60,10 @@ public class StoreHealthReportCommandHandlerTests
     [Fact]
     public async Task WhenHealthReportContainsMultipleChecksThenAllChecksAreAddedToDatabase()
     {
-        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, new[]
-        {
+        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, [
             new HausHealthCheckModel("NewHotness", HealthStatus.Healthy, 6),
             new HausHealthCheckModel("Old n' Busted", HealthStatus.Healthy, 6)
-        });
+        ]);
 
         await _bus.ExecuteCommandAsync(new StoreHealthReportCommand(report));
 

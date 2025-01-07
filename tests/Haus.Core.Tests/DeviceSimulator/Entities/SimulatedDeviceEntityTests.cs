@@ -27,7 +27,7 @@ public class SimulatedDeviceEntityTests
     [Fact]
     public void WhenCreatedWithMetadataThenMetadataIsMappedToSimulatedDevice()
     {
-        var model = new SimulatedDeviceModel(Metadata: new[] { new MetadataModel("one", "three") });
+        var model = new SimulatedDeviceModel(Metadata: [new MetadataModel("one", "three")]);
 
         var entity = SimulatedDeviceEntity.Create(model);
 
@@ -50,10 +50,9 @@ public class SimulatedDeviceEntityTests
     public void WhenConvertedToModelThenReturnsSimulatedDeviceModel()
     {
         var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel($"{Guid.NewGuid()}", DeviceType.Light, true,
-            new[]
-            {
-                new MetadataModel("one", "three")
-            }));
+        [
+            new MetadataModel("one", "three")
+        ]));
 
         var model = entity.ToModel();
 
