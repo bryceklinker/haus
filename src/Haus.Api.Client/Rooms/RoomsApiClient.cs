@@ -23,13 +23,9 @@ public interface IRoomsApiClient : IApiClient
     Task<HttpResponseMessage> TurnRoomOffAsync(long roomId);
 }
 
-public class RoomsApiClient : ApiClient, IRoomsApiClient
+public class RoomsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+    : ApiClient(httpClient, options), IRoomsApiClient
 {
-    public RoomsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-        : base(httpClient, options)
-    {
-    }
-
     public Task<RoomModel> GetRoomAsync(long id)
     {
         return GetAsJsonAsync<RoomModel>($"rooms/{id}");

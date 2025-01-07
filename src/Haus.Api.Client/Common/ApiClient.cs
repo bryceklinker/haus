@@ -13,20 +13,14 @@ public interface IApiClient
     string BaseUrl { get; }
 }
 
-public abstract class ApiClient : IApiClient
+public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+    : IApiClient
 {
     private const string ApiPath = "api";
-    private readonly IOptions<HausApiClientSettings> _options;
 
-    public string BaseUrl => UrlUtility.Join(null, _options.Value.BaseUrl);
+    public string BaseUrl => UrlUtility.Join(null, options.Value.BaseUrl);
     public string ApiBaseUrl => UrlUtility.Join(null, BaseUrl, ApiPath);
-    protected HttpClient HttpClient { get; }
-
-    protected ApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    {
-        HttpClient = httpClient;
-        _options = options;
-    }
+    protected HttpClient HttpClient { get; } = httpClient;
 
     protected Task<T> GetAsJsonAsync<T>(string path, QueryParameters parameters = null)
     {

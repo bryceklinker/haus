@@ -14,13 +14,9 @@ public interface IDeviceSimulatorApiClient
     Task<HttpResponseMessage> ResetDeviceSimulatorAsync();
 }
 
-public class DeviceSimulatorApiClient : ApiClient, IDeviceSimulatorApiClient
+public class DeviceSimulatorApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+    : ApiClient(httpClient, options), IDeviceSimulatorApiClient
 {
-    public DeviceSimulatorApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-        : base(httpClient, options)
-    {
-    }
-
     public Task<HttpResponseMessage> TriggerOccupancyChange(string simulatorId)
     {
         return PostEmptyContentAsync($"device-simulator/devices/{simulatorId}/trigger-occupancy-change");

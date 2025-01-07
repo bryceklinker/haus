@@ -36,23 +36,20 @@ public interface IHausApiClient :
 {
 }
 
-public class HausApiClient : ApiClient, IHausApiClient
+public class HausApiClient(
+    IHausApiClientFactory factory,
+    HttpClient httpClient,
+    IOptions<HausApiClientSettings> options)
+    : ApiClient(httpClient, options), IHausApiClient
 {
-    private readonly IHausApiClientFactory _factory;
-    private IDeviceApiClient DeviceApiClient => _factory.CreateDeviceClient();
-    private IDiagnosticsApiClient DiagnosticsApiClient => _factory.CreateDiagnosticsClient();
-    private IRoomsApiClient RoomsApiClient => _factory.CreateRoomsClient();
-    private IDeviceSimulatorApiClient DeviceSimulatorApiClient => _factory.CreateDeviceSimulatorClient();
-    private IDiscoveryApiClient DiscoveryApiClient => _factory.CreateDiscoveryClient();
-    private ILogsApiClient LogsApiClient => _factory.CreateLogsClient();
-    private IClientSettingsApiClient ClientSettingsApiClient => _factory.CreateClientSettingsClient();
-    private IApplicationApiClient ApplicationApiClient => _factory.CreateApplicationClient();
-
-    public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
-        : base(httpClient, options)
-    {
-        _factory = factory;
-    }
+    private IDeviceApiClient DeviceApiClient => factory.CreateDeviceClient();
+    private IDiagnosticsApiClient DiagnosticsApiClient => factory.CreateDiagnosticsClient();
+    private IRoomsApiClient RoomsApiClient => factory.CreateRoomsClient();
+    private IDeviceSimulatorApiClient DeviceSimulatorApiClient => factory.CreateDeviceSimulatorClient();
+    private IDiscoveryApiClient DiscoveryApiClient => factory.CreateDiscoveryClient();
+    private ILogsApiClient LogsApiClient => factory.CreateLogsClient();
+    private IClientSettingsApiClient ClientSettingsApiClient => factory.CreateClientSettingsClient();
+    private IApplicationApiClient ApplicationApiClient => factory.CreateApplicationClient();
 
     public Task<DiscoveryModel> GetDiscoveryStateAsync()
     {

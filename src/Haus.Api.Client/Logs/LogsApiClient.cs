@@ -13,13 +13,9 @@ public interface ILogsApiClient
     Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null);
 }
 
-public class LogsApiClient : ApiClient, ILogsApiClient
+public class LogsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+    : ApiClient(httpClient, options), ILogsApiClient
 {
-    public LogsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-        : base(httpClient, options)
-    {
-    }
-
     public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null)
     {
         return GetAsJsonAsync<ListResult<LogEntryModel>>("logs", ConvertToQueryParameters(parameters));

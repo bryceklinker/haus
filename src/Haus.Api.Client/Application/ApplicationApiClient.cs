@@ -15,14 +15,10 @@ public interface IApplicationApiClient
     Task<HttpResponseMessage> DownloadLatestPackageAsync(int packageId);
 }
 
-public class ApplicationApiClient : ApiClient, IApplicationApiClient
+public class ApplicationApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+    : ApiClient(httpClient, options), IApplicationApiClient
 {
     private const string LatestVersionRoute = "application/latest-version";
-
-    public ApplicationApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-        : base(httpClient, options)
-    {
-    }
 
     public Task<ApplicationVersionModel> GetLatestVersionAsync()
     {

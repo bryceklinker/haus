@@ -22,13 +22,9 @@ public interface IDeviceApiClient : IApiClient
     Task<HttpResponseMessage> TurnLightOnAsync(long deviceId);
 }
 
-public class DevicesApiClient : ApiClient, IDeviceApiClient
+public class DevicesApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+    : ApiClient(httpClient, options), IDeviceApiClient
 {
-    public DevicesApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-        : base(httpClient, options)
-    {
-    }
-
     public Task<DeviceModel> GetDeviceAsync(long id)
     {
         return GetAsJsonAsync<DeviceModel>($"devices/{id}");
