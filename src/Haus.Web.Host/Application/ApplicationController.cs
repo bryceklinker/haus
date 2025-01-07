@@ -36,7 +36,7 @@ public class ApplicationController : HausBusController
         var httpStatusCode = result.Status.ToHttpStatus();
         return httpStatusCode switch
         {
-            HttpStatusCode.OK => File(result.Bytes, MediaTypeNames.Application.Octet),
+            HttpStatusCode.OK => File(result.Stream, MediaTypeNames.Application.Octet),
             _ => StatusCode((int)httpStatusCode)
         };
     }

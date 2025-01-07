@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Haus.Core.Application;
@@ -11,5 +12,5 @@ public interface ILatestReleaseProvider
 {
     Task<ReleaseModel> GetLatestVersionAsync();
     Task<ReleasePackageModel[]> GetLatestPackages();
-    Task<byte[]> DownloadLatestPackage(int id);
+    Task<Stream> DownloadLatestPackage(int id);
 }

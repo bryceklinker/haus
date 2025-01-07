@@ -18,3 +18,23 @@ targeting support for many Zigbee devices.
 - Yarn
 
 Currently, this is only intended to be run from the command line with all code available locally.
+
+# Environment Variables
+
+```bash
+export GITHUB_TOKEN="{insert GitHub PAT w/ read access to repository}";
+
+export AUTH_DOMAIN="{insert auth0 domain}"
+export AUTH_CLIENT_ID="{insert auth0 client id}"
+export AUTH_CLIENT_SECRET="{insert client secret for above client id}"
+export AUTH_AUDIENCE="https://haus-portal-api.com"
+export AUTH_USERNAME="{insert user name}"
+export AUTH_PASSWORD="{insert user password"
+
+export CYPRESS_AUTH_DOMAIN="${AUTH_DOMAIN}"
+export CYPRESS_AUTH_CLIENT_ID="${AUTH_CLIENT_ID}"
+export CYPRESS_AUTH_CLIENT_SECRET="${AUTH_CLIENT_SECRET}"
+export CYPRESS_AUTH_AUDIENCE="${AUTH_AUDIENCE}"
+export CYPRESS_AUTH_USERNAME="${AUTH_USERNAME}"
+export CYPRESS_AUTH_PASSWORD="${AUTH_PASSWORD}"
+```

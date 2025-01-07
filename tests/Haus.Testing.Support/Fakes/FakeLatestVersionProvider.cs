@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Haus.Core.Application;
 
@@ -28,12 +29,12 @@ public class FakeLatestReleaseProvider : ILatestReleaseProvider
         return Task.FromResult(Packages);
     }
 
-    public Task<byte[]> DownloadLatestPackage(int id)
+    public Task<Stream> DownloadLatestPackage(int id)
     {
         if (Exception != null)
             throw Exception;
 
-        return Task.FromResult(PackageBytes[id]);
+        return Task.FromResult<Stream>(new MemoryStream(PackageBytes[id]));
     }
 
     public void SetupLatestVersion(ReleaseModel model)

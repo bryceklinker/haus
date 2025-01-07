@@ -46,7 +46,7 @@ internal class
         {
             _logger.LogError(e, "Failed to get latest packages using provider {Type}",
                 _latestReleaseProvider.GetType());
-            return Array.Empty<ReleasePackageModel>();
+            return [];
         }
     }
 }

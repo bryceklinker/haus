@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -48,11 +49,11 @@ public class GithubLatestReleaseProvider : ILatestReleaseProvider
             .ToArray();
     }
 
-    public async Task<byte[]> DownloadLatestPackage(int id)
+    public async Task<Stream> DownloadLatestPackage(int id)
     {
         var githubRelease = await GetLatestGitHubRelease().ConfigureAwait(false);
         var asset = githubRelease.Assets.Single(p => p.Id == id);
-        var response = await _githubClient.Connection.Get<byte[]>(new Uri(asset.Url), new Dictionary<string, string>(),
+        var response = await _githubClient.Connection.Get<Stream>(new Uri(asset.Url), new Dictionary<string, string>(),
             MediaTypeNames.Application.Octet);
         if (response.HttpResponse.StatusCode != HttpStatusCode.OK)
             throw new HttpRequestException($"Failed to get asset {id} from GitHub", null,

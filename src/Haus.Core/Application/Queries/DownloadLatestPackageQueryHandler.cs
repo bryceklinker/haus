@@ -26,8 +26,8 @@ public class DownloadLatestPackageQueryHandler : IQueryHandler<DownloadLatestPac
     {
         try
         {
-            var bytes = await _latestReleaseProvider.DownloadLatestPackage(request.PackageId).ConfigureAwait(false);
-            return DownloadLatestPackageResult.Ok(bytes);
+            var stream = await _latestReleaseProvider.DownloadLatestPackage(request.PackageId).ConfigureAwait(false);
+            return DownloadLatestPackageResult.Ok(stream);
         }
         catch (Exception e)
         {
