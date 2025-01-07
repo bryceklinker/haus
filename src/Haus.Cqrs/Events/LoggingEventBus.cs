@@ -6,21 +6,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Haus.Cqrs.Events;
 
-internal class LoggingEventBus : LoggingBus, IEventBus
+internal class LoggingEventBus(IEventBus eventBus, ILogger<LoggingEventBus> logger) : LoggingBus(logger), IEventBus
 {
-    private readonly IEventBus _eventBus;
-
-    public LoggingEventBus(IEventBus eventBus, ILogger<LoggingEventBus> logger)
-        : base(logger)
-    {
-        _eventBus = eventBus;
-    }
-
     public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken token = default) where TEvent : IEvent
     {
         await ExecuteWithLoggingAsync(@event, async () =>
             {
-                await _eventBus.PublishAsync(@event, token).ConfigureAwait(false);
+                await eventBus.PublishAsync(@event, token).ConfigureAwait(false);
                 return Unit.Value;
             }, token)
             .ConfigureAwait(false);

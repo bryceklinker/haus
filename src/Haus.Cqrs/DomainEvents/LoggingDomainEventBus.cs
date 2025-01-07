@@ -4,27 +4,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Haus.Cqrs.DomainEvents;
 
-internal class LoggingDomainEventBus : IDomainEventBus
+internal class LoggingDomainEventBus(IDomainEventBus domainEventBus, ILogger<LoggingDomainEventBus> logger)
+    : IDomainEventBus
 {
-    private readonly IDomainEventBus _domainEventBus;
-    private readonly ILogger<LoggingDomainEventBus> _logger;
-
-    public LoggingDomainEventBus(IDomainEventBus domainEventBus, ILogger<LoggingDomainEventBus> logger)
-    {
-        _domainEventBus = domainEventBus;
-        _logger = logger;
-    }
-
     public void Enqueue(IDomainEvent domainEvent)
     {
-        _logger.LogInformation("Enqueuing domain event {EventName}...", domainEvent.GetType().Name);
-        _domainEventBus.Enqueue(domainEvent);
+        logger.LogInformation("Enqueuing domain event {EventName}...", domainEvent.GetType().Name);
+        domainEventBus.Enqueue(domainEvent);
     }
 
     public async Task FlushAsync(CancellationToken token = default)
     {
-        _logger.LogInformation("Flushing domain events...");
-        await _domainEventBus.FlushAsync(token).ConfigureAwait(false);
-        _logger.LogInformation("Finished flushing domain events");
+        logger.LogInformation("Flushing domain events...");
+        await domainEventBus.FlushAsync(token).ConfigureAwait(false);
+        logger.LogInformation("Finished flushing domain events");
     }
 }

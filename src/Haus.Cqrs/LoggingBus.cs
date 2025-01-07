@@ -6,14 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Haus.Cqrs;
 
-internal abstract class LoggingBus
+internal abstract class LoggingBus(ILogger logger)
 {
-    protected ILogger Logger { get; }
-
-    protected LoggingBus(ILogger logger)
-    {
-        Logger = logger;
-    }
+    protected ILogger Logger { get; } = logger;
 
     protected async Task<TOutput> ExecuteWithLoggingAsync<TInput, TOutput>(TInput input, Func<Task<TOutput>> executor,
         CancellationToken token = default)
