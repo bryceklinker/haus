@@ -2,17 +2,16 @@ using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 
-public class Zigbee2MqttMessage
+public class Zigbee2MqttMessage(string topic, string raw = null, JToken root = null)
 {
-    private readonly JToken _root;
     private Zigbee2MqttMeta _meta;
-    public string Topic { get; }
-    public string Raw { get; }
+    public string Topic { get; } = topic;
+    public string Raw { get; } = raw;
 
-    public JObject PayloadObject => _root as JObject;
-    public JArray PayloadArray => _root as JArray;
+    public JObject PayloadObject => root as JObject;
+    public JArray PayloadArray => root as JArray;
 
-    public bool IsJson => _root != null;
+    public bool IsJson => root != null;
     public string Json => Raw;
     public string Type => SafeGetValue<string>("type");
     public string Message => SafeGetValue<string>("message");
@@ -27,13 +26,6 @@ public class Zigbee2MqttMessage
     public bool? Occupancy => SafeGetValue<bool?>("occupancy");
     public int? OccupancyTimeout => SafeGetValue<int?>("occupancy_timeout");
     public double? Temperature => SafeGetValue<double?>("temperature");
-
-    public Zigbee2MqttMessage(string topic, string raw = null, JToken root = null)
-    {
-        _root = root;
-        Topic = topic;
-        Raw = raw;
-    }
 
     public static Zigbee2MqttMessage FromJToken(string topic, JToken jToken)
     {

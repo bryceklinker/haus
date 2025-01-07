@@ -17,17 +17,11 @@ public interface IDeviceTypeResolver
     DeviceType Resolve(string vendor, string model);
 }
 
-public class DeviceTypeResolver : IDeviceTypeResolver
+public class DeviceTypeResolver(IOptions<HausOptions> options) : IDeviceTypeResolver
 {
-    private readonly IOptions<HausOptions> _options;
     private static readonly Lazy<DeviceTypeOptions[]> DefaultDeviceTypeOptions = new(LoadDefaultDeviceTypeOptions);
 
-    private IEnumerable<DeviceTypeOptions> DeviceTypeOptions => _options.Value.DeviceTypeOptions;
-
-    public DeviceTypeResolver(IOptions<HausOptions> options)
-    {
-        _options = options;
-    }
+    private IEnumerable<DeviceTypeOptions> DeviceTypeOptions => options.Value.DeviceTypeOptions;
 
     private static IEnumerable<DeviceTypeOptions> DefaultOptions => DefaultDeviceTypeOptions.Value;
 

@@ -11,19 +11,12 @@ public interface IHausToZigbeeMapper
     IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message);
 }
 
-public class HausToZigbeeMapper : IHausToZigbeeMapper
+public class HausToZigbeeMapper(IEnumerable<IToZigbeeMapper> mappers) : IHausToZigbeeMapper
 {
-    private readonly IEnumerable<IToZigbeeMapper> _mappers;
-
-    public HausToZigbeeMapper(IEnumerable<IToZigbeeMapper> mappers)
-    {
-        _mappers = mappers;
-    }
-
     public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
     {
         var command = HausJsonSerializer.Deserialize<HausCommand>(message.PayloadSegment);
-        return _mappers.Where(m => m.IsSupported(command.Type))
+        return mappers.Where(m => m.IsSupported(command.Type))
             .SelectMany(m => m.Map(message));
     }
 }

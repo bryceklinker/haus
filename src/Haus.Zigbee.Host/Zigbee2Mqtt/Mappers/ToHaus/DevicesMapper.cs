@@ -14,25 +14,15 @@ using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
 
-public class DevicesMapper : IToHausMapper
+public class DevicesMapper(
+    IOptions<ZigbeeOptions> zigbeeOptions,
+    IOptions<HausOptions> hausOptions,
+    IDeviceTypeResolver deviceTypeResolver)
+    : IToHausMapper
 {
-    private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
-    private readonly IOptions<HausOptions> _hausOptions;
-    private readonly IDeviceTypeResolver _deviceTypeResolver;
-
-    public DevicesMapper(
-        IOptions<ZigbeeOptions> zigbeeOptions,
-        IOptions<HausOptions> hausOptions,
-        IDeviceTypeResolver deviceTypeResolver)
-    {
-        _zigbeeOptions = zigbeeOptions;
-        _hausOptions = hausOptions;
-        _deviceTypeResolver = deviceTypeResolver;
-    }
-
     public bool IsSupported(Zigbee2MqttMessage message)
     {
-        return message.Topic == $"{_zigbeeOptions.GetBaseTopic()}/bridge/config/devices";
+        return message.Topic == $"{zigbeeOptions.GetBaseTopic()}/bridge/config/devices";
     }
 
     public IEnumerable<MqttApplicationMessage> Map(Zigbee2MqttMessage message)
@@ -41,7 +31,7 @@ public class DevicesMapper : IToHausMapper
             .Cast<JObject>()
             .Select(item => new MqttApplicationMessage
             {
-                Topic = _hausOptions.GetEventsTopic(),
+                Topic = hausOptions.GetEventsTopic(),
                 PayloadSegment = HausJsonSerializer.SerializeToBytes(CreateDeviceDiscoveredEvent(item))
             });
     }
@@ -51,7 +41,7 @@ public class DevicesMapper : IToHausMapper
         var model = jToken.Value<string>("model");
         var vendor = jToken.Value<string>("vendor");
         return new DeviceDiscoveredEvent(jToken.Value<string>("friendly_name"),
-            _deviceTypeResolver.Resolve(vendor, model),
+            deviceTypeResolver.Resolve(vendor, model),
             CreateDeviceMetadata(jToken)
         ).AsHausEvent();
     }

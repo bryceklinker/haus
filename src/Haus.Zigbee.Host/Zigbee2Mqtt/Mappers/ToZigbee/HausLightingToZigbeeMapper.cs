@@ -10,16 +10,9 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
 
-public class HausLightingToZigbeeMapper : IToZigbeeMapper
+public class HausLightingToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZigbeeMapper
 {
-    private readonly IOptions<ZigbeeOptions> _options;
-
-    private string ZigbeeBaseTopic => _options.Value.Config.Mqtt.BaseTopic;
-
-    public HausLightingToZigbeeMapper(IOptions<ZigbeeOptions> options)
-    {
-        _options = options;
-    }
+    private string ZigbeeBaseTopic => options.Value.Config.Mqtt.BaseTopic;
 
     public bool IsSupported(string type)
     {

@@ -11,7 +11,7 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
 
-public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
+public class HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZigbeeMapper
 {
     private static readonly string[] SupportedTypes =
     {
@@ -19,13 +19,6 @@ public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
         StopDiscoveryModel.Type,
         SyncDiscoveryModel.Type
     };
-
-    private readonly IOptions<ZigbeeOptions> _options;
-
-    public HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options)
-    {
-        _options = options;
-    }
 
     public bool IsSupported(string type)
     {
@@ -48,7 +41,7 @@ public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
     {
         yield return new MqttApplicationMessage
         {
-            Topic = $"{_options.GetBaseTopic()}/bridge/config/devices/get",
+            Topic = $"{options.GetBaseTopic()}/bridge/config/devices/get",
             PayloadSegment = ArraySegment<byte>.Empty
         };
     }
@@ -57,7 +50,7 @@ public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
     {
         yield return new MqttApplicationMessage
         {
-            Topic = $"{_options.GetBaseTopic()}/bridge/config/permit_join",
+            Topic = $"{options.GetBaseTopic()}/bridge/config/permit_join",
             PayloadSegment = Encoding.UTF8.GetBytes(permitJoin.ToString().ToLowerInvariant())
         };
     }

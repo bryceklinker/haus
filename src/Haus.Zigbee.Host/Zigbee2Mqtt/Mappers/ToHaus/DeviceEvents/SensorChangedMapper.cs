@@ -5,18 +5,10 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class SensorChangedMapper
 {
-    private readonly BatteryChangedMapper _batteryChangedMapper;
-    private readonly IlluminanceChangedMapper _illuminanceChangedMapper;
-    private readonly OccupancyChangedMapper _occupancyChangedMapper;
-    private readonly TemperatureChangedMapper _temperatureChangedMapper;
-
-    public SensorChangedMapper()
-    {
-        _batteryChangedMapper = new BatteryChangedMapper();
-        _illuminanceChangedMapper = new IlluminanceChangedMapper();
-        _occupancyChangedMapper = new OccupancyChangedMapper();
-        _temperatureChangedMapper = new TemperatureChangedMapper();
-    }
+    private readonly BatteryChangedMapper _batteryChangedMapper = new();
+    private readonly IlluminanceChangedMapper _illuminanceChangedMapper = new();
+    private readonly OccupancyChangedMapper _occupancyChangedMapper = new();
+    private readonly TemperatureChangedMapper _temperatureChangedMapper = new();
 
     public object Map(Zigbee2MqttMessage message)
     {

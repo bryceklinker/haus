@@ -12,15 +12,8 @@ public interface IZigbee2MqttMessageFactory
     Zigbee2MqttMessage Create(MqttApplicationMessage message);
 }
 
-public class Zigbee2MqttMessageFactory : IZigbee2MqttMessageFactory
+public class Zigbee2MqttMessageFactory(ILogger<Zigbee2MqttMessageFactory> logger) : IZigbee2MqttMessageFactory
 {
-    private readonly ILogger<Zigbee2MqttMessageFactory> _logger;
-
-    public Zigbee2MqttMessageFactory(ILogger<Zigbee2MqttMessageFactory> logger)
-    {
-        _logger = logger;
-    }
-
     public Zigbee2MqttMessage Create(MqttApplicationMessage message)
     {
         var payloadAsString = message.PayloadSegment != null ? Encoding.UTF8.GetString(message.PayloadSegment) : null;
@@ -35,7 +28,7 @@ public class Zigbee2MqttMessageFactory : IZigbee2MqttMessageFactory
         }
         catch (Exception)
         {
-            _logger.LogInformation("Failed to turn payload {0} into JObject", payload);
+            logger.LogInformation("Failed to turn payload {0} into JObject", payload);
             return null;
         }
     }
