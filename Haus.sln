@@ -93,7 +93,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tasks", ".tasks", "{3E214A
 	ProjectSection(SolutionItems) = preProject
 		yarn.lock = yarn.lock
 		package.json = package.json
-		.env-cmdrc.json = .env-cmdrc.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{39FA0F9B-0B5A-4B47-806B-80033788570C}"
