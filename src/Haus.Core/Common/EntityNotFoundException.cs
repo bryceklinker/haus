@@ -6,12 +6,12 @@ namespace Haus.Core.Common;
 
 public class EntityNotFoundException : Exception
 {
-    public EntityNotFoundException(Type entityType, long id)
+    protected EntityNotFoundException(Type entityType, long id)
         : base($"No entity of type ${entityType.Name} found with id {id}.")
     {
     }
 
-    public EntityNotFoundException(Type entityType, IEnumerable<long> ids)
+    protected EntityNotFoundException(Type entityType, IEnumerable<long> ids)
         : base($"No entities of type ${entityType.Name} found with ids {string.Join(", ", ids)}.")
     {
     }

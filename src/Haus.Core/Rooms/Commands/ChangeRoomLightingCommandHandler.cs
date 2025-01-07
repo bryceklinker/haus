@@ -11,25 +11,17 @@ namespace Haus.Core.Rooms.Commands;
 
 public record ChangeRoomLightingCommand(long RoomId, LightingModel Lighting) : ICommand;
 
-internal class ChangeRoomLightingCommandHandler : ICommandHandler<ChangeRoomLightingCommand>
+internal class ChangeRoomLightingCommandHandler(IDomainEventBus domainEventBus, IRoomCommandRepository repository)
+    : ICommandHandler<ChangeRoomLightingCommand>
 {
-    private readonly IRoomCommandRepository _repository;
-    private readonly IDomainEventBus _domainEventBus;
-
-    public ChangeRoomLightingCommandHandler(IDomainEventBus domainEventBus, IRoomCommandRepository repository)
-    {
-        _domainEventBus = domainEventBus;
-        _repository = repository;
-    }
-
     public async Task Handle(ChangeRoomLightingCommand request, CancellationToken cancellationToken)
     {
-        var room = await _repository.GetByIdAsync(request.RoomId, cancellationToken).ConfigureAwait(false);
+        var room = await repository.GetByIdAsync(request.RoomId, cancellationToken).ConfigureAwait(false);
 
         var lighting = LightingEntity.FromModel(request.Lighting);
-        room.ChangeLighting(lighting, _domainEventBus);
+        room.ChangeLighting(lighting, domainEventBus);
 
-        await _repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
-        await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
+        await repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
+        await domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 }

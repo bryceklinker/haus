@@ -12,22 +12,14 @@ namespace Haus.Core.DeviceSimulator.Commands;
 
 public record CreateSimulatedDeviceCommand(SimulatedDeviceModel Model) : ICommand;
 
-internal class CreateSimulatedDeviceCommandHandler : ICommandHandler<CreateSimulatedDeviceCommand>
+internal class CreateSimulatedDeviceCommandHandler(IDeviceSimulatorStore store, IHausBus hausBus)
+    : ICommandHandler<CreateSimulatedDeviceCommand>
 {
-    private readonly IDeviceSimulatorStore _store;
-    private readonly IHausBus _hausBus;
-
-    public CreateSimulatedDeviceCommandHandler(IDeviceSimulatorStore store, IHausBus hausBus)
-    {
-        _store = store;
-        _hausBus = hausBus;
-    }
-
     public async Task Handle(CreateSimulatedDeviceCommand request, CancellationToken cancellationToken)
     {
         var device = SimulatedDeviceEntity.Create(request.Model);
-        _store.Publish(_store.Current.AddSimulatedDevice(device));
-        await _hausBus.PublishAsync(SimulatedEvent.FromEvent(device.ToDeviceDiscoveredModel()), cancellationToken)
+        store.Publish(store.Current.AddSimulatedDevice(device));
+        await hausBus.PublishAsync(SimulatedEvent.FromEvent(device.ToDeviceDiscoveredModel()), cancellationToken)
             .ConfigureAwait(false);
     }
 }

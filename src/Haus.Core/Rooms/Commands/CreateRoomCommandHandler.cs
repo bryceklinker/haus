@@ -14,29 +14,21 @@ namespace Haus.Core.Rooms.Commands;
 
 public record CreateRoomCommand(RoomModel Model) : CreateEntityCommand<RoomModel>(Model);
 
-internal class CreateRoomCommandHandler : ICommandHandler<CreateRoomCommand, RoomModel>
+internal class CreateRoomCommandHandler(
+    IValidator<RoomModel> validator,
+    IRoomCommandRepository repository,
+    IHausBus hausBus)
+    : ICommandHandler<CreateRoomCommand, RoomModel>
 {
-    private readonly IRoomCommandRepository _repository;
-    private readonly IValidator<RoomModel> _validator;
-    private readonly IHausBus _hausBus;
-
-    public CreateRoomCommandHandler(IValidator<RoomModel> validator, IRoomCommandRepository repository,
-        IHausBus hausBus)
-    {
-        _validator = validator;
-        _repository = repository;
-        _hausBus = hausBus;
-    }
-
     public async Task<RoomModel> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
     {
-        await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
+        await validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
             .ConfigureAwait(false);
-        var room = await _repository.AddAsync(RoomEntity.CreateFromModel(request.Model), cancellationToken)
+        var room = await repository.AddAsync(RoomEntity.CreateFromModel(request.Model), cancellationToken)
             .ConfigureAwait(false);
 
         var model = room.ToModel();
-        await _hausBus.PublishAsync(RoutableEvent.FromEvent(new RoomCreatedEvent(model)), cancellationToken)
+        await hausBus.PublishAsync(RoutableEvent.FromEvent(new RoomCreatedEvent(model)), cancellationToken)
             .ConfigureAwait(false);
         return model;
     }

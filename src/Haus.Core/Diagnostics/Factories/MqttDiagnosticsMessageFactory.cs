@@ -11,21 +11,14 @@ public interface IMqttDiagnosticsMessageFactory
     MqttDiagnosticsMessageModel Create(string topic, ArraySegment<byte> payload);
 }
 
-public class MqttDiagnosticsMessageFactory : IMqttDiagnosticsMessageFactory
+public class MqttDiagnosticsMessageFactory(IClock clock) : IMqttDiagnosticsMessageFactory
 {
-    private readonly IClock _clock;
-
-    public MqttDiagnosticsMessageFactory(IClock clock)
-    {
-        _clock = clock;
-    }
-
     public MqttDiagnosticsMessageModel Create(string topic, ArraySegment<byte> payload)
     {
         return new MqttDiagnosticsMessageModel
         {
             Id = $"{Guid.NewGuid()}",
-            Timestamp = _clock.LocalNow,
+            Timestamp = clock.LocalNow,
             Topic = topic,
             Payload = GetPayloadFromBytes(payload)
         };

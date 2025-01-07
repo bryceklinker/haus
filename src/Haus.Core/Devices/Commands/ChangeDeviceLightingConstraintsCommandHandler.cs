@@ -10,23 +10,15 @@ namespace Haus.Core.Devices.Commands;
 
 public record ChangeDeviceLightingConstraintsCommand(long DeviceId, LightingConstraintsModel Model) : ICommand;
 
-public class ChangeDeviceLightingConstraintsCommandHandler : ICommandHandler<ChangeDeviceLightingConstraintsCommand>
+public class ChangeDeviceLightingConstraintsCommandHandler(IDeviceCommandRepository repository, IHausBus hausBus)
+    : ICommandHandler<ChangeDeviceLightingConstraintsCommand>
 {
-    private readonly IDeviceCommandRepository _repository;
-    private readonly IHausBus _hausBus;
-
-    public ChangeDeviceLightingConstraintsCommandHandler(IDeviceCommandRepository repository, IHausBus hausBus)
-    {
-        _repository = repository;
-        _hausBus = hausBus;
-    }
-
     public async Task Handle(ChangeDeviceLightingConstraintsCommand request,
         CancellationToken cancellationToken)
     {
-        var device = await _repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
-        device.UpdateFromLightingConstraints(request.Model, _hausBus);
-        await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
-        await _hausBus.FlushAsync(cancellationToken).ConfigureAwait(false);
+        var device = await repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
+        device.UpdateFromLightingConstraints(request.Model, hausBus);
+        await repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
+        await hausBus.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 }

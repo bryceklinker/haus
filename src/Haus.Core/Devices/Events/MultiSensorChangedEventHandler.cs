@@ -8,15 +8,8 @@ using Haus.Cqrs.Events;
 
 namespace Haus.Core.Devices.Events;
 
-internal class MultiSensorChangedEventHandler : IEventHandler<RoutableEvent<MultiSensorChanged>>
+internal class MultiSensorChangedEventHandler(IHausBus hausBus) : IEventHandler<RoutableEvent<MultiSensorChanged>>
 {
-    private readonly IHausBus _hausBus;
-
-    public MultiSensorChangedEventHandler(IHausBus hausBus)
-    {
-        _hausBus = hausBus;
-    }
-
     public Task Handle(RoutableEvent<MultiSensorChanged> notification, CancellationToken cancellationToken)
     {
         return Task.WhenAll(GetPublishTasks(notification.Payload, cancellationToken));
@@ -25,6 +18,6 @@ internal class MultiSensorChangedEventHandler : IEventHandler<RoutableEvent<Mult
     private IEnumerable<Task> GetPublishTasks(MultiSensorChanged change, CancellationToken token)
     {
         if (change.HasOccupancy)
-            yield return _hausBus.PublishAsync(RoutableEvent.FromEvent(change.OccupancyChanged), token);
+            yield return hausBus.PublishAsync(RoutableEvent.FromEvent(change.OccupancyChanged), token);
     }
 }

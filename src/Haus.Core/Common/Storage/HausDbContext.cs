@@ -10,13 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Core.Common.Storage;
 
-public class HausDbContext : DbContext
+public class HausDbContext(DbContextOptions<HausDbContext> options) : DbContext(options)
 {
-    public HausDbContext(DbContextOptions<HausDbContext> options)
-        : base(options)
-    {
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(HausDbContext).Assembly);

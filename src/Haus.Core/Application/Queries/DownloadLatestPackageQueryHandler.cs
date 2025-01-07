@@ -9,29 +9,22 @@ namespace Haus.Core.Application.Queries;
 
 public record DownloadLatestPackageQuery(int PackageId) : IQuery<DownloadLatestPackageResult>;
 
-public class DownloadLatestPackageQueryHandler : IQueryHandler<DownloadLatestPackageQuery, DownloadLatestPackageResult>
+public class DownloadLatestPackageQueryHandler(
+    ILatestReleaseProvider latestReleaseProvider,
+    ILogger<DownloadLatestPackageQuery> logger)
+    : IQueryHandler<DownloadLatestPackageQuery, DownloadLatestPackageResult>
 {
-    private readonly ILatestReleaseProvider _latestReleaseProvider;
-    private readonly ILogger<DownloadLatestPackageQuery> _logger;
-
-    public DownloadLatestPackageQueryHandler(ILatestReleaseProvider latestReleaseProvider,
-        ILogger<DownloadLatestPackageQuery> logger)
-    {
-        _latestReleaseProvider = latestReleaseProvider;
-        _logger = logger;
-    }
-
     public async Task<DownloadLatestPackageResult> Handle(DownloadLatestPackageQuery request,
         CancellationToken cancellationToken)
     {
         try
         {
-            var stream = await _latestReleaseProvider.DownloadLatestPackage(request.PackageId).ConfigureAwait(false);
+            var stream = await latestReleaseProvider.DownloadLatestPackage(request.PackageId).ConfigureAwait(false);
             return DownloadLatestPackageResult.Ok(stream);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed to download package from provider {Type}", _latestReleaseProvider.GetType());
+            logger.LogError(e, "Failed to download package from provider {Type}", latestReleaseProvider.GetType());
             return CreatePackageResultFromException(e);
         }
     }

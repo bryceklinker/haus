@@ -15,14 +15,9 @@ public interface IDeviceSimulatorStore : IObservable<IDeviceSimulatorState>
 
 public class DeviceSimulatorStore : IDeviceSimulatorStore
 {
-    private readonly BehaviorSubject<IDeviceSimulatorState> _subject;
+    private readonly BehaviorSubject<IDeviceSimulatorState> _subject = new(DeviceSimulatorState.Initial);
 
     public IDeviceSimulatorState Current => _subject.Value;
-
-    public DeviceSimulatorStore()
-    {
-        _subject = new BehaviorSubject<IDeviceSimulatorState>(DeviceSimulatorState.Initial);
-    }
 
     public SimulatedDeviceEntity GetDeviceById(string deviceId)
     {

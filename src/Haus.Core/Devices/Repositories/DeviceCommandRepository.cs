@@ -15,38 +15,31 @@ public interface IDeviceCommandRepository
     Task SaveAsync(DeviceEntity device, CancellationToken token = default);
 }
 
-public class DeviceCommandRepository : IDeviceCommandRepository
+public class DeviceCommandRepository(HausDbContext context) : IDeviceCommandRepository
 {
-    private readonly HausDbContext _context;
-
-    public DeviceCommandRepository(HausDbContext context)
-    {
-        _context = context;
-    }
-
     public Task<DeviceEntity> GetById(long id, CancellationToken token = default)
     {
-        return _context.FindByIdOrThrowAsync<DeviceEntity>(id, AddIncludes, token);
+        return context.FindByIdOrThrowAsync<DeviceEntity>(id, AddIncludes, token);
     }
 
     public Task<DeviceEntity> GetByExternalId(string externalId, CancellationToken token = default)
     {
-        return _context.FindByAsync<DeviceEntity>(d => d.ExternalId == externalId,
+        return context.FindByAsync<DeviceEntity>(d => d.ExternalId == externalId,
             AddIncludes,
             token);
     }
 
     public async Task<DeviceEntity> AddAsync(DeviceEntity device, CancellationToken token = default)
     {
-        _context.Add(device);
-        await _context.SaveChangesAsync(token).ConfigureAwait(false);
+        context.Add(device);
+        await context.SaveChangesAsync(token).ConfigureAwait(false);
         return device;
     }
 
     public Task SaveAsync(DeviceEntity device, CancellationToken token = default)
     {
-        _context.Update(device);
-        return _context.SaveChangesAsync(token);
+        context.Update(device);
+        return context.SaveChangesAsync(token);
     }
 
     private static IQueryable<DeviceEntity> AddIncludes(IQueryable<DeviceEntity> query)

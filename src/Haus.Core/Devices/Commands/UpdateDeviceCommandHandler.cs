@@ -14,32 +14,24 @@ namespace Haus.Core.Devices.Commands;
 
 public record UpdateDeviceCommand(DeviceModel Model) : UpdateEntityCommand<DeviceModel>(Model);
 
-internal class UpdateDeviceCommandHandler : ICommandHandler<UpdateDeviceCommand>
+internal class UpdateDeviceCommandHandler(
+    IValidator<DeviceModel> validator,
+    IHausBus hausBus,
+    IDeviceCommandRepository repository)
+    : ICommandHandler<UpdateDeviceCommand>
 {
-    private readonly IDeviceCommandRepository _repository;
-    private readonly IValidator<DeviceModel> _validator;
-    private readonly IHausBus _hausBus;
-
-    public UpdateDeviceCommandHandler(IValidator<DeviceModel> validator, IHausBus hausBus,
-        IDeviceCommandRepository repository)
-    {
-        _validator = validator;
-        _hausBus = hausBus;
-        _repository = repository;
-    }
-
     public async Task Handle(UpdateDeviceCommand request, CancellationToken cancellationToken)
     {
-        await _validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
+        await validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
             .ConfigureAwait(false);
 
-        var device = await _repository.GetById(request.Id, cancellationToken)
+        var device = await repository.GetById(request.Id, cancellationToken)
             .ConfigureAwait(false);
 
-        device.UpdateFromModel(request.Model, _hausBus);
-        await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
+        device.UpdateFromModel(request.Model, hausBus);
+        await repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
 
-        await _hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceUpdatedEvent(device.ToModel())),
+        await hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceUpdatedEvent(device.ToModel())),
                 cancellationToken)
             .ConfigureAwait(false);
     }

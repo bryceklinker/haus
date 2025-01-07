@@ -20,7 +20,7 @@ public record DeviceEntity : Entity
     public static readonly Expression<Func<DeviceEntity, DeviceModel>> ToModelExpression =
         d => new DeviceModel(
             d.Id,
-            d.Room == null ? default(long?) : d.Room.Id,
+            d.Room == null ? null : d.Room.Id,
             d.ExternalId,
             d.Name,
             d.DeviceType,
@@ -47,14 +47,14 @@ public record DeviceEntity : Entity
 
     private static readonly Lazy<Func<DeviceEntity, DeviceModel>> ToModelFunc = new(ToModelExpression.Compile);
 
-    public string ExternalId { get; set; }
+    public string ExternalId { get; init; }
 
     public string Name { get; set; }
 
     public DeviceType DeviceType { get; set; }
     public LightType LightType { get; set; }
 
-    public ICollection<DeviceMetadataEntity> Metadata { get; set; }
+    public ICollection<DeviceMetadataEntity> Metadata { get; init; }
 
     public RoomEntity Room { get; set; }
 

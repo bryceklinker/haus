@@ -39,7 +39,7 @@ public record RoomEntity : Entity
 
     public LightingEntity Lighting { get; set; }
 
-    public ICollection<DeviceEntity> Devices { get; set; }
+    public ICollection<DeviceEntity> Devices { get; init; }
 
     public IEnumerable<DeviceEntity> Lights => Devices.Where(d => d.IsLight);
 

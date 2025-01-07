@@ -9,21 +9,13 @@ using Haus.Cqrs.Events;
 
 namespace Haus.Core.Devices.Events;
 
-internal class DeviceDiscoveredEventHandler : IEventHandler<RoutableEvent<DeviceDiscoveredEvent>>
+internal class DeviceDiscoveredEventHandler(IHausBus hausBus, IDeviceCommandRepository repository)
+    : IEventHandler<RoutableEvent<DeviceDiscoveredEvent>>
 {
-    private readonly IDeviceCommandRepository _repository;
-    private readonly IHausBus _hausBus;
-
-    public DeviceDiscoveredEventHandler(IHausBus hausBus, IDeviceCommandRepository repository)
-    {
-        _hausBus = hausBus;
-        _repository = repository;
-    }
-
     public async Task Handle(RoutableEvent<DeviceDiscoveredEvent> notification,
         CancellationToken cancellationToken = default)
     {
-        var existing = await _repository.GetByExternalId(notification.Payload.Id, cancellationToken)
+        var existing = await repository.GetByExternalId(notification.Payload.Id, cancellationToken)
             .ConfigureAwait(false);
         if (existing == null)
             await CreateDeviceAsync(notification.Payload, cancellationToken).ConfigureAwait(false);
@@ -33,10 +25,10 @@ internal class DeviceDiscoveredEventHandler : IEventHandler<RoutableEvent<Device
 
     private async Task CreateDeviceAsync(DeviceDiscoveredEvent @event, CancellationToken cancellationToken)
     {
-        var device = await _repository.AddAsync(DeviceEntity.FromDiscoveredDevice(@event, _hausBus), cancellationToken)
+        var device = await repository.AddAsync(DeviceEntity.FromDiscoveredDevice(@event, hausBus), cancellationToken)
             .ConfigureAwait(false);
 
-        await _hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceCreatedEvent(device.ToModel())),
+        await hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceCreatedEvent(device.ToModel())),
                 cancellationToken)
             .ConfigureAwait(false);
     }
@@ -44,9 +36,9 @@ internal class DeviceDiscoveredEventHandler : IEventHandler<RoutableEvent<Device
     private async Task UpdateDeviceAsync(DeviceEntity device, DeviceDiscoveredEvent @event,
         CancellationToken cancellationToken)
     {
-        device.UpdateFromDiscoveredDevice(@event, _hausBus);
-        await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
-        await _hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceUpdatedEvent(device.ToModel())),
+        device.UpdateFromDiscoveredDevice(@event, hausBus);
+        await repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
+        await hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceUpdatedEvent(device.ToModel())),
                 cancellationToken)
             .ConfigureAwait(false);
     }

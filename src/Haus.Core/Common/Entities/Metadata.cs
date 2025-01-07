@@ -2,16 +2,10 @@ using Haus.Core.Models.Common;
 
 namespace Haus.Core.Common.Entities;
 
-public record Metadata
+public record Metadata(string Key = null, string Value = null)
 {
-    public string Key { get; set; }
-    public string Value { get; set; }
-
-    public Metadata(string key = null, string value = null)
-    {
-        Key = key;
-        Value = value;
-    }
+    public string Key { get; set; } = Key;
+    public string Value { get; set; } = Value;
 
     public virtual MetadataModel ToModel()
     {

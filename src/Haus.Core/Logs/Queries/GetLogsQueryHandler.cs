@@ -20,17 +20,9 @@ public record GetLogsQuery(string LogsDirectory, GetLogsParameters Parameters = 
     public int SkipCount => (PageNumber - 1) * PageSize;
 }
 
-internal class GetLogsQueryHandler : IQueryHandler<GetLogsQuery, ListResult<LogEntryModel>>
+internal class GetLogsQueryHandler(ILogEntryModelFactory logEntryFactory, ILogEntryFilterer logEntryFilterer)
+    : IQueryHandler<GetLogsQuery, ListResult<LogEntryModel>>
 {
-    private readonly ILogEntryModelFactory _logEntryFactory;
-    private readonly ILogEntryFilterer _logEntryFilterer;
-
-    public GetLogsQueryHandler(ILogEntryModelFactory logEntryFactory, ILogEntryFilterer logEntryFilterer)
-    {
-        _logEntryFactory = logEntryFactory;
-        _logEntryFilterer = logEntryFilterer;
-    }
-
     public async Task<ListResult<LogEntryModel>> Handle(
         GetLogsQuery request,
         CancellationToken cancellationToken)
@@ -81,7 +73,7 @@ internal class GetLogsQueryHandler : IQueryHandler<GetLogsQuery, ListResult<LogE
         CancellationToken token)
     {
         var lines = await File.ReadAllLinesAsync(filePath, token).ConfigureAwait(false);
-        var matchingEntries = _logEntryFilterer.Filter(lines.Select(_logEntryFactory.CreateFromLine), query.Parameters);
+        var matchingEntries = logEntryFilterer.Filter(lines.Select(logEntryFactory.CreateFromLine), query.Parameters);
         return matchingEntries.OrderByDescending(e => e.Timestamp);
     }
 

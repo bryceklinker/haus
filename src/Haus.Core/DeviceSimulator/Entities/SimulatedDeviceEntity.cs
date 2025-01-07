@@ -17,10 +17,12 @@ public record SimulatedDeviceEntity(
     ImmutableArray<Metadata> Metadata = default,
     LightingModel Lighting = null)
 {
-    private static readonly ImmutableArray<Metadata> StandardMetadata = new[]
-    {
-        new Metadata("simulated", "true")
-    }.ToImmutableArray();
+    private static readonly ImmutableArray<Metadata> StandardMetadata = [
+        ..new[]
+        {
+            new Metadata("simulated", "true")
+        }
+    ];
 
     public string Id { get; } = string.IsNullOrEmpty(Id) ? $"{Guid.NewGuid()}" : Id;
 

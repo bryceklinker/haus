@@ -14,19 +14,12 @@ public record GetDevicesQuery(string ExternalId = null) : IQuery<ListResult<Devi
     public bool HasExternalId => !string.IsNullOrWhiteSpace(ExternalId);
 }
 
-internal class GetDevicesQueryHandler : IQueryHandler<GetDevicesQuery, ListResult<DeviceModel>>
+internal class GetDevicesQueryHandler(HausDbContext context) : IQueryHandler<GetDevicesQuery, ListResult<DeviceModel>>
 {
-    private readonly HausDbContext _context;
-
-    public GetDevicesQueryHandler(HausDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<ListResult<DeviceModel>> Handle(GetDevicesQuery request,
         CancellationToken cancellationToken = default)
     {
-        var query = _context.QueryAll<DeviceEntity>();
+        var query = context.QueryAll<DeviceEntity>();
 
         if (request.HasExternalId)
             query = query.Where(d => d.ExternalId == request.ExternalId);

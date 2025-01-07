@@ -13,19 +13,12 @@ namespace Haus.Core.Application.Queries;
 public record GetLatestVersionPackagesQuery : IQuery<ListResult<ApplicationPackageModel>>;
 
 internal class
-    GetLatestVersionPackagesQueryHandler : IQueryHandler<GetLatestVersionPackagesQuery,
+    GetLatestVersionPackagesQueryHandler(
+        ILatestReleaseProvider latestReleaseProvider,
+        ILogger<GetLatestVersionPackagesQuery> logger)
+    : IQueryHandler<GetLatestVersionPackagesQuery,
         ListResult<ApplicationPackageModel>>
 {
-    private readonly ILatestReleaseProvider _latestReleaseProvider;
-    private readonly ILogger<GetLatestVersionPackagesQuery> _logger;
-
-    public GetLatestVersionPackagesQueryHandler(ILatestReleaseProvider latestReleaseProvider,
-        ILogger<GetLatestVersionPackagesQuery> logger)
-    {
-        _latestReleaseProvider = latestReleaseProvider;
-        _logger = logger;
-    }
-
     public async Task<ListResult<ApplicationPackageModel>> Handle(GetLatestVersionPackagesQuery request,
         CancellationToken cancellationToken)
     {
@@ -40,12 +33,12 @@ internal class
     {
         try
         {
-            return await _latestReleaseProvider.GetLatestPackages();
+            return await latestReleaseProvider.GetLatestPackages();
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed to get latest packages using provider {Type}",
-                _latestReleaseProvider.GetType());
+            logger.LogError(e, "Failed to get latest packages using provider {Type}",
+                latestReleaseProvider.GetType());
             return [];
         }
     }

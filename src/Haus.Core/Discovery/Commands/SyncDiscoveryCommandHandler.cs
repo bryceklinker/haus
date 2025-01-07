@@ -10,17 +10,10 @@ namespace Haus.Core.Discovery.Commands;
 
 public record SyncDiscoveryCommand : ICommand;
 
-internal class SyncDiscoveryCommandHandler : ICommandHandler<SyncDiscoveryCommand>
+internal class SyncDiscoveryCommandHandler(IHausBus hausBus) : ICommandHandler<SyncDiscoveryCommand>
 {
-    private readonly IHausBus _hausBus;
-
-    public SyncDiscoveryCommandHandler(IHausBus hausBus)
-    {
-        _hausBus = hausBus;
-    }
-
     public Task Handle(SyncDiscoveryCommand request, CancellationToken cancellationToken)
     {
-        return _hausBus.PublishAsync(RoutableCommand.FromEvent(new SyncDiscoveryModel()), cancellationToken);
+        return hausBus.PublishAsync(RoutableCommand.FromEvent(new SyncDiscoveryModel()), cancellationToken);
     }
 }
