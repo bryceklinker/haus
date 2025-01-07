@@ -8,13 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Haus.Web.Host.DeviceSimulator;
 
 [Route("api/device-simulator")]
-public class DeviceSimulatorController : HausBusController
+public class DeviceSimulatorController(IHausBus hausBus) : HausBusController(hausBus)
 {
-    public DeviceSimulatorController(IHausBus hausBus)
-        : base(hausBus)
-    {
-    }
-
     [HttpPost("devices")]
     public Task<IActionResult> AddDevice([FromBody] SimulatedDeviceModel model)
     {

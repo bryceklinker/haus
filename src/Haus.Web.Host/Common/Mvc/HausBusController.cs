@@ -11,14 +11,9 @@ namespace Haus.Web.Host.Common.Mvc;
 
 [Authorize]
 [ApiController]
-public abstract class HausBusController : Controller
+public abstract class HausBusController(IHausBus hausBus) : Controller
 {
-    protected IHausBus Bus { get; }
-
-    protected HausBusController(IHausBus hausBus)
-    {
-        Bus = hausBus;
-    }
+    protected IHausBus Bus { get; } = hausBus;
 
     protected async Task<IActionResult> QueryAsync<TResult>(IQuery<TResult> query)
     {

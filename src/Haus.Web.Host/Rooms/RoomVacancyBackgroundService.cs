@@ -9,15 +9,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace Haus.Web.Host.Rooms;
 
-public class RoomVacancyBackgroundService : BackgroundService
+public class RoomVacancyBackgroundService(IServiceScopeFactory scopeFactory) : BackgroundService
 {
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
-    private readonly IServiceScopeFactory _scopeFactory;
-
-    public RoomVacancyBackgroundService(IServiceScopeFactory scopeFactory)
-    {
-        _scopeFactory = scopeFactory;
-    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -33,14 +27,14 @@ public class RoomVacancyBackgroundService : BackgroundService
 
     private async Task<bool> CanStartExecuting(CancellationToken stoppingToken)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
         await using var db = scope.GetService<HausDbContext>();
         return await db.HaveMigrationsBeenApplied(stoppingToken).ConfigureAwait(false);
     }
 
     private async Task ExecuteTurnOffVacantRooms(CancellationToken stoppingToken)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
         await using var db = scope.GetService<HausDbContext>();
         var commandBus = scope.GetService<ICommandBus>();
         await commandBus.ExecuteAsync(new TurnOffVacantRoomsCommand(), stoppingToken).ConfigureAwait(false);

@@ -7,13 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Haus.Web.Host.Devices;
 
 [Route("api/light-types")]
-public class LightTypesController : HausBusController
+public class LightTypesController(IHausBus hausBus) : HausBusController(hausBus)
 {
-    public LightTypesController(IHausBus hausBus)
-        : base(hausBus)
-    {
-    }
-
     [HttpGet]
     public Task<IActionResult> GetAll()
     {

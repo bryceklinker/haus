@@ -10,13 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Haus.Web.Host.Devices;
 
 [Route("api/devices")]
-public class DevicesController : HausBusController
+public class DevicesController(IHausBus hausBus) : HausBusController(hausBus)
 {
-    public DevicesController(IHausBus hausBus)
-        : base(hausBus)
-    {
-    }
-
     [HttpGet("")]
     public Task<IActionResult> Get([FromQuery] string externalId = null)
     {

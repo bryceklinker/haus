@@ -10,7 +10,7 @@ public static class HubPatterns
     public const string EventsHub = "/hubs/events";
     public const string HealthHub = "/hubs/health";
 
-    private static readonly string[] All = { DiagnosticsHub, DeviceSimulatorHub, EventsHub, HealthHub };
+    private static readonly string[] All = [DiagnosticsHub, DeviceSimulatorHub, EventsHub, HealthHub];
 
     public static bool MatchesHub(PathString path)
     {

@@ -12,18 +12,13 @@ using MQTTnet;
 
 namespace Haus.Web.Host.Health;
 
-public class HealthListener : MqttBackgroundServiceListener
+public class HealthListener(
+    IHausMqttClientFactory hausMqttClientFactory,
+    IServiceScopeFactory scopeFactory,
+    IOptions<HausMqttSettings> hausMqttSettings)
+    : MqttBackgroundServiceListener(hausMqttClientFactory, scopeFactory)
 {
-    private readonly IOptions<HausMqttSettings> _hausMqttSettings;
-
-    private string HealthTopic => _hausMqttSettings.Value.HealthTopic;
-
-    public HealthListener(IHausMqttClientFactory hausMqttClientFactory, IServiceScopeFactory scopeFactory,
-        IOptions<HausMqttSettings> hausMqttSettings)
-        : base(hausMqttClientFactory, scopeFactory)
-    {
-        _hausMqttSettings = hausMqttSettings;
-    }
+    private string HealthTopic => hausMqttSettings.Value.HealthTopic;
 
     protected override async Task OnMessageReceived(MqttApplicationMessage message)
     {

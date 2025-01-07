@@ -8,15 +8,11 @@ using MQTTnet;
 
 namespace Haus.Web.Host.Diagnostics;
 
-public class DiagnosticsMqttListener : MqttBackgroundServiceListener
+public class DiagnosticsMqttListener(
+    IHausMqttClientFactory hausMqttClientFactory,
+    IServiceScopeFactory scopeFactory)
+    : MqttBackgroundServiceListener(hausMqttClientFactory, scopeFactory)
 {
-    public DiagnosticsMqttListener(
-        IHausMqttClientFactory hausMqttClientFactory,
-        IServiceScopeFactory scopeFactory)
-        : base(hausMqttClientFactory, scopeFactory)
-    {
-    }
-
     protected override async Task OnMessageReceived(MqttApplicationMessage message)
     {
         using var scope = CreateScope();

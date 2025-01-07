@@ -3,15 +3,9 @@ using System;
 namespace Haus.Utilities.Common.Cli;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class CommandAttribute : Attribute
+public class CommandAttribute(string groupName, string commandName) : Attribute
 {
-    public string CommandName { get; }
+    public string CommandName { get; } = commandName;
 
-    public string GroupName { get; }
-
-    public CommandAttribute(string groupName, string commandName)
-    {
-        CommandName = commandName;
-        GroupName = groupName;
-    }
+    public string GroupName { get; } = groupName;
 }
