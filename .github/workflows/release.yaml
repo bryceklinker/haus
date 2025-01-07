@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Machine
-        uses: ${{ github.workspace }}/.github/actions/setup-machine
+        uses: ./.github/actions/setup-machine
 
       - name: Bump version and Push Tag
         id: tag_version
