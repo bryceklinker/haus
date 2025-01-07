@@ -5,21 +5,14 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Haus.Mqtt.Client.Health;
 
-public class HausMqttHealthCHeck : IHealthCheck
+public class HausMqttHealthCHeck(IHausMqttClientFactory clientFactory) : IHealthCheck
 {
-    private readonly IHausMqttClientFactory _clientFactory;
-
-    public HausMqttHealthCHeck(IHausMqttClientFactory clientFactory)
-    {
-        _clientFactory = clientFactory;
-    }
-
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var client = await _clientFactory.CreateClient();
+            var client = await clientFactory.CreateClient();
             await client.PingAsync(cancellationToken);
 
             return client.IsConnected

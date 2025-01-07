@@ -6,22 +6,14 @@ using MQTTnet;
 
 namespace Haus.Mqtt.Client.Services;
 
-public abstract class MqttBackgroundServiceListener : BackgroundService
+public abstract class MqttBackgroundServiceListener(
+    IHausMqttClientFactory hausMqttClientFactory,
+    IServiceScopeFactory scopeFactory)
+    : BackgroundService
 {
-    private readonly IHausMqttClientFactory _hausMqttClientFactory;
-    private readonly IServiceScopeFactory _scopeFactory;
-
-    protected MqttBackgroundServiceListener(
-        IHausMqttClientFactory hausMqttClientFactory,
-        IServiceScopeFactory scopeFactory)
-    {
-        _hausMqttClientFactory = hausMqttClientFactory;
-        _scopeFactory = scopeFactory;
-    }
-
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
-        var mqttClient = await _hausMqttClientFactory.CreateClient();
+        var mqttClient = await hausMqttClientFactory.CreateClient();
         await mqttClient.SubscribeAsync("#", OnMessageReceived);
         await base.StartAsync(cancellationToken);
     }
@@ -33,7 +25,7 @@ public abstract class MqttBackgroundServiceListener : BackgroundService
 
     protected IServiceScope CreateScope()
     {
-        return _scopeFactory.CreateScope();
+        return scopeFactory.CreateScope();
     }
 
     protected abstract Task OnMessageReceived(MqttApplicationMessage message);

@@ -5,19 +5,12 @@ using MQTTnet.Diagnostics;
 
 namespace Haus.Mqtt.Client.Logging;
 
-public class MqttLogger : IMqttNetLogger
+public class MqttLogger(ILogger<MqttLogger> logger) : IMqttNetLogger
 {
-    private readonly ILogger<MqttLogger> _logger;
-
-    public MqttLogger(ILogger<MqttLogger> logger)
-    {
-        _logger = logger;
-    }
-
     public void Publish(MqttNetLogLevel level, string source, string message, object[] parameters, Exception exception)
     {
         var convertedLogLevel = ConvertLogLevel(level);
-        _logger.Log(convertedLogLevel, exception, message, parameters);
+        logger.Log(convertedLogLevel, exception, message, parameters);
 
         var logMessagePublishedEvent = LogMessagePublished;
         if (logMessagePublishedEvent != null)
