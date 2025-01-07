@@ -103,7 +103,15 @@ ProjectSection(SolutionItems) = preProject
 	haus-app.service = haus-app.service
 	configuration.yaml = configuration.yaml
 	mosquitto.conf = mosquitto.conf
+	.nvmrc = .nvmrc
 EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{A9A14DE2-1149-489F-8EB5-0036A1A1FDAB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "setup-machine", "setup-machine", "{4C710C62-3D26-466C-9CBF-6A1AF004B715}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\setup-machine\action.yaml = .github\actions\setup-machine\action.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -368,5 +376,7 @@ Global
 		{DA39932B-907E-4135-BADF-2C593B23F88D} = {E548574D-38E9-4208-97A3-33BF6F2EC43D}
 		{3CBC2DE6-4CB7-4DF8-B307-AD457F420E46} = {74319CCE-D734-4495-BA3A-2500488064B0}
 		{812B4F15-2016-40F4-AB84-D3BF773590AA} = {74319CCE-D734-4495-BA3A-2500488064B0}
+		{A9A14DE2-1149-489F-8EB5-0036A1A1FDAB} = {2BED73DF-2C16-420D-9C79-8538151F9F9E}
+		{4C710C62-3D26-466C-9CBF-6A1AF004B715} = {A9A14DE2-1149-489F-8EB5-0036A1A1FDAB}
 	EndGlobalSection
 EndGlobal
