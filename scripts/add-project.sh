@@ -22,6 +22,10 @@ function main() {
       OUTPUT="${SOURCE_DIRECTORY}/${PROJECT_NAME}"
   fi
   
+  if [[ "${TYPE}" == "blazorwasm-empty" ]]; then
+      OUTPUT="${SOURCE_DIRECTORY}/${PROJECT_NAME}"
+  fi
+  
   dotnet new "${TYPE}" --name "${PROJECT_NAME}" --output "${OUTPUT}"
   dotnet sln "${SOLUTION_PATH}" add "${OUTPUT}"
 }

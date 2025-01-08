@@ -96,15 +96,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tasks", ".tasks", "{3E214A
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{39FA0F9B-0B5A-4B47-806B-80033788570C}"
-ProjectSection(SolutionItems) = preProject
-	global.json = global.json
-	haus-dockerfile = haus-dockerfile
-	docker-compose.yml = docker-compose.yml
-	haus-app.service = haus-app.service
-	configuration.yaml = configuration.yaml
-	mosquitto.conf = mosquitto.conf
-	.nvmrc = .nvmrc
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		haus-dockerfile = haus-dockerfile
+		docker-compose.yml = docker-compose.yml
+		haus-app.service = haus-app.service
+		configuration.yaml = configuration.yaml
+		mosquitto.conf = mosquitto.conf
+		.nvmrc = .nvmrc
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{A9A14DE2-1149-489F-8EB5-0036A1A1FDAB}"
 EndProject
@@ -112,6 +112,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "setup-machine", "setup-mach
 	ProjectSection(SolutionItems) = preProject
 		.github\actions\setup-machine\action.yaml = .github\actions\setup-machine\action.yaml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Site.Host", "src\Haus.Site.Host\Haus.Site.Host.csproj", "{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Site.Host.Tests", "tests\Haus.Site.Host.Tests\Haus.Site.Host.Tests.csproj", "{F278910B-016A-4545-A899-976CF8B2F8B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -354,6 +358,30 @@ Global
 		{812B4F15-2016-40F4-AB84-D3BF773590AA}.Release|x64.Build.0 = Release|Any CPU
 		{812B4F15-2016-40F4-AB84-D3BF773590AA}.Release|x86.ActiveCfg = Release|Any CPU
 		{812B4F15-2016-40F4-AB84-D3BF773590AA}.Release|x86.Build.0 = Release|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Debug|x64.Build.0 = Debug|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Debug|x86.Build.0 = Debug|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Release|x64.ActiveCfg = Release|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Release|x64.Build.0 = Release|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Release|x86.ActiveCfg = Release|Any CPU
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}.Release|x86.Build.0 = Release|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Debug|x64.Build.0 = Debug|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Debug|x86.Build.0 = Debug|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Release|x64.ActiveCfg = Release|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Release|x64.Build.0 = Release|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Release|x86.ActiveCfg = Release|Any CPU
+		{F278910B-016A-4545-A899-976CF8B2F8B6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E0793E28-ACBC-45CB-B1AF-1AD4889FAEA6} = {E548574D-38E9-4208-97A3-33BF6F2EC43D}
@@ -378,5 +406,7 @@ Global
 		{812B4F15-2016-40F4-AB84-D3BF773590AA} = {74319CCE-D734-4495-BA3A-2500488064B0}
 		{A9A14DE2-1149-489F-8EB5-0036A1A1FDAB} = {2BED73DF-2C16-420D-9C79-8538151F9F9E}
 		{4C710C62-3D26-466C-9CBF-6A1AF004B715} = {A9A14DE2-1149-489F-8EB5-0036A1A1FDAB}
+		{3793FF17-4622-4CCE-9FF3-C1C45D576FDD} = {E548574D-38E9-4208-97A3-33BF6F2EC43D}
+		{F278910B-016A-4545-A899-976CF8B2F8B6} = {74319CCE-D734-4495-BA3A-2500488064B0}
 	EndGlobalSection
 EndGlobal
