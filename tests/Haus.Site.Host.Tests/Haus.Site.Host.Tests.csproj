@@ -9,4 +9,8 @@
 	<ItemGroup>
 		<PackageReference Include="bunit" Version="1.34.0" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\Haus.Site.Host\Haus.Site.Host.csproj" />
+	</ItemGroup>
 </Project>

@@ -1,0 +1,33 @@
+@using Haus.Site.Host.Shared.Theming
+@inherits LayoutComponentBase
+
+<MudThemeProvider IsDarkMode="IsDarkMode" />
+<MudPopoverProvider />
+<MudSnackbarProvider />
+<MudDialogProvider />
+
+<MudLayout>
+    <ShellHeader OnMenuToggled="HandleToggleDrawer"  ThemeMode="_themeMode" OnThemeToggled="HandleToggleThemeMode" />
+    <ShellDrawer IsOpen="_isDrawerOpen" />
+    
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _isDrawerOpen = true;
+    private ThemeMode _themeMode = ThemeMode.Dark;
+
+    public bool IsDarkMode => _themeMode == ThemeMode.Dark;
+
+    private void HandleToggleDrawer()
+    {
+        _isDrawerOpen = !_isDrawerOpen;
+    }
+
+    private void HandleToggleThemeMode(ThemeMode mode)
+    {
+        _themeMode = mode;
+    }
+}
