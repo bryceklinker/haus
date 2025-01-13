@@ -12,5 +12,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\Haus.Site.Host\Haus.Site.Host.csproj" />
+	  <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj" />
 	</ItemGroup>
 </Project>

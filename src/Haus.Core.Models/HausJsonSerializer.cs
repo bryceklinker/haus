@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace Haus.Core.Models;
 
@@ -8,6 +9,7 @@ public static class HausJsonSerializer
 {
     public static readonly JsonSerializerOptions DefaultOptions = new(JsonSerializerDefaults.Web)
     {
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         Converters =
         {

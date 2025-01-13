@@ -1,7 +1,7 @@
 @using Haus.Site.Host.Shared.Theming
 @inherits LayoutComponentBase
 
-<MudThemeProvider IsDarkMode="IsDarkMode" />
+<MudThemeProvider IsDarkMode="IsDarkMode" Theme="_theme" />
 <MudPopoverProvider />
 <MudSnackbarProvider />
 <MudDialogProvider />
@@ -16,6 +16,7 @@
 </MudLayout>
 
 @code {
+    private readonly HausTheme _theme = new();
     private bool _isDrawerOpen = true;
     private ThemeMode _themeMode = ThemeMode.Dark;
 

@@ -25,59 +25,51 @@ public interface IHausApiClientFactory
     IApplicationApiClient CreateApplicationClient();
 }
 
-public class HausApiClientFactory : IHausApiClientFactory
+public class HausApiClientFactory(IHttpClientFactory httpClientFactory, IOptions<HausApiClientSettings> options)
+    : IHausApiClientFactory
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IOptions<HausApiClientSettings> _options;
-
-    public HausApiClientFactory(IHttpClientFactory httpClientFactory, IOptions<HausApiClientSettings> options)
-    {
-        _httpClientFactory = httpClientFactory;
-        _options = options;
-    }
-
     public IHausApiClient Create()
     {
-        return new HausApiClient(this, _httpClientFactory.CreateClient(), _options);
+        return new HausApiClient(this, httpClientFactory.CreateClient(), options);
     }
 
     public IDeviceApiClient CreateDeviceClient()
     {
-        return new DevicesApiClient(_httpClientFactory.CreateClient(), _options);
+        return new DevicesApiClient(httpClientFactory.CreateClient(), options);
     }
 
     public IDiagnosticsApiClient CreateDiagnosticsClient()
     {
-        return new DiagnosticsApiClient(_httpClientFactory.CreateClient(), _options);
+        return new DiagnosticsApiClient(httpClientFactory.CreateClient(), options);
     }
 
     public IRoomsApiClient CreateRoomsClient()
     {
-        return new RoomsApiClient(_httpClientFactory.CreateClient(), _options);
+        return new RoomsApiClient(httpClientFactory.CreateClient(), options);
     }
 
     public IDeviceSimulatorApiClient CreateDeviceSimulatorClient()
     {
-        return new DeviceSimulatorApiClient(_httpClientFactory.CreateClient(), _options);
+        return new DeviceSimulatorApiClient(httpClientFactory.CreateClient(), options);
     }
 
     public IDiscoveryApiClient CreateDiscoveryClient()
     {
-        return new DiscoveryApiClient(_httpClientFactory.CreateClient(), _options);
+        return new DiscoveryApiClient(httpClientFactory.CreateClient(), options);
     }
 
     public ILogsApiClient CreateLogsClient()
     {
-        return new LogsApiClient(_httpClientFactory.CreateClient(), _options);
+        return new LogsApiClient(httpClientFactory.CreateClient(), options);
     }
 
     public IClientSettingsApiClient CreateClientSettingsClient()
     {
-        return new ClientSettingsApiClient(_httpClientFactory.CreateClient(), _options);
+        return new ClientSettingsApiClient(httpClientFactory.CreateClient(), options);
     }
 
     public IApplicationApiClient CreateApplicationClient()
     {
-        return new ApplicationApiClient(_httpClientFactory.CreateClient(), _options);
+        return new ApplicationApiClient(httpClientFactory.CreateClient(), options);
     }
 }

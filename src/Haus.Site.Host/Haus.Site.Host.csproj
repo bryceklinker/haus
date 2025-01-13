@@ -4,17 +4,19 @@
   
   <ItemGroup>
     <PackageReference Include="MudBlazor" Version="7.15.0" />
+    <PackageReference Include="Fluxor.Blazor.Web" Version="6.5.2" />
+    <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="6.5.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="$(MicrosoftPackageVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(MicrosoftPackageVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(MicrosoftPackageVersion)" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="DeviceSimulator\" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\app.css" />
   </ItemGroup>
   
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\css\app.css" />
+    <ProjectReference Include="..\Haus.Api.Client\Haus.Api.Client.csproj" />
   </ItemGroup>
 
 </Project>
