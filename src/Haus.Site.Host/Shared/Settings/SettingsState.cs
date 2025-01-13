@@ -2,9 +2,16 @@ using Fluxor;
 
 namespace Haus.Site.Host.Shared.Settings;
 
-public record ApiSettingsModel(string BaseUrl);
+public record ApiSettingsModel(string BaseUrl = "");
 
-public record AuthSettingsModel(string Domain, string ClientId, string Audience);
+public record AuthSettingsModel(string Domain = "", string ClientId = "", string Audience = "");
 
 [FeatureState]
-public record SettingsState(ApiSettingsModel? Api = null, AuthSettingsModel? Auth = null);
+public record SettingsState(ApiSettingsModel? Api = null, AuthSettingsModel? Auth = null)
+{
+    public SettingsState()
+        : this(null, null)
+    {
+        
+    }
+}

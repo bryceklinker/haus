@@ -1,4 +1,10 @@
-﻿@using Haus.Site.Host.Shell
+﻿@using Fluxor
+@using Haus.Site.Host.Shared.Settings
+@using Haus.Site.Host.Shell
+@using Microsoft.Extensions.Configuration
+
+@inject IDispatcher Dispatch;
+@inject IConfiguration Configuration;
 
 <Fluxor.Blazor.Web.StoreInitializer/>
 
@@ -14,3 +20,14 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code {
+    protected override void OnInitialized()
+    {
+        var apiSettings = new ApiSettingsModel();
+        Configuration.Bind("Api", apiSettings);
+        var authSettings = new AuthSettingsModel();
+        Configuration.Bind("Auth", authSettings);
+        Dispatch.Dispatch(new SettingsLoadedAction(new SettingsState(apiSettings, authSettings)));
+    }
+}

@@ -14,4 +14,8 @@
 	  <ProjectReference Include="..\..\src\Haus.Site.Host\Haus.Site.Host.csproj" />
 	  <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Settings\" />
+	</ItemGroup>
 </Project>
