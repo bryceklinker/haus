@@ -16,7 +16,7 @@ public record LevelLightingEntity : LightingRange
         Max = max;
     }
 
-    public static LevelLightingEntity CalculateTarget(LevelLightingEntity current, LevelLightingEntity target)
+    public static LevelLightingEntity? CalculateTarget(LevelLightingEntity? current, LevelLightingEntity? target)
     {
         if (current == null)
             return null;
@@ -27,7 +27,7 @@ public record LevelLightingEntity : LightingRange
         return new LevelLightingEntity(value, current.Min, current.Max);
     }
 
-    public static LevelLightingEntity FromModel(LevelLightingModel model)
+    public static LevelLightingEntity? FromModel(LevelLightingModel? model)
     {
         if (model == null)
             return null;
@@ -35,7 +35,7 @@ public record LevelLightingEntity : LightingRange
         return new LevelLightingEntity(model.Value, model.Min, model.Max);
     }
 
-    public static LevelLightingEntity FromEntity(LevelLightingEntity entity)
+    public static LevelLightingEntity? FromEntity(LevelLightingEntity? entity)
     {
         if (entity == null)
             return null;

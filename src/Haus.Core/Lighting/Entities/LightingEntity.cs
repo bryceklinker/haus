@@ -7,14 +7,14 @@ namespace Haus.Core.Lighting.Entities;
 
 public record LightingEntity(
     LightingState State = LightingDefaults.State,
-    LevelLightingEntity Level = null,
-    TemperatureLightingEntity Temperature = null,
-    ColorLightingEntity Color = null)
+    LevelLightingEntity? Level = null,
+    TemperatureLightingEntity? Temperature = null,
+    ColorLightingEntity? Color = null)
 {
     public LightingState State { get; set; } = State;
-    public LevelLightingEntity Level { get; set; } = Level;
-    public TemperatureLightingEntity Temperature { get; set; } = Temperature;
-    public ColorLightingEntity Color { get; set; } = Color;
+    public LevelLightingEntity? Level { get; set; } = Level;
+    public TemperatureLightingEntity? Temperature { get; set; } = Temperature;
+    public ColorLightingEntity? Color { get; set; } = Color;
 
     public LightingEntity()
         : this(LightingDefaults.State)
@@ -38,18 +38,18 @@ public record LightingEntity(
         return ToModelFunc.Value(this);
     }
 
-    public LightingEntity CalculateTarget(LightingEntity target)
+    public LightingEntity? CalculateTarget(LightingEntity target)
     {
         return CalculateTarget(this, target);
     }
 
-    public LightingEntity ConvertToConstraints(LightingConstraintsModel model)
+    public LightingEntity? ConvertToConstraints(LightingConstraintsModel model)
     {
         var level = new LevelLightingEntity(0, model.MinLevel, model.MaxLevel);
         var temperature = model.HasTemperature && Temperature != null
             ? new TemperatureLightingEntity(0, model.MinTemperature.Value, model.MaxTemperature.Value)
             : null;
-        var lighting = new LightingEntity(State, level, temperature, Color);
+        var lighting = this with { Level = level, Temperature = temperature };
         return lighting.CalculateTarget(this);
     }
 
@@ -62,7 +62,7 @@ public record LightingEntity(
             ColorLightingEntity.FromModel(model.Color));
     }
 
-    public static LightingEntity FromEntity(LightingEntity entity)
+    public static LightingEntity? FromEntity(LightingEntity? entity)
     {
         if (entity == null)
             return null;
@@ -75,7 +75,7 @@ public record LightingEntity(
         );
     }
 
-    public static LightingEntity CalculateTarget(LightingEntity current, LightingEntity target)
+    public static LightingEntity? CalculateTarget(LightingEntity? current, LightingEntity? target)
     {
         if (current == null)
             return target;

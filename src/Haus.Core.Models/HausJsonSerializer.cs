@@ -17,7 +17,7 @@ public static class HausJsonSerializer
         }
     };
 
-    public static bool TryDeserialize<T>(ArraySegment<byte> bytes, out T value)
+    public static bool TryDeserialize<T>(ArraySegment<byte> bytes, out T? value)
     {
         try
         {
@@ -31,17 +31,17 @@ public static class HausJsonSerializer
         }
     }
 
-    public static T Deserialize<T>(ArraySegment<byte> bytes)
+    public static T? Deserialize<T>(ArraySegment<byte> bytes)
     {
         return JsonSerializer.Deserialize<T>(bytes, DefaultOptions);
     }
 
-    public static T Deserialize<T>(string json, JsonSerializerOptions options = null)
+    public static T? Deserialize<T>(string json, JsonSerializerOptions? options = null)
     {
         return JsonSerializer.Deserialize<T>(json, options ?? DefaultOptions);
     }
 
-    public static string Serialize(object value, JsonSerializerOptions options = null)
+    public static string Serialize(object value, JsonSerializerOptions? options = null)
     {
         return JsonSerializer.Serialize(value, options ?? DefaultOptions);
     }

@@ -49,33 +49,33 @@ public record DeviceEntity : Entity
 
     public string ExternalId { get; init; }
 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     public DeviceType DeviceType { get; set; }
     public LightType LightType { get; set; }
 
     public ICollection<DeviceMetadataEntity> Metadata { get; init; }
 
-    public RoomEntity Room { get; set; }
+    public RoomEntity? Room { get; set; }
 
     public LightingEntity Lighting { get; set; }
 
     public bool IsLight => DeviceType == DeviceType.Light;
 
     public DeviceEntity()
-        : this(0, null, null)
+        : this(0)
     {
     }
 
     public DeviceEntity(
         long id = 0,
-        string externalId = "",
-        string name = "",
+        string? externalId = "",
+        string? name = "",
         DeviceType deviceType = DeviceType.Unknown,
         LightType lightType = LightType.None,
-        RoomEntity room = null,
-        LightingEntity lighting = null,
-        ICollection<DeviceMetadataEntity> metadata = null)
+        RoomEntity? room = null,
+        LightingEntity? lighting = null,
+        ICollection<DeviceMetadataEntity>? metadata = null)
     {
         Id = id;
         ExternalId = externalId ?? string.Empty;

@@ -24,7 +24,7 @@ internal class HausUdpClient(UdpClient client, IOptions<HausUdpSettings> options
 
     private int Port => options.Value.Port;
     private bool HasStarted { get; set; } = false;
-    private Task ListeningTask { get; set; }
+    private Task? ListeningTask { get; set; }
 
     public Task BroadcastAsync<T>(T value)
     {
@@ -69,7 +69,7 @@ internal class HausUdpClient(UdpClient client, IOptions<HausUdpSettings> options
     {
         while (!token.IsCancellationRequested)
         {
-            var data = await client.ReceiveAsync().ConfigureAwait(false);
+            var data = await client.ReceiveAsync(token).ConfigureAwait(false);
             var tasks = _subscriptions.Values.Select(s => s.ExecuteAsync(data.Buffer));
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }

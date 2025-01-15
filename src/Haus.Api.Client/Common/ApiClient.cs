@@ -18,36 +18,37 @@ public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSet
 {
     private const string ApiPath = "api";
 
-    public string BaseUrl => UrlUtility.Join(null, options.Value.BaseUrl);
-    public string ApiBaseUrl => UrlUtility.Join(null, BaseUrl, ApiPath);
+    public string BaseUrl => UrlUtility.Join(new QueryParameters(), options.Value.BaseUrl);
+    public string ApiBaseUrl => UrlUtility.Join(new QueryParameters(), BaseUrl, ApiPath);
     protected HttpClient HttpClient { get; } = httpClient;
 
-    protected Task<T> GetAsJsonAsync<T>(string path, QueryParameters parameters = null)
+    protected Task<T?> GetAsJsonAsync<T>(string path, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
         return HttpClient.GetFromJsonAsync<T>(fullUrl);
     }
 
-    protected Task<HttpResponseMessage> PostAsJsonAsync<T>(string path, T data, QueryParameters parameters = null)
+    protected Task<HttpResponseMessage> PostAsJsonAsync<T>(string path, T data, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
         return HttpClient.PostAsJsonAsync(fullUrl, data);
     }
 
-    protected Task<HttpResponseMessage> PostEmptyContentAsync(string path, QueryParameters parameters = null)
+    protected Task<HttpResponseMessage> PostEmptyContentAsync(string path, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
-        return HttpClient.PostAsync(fullUrl, new ByteArrayContent(Array.Empty<byte>()));
+        return HttpClient.PostAsync(fullUrl, new ByteArrayContent([]));
     }
 
-    protected Task<HttpResponseMessage> PutAsJsonAsync<T>(string path, T data, QueryParameters parameters = null)
+    protected Task<HttpResponseMessage> PutAsJsonAsync<T>(string path, T data, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
         return HttpClient.PutAsJsonAsync(fullUrl, data);
     }
 
-    protected string GetFullUrl(string path, QueryParameters parameters = null)
+    protected string GetFullUrl(string path, QueryParameters? parameters = null)
     {
-        return UrlUtility.Join(parameters, ApiBaseUrl, path);
+        var queryParameters = parameters ?? new QueryParameters();
+        return UrlUtility.Join(queryParameters, ApiBaseUrl, path);
     }
 }

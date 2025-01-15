@@ -2,14 +2,9 @@ using System;
 
 namespace Haus.Core.Models.Common;
 
-public class ListResult<T>
+public class ListResult<T>(T[]? items = null)
 {
-    public T[] Items { get; set; }
+    public T[] Items { get; set; } = items ?? [];
 
     public int Count => Items.Length;
-
-    public ListResult(T[] items)
-    {
-        Items = items ?? Array.Empty<T>();
-    }
 }

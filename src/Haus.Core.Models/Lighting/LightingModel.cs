@@ -2,11 +2,12 @@ namespace Haus.Core.Models.Lighting;
 
 public record LightingModel(
     LightingState State = LightingDefaults.State,
-    LevelLightingModel Level = null,
-    TemperatureLightingModel Temperature = null,
-    ColorLightingModel Color = null)
+    LevelLightingModel? Level = null,
+    TemperatureLightingModel? Temperature = null,
+    ColorLightingModel? Color = null)
 {
-    [OptionalGeneration] public TemperatureLightingModel Temperature { get; } = Temperature;
+    public LevelLightingModel Level { get; } = Level ?? new LevelLightingModel();
+    [OptionalGeneration] public TemperatureLightingModel Temperature { get; } = Temperature ?? new TemperatureLightingModel();
 
-    [OptionalGeneration] public ColorLightingModel Color { get; } = Color;
+    [OptionalGeneration] public ColorLightingModel Color { get; } = Color ?? new ColorLightingModel();
 }

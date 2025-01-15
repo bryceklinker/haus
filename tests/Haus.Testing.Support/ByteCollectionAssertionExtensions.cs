@@ -10,7 +10,7 @@ public static class ByteCollectionAssertionExtensions
     public static AndConstraint<GenericCollectionAssertions<byte>> BeEncodedString(
         this GenericCollectionAssertions<byte> assertions,
         string value,
-        Encoding encoding = null)
+        Encoding? encoding = null)
     {
         var decoded = (encoding ?? Encoding.UTF8).GetString(assertions.Subject.ToArray());
         decoded.Should().Be(value);

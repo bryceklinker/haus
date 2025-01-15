@@ -9,7 +9,7 @@ using Haus.Cqrs.Queries;
 
 namespace Haus.Core.Devices.Queries;
 
-public record GetDevicesQuery(string ExternalId = null) : IQuery<ListResult<DeviceModel>>
+public record GetDevicesQuery(string? ExternalId = null) : IQuery<ListResult<DeviceModel>>
 {
     public bool HasExternalId => !string.IsNullOrWhiteSpace(ExternalId);
 }

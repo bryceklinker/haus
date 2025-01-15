@@ -22,7 +22,7 @@ public record ColorLightingEntity(byte Red = LightingDefaults.Red,
         return HashCode.Combine(Red, Green, Blue);
     }
 
-    public static ColorLightingEntity FromModel(ColorLightingModel model)
+    public static ColorLightingEntity? FromModel(ColorLightingModel? model)
     {
         if (model == null)
             return null;
@@ -30,7 +30,7 @@ public record ColorLightingEntity(byte Red = LightingDefaults.Red,
         return new ColorLightingEntity(model.Red, model.Green, model.Blue);
     }
 
-    public static ColorLightingEntity FromEntity(ColorLightingEntity entity)
+    public static ColorLightingEntity? FromEntity(ColorLightingEntity? entity)
     {
         if (entity == null)
             return null;
@@ -38,7 +38,7 @@ public record ColorLightingEntity(byte Red = LightingDefaults.Red,
         return new ColorLightingEntity(entity.Red, entity.Green, entity.Blue);
     }
 
-    public static ColorLightingEntity CalculateTarget(ColorLightingEntity current, ColorLightingEntity target)
+    public static ColorLightingEntity? CalculateTarget(ColorLightingEntity? current, ColorLightingEntity? target)
     {
         if (current == null)
             return null;

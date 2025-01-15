@@ -10,7 +10,7 @@ public record ReleasePackageModel(int Id, string Name);
 
 public interface ILatestReleaseProvider
 {
-    Task<ReleaseModel> GetLatestVersionAsync();
+    Task<ReleaseModel?> GetLatestVersionAsync();
     Task<ReleasePackageModel[]> GetLatestPackages();
-    Task<Stream> DownloadLatestPackage(int id);
+    Task<Stream?> DownloadLatestPackage(int id);
 }

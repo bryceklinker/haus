@@ -53,8 +53,8 @@ public record RoomEntity : Entity
         string name,
         int occupancyTimeoutInSeconds = RoomDefaults.OccupancyTimeoutInSeconds,
         DateTime? lastOccupiedTime = null,
-        LightingEntity lighting = null,
-        ICollection<DeviceEntity> devices = null)
+        LightingEntity? lighting = null,
+        ICollection<DeviceEntity>? devices = null)
     {
         Id = id;
         OccupancyTimeoutInSeconds = occupancyTimeoutInSeconds;

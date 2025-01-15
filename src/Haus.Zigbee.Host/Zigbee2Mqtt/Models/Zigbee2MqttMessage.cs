@@ -2,22 +2,22 @@ using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 
-public class Zigbee2MqttMessage(string topic, string raw = null, JToken root = null)
+public class Zigbee2MqttMessage(string topic, string? raw = null, JToken? root = null)
 {
-    private Zigbee2MqttMeta _meta;
+    private Zigbee2MqttMeta? _meta;
     public string Topic { get; } = topic;
-    public string Raw { get; } = raw;
+    public string? Raw { get; } = raw;
 
-    public JObject PayloadObject => root as JObject;
-    public JArray PayloadArray => root as JArray;
+    public JObject? PayloadObject => root as JObject;
+    public JArray? PayloadArray => root as JArray;
 
     public bool IsJson => root != null;
-    public string Json => Raw;
+    public string? Json => Raw;
     public string Type => SafeGetValue<string>("type");
     public string Message => SafeGetValue<string>("message");
     public bool HasMeta => Meta != null;
 
-    public Zigbee2MqttMeta Meta => GetMetaData();
+    public Zigbee2MqttMeta? Meta => GetMetaData();
     public int? Battery => SafeGetValue<int?>("battery");
     public int? Illuminance => SafeGetValue<int?>("illuminance");
     public int? IlluminanceLux => SafeGetValue<int?>("illuminance_lux");
@@ -37,7 +37,7 @@ public class Zigbee2MqttMessage(string topic, string raw = null, JToken root = n
         return Topic.Split('/')[1];
     }
 
-    private T SafeGetValue<T>(string propertyName)
+    private T? SafeGetValue<T>(string propertyName)
     {
         if (PayloadObject == null)
             return default;
@@ -47,7 +47,7 @@ public class Zigbee2MqttMessage(string topic, string raw = null, JToken root = n
             : default;
     }
 
-    private Zigbee2MqttMeta GetMetaData()
+    private Zigbee2MqttMeta? GetMetaData()
     {
         if (!IsJson)
             return null;

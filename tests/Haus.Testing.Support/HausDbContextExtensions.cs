@@ -12,8 +12,8 @@ namespace Haus.Testing.Support;
 
 public static class HausDbContextExtensions
 {
-    public static DeviceEntity AddDevice(this HausDbContext context, string externalId = null, string name = null,
-        DeviceType deviceType = DeviceType.Unknown, Action<DeviceEntity> configure = null)
+    public static DeviceEntity AddDevice(this HausDbContext context, string? externalId = null, string? name = null,
+        DeviceType deviceType = DeviceType.Unknown, Action<DeviceEntity>? configure = null)
     {
         var device = new DeviceEntity
         {
@@ -26,8 +26,8 @@ public static class HausDbContextExtensions
         return device;
     }
 
-    public static RoomEntity AddRoom(this HausDbContext context, string name = null,
-        Action<RoomEntity> configure = null)
+    public static RoomEntity AddRoom(this HausDbContext context, string? name = null,
+        Action<RoomEntity>? configure = null)
     {
         var room = new RoomEntity
         {
@@ -47,8 +47,8 @@ public static class HausDbContextExtensions
     }
 
     public static HealthCheckEntity AddHealthCheck(this HausDbContext context,
-        string name = null,
-        Action<HealthCheckEntity> configure = null)
+        string? name = null,
+        Action<HealthCheckEntity>? configure = null)
     {
         var check = new HealthCheckEntity
         {
@@ -61,8 +61,11 @@ public static class HausDbContextExtensions
         return check;
     }
 
-    private static void AddAndSave<T>(this HausDbContext context, T entity)
+    private static void AddAndSave<T>(this HausDbContext context, T? entity)
     {
+        if (entity == null)
+            return;
+        
         context.Add(entity);
         context.SaveChanges();
     }

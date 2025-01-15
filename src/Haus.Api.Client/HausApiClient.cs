@@ -51,7 +51,7 @@ public class HausApiClient(
     private IClientSettingsApiClient ClientSettingsApiClient => factory.CreateClientSettingsClient();
     private IApplicationApiClient ApplicationApiClient => factory.CreateApplicationClient();
 
-    public Task<DiscoveryModel> GetDiscoveryStateAsync()
+    public Task<DiscoveryModel?> GetDiscoveryStateAsync()
     {
         return DiscoveryApiClient.GetDiscoveryStateAsync();
     }
@@ -106,7 +106,7 @@ public class HausApiClient(
         return DeviceApiClient.TurnLightOnAsync(deviceId);
     }
 
-    public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
+    public Task<ListResult<DeviceModel>> GetDevicesAsync(string? externalId = null)
     {
         return DeviceApiClient.GetDevicesAsync(externalId);
     }

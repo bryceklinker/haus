@@ -5,10 +5,10 @@ using Haus.Core.Models.ExternalMessages;
 namespace Haus.Core.Models.Devices.Events;
 
 public record DeviceDiscoveredEvent(string Id, DeviceType DeviceType = DeviceType.Unknown,
-    MetadataModel[] Metadata = null) : IHausEventCreator<DeviceDiscoveredEvent>
+    MetadataModel[]? Metadata = null) : IHausEventCreator<DeviceDiscoveredEvent>
 {
     public const string Type = "device_discovered";
-    public MetadataModel[] Metadata { get; } = Metadata ?? Array.Empty<MetadataModel>();
+    public MetadataModel[] Metadata { get; } = Metadata ?? [];
 
     public HausEvent<DeviceDiscoveredEvent> AsHausEvent()
     {

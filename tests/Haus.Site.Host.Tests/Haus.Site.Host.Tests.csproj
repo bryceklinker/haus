@@ -17,5 +17,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Settings\" />
+	  <Folder Include="Shared\SignalR\" />
 	</ItemGroup>
 </Project>

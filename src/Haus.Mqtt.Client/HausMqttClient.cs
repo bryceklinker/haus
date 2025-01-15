@@ -23,7 +23,7 @@ public interface IHausMqttClient : IAsyncDisposable
     Task<IHausMqttSubscription> SubscribeAsync(string topic, Action<MqttApplicationMessage> handler);
     Task PublishAsync(MqttApplicationMessage message);
     Task PublishAsync(string topic, object payload);
-    Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string topicName = null);
+    Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string? topicName = null);
 }
 
 internal class HausMqttClient : IHausMqttClient
@@ -31,7 +31,7 @@ internal class HausMqttClient : IHausMqttClient
     private const string AllTopicsFilter = "#";
     private readonly IManagedMqttClient _mqttClient;
     private readonly IOptions<HausMqttSettings> _settings;
-    private readonly Action _onDisposed;
+    private readonly Action? _onDisposed;
     private readonly Lazy<Task> _setupMqttListener;
     private readonly ConcurrentDictionary<Guid, IHausMqttSubscription> _subscriptions;
 
@@ -40,7 +40,7 @@ internal class HausMqttClient : IHausMqttClient
     public bool IsConnected => _mqttClient.IsConnected;
     public bool IsStarted => _mqttClient.IsStarted;
 
-    public HausMqttClient(IManagedMqttClient mqttClient, IOptions<HausMqttSettings> settings, Action onDisposed = null)
+    public HausMqttClient(IManagedMqttClient mqttClient, IOptions<HausMqttSettings> settings, Action? onDisposed = null)
     {
         _mqttClient = mqttClient;
         _settings = settings;
@@ -85,7 +85,7 @@ internal class HausMqttClient : IHausMqttClient
         });
     }
 
-    public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string topicName = null)
+    public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string? topicName = null)
     {
         await PublishAsync(topicName ?? EventsTopic, creator.AsHausEvent());
     }

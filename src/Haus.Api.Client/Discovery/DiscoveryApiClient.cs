@@ -9,7 +9,7 @@ namespace Haus.Api.Client.Discovery;
 
 public interface IDiscoveryApiClient
 {
-    Task<DiscoveryModel> GetDiscoveryStateAsync();
+    Task<DiscoveryModel?> GetDiscoveryStateAsync();
     Task<HttpResponseMessage> StartDiscoveryAsync();
     Task<HttpResponseMessage> StopDiscoveryAsync();
     Task<HttpResponseMessage> SyncDevicesAsync();
@@ -18,7 +18,7 @@ public interface IDiscoveryApiClient
 public class DiscoveryApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
     : ApiClient(httpClient, options), IDiscoveryApiClient
 {
-    public Task<DiscoveryModel> GetDiscoveryStateAsync()
+    public Task<DiscoveryModel?> GetDiscoveryStateAsync()
     {
         return GetAsJsonAsync<DiscoveryModel>("discovery/state");
     }

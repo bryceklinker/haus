@@ -11,11 +11,11 @@ using Haus.Core.Models.Lighting;
 namespace Haus.Core.DeviceSimulator.Entities;
 
 public record SimulatedDeviceEntity(
-    string Id = null,
+    string? Id = null,
     DeviceType DeviceType = DeviceType.Unknown,
     bool IsOccupied = false,
-    ImmutableArray<Metadata> Metadata = default,
-    LightingModel Lighting = null)
+    Metadata[]? Metadata = null,
+    LightingModel? Lighting = null)
 {
     private static readonly ImmutableArray<Metadata> StandardMetadata = [
         ..new[]
@@ -26,17 +26,16 @@ public record SimulatedDeviceEntity(
 
     public string Id { get; } = string.IsNullOrEmpty(Id) ? $"{Guid.NewGuid()}" : Id;
 
-    public ImmutableArray<Metadata> Metadata { get; } =
-        Metadata.IsDefaultOrEmpty ? ImmutableArray<Metadata>.Empty : Metadata;
+    public Metadata[] Metadata { get; } = Metadata ?? [];
 
-    public LightingModel Lighting { get; private init; } = DeviceType == DeviceType.Light ? Lighting : null;
+    public LightingModel? Lighting { get; private init; } = DeviceType == DeviceType.Light ? Lighting : null;
 
     public static SimulatedDeviceEntity Create(SimulatedDeviceModel model)
     {
         var metadata = model.Metadata
             .Select(Common.Entities.Metadata.FromModel)
             .Concat(StandardMetadata)
-            .ToImmutableArray();
+            .ToArray();
         return new SimulatedDeviceEntity(model.Id, model.DeviceType, Metadata: metadata);
     }
 

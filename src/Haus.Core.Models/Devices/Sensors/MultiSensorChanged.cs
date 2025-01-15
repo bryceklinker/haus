@@ -10,10 +10,11 @@ namespace Haus.Core.Models.Devices.Sensors;
 
 public record MultiSensorChanged(
     string DeviceId,
-    OccupancyChangedModel OccupancyChanged = null,
-    TemperatureChangedModel TemperatureChanged = null,
-    IlluminanceChangedModel IlluminanceChanged = null,
-    BatteryChangedModel BatteryChanged = null) : IHausEventCreator<MultiSensorChanged>
+    OccupancyChangedModel? OccupancyChanged = null,
+    TemperatureChangedModel? TemperatureChanged = null,
+    IlluminanceChangedModel? IlluminanceChanged = null,
+    BatteryChangedModel? BatteryChanged = null
+    ) : IHausEventCreator<MultiSensorChanged>
 {
     public const string Type = "multi_sensor_changed";
 
@@ -21,10 +22,10 @@ public record MultiSensorChanged(
     public bool HasOccupancy => OccupancyChanged != null;
     public bool HasIlluminance => IlluminanceChanged != null;
     public bool HasBattery => BatteryChanged != null;
-    public bool[] Changes => new[] { HasTemperature, HasOccupancy, HasIlluminance, HasBattery };
+    public bool[] Changes => [HasTemperature, HasOccupancy, HasIlluminance, HasBattery];
     public bool HasMultipleChanges => Changes.Count(c => c) > 1;
 
-    public object GetSingleChange()
+    public object? GetSingleChange()
     {
         if (HasTemperature)
             return TemperatureChanged;

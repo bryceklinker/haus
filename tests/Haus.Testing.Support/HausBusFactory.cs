@@ -15,7 +15,7 @@ namespace Haus.Testing.Support;
 
 public static class HausBusFactory
 {
-    public static IHausBus Create(HausDbContext context = null, Action<IServiceCollection> configureServices = null)
+    public static IHausBus Create(HausDbContext? context = null, Action<IServiceCollection>? configureServices = null)
     {
         var services = CreateServicesCollection(context, configureServices);
 
@@ -28,8 +28,8 @@ public static class HausBusFactory
         return CreateCapturingBus(configureServices: services => services.AddSingleton(simulatorStore));
     }
 
-    public static CapturingHausBus CreateCapturingBus(HausDbContext context = null,
-        Action<IServiceCollection> configureServices = null)
+    public static CapturingHausBus CreateCapturingBus(HausDbContext? context = null,
+        Action<IServiceCollection>? configureServices = null)
     {
         var services = CreateServicesCollection(context, configureServices);
 
@@ -47,8 +47,8 @@ public static class HausBusFactory
             .GetRequiredService<IHausBus>();
     }
 
-    private static IServiceCollection CreateServicesCollection(HausDbContext context,
-        Action<IServiceCollection> configureServices = null)
+    private static IServiceCollection CreateServicesCollection(HausDbContext? context,
+        Action<IServiceCollection>? configureServices = null)
     {
         var services = new ServiceCollection()
             .AddHausCore(opts => opts.UseInMemoryDatabase($"{Guid.NewGuid()}"))
