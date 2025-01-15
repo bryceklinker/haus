@@ -4,7 +4,7 @@ namespace Haus.Api.Client.Common;
 
 internal static class UrlUtility
 {
-    public static string Join(QueryParameters queryParameters = null, params string[] paths)
+    public static string Join(QueryParameters? queryParameters = null, params string[] paths)
     {
         var trimmedPaths = paths.Select(TrimSlashes);
         var baseUrl = string.Join("/", trimmedPaths);

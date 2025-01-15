@@ -19,6 +19,6 @@ public static class ServiceCollectionExtensions
             .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDeviceSimulatorClient())
             .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateApplicationClient())
             .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().Create());
-        return services.AddHttpClient(HausApiClientFactory.HttpClientName);
+        return services.AddHttpClient(HausApiClientNames.Default);
     }
 }

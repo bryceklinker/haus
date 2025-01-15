@@ -1,7 +1,32 @@
-@page "/device-simulator/add";
+@page "/device-simulator/add"
+@using Haus.Core.Models.Devices
+@using Haus.Site.Host.Shared.State
+@using Haus.Site.Host.Shared.State.DeviceTypes
 
-<h3>AddSimulatedDevice</h3>
+@inject IDispatcher Dispatcher;
+@inject IState<DeviceTypesState> State;
+
+@if (State.Value.IsLoading)
+{
+    <MudProgressCircular />
+}
+
+@if (!State.Value.IsLoading)
+{
+    <MudSelect @bind-Value="_deviceType">
+        @foreach (var type in State.Value.Items)
+        {
+            <MudSelectItem Value="type"/>
+        }
+    </MudSelect>   
+}
 
 @code {
-    
+    private DeviceType? _deviceType;
+
+    protected override void OnInitialized()
+    {
+        _deviceType = null;
+        Dispatcher.Dispatch(new LoadListRequestAction<DeviceType>());
+    }
 }

@@ -28,8 +28,6 @@ public interface IHausApiClientFactory
 public class HausApiClientFactory(IHttpClientFactory httpClientFactory, IOptions<HausApiClientSettings> options)
     : IHausApiClientFactory
 {
-    internal const string HttpClientName = "HausApi";
-    
     public IHausApiClient Create()
     {
         return new HausApiClient(this, CreateClient(), options);
@@ -77,6 +75,6 @@ public class HausApiClientFactory(IHttpClientFactory httpClientFactory, IOptions
 
     private HttpClient CreateClient()
     {
-        return httpClientFactory.CreateClient(HttpClientName);
+        return httpClientFactory.CreateClient(HausApiClientNames.Default);
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Fluxor;
-using Haus.Site.Host.Shared.Settings;
+using Haus.Site.Host.Shared.State.Settings;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.SignalR.Client;
 

@@ -18,8 +18,8 @@ public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSet
 {
     private const string ApiPath = "api";
 
-    public string BaseUrl => UrlUtility.Join(new QueryParameters(), options.Value.BaseUrl);
-    public string ApiBaseUrl => UrlUtility.Join(new QueryParameters(), BaseUrl, ApiPath);
+    public string BaseUrl => options.Value.BaseUrl;
+    public string ApiBaseUrl => UrlUtility.Join(null, BaseUrl, ApiPath);
     protected HttpClient HttpClient { get; } = httpClient;
 
     protected Task<T?> GetAsJsonAsync<T>(string path, QueryParameters? parameters = null)
@@ -48,7 +48,6 @@ public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSet
 
     protected string GetFullUrl(string path, QueryParameters? parameters = null)
     {
-        var queryParameters = parameters ?? new QueryParameters();
-        return UrlUtility.Join(queryParameters, ApiBaseUrl, path);
+        return UrlUtility.Join(parameters, ApiBaseUrl, path);
     }
 }

@@ -52,7 +52,8 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
         builder.ConfigureTestServices(services =>
         {
             services.AddSingleton<IClock>(_clock);
-            services.AddHausApiClient(opts => { opts.BaseUrl = Server.BaseAddress.ToString(); })
+            services.AddHausApiClient(opts => { opts.BaseUrl = Server.BaseAddress.ToString(); });
+            services
                 .RemoveAll(typeof(IHttpClientFactory))
                 .AddSingleton<IHttpClientFactory>(new FakeHttpClientFactory(CreateHttpClientWithAuth));
 
