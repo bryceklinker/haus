@@ -102,7 +102,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{39FA0F
 		docker-compose.yml = docker-compose.yml
 		haus-app.service = haus-app.service
 		configuration.yaml = configuration.yaml
-		mosquitto.conf = mosquitto.conf
 		.nvmrc = .nvmrc
 	EndProjectSection
 EndProject
@@ -116,6 +115,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Site.Host", "src\Haus.Site.Host\Haus.Site.Host.csproj", "{3793FF17-4622-4CCE-9FF3-C1C45D576FDD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Site.Host.Tests", "tests\Haus.Site.Host.Tests\Haus.Site.Host.Tests.csproj", "{F278910B-016A-4545-A899-976CF8B2F8B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "local-mosquitto", "local-mosquitto", "{5E477A0C-C9F9-430E-B50B-B186B61644C5}"
+	ProjectSection(SolutionItems) = preProject
+		local-mosquitto\mosquitto.conf = local-mosquitto\mosquitto.conf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

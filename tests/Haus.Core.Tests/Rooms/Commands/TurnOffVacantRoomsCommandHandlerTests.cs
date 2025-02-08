@@ -44,8 +44,8 @@ public class TurnOffVacantRoomsCommandHandlerTests
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var lightingChange = _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        lightingChange.Payload.Lighting.State.Should().Be(LightingState.Off);
-        lightingChange.Payload.Room.Id.Should().Be(room.Id);
+        lightingChange.Payload?.Lighting.State.Should().Be(LightingState.Off);
+        lightingChange.Payload?.Room.Id.Should().Be(room.Id);
     }
 
     [Fact]

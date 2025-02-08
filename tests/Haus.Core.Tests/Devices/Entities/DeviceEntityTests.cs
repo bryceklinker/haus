@@ -424,8 +424,8 @@ public class DeviceEntityTest
 
         device.UpdateFromLightingConstraints(model, new FakeDomainEventBus());
 
-        device.Lighting.Level.Min.Should().Be(1);
-        device.Lighting.Level.Max.Should().Be(254);
+        device.Lighting?.Level?.Min.Should().Be(1);
+        device.Lighting?.Level?.Max.Should().Be(254);
     }
 
     [Fact]

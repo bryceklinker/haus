@@ -12,9 +12,11 @@ public class ColorLightingDefaultGenerator : IDefaultLightingGenerator
         new ColorLightingEntity()
     );
 
-    public LightingEntity Generate(LightingEntity currentLighting, LightingEntity roomLighting)
+    public LightingEntity? Generate(LightingEntity? currentLighting, LightingEntity? roomLighting)
     {
         var lighting = LightingEntity.FromEntity(currentLighting ?? roomLighting ?? Default);
+        if (lighting == null)
+            return null;
         lighting.Temperature = null;
         lighting.Color ??= Default.Color;
         lighting.Level ??= Default.Level;

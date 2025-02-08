@@ -38,7 +38,7 @@ public record LightingEntity(
         return ToModelFunc.Value(this);
     }
 
-    public LightingEntity? CalculateTarget(LightingEntity target)
+    public LightingEntity? CalculateTarget(LightingEntity? target)
     {
         return CalculateTarget(this, target);
     }

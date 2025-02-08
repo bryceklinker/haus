@@ -17,10 +17,6 @@ public static class JObjectExtensions
     {
         return jObject.Properties()
             .Where(prop => KnownMetadata.Missing(prop.Name))
-            .Select(prop => new MetadataModel
-            {
-                Key = prop.Name,
-                Value = prop.Value.ToString()
-            });
+            .Select(prop => new MetadataModel(prop.Name, prop.Value.ToString()));
     }
 }

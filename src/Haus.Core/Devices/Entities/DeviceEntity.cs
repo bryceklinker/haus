@@ -58,7 +58,7 @@ public record DeviceEntity : Entity
 
     public RoomEntity? Room { get; set; }
 
-    public LightingEntity Lighting { get; set; }
+    public LightingEntity? Lighting { get; set; }
 
     public bool IsLight => DeviceType == DeviceType.Light;
 
@@ -163,7 +163,7 @@ public record DeviceEntity : Entity
         Room = null;
     }
 
-    public void ChangeLighting(LightingEntity targetLighting, IDomainEventBus domainEventBus)
+    public void ChangeLighting(LightingEntity? targetLighting, IDomainEventBus domainEventBus)
     {
         if (!IsLight)
             throw new InvalidOperationException($"Device with id {Id} is not a light.");
@@ -175,6 +175,9 @@ public record DeviceEntity : Entity
     public void TurnOff(IDomainEventBus domainEventBus)
     {
         var lightingCopy = LightingEntity.FromEntity(Lighting ?? GenerateDefaultLighting());
+        if (lightingCopy == null)
+            return;
+        
         lightingCopy.State = LightingState.Off;
         ChangeLighting(lightingCopy, domainEventBus);
     }
@@ -182,11 +185,14 @@ public record DeviceEntity : Entity
     public void TurnOn(IDomainEventBus domainEventBus)
     {
         var turnOnLighting = LightingEntity.FromEntity(Lighting ?? GenerateDefaultLighting());
+        if (turnOnLighting == null)
+            return;
+        
         turnOnLighting.State = LightingState.On;
         ChangeLighting(turnOnLighting, domainEventBus);
     }
 
-    private LightingEntity GenerateDefaultLighting()
+    private LightingEntity? GenerateDefaultLighting()
     {
         return DefaultLightingGeneratorFactory.GetGenerator(DeviceType, LightType)
             .Generate(Lighting, Room?.Lighting);

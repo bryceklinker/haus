@@ -11,10 +11,10 @@ using Haus.Cqrs.DomainEvents;
 
 namespace Haus.Core.Devices.DomainEvents;
 
-public record DeviceLightingChangedDomainEvent(DeviceEntity Device, LightingEntity Lighting) : IDomainEvent
+public record DeviceLightingChangedDomainEvent(DeviceEntity Device, LightingEntity? Lighting) : IDomainEvent
 {
     public DeviceModel DeviceModel => Device.ToModel();
-    public LightingModel LightingModel => Lighting.ToModel();
+    public LightingModel? LightingModel => Lighting?.ToModel();
 }
 
 internal class DeviceLightingChangedDomainEventHandler(IHausBus hausBus)

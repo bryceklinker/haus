@@ -5,7 +5,7 @@ namespace Haus.Core.Models.Rooms;
 
 public record RoomModel(
     long Id = -1,
-    string? Name = null,
+    string Name = "",
     int OccupancyTimeoutInSeconds = RoomDefaults.OccupancyTimeoutInSeconds,
     LightingModel? Lighting = null) : IdentityModel
 {

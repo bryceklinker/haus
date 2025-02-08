@@ -37,14 +37,14 @@ public record RoomEntity : Entity
 
     public DateTime? LastOccupiedTime { get; set; }
 
-    public LightingEntity Lighting { get; set; }
+    public LightingEntity? Lighting { get; set; }
 
     public ICollection<DeviceEntity> Devices { get; init; }
 
     public IEnumerable<DeviceEntity> Lights => Devices.Where(d => d.IsLight);
 
     public RoomEntity()
-        : this(0, null)
+        : this(0, "")
     {
     }
 
@@ -59,7 +59,7 @@ public record RoomEntity : Entity
         Id = id;
         OccupancyTimeoutInSeconds = occupancyTimeoutInSeconds;
         LastOccupiedTime = lastOccupiedTime;
-        Name = name ?? string.Empty;
+        Name = name;
         Lighting = lighting ?? new LightingEntity(LightingDefaults.State, new LevelLightingEntity(),
             new TemperatureLightingEntity(), new ColorLightingEntity());
         Devices = devices ?? new List<DeviceEntity>();
