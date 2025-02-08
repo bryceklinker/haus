@@ -1,66 +1,57 @@
-using System.Collections.Concurrent;
-using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using Fluxor;
 using Haus.Api.Client;
-using Haus.Site.Host.Shared.State;
 using Haus.Site.Host.Tests.Support.Http;
 using Haus.Testing.Support;
 using Microsoft.Extensions.DependencyInjection;
-using MudBlazor;
+using Microsoft.Extensions.Hosting;
 using MudBlazor.Services;
 
 namespace Haus.Site.Host.Tests.Support;
 
-public class HausSiteTestContext : TestContext, IAsyncLifetime
+public class HausSiteTestContext : IAsyncLifetime
 {
     private readonly InMemoryHttpClientFactory _httpClientFactory;
-    private readonly ConcurrentBag<object> _capturedActions = [];
-    private IDispatcher? _dispatcher = null;
-
+    protected TestContext Context { get; }
     protected InMemoryHttpMessageHandler HausApiHandler => _httpClientFactory.GetHandler(HausApiClientNames.Default);
-    
+
     protected HausSiteTestContext()
     {
-        _httpClientFactory = new InMemoryHttpClientFactory();
-        Services.AddMudServices()
-            .AddHausApiClient(opts =>
-            {
-                opts.BaseUrl = ConfigureHttpResponseOptions.DefaultBaseUrl;
-            });
-        Services.AddFluxor(scan => scan.ScanAssemblies(typeof(ListState<>).Assembly));
+        Context = new TestContext();
+        Context.JSInterop.Mode = JSRuntimeMode.Loose;
         
-        Services.AddSingleton(_httpClientFactory);
-        Services.Replace<IHttpClientFactory>(_httpClientFactory);
-        JSInterop.Mode = JSRuntimeMode.Loose;
+        Context.Services.AddMudServices(opts =>
+        {
+            opts.SnackbarConfiguration.ShowTransitionDuration = 0;
+            opts.SnackbarConfiguration.HideTransitionDuration = 0;
+            opts.PopoverOptions.CheckForPopoverProvider = false;
+        });
+        Context.Services
+            .AddHausApiClient(opts => { opts.BaseUrl = ConfigureHttpResponseOptions.DefaultBaseUrl; });
+
+        _httpClientFactory = new InMemoryHttpClientFactory();
+        Context.Services.AddSingleton(_httpClientFactory);
+        Context.Services.Replace<IHttpClientFactory>(_httpClientFactory);
     }
 
-    public T[] GetCapturedActions<T>()
-    {
-        return _capturedActions.OfType<T>().ToArray();
-    }
-    
     public async Task InitializeAsync()
     {
-        RenderComponent<MudPopoverProvider>();
-        RenderComponent<MudSnackbarProvider>();
-        _dispatcher = Services.GetRequiredService<IDispatcher>();
-        _dispatcher.ActionDispatched += CaptureDispatchedAction;
-        
-        var store = Services.GetRequiredService<IStore>();
-        await store.InitializeAsync();
+        var hostedServices = Context.Services.GetServices<IHostedService>();
+        foreach (var service in hostedServices)
+        {
+            await service.StartAsync(CancellationToken.None);
+        }
     }
 
-    public Task DisposeAsync()
+    public async Task DisposeAsync()
     {
-        if (_dispatcher != null) _dispatcher.ActionDispatched -= CaptureDispatchedAction;
-        
-        return Task.CompletedTask;
-    }
+        var hostedServices = Context.Services.GetServices<IHostedService>();
+        foreach (var service in hostedServices)
+        {
+            await service.StartAsync(CancellationToken.None);
+        }
 
-    private void CaptureDispatchedAction(object? sender, ActionDispatchedEventArgs args)
-    {
-        _capturedActions.Add(args.Action);
+        await Context.Services.DisposeAsync();
     }
 }

@@ -11,7 +11,7 @@ public class ShellLayoutTests : HausSiteTestContext
     [Fact]
     public async Task WhenMenuIsToggledThenMenuIsClosed()
     {
-        var shell = RenderComponent<ShellLayout>();
+        var shell = Context.RenderComponent<ShellLayout>();
 
         await shell.FindByTag("button").ClickAsync(new MouseEventArgs());
 
@@ -21,7 +21,7 @@ public class ShellLayoutTests : HausSiteTestContext
     [Fact]
     public async Task WhenMenuIsToggledTwiceThenMenuIsOpen()
     {
-        var shell = RenderComponent<ShellLayout>();
+        var shell = Context.RenderComponent<ShellLayout>();
 
         await shell.FindByTag("button").ClickAsync(new MouseEventArgs());
         await shell.FindByTag("button").ClickAsync(new MouseEventArgs());
@@ -32,7 +32,7 @@ public class ShellLayoutTests : HausSiteTestContext
     [Fact]
     public async Task WhenThemeModeIsToggledTrueThenThemeIsDark()
     {
-        var shell = RenderComponent<ShellLayout>();
+        var shell = Context.RenderComponent<ShellLayout>();
 
         await shell.InvokeAsync(async () =>
         {
@@ -45,7 +45,7 @@ public class ShellLayoutTests : HausSiteTestContext
     [Fact]
     public async Task WhenThemeModeIsToggledThenThemeIsLight()
     {
-        var shell = RenderComponent<ShellLayout>();
+        var shell = Context.RenderComponent<ShellLayout>();
 
         await shell.InvokeAsync(async () =>
         {

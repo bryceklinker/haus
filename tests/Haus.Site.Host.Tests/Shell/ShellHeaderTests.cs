@@ -13,7 +13,7 @@ public class ShellHeaderTests : HausSiteTestContext
     public async Task WhenMenuClickedThenNotifiesMenuToggled()
     {
         var toggled = false;
-        var header = RenderComponent<ShellHeader>(p => p
+        var header = Context.RenderComponent<ShellHeader>(p => p
             .Add(h => h.OnMenuToggled, () => toggled= true)
         );
 
@@ -27,7 +27,7 @@ public class ShellHeaderTests : HausSiteTestContext
     {
         var themeMode = ThemeMode.Light;
 
-        var header = RenderComponent<ShellHeader>(p => p
+        var header = Context.RenderComponent<ShellHeader>(p => p
             .Add(h => h.OnThemeToggled, (mode) => themeMode = mode)
         );
 

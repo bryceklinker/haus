@@ -1,9 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Fluxor;
-using Haus.Site.Host.Shared.State.Settings;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Configuration;
 
 namespace Haus.Site.Host.Shared.SignalR;
 
@@ -12,9 +11,9 @@ public interface ISignalRConnectionFactory
     Task<HubConnection> CreateAsync(string hubName);
 }
 
-public class SignalRConnectionFactory(IState<SettingsState> settingsState, IAccessTokenProvider tokenProvider) : ISignalRConnectionFactory
+public class SignalRConnectionFactory(IConfiguration config, IAccessTokenProvider tokenProvider) : ISignalRConnectionFactory
 {
-    private string? ApiUrl => settingsState.Value.Api?.BaseUrl;
+    private string? ApiUrl => config.GetValue<string>("Api:BaseUrl");
     
     public Task<HubConnection> CreateAsync(string hubName)
     {

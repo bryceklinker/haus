@@ -1,6 +1,4 @@
 using System;
-using Fluxor;
-using Fluxor.Blazor.Web.ReduxDevTools;
 using Haus.Api.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
@@ -23,18 +21,11 @@ public static class ServiceCollectionExtensions
         ArgumentException.ThrowIfNullOrEmpty(authClientId, nameof(authClientId));
         ArgumentException.ThrowIfNullOrEmpty(authAudience, nameof(authAudience));
 
-
         services.AddMudServices();
-        services.AddFluxor(opts =>
-        {
-            opts.ScanAssemblies(typeof(ServiceCollectionExtensions).Assembly)
-                .UseReduxDevTools();
-        });
         services.AddHausApiClient(opts =>
         {
             opts.BaseUrl = apiUrl;
         }).AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
-
         services.AddOidcAuthentication(opts =>
         {
             opts.ProviderOptions.ClientId = authClientId;
