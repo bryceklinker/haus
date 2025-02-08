@@ -3,6 +3,7 @@ using System;
 using Haus.Core.Common.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Haus.Core.Common.Storage.Migrations
 {
     [DbContext(typeof(HausDbContext))]
-    partial class HausDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250208223822_dotnet_9_upgrade")]
+    partial class dotnet_9_upgrade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
