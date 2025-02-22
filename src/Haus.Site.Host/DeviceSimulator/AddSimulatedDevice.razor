@@ -1,32 +1,75 @@
 @page "/device-simulator/add"
 
 @using Haus.Api.Client.Devices
+@using Haus.Api.Client.DeviceSimulator
 @using Haus.Core.Models.Common
 @using Haus.Core.Models.Devices
-@inject IDeviceApiClient DeviceClient;
+@using Haus.Core.Models.DeviceSimulator
+@inject IDeviceApiClient DeviceClient
+@inject IDeviceSimulatorApiClient SimulatorClient;
 
 <MudPopoverProvider />
 
 <LoadingContent IsLoading="IsLoading" LoadingText="Loading Device Types...">
-    <MudSelect @bind-Value="_deviceType">
-        @foreach (var type in DeviceTypes.Items)
-        {
-            <MudSelectItem T="DeviceType?" Value="type"/>
-        }
-    </MudSelect>
+    <MudPaper>
+        <MudForm>
+            <MudSelect Required @bind-Value="DeviceType"  onvaRequiredError="You must select a device type">
+                @foreach (var type in DeviceTypes.Items)
+                {
+                    <MudSelectItem T="DeviceType?" Value="type"/>
+                }
+            </MudSelect>
+            <MudPaper>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => AddMetadataRow()">
+                    Add Metadata
+                </MudButton>
+            </MudPaper>
+            
+            <EditableMetadataList @bind-Items="Metadata" />
+        </MudForm>    
+    </MudPaper>
+    <MudPaper>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="() => HandleSave()">
+            Save
+        </MudButton>
+    </MudPaper>
 </LoadingContent>
 
 @code {
-    private DeviceType? _deviceType = null;
-    public bool IsLoading { get; set; } = false;
+    public bool IsLoading { get; set; }
 
     public ListResult<DeviceType> DeviceTypes { get; set; } = new();
 
+    public DeviceType? DeviceType { get; set; }
+
+    public MetadataModel[] Metadata { get; set; } = [];
+
     protected override async Task OnInitializedAsync()
     {
+        DeviceType = null;
         IsLoading = true;
         DeviceTypes = await DeviceClient.GetDeviceTypesAsync();
         IsLoading = false;
     }
 
+    private async Task HandleSave()
+    {
+        if (DeviceType == null)
+        {
+            return;
+        }
+
+        await SimulatorClient.AddSimulatedDeviceAsync(new SimulatedDeviceModel
+        {
+            DeviceType = DeviceType.Value,
+            Metadata = Metadata.ToArray()
+        });
+    }
+
+    private void AddMetadataRow()
+    {
+        Metadata = Metadata.Append(new MetadataModel("", "")).ToArray();
+    }
 }

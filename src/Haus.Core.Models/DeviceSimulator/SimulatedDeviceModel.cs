@@ -1,4 +1,3 @@
-using System;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Lighting;
@@ -12,6 +11,6 @@ public record SimulatedDeviceModel(
     MetadataModel[]? Metadata = null,
     LightingModel? Lighting = null)
 {
-    public MetadataModel[] Metadata { get; } = Metadata ?? [];
-    public LightingModel? Lighting { get; } = DeviceType == DeviceType.Light ? Lighting : null;
+    public MetadataModel[] Metadata { get; init; } = Metadata ?? [];
+    public LightingModel? Lighting { get; init; } = DeviceType == DeviceType.Light ? Lighting : null;
 }

@@ -32,6 +32,7 @@ public record ConfiguredHttpResponse
             return null;
 
         await Task.Delay(_options.Delay);
+        await _options.Capture(await incomingRequest.CloneAsync());
         return _response;
     }
 

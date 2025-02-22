@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models;
@@ -32,21 +31,29 @@ public class InMemoryHttpMessageHandler : HttpMessageHandler
     public async Task SetupResponse(
         HttpRequestMessage request,
         HttpResponseMessage response,
-        ConfigureHttpResponseOptions? options = null)
+        ConfigureHttpResponseWithStatus options)
     {
         var requestClone = await request.CloneAsync();
         var responseClone = await response.CloneAsync();
-        var configuredOptions = options ?? new ConfigureHttpResponseOptions(TimeSpan.Zero);
-        _responses.Add(new ConfiguredHttpResponse(requestClone, responseClone, configuredOptions));
+        _responses.Add(new ConfiguredHttpResponse(requestClone, responseClone, options));
+    }
+    
+    public async Task SetupResponse(
+        HttpRequestMessage request,
+        HttpResponseMessage response,
+        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
+    {
+        var options = ConfigureOptions(configure);
+        await SetupResponse(request, response, options);
     }
 
     public async Task SetupResponseAsJson<T>(
         HttpMethod method,
         string url,
         T model,
-        ConfigureHttpResponseWithStatus? options = null)
+        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
     {
-        var opts = options ?? new ConfigureHttpResponseWithStatus();
+        var opts = ConfigureOptions(configure);
 
         var uri = CreateUriFromString(url, opts.BaseUri);
         var request = new HttpRequestMessage(method, uri);
@@ -54,27 +61,27 @@ public class InMemoryHttpMessageHandler : HttpMessageHandler
         {
             Content = JsonContent.Create(model, options: HausJsonSerializer.DefaultOptions)
         };
-        await SetupResponse(request, response, opts);
+        await SetupResponse(request, response, configure);
     }
 
-    public async Task SetupGetAsJson<T>(string url, T model, ConfigureHttpResponseWithStatus? options = null)
+    public async Task SetupGetAsJson<T>(string url, T model, Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
     {
-        await SetupResponseAsJson(HttpMethod.Get, url, model, options);
+        await SetupResponseAsJson(HttpMethod.Get, url, model, configure);
     }
 
-    public async Task SetupPostAsJson<T>(string url, T model, ConfigureHttpResponseWithStatus? options = null)
+    public async Task SetupPostAsJson<T>(string url, T model, Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
     {
-        await SetupResponseAsJson(HttpMethod.Post, url, model, options);
+        await SetupResponseAsJson(HttpMethod.Post, url, model, configure);
     }
 
-    public async Task SetupPutAsJson<T>(string url, T model, ConfigureHttpResponseWithStatus? options = null)
+    public async Task SetupPutAsJson<T>(string url, T model, Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
     {
-        await SetupResponseAsJson(HttpMethod.Put, url, model, options);
+        await SetupResponseAsJson(HttpMethod.Put, url, model, configure);
     }
 
-    public async Task SetupDeleteAsJson<T>(string url, ConfigureHttpResponseWithStatus? options = null)
+    public async Task SetupDeleteAsJson<T>(string url, Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
     {
-        await SetupResponseAsJson<object?>(HttpMethod.Delete, url, null, options);
+        await SetupResponseAsJson<object?>(HttpMethod.Delete, url, null, configure);
     }
 
     private static Uri CreateUriFromString(string url, Uri baseUri)
@@ -83,5 +90,14 @@ public class InMemoryHttpMessageHandler : HttpMessageHandler
             return uri;
         
         return new Uri(baseUri, url);
+    }
+
+    private static ConfigureHttpResponseWithStatus ConfigureOptions(
+        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
+    {
+        var defaultOptions = new ConfigureHttpResponseWithStatus(Delay: TimeSpan.Zero);
+        return configure != null
+            ? configure.Invoke(defaultOptions)
+            : defaultOptions;
     }
 }
