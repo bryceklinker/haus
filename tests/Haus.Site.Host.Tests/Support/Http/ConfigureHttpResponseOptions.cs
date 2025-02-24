@@ -27,6 +27,11 @@ public record ConfigureHttpResponseWithStatus(
         return this with { Status = status };
     }
 
+    public ConfigureHttpResponseWithStatus WithDelayMs(long delay)
+    {
+        return WithDelay(TimeSpan.FromMilliseconds(delay));
+    }
+    
     public ConfigureHttpResponseWithStatus WithDelay(TimeSpan delay)
     {
         return this with { Delay = delay };

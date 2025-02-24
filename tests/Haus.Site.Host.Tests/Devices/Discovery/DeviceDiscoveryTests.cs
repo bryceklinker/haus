@@ -15,36 +15,55 @@ public class DeviceDiscoveryTests : HausSiteTestContext
     private const string DevicesUrl = "/api/devices";
 
     [Fact]
+    public async Task WhenRenderedThenShowsLoading()
+    {
+        await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>(), opts => opts.WithDelayMs(1000));
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>(), opts => opts.WithDelayMs(1000));
+
+        var page = Context.RenderComponent<DeviceDiscovery>();
+        
+        Eventually.Assert(() =>
+        {
+            page.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
+        });
+    }
+    
+    [Fact]
     public async Task WhenRenderedThenShowsAllRooms()
     {
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>());
         await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>([
-            new RoomModel(Name: "Basement"),
-            new RoomModel(Name: "Master Bedroom"),
+            HausModelFactory.RoomModel() with {Name = "Basement", Id = 4},
+            HausModelFactory.RoomModel() with {Name = "Master Bedroom", Id = 3},
         ]));
 
         var page = Context.RenderComponent<DeviceDiscovery>();
 
         Eventually.Assert(() =>
         {
-            page.FindAllByComponent<MudListItem<RoomModel>>().Should().HaveCount(2);
+            page.FindAllByComponent<MudDropZone<DeviceModel>>().Should().HaveCount(3);
         });
     }
 
     [Fact]
     public async Task WhenRenderedThenShowsAllUnassignedDevices()
     {
+        await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>([
+            HausModelFactory.RoomModel() with { Id = 6 }
+        ]));
         await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>([
-            new DeviceModel(RoomId: 5),
-            new DeviceModel(RoomId: null),
-            new DeviceModel(RoomId: null),
-            new DeviceModel(RoomId: 6),
+            HausModelFactory.DeviceModel() with {RoomId = 6},
+            HausModelFactory.DeviceModel() with {RoomId = null},
+            HausModelFactory.DeviceModel() with {RoomId = null},
+            HausModelFactory.DeviceModel() with {RoomId = 6},
         ]));
         
         var page = Context.RenderComponent<DeviceDiscovery>();
+        await Task.Delay(1000);
         
         Eventually.Assert(() =>
         {
-            page.FindAllByComponent<MudListItem<DeviceModel>>().Should().HaveCount(2);
+            page.FindAllByComponent<MudPaper>().Should().HaveCount(4);
         });
     }
 }

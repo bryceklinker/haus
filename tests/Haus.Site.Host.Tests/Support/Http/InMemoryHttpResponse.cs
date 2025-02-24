@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Haus.Site.Host.Tests.Support.Http;
@@ -16,7 +17,7 @@ public class InMemoryHttpResponse(
     {
         var response = new HttpResponseMessage(statusCode);
         responseHeaders.CloneTo(response.Headers);
-        
+
         response.Content = new ByteArrayContent(content);
         contentHeaders.CloneTo(response.Content.Headers);
         return response;

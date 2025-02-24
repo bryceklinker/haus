@@ -8,33 +8,58 @@
 @inject IDeviceApiClient DevicesClient;
 @inject IRoomsApiClient RoomsClient;
 
-<MudList T="RoomModel">
-    @foreach (var room in Rooms)
-    {
-        <MudListItem T="RoomModel"
-                     Text="@room.Name" />
-    }
-</MudList>
+<LoadingContent IsLoading="IsLoading" LoadingText="Loading rooms and devices...">
+    <MudDropContainer T="DeviceModel" Items="Devices" ItemsSelector="IsDeviceInRoom" ItemDropped="HandleDeviceDropped">
+        <ChildContent>
+            @foreach (var room in Rooms)
+            {
+                <MudDropZone T="DeviceModel" Identifier="@room.Id.ToString()" >
+                    <MudText Typo="Typo.h3">@room.Name</MudText>
+                </MudDropZone>
+            }
+            <MudDropZone T="DeviceModel" Identifier="@UnassignedDeviceRoomId">
+                <MudText Typo="Typo.h3">Unassigned Devices</MudText>
+            </MudDropZone>
+        </ChildContent>
+        <ItemRenderer>
+            <MudPaper>@context.Name</MudPaper>
+        </ItemRenderer>
+    </MudDropContainer>
+</LoadingContent>
 
-<MudList T="DeviceModel">
-    @foreach (var device in UnassignedDevices)
-    {
-        <MudListItem T="DeviceModel"
-                     Text="@device.Name" />
-    }
-</MudList>
 
 @code {
+    private const string UnassignedDeviceRoomId = "unassigned";
+
     private RoomModel[] Rooms { get; set; } = [];
-    private DeviceModel[] UnassignedDevices { get; set; } = [];
+    private DeviceModel[] Devices { get; set; } = [];
+
+    private bool IsLoading { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var devicesList = await DevicesClient.GetDevicesAsync();
+        IsLoading = true;
         var roomsList = await RoomsClient.GetRoomsAsync();
         Rooms = roomsList.Items;
 
-        UnassignedDevices = devicesList.Items.Where(i => i.RoomId == null).ToArray();
+        var devicesList = await DevicesClient.GetDevicesAsync();
+        Devices = devicesList.Items;
+        IsLoading = false;
+    }
+
+    private static bool IsDeviceInRoom(DeviceModel device, string roomId)
+    {
+        if (device.RoomId == null)
+        {
+            return roomId == UnassignedDeviceRoomId;
+        }
+
+        return roomId == device.RoomId.ToString();
+    }
+
+    private async Task HandleDeviceDropped(MudItemDropInfo<DeviceModel> droppedItem)
+    {
+
     }
 
 }

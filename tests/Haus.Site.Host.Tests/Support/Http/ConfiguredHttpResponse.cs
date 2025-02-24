@@ -32,7 +32,8 @@ public record ConfiguredHttpResponse(
 
         if (Request.Uri == incomingUri)
             return true;
-
-        return Request.Uri.IsBaseOf(incomingUri);
+        
+        return Request.Uri.IsBaseOf(incomingUri)
+            && Request.Uri.AbsolutePath == incomingUri.AbsolutePath;
     }
 }
