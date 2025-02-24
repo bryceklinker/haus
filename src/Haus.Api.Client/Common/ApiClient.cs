@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Haus.Api.Client.Options;
+using Haus.Core.Models;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client.Common;
@@ -22,16 +23,16 @@ public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSet
     public string ApiBaseUrl => UrlUtility.Join(null, BaseUrl, ApiPath);
     protected HttpClient HttpClient { get; } = httpClient;
 
-    protected Task<T?> GetAsJsonAsync<T>(string path, QueryParameters? parameters = null)
+    protected async Task<T?> GetAsJsonAsync<T>(string path, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
-        return HttpClient.GetFromJsonAsync<T>(fullUrl);
+        return await HttpClient.GetFromJsonAsync<T>(fullUrl, HausJsonSerializer.DefaultOptions);
     }
 
     protected Task<HttpResponseMessage> PostAsJsonAsync<T>(string path, T data, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
-        return HttpClient.PostAsJsonAsync(fullUrl, data);
+        return HttpClient.PostAsJsonAsync(fullUrl, data, HausJsonSerializer.DefaultOptions);
     }
 
     protected Task<HttpResponseMessage> PostEmptyContentAsync(string path, QueryParameters? parameters = null)
@@ -43,7 +44,7 @@ public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSet
     protected Task<HttpResponseMessage> PutAsJsonAsync<T>(string path, T data, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
-        return HttpClient.PutAsJsonAsync(fullUrl, data);
+        return HttpClient.PutAsJsonAsync(fullUrl, data, HausJsonSerializer.DefaultOptions);
     }
 
     protected string GetFullUrl(string path, QueryParameters? parameters = null)

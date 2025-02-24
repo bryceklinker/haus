@@ -1,0 +1,40 @@
+@using Haus.Api.Client.Devices
+@using Haus.Api.Client.Rooms
+@using Haus.Core.Models.Devices
+@using Haus.Core.Models.Rooms
+
+@page "/devices/discovery"
+
+@inject IDeviceApiClient DevicesClient;
+@inject IRoomsApiClient RoomsClient;
+
+<MudList T="RoomModel">
+    @foreach (var room in Rooms)
+    {
+        <MudListItem T="RoomModel"
+                     Text="@room.Name" />
+    }
+</MudList>
+
+<MudList T="DeviceModel">
+    @foreach (var device in UnassignedDevices)
+    {
+        <MudListItem T="DeviceModel"
+                     Text="@device.Name" />
+    }
+</MudList>
+
+@code {
+    private RoomModel[] Rooms { get; set; } = [];
+    private DeviceModel[] UnassignedDevices { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var devicesList = await DevicesClient.GetDevicesAsync();
+        var roomsList = await RoomsClient.GetRoomsAsync();
+        Rooms = roomsList.Items;
+
+        UnassignedDevices = devicesList.Items.Where(i => i.RoomId == null).ToArray();
+    }
+
+}

@@ -71,7 +71,7 @@ public class HausApiClient(
         return DiscoveryApiClient.SyncDevicesAsync();
     }
 
-    public Task<DeviceModel> GetDeviceAsync(long id)
+    public Task<DeviceModel?> GetDeviceAsync(long id)
     {
         return DeviceApiClient.GetDeviceAsync(id);
     }

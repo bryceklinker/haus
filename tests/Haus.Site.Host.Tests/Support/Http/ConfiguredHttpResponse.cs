@@ -1,49 +1,38 @@
 using System;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Haus.Site.Host.Tests.Support.Http;
 
-public record ConfiguredHttpResponse
-{
-    private readonly HttpRequestMessage _request;
-    private readonly HttpResponseMessage _response;
-    private readonly ConfigureHttpResponseOptions _options;
-
-    public HttpMethod Method => _request.Method;
-    public Uri? Uri => _request.RequestUri;
-    
-    public ConfiguredHttpResponse(
-        HttpRequestMessage request,
-        HttpResponseMessage response,
-        ConfigureHttpResponseOptions options)
-    {
-        _request = request;
-        _response = response;
-        _options = options;
-    }
+public record ConfiguredHttpResponse(
+    InMemoryHttpRequest Request,
+    InMemoryHttpResponse Response,
+    ConfigureHttpResponseOptions Options) {
 
     public async Task<HttpResponseMessage?> GetResponseAsync(HttpRequestMessage incomingRequest)
     {
-        if (incomingRequest.Method != Method)
+        var request = await InMemoryHttpRequest.FromRequest(incomingRequest);
+        if (request.Method != Request.Method)
             return null;
 
         if (!DoUrisMatch(incomingRequest.RequestUri))
             return null;
 
-        await Task.Delay(_options.Delay);
-        await _options.Capture(await incomingRequest.CloneAsync());
-        return _response;
+        await Task.Delay(Options.Delay);
+        await Options.Capture(request.AsRequest());
+        return Response.AsResponse();
     }
 
     private bool DoUrisMatch(Uri? incomingUri)
     {
-        if (incomingUri == null || Uri == null)
+        if (incomingUri == null || Request.Uri == null)
             return false;
 
-        if (Uri == incomingUri)
+        if (Request.Uri == incomingUri)
             return true;
 
-        return Uri.IsBaseOf(incomingUri);
+        return Request.Uri.IsBaseOf(incomingUri);
     }
 }

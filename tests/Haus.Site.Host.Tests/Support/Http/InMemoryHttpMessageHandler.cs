@@ -16,13 +16,12 @@ public class InMemoryHttpMessageHandler : HttpMessageHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        var incomingRequest = await request.CloneAsync();
         foreach (var response in _responses)
         {
-            var result = await response.GetResponseAsync(incomingRequest);
+            var result = await response.GetResponseAsync(request);
             if (result == null)
                 continue;
-            return await result.CloneAsync();
+            return result;
         }
 
         return new HttpResponseMessage(HttpStatusCode.NotFound);
@@ -33,9 +32,9 @@ public class InMemoryHttpMessageHandler : HttpMessageHandler
         HttpResponseMessage response,
         ConfigureHttpResponseWithStatus options)
     {
-        var requestClone = await request.CloneAsync();
-        var responseClone = await response.CloneAsync();
-        _responses.Add(new ConfiguredHttpResponse(requestClone, responseClone, options));
+        var inMemoryRequest = await InMemoryHttpRequest.FromRequest(request);
+        var inMemoryResponse = await InMemoryHttpResponse.FromResponse(response);
+        _responses.Add(new ConfiguredHttpResponse(inMemoryRequest, inMemoryResponse, options));
     }
     
     public async Task SetupResponse(

@@ -9,6 +9,7 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Site.Host.DeviceSimulator;
 using Haus.Site.Host.Tests.Support;
+using Haus.Testing.Support;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
@@ -30,7 +31,10 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
 
         var page = Context.RenderComponent<AddSimulatedDevice>();
 
-        page.WaitForAssertion(() => page.FindComponents<MudProgressCircular>().Should().HaveCount(1));
+        Eventually.Assert(() =>
+        {
+            page.FindComponents<MudProgressCircular>().Should().HaveCount(1);
+        });
     }
 
     [Fact]
@@ -41,7 +45,10 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
         var page = Context.RenderComponent<AddSimulatedDevice>();
         OpenDeviceTypes(page);
 
-        page.WaitForAssertion(() => page.FindAllByClass("mud-list-item").Should().HaveCount(2));
+        Eventually.Assert(() =>
+        {
+            page.FindAllByClass("mud-list-item").Should().HaveCount(2);
+        });
     }
 
     [Fact]

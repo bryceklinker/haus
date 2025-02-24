@@ -46,7 +46,7 @@ public static class HausJsonSerializer
         return JsonSerializer.Serialize(value, options ?? DefaultOptions);
     }
 
-    public static ArraySegment<byte> SerializeToBytes(object value)
+    public static ArraySegment<byte> SerializeToBytes(object? value)
     {
         return JsonSerializer.SerializeToUtf8Bytes(value, DefaultOptions);
     }
