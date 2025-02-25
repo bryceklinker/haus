@@ -8,7 +8,9 @@ public record FindOptions(
     string? Name = null,
     Regex? NameRegex = null,
     string? Id = null,
-    Regex? IdRegex = null
+    Regex? IdRegex = null,
+    string? ClassName = null,
+    Regex? ClassNameRegex = null
 )
 {
     public FindOptions WithText(string text) => this with { Text = text };
@@ -22,4 +24,8 @@ public record FindOptions(
     public FindOptions WithId(string id) => this with { Id = id };
     
     public FindOptions WithIdRegex(Regex regex) => this with { IdRegex = regex };
+    
+    public FindOptions WithClassName(string className) => this with { ClassName = className };
+    
+    public FindOptions WithClassNameRegex(Regex regex) => this with { ClassNameRegex = regex };
 }

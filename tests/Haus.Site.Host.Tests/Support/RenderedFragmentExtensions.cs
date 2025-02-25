@@ -108,6 +108,12 @@ public static class RenderedFragmentExtensions
         if (options.IdRegex != null)
             query = query.Where(e => e.AttributeContains("id", options.IdRegex));
         
+        if (options.ClassName != null)
+            query = query.Where(e => e.ClassList.Contains(options.ClassName));
+        
+        if (options.ClassNameRegex != null)
+            query = query.Where(e => e.ClassList.Any(c => options.ClassNameRegex.IsMatch(c)));
+        
         return query;
     }
 

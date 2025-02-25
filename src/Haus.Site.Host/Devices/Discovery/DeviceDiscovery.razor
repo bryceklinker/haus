@@ -17,12 +17,13 @@
                     <MudText Typo="Typo.h3">@room.Name</MudText>
                 </MudDropZone>
             }
-            <MudDropZone T="DeviceModel" Identifier="@UnassignedDeviceRoomId">
+            <MudDropZone T="DeviceModel"
+                         Identifier="@UnassignedDeviceRoomId">
                 <MudText Typo="Typo.h3">Unassigned Devices</MudText>
             </MudDropZone>
         </ChildContent>
         <ItemRenderer>
-            <MudPaper>@context.Name</MudPaper>
+            <MudPaper Class="device" >@context.Name</MudPaper>
         </ItemRenderer>
     </MudDropContainer>
 </LoadingContent>
@@ -59,7 +60,13 @@
 
     private async Task HandleDeviceDropped(MudItemDropInfo<DeviceModel> droppedItem)
     {
-
+        if (droppedItem.Item == null)
+        {
+            return;
+        }
+        
+        long.TryParse(droppedItem.DropzoneIdentifier, out var roomId);
+        await RoomsClient.AddDevicesToRoomAsync(roomId, droppedItem.Item.Id);
     }
 
 }
