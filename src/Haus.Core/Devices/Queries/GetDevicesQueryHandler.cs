@@ -16,8 +16,10 @@ public record GetDevicesQuery(string? ExternalId = null) : IQuery<ListResult<Dev
 
 internal class GetDevicesQueryHandler(HausDbContext context) : IQueryHandler<GetDevicesQuery, ListResult<DeviceModel>>
 {
-    public async Task<ListResult<DeviceModel>> Handle(GetDevicesQuery request,
-        CancellationToken cancellationToken = default)
+    public async Task<ListResult<DeviceModel>> Handle(
+        GetDevicesQuery request,
+        CancellationToken cancellationToken = default
+    )
     {
         var query = context.QueryAll<DeviceEntity>();
 

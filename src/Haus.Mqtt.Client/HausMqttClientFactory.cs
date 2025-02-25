@@ -19,8 +19,8 @@ public interface IHausMqttClientFactory : IAsyncDisposable
 internal class HausMqttClientFactory(
     IOptions<HausMqttSettings> options,
     IMqttFactory mqttFactory,
-    IMqttNetLogger logger)
-    : IHausMqttClientFactory
+    IMqttNetLogger logger
+) : IHausMqttClientFactory
 {
     private readonly ConcurrentDictionary<string, Task<IHausMqttClient>> _clients = new();
 

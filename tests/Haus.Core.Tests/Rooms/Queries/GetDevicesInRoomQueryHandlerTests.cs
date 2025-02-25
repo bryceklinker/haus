@@ -32,7 +32,9 @@ public class GetDevicesInRoomQueryHandlerTests
         var result = await _hausBus.ExecuteQueryAsync(new GetDevicesInRoomQuery(room.Id));
 
         result.Count.Should().Be(3);
-        result.Items.Should().HaveCount(3)
+        result
+            .Items.Should()
+            .HaveCount(3)
             .And.Contain(d => d.ExternalId == "one")
             .And.Contain(d => d.ExternalId == "two")
             .And.Contain(d => d.ExternalId == "three");

@@ -31,7 +31,7 @@ public record ConfigureHttpResponseWithStatus(
     {
         return WithDelay(TimeSpan.FromMilliseconds(delay));
     }
-    
+
     public ConfigureHttpResponseWithStatus WithDelay(TimeSpan delay)
     {
         return this with { Delay = delay };
@@ -50,7 +50,7 @@ public record ConfigureHttpResponseWithStatus(
             {
                 capture(req);
                 return Task.CompletedTask;
-            }
+            },
         };
     }
 }

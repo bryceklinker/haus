@@ -45,9 +45,7 @@ public class HausDiscoveryToZigbeeMapperTests
     [Fact]
     public void WhenStartDiscoveryIsMappedThenReturnsPermitJoinTrue()
     {
-        var original = new StartDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new StartDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
@@ -58,9 +56,7 @@ public class HausDiscoveryToZigbeeMapperTests
     [Fact]
     public void WhenStopDiscoveryIsMappedThenReturnsPermitJoinFalse()
     {
-        var original = new StopDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new StopDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
@@ -71,9 +67,7 @@ public class HausDiscoveryToZigbeeMapperTests
     [Fact]
     public void WhenSyncDiscoveryIsMappedThenReturnsGetDevices()
     {
-        var original = new SyncDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 

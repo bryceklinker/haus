@@ -21,7 +21,6 @@ public class MultiSensorChangedEventHandlerTests
 
         await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
-        _hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>()
-            .Should().HaveCount(1);
+        _hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>().Should().HaveCount(1);
     }
 }

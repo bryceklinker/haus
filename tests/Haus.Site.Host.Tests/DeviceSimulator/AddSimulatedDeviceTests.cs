@@ -25,7 +25,9 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
     [Fact]
     public async Task WhenLoadingTakesAwhileThenLoadingSpinnerIsShown()
     {
-        await HausApiHandler.SetupGetAsJson(DeviceTypesUrl, new ListResult<DeviceType>(),
+        await HausApiHandler.SetupGetAsJson(
+            DeviceTypesUrl,
+            new ListResult<DeviceType>(),
             opts => opts.WithDelay(TimeSpan.FromSeconds(1))
         );
 
@@ -62,10 +64,7 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
         _savedDevices.Should().HaveCount(1);
-        _savedDevices.Should().ContainEquivalentOf(new SimulatedDeviceModel
-        {
-            DeviceType = DeviceType.Switch,
-        });
+        _savedDevices.Should().ContainEquivalentOf(new SimulatedDeviceModel { DeviceType = DeviceType.Switch });
     }
 
     [Fact]
@@ -89,19 +88,20 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
         var page = Context.RenderComponent<AddSimulatedDevice>();
         await FindAddMetadata(page).ClickAsync(new MouseEventArgs());
         await EnterMetadata(page, "external", "true");
-        
+
         await SelectDeviceType(page, DeviceType.Light);
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
         _savedDevices.Should().HaveCount(1);
-        _savedDevices.Should().ContainEquivalentOf(new SimulatedDeviceModel
-        {
-            DeviceType = DeviceType.Light,
-            Metadata =
-            [
-                new MetadataModel("external", "true")
-            ]
-        });
+        _savedDevices
+            .Should()
+            .ContainEquivalentOf(
+                new SimulatedDeviceModel
+                {
+                    DeviceType = DeviceType.Light,
+                    Metadata = [new MetadataModel("external", "true")],
+                }
+            );
     }
 
     private async Task SetupDeviceTypes(params DeviceType[] deviceTypes)
@@ -111,17 +111,19 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
 
     private async Task SetupSaveSimulatedDevice()
     {
-        await HausApiHandler.SetupPostAsJson<object?>(DeviceSimulatorDevicesUrl, null, opts => opts
-            .WithCapture(async req =>
-            {
-                var device = req.Content != null
-                    ? await req.Content.ReadFromJsonAsync<SimulatedDeviceModel>()
-                    : null;
-                if (device != null)
+        await HausApiHandler.SetupPostAsJson<object?>(
+            DeviceSimulatorDevicesUrl,
+            null,
+            opts =>
+                opts.WithCapture(async req =>
                 {
-                    _savedDevices.Add(device);
-                }
-            })
+                    var device =
+                        req.Content != null ? await req.Content.ReadFromJsonAsync<SimulatedDeviceModel>() : null;
+                    if (device != null)
+                    {
+                        _savedDevices.Add(device);
+                    }
+                })
         );
     }
 
@@ -154,7 +156,7 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
     {
         var keyInput = page.FindByComponent<MudTextField<string>>(opts => opts.WithId("key"));
         await keyInput.InvokeAsync(() => keyInput.Instance.SetText(key));
-        
+
         var valueInput = page.FindByComponent<MudTextField<string>>(opts => opts.WithId("value"));
         await valueInput.InvokeAsync(() => valueInput.Instance.SetText(value));
     }

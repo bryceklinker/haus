@@ -23,7 +23,8 @@ public interface IDeviceApiClient : IApiClient
 }
 
 public class DevicesApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    : ApiClient(httpClient, options), IDeviceApiClient
+    : ApiClient(httpClient, options),
+        IDeviceApiClient
 {
     public Task<DeviceModel?> GetDeviceAsync(long id)
     {
@@ -45,7 +46,8 @@ public class DevicesApiClient(HttpClient httpClient, IOptions<HausApiClientSetti
     public async Task<ListResult<DeviceModel>> GetDevicesAsync(string? externalId = null)
     {
         var queryParameters = new QueryParameters();
-        if (!string.IsNullOrWhiteSpace(externalId)) queryParameters.Add("externalId", externalId);
+        if (!string.IsNullOrWhiteSpace(externalId))
+            queryParameters.Add("externalId", externalId);
         var result = await GetAsJsonAsync<ListResult<DeviceModel>>("devices", queryParameters).ConfigureAwait(false);
         return result ?? new ListResult<DeviceModel>();
     }

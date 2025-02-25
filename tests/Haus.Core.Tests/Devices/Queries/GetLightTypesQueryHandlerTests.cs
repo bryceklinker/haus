@@ -26,7 +26,9 @@ public class GetLightTypesQueryHandlerTests
         var result = await _hausBus.ExecuteQueryAsync(new GetLightTypesQuery());
 
         result.Count.Should().Be(3);
-        result.Items.Should().HaveCount(3)
+        result
+            .Items.Should()
+            .HaveCount(3)
             .And.Contain(LightType.Color)
             .And.Contain(LightType.Level)
             .And.Contain(LightType.Temperature);

@@ -18,10 +18,12 @@ internal class RoutableCommandHandler(IOptions<HausMqttSettings> mqttOptions, IH
     public async Task Handle(RoutableCommand notification, CancellationToken cancellationToken)
     {
         var hausMqttClient = await clientFactory.CreateClient();
-        await hausMqttClient.PublishAsync(new MqttApplicationMessage
-        {
-            Topic = CommandsTopic,
-            PayloadSegment = HausJsonSerializer.SerializeToBytes(notification.HausCommand)
-        });
+        await hausMqttClient.PublishAsync(
+            new MqttApplicationMessage
+            {
+                Topic = CommandsTopic,
+                PayloadSegment = HausJsonSerializer.SerializeToBytes(notification.HausCommand),
+            }
+        );
     }
 }

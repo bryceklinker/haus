@@ -24,12 +24,16 @@ public class ExternalHealthListenerTests(HausWebHostApplicationFactory factory)
         var mqttClient = await factory.GetMqttClient();
         var publishedChecks = new[]
         {
-            new HausHealthCheckModel("External", HealthStatus.Healthy, 66, "External Check", null,
-                [])
+            new HausHealthCheckModel("External", HealthStatus.Healthy, 66, "External Check", null, []),
         };
-        await mqttClient.PublishAsync(DefaultHausMqttTopics.HealthTopic,
-            new HausHealthReportModel(HealthStatus.Healthy, 55, publishedChecks));
+        await mqttClient.PublishAsync(
+            DefaultHausMqttTopics.HealthTopic,
+            new HausHealthReportModel(HealthStatus.Healthy, 55, publishedChecks)
+        );
 
-        Eventually.Assert(() => { report.Checks.Should().Contain(c => c.Name == "External"); });
+        Eventually.Assert(() =>
+        {
+            report.Checks.Should().Contain(c => c.Name == "External");
+        });
     }
 }

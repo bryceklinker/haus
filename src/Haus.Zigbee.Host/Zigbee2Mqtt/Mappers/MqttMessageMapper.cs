@@ -18,8 +18,8 @@ public class MqttMessageMapper(
     IOptionsMonitor<HausOptions> hausOptions,
     IOptions<ZigbeeOptions> zigbeeOptions,
     IZigbeeToHausMapper zigbeeToHausMapper,
-    IHausToZigbeeMapper hausToZigbeeMapper)
-    : IMqttMessageMapper
+    IHausToZigbeeMapper hausToZigbeeMapper
+) : IMqttMessageMapper
 {
     private string Zigbee2MqttBaseTopic => zigbeeOptions.Value.Config.Mqtt.BaseTopic;
     private string HausCommandsTopic => hausOptions.CurrentValue.CommandsTopic;

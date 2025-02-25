@@ -17,8 +17,7 @@ internal class ChangeDeviceLightingCommandHandler(IDomainEventBus domainEventBus
 {
     public async Task Handle(ChangeDeviceLightingCommand request, CancellationToken cancellationToken)
     {
-        var device = await repository.GetById(request.DeviceId, cancellationToken)
-            .ConfigureAwait(false);
+        var device = await repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
 
         if (!device.IsLight)
             throw new InvalidOperationException($"Device with id {device.Id} is not a light");

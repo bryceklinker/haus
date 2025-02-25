@@ -19,20 +19,21 @@ public record AssignDevicesToRoomCommand(long RoomId, params long[] DeviceIds) :
 internal class AssignDevicesToRoomCommandHandler(
     HausDbContext context,
     IRoomCommandRepository repository,
-    IHausBus hausBus)
-    : ICommandHandler<AssignDevicesToRoomCommand>
+    IHausBus hausBus
+) : ICommandHandler<AssignDevicesToRoomCommand>
 {
     public async Task Handle(AssignDevicesToRoomCommand request, CancellationToken cancellationToken)
     {
         var room = await repository.GetByIdAsync(request.RoomId, cancellationToken).ConfigureAwait(false);
 
-        var devices = await EnsureAllDevicesExist(request.DeviceIds, cancellationToken)
-            .ConfigureAwait(false);
+        var devices = await EnsureAllDevicesExist(request.DeviceIds, cancellationToken).ConfigureAwait(false);
         room.AddDevices(devices, hausBus);
         await repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
         await hausBus
-            .PublishAsync(RoutableEvent.FromEvent(new DevicesAssignedToRoomEvent(request.RoomId, request.DeviceIds)),
-                cancellationToken)
+            .PublishAsync(
+                RoutableEvent.FromEvent(new DevicesAssignedToRoomEvent(request.RoomId, request.DeviceIds)),
+                cancellationToken
+            )
             .ConfigureAwait(false);
         await hausBus.FlushAsync(cancellationToken).ConfigureAwait(false);
     }

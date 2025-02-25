@@ -19,8 +19,8 @@ public class GetLatestVersionQueryHandlerTests
     public GetLatestVersionQueryHandlerTests()
     {
         _latestReleaseProvider = new FakeLatestReleaseProvider();
-        _hausBus = HausBusFactory.Create(configureServices:
-            services => services.AddSingleton<ILatestReleaseProvider>(_latestReleaseProvider)
+        _hausBus = HausBusFactory.Create(configureServices: services =>
+            services.AddSingleton<ILatestReleaseProvider>(_latestReleaseProvider)
         );
     }
 

@@ -14,7 +14,8 @@ public interface ILogsApiClient
 }
 
 public class LogsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    : ApiClient(httpClient, options), ILogsApiClient
+    : ApiClient(httpClient, options),
+        ILogsApiClient
 {
     public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null)
     {
@@ -31,7 +32,7 @@ public class LogsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings
             { "pageSize", parameters.PageSize.ToString() },
             { "pageNumber", parameters.PageNumber.ToString() },
             { "search", parameters.SearchTerm },
-            { "level", parameters.Level }
+            { "level", parameters.Level },
         };
     }
 }

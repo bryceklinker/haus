@@ -25,9 +25,7 @@ public class DeviceTypeOptionsParserTests
     {
         var markdown = SupportedDevicesMarkdown.Sample;
 
-        var options = _parser
-            .Parse(markdown)
-            .ToArray();
+        var options = _parser.Parse(markdown).ToArray();
 
         options[0].Model.Should().Be("RS 227 T");
         options[0].Vendor.Should().Be("Innr");

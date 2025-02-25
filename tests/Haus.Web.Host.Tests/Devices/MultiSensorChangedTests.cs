@@ -25,14 +25,14 @@ public class MultiSensorChangedTests(HausWebHostApplicationFactory factory)
 
         var commands = new ConcurrentBag<HausCommand<RoomLightingChangedEvent>>();
         await factory.SubscribeToRoomLightingChangedCommandsAsync(commands.Add);
-        await factory.PublishHausEventAsync(new MultiSensorChanged(
-            sensor.ExternalId,
-            new OccupancyChangedModel(sensor.ExternalId, true)
-        ));
+        await factory.PublishHausEventAsync(
+            new MultiSensorChanged(sensor.ExternalId, new OccupancyChangedModel(sensor.ExternalId, true))
+        );
 
         Eventually.Assert(() =>
         {
-            commands.Should()
+            commands
+                .Should()
                 .Contain(cmd => cmd.Payload.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On);
         });
     }

@@ -23,7 +23,8 @@ internal class ClearDatabaseCommandHandler(HausDbContext context) : ICommandHand
         where T : class
     {
         var entities = await context.Set<T>().ToArrayAsync(token).ConfigureAwait(false);
-        foreach (var entity in entities) context.Remove(entity);
+        foreach (var entity in entities)
+            context.Remove(entity);
         await context.SaveChangesAsync(token).ConfigureAwait(false);
     }
 }

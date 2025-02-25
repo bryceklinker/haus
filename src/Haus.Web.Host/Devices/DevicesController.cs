@@ -31,8 +31,7 @@ public class DevicesController(IHausBus hausBus) : HausBusController(hausBus)
     }
 
     [HttpPut("{id}/lighting-constraints")]
-    public Task<IActionResult> ChangeLightingConstraints([FromRoute] long id,
-        [FromBody] LightingConstraintsModel model)
+    public Task<IActionResult> ChangeLightingConstraints([FromRoute] long id, [FromBody] LightingConstraintsModel model)
     {
         return CommandAsync(new ChangeDeviceLightingConstraintsCommand(id, model));
     }

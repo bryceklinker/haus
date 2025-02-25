@@ -14,9 +14,7 @@ public record DiscoveryEntity : Entity
     public DiscoveryState State { get; set; }
 
     public DiscoveryEntity()
-        : this(0)
-    {
-    }
+        : this(0) { }
 
     public DiscoveryEntity(long id = 0, DiscoveryState state = DiscoveryState.Disabled)
     {

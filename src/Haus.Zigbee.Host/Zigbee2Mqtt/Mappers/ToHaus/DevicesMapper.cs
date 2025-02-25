@@ -17,8 +17,8 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
 public class DevicesMapper(
     IOptions<ZigbeeOptions> zigbeeOptions,
     IOptions<HausOptions> hausOptions,
-    IDeviceTypeResolver deviceTypeResolver)
-    : IToHausMapper
+    IDeviceTypeResolver deviceTypeResolver
+) : IToHausMapper
 {
     public bool IsSupported(Zigbee2MqttMessage message)
     {
@@ -27,12 +27,12 @@ public class DevicesMapper(
 
     public IEnumerable<MqttApplicationMessage> Map(Zigbee2MqttMessage message)
     {
-        return message.PayloadArray
-            .Cast<JObject>()
+        return message
+            .PayloadArray.Cast<JObject>()
             .Select(item => new MqttApplicationMessage
             {
                 Topic = hausOptions.GetEventsTopic(),
-                PayloadSegment = HausJsonSerializer.SerializeToBytes(CreateDeviceDiscoveredEvent(item))
+                PayloadSegment = HausJsonSerializer.SerializeToBytes(CreateDeviceDiscoveredEvent(item)),
             });
     }
 
@@ -40,7 +40,8 @@ public class DevicesMapper(
     {
         var model = jToken.Value<string>("model");
         var vendor = jToken.Value<string>("vendor");
-        return new DeviceDiscoveredEvent(jToken.Value<string>("friendly_name"),
+        return new DeviceDiscoveredEvent(
+            jToken.Value<string>("friendly_name"),
             deviceTypeResolver.Resolve(vendor, model),
             CreateDeviceMetadata(jToken)
         ).AsHausEvent();
@@ -48,7 +49,6 @@ public class DevicesMapper(
 
     private static MetadataModel[] CreateDeviceMetadata(JObject jObject)
     {
-        return jObject.ToDeviceMetadata()
-            .ToArray();
+        return jObject.ToDeviceMetadata().ToArray();
     }
 }

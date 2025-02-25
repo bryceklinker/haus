@@ -31,9 +31,11 @@ public class StartDiscoveryCommandHandlerTests
 
         await _hausBus.ExecuteCommandAsync(command);
 
-        _context.Set<DiscoveryEntity>().Should().HaveCount(1)
-            .And.ContainEquivalentOf(new DiscoveryEntity(0, DiscoveryState.Enabled),
-                opts => opts.Excluding(d => d.Id));
+        _context
+            .Set<DiscoveryEntity>()
+            .Should()
+            .HaveCount(1)
+            .And.ContainEquivalentOf(new DiscoveryEntity(0, DiscoveryState.Enabled), opts => opts.Excluding(d => d.Id));
     }
 
     [Fact]

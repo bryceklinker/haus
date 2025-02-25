@@ -74,7 +74,6 @@ public class OccupancyChangedEventHandlerTests
         var change = new OccupancyChangedModel(sensor.ExternalId, true);
         await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
-        _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>()
-            .Should().BeEmpty();
+        _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().BeEmpty();
     }
 }

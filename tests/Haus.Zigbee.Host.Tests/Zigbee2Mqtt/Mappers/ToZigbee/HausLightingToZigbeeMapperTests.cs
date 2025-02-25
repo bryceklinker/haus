@@ -54,7 +54,8 @@ public class HausLightingToZigbeeMapperTests
             LightingState.On,
             new LevelLightingModel(54),
             new TemperatureLightingModel(67),
-            new ColorLightingModel(98, 54, 234));
+            new ColorLightingModel(98, 54, 234)
+        );
 
         var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
 
@@ -70,10 +71,7 @@ public class HausLightingToZigbeeMapperTests
     [Fact]
     public void WhenLightingIsMissingTemperatureThenColorTempIsMissingFromPayload()
     {
-        var lighting = new LightingModel(
-            LightingState.On,
-            new LevelLightingModel(12, 0, 254)
-        );
+        var lighting = new LightingModel(LightingState.On, new LevelLightingModel(12, 0, 254));
 
         var message = _mapper.Map(CreateMqttMessage(lighting)).Single();
 
@@ -84,10 +82,7 @@ public class HausLightingToZigbeeMapperTests
     [Fact]
     public void WhenLightingIsMissingColorThenColorIsMissingFromPayload()
     {
-        var lighting = new LightingModel(
-            LightingState.On,
-            new LevelLightingModel(12, 0, 254)
-        );
+        var lighting = new LightingModel(LightingState.On, new LevelLightingModel(12, 0, 254));
 
         var message = _mapper.Map(CreateMqttMessage(lighting)).Single();
 
@@ -114,7 +109,8 @@ public class HausLightingToZigbeeMapperTests
             LightingState.Off,
             new LevelLightingModel(54),
             new TemperatureLightingModel(67),
-            new ColorLightingModel(98, 54, 234));
+            new ColorLightingModel(98, 54, 234)
+        );
 
         var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
 
@@ -127,8 +123,6 @@ public class HausLightingToZigbeeMapperTests
 
     private MqttApplicationMessage CreateMqttMessage(LightingModel lighting)
     {
-        return new DeviceLightingChangedEvent(_device, lighting)
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        return new DeviceLightingChangedEvent(_device, lighting).AsHausCommand().ToMqttMessage("haus/commands");
     }
 }

@@ -10,6 +10,5 @@ public static class HttpHeadersExtensions
         {
             target.TryAddWithoutValidation(header.Key, header.Value);
         }
-        
     }
 }

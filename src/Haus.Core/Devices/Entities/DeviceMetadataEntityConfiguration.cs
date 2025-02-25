@@ -12,7 +12,6 @@ public class DeviceMetadataEntityConfiguration : IEntityTypeConfiguration<Device
 
         builder.Property(p => p.Key).IsRequired();
         builder.Property(p => p.Value).IsRequired();
-        builder.HasOne(d => d.Device)
-            .WithMany(d => d.Metadata);
+        builder.HasOne(d => d.Device).WithMany(d => d.Metadata);
     }
 }

@@ -23,17 +23,25 @@ public class GenerateDefaultDeviceTypeOptionsCommandHandler(
     IHttpClientFactory httpClientFactory,
     ILogger<GenerateDefaultDeviceTypeOptionsCommandHandler> logger,
     IDeviceTypeOptionsParser parser,
-    IDeviceTypeOptionsMerger merger)
-    :
-        ICommandHandler<GenerateDefaultDeviceTypeOptionsCommand>
+    IDeviceTypeOptionsMerger merger
+) : ICommandHandler<GenerateDefaultDeviceTypeOptionsCommand>
 {
-    private const string SupportedDevicesPage = "https://raw.githubusercontent.com/Koenkk/zigbee2mqtt.io/master/docs/supported-devices/README.md";
+    private const string SupportedDevicesPage =
+        "https://raw.githubusercontent.com/Koenkk/zigbee2mqtt.io/master/docs/supported-devices/README.md";
 
-    private static readonly string DefaultDeviceTypeOptionsPath = Path.GetFullPath(Path.Combine("..",
-        "Haus.Zigbee.Host", "Zigbee2Mqtt", "Mappers", "ToHaus", "Resolvers", "DefaultDeviceTypeOptions.json"));
+    private static readonly string DefaultDeviceTypeOptionsPath = Path.GetFullPath(
+        Path.Combine(
+            "..",
+            "Haus.Zigbee.Host",
+            "Zigbee2Mqtt",
+            "Mappers",
+            "ToHaus",
+            "Resolvers",
+            "DefaultDeviceTypeOptions.json"
+        )
+    );
 
-    public async Task Handle(GenerateDefaultDeviceTypeOptionsCommand request,
-        CancellationToken cancellationToken)
+    public async Task Handle(GenerateDefaultDeviceTypeOptionsCommand request, CancellationToken cancellationToken)
     {
         var html = await GetHtml(cancellationToken);
         var existingOptions = await ReadExistingOptions();
@@ -68,10 +76,7 @@ public class GenerateDefaultDeviceTypeOptionsCommandHandler(
     private async Task WriteDefaultsOptions(IEnumerable<DeviceTypeOptions> options)
     {
         logger.LogInformation("Writing defaults to {FilePath}", DefaultDeviceTypeOptionsPath);
-        var json = HausJsonSerializer.Serialize(options, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
+        var json = HausJsonSerializer.Serialize(options, new JsonSerializerOptions { WriteIndented = true });
         await File.WriteAllTextAsync(DefaultDeviceTypeOptionsPath, json);
     }
 }

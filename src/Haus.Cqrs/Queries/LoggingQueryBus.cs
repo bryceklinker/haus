@@ -20,8 +20,12 @@ internal class LoggingQueryBus(IQueryBus queryBus, ILogger<LoggingQueryBus> logg
 
     protected override void LogError<TInput>(TInput input, Exception exception, long elapsedMilliseconds)
     {
-        Logger.LogError("Query {Query} failed to execute after {ElapsedTime}ms: {Exception}", input, exception,
-            elapsedMilliseconds);
+        Logger.LogError(
+            "Query {Query} failed to execute after {ElapsedTime}ms: {Exception}",
+            input,
+            exception,
+            elapsedMilliseconds
+        );
     }
 
     protected override void LogStarted<TInput>(TInput input)

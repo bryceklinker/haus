@@ -17,7 +17,7 @@ public class HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZ
     {
         StartDiscoveryModel.Type,
         StopDiscoveryModel.Type,
-        SyncDiscoveryModel.Type
+        SyncDiscoveryModel.Type,
     };
 
     public bool IsSupported(string type)
@@ -33,7 +33,7 @@ public class HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZ
             StartDiscoveryModel.Type => CreatePermitJoinMessage(true),
             StopDiscoveryModel.Type => CreatePermitJoinMessage(false),
             SyncDiscoveryModel.Type => CreateGetDevicesMessage(),
-            _ => throw new InvalidOperationException($"Command with {command.Type} is not supported")
+            _ => throw new InvalidOperationException($"Command with {command.Type} is not supported"),
         };
     }
 
@@ -42,7 +42,7 @@ public class HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZ
         yield return new MqttApplicationMessage
         {
             Topic = $"{options.GetBaseTopic()}/bridge/config/devices/get",
-            PayloadSegment = ArraySegment<byte>.Empty
+            PayloadSegment = ArraySegment<byte>.Empty,
         };
     }
 
@@ -51,7 +51,7 @@ public class HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZ
         yield return new MqttApplicationMessage
         {
             Topic = $"{options.GetBaseTopic()}/bridge/config/permit_join",
-            PayloadSegment = Encoding.UTF8.GetBytes(permitJoin.ToString().ToLowerInvariant())
+            PayloadSegment = Encoding.UTF8.GetBytes(permitJoin.ToString().ToLowerInvariant()),
         };
     }
 }

@@ -12,5 +12,5 @@ public enum DeviceType
     LightSensor = 2,
     MotionSensor = 4,
     TemperatureSensor = 8,
-    Switch = 16
+    Switch = 16,
 }

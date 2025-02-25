@@ -10,7 +10,6 @@ public class KnownCommand(Type type)
 
     public bool Matches(string group, string command)
     {
-        return group == _attribute.GroupName
-               && command == _attribute.CommandName;
+        return group == _attribute.GroupName && command == _attribute.CommandName;
     }
 }

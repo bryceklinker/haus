@@ -22,7 +22,7 @@ public class MqttLogger(ILogger<MqttLogger> logger) : IMqttNetLogger
                 Source = source,
                 Level = level,
                 Message = message,
-                Exception = exception
+                Exception = exception,
             };
 
             logMessagePublishedEvent.Invoke(this, new MqttNetLogMessagePublishedEventArgs(logMessage));
@@ -41,7 +41,7 @@ public class MqttLogger(ILogger<MqttLogger> logger) : IMqttNetLogger
             MqttNetLogLevel.Warning => LogLevel.Warning,
             MqttNetLogLevel.Info => LogLevel.Information,
             MqttNetLogLevel.Verbose => LogLevel.Debug,
-            _ => LogLevel.Debug
+            _ => LogLevel.Debug,
         };
     }
 }

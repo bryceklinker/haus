@@ -21,14 +21,10 @@ public class LogEntryModelFactory : ILogEntryModelFactory
 
     public LogEntryModel CreateFromLine(string line)
     {
-        ExpandoObject value = HausJsonSerializer.Deserialize<dynamic>(line,
-            new JsonSerializerOptions(HausJsonSerializer.DefaultOptions)
-            {
-                Converters =
-                {
-                    new DynamicJsonConverter()
-                }
-            });
+        ExpandoObject value = HausJsonSerializer.Deserialize<dynamic>(
+            line,
+            new JsonSerializerOptions(HausJsonSerializer.DefaultOptions) { Converters = { new DynamicJsonConverter() } }
+        );
 
         var timestamp = GetValue(TimestampKey, value);
         var level = GetValue(LevelKey, value) ?? LogLevel.Information.ToString();
@@ -38,10 +34,7 @@ public class LogEntryModelFactory : ILogEntryModelFactory
 
     private static string GetValue(string key, ExpandoObject value)
     {
-        var result = value
-            .Where(pair => pair.Key == key)
-            .Select(pair => pair.Value)
-            .FirstOrDefault();
+        var result = value.Where(pair => pair.Key == key).Select(pair => pair.Value).FirstOrDefault();
 
         return result?.ToString();
     }

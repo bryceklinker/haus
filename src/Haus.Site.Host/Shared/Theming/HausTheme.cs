@@ -9,7 +9,7 @@ public class HausTheme : MudTheme
     private static string SuccessColor => Colors.Green.Default;
     private static string ErrorColor => Colors.Red.Default;
     private static string WarningColor => Colors.DeepOrange.Default;
-    
+
     public HausTheme()
     {
         PaletteLight = new PaletteLight

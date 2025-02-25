@@ -7,16 +7,21 @@ namespace Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 
 public interface IDeviceTypeOptionsMerger
 {
-    IEnumerable<DeviceTypeOptions> Merge(IEnumerable<DeviceTypeOptions> existing,
-        IEnumerable<DeviceTypeOptions> latest);
+    IEnumerable<DeviceTypeOptions> Merge(
+        IEnumerable<DeviceTypeOptions> existing,
+        IEnumerable<DeviceTypeOptions> latest
+    );
 }
 
 public class DeviceTypeOptionsMerger : IDeviceTypeOptionsMerger
 {
-    public IEnumerable<DeviceTypeOptions> Merge(IEnumerable<DeviceTypeOptions> existing,
-        IEnumerable<DeviceTypeOptions> latest)
+    public IEnumerable<DeviceTypeOptions> Merge(
+        IEnumerable<DeviceTypeOptions> existing,
+        IEnumerable<DeviceTypeOptions> latest
+    )
     {
-        return existing.Concat(latest)
+        return existing
+            .Concat(latest)
             .GroupBy(o => $"{o.Vendor}-{o.Model}", options => options)
             .Select(group =>
             {

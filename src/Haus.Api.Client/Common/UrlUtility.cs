@@ -8,16 +8,16 @@ internal static class UrlUtility
     {
         var trimmedPaths = paths.Select(TrimSlashes);
         var baseUrl = string.Join("/", trimmedPaths);
-        return queryParameters == null
-            ? baseUrl
-            : $"{baseUrl}?{queryParameters}";
+        return queryParameters == null ? baseUrl : $"{baseUrl}?{queryParameters}";
     }
 
     private static string TrimSlashes(string value)
     {
         var trimmed = value;
-        if (trimmed.StartsWith("/")) trimmed = trimmed.Substring(1);
-        if (trimmed.EndsWith("/")) trimmed = trimmed.Substring(0, trimmed.Length - 1);
+        if (trimmed.StartsWith("/"))
+            trimmed = trimmed.Substring(1);
+        if (trimmed.EndsWith("/"))
+            trimmed = trimmed.Substring(0, trimmed.Length - 1);
         return trimmed;
     }
 }

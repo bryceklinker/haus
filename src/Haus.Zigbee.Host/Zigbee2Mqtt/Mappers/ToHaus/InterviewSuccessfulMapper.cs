@@ -20,9 +20,7 @@ public class InterviewSuccessfulMapper : IToHausMapper
 
     private string EventsTopic => _hausOptions.Value.EventsTopic;
 
-    public InterviewSuccessfulMapper(
-        IOptions<HausOptions> hausOptions,
-        IOptions<ZigbeeOptions> zigbeeOptions)
+    public InterviewSuccessfulMapper(IOptions<HausOptions> hausOptions, IOptions<ZigbeeOptions> zigbeeOptions)
     {
         _hausOptions = hausOptions;
         _zigbeeOptions = zigbeeOptions;
@@ -32,8 +30,8 @@ public class InterviewSuccessfulMapper : IToHausMapper
     public bool IsSupported(Zigbee2MqttMessage message)
     {
         return message.Topic == $"{_zigbeeOptions.GetBaseTopic()}/bridge/log"
-               && message.Message == "interview_successful"
-               && message.Type == "pairing";
+            && message.Message == "interview_successful"
+            && message.Type == "pairing";
     }
 
     public IEnumerable<MqttApplicationMessage> Map(Zigbee2MqttMessage zigbeeMessage)
@@ -41,15 +39,17 @@ public class InterviewSuccessfulMapper : IToHausMapper
         yield return new MqttApplicationMessage
         {
             Topic = EventsTopic,
-            PayloadSegment = HausJsonSerializer.SerializeToBytes(new HausEvent<DeviceDiscoveredEvent>
-            {
-                Type = DeviceDiscoveredEvent.Type,
-                Payload = new DeviceDiscoveredEvent(
-                    zigbeeMessage.Meta.FriendlyName,
-                    _deviceTypeResolver.Resolve(zigbeeMessage.Meta),
-                    zigbeeMessage.Meta.Root.ToDeviceMetadata().ToArray()
-                )
-            })
+            PayloadSegment = HausJsonSerializer.SerializeToBytes(
+                new HausEvent<DeviceDiscoveredEvent>
+                {
+                    Type = DeviceDiscoveredEvent.Type,
+                    Payload = new DeviceDiscoveredEvent(
+                        zigbeeMessage.Meta.FriendlyName,
+                        _deviceTypeResolver.Resolve(zigbeeMessage.Meta),
+                        zigbeeMessage.Meta.Root.ToDeviceMetadata().ToArray()
+                    ),
+                }
+            ),
         };
     }
 }

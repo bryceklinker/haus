@@ -24,23 +24,21 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client;
 
-public interface IHausApiClient :
-    IDeviceApiClient,
-    IDiagnosticsApiClient,
-    IRoomsApiClient,
-    IDeviceSimulatorApiClient,
-    IDiscoveryApiClient,
-    ILogsApiClient,
-    IClientSettingsApiClient,
-    IApplicationApiClient
-{
-}
+public interface IHausApiClient
+    : IDeviceApiClient,
+        IDiagnosticsApiClient,
+        IRoomsApiClient,
+        IDeviceSimulatorApiClient,
+        IDiscoveryApiClient,
+        ILogsApiClient,
+        IClientSettingsApiClient,
+        IApplicationApiClient { }
 
 public class HausApiClient(
     IHausApiClientFactory factory,
     HttpClient httpClient,
-    IOptions<HausApiClientSettings> options)
-    : ApiClient(httpClient, options), IHausApiClient
+    IOptions<HausApiClientSettings> options
+) : ApiClient(httpClient, options), IHausApiClient
 {
     private IDeviceApiClient DeviceApiClient => factory.CreateDeviceClient();
     private IDiagnosticsApiClient DiagnosticsApiClient => factory.CreateDiagnosticsClient();

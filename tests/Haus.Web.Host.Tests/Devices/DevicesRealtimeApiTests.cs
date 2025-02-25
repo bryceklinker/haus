@@ -20,10 +20,14 @@ public class DevicesRealtimeApiTests(HausWebHostApplicationFactory factory, ITes
     {
         var hub = await factory.CreateHubConnection("events");
         HausEvent<DeviceLightingChangedEvent> change = null;
-        hub.On<HausEvent<DeviceLightingChangedEvent>>("OnEvent", e =>
-        {
-            if (e?.Payload?.Device != null) change = e;
-        });
+        hub.On<HausEvent<DeviceLightingChangedEvent>>(
+            "OnEvent",
+            e =>
+            {
+                if (e?.Payload?.Device != null)
+                    change = e;
+            }
+        );
 
         var (_, device) = await factory.AddRoomWithDevice("my-room", DeviceType.Light);
 

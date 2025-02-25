@@ -24,7 +24,7 @@ public class RoutableEventFactory : IRoutableEventFactory
             DeviceDiscoveredEvent.Type => CreateRoutableEvent<DeviceDiscoveredEvent>(bytes),
             MultiSensorChanged.Type => CreateRoutableEvent<MultiSensorChanged>(bytes),
             OccupancyChangedModel.Type => CreateRoutableEvent<OccupancyChangedModel>(bytes),
-            _ => null
+            _ => null,
         };
     }
 

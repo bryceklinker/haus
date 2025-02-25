@@ -19,8 +19,7 @@ public static class HausBusFactory
     {
         var services = CreateServicesCollection(context, configureServices);
 
-        return services.BuildServiceProvider()
-            .GetRequiredService<IHausBus>();
+        return services.BuildServiceProvider().GetRequiredService<IHausBus>();
     }
 
     public static CapturingHausBus CreateCapturingBus(IDeviceSimulatorStore simulatorStore)
@@ -28,8 +27,10 @@ public static class HausBusFactory
         return CreateCapturingBus(configureServices: services => services.AddSingleton(simulatorStore));
     }
 
-    public static CapturingHausBus CreateCapturingBus(HausDbContext? context = null,
-        Action<IServiceCollection>? configureServices = null)
+    public static CapturingHausBus CreateCapturingBus(
+        HausDbContext? context = null,
+        Action<IServiceCollection>? configureServices = null
+    )
     {
         var services = CreateServicesCollection(context, configureServices);
 
@@ -43,12 +44,13 @@ public static class HausBusFactory
             return new CapturingHausBus(commandBus, queryBus, eventBus, domainEventBus);
         });
 
-        return (CapturingHausBus)services.BuildServiceProvider()
-            .GetRequiredService<IHausBus>();
+        return (CapturingHausBus)services.BuildServiceProvider().GetRequiredService<IHausBus>();
     }
 
-    private static IServiceCollection CreateServicesCollection(HausDbContext? context,
-        Action<IServiceCollection>? configureServices = null)
+    private static IServiceCollection CreateServicesCollection(
+        HausDbContext? context,
+        Action<IServiceCollection>? configureServices = null
+    )
     {
         var services = new ServiceCollection()
             .AddHausCore(opts => opts.UseInMemoryDatabase($"{Guid.NewGuid()}"))

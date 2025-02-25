@@ -23,8 +23,7 @@ public class DeviceDiscoveredTests(HausWebHostApplicationFactory factory)
         {
             var client = factory.CreateAuthenticatedClient();
             var list = await client.GetDevicesAsync();
-            list.Items.Should()
-                .Contain(m => m.ExternalId == "my-new-id" && m.DeviceType == deviceType);
+            list.Items.Should().Contain(m => m.ExternalId == "my-new-id" && m.DeviceType == deviceType);
         });
     }
 

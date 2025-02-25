@@ -15,13 +15,16 @@ public record GetDevicesInRoomQuery(long RoomId) : IQuery<ListResult<DeviceModel
 public class GetDevicesInRoomQueryHandler(HausDbContext context)
     : IQueryHandler<GetDevicesInRoomQuery, ListResult<DeviceModel>>
 {
-    public async Task<ListResult<DeviceModel>> Handle(GetDevicesInRoomQuery request,
-        CancellationToken cancellationToken)
+    public async Task<ListResult<DeviceModel>> Handle(
+        GetDevicesInRoomQuery request,
+        CancellationToken cancellationToken
+    )
     {
         if (await context.IsMissingAsync<RoomEntity>(request.RoomId).ConfigureAwait(false))
             return null;
 
-        return await context.QueryAll<DeviceEntity>()
+        return await context
+            .QueryAll<DeviceEntity>()
             .Where(d => d.Room.Id == request.RoomId)
             .Select(DeviceEntity.ToModelExpression)
             .ToListResultAsync(cancellationToken)

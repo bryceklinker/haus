@@ -13,8 +13,10 @@ public class InMemoryHttpMessageHandler : HttpMessageHandler
 {
     private readonly ConcurrentBag<ConfiguredHttpResponse> _responses = [];
 
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-        CancellationToken cancellationToken)
+    protected override async Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken
+    )
     {
         foreach (var response in _responses)
         {
@@ -30,17 +32,19 @@ public class InMemoryHttpMessageHandler : HttpMessageHandler
     public async Task SetupResponse(
         HttpRequestMessage request,
         HttpResponseMessage response,
-        ConfigureHttpResponseWithStatus options)
+        ConfigureHttpResponseWithStatus options
+    )
     {
         var inMemoryRequest = await InMemoryHttpRequest.FromRequest(request);
         var inMemoryResponse = await InMemoryHttpResponse.FromResponse(response);
         _responses.Add(new ConfiguredHttpResponse(inMemoryRequest, inMemoryResponse, options));
     }
-    
+
     public async Task SetupResponse(
         HttpRequestMessage request,
         HttpResponseMessage response,
-        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
+        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null
+    )
     {
         var options = ConfigureOptions(configure);
         await SetupResponse(request, response, options);
@@ -50,7 +54,8 @@ public class InMemoryHttpMessageHandler : HttpMessageHandler
         HttpMethod method,
         string url,
         T model,
-        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
+        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null
+    )
     {
         var opts = ConfigureOptions(configure);
 
@@ -58,45 +63,62 @@ public class InMemoryHttpMessageHandler : HttpMessageHandler
         var request = new HttpRequestMessage(method, uri);
         var response = new HttpResponseMessage(opts.Status)
         {
-            Content = JsonContent.Create(model, options: HausJsonSerializer.DefaultOptions)
+            Content = JsonContent.Create(model, options: HausJsonSerializer.DefaultOptions),
         };
         await SetupResponse(request, response, configure);
     }
 
-    public async Task SetupGetAsJson<T>(string url, T model, Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
+    public async Task SetupGetAsJson<T>(
+        string url,
+        T model,
+        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null
+    )
     {
         await SetupResponseAsJson(HttpMethod.Get, url, model, configure);
     }
 
-    public async Task SetupPostAsJson<T>(string url, T model, Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
+    public async Task SetupPostAsJson<T>(
+        string url,
+        T model,
+        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null
+    )
     {
         await SetupResponseAsJson(HttpMethod.Post, url, model, configure);
     }
 
-    public async Task SetupPutAsJson<T>(string url, T model, Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
+    public async Task SetupPutAsJson<T>(
+        string url,
+        T model,
+        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null
+    )
     {
         await SetupResponseAsJson(HttpMethod.Put, url, model, configure);
     }
 
-    public async Task SetupDeleteAsJson<T>(string url, Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
+    public async Task SetupDeleteAsJson<T>(
+        string url,
+        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null
+    )
     {
         await SetupResponseAsJson<object?>(HttpMethod.Delete, url, null, configure);
     }
 
     private static Uri CreateUriFromString(string url, Uri baseUri)
     {
-        if (Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase))
+        if (
+            Uri.TryCreate(url, UriKind.Absolute, out var uri)
+            && uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase)
+        )
             return uri;
-        
+
         return new Uri(baseUri, url);
     }
 
     private static ConfigureHttpResponseWithStatus ConfigureOptions(
-        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null)
+        Func<ConfigureHttpResponseWithStatus, ConfigureHttpResponseWithStatus>? configure = null
+    )
     {
         var defaultOptions = new ConfigureHttpResponseWithStatus(Delay: TimeSpan.Zero);
-        return configure != null
-            ? configure.Invoke(defaultOptions)
-            : defaultOptions;
+        return configure != null ? configure.Invoke(defaultOptions) : defaultOptions;
     }
 }

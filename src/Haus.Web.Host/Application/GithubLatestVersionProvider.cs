@@ -29,7 +29,7 @@ public class GithubLatestReleaseProvider : ILatestReleaseProvider
         _options = options;
         _githubClient = new GitHubClient(new ProductHeaderValue(ProductHeaderName))
         {
-            Credentials = new Credentials(GitHubUsername, GithubPersonalAccessToken)
+            Credentials = new Credentials(GitHubUsername, GithubPersonalAccessToken),
         };
     }
 
@@ -37,27 +37,35 @@ public class GithubLatestReleaseProvider : ILatestReleaseProvider
     {
         var githubRelease = await GetLatestGitHubRelease().ConfigureAwait(false);
         var version = githubRelease.TagName.Replace("v", "", StringComparison.OrdinalIgnoreCase);
-        return new ReleaseModel(Version.Parse(version), !githubRelease.Prerelease, githubRelease.CreatedAt,
-            githubRelease.Body);
+        return new ReleaseModel(
+            Version.Parse(version),
+            !githubRelease.Prerelease,
+            githubRelease.CreatedAt,
+            githubRelease.Body
+        );
     }
 
     public async Task<ReleasePackageModel[]> GetLatestPackages()
     {
         var githubRelease = await GetLatestGitHubRelease().ConfigureAwait(false);
-        return githubRelease.Assets
-            .Select(a => new ReleasePackageModel(a.Id, a.Name))
-            .ToArray();
+        return githubRelease.Assets.Select(a => new ReleasePackageModel(a.Id, a.Name)).ToArray();
     }
 
     public async Task<Stream> DownloadLatestPackage(int id)
     {
         var githubRelease = await GetLatestGitHubRelease().ConfigureAwait(false);
         var asset = githubRelease.Assets.Single(p => p.Id == id);
-        var response = await _githubClient.Connection.Get<Stream>(new Uri(asset.Url), new Dictionary<string, string>(),
-            MediaTypeNames.Application.Octet);
+        var response = await _githubClient.Connection.Get<Stream>(
+            new Uri(asset.Url),
+            new Dictionary<string, string>(),
+            MediaTypeNames.Application.Octet
+        );
         if (response.HttpResponse.StatusCode != HttpStatusCode.OK)
-            throw new HttpRequestException($"Failed to get asset {id} from GitHub", null,
-                response.HttpResponse.StatusCode);
+            throw new HttpRequestException(
+                $"Failed to get asset {id} from GitHub",
+                null,
+                response.HttpResponse.StatusCode
+            );
 
         return response.Body;
     }

@@ -14,8 +14,7 @@ public interface IApiClient
     string BaseUrl { get; }
 }
 
-public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    : IApiClient
+public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) : IApiClient
 {
     private const string ApiPath = "api";
 

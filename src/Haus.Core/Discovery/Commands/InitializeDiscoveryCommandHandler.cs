@@ -7,9 +7,7 @@ using MediatR;
 
 namespace Haus.Core.Discovery.Commands;
 
-public class InitializeDiscoveryCommand : ICommand
-{
-}
+public class InitializeDiscoveryCommand : ICommand { }
 
 public class InitializeDiscoveryCommandHandler(HausDbContext context) : ICommandHandler<InitializeDiscoveryCommand>
 {

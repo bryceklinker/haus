@@ -34,8 +34,6 @@ internal class HausUdpFactory : IHausUdpFactory
 
     public ValueTask DisposeAsync()
     {
-        return _client.IsValueCreated
-            ? _client.Value.DisposeAsync()
-            : ValueTask.CompletedTask;
+        return _client.IsValueCreated ? _client.Value.DisposeAsync() : ValueTask.CompletedTask;
     }
 }

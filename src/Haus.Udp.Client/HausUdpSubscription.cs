@@ -18,9 +18,7 @@ internal class HausUdpSubscription<T>(Func<T, Task> handler, Func<IHausUdpSubscr
 
     public Task ExecuteAsync(byte[] bytes)
     {
-        return HausJsonSerializer.TryDeserialize(bytes, out T value)
-            ? handler.Invoke(value)
-            : Task.CompletedTask;
+        return HausJsonSerializer.TryDeserialize(bytes, out T value) ? handler.Invoke(value) : Task.CompletedTask;
     }
 
     public Task UnsubscribeAsync()

@@ -36,7 +36,8 @@ public class OccupancyChangedTests
 
         Eventually.Assert(() =>
         {
-            lightingCommands.Should()
+            lightingCommands
+                .Should()
                 .Contain(cmd => cmd.Payload.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On);
         });
     }

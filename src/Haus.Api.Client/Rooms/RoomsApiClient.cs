@@ -24,7 +24,8 @@ public interface IRoomsApiClient : IApiClient
 }
 
 public class RoomsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    : ApiClient(httpClient, options), IRoomsApiClient
+    : ApiClient(httpClient, options),
+        IRoomsApiClient
 {
     public Task<RoomModel> GetRoomAsync(long id)
     {

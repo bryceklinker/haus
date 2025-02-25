@@ -102,7 +102,10 @@ public class RoomsApiTests
         var room = await CreateRoomAsync("room");
         await _apiClient.ChangeRoomLightingAsync(room.Id, new LightingModel(LightingState.On));
 
-        Eventually.Assert(() => { hausCommand.Type.Should().Be(RoomLightingChangedEvent.Type); });
+        Eventually.Assert(() =>
+        {
+            hausCommand.Type.Should().Be(RoomLightingChangedEvent.Type);
+        });
     }
 
     [Fact]

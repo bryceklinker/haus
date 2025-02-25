@@ -34,8 +34,11 @@ public abstract class HausBusController(IHausBus hausBus) : Controller
         }
     }
 
-    protected async Task<IActionResult> CreateCommandAsync<TResult>(ICommand<TResult> command, string routeName,
-        Func<TResult, object> createRouteValues)
+    protected async Task<IActionResult> CreateCommandAsync<TResult>(
+        ICommand<TResult> command,
+        string routeName,
+        Func<TResult, object> createRouteValues
+    )
     {
         try
         {

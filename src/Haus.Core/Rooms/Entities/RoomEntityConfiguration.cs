@@ -17,7 +17,6 @@ public class RoomEntityConfiguration : IEntityTypeConfiguration<RoomEntity>
         builder.OwnsOne(r => r.Lighting, LightingEntity.Configure);
 
         builder.Ignore(r => r.Lights);
-        builder.HasMany(r => r.Devices)
-            .WithOne(d => d.Room);
+        builder.HasMany(r => r.Devices).WithOne(d => d.Room);
     }
 }

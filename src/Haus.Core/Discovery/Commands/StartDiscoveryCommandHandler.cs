@@ -24,8 +24,9 @@ internal class StartDiscoveryCommandHandler(IHausBus hausBus, HausDbContext cont
         await context.SaveChangesAsync(cancellationToken);
 
         await Task.WhenAll(
-            hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken),
-            hausBus.PublishAsync(RoutableEvent.FromEvent(new DiscoveryStartedEvent()), cancellationToken)
-        ).ConfigureAwait(false);
+                hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken),
+                hausBus.PublishAsync(RoutableEvent.FromEvent(new DiscoveryStartedEvent()), cancellationToken)
+            )
+            .ConfigureAwait(false);
     }
 }

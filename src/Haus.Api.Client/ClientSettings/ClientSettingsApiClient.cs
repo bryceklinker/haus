@@ -14,7 +14,8 @@ public interface IClientSettingsApiClient
 }
 
 public class ClientSettingsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    : ApiClient(httpClient, options), IClientSettingsApiClient
+    : ApiClient(httpClient, options),
+        IClientSettingsApiClient
 {
     public Task<ClientSettingsModel> GetClientSettingsAsync()
     {

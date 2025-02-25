@@ -11,7 +11,7 @@ public static class MqttDiagnosticsMessageModelExtensions
         return new MqttApplicationMessage
         {
             Topic = model.Topic,
-            PayloadSegment = HausJsonSerializer.SerializeToBytes(model.Payload)
+            PayloadSegment = HausJsonSerializer.SerializeToBytes(model.Payload),
         };
     }
 }

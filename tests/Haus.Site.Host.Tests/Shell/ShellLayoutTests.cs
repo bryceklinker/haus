@@ -41,7 +41,7 @@ public class ShellLayoutTests : HausSiteTestContext
 
         shell.Markup.Should().Contain("--mud-native-html-color-scheme: dark");
     }
-    
+
     [Fact]
     public async Task WhenThemeModeIsToggledThenThemeIsLight()
     {

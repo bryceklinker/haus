@@ -14,7 +14,8 @@ internal class OccupancyChangedEventHandler(IDomainEventBus domainEventBus, IRoo
     public async Task Handle(RoutableEvent<OccupancyChangedModel> notification, CancellationToken cancellationToken)
     {
         var deviceExternalId = notification.Payload.DeviceId;
-        var room = await repository.GetRoomByDeviceExternalId(deviceExternalId, cancellationToken)
+        var room = await repository
+            .GetRoomByDeviceExternalId(deviceExternalId, cancellationToken)
             .ConfigureAwait(false);
         if (room == null)
             return;

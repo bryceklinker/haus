@@ -31,9 +31,7 @@ public class DeviceEventMapperTests
     [Fact]
     public void WhenTopicStartsWithZigbeeBaseTopicAndOnlyHasTwoPartsThenIsSupported()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithDeviceTopic("device-friendly-name")
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithDeviceTopic("device-friendly-name").BuildZigbee2MqttMessage();
 
         _mapper.IsSupported(message).Should().BeTrue();
     }
@@ -51,9 +49,7 @@ public class DeviceEventMapperTests
     [Fact]
     public void WhenTopicNameHasMoreThanTwoPartsThenUnsupported()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithTopicPath("one/two/three")
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithTopicPath("one/two/three").BuildZigbee2MqttMessage();
 
         _mapper.IsSupported(message).Should().BeFalse();
     }
@@ -128,9 +124,7 @@ public class DeviceEventMapperTests
     [Fact]
     public void WhenEventIsNotRecognizedThenEventTypeIsUnknownEvent()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithDeviceTopic("something")
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithDeviceTopic("something").BuildZigbee2MqttMessage();
 
         var result = _mapper.Map(message).Single();
 

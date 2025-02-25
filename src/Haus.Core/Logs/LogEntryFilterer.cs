@@ -22,8 +22,7 @@ public class LogEntryFilterer : ILogEntryFilterer
 
     private static bool DoesEntryMatchParameters(LogEntryModel entry, GetLogsParameters query)
     {
-        return DoesEntryMatchLevel(entry, query.Level)
-               && DoesEntryContainSearchTerm(entry, query.SearchTerm);
+        return DoesEntryMatchLevel(entry, query.Level) && DoesEntryContainSearchTerm(entry, query.SearchTerm);
     }
 
     private static bool DoesEntryContainSearchTerm(LogEntryModel entry, string searchTerm)

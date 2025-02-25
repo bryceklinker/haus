@@ -6,13 +6,15 @@ namespace Haus.Api.Client;
 
 public static class ServiceCollectionExtensions
 {
-    public static IHttpClientBuilder AddHausApiClient(this IServiceCollection services,
-        Action<HausApiClientSettings> configureSettings)
+    public static IHttpClientBuilder AddHausApiClient(
+        this IServiceCollection services,
+        Action<HausApiClientSettings> configureSettings
+    )
     {
-        services.AddOptions<HausApiClientSettings>()
-            .Configure(configureSettings);
+        services.AddOptions<HausApiClientSettings>().Configure(configureSettings);
 
-        services.AddSingleton<IHausApiClientFactory, HausApiClientFactory>()
+        services
+            .AddSingleton<IHausApiClientFactory, HausApiClientFactory>()
             .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDeviceClient())
             .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDiagnosticsClient())
             .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateRoomsClient())

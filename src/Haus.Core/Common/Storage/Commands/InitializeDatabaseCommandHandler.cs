@@ -14,8 +14,9 @@ internal class InitializeDatabaseCommandHandler(HausDbContext context) : IComman
     public async Task Handle(InitializeDatabaseCommand request, CancellationToken cancellationToken)
     {
         var allMigrations = context.Database.GetMigrations();
-        var appliedMigrations =
-            await context.Database.GetAppliedMigrationsAsync(cancellationToken).ConfigureAwait(false);
+        var appliedMigrations = await context
+            .Database.GetAppliedMigrationsAsync(cancellationToken)
+            .ConfigureAwait(false);
         if (allMigrations.Count() != appliedMigrations.Count())
             await context.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }

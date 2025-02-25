@@ -23,8 +23,9 @@ public record HealthCheckEntity : Entity
             c.Tags
         );
 
-    private static readonly Lazy<Func<HealthCheckEntity, HausHealthCheckModel>> ToModelFunc =
-        new(ToModelExpression.Compile);
+    private static readonly Lazy<Func<HealthCheckEntity, HausHealthCheckModel>> ToModelFunc = new(
+        ToModelExpression.Compile
+    );
 
     public string Name { get; set; } = "";
     public HealthStatus Status { get; set; }

@@ -9,9 +9,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Haus.Web.Host.DeviceSimulator;
 
-public class DeviceSimulatorStatePublisher(
-    IDeviceSimulatorStore simulatorStore,
-    IServiceScopeFactory scopeFactory)
+public class DeviceSimulatorStatePublisher(IDeviceSimulatorStore simulatorStore, IServiceScopeFactory scopeFactory)
     : BackgroundService
 {
     private IDisposable _subscription;

@@ -28,7 +28,8 @@ internal class StoreHealthReportCommandHandler(HausDbContext context, IClock clo
     private async Task AddOrUpdateHealthCheck(HausHealthCheckModel healthCheck)
     {
         var timestamp = clock.UtcNowOffset;
-        var entity = await context.FindByAsync<HealthCheckEntity>(e => e.Name == healthCheck.Name)
+        var entity = await context
+            .FindByAsync<HealthCheckEntity>(e => e.Name == healthCheck.Name)
             .ConfigureAwait(false);
 
         if (entity == null)

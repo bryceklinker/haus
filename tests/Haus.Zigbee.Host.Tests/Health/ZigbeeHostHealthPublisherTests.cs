@@ -38,8 +38,11 @@ public class ZigbeeHostHealthPublisherTests : IAsyncLifetime
         HausHealthReportModel actual = null;
         await _mqttClient.SubscribeToHausHealthAsync(r => actual = r);
 
-        var report = new HealthReport(new Dictionary<string, HealthReportEntry>(), HealthStatus.Healthy,
-            TimeSpan.FromMilliseconds(200));
+        var report = new HealthReport(
+            new Dictionary<string, HealthReportEntry>(),
+            HealthStatus.Healthy,
+            TimeSpan.FromMilliseconds(200)
+        );
         await _publisher.PublishAsync(report);
 
         Eventually.Assert(() =>

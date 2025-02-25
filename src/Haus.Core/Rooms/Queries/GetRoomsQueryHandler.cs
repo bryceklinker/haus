@@ -15,7 +15,8 @@ public class GetRoomsQueryHandler(HausDbContext context) : IQueryHandler<GetRoom
 {
     public async Task<ListResult<RoomModel>> Handle(GetRoomsQuery request, CancellationToken cancellationToken)
     {
-        return await context.QueryAll<RoomEntity>()
+        return await context
+            .QueryAll<RoomEntity>()
             .Select(RoomEntity.ToModelExpression)
             .ToListResultAsync(cancellationToken)
             .ConfigureAwait(false);

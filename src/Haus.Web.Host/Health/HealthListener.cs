@@ -15,8 +15,8 @@ namespace Haus.Web.Host.Health;
 public class HealthListener(
     IHausMqttClientFactory hausMqttClientFactory,
     IServiceScopeFactory scopeFactory,
-    IOptions<HausMqttSettings> hausMqttSettings)
-    : MqttBackgroundServiceListener(hausMqttClientFactory, scopeFactory)
+    IOptions<HausMqttSettings> hausMqttSettings
+) : MqttBackgroundServiceListener(hausMqttClientFactory, scopeFactory)
 {
     private string HealthTopic => hausMqttSettings.Value.HealthTopic;
 
@@ -24,7 +24,6 @@ public class HealthListener(
     {
         if (message.Topic != HealthTopic)
             return;
-
 
         var healthReport = HausJsonSerializer.Deserialize<HausHealthReportModel>(message.PayloadSegment);
         using var scope = CreateScope();

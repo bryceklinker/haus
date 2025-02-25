@@ -33,6 +33,9 @@ public class DeviceSimulatorRealtimeApiTests
 
         await _client.AddSimulatedDeviceAsync(new SimulatedDeviceModel());
 
-        Eventually.Assert(() => { state.Devices.Should().HaveCount(1); });
+        Eventually.Assert(() =>
+        {
+            state.Devices.Should().HaveCount(1);
+        });
     }
 }

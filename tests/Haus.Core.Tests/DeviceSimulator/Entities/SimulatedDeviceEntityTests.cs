@@ -49,18 +49,16 @@ public class SimulatedDeviceEntityTests
     [Fact]
     public void WhenConvertedToModelThenReturnsSimulatedDeviceModel()
     {
-        var entity = SimulatedDeviceEntity.Create(new SimulatedDeviceModel($"{Guid.NewGuid()}", DeviceType.Light, true,
-        [
-            new MetadataModel("one", "three")
-        ]));
+        var entity = SimulatedDeviceEntity.Create(
+            new SimulatedDeviceModel($"{Guid.NewGuid()}", DeviceType.Light, true, [new MetadataModel("one", "three")])
+        );
 
         var model = entity.ToModel();
 
         model.Id.Should().Be(entity.Id);
         model.DeviceType.Should().Be(DeviceType.Light);
         model.IsOccupied.Should().BeFalse();
-        model.Metadata.Should().HaveCount(2)
-            .And.ContainEquivalentOf(new MetadataModel("one", "three"));
+        model.Metadata.Should().HaveCount(2).And.ContainEquivalentOf(new MetadataModel("one", "three"));
     }
 
     [Fact]
@@ -76,8 +74,7 @@ public class SimulatedDeviceEntityTests
     [Fact]
     public void WhenSimulatorIsMotionSensorAndOccupancyIsChangedThenIsOccupied()
     {
-        var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor)
-            .ChangeOccupancy();
+        var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor).ChangeOccupancy();
 
         entity.IsOccupied.Should().BeTrue();
     }
@@ -85,8 +82,7 @@ public class SimulatedDeviceEntityTests
     [Fact]
     public void WhenSimulatorIsMotionSensorAndOccupiedAndOccupancyIsChangedThenIsVacant()
     {
-        var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor, IsOccupied: true)
-            .ChangeOccupancy();
+        var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor, IsOccupied: true).ChangeOccupancy();
 
         entity.IsOccupied.Should().BeFalse();
     }

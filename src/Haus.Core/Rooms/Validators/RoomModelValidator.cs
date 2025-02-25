@@ -14,19 +14,12 @@ public class RoomModelValidator : AbstractValidator<RoomModel>
     public RoomModelValidator(HausDbContext context)
     {
         _context = context;
-        RuleFor(r => r.Name)
-            .Required()
-            .MustAsync(BeUniqueAsync);
-        RuleFor(r => r.OccupancyTimeoutInSeconds)
-            .GreaterThanOrEqualTo(0);
+        RuleFor(r => r.Name).Required().MustAsync(BeUniqueAsync);
+        RuleFor(r => r.OccupancyTimeoutInSeconds).GreaterThanOrEqualTo(0);
     }
 
     private Task<bool> BeUniqueAsync(RoomModel model, string name, CancellationToken token)
     {
-        return _context.IsUniqueAsync<RoomEntity, string>(
-            model.Id,
-            name,
-            e => e.Name,
-            token);
+        return _context.IsUniqueAsync<RoomEntity, string>(model.Id, name, e => e.Name, token);
     }
 }

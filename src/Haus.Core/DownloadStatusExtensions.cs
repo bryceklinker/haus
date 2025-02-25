@@ -10,7 +10,7 @@ public static class DownloadStatusExtensions
         return status switch
         {
             HttpStatusCode.NotFound => DownloadStatus.NotFound,
-            _ => DownloadStatus.Error
+            _ => DownloadStatus.Error,
         };
     }
 
@@ -20,7 +20,7 @@ public static class DownloadStatusExtensions
         {
             DownloadStatus.Ok => HttpStatusCode.OK,
             DownloadStatus.NotFound => HttpStatusCode.NotFound,
-            _ => HttpStatusCode.InternalServerError
+            _ => HttpStatusCode.InternalServerError,
         };
     }
 }

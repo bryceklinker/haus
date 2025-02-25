@@ -8,9 +8,7 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
 
-public interface IUnknownMessageMapper : IToHausMapper
-{
-}
+public interface IUnknownMessageMapper : IToHausMapper { }
 
 public class UnknownMessageMapper(IOptionsMonitor<HausOptions> options) : IUnknownMessageMapper
 {
@@ -27,7 +25,7 @@ public class UnknownMessageMapper(IOptionsMonitor<HausOptions> options) : IUnkno
         yield return new MqttApplicationMessage
         {
             Topic = UnknownTopicName,
-            PayloadSegment = HausJsonSerializer.SerializeToBytes(model)
+            PayloadSegment = HausJsonSerializer.SerializeToBytes(model),
         };
     }
 }

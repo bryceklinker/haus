@@ -22,8 +22,7 @@ public class HausToZigbeeMapperTests
     public HausToZigbeeMapperTests()
     {
         var config = ConfigurationFactory.CreateConfig(Zigbee2MqttBaseTopic);
-        var mappers = ServiceProviderFactory.Create(config)
-            .GetServices<IToZigbeeMapper>();
+        var mappers = ServiceProviderFactory.Create(config).GetServices<IToZigbeeMapper>();
 
         _mapper = new HausToZigbeeMapper(mappers);
     }
@@ -31,9 +30,7 @@ public class HausToZigbeeMapperTests
     [Fact]
     public void WhenStartDiscoveryCommandReceivedThenReturnsPermitJoinTrueMessage()
     {
-        var original = new StartDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new StartDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
@@ -44,9 +41,7 @@ public class HausToZigbeeMapperTests
     [Fact]
     public void WhenStopDiscoveryCommandReceivedThenReturnsPermitJoinFalseMessage()
     {
-        var original = new StopDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new StopDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
@@ -57,9 +52,7 @@ public class HausToZigbeeMapperTests
     [Fact]
     public void WhenSyncDevicesCommandReceivedThenReturnsZigbeeGetDevices()
     {
-        var original = new SyncDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
@@ -70,10 +63,9 @@ public class HausToZigbeeMapperTests
     [Fact]
     public void WhenDeviceLightingCommandReceivedThenReturnsSetDeviceMessage()
     {
-        var original =
-            new DeviceLightingChangedEvent(new DeviceModel { ExternalId = "my-ext-id" }, new LightingModel())
-                .AsHausCommand()
-                .ToMqttMessage("haus/commands");
+        var original = new DeviceLightingChangedEvent(new DeviceModel { ExternalId = "my-ext-id" }, new LightingModel())
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 

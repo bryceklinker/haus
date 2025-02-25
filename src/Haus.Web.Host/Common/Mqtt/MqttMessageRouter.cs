@@ -9,9 +9,7 @@ using MQTTnet;
 
 namespace Haus.Web.Host.Common.Mqtt;
 
-public class MqttMessageRouter(
-    IHausMqttClientFactory hausMqttClientFactory,
-    IServiceScopeFactory scopeFactory)
+public class MqttMessageRouter(IHausMqttClientFactory hausMqttClientFactory, IServiceScopeFactory scopeFactory)
     : MqttBackgroundServiceListener(hausMqttClientFactory, scopeFactory)
 {
     protected override async Task OnMessageReceived(MqttApplicationMessage message)

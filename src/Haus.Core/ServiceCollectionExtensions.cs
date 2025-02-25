@@ -17,11 +17,14 @@ namespace Haus.Core;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddHausCore(this IServiceCollection services,
-        Action<DbContextOptionsBuilder> configureDb)
+    public static IServiceCollection AddHausCore(
+        this IServiceCollection services,
+        Action<DbContextOptionsBuilder> configureDb
+    )
     {
         var coreAssembly = typeof(ServiceCollectionExtensions).Assembly;
-        return services.AddSingleton<IClock, Clock>()
+        return services
+            .AddSingleton<IClock, Clock>()
             .AddDbContext<HausDbContext>(configureDb)
             .AddTransient<IRoomCommandRepository, RoomCommandRepository>()
             .AddTransient<IDeviceCommandRepository, DeviceCommandRepository>()

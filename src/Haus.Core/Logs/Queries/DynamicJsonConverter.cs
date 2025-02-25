@@ -9,9 +9,7 @@ namespace Haus.Core.Logs.Queries;
 
 public class DynamicJsonConverter : JsonConverter<dynamic>
 {
-    public override dynamic Read(ref Utf8JsonReader reader,
-        Type typeToConvert,
-        JsonSerializerOptions options)
+    public override dynamic Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         switch (reader.TokenType)
         {
@@ -83,9 +81,7 @@ public class DynamicJsonConverter : JsonConverter<dynamic>
         return list.Count == 0 ? null : list;
     }
 
-    public override void Write(Utf8JsonWriter writer,
-        object value,
-        JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
     {
         // writer.WriteStringValue(value.ToString());
     }

@@ -17,17 +17,21 @@ public record InMemoryHttpRequest(
     {
         var request = new HttpRequestMessage(Method, Uri);
         RequestHeaders.CloneTo(request.Headers);
-        
+
         request.Content = new ByteArrayContent(Content);
         ContentHeaders?.CloneTo(request.Content.Headers);
         return request;
     }
-    
+
     public static async Task<InMemoryHttpRequest> FromRequest(HttpRequestMessage request)
     {
-        var content = request.Content == null
-            ? []
-            : await request.Content.ReadAsByteArrayAsync();
-        return new InMemoryHttpRequest(request.Method, request.RequestUri, request.Headers, content, request.Content?.Headers);
+        var content = request.Content == null ? [] : await request.Content.ReadAsByteArrayAsync();
+        return new InMemoryHttpRequest(
+            request.Method,
+            request.RequestUri,
+            request.Headers,
+            content,
+            request.Content?.Headers
+        );
     }
 }

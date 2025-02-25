@@ -12,8 +12,8 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services;
 public class ZigbeeToHausRelay(
     IMqttMessageMapper mqttMessageMapper,
     IZigbeeMqttClientFactory zigbeeMqttFactory,
-    ILogger<ZigbeeToHausRelay> logger)
-    : BackgroundService
+    ILogger<ZigbeeToHausRelay> logger
+) : BackgroundService
 {
     private IHausMqttClient ZigbeeMqttClient { get; set; }
     private IHausMqttClient HausMqttClient { get; set; }
@@ -37,7 +37,8 @@ public class ZigbeeToHausRelay(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested) await Task.Delay(1000, stoppingToken);
+        while (!stoppingToken.IsCancellationRequested)
+            await Task.Delay(1000, stoppingToken);
     }
 
     private async Task HausMessageHandler(MqttApplicationMessage arg)

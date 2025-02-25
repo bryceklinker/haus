@@ -11,16 +11,14 @@ namespace Haus.Web.Host.Tests.Support;
 public class TestingAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
     ILoggerFactory logger,
-    UrlEncoder encoder)
-    : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+    UrlEncoder encoder
+) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
     public const string TestingScheme = "Testing";
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        return IsAuthenticatedRequest()
-            ? CreateSuccessResult()
-            : CreateFailedResult();
+        return IsAuthenticatedRequest() ? CreateSuccessResult() : CreateFailedResult();
     }
 
     private static Task<AuthenticateResult> CreateFailedResult()
@@ -30,10 +28,7 @@ public class TestingAuthenticationHandler(
 
     private static Task<AuthenticateResult> CreateSuccessResult()
     {
-        var claims = new[]
-        {
-            new Claim("sub", "me")
-        };
+        var claims = new[] { new Claim("sub", "me") };
         var identity = new ClaimsIdentity(claims, TestingScheme);
         var principal = new ClaimsPrincipal(identity);
         var ticket = new AuthenticationTicket(principal, TestingScheme);
@@ -42,7 +37,6 @@ public class TestingAuthenticationHandler(
 
     private bool IsAuthenticatedRequest()
     {
-        return Request.Headers.TryGetValue("Authorization", out var value)
-               && value.Any(v => v.Contains(TestingScheme));
+        return Request.Headers.TryGetValue("Authorization", out var value) && value.Any(v => v.Contains(TestingScheme));
     }
 }

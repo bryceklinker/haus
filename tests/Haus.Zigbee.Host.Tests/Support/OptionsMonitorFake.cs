@@ -24,6 +24,7 @@ public class OptionsMonitorFake<T>(T value) : IOptionsMonitor<T>
     public void TriggerChange(T value, string name = null)
     {
         CurrentValue = value;
-        foreach (var listener in _listeners) listener.Trigger(value, name);
+        foreach (var listener in _listeners)
+            listener.Trigger(value, name);
     }
 }

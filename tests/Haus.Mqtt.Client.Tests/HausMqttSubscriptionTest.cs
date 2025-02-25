@@ -20,11 +20,14 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
     public async Task WhenExecutedForMessageWithDifferentTopicThenSubscriberIsNotExecuted()
     {
         MqttApplicationMessage actual = null;
-        await _client.SubscribeAsync("one", msg =>
-        {
-            actual = msg;
-            return Task.CompletedTask;
-        });
+        await _client.SubscribeAsync(
+            "one",
+            msg =>
+            {
+                actual = msg;
+                return Task.CompletedTask;
+            }
+        );
 
         await _client.PublishAsync(new MqttApplicationMessage { Topic = "other" });
 
@@ -35,27 +38,36 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
     public async Task WhenSubscribedToAllTopicsThenExecuteAlwaysInvokesSubscriber()
     {
         MqttApplicationMessage actual = null;
-        await _client.SubscribeAsync("#", msg =>
-        {
-            actual = msg;
-            return Task.CompletedTask;
-        });
+        await _client.SubscribeAsync(
+            "#",
+            msg =>
+            {
+                actual = msg;
+                return Task.CompletedTask;
+            }
+        );
 
         var expected = new MqttApplicationMessage { Topic = "other" };
         await _client.PublishAsync(expected);
 
-        Eventually.Assert(() => { actual.Should().BeEquivalentTo(expected); });
+        Eventually.Assert(() =>
+        {
+            actual.Should().BeEquivalentTo(expected);
+        });
     }
 
     [Fact]
     public async Task WhenUnsubscribedThenNoLongerReceivesMessages()
     {
         var wasCalled = false;
-        var subscription = await _client.SubscribeAsync("#", _ =>
-        {
-            wasCalled = true;
-            return Task.CompletedTask;
-        });
+        var subscription = await _client.SubscribeAsync(
+            "#",
+            _ =>
+            {
+                wasCalled = true;
+                return Task.CompletedTask;
+            }
+        );
 
         await subscription.UnsubscribeAsync();
         await _client.PublishAsync(new MqttApplicationMessage { Topic = "idk" });

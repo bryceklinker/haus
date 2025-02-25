@@ -20,11 +20,7 @@ public class DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
         MqttApplicationMessage received = null;
         await mqtt.SubscribeAsync("my-topic", msg => received = msg);
 
-        var model = new MqttDiagnosticsMessageModel
-        {
-            Payload = new { id = 65 },
-            Topic = "my-topic"
-        };
+        var model = new MqttDiagnosticsMessageModel { Payload = new { id = 65 }, Topic = "my-topic" };
         var client = factory.CreateAuthenticatedClient();
         await client.ReplayDiagnosticsMessageAsync(model);
 

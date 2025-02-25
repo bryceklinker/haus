@@ -13,8 +13,7 @@ public record ChangeDeviceLightingConstraintsCommand(long DeviceId, LightingCons
 public class ChangeDeviceLightingConstraintsCommandHandler(IDeviceCommandRepository repository, IHausBus hausBus)
     : ICommandHandler<ChangeDeviceLightingConstraintsCommand>
 {
-    public async Task Handle(ChangeDeviceLightingConstraintsCommand request,
-        CancellationToken cancellationToken)
+    public async Task Handle(ChangeDeviceLightingConstraintsCommand request, CancellationToken cancellationToken)
     {
         var device = await repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
         device.UpdateFromLightingConstraints(request.Model, hausBus);

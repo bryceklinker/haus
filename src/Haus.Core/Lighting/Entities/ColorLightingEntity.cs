@@ -4,18 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Haus.Core.Lighting.Entities;
 
-public record ColorLightingEntity(byte Red = LightingDefaults.Red,
+public record ColorLightingEntity(
+    byte Red = LightingDefaults.Red,
     byte Green = LightingDefaults.Green,
-    byte Blue = LightingDefaults.Blue)
+    byte Blue = LightingDefaults.Blue
+)
 {
     public byte Red { get; } = Red;
     public byte Green { get; } = Green;
     public byte Blue { get; } = Blue;
 
     public ColorLightingEntity()
-        : this(LightingDefaults.Red)
-    {
-    }
+        : this(LightingDefaults.Red) { }
 
     public override int GetHashCode()
     {

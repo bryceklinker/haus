@@ -22,6 +22,9 @@ public class DiscoveryRealtimeApiTests(HausWebHostApplicationFactory factory)
         hub.On<HausEvent>("OnEvent", msg => events.Add(msg));
 
         await factory.CreateAuthenticatedClient().StartDiscoveryAsync();
-        Eventually.Assert(() => { events.Should().Contain(e => e.Type == DiscoveryStartedEvent.Type); });
+        Eventually.Assert(() =>
+        {
+            events.Should().Contain(e => e.Type == DiscoveryStartedEvent.Type);
+        });
     }
 }

@@ -4,6 +4,4 @@ using Microsoft.AspNetCore.SignalR;
 namespace Haus.Web.Host.Common.Events;
 
 [Authorize]
-public class EventsHub : Hub
-{
-}
+public class EventsHub : Hub { }

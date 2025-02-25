@@ -10,8 +10,8 @@ namespace Haus.Zigbee.Host.Health;
 
 public class ZigbeeHostHealthPublisher(
     IZigbeeMqttClientFactory zigbeeMqttClientFactory,
-    IOptions<HausOptions> hausOptions)
-    : IHealthCheckPublisher
+    IOptions<HausOptions> hausOptions
+) : IHealthCheckPublisher
 {
     private string HealthTopic => hausOptions.Value.HealthTopic;
 

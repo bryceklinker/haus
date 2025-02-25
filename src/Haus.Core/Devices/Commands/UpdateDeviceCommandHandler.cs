@@ -17,22 +17,20 @@ public record UpdateDeviceCommand(DeviceModel Model) : UpdateEntityCommand<Devic
 internal class UpdateDeviceCommandHandler(
     IValidator<DeviceModel> validator,
     IHausBus hausBus,
-    IDeviceCommandRepository repository)
-    : ICommandHandler<UpdateDeviceCommand>
+    IDeviceCommandRepository repository
+) : ICommandHandler<UpdateDeviceCommand>
 {
     public async Task Handle(UpdateDeviceCommand request, CancellationToken cancellationToken)
     {
-        await validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
-            .ConfigureAwait(false);
+        await validator.HausValidateAndThrowAsync(request.Model, cancellationToken).ConfigureAwait(false);
 
-        var device = await repository.GetById(request.Id, cancellationToken)
-            .ConfigureAwait(false);
+        var device = await repository.GetById(request.Id, cancellationToken).ConfigureAwait(false);
 
         device.UpdateFromModel(request.Model, hausBus);
         await repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
 
-        await hausBus.PublishAsync(RoutableEvent.FromEvent(new DeviceUpdatedEvent(device.ToModel())),
-                cancellationToken)
+        await hausBus
+            .PublishAsync(RoutableEvent.FromEvent(new DeviceUpdatedEvent(device.ToModel())), cancellationToken)
             .ConfigureAwait(false);
     }
 }

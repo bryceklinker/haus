@@ -35,7 +35,8 @@ public class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
-        return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
+        return Microsoft
+            .Extensions.Hosting.Host.CreateDefaultBuilder(args)
             .UseHausLogging("Haus Web")
             .UseSystemd()
             .UseWindowsService()

@@ -23,8 +23,10 @@ internal class HausBus(ICommandBus commandBus, IQueryBus queryBus, IEventBus eve
         await commandBus.ExecuteAsync(command, token).ConfigureAwait(false);
     }
 
-    public async Task<TResult> ExecuteCommandAsync<TResult>(ICommand<TResult> command,
-        CancellationToken token = default)
+    public async Task<TResult> ExecuteCommandAsync<TResult>(
+        ICommand<TResult> command,
+        CancellationToken token = default
+    )
     {
         return await commandBus.ExecuteAsync(command, token).ConfigureAwait(false);
     }

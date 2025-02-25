@@ -16,7 +16,8 @@ internal class GetDeviceByIdQueryHandler(HausDbContext context) : IQueryHandler<
 {
     public async Task<DeviceModel> Handle(GetDeviceByIdQuery request, CancellationToken cancellationToken = default)
     {
-        return await context.QueryAll<DeviceEntity>()
+        return await context
+            .QueryAll<DeviceEntity>()
             .Where(d => d.Id == request.Id)
             .Select(DeviceEntity.ToModelExpression)
             .SingleOrDefaultAsync(cancellationToken)

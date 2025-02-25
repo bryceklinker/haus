@@ -65,8 +65,10 @@ public record DeviceSimulatorState(ImmutableArray<SimulatedDeviceEntity> Devices
         return Devices.FirstOrDefault(d => d.Id == deviceId);
     }
 
-    private IDeviceSimulatorState CreateStateReplacingDevice(SimulatedDeviceEntity oldDevice,
-        SimulatedDeviceEntity newDevice)
+    private IDeviceSimulatorState CreateStateReplacingDevice(
+        SimulatedDeviceEntity oldDevice,
+        SimulatedDeviceEntity newDevice
+    )
     {
         return this with { Devices = Devices.Remove(oldDevice).Add(newDevice) };
     }

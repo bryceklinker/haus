@@ -64,11 +64,14 @@ internal class HausMqttClient : IHausMqttClient
 
     public Task<IHausMqttSubscription> SubscribeAsync(string topic, Action<MqttApplicationMessage> handler)
     {
-        return SubscribeAsync(topic, msg =>
-        {
-            handler.Invoke(msg);
-            return Task.CompletedTask;
-        });
+        return SubscribeAsync(
+            topic,
+            msg =>
+            {
+                handler.Invoke(msg);
+                return Task.CompletedTask;
+            }
+        );
     }
 
     public async Task PublishAsync(MqttApplicationMessage message)
@@ -78,11 +81,9 @@ internal class HausMqttClient : IHausMqttClient
 
     public async Task PublishAsync(string topic, object payload)
     {
-        await PublishAsync(new MqttApplicationMessage
-        {
-            Topic = topic,
-            PayloadSegment = HausJsonSerializer.SerializeToBytes(payload)
-        });
+        await PublishAsync(
+            new MqttApplicationMessage { Topic = topic, PayloadSegment = HausJsonSerializer.SerializeToBytes(payload) }
+        );
     }
 
     public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string? topicName = null)

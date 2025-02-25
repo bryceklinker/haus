@@ -145,7 +145,7 @@ public class Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOpt
             return new MqttApplicationMessage
             {
                 Topic = $"{baseTopicName}/{_topicPath}",
-                PayloadSegment = Encoding.UTF8.GetBytes(payloadAsString)
+                PayloadSegment = Encoding.UTF8.GetBytes(payloadAsString),
             };
         }
         finally
@@ -159,8 +159,7 @@ public class Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOpt
     {
         try
         {
-            return Zigbee2MqttMessage.FromJToken($"{baseTopicName}/{_topicPath}",
-                JToken.Parse(GetRootMessageAsJson()));
+            return Zigbee2MqttMessage.FromJToken($"{baseTopicName}/{_topicPath}", JToken.Parse(GetRootMessageAsJson()));
         }
         finally
         {

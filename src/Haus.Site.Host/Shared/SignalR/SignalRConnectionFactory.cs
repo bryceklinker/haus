@@ -11,28 +11,30 @@ public interface ISignalRConnectionFactory
     Task<HubConnection> CreateAsync(string hubName);
 }
 
-public class SignalRConnectionFactory(IConfiguration config, IAccessTokenProvider tokenProvider) : ISignalRConnectionFactory
+public class SignalRConnectionFactory(IConfiguration config, IAccessTokenProvider tokenProvider)
+    : ISignalRConnectionFactory
 {
     private string? ApiUrl => config.GetValue<string>("Api:BaseUrl");
-    
+
     public Task<HubConnection> CreateAsync(string hubName)
     {
         ArgumentException.ThrowIfNullOrEmpty(ApiUrl);
-        
-        var connection =  new HubConnectionBuilder()
+
+        var connection = new HubConnectionBuilder()
             .WithAutomaticReconnect()
-            .WithUrl($"{ApiUrl}/hubs/{hubName}", opts =>
-            {
-                opts.AccessTokenProvider = async () =>
+            .WithUrl(
+                $"{ApiUrl}/hubs/{hubName}",
+                opts =>
                 {
-                    var token = await tokenProvider.RequestAccessToken().ConfigureAwait(false);
-                    return token.TryGetToken(out var accessToken) 
-                        ? accessToken.Value 
-                        : null;
-                };
-            })
+                    opts.AccessTokenProvider = async () =>
+                    {
+                        var token = await tokenProvider.RequestAccessToken().ConfigureAwait(false);
+                        return token.TryGetToken(out var accessToken) ? accessToken.Value : null;
+                    };
+                }
+            )
             .Build();
-        
+
         return Task.FromResult(connection);
     }
 }

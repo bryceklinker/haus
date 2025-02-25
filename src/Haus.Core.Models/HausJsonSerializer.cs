@@ -11,10 +11,7 @@ public static class HausJsonSerializer
     {
         TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        Converters =
-        {
-            new JsonStringEnumConverter()
-        }
+        Converters = { new JsonStringEnumConverter() },
     };
 
     public static bool TryDeserialize<T>(ArraySegment<byte> bytes, out T? value)

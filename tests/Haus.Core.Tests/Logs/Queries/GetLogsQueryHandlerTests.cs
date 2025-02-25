@@ -12,7 +12,14 @@ namespace Haus.Core.Tests.Logs.Queries;
 
 public class GetLogsQueryHandlerTests
 {
-    private readonly string _logsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "Logs", "sample-log-files");
+    private readonly string _logsDirectory = Path.Combine(
+        Directory.GetCurrentDirectory(),
+        "..",
+        "..",
+        "..",
+        "Logs",
+        "sample-log-files"
+    );
     private readonly IHausBus _hausBus = HausBusFactory.Create();
 
     [Fact]
@@ -68,7 +75,6 @@ public class GetLogsQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new GetLogsQuery(_logsDirectory, parameters));
 
-        result.Items.Should()
-            .Match(logs => logs.All(l => l.Level == "Error"));
+        result.Items.Should().Match(logs => logs.All(l => l.Level == "Error"));
     }
 }

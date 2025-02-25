@@ -29,7 +29,9 @@ public class GetDevicesQueryHandlerTests
         var result = await _hausBus.ExecuteQueryAsync(new GetDevicesQuery());
 
         result.Count.Should().Be(3);
-        result.Items.Should().HaveCount(3)
+        result
+            .Items.Should()
+            .HaveCount(3)
             .And.Contain(i => i.ExternalId == "one")
             .And.Contain(i => i.ExternalId == "two")
             .And.Contain(i => i.ExternalId == "three");

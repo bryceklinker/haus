@@ -19,14 +19,17 @@ public class TurnOffVacantRoomsCommandHandler(IDomainEventBus domainEventBus, Ha
 {
     public async Task Handle(TurnOffVacantRoomsCommand request, CancellationToken cancellationToken)
     {
-        var rooms = await context.GetRoomsIncludeDevices()
+        var rooms = await context
+            .GetRoomsIncludeDevices()
             .Where(r => r.Lighting.State == LightingState.On)
             .Where(r => r.LastOccupiedTime.HasValue)
-            .ToArrayAsync(cancellationToken).ConfigureAwait(false);
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
         foreach (var room in rooms)
             room.ChangeOccupancy(
                 new OccupancyChangedModel(RoomDefaults.SimulatedOccupancyChangeDeviceId),
-                domainEventBus);
+                domainEventBus
+            );
 
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         await domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);

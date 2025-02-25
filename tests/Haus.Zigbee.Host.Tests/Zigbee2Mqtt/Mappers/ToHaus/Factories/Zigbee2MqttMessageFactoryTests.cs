@@ -26,7 +26,6 @@ public class Zigbee2MqttMessageFactoryTests
 
         var message = _factory.Create(new MqttApplicationMessage { PayloadSegment = bytes });
 
-
         message.PayloadObject.Value<int>("id").Should().Be(54);
     }
 

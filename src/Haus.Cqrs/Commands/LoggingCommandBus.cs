@@ -7,15 +7,20 @@ using Microsoft.Extensions.Logging;
 namespace Haus.Cqrs.Commands;
 
 internal class LoggingCommandBus(ICommandBus commandBus, ILogger<LoggingCommandBus> logger)
-    : LoggingBus(logger), ICommandBus
+    : LoggingBus(logger),
+        ICommandBus
 {
     public async Task ExecuteAsync(ICommand command, CancellationToken token = default)
     {
-        await ExecuteWithLoggingAsync(command, async () =>
-        {
-            await commandBus.ExecuteAsync(command, token).ConfigureAwait(false);
-            return Unit.Value;
-        }, token);
+        await ExecuteWithLoggingAsync(
+            command,
+            async () =>
+            {
+                await commandBus.ExecuteAsync(command, token).ConfigureAwait(false);
+                return Unit.Value;
+            },
+            token
+        );
     }
 
     public async Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, CancellationToken token = default)
@@ -30,8 +35,12 @@ internal class LoggingCommandBus(ICommandBus commandBus, ILogger<LoggingCommandB
 
     protected override void LogError<TInput>(TInput input, Exception exception, long elapsedMilliseconds)
     {
-        Logger.LogError(exception, "Command {@Command} failed to execute after {@ElapsedTime}ms", input,
-            elapsedMilliseconds);
+        Logger.LogError(
+            exception,
+            "Command {@Command} failed to execute after {@ElapsedTime}ms",
+            input,
+            elapsedMilliseconds
+        );
     }
 
     protected override void LogStarted<TInput>(TInput input)

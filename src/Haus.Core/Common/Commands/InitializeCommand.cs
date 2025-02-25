@@ -14,11 +14,11 @@ internal class InitializeCommandHandler(IHausBus hausBus) : ICommandHandler<Init
 {
     public async Task Handle(InitializeCommand request, CancellationToken cancellationToken)
     {
-        await hausBus.ExecuteCommandAsync(new InitializeDatabaseCommand(), cancellationToken)
-            .ConfigureAwait(false);
+        await hausBus.ExecuteCommandAsync(new InitializeDatabaseCommand(), cancellationToken).ConfigureAwait(false);
         await Task.WhenAll(
-            hausBus.ExecuteCommandAsync(new InitializeDiscoveryCommand(), cancellationToken),
-            hausBus.ExecuteCommandAsync(new SyncDiscoveryCommand(), cancellationToken)
-        ).ConfigureAwait(false);
+                hausBus.ExecuteCommandAsync(new InitializeDiscoveryCommand(), cancellationToken),
+                hausBus.ExecuteCommandAsync(new SyncDiscoveryCommand(), cancellationToken)
+            )
+            .ConfigureAwait(false);
     }
 }

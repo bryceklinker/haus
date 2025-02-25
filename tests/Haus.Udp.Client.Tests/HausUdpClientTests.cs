@@ -28,7 +28,10 @@ public class HausUdpClientTests : IDisposable
 
         await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "192.168.1.1", 5000));
 
-        Eventually.Assert(() => { model.Name.Should().Be(KnownServices.Web); });
+        Eventually.Assert(() =>
+        {
+            model.Name.Should().Be(KnownServices.Web);
+        });
     }
 
     [Fact]
@@ -43,7 +46,10 @@ public class HausUdpClientTests : IDisposable
 
         await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "1.1.1.1", 600));
 
-        Eventually.Assert(() => { model.Name.Should().Be(KnownServices.Web); });
+        Eventually.Assert(() =>
+        {
+            model.Name.Should().Be(KnownServices.Web);
+        });
     }
 
     [Fact]

@@ -10,9 +10,7 @@ namespace Haus.Core.Common.Storage.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_DeviceMetadata_Devices_DeviceId",
-                table: "DeviceMetadata");
+            migrationBuilder.DropForeignKey(name: "FK_DeviceMetadata_Devices_DeviceId", table: "DeviceMetadata");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Tags",
@@ -22,7 +20,8 @@ namespace Haus.Core.Common.Storage.Migrations
                 defaultValue: "",
                 oldClrType: typeof(string),
                 oldType: "TEXT",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AlterColumn<long>(
                 name: "DeviceId",
@@ -32,7 +31,8 @@ namespace Haus.Core.Common.Storage.Migrations
                 defaultValue: 0L,
                 oldClrType: typeof(long),
                 oldType: "INTEGER",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_DeviceMetadata_Devices_DeviceId",
@@ -40,15 +40,14 @@ namespace Haus.Core.Common.Storage.Migrations
                 column: "DeviceId",
                 principalTable: "Devices",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_DeviceMetadata_Devices_DeviceId",
-                table: "DeviceMetadata");
+            migrationBuilder.DropForeignKey(name: "FK_DeviceMetadata_Devices_DeviceId", table: "DeviceMetadata");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Tags",
@@ -56,7 +55,8 @@ namespace Haus.Core.Common.Storage.Migrations
                 type: "TEXT",
                 nullable: true,
                 oldClrType: typeof(string),
-                oldType: "TEXT");
+                oldType: "TEXT"
+            );
 
             migrationBuilder.AlterColumn<long>(
                 name: "DeviceId",
@@ -64,14 +64,16 @@ namespace Haus.Core.Common.Storage.Migrations
                 type: "INTEGER",
                 nullable: true,
                 oldClrType: typeof(long),
-                oldType: "INTEGER");
+                oldType: "INTEGER"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_DeviceMetadata_Devices_DeviceId",
                 table: "DeviceMetadata",
                 column: "DeviceId",
                 principalTable: "Devices",
-                principalColumn: "Id");
+                principalColumn: "Id"
+            );
         }
     }
 }

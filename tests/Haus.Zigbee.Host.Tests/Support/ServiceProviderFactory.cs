@@ -21,7 +21,6 @@ public static class ServiceProviderFactory
             services.AddSingleton(mqttFactory);
         }
 
-        return services
-            .BuildServiceProvider();
+        return services.BuildServiceProvider();
     }
 }

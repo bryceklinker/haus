@@ -26,10 +26,11 @@ public class InitializeDiscoveryCommandHandlerTests
     {
         await _hausBus.ExecuteCommandAsync(new InitializeDiscoveryCommand());
 
-        _context.Set<DiscoveryEntity>().Should().HaveCount(1)
-            .And.ContainEquivalentOf(new DiscoveryEntity(0),
-                opts => opts.Excluding(d => d.Id)
-            );
+        _context
+            .Set<DiscoveryEntity>()
+            .Should()
+            .HaveCount(1)
+            .And.ContainEquivalentOf(new DiscoveryEntity(0), opts => opts.Excluding(d => d.Id));
     }
 
     [Fact]
@@ -39,9 +40,10 @@ public class InitializeDiscoveryCommandHandlerTests
 
         await _hausBus.ExecuteCommandAsync(new InitializeDiscoveryCommand());
 
-        _context.Set<DiscoveryEntity>().Should().HaveCount(1)
-            .And.ContainEquivalentOf(new DiscoveryEntity(0, DiscoveryState.Enabled),
-                opts => opts.Excluding(d => d.Id)
-            );
+        _context
+            .Set<DiscoveryEntity>()
+            .Should()
+            .HaveCount(1)
+            .And.ContainEquivalentOf(new DiscoveryEntity(0, DiscoveryState.Enabled), opts => opts.Excluding(d => d.Id));
     }
 }

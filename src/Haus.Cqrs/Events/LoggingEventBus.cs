@@ -8,13 +8,18 @@ namespace Haus.Cqrs.Events;
 
 internal class LoggingEventBus(IEventBus eventBus, ILogger<LoggingEventBus> logger) : LoggingBus(logger), IEventBus
 {
-    public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken token = default) where TEvent : IEvent
+    public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken token = default)
+        where TEvent : IEvent
     {
-        await ExecuteWithLoggingAsync(@event, async () =>
-            {
-                await eventBus.PublishAsync(@event, token).ConfigureAwait(false);
-                return Unit.Value;
-            }, token)
+        await ExecuteWithLoggingAsync(
+                @event,
+                async () =>
+                {
+                    await eventBus.PublishAsync(@event, token).ConfigureAwait(false);
+                    return Unit.Value;
+                },
+                token
+            )
             .ConfigureAwait(false);
     }
 
@@ -25,8 +30,12 @@ internal class LoggingEventBus(IEventBus eventBus, ILogger<LoggingEventBus> logg
 
     protected override void LogError<TInput>(TInput input, Exception exception, long elapsedMilliseconds)
     {
-        Logger.LogError(exception, "Event {@Event} failed to publish after {@ElapsedTime}ms", input,
-            elapsedMilliseconds);
+        Logger.LogError(
+            exception,
+            "Event {@Event} failed to publish after {@ElapsedTime}ms",
+            input,
+            elapsedMilliseconds
+        );
     }
 
     protected override void LogStarted<TInput>(TInput input)

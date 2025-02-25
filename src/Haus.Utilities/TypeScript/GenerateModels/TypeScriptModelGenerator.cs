@@ -21,16 +21,13 @@ public class TypeScriptModelGenerator : ITypeScriptModelGenerator
             return;
 
         var filename = $"{type.ToTypeScriptFileName()}.ts";
-        var contents = type.IsEnum
-            ? GenerateTypeScriptEnum(type)
-            : GenerateTypeScriptInterface(type, context);
+        var contents = type.IsEnum ? GenerateTypeScriptEnum(type) : GenerateTypeScriptInterface(type, context);
         context.Add(new TypeScriptModel(type, filename, contents));
     }
 
     private string GenerateTypeScriptEnum(Type type)
     {
-        var values = Enum.GetNames(type)
-            .Select(value => $"\t{value} = '{value}',");
+        var values = Enum.GetNames(type).Select(value => $"\t{value} = '{value}',");
 
         var enumerationValues = string.Join(Environment.NewLine, values);
         return new StringBuilder()
@@ -53,8 +50,7 @@ public class TypeScriptModelGenerator : ITypeScriptModelGenerator
 
     private string GenerateImportStatements(Type type, ITypeScriptGeneratorContext context)
     {
-        var imports = GetTypesToImport(type, context)
-            .Select(GenerateImportStatement);
+        var imports = GetTypesToImport(type, context).Select(GenerateImportStatement);
         return string.Join(Environment.NewLine, imports);
     }
 
@@ -76,14 +72,16 @@ public class TypeScriptModelGenerator : ITypeScriptModelGenerator
     private IEnumerable<TypeScriptModel> GetTypesToImport(Type type, ITypeScriptGeneratorContext context)
     {
         var propertyInfos = type.GetProperties();
-        var importTypes = propertyInfos.Select(p => p.PropertyType)
+        var importTypes = propertyInfos
+            .Select(p => p.PropertyType)
             .Where(t => t.RequiresTypescriptImport())
             .Select(t => t.GetTypeThatRequiresImport())
             .Select(t => GetOrGenerateModelForType(t, context));
 
         if (type.BaseType != null && type.BaseType.RequiresTypescriptImport())
-            importTypes =
-                importTypes.Append(GetOrGenerateModelForType(type.BaseType.GetTypeThatRequiresImport(), context));
+            importTypes = importTypes.Append(
+                GetOrGenerateModelForType(type.BaseType.GetTypeThatRequiresImport(), context)
+            );
 
         return importTypes.ToArray();
     }

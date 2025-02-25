@@ -7,8 +7,7 @@ using Haus.Cqrs.Events;
 
 namespace Haus.Core.DeviceSimulator.Events;
 
-internal class
-    DeviceSimulatorDeviceLightingChangedEventHandler(IDeviceSimulatorStore store)
+internal class DeviceSimulatorDeviceLightingChangedEventHandler(IDeviceSimulatorStore store)
     : IEventHandler<RoutableEvent<DeviceLightingChangedEvent>>
 {
     public Task Handle(RoutableEvent<DeviceLightingChangedEvent> notification, CancellationToken cancellationToken)

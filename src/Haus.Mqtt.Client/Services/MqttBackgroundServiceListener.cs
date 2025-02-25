@@ -8,8 +8,8 @@ namespace Haus.Mqtt.Client.Services;
 
 public abstract class MqttBackgroundServiceListener(
     IHausMqttClientFactory hausMqttClientFactory,
-    IServiceScopeFactory scopeFactory)
-    : BackgroundService
+    IServiceScopeFactory scopeFactory
+) : BackgroundService
 {
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -20,7 +20,8 @@ public abstract class MqttBackgroundServiceListener(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested) await Task.Delay(1000, stoppingToken);
+        while (!stoppingToken.IsCancellationRequested)
+            await Task.Delay(1000, stoppingToken);
     }
 
     protected IServiceScope CreateScope()

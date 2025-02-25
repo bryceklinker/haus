@@ -16,17 +16,19 @@ public static class ServiceCollectionExtensions
         var authDomain = configuration.GetValue<string>("Auth:Domain");
         var authClientId = configuration.GetValue<string>("Auth:ClientId");
         var authAudience = configuration.GetValue<string>("Auth:Audience");
-        
+
         ArgumentException.ThrowIfNullOrEmpty(apiUrl, nameof(apiUrl));
         ArgumentException.ThrowIfNullOrEmpty(authDomain, nameof(authDomain));
         ArgumentException.ThrowIfNullOrEmpty(authClientId, nameof(authClientId));
         ArgumentException.ThrowIfNullOrEmpty(authAudience, nameof(authAudience));
 
         services.AddMudServices();
-        services.AddHausApiClient(opts =>
-        {
-            opts.BaseUrl = apiUrl;
-        }).AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+        services
+            .AddHausApiClient(opts =>
+            {
+                opts.BaseUrl = apiUrl;
+            })
+            .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
         services.AddOidcAuthentication(opts =>
         {
             opts.ProviderOptions.ClientId = authClientId;

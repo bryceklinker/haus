@@ -24,9 +24,7 @@ public class DeviceCommandRepository(HausDbContext context) : IDeviceCommandRepo
 
     public Task<DeviceEntity> GetByExternalId(string externalId, CancellationToken token = default)
     {
-        return context.FindByAsync<DeviceEntity>(d => d.ExternalId == externalId,
-            AddIncludes,
-            token);
+        return context.FindByAsync<DeviceEntity>(d => d.ExternalId == externalId, AddIncludes, token);
     }
 
     public async Task<DeviceEntity> AddAsync(DeviceEntity device, CancellationToken token = default)
@@ -44,8 +42,6 @@ public class DeviceCommandRepository(HausDbContext context) : IDeviceCommandRepo
 
     private static IQueryable<DeviceEntity> AddIncludes(IQueryable<DeviceEntity> query)
     {
-        return query
-            .Include(d => d.Metadata)
-            .Include(d => d.Room);
+        return query.Include(d => d.Metadata).Include(d => d.Room);
     }
 }

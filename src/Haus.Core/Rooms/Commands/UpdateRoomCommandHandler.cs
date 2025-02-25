@@ -17,19 +17,19 @@ public record UpdateRoomCommand(RoomModel Model) : UpdateEntityCommand<RoomModel
 internal class UpdateRoomCommandHandler(
     IValidator<RoomModel> validator,
     IRoomCommandRepository repository,
-    IHausBus hausBus)
-    : ICommandHandler<UpdateRoomCommand>
+    IHausBus hausBus
+) : ICommandHandler<UpdateRoomCommand>
 {
     public async Task Handle(UpdateRoomCommand request, CancellationToken cancellationToken)
     {
-        await validator.HausValidateAndThrowAsync(request.Model, cancellationToken)
-            .ConfigureAwait(false);
+        await validator.HausValidateAndThrowAsync(request.Model, cancellationToken).ConfigureAwait(false);
 
         var room = await repository.GetByIdAsync(request.Id, cancellationToken).ConfigureAwait(false);
 
         room.UpdateFromModel(request.Model);
         await repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
-        await hausBus.PublishAsync(RoutableEvent.FromEvent(new RoomUpdatedEvent(room.ToModel())), cancellationToken)
+        await hausBus
+            .PublishAsync(RoutableEvent.FromEvent(new RoomUpdatedEvent(room.ToModel())), cancellationToken)
             .ConfigureAwait(false);
     }
 }

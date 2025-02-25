@@ -7,8 +7,10 @@ namespace Haus.Mqtt.Client.Health;
 
 public class HausMqttHealthCHeck(IHausMqttClientFactory clientFactory) : IHealthCheck
 {
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
-        CancellationToken cancellationToken = default)
+    public async Task<HealthCheckResult> CheckHealthAsync(
+        HealthCheckContext context,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
@@ -22,7 +24,9 @@ public class HausMqttHealthCHeck(IHausMqttClientFactory clientFactory) : IHealth
         catch (Exception e)
         {
             return HealthCheckResult.Unhealthy(
-                "An exception occurred when attempting to send ping or creating client", e);
+                "An exception occurred when attempting to send ping or creating client",
+                e
+            );
         }
     }
 }

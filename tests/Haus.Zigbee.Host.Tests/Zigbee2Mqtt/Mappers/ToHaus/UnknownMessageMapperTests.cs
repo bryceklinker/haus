@@ -18,10 +18,7 @@ public class UnknownMessageMapperTests
 
     public UnknownMessageMapperTests()
     {
-        var options = new OptionsMonitorFake<HausOptions>(new HausOptions
-        {
-            UnknownTopic = UnknownTopicName
-        });
+        var options = new OptionsMonitorFake<HausOptions>(new HausOptions { UnknownTopic = UnknownTopicName });
         _mapper = new UnknownMessageMapper(options);
     }
 
@@ -56,10 +53,7 @@ public class UnknownMessageMapperTests
     [Fact]
     public void WhenMappedThenZigbeePayloadIsInMessagePayload()
     {
-        var message = Zigbee2MqttMessage.FromJToken("", JObject.FromObject(new
-        {
-            Id = "my-id"
-        }));
+        var message = Zigbee2MqttMessage.FromJToken("", JObject.FromObject(new { Id = "my-id" }));
 
         var result = _mapper.Map(message).Single();
 

@@ -17,9 +17,7 @@ public class SensorChangedMapperTests
     [Fact]
     public void WhenMessageIsForLightSensorThenReturnsIlluminanceChanged()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithIlluminance(54)
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithIlluminance(54).BuildZigbee2MqttMessage();
 
         _mapper.Map(message).Should().BeOfType<IlluminanceChangedModel>();
     }
@@ -27,9 +25,7 @@ public class SensorChangedMapperTests
     [Fact]
     public void WhenMessageIsForMotionSensorThenReturnsOccupancyChanged()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithOccupancy(true)
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithOccupancy(true).BuildZigbee2MqttMessage();
 
         _mapper.Map(message).Should().BeOfType<OccupancyChangedModel>();
     }
@@ -37,9 +33,7 @@ public class SensorChangedMapperTests
     [Fact]
     public void WhenMessageIsForTemperatureSensorThenReturnsTemperatureChanged()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithTemperature(43)
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithTemperature(43).BuildZigbee2MqttMessage();
 
         _mapper.Map(message).Should().BeOfType<TemperatureChangedModel>();
     }
@@ -47,9 +41,7 @@ public class SensorChangedMapperTests
     [Fact]
     public void WhenMessageIsForBatterySensorThenReturnsBatteryChanged()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithBatteryLevel(5)
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithBatteryLevel(5).BuildZigbee2MqttMessage();
 
         _mapper.Map(message).Should().BeOfType<BatteryChangedModel>();
     }
@@ -57,10 +49,7 @@ public class SensorChangedMapperTests
     [Fact]
     public void WhenMessageIsForBatteryAndIlluminanceThenReturnsMultiSensorChanged()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithBatteryLevel(45)
-            .WithIlluminance(2)
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithBatteryLevel(45).WithIlluminance(2).BuildZigbee2MqttMessage();
 
         _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
     }
@@ -68,10 +57,7 @@ public class SensorChangedMapperTests
     [Fact]
     public void WhenMessageIsForBatteryAndOccupancyThenReturnsMultiSensorChanged()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithBatteryLevel(5)
-            .WithOccupancy(true)
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithBatteryLevel(5).WithOccupancy(true).BuildZigbee2MqttMessage();
 
         _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
     }
@@ -79,10 +65,7 @@ public class SensorChangedMapperTests
     [Fact]
     public void WhenMessageIsForBatteryAndTemperatureThenReturnsMultiSensorChanged()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithBatteryLevel(5)
-            .WithTemperature(1)
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithBatteryLevel(5).WithTemperature(1).BuildZigbee2MqttMessage();
 
         _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
     }
@@ -90,10 +73,7 @@ public class SensorChangedMapperTests
     [Fact]
     public void WhenMessageIsForIlluminanceAndOccupancyThenReturnsMultiSensorChanged()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithIlluminance(3)
-            .WithOccupancy(false)
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithIlluminance(3).WithOccupancy(false).BuildZigbee2MqttMessage();
 
         _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
     }
@@ -101,10 +81,7 @@ public class SensorChangedMapperTests
     [Fact]
     public void WhenMessageIsForIlluminanceAndTemperatureThenReturnsMultiSensorChanged()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithIlluminance(6)
-            .WithTemperature(12)
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithIlluminance(6).WithTemperature(12).BuildZigbee2MqttMessage();
 
         _mapper.Map(message).Should().BeOfType<MultiSensorChanged>();
     }

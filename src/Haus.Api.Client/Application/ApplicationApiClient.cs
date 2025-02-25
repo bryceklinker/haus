@@ -16,7 +16,8 @@ public interface IApplicationApiClient
 }
 
 public class ApplicationApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    : ApiClient(httpClient, options), IApplicationApiClient
+    : ApiClient(httpClient, options),
+        IApplicationApiClient
 {
     private const string LatestVersionRoute = "application/latest-version";
 

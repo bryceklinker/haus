@@ -19,7 +19,8 @@ public class CreateSimulatedDeviceCommandHandlerTests
     {
         _store = new DeviceSimulatorStore();
         _hausBus = HausBusFactory.CreateCapturingBus(configureServices: services =>
-            services.Replace<IDeviceSimulatorStore>(_store));
+            services.Replace<IDeviceSimulatorStore>(_store)
+        );
     }
 
     [Fact]
@@ -37,7 +38,9 @@ public class CreateSimulatedDeviceCommandHandlerTests
         var command = new CreateSimulatedDeviceCommand(new SimulatedDeviceModel());
         await _hausBus.ExecuteCommandAsync(command);
 
-        _hausBus.GetPublishedEvents<SimulatedEvent>().Should()
+        _hausBus
+            .GetPublishedEvents<SimulatedEvent>()
+            .Should()
             .ContainSingle(e => e.HausEvent.Type == DeviceDiscoveredEvent.Type);
     }
 }

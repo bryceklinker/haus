@@ -11,11 +11,11 @@ public class InMemoryHttpClientFactory : IHttpClientFactory
     {
         if (_handlers.TryGetValue(name, out var handler))
             return handler;
-        
+
         _handlers.TryAdd(name, new InMemoryHttpMessageHandler());
         return _handlers[name];
     }
-    
+
     public HttpClient CreateClient(string name)
     {
         var handler = GetHandler(name);

@@ -16,7 +16,8 @@ internal class GetRoomByIdQueryHandler(HausDbContext context) : IQueryHandler<Ge
 {
     public async Task<RoomModel> Handle(GetRoomByIdQuery request, CancellationToken cancellationToken)
     {
-        return await context.QueryAll<RoomEntity>()
+        return await context
+            .QueryAll<RoomEntity>()
             .Where(r => r.Id == request.Id)
             .Select(RoomEntity.ToModelExpression)
             .SingleOrDefaultAsync(cancellationToken)

@@ -7,7 +7,7 @@ namespace Haus.Testing.Support;
 public static class HausModelFactory
 {
     private static readonly Faker Faker = new Faker();
-    
+
     public static DeviceModel DeviceModel()
     {
         return new DeviceModel(
@@ -24,10 +24,6 @@ public static class HausModelFactory
 
     public static RoomModel RoomModel()
     {
-        return new RoomModel(
-            Id: Faker.Random.Number(),
-            Name: Faker.Company.CompanyName(),
-            Lighting: null
-        );
+        return new RoomModel(Id: Faker.Random.Number(), Name: Faker.Company.CompanyName(), Lighting: null);
     }
 }

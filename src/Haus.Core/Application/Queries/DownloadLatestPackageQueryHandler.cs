@@ -11,11 +11,13 @@ public record DownloadLatestPackageQuery(int PackageId) : IQuery<DownloadLatestP
 
 public class DownloadLatestPackageQueryHandler(
     ILatestReleaseProvider latestReleaseProvider,
-    ILogger<DownloadLatestPackageQuery> logger)
-    : IQueryHandler<DownloadLatestPackageQuery, DownloadLatestPackageResult>
+    ILogger<DownloadLatestPackageQuery> logger
+) : IQueryHandler<DownloadLatestPackageQuery, DownloadLatestPackageResult>
 {
-    public async Task<DownloadLatestPackageResult> Handle(DownloadLatestPackageQuery request,
-        CancellationToken cancellationToken)
+    public async Task<DownloadLatestPackageResult> Handle(
+        DownloadLatestPackageQuery request,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
@@ -34,7 +36,7 @@ public class DownloadLatestPackageQueryHandler(
         return exception switch
         {
             HttpRequestException httpException => CreatePackageResultFromHttpRequestException(httpException),
-            _ => DownloadLatestPackageResult.Error()
+            _ => DownloadLatestPackageResult.Error(),
         };
     }
 

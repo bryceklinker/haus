@@ -9,7 +9,8 @@ public record SimulatedDeviceModel(
     DeviceType DeviceType = DeviceType.Unknown,
     bool IsOccupied = false,
     MetadataModel[]? Metadata = null,
-    LightingModel? Lighting = null)
+    LightingModel? Lighting = null
+)
 {
     public MetadataModel[] Metadata { get; init; } = Metadata ?? [];
     public LightingModel? Lighting { get; init; } = DeviceType == DeviceType.Light ? Lighting : null;

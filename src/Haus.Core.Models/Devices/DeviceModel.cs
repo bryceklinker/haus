@@ -12,7 +12,8 @@ public record DeviceModel(
     DeviceType DeviceType = DeviceType.Unknown,
     LightType LightType = LightType.None,
     MetadataModel[]? Metadata = null,
-    LightingModel? Lighting = null) : IdentityModel
+    LightingModel? Lighting = null
+) : IdentityModel
 {
     public MetadataModel[] Metadata { get; } = Metadata ?? [];
 }

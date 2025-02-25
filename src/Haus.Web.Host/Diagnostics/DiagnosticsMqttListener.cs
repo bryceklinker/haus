@@ -8,9 +8,7 @@ using MQTTnet;
 
 namespace Haus.Web.Host.Diagnostics;
 
-public class DiagnosticsMqttListener(
-    IHausMqttClientFactory hausMqttClientFactory,
-    IServiceScopeFactory scopeFactory)
+public class DiagnosticsMqttListener(IHausMqttClientFactory hausMqttClientFactory, IServiceScopeFactory scopeFactory)
     : MqttBackgroundServiceListener(hausMqttClientFactory, scopeFactory)
 {
     protected override async Task OnMessageReceived(MqttApplicationMessage message)

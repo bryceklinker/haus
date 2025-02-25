@@ -15,13 +15,12 @@ public record SimulatedDeviceEntity(
     DeviceType DeviceType = DeviceType.Unknown,
     bool IsOccupied = false,
     Metadata[]? Metadata = null,
-    LightingModel? Lighting = null)
+    LightingModel? Lighting = null
+)
 {
-    private static readonly ImmutableArray<Metadata> StandardMetadata = [
-        ..new[]
-        {
-            new Metadata("simulated", "true")
-        }
+    private static readonly ImmutableArray<Metadata> StandardMetadata =
+    [
+        .. new[] { new Metadata("simulated", "true") },
     ];
 
     public string Id { get; } = string.IsNullOrEmpty(Id) ? $"{Guid.NewGuid()}" : Id;
@@ -32,10 +31,7 @@ public record SimulatedDeviceEntity(
 
     public static SimulatedDeviceEntity Create(SimulatedDeviceModel model)
     {
-        var metadata = model.Metadata
-            .Select(Common.Entities.Metadata.FromModel)
-            .Concat(StandardMetadata)
-            .ToArray();
+        var metadata = model.Metadata.Select(Common.Entities.Metadata.FromModel).Concat(StandardMetadata).ToArray();
         return new SimulatedDeviceEntity(model.Id, model.DeviceType, Metadata: metadata);
     }
 

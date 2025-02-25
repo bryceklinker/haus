@@ -17,8 +17,6 @@ public class TemperatureLightingDefaultGenerator : IDefaultLightingGenerator
         lighting.Color = null;
         lighting.Temperature = Default.Temperature;
         lighting.Level ??= Default.Level;
-        return roomLighting != null
-            ? lighting.CalculateTarget(roomLighting)
-            : lighting;
+        return roomLighting != null ? lighting.CalculateTarget(roomLighting) : lighting;
     }
 }

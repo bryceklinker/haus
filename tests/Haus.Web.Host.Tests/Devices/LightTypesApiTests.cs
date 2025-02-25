@@ -18,7 +18,9 @@ public class LightTypesApiTests(HausWebHostApplicationFactory factory)
         var result = await _client.GetLightTypesAsync();
 
         result.Count.Should().Be(3);
-        result.Items.Should().HaveCount(3)
+        result
+            .Items.Should()
+            .HaveCount(3)
             .And.Contain(LightType.Color)
             .And.Contain(LightType.Level)
             .And.Contain(LightType.Temperature);

@@ -54,8 +54,9 @@ public class DownloadLatestPackageQueryHandlerTests
     [Fact]
     public async Task WhenDownloadingPackageFailsWithInternalServerErrorThenReturnsErrorDownloadResult()
     {
-        _latestReleaseProvider.SetupFailure(new HttpRequestException("", new Exception(),
-            HttpStatusCode.InternalServerError));
+        _latestReleaseProvider.SetupFailure(
+            new HttpRequestException("", new Exception(), HttpStatusCode.InternalServerError)
+        );
 
         var result = await _hausBus.ExecuteQueryAsync(new DownloadLatestPackageQuery(8));
 

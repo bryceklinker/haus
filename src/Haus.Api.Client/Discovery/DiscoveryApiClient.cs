@@ -16,7 +16,8 @@ public interface IDiscoveryApiClient
 }
 
 public class DiscoveryApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    : ApiClient(httpClient, options), IDiscoveryApiClient
+    : ApiClient(httpClient, options),
+        IDiscoveryApiClient
 {
     public Task<DiscoveryModel?> GetDiscoveryStateAsync()
     {

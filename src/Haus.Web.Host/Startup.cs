@@ -37,13 +37,10 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IHostEnvironment env)
     {
-        if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+        if (env.IsDevelopment())
+            app.UseDeveloperExceptionPage();
 
-        app.UseHausRequestLogging()
-            .UseHttpsRedirection()
-            .UseCors()
-            .UseStaticFiles()
-            .UseSpaStaticFiles();
+        app.UseHausRequestLogging().UseHttpsRedirection().UseCors().UseStaticFiles().UseSpaStaticFiles();
 
         app.UseRouting()
             .UseAuthentication()
@@ -60,7 +57,8 @@ public class Startup
         app.UseSpa(spa =>
         {
             spa.Options.SourcePath = ClientAppRoot;
-            if (env.IsDevelopment()) spa.UseAngularCliServer("start");
+            if (env.IsDevelopment())
+                spa.UseAngularCliServer("start");
         });
     }
 }

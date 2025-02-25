@@ -11,9 +11,6 @@ public class TemperatureChangedMapper
         if (message.Temperature.IsNull())
             return null;
 
-        return new TemperatureChangedModel(
-            message.GetFriendlyNameFromTopic(),
-            message.Temperature.GetValueOrDefault()
-        );
+        return new TemperatureChangedModel(message.GetFriendlyNameFromTopic(), message.Temperature.GetValueOrDefault());
     }
 }

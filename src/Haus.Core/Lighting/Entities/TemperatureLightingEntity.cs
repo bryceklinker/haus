@@ -6,14 +6,13 @@ namespace Haus.Core.Lighting.Entities;
 public record TemperatureLightingEntity : LightingRange
 {
     public TemperatureLightingEntity()
-        : this(LightingDefaults.Temperature)
-    {
-    }
+        : this(LightingDefaults.Temperature) { }
 
     public TemperatureLightingEntity(
         double value = LightingDefaults.Temperature,
         double min = LightingDefaults.MinTemperature,
-        double max = LightingDefaults.MaxTemperature)
+        double max = LightingDefaults.MaxTemperature
+    )
         : base(value, min, max)
     {
         Value = value;
@@ -23,7 +22,8 @@ public record TemperatureLightingEntity : LightingRange
 
     public static TemperatureLightingEntity? CalculateTarget(
         TemperatureLightingEntity? current,
-        TemperatureLightingEntity? target)
+        TemperatureLightingEntity? target
+    )
     {
         if (current == null)
             return null;

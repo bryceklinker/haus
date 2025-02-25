@@ -13,7 +13,8 @@ public interface IDiagnosticsApiClient : IApiClient
 }
 
 public class DiagnosticsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    : ApiClient(httpClient, options), IDiagnosticsApiClient
+    : ApiClient(httpClient, options),
+        IDiagnosticsApiClient
 {
     public Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
     {

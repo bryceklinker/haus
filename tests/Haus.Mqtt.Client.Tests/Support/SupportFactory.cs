@@ -31,7 +31,10 @@ public class SupportFactory
             .AddHausMqtt()
             .AddLogging()
             .Replace<IMqttFactory>(FakeClientFactory)
-            .Configure<HausMqttSettings>(opts => { opts.Server = "mqtt://localhost:1883"; })
+            .Configure<HausMqttSettings>(opts =>
+            {
+                opts.Server = "mqtt://localhost:1883";
+            })
             .BuildServiceProvider();
     }
 }

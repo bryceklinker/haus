@@ -19,7 +19,8 @@ internal class CreateSimulatedDeviceCommandHandler(IDeviceSimulatorStore store, 
     {
         var device = SimulatedDeviceEntity.Create(request.Model);
         store.Publish(store.Current.AddSimulatedDevice(device));
-        await hausBus.PublishAsync(SimulatedEvent.FromEvent(device.ToDeviceDiscoveredModel()), cancellationToken)
+        await hausBus
+            .PublishAsync(SimulatedEvent.FromEvent(device.ToDeviceDiscoveredModel()), cancellationToken)
             .ConfigureAwait(false);
     }
 }

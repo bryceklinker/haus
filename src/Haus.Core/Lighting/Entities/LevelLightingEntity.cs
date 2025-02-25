@@ -8,7 +8,8 @@ public record LevelLightingEntity : LightingRange
     public LevelLightingEntity(
         double value = LightingDefaults.Level,
         double min = LightingDefaults.MinLevel,
-        double max = LightingDefaults.MaxLevel)
+        double max = LightingDefaults.MaxLevel
+    )
         : base(value, min, max)
     {
         Value = value;

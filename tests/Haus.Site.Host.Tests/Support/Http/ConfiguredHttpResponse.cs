@@ -9,8 +9,9 @@ namespace Haus.Site.Host.Tests.Support.Http;
 public record ConfiguredHttpResponse(
     InMemoryHttpRequest Request,
     InMemoryHttpResponse Response,
-    ConfigureHttpResponseOptions Options) {
-
+    ConfigureHttpResponseOptions Options
+)
+{
     public async Task<HttpResponseMessage?> GetResponseAsync(HttpRequestMessage incomingRequest)
     {
         var request = await InMemoryHttpRequest.FromRequest(incomingRequest);
@@ -32,8 +33,7 @@ public record ConfiguredHttpResponse(
 
         if (Request.Uri == incomingUri)
             return true;
-        
-        return Request.Uri.IsBaseOf(incomingUri)
-            && Request.Uri.AbsolutePath == incomingUri.AbsolutePath;
+
+        return Request.Uri.IsBaseOf(incomingUri) && Request.Uri.AbsolutePath == incomingUri.AbsolutePath;
     }
 }

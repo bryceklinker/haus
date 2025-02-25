@@ -15,9 +15,7 @@ internal class GetLightTypesQueryHandler : IQueryHandler<GetLightTypesQuery, Lis
 {
     public Task<ListResult<LightType>> Handle(GetLightTypesQuery request, CancellationToken cancellationToken)
     {
-        var values = Enum.GetValues<LightType>()
-            .Where(type => type != LightType.None)
-            .ToListResult();
+        var values = Enum.GetValues<LightType>().Where(type => type != LightType.None).ToListResult();
 
         return Task.FromResult(values);
     }

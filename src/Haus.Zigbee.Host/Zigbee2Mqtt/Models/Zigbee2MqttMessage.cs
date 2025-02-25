@@ -42,9 +42,7 @@ public class Zigbee2MqttMessage(string topic, string? raw = null, JToken? root =
         if (PayloadObject == null)
             return default;
 
-        return PayloadObject.TryGetValue(propertyName, out var token)
-            ? token.ToObject<T>()
-            : default;
+        return PayloadObject.TryGetValue(propertyName, out var token) ? token.ToObject<T>() : default;
     }
 
     private Zigbee2MqttMeta? GetMetaData()

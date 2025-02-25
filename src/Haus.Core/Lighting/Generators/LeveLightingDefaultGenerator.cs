@@ -5,10 +5,7 @@ namespace Haus.Core.Lighting.Generators;
 
 public class LeveLightingDefaultGenerator : IDefaultLightingGenerator
 {
-    private static readonly LightingEntity Default = new(
-        LightingDefaults.State,
-        new LevelLightingEntity()
-    );
+    private static readonly LightingEntity Default = new(LightingDefaults.State, new LevelLightingEntity());
 
     public LightingEntity Generate(LightingEntity currentLighting, LightingEntity roomLighting)
     {

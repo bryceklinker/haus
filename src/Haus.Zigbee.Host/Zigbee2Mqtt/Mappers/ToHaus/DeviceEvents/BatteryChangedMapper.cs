@@ -11,8 +11,6 @@ public class BatteryChangedMapper
         if (message.Battery.IsNull())
             return null;
 
-        return new BatteryChangedModel(
-            message.GetFriendlyNameFromTopic(),
-            message.Battery.GetValueOrDefault());
+        return new BatteryChangedModel(message.GetFriendlyNameFromTopic(), message.Battery.GetValueOrDefault());
     }
 }

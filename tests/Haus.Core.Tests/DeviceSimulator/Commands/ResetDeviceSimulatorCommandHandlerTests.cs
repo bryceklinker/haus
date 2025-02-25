@@ -18,7 +18,8 @@ public class ResetDeviceSimulatorCommandHandlerTests
     {
         _store = new DeviceSimulatorStore();
         _hausBus = HausBusFactory.Create(configureServices: services =>
-            services.Replace<IDeviceSimulatorStore>(_store));
+            services.Replace<IDeviceSimulatorStore>(_store)
+        );
     }
 
     [Fact]

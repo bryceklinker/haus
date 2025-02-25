@@ -23,9 +23,11 @@ public class LogEntryModelFactoryTests
 
         entry.Timestamp.Should().Be("2021-01-17T15:27:12.3639990Z");
         entry.Level.Should().Be("Debug");
-        entry.Message.Should()
+        entry
+            .Message.Should()
             .Be(
-                "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\"");
+                "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\""
+            );
     }
 
     [Fact]
@@ -36,9 +38,12 @@ public class LogEntryModelFactoryTests
         var json = HausJsonSerializer.Serialize(entry.Value);
         var jObject = JObject.Parse(json);
 
-        jObject.Value<string>("@m").Should()
+        jObject
+            .Value<string>("@m")
+            .Should()
             .Be(
-                "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\"");
+                "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\""
+            );
     }
 
     [Fact]

@@ -20,7 +20,8 @@ public class RoomCommandRepository(HausDbContext context) : IRoomCommandReposito
 {
     public Task<RoomEntity> GetRoomByDeviceExternalId(string externalId, CancellationToken cancellationToken = default)
     {
-        return context.GetAll<DeviceEntity>()
+        return context
+            .GetAll<DeviceEntity>()
             .Where(d => d.ExternalId == externalId)
             .Include(d => d.Room)
             .ThenInclude(r => r.Devices)
@@ -30,10 +31,11 @@ public class RoomCommandRepository(HausDbContext context) : IRoomCommandReposito
 
     public Task<RoomEntity> GetByIdAsync(long roomId, CancellationToken cancellationToken = default)
     {
-        return context.FindByIdOrThrowAsync<RoomEntity>(roomId,
-            query => query.Include(r => r.Devices)
-                .ThenInclude(d => d.Metadata),
-            cancellationToken);
+        return context.FindByIdOrThrowAsync<RoomEntity>(
+            roomId,
+            query => query.Include(r => r.Devices).ThenInclude(d => d.Metadata),
+            cancellationToken
+        );
     }
 
     public async Task<RoomEntity> AddAsync(RoomEntity room, CancellationToken cancellationToken = default)

@@ -9,5 +9,7 @@ public record GetLogsParameters(
 {
     public const int DefaultPageNumber = 1;
     public const int DefaultPageSize = 25;
-    [OptionalGeneration] public string? SearchTerm { get; } = SearchTerm;
+
+    [OptionalGeneration]
+    public string? SearchTerm { get; } = SearchTerm;
 }

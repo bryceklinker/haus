@@ -32,10 +32,7 @@ public class DevicesApiTests
         {
             var result = await _hausClient.GetDevicesAsync("hello");
             var device = result.Items[0];
-            await _hausClient.UpdateDeviceAsync(device.Id, new DeviceModel
-            {
-                Name = "some-name"
-            });
+            await _hausClient.UpdateDeviceAsync(device.Id, new DeviceModel { Name = "some-name" });
 
             var updated = await _hausClient.GetDeviceAsync(device.Id);
             updated.Name.Should().Be("some-name");
@@ -54,7 +51,10 @@ public class DevicesApiTests
         var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
         await _hausClient.ChangeDeviceLightingAsync(device.Id, new LightingModel());
 
-        Eventually.Assert(() => { hausCommand.Type.Should().Be(DeviceLightingChangedEvent.Type); });
+        Eventually.Assert(() =>
+        {
+            hausCommand.Type.Should().Be(DeviceLightingChangedEvent.Type);
+        });
     }
 
     [Fact]
@@ -69,7 +69,10 @@ public class DevicesApiTests
         var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
         await _hausClient.TurnLightOffAsync(device.Id);
 
-        Eventually.Assert(() => { published.Payload.Lighting.State.Should().Be(LightingState.Off); });
+        Eventually.Assert(() =>
+        {
+            published.Payload.Lighting.State.Should().Be(LightingState.Off);
+        });
     }
 
     [Fact]
@@ -84,7 +87,10 @@ public class DevicesApiTests
         var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
         await _hausClient.TurnLightOnAsync(device.Id);
 
-        Eventually.Assert(() => { published.Payload.Lighting.State.Should().Be(LightingState.On); });
+        Eventually.Assert(() =>
+        {
+            published.Payload.Lighting.State.Should().Be(LightingState.On);
+        });
     }
 
     [Fact]

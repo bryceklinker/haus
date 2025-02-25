@@ -18,6 +18,9 @@ public class HealthRealtimeApiTests(HausWebHostApplicationFactory factory)
         HausHealthReportModel health = null;
         hub.On<HausHealthReportModel>("OnHealth", h => health = h);
 
-        Eventually.Assert(() => { health.Should().NotBeNull(); });
+        Eventually.Assert(() =>
+        {
+            health.Should().NotBeNull();
+        });
     }
 }

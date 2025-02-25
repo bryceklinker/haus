@@ -46,7 +46,10 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         await _client.StartDiscoveryAsync();
 
-        Eventually.Assert(() => { hausCommand.Type.Should().Be(StartDiscoveryModel.Type); });
+        Eventually.Assert(() =>
+        {
+            hausCommand.Type.Should().Be(StartDiscoveryModel.Type);
+        });
     }
 
     [Fact]
@@ -60,21 +63,24 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         await _client.StopDiscoveryAsync();
 
-        Eventually.Assert(() => { hausCommand.Type.Should().Be(StopDiscoveryModel.Type); });
+        Eventually.Assert(() =>
+        {
+            hausCommand.Type.Should().Be(StopDiscoveryModel.Type);
+        });
     }
 
     [Fact]
     public async Task WhenExternalDevicesAreSyncedThenSyncExternalDevicesIsPublished()
     {
         HausCommand<SyncDiscoveryModel> command = null;
-        await factory.SubscribeToHausCommandsAsync<SyncDiscoveryModel>(
-            SyncDiscoveryModel.Type,
-            cmd => command = cmd
-        );
+        await factory.SubscribeToHausCommandsAsync<SyncDiscoveryModel>(SyncDiscoveryModel.Type, cmd => command = cmd);
 
         var client = factory.CreateAuthenticatedClient();
         await client.SyncDevicesAsync();
 
-        Eventually.Assert(() => { command.Type.Should().Be(SyncDiscoveryModel.Type); });
+        Eventually.Assert(() =>
+        {
+            command.Type.Should().Be(SyncDiscoveryModel.Type);
+        });
     }
 }

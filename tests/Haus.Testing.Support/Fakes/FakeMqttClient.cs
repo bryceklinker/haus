@@ -24,7 +24,7 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
     bool IManagedMqttClient.IsConnected => IsConnected;
     bool IMqttClient.IsConnected => IsConnected;
     private MqttClientOptions Options { get; set; }
-    
+
     event Func<MqttApplicationMessageReceivedEventArgs, Task> IMqttClient.ApplicationMessageReceivedAsync
     {
         add => _events.ApplicationMessageReceivedEvent.AddHandler(value);
@@ -48,10 +48,7 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
     public event Func<InspectMqttPacketEventArgs, Task> InspectPacketAsync;
     MqttClientOptions IMqttClient.Options => Options;
 
-    ManagedMqttClientOptions IManagedMqttClient.Options => new()
-    {
-        ClientOptions = Options
-    };
+    ManagedMqttClientOptions IManagedMqttClient.Options => new() { ClientOptions = Options };
 
     public IMqttClient InternalClient => this;
 
@@ -88,6 +85,7 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
 
     public Exception PingException { get; set; }
     public Exception ConnectException { get; set; }
+
     public void Dispose()
     {
         IsDisposed = true;
@@ -97,7 +95,7 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
     {
         if (ConnectException != null)
             throw ConnectException;
-        
+
         IsStarted = true;
         IsConnected = true;
         Options = options.ClientOptions;
@@ -128,10 +126,16 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
     public async Task EnqueueAsync(MqttApplicationMessage applicationMessage)
     {
         _publishedMessages.Add(applicationMessage);
-        await _events.ApplicationMessageReceivedEvent.InvokeAsync(
-            new MqttApplicationMessageReceivedEventArgs("", applicationMessage, new MqttPublishPacket(),
-                (_, _) => Task.CompletedTask)
-        ).ConfigureAwait(false);
+        await _events
+            .ApplicationMessageReceivedEvent.InvokeAsync(
+                new MqttApplicationMessageReceivedEventArgs(
+                    "",
+                    applicationMessage,
+                    new MqttPublishPacket(),
+                    (_, _) => Task.CompletedTask
+                )
+            )
+            .ConfigureAwait(false);
     }
 
     public async Task EnqueueAsync(ManagedMqttApplicationMessage applicationMessage)
@@ -147,34 +151,45 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
         throw PingException;
     }
 
-    public async Task<MqttClientPublishResult> PublishAsync(MqttApplicationMessage applicationMessage,
-        CancellationToken cancellationToken = new CancellationToken())
+    public async Task<MqttClientPublishResult> PublishAsync(
+        MqttApplicationMessage applicationMessage,
+        CancellationToken cancellationToken = new CancellationToken()
+    )
     {
         await EnqueueAsync(applicationMessage);
         return new MqttClientPublishResult(0, MqttClientPublishReasonCode.Success, "", Array.Empty<MqttUserProperty>());
     }
 
-    public Task SendExtendedAuthenticationExchangeDataAsync(MqttExtendedAuthenticationExchangeData data,
-        CancellationToken cancellationToken)
+    public Task SendExtendedAuthenticationExchangeDataAsync(
+        MqttExtendedAuthenticationExchangeData data,
+        CancellationToken cancellationToken
+    )
     {
         throw new NotImplementedException();
     }
 
-    public Task<MqttClientSubscribeResult> SubscribeAsync(MqttClientSubscribeOptions options,
-        CancellationToken cancellationToken)
+    public Task<MqttClientSubscribeResult> SubscribeAsync(
+        MqttClientSubscribeOptions options,
+        CancellationToken cancellationToken
+    )
     {
-        return Task.FromResult(new MqttClientSubscribeResult(
-            0,
-            Array.Empty<MqttClientSubscribeResultItem>(),
-            "",
-            Array.Empty<MqttUserProperty>()
-        ));
+        return Task.FromResult(
+            new MqttClientSubscribeResult(
+                0,
+                Array.Empty<MqttClientSubscribeResultItem>(),
+                "",
+                Array.Empty<MqttUserProperty>()
+            )
+        );
     }
 
-    public Task<MqttClientUnsubscribeResult> UnsubscribeAsync(MqttClientUnsubscribeOptions options,
-        CancellationToken cancellationToken)
+    public Task<MqttClientUnsubscribeResult> UnsubscribeAsync(
+        MqttClientUnsubscribeOptions options,
+        CancellationToken cancellationToken
+    )
     {
-        return Task.FromResult(new MqttClientUnsubscribeResult(
+        return Task.FromResult(
+            new MqttClientUnsubscribeResult(
                 0,
                 Array.Empty<MqttClientUnsubscribeResultItem>(),
                 "",
@@ -192,17 +207,17 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
 
     public Task SubscribeAsync(IEnumerable<MqttTopicFilter> topicFilters)
     {
-        return SubscribeAsync(new MqttClientSubscribeOptions
-        {
-            TopicFilters = topicFilters.ToList()
-        }, CancellationToken.None);
+        return SubscribeAsync(
+            new MqttClientSubscribeOptions { TopicFilters = topicFilters.ToList() },
+            CancellationToken.None
+        );
     }
 
     public Task UnsubscribeAsync(IEnumerable<string> topics)
     {
-        return UnsubscribeAsync(new MqttClientUnsubscribeOptions
-        {
-            TopicFilters = topics.ToList()
-        }, CancellationToken.None);
+        return UnsubscribeAsync(
+            new MqttClientUnsubscribeOptions { TopicFilters = topics.ToList() },
+            CancellationToken.None
+        );
     }
 }

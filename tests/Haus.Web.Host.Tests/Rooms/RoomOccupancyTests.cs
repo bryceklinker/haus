@@ -33,9 +33,7 @@ public class RoomOccupancyTests : IAsyncLifetime
     public async Task InitializeAsync()
     {
         var (room, device) = await _factory.AddRoomWithDevice($"{Guid.NewGuid()}", DeviceType.MotionSensor);
-        await _factory.SubscribeToRoomLightingChangedCommandsAsync(
-            cmd => _roomLightingCommands.Add(cmd.Payload)
-        );
+        await _factory.SubscribeToRoomLightingChangedCommandsAsync(cmd => _roomLightingCommands.Add(cmd.Payload));
         _room = room;
         _device = device;
     }
@@ -52,7 +50,8 @@ public class RoomOccupancyTests : IAsyncLifetime
 
         Eventually.Assert(() =>
         {
-            _roomLightingCommands.Should()
+            _roomLightingCommands
+                .Should()
                 .NotContain(cmd => cmd.Room.Id == _room.Id && cmd.Lighting.State == LightingState.Off);
         });
     }

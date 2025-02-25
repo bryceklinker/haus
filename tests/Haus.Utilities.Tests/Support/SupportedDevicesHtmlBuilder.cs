@@ -5,7 +5,8 @@ namespace Haus.Utilities.Tests.Support;
 
 public class SupportedDevicesPageHtmlBuilder
 {
-    private const string Html = @"
+    private const string Html =
+        @"
         <html>
             <head></head>
             <body>

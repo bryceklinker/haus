@@ -80,13 +80,15 @@ public class RoomEntityTests
     {
         var room = new RoomEntity();
 
-        room.Lighting.Should().BeEquivalentTo(new LightingEntity(
-                LightingDefaults.State,
-                new LevelLightingEntity(),
-                new TemperatureLightingEntity(),
-                new ColorLightingEntity()
-            )
-        );
+        room.Lighting.Should()
+            .BeEquivalentTo(
+                new LightingEntity(
+                    LightingDefaults.State,
+                    new LevelLightingEntity(),
+                    new TemperatureLightingEntity(),
+                    new ColorLightingEntity()
+                )
+            );
     }
 
     [Fact]
@@ -143,8 +145,7 @@ public class RoomEntityTests
         var lighting = new LightingEntity();
         room.ChangeLighting(lighting, domainEventBus);
 
-        domainEventBus.GetEvents.Should().HaveCount(1)
-            .And.ContainItemsAssignableTo<RoomLightingChangedDomainEvent>();
+        domainEventBus.GetEvents.Should().HaveCount(1).And.ContainItemsAssignableTo<RoomLightingChangedDomainEvent>();
     }
 
     [Fact]
@@ -172,15 +173,14 @@ public class RoomEntityTests
     }
 
     [Fact]
-    public void
-        WhenRoomContainsDevicesWithDifferentMinAndMaxLevelsWhenLightingIsChangedThenDeviceLevelIsSetBasedOnPercentLevelOfRoom()
+    public void WhenRoomContainsDevicesWithDifferentMinAndMaxLevelsWhenLightingIsChangedThenDeviceLevelIsSetBasedOnPercentLevelOfRoom()
     {
         var fakeDomainEventBus = new FakeDomainEventBus();
         var room = new RoomEntity();
         var device = new DeviceEntity
         {
             DeviceType = DeviceType.Light,
-            Lighting = new LightingEntity(Level: new LevelLightingEntity(0, 0, 254))
+            Lighting = new LightingEntity(Level: new LevelLightingEntity(0, 0, 254)),
         };
         room.AddDevice(device, fakeDomainEventBus);
 

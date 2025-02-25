@@ -93,11 +93,12 @@ public class InterviewSuccessfulMapperTests
             .WithInterviewSuccessful()
             .WithPairingType()
             .WithLogTopic()
-            .WithMeta(meta => meta.WithFriendlyName("this-is-an-id")
-                .WithDescription("my description")
-                .WithModel("this is a model")
-                .WithSupported(true)
-                .WithVendor("Philips")
+            .WithMeta(meta =>
+                meta.WithFriendlyName("this-is-an-id")
+                    .WithDescription("my description")
+                    .WithModel("this is a model")
+                    .WithSupported(true)
+                    .WithVendor("Philips")
             )
             .BuildZigbee2MqttMessage();
         var result = _mapper.Map(message).Single();
@@ -106,7 +107,8 @@ public class InterviewSuccessfulMapperTests
         hausEvent.Type.Should().Be(DeviceDiscoveredEvent.Type);
         hausEvent.Payload.Id.Should().Be("this-is-an-id");
         hausEvent.Payload.DeviceType.Should().Be(DeviceType.Unknown);
-        hausEvent.Payload.Metadata.Should()
+        hausEvent
+            .Payload.Metadata.Should()
             .ContainEquivalentOf(new MetadataModel("description", "my description"))
             .And.ContainEquivalentOf(new MetadataModel("model", "this is a model"))
             .And.ContainEquivalentOf(new MetadataModel("vendor", "Philips"));
@@ -119,11 +121,12 @@ public class InterviewSuccessfulMapperTests
             .WithInterviewSuccessful()
             .WithPairingType()
             .WithLogTopic()
-            .WithMeta(meta => meta.WithFriendlyName("this-is-an-id")
-                .WithDescription("my description")
-                .WithModel("929002335001")
-                .WithSupported(true)
-                .WithVendor("Philips")
+            .WithMeta(meta =>
+                meta.WithFriendlyName("this-is-an-id")
+                    .WithDescription("my description")
+                    .WithModel("929002335001")
+                    .WithSupported(true)
+                    .WithVendor("Philips")
             )
             .BuildZigbee2MqttMessage();
 

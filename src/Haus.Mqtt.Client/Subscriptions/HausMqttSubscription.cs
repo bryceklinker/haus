@@ -14,8 +14,8 @@ public interface IHausMqttSubscription
 public class HausMqttSubscription(
     string topic,
     Func<MqttApplicationMessage, Task> handler,
-    Func<IHausMqttSubscription, Task> unsubscribe = null)
-    : IHausMqttSubscription
+    Func<IHausMqttSubscription, Task> unsubscribe = null
+) : IHausMqttSubscription
 {
     public Guid Id { get; } = Guid.NewGuid();
 
@@ -26,7 +26,8 @@ public class HausMqttSubscription(
 
     public async Task ExecuteAsync(MqttApplicationMessage message)
     {
-        if (IsSubscribedToTopic(message.Topic)) await handler.Invoke(message);
+        if (IsSubscribedToTopic(message.Topic))
+            await handler.Invoke(message);
     }
 
     public async Task UnsubscribeAsync()

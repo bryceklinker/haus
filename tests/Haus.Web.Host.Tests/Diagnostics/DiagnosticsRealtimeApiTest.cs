@@ -34,7 +34,8 @@ public class DiagnosticsRealtimeApiTest
         await mqttClient.PublishAsync("my-topic", "this is data");
         Eventually.Assert(() =>
         {
-            mqttMessages.Should()
+            mqttMessages
+                .Should()
                 .Contain(e => e.Topic == "my-topic")
                 .And.Contain(e => e.Payload.ToString() == "this is data")
                 .And.Contain(e => e.Timestamp == CurrentTime);

@@ -14,10 +14,13 @@ public record GetAllHealthChecksQuery : IQuery<ListResult<HausHealthCheckModel>>
 public class GetAllHealthChecksQueryHandler(HausDbContext context)
     : IQueryHandler<GetAllHealthChecksQuery, ListResult<HausHealthCheckModel>>
 {
-    public async Task<ListResult<HausHealthCheckModel>> Handle(GetAllHealthChecksQuery request,
-        CancellationToken cancellationToken)
+    public async Task<ListResult<HausHealthCheckModel>> Handle(
+        GetAllHealthChecksQuery request,
+        CancellationToken cancellationToken
+    )
     {
-        return await context.QueryAll<HealthCheckEntity>()
+        return await context
+            .QueryAll<HealthCheckEntity>()
             .Select(HealthCheckEntity.ToModelExpression)
             .ToListResultAsync(cancellationToken)
             .ConfigureAwait(false);

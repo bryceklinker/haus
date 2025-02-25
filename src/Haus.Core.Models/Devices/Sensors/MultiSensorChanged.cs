@@ -14,7 +14,7 @@ public record MultiSensorChanged(
     TemperatureChangedModel? TemperatureChanged = null,
     IlluminanceChangedModel? IlluminanceChanged = null,
     BatteryChangedModel? BatteryChanged = null
-    ) : IHausEventCreator<MultiSensorChanged>
+) : IHausEventCreator<MultiSensorChanged>
 {
     public const string Type = "multi_sensor_changed";
 

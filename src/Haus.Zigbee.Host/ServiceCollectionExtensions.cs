@@ -23,10 +23,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHausZigbee(this IServiceCollection services, IConfiguration config)
     {
-        services
-            .AddHealthChecks()
-            .AddHausMqttHealthChecks()
-            .AddCheck<Zigbee2MqttHealthCheck>("Zigbee2Mqtt");
+        services.AddHealthChecks().AddHausMqttHealthChecks().AddCheck<Zigbee2MqttHealthCheck>("Zigbee2Mqtt");
 
         return services
             .AddSingleton<IZigbeeMqttClientFactory, ZigbeeMqttClientFactory>()
@@ -40,7 +37,10 @@ public static class ServiceCollectionExtensions
             .AddHausMqtt()
             .AddSingleton<IHealthCheckPublisher, ZigbeeHostHealthPublisher>()
             .AddHostedService<ZigbeeToHausRelay>()
-            .Configure<HealthCheckPublisherOptions>(opts => { opts.Period = TimeSpan.FromSeconds(10); });
+            .Configure<HealthCheckPublisherOptions>(opts =>
+            {
+                opts.Period = TimeSpan.FromSeconds(10);
+            });
     }
 
     private static IServiceCollection AddHausToZigbeeMappers(this IServiceCollection services)

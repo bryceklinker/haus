@@ -29,7 +29,6 @@ public class LogsApiTests(HausWebHostApplicationFactory factory)
 
         var logs = await _client.GetLogsAsync(parameters);
 
-        logs.Items.Should()
-            .Match(entries => entries.All(e => e.Level == "Error"));
+        logs.Items.Should().Match(entries => entries.All(e => e.Level == "Error"));
     }
 }

@@ -6,7 +6,6 @@ public record DeviceTypeOptions(string? Vendor = null, string? Model = null, Dev
 {
     public bool Matches(string vendor, string model)
     {
-        return Model == model
-               && Vendor == vendor;
+        return Model == model && Vendor == vendor;
     }
 }

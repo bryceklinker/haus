@@ -91,7 +91,8 @@ internal class HausUdpClient(UdpClient client, IOptions<HausUdpSettings> options
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!disposing) return;
+        if (!disposing)
+            return;
 
         client.Dispose();
         _cancellationTokenSource.Cancel();

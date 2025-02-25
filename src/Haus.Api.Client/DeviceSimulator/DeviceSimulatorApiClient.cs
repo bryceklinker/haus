@@ -15,7 +15,8 @@ public interface IDeviceSimulatorApiClient
 }
 
 public class DeviceSimulatorApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    : ApiClient(httpClient, options), IDeviceSimulatorApiClient
+    : ApiClient(httpClient, options),
+        IDeviceSimulatorApiClient
 {
     public Task<HttpResponseMessage> TriggerOccupancyChange(string simulatorId)
     {

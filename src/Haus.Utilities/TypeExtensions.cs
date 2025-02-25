@@ -27,7 +27,7 @@ public static class TypeExtensions
         { typeof(DateTime), String },
         { typeof(DateTimeOffset), String },
         { typeof(object), Object },
-        { typeof(bool), Boolean }
+        { typeof(bool), Boolean },
     };
 
     public static bool IsStatic(this Type type)
@@ -37,9 +37,7 @@ public static class TypeExtensions
 
     public static string ToTypeScriptFileName(this Type type)
     {
-        var name = type.IsGenericType
-            ? type.Name.Split('`')[0]
-            : type.Name;
+        var name = type.IsGenericType ? type.Name.Split('`')[0] : type.Name;
 
         return name.Kebaberize();
     }
@@ -52,9 +50,9 @@ public static class TypeExtensions
     public static bool IsSkippable(this Type type)
     {
         return type.IsStatic()
-               || type.IsInterface
-               || type.IsAssignableTo(typeof(Attribute))
-               || type.GetCustomAttributes<SkipGenerationAttribute>().Any();
+            || type.IsInterface
+            || type.IsAssignableTo(typeof(Attribute))
+            || type.GetCustomAttributes<SkipGenerationAttribute>().Any();
     }
 
     public static Type GetTypeThatRequiresImport(this Type type)
@@ -120,8 +118,8 @@ public static class TypeExtensions
     public static bool IsNullable(this Type type)
     {
         return type.BaseType == typeof(ValueType)
-               && type.IsGenericType
-               && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+            && type.IsGenericType
+            && type.GetGenericTypeDefinition() == typeof(Nullable<>);
     }
 
     public static string ToTypescriptTypeName(this Type type)
@@ -130,8 +128,7 @@ public static class TypeExtensions
             return type.Name;
 
         var typeName = type.GetGenericTypeDefinition().Name.Split('`')[0];
-        var typeArguments = type.GetGenericArguments()
-            .Select(t => t.Name);
+        var typeArguments = type.GetGenericArguments().Select(t => t.Name);
         return $"{typeName}<{string.Join(", ", typeArguments)}>";
     }
 }

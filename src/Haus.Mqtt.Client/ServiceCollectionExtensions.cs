@@ -11,7 +11,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHausMqtt(this IServiceCollection services)
     {
-        return services.AddTransient<MqttFactory>()
+        return services
+            .AddTransient<MqttFactory>()
             .AddTransient<IMqttFactory, MqttFactoryWrapper>()
             .AddTransient<IMqttNetLogger, MqttLogger>()
             .AddSingleton<IHausMqttClientFactory, HausMqttClientFactory>();

@@ -15,8 +15,8 @@ public interface IZigbeeMqttClientFactory
 public class ZigbeeMqttClientFactory(
     IOptions<ZigbeeOptions> zigbeeOptions,
     IOptions<HausOptions> hausOptions,
-    IHausMqttClientFactory mqttFactory)
-    : IZigbeeMqttClientFactory
+    IHausMqttClientFactory mqttFactory
+) : IZigbeeMqttClientFactory
 {
     private string ZigbeeMqttUrl => zigbeeOptions.Value.Config.Mqtt.Server;
     private string HausMqttUrl => hausOptions.Value.Server;

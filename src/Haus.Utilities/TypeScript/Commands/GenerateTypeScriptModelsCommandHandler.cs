@@ -19,8 +19,16 @@ public class GenerateTypeScriptModelsCommandHandler(ITypeScriptModelGenerator ge
     : ICommandHandler<GenerateTypeScriptModelsCommand>
 {
     private static readonly string ModelsDirectory = Path.Combine(
-        Directory.GetCurrentDirectory(), "..", "Haus.Web.Host", "client-app", "src", "app", "shared", "models",
-        "generated");
+        Directory.GetCurrentDirectory(),
+        "..",
+        "Haus.Web.Host",
+        "client-app",
+        "src",
+        "app",
+        "shared",
+        "models",
+        "generated"
+    );
 
     public Task Handle(GenerateTypeScriptModelsCommand request, CancellationToken cancellationToken)
     {
@@ -51,7 +59,6 @@ public class GenerateTypeScriptModelsCommandHandler(ITypeScriptModelGenerator ge
 
     private static IEnumerable<Type> GetAllTypesInCoreModels()
     {
-        return Assembly.GetAssembly(typeof(HausJsonSerializer))
-            .GetExportedTypes();
+        return Assembly.GetAssembly(typeof(HausJsonSerializer)).GetExportedTypes();
     }
 }

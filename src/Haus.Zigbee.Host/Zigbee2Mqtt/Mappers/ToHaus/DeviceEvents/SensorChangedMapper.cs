@@ -20,8 +20,6 @@ public class SensorChangedMapper
             _batteryChangedMapper.Map(message)
         );
 
-        return multiSensorChanged.HasMultipleChanges
-            ? multiSensorChanged
-            : multiSensorChanged.GetSingleChange();
+        return multiSensorChanged.HasMultipleChanges ? multiSensorChanged : multiSensorChanged.GetSingleChange();
     }
 }

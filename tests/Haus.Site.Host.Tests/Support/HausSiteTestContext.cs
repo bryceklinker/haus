@@ -20,15 +20,17 @@ public class HausSiteTestContext : IAsyncLifetime
     {
         Context = new TestContext();
         Context.JSInterop.Mode = JSRuntimeMode.Loose;
-        
+
         Context.Services.AddMudServices(opts =>
         {
             opts.SnackbarConfiguration.ShowTransitionDuration = 0;
             opts.SnackbarConfiguration.HideTransitionDuration = 0;
             opts.PopoverOptions.CheckForPopoverProvider = false;
         });
-        Context.Services
-            .AddHausApiClient(opts => { opts.BaseUrl = ConfigureHttpResponseOptions.DefaultBaseUrl; });
+        Context.Services.AddHausApiClient(opts =>
+        {
+            opts.BaseUrl = ConfigureHttpResponseOptions.DefaultBaseUrl;
+        });
 
         _httpClientFactory = new InMemoryHttpClientFactory();
         Context.Services.AddSingleton(_httpClientFactory);

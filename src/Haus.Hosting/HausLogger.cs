@@ -39,16 +39,19 @@ public class HausLogger : ILogsDirectoryProvider
     {
         AppName = appName;
         Log.Logger = CreateDefaultLoggerConfiguration(appName)
-            .WriteTo.File(new RenderedCompactJsonFormatter(), LogFilePath, fileSizeLimitBytes: LogFileSizeLimit,
-                retainedFileCountLimit: 20)
+            .WriteTo.File(
+                new RenderedCompactJsonFormatter(),
+                LogFilePath,
+                fileSizeLimitBytes: LogFileSizeLimit,
+                retainedFileCountLimit: 20
+            )
             .CreateLogger();
     }
 
     public static void ConfigureConsoleOnly(string appName)
     {
         AppName = appName;
-        Log.Logger = CreateDefaultLoggerConfiguration(appName)
-            .CreateLogger();
+        Log.Logger = CreateDefaultLoggerConfiguration(appName).CreateLogger();
     }
 
     private static LoggerConfiguration CreateDefaultLoggerConfiguration(string appName)
@@ -64,8 +67,10 @@ public class HausLogger : ILogsDirectoryProvider
 
     private static LogEventLevel GetLoggingLevel()
     {
-        return Enum.TryParse(Environment.GetEnvironmentVariable(LogLevelEnvironmentVariableName),
-            out LogEventLevel level)
+        return Enum.TryParse(
+            Environment.GetEnvironmentVariable(LogLevelEnvironmentVariableName),
+            out LogEventLevel level
+        )
             ? level
             : DefaultLogLevel;
     }

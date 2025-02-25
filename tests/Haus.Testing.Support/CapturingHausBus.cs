@@ -17,8 +17,8 @@ public class CapturingHausBus(
     ICommandBus commandBus,
     IQueryBus queryBus,
     IEventBus eventBus,
-    IDomainEventBus domainEventBus)
-    : IHausBus
+    IDomainEventBus domainEventBus
+) : IHausBus
 {
     private readonly List<object> _messages = new();
 
@@ -71,8 +71,6 @@ public class CapturingHausBus(
 
     public IEnumerable<HausCommand<T>> GetPublishedHausCommands<T>()
     {
-        return _messages.OfType<RoutableCommand>()
-            .Select(r => r.HausCommand)
-            .OfType<HausCommand<T>>();
+        return _messages.OfType<RoutableCommand>().Select(r => r.HausCommand).OfType<HausCommand<T>>();
     }
 }

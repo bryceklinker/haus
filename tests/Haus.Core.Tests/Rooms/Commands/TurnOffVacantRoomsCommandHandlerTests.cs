@@ -75,11 +75,14 @@ public class TurnOffVacantRoomsCommandHandlerTests
     [Fact]
     public async Task WhenRoomLightingIsOffThenRoomLightingIsNotChanged()
     {
-        _context.AddRoom("off", r =>
-        {
-            r.ChangeLighting(new LightingEntity(), new FakeDomainEventBus());
-            r.ChangeOccupancy(new OccupancyChangedModel("idk", true), new FakeDomainEventBus());
-        });
+        _context.AddRoom(
+            "off",
+            r =>
+            {
+                r.ChangeLighting(new LightingEntity(), new FakeDomainEventBus());
+                r.ChangeOccupancy(new OccupancyChangedModel("idk", true), new FakeDomainEventBus());
+            }
+        );
 
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
@@ -98,7 +101,8 @@ public class TurnOffVacantRoomsCommandHandlerTests
 
     private RoomEntity AddOccupiedRoom(int occupancyTimeoutInSeconds = 0)
     {
-        return _context.AddRoom("one",
+        return _context.AddRoom(
+            "one",
             e =>
             {
                 e.OccupancyTimeoutInSeconds = occupancyTimeoutInSeconds;

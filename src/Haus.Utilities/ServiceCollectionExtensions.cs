@@ -11,7 +11,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHausUtilities(this IServiceCollection services)
     {
-        return services.AddMediatR(cfg =>
+        return services
+            .AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
             })

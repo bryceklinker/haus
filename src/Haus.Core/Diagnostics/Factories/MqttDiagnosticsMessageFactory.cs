@@ -20,7 +20,7 @@ public class MqttDiagnosticsMessageFactory(IClock clock) : IMqttDiagnosticsMessa
             Id = $"{Guid.NewGuid()}",
             Timestamp = clock.LocalNow,
             Topic = topic,
-            Payload = GetPayloadFromBytes(payload)
+            Payload = GetPayloadFromBytes(payload),
         };
     }
 
@@ -29,8 +29,6 @@ public class MqttDiagnosticsMessageFactory(IClock clock) : IMqttDiagnosticsMessa
         if (bytes == null)
             return null;
 
-        return HausJsonSerializer.TryDeserialize(bytes, out object payload)
-            ? payload
-            : Encoding.UTF8.GetString(bytes);
+        return HausJsonSerializer.TryDeserialize(bytes, out object payload) ? payload : Encoding.UTF8.GetString(bytes);
     }
 }

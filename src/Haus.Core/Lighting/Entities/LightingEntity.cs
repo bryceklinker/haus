@@ -9,7 +9,8 @@ public record LightingEntity(
     LightingState State = LightingDefaults.State,
     LevelLightingEntity? Level = null,
     TemperatureLightingEntity? Temperature = null,
-    ColorLightingEntity? Color = null)
+    ColorLightingEntity? Color = null
+)
 {
     public LightingState State { get; set; } = State;
     public LevelLightingEntity? Level { get; set; } = Level;
@@ -17,19 +18,16 @@ public record LightingEntity(
     public ColorLightingEntity? Color { get; set; } = Color;
 
     public LightingEntity()
-        : this(LightingDefaults.State)
-    {
-    }
+        : this(LightingDefaults.State) { }
 
-    public static readonly Expression<Func<LightingEntity, LightingModel>> ToModelExpression =
-        l => new LightingModel(
-            l.State,
-            l.Level == null ? null : new LevelLightingModel(l.Level.Value, l.Level.Min, l.Level.Max),
-            l.Temperature == null
-                ? null
-                : new TemperatureLightingModel(l.Temperature.Value, l.Temperature.Min, l.Temperature.Max),
-            l.Color == null ? null : new ColorLightingModel(l.Color.Red, l.Color.Green, l.Color.Blue)
-        );
+    public static readonly Expression<Func<LightingEntity, LightingModel>> ToModelExpression = l => new LightingModel(
+        l.State,
+        l.Level == null ? null : new LevelLightingModel(l.Level.Value, l.Level.Min, l.Level.Max),
+        l.Temperature == null
+            ? null
+            : new TemperatureLightingModel(l.Temperature.Value, l.Temperature.Min, l.Temperature.Max),
+        l.Color == null ? null : new ColorLightingModel(l.Color.Red, l.Color.Green, l.Color.Blue)
+    );
 
     private static readonly Lazy<Func<LightingEntity, LightingModel>> ToModelFunc = new(ToModelExpression.Compile);
 
@@ -46,9 +44,10 @@ public record LightingEntity(
     public LightingEntity? ConvertToConstraints(LightingConstraintsModel model)
     {
         var level = new LevelLightingEntity(0, model.MinLevel, model.MaxLevel);
-        var temperature = model.HasTemperature && Temperature != null
-            ? new TemperatureLightingEntity(0, model.MinTemperature.Value, model.MaxTemperature.Value)
-            : null;
+        var temperature =
+            model.HasTemperature && Temperature != null
+                ? new TemperatureLightingEntity(0, model.MinTemperature.Value, model.MaxTemperature.Value)
+                : null;
         var lighting = this with { Level = level, Temperature = temperature };
         return lighting.CalculateTarget(this);
     }
@@ -59,7 +58,8 @@ public record LightingEntity(
             model.State,
             LevelLightingEntity.FromModel(model.Level),
             TemperatureLightingEntity.FromModel(model.Temperature),
-            ColorLightingEntity.FromModel(model.Color));
+            ColorLightingEntity.FromModel(model.Color)
+        );
     }
 
     public static LightingEntity? FromEntity(LightingEntity? entity)

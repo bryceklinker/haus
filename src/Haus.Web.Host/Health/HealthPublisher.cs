@@ -13,8 +13,8 @@ namespace Haus.Web.Host.Health;
 public class HealthPublisher(
     ILogger<HealthPublisher> logger,
     ILastKnownHealthCache lastKnownHealthCache,
-    IServiceScopeFactory scopeFactory)
-    : IHealthCheckPublisher
+    IServiceScopeFactory scopeFactory
+) : IHealthCheckPublisher
 {
     private readonly ILogger _logger = logger;
 
@@ -22,12 +22,14 @@ public class HealthPublisher(
     {
         using var scope = scopeFactory.CreateScope();
         var storedChecks = await GetStoredHealthChecks(scope).ConfigureAwait(false);
-        var health = HausHealthReportModel.FromHealthReport(report)
-            .AppendChecks(storedChecks);
+        var health = HausHealthReportModel.FromHealthReport(report).AppendChecks(storedChecks);
 
-        if (health.IsError) _logger.LogCritical("System is reporting to be down");
-        else if (health.IsOk) _logger.LogInformation("System is reporting to be healthy");
-        else if (health.IsWarn) _logger.LogWarning("System is report to be have warnings");
+        if (health.IsError)
+            _logger.LogCritical("System is reporting to be down");
+        else if (health.IsOk)
+            _logger.LogInformation("System is reporting to be healthy");
+        else if (health.IsWarn)
+            _logger.LogWarning("System is report to be have warnings");
 
         lastKnownHealthCache.UpdateLatestReport(health);
         await PublishHealthReport(scope, health);

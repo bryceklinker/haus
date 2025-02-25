@@ -32,7 +32,7 @@ public class ApplicationController(IHausBus hausBus) : HausBusController(hausBus
         return httpStatusCode switch
         {
             HttpStatusCode.OK => File(result.Stream, MediaTypeNames.Application.Octet),
-            _ => StatusCode((int)httpStatusCode)
+            _ => StatusCode((int)httpStatusCode),
         };
     }
 }

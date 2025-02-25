@@ -24,8 +24,9 @@ internal class StopDiscoveryCommandHandler(IHausBus hausBus, HausDbContext conte
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await Task.WhenAll(
-            hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken),
-            hausBus.PublishAsync(RoutableEvent.FromEvent(new DiscoveryStoppedEvent()), cancellationToken)
-        ).ConfigureAwait(false);
+                hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken),
+                hausBus.PublishAsync(RoutableEvent.FromEvent(new DiscoveryStoppedEvent()), cancellationToken)
+            )
+            .ConfigureAwait(false);
     }
 }

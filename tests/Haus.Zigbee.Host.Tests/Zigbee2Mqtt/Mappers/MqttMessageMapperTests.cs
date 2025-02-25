@@ -23,10 +23,7 @@ public class MqttMessageTranslatorTests
 
     public MqttMessageTranslatorTests()
     {
-        var config = ConfigurationFactory.CreateConfig(
-            Zigbee2MqttBaseTopic,
-            HausEventsTopic,
-            HausCommandsTopic);
+        var config = ConfigurationFactory.CreateConfig(Zigbee2MqttBaseTopic, HausEventsTopic, HausCommandsTopic);
         var provider = ServiceProviderFactory.Create(config);
 
         var toHausModelMapper = provider.GetRequiredService<IZigbeeToHausMapper>();

@@ -32,7 +32,8 @@ public class CommandFactory(ILogger<CommandFactory> logger) : ICommandFactory
 
     private static KnownCommand[] DiscoverKnownCommands()
     {
-        return typeof(CommandFactory).Assembly.GetExportedTypes()
+        return typeof(CommandFactory)
+            .Assembly.GetExportedTypes()
             .Where(t => t.GetCustomAttribute<CommandAttribute>() != null)
             .Select(t => new KnownCommand(t))
             .ToArray();
