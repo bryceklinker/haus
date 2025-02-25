@@ -104,6 +104,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{39FA0F
 		configuration.yaml = configuration.yaml
 		mosquitto.conf = mosquitto.conf
 		.nvmrc = .nvmrc
+		.csharpierrc.json = .csharpierrc.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{A9A14DE2-1149-489F-8EB5-0036A1A1FDAB}"
@@ -120,6 +121,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "local-mosquitto", "local-mosquitto", "{5E477A0C-C9F9-430E-B50B-B186B61644C5}"
 	ProjectSection(SolutionItems) = preProject
 		local-mosquitto\mosquitto.conf = local-mosquitto\mosquitto.conf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".husky", ".husky", "{E724738F-E78C-4011-A77F-291F2AAF1DCB}"
+	ProjectSection(SolutionItems) = preProject
+		.husky\task-runner.json = .husky\task-runner.json
+		.husky\pre-commit = .husky\pre-commit
 	EndProjectSection
 EndProject
 Global
