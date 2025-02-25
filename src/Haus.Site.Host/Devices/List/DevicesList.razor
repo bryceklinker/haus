@@ -1,0 +1,53 @@
+@page "/devices/{deviceId:long?}"
+@using Haus.Api.Client.Devices
+@using Haus.Core.Models.Common
+@using Haus.Core.Models.Devices
+@using Haus.Site.Host.Devices.Detail
+
+@inject NavigationManager Navigation
+@inject IDeviceApiClient DevicesClient
+
+<LoadingContent IsLoading="IsLoading">
+    <MudList T="DeviceModel">
+        @foreach (var device in Devices.Items)
+        {
+            <MudListItem T="DeviceModel"
+                         Text="@device.Name"
+                         SecondaryText="@device.DeviceType.Humanize(LetterCasing.Title)"
+                         OnClick="() => HandleDeviceSelected(device)"/>
+        }
+    </MudList>
+
+    @if (SelectedDevice != null)
+    {
+        <DeviceDetail Device="SelectedDevice"/>
+    }
+</LoadingContent>
+
+
+@code {
+    private bool IsLoading { get; set; }
+    [Parameter] public long? DeviceId { get; set; }
+
+    private ListResult<DeviceModel> Devices { get; set; } = new();
+    private DeviceModel? SelectedDevice { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        Devices = await DevicesClient.GetDevicesAsync();
+        IsLoading = false;
+    }
+
+    protected override void OnParametersSet()
+    {
+        SelectedDevice = DeviceId == null
+            ? null
+            : Devices.Items.FirstOrDefault(i => i.Id == DeviceId);
+    }
+
+    protected void HandleDeviceSelected(DeviceModel device)
+    {
+        Navigation.NavigateTo($"/devices/{device.Id}");
+    }
+}

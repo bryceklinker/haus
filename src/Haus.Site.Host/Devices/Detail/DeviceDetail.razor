@@ -1,0 +1,26 @@
+@using Haus.Core.Models.Devices
+@using Haus.Site.Host.Shared.Metadata
+
+<MudPaper Class="device-detail">
+    <MudTextField T="string"
+                  InputId="name"
+                  Value="Device.Name" />
+    <MudTextField T="DeviceType?"
+                  InputId="deviceType"
+                  Value="Device.DeviceType" />
+    <MudTextField T="string"
+                  InputId="externalId"
+                  Value="Device.ExternalId" />
+    <MudTextField T="LightType"
+                  InputId="lightType"
+                  Value="Device.LightType" />
+    <MudTextField T="long?"
+                  InputId="roomId"
+                  Value="Device.RoomId" />
+    
+    <EditableMetadataList Items="Device.Metadata" />
+</MudPaper>
+
+@code {
+    [Parameter] public required DeviceModel Device { get; set; }
+}

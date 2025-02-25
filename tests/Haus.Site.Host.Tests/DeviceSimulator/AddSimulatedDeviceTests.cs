@@ -18,7 +18,7 @@ namespace Haus.Site.Host.Tests.DeviceSimulator;
 
 public class AddSimulatedDeviceTests : HausSiteTestContext
 {
-    private const string DeviceTypesUrl = "/api/deviceTypes";
+    private const string DeviceTypesUrl = "/api/device-types";
     private const string DeviceSimulatorDevicesUrl = "/api/device-simulator/devices";
     private readonly ConcurrentBag<SimulatedDeviceModel> _savedDevices = [];
 

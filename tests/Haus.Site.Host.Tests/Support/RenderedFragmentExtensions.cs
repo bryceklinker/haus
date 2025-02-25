@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using AngleSharp.Diffing.Extensions;
 using AngleSharp.Dom;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Support;
 
@@ -44,6 +45,14 @@ public static class RenderedFragmentExtensions
     )
     {
         return fragment.FindAll(CreateRoleSelector(role)).FindByOptions(configureOptions).First();
+    }
+
+    public static IRenderedComponent<MudTextField<T>> FindMudTextFieldById<T>(
+        this IRenderedFragment fragment,
+        string id
+    )
+    {
+        return fragment.FindByComponent<MudTextField<T>>(opts => opts.WithId(id));
     }
 
     public static IRenderedComponent<T> FindByComponent<T>(

@@ -1,6 +1,6 @@
-using System;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Lighting;
+using Humanizer;
 
 namespace Haus.Core.Models.Devices;
 
@@ -15,5 +15,7 @@ public record DeviceModel(
     LightingModel? Lighting = null
 ) : IdentityModel
 {
-    public MetadataModel[] Metadata { get; } = Metadata ?? [];
+    public MetadataModel[] Metadata { get; init; } = Metadata ?? [];
+
+    public string DisplayText => $"({DeviceType.Humanize(LetterCasing.Title)}) {Name}";
 }
