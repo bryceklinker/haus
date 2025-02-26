@@ -82,7 +82,7 @@ public class HealthCheckEntityTests
         var entity = new HealthCheckEntity
         {
             Status = HealthStatus.Healthy,
-            LastUpdatedTimestamp = DateTimeOffset.UtcNow.AddHours(-1),
+            LastUpdatedTimestamp = DateTimeOffset.UtcNow.AddHours(-1.1),
         };
 
         var model = entity.ToModel();

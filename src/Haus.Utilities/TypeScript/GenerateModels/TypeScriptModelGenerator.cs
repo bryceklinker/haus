@@ -59,7 +59,7 @@ public class TypeScriptModelGenerator : ITypeScriptModelGenerator
         var baseType = type.BaseType;
         ArgumentNullException.ThrowIfNull(baseType);
 
-        if (baseType.RequiresTypescriptImport())
+        if (!baseType.RequiresTypescriptImport())
             return $"export interface {type.ToTypescriptTypeName()} {{";
 
         var baseModel = context.GetModelForType(baseType);
