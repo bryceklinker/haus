@@ -30,7 +30,7 @@ public static class HausJsonSerializer
 
     public static T? Deserialize<T>(ArraySegment<byte> bytes)
     {
-        return JsonSerializer.Deserialize<T>(bytes, DefaultOptions);
+        return bytes.IsEmpty() ? default : JsonSerializer.Deserialize<T>(bytes, DefaultOptions);
     }
 
     public static T? Deserialize<T>(string json, JsonSerializerOptions? options = null)

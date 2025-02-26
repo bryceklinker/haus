@@ -18,8 +18,9 @@ public class RoomModelValidator : AbstractValidator<RoomModel>
         RuleFor(r => r.OccupancyTimeoutInSeconds).GreaterThanOrEqualTo(0);
     }
 
-    private Task<bool> BeUniqueAsync(RoomModel model, string name, CancellationToken token)
+    private async Task<bool> BeUniqueAsync(RoomModel model, string name, CancellationToken token)
     {
-        return _context.IsUniqueAsync<RoomEntity, string>(model.Id, name, e => e.Name, token);
+        var isUnique = await _context.IsUniqueAsync<RoomEntity, string>(model.Id, name, e => e.Name, token);
+        return isUnique;
     }
 }

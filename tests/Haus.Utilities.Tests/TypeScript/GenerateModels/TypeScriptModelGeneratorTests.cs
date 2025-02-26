@@ -89,10 +89,10 @@ public class TypeScriptModelGeneratorTests
         var model = _context.GetModelForType(typeof(GenericType<,,>));
         model
             ?.Contents.Should()
-            .Contain("export interface GenericType<T, R, U>")
+            .Contain("export interface GenericType<T, TR, TU>")
             .And.Contain("first: T")
-            .And.Contain("second: R")
-            .And.Contain("third: U");
+            .And.Contain("second: TR")
+            .And.Contain("third: TU");
     }
 
     [Fact]

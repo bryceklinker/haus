@@ -108,11 +108,12 @@ public class HausDbContext(DbContextOptions<HausDbContext> options) : DbContext(
         CancellationToken token = default
     )
         where TEntity : class, IEntity
+        where TProperty : notnull
     {
-        return await GetAll<TEntity>()
+        return !await GetAll<TEntity>()
             .Where(e => e.Id != id)
             .Select(propertySelector)
-            .AnyAsync(v => v != null && v.Equals(value), token)
+            .AnyAsync(v => v.Equals(value), token)
             .ConfigureAwait(false);
     }
 }

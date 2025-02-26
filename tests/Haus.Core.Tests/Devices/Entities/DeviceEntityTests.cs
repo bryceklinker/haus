@@ -31,8 +31,8 @@ public class DeviceEntityTest
         entity.DeviceType.Should().Be(DeviceType.MotionSensor);
         entity
             .Metadata.Should()
-            .ContainEquivalentOf(new DeviceMetadataEntity("Vendor", "Vendy"))
-            .And.ContainEquivalentOf(new DeviceMetadataEntity("Model", "some model"));
+            .ContainEquivalentOf(new DeviceMetadataEntity("Vendor", "Vendy") { Device = entity })
+            .And.ContainEquivalentOf(new DeviceMetadataEntity("Model", "some model") { Device = entity });
     }
 
     [Fact]
@@ -139,7 +139,7 @@ public class DeviceEntityTest
 
         entity.UpdateFromDiscoveredDevice(model, new FakeDomainEventBus());
 
-        entity.Metadata.Should().ContainEquivalentOf(new DeviceMetadataEntity("Model", "boom"));
+        entity.Metadata.Should().ContainEquivalentOf(new DeviceMetadataEntity("Model", "boom") { Device = entity });
     }
 
     [Fact]
@@ -151,7 +151,10 @@ public class DeviceEntityTest
 
         entity.UpdateFromDiscoveredDevice(model, new FakeDomainEventBus());
 
-        entity.Metadata.Should().HaveCount(1).And.ContainEquivalentOf(new DeviceMetadataEntity("Model", "boom"));
+        entity
+            .Metadata.Should()
+            .HaveCount(1)
+            .And.ContainEquivalentOf(new DeviceMetadataEntity("Model", "boom") { Device = entity });
     }
 
     [Fact]
@@ -177,8 +180,8 @@ public class DeviceEntityTest
         entity
             .Metadata.Should()
             .HaveCount(2)
-            .And.ContainEquivalentOf(new DeviceMetadataEntity("one", "three"))
-            .And.ContainEquivalentOf(new DeviceMetadataEntity("three", "two"));
+            .And.ContainEquivalentOf(new DeviceMetadataEntity("one", "three") { Device = entity })
+            .And.ContainEquivalentOf(new DeviceMetadataEntity("three", "two") { Device = entity });
     }
 
     [Fact]

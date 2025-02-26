@@ -36,7 +36,7 @@ public class MqttDiagnosticsMessageFactoryTests
         var model = _factory.Create("something", Array.Empty<byte>());
 
         model.Topic.Should().Be("something");
-        model.Payload.Should().Be("");
+        model.Payload.Should().BeNull();
     }
 
     [Fact]
