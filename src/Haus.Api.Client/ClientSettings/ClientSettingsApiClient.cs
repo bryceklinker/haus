@@ -10,14 +10,14 @@ namespace Haus.Api.Client.ClientSettings;
 
 public interface IClientSettingsApiClient
 {
-    Task<ClientSettingsModel> GetClientSettingsAsync();
+    Task<ClientSettingsModel?> GetClientSettingsAsync();
 }
 
 public class ClientSettingsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
     : ApiClient(httpClient, options),
         IClientSettingsApiClient
 {
-    public Task<ClientSettingsModel> GetClientSettingsAsync()
+    public Task<ClientSettingsModel?> GetClientSettingsAsync()
     {
         var url = UrlUtility.Join(null, BaseUrl, "client-settings");
         return HttpClient.GetFromJsonAsync<ClientSettingsModel>(url);

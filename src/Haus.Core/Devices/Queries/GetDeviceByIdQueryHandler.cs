@@ -12,9 +12,9 @@ namespace Haus.Core.Devices.Queries;
 
 public record GetDeviceByIdQuery(long Id) : GetByIdQuery<DeviceModel>(Id);
 
-internal class GetDeviceByIdQueryHandler(HausDbContext context) : IQueryHandler<GetDeviceByIdQuery, DeviceModel>
+internal class GetDeviceByIdQueryHandler(HausDbContext context) : IQueryHandler<GetDeviceByIdQuery, DeviceModel?>
 {
-    public async Task<DeviceModel> Handle(GetDeviceByIdQuery request, CancellationToken cancellationToken = default)
+    public async Task<DeviceModel?> Handle(GetDeviceByIdQuery request, CancellationToken cancellationToken = default)
     {
         return await context
             .QueryAll<DeviceEntity>()

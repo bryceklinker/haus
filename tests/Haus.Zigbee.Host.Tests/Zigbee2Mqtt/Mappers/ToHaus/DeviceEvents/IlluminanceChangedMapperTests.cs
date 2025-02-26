@@ -20,9 +20,9 @@ public class IlluminanceChangedMapperTests
 
         var model = _mapper.Map(message);
 
-        model.Illuminance.Should().Be(65);
-        model.Lux.Should().Be(12);
-        model.DeviceId.Should().Be("1231");
+        model?.Illuminance.Should().Be(65);
+        model?.Lux.Should().Be(12);
+        model?.DeviceId.Should().Be("1231");
     }
 
     [Fact]

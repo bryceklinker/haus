@@ -22,6 +22,10 @@ public class HausLightingToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZi
     public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
     {
         var command = HausJsonSerializer.Deserialize<HausCommand<DeviceLightingChangedEvent>>(message.PayloadSegment);
+        ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(command.Payload);
+        ArgumentNullException.ThrowIfNull(command.Payload.Lighting);
+
         var device = command.Payload.Device;
         yield return new MqttApplicationMessage
         {
@@ -39,8 +43,8 @@ public class HausLightingToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZi
             new
             {
                 state = lighting.State.ToString().ToUpperInvariant(),
-                brightness = lighting.Level == null ? default(double?) : lighting.Level.Value,
-                color_temp = lighting.Temperature == null ? default(double?) : lighting.Temperature.Value,
+                brightness = lighting.Level.Value,
+                color_temp = lighting.Temperature?.Value,
                 color = lighting.Color == null
                     ? null
                     : new

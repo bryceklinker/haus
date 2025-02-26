@@ -31,8 +31,8 @@ public class UpdateRoomCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(command);
 
         var updated = await _context.FindByIdAsync<RoomEntity>(original.Id);
-        updated.Name.Should().Be("bob");
-        updated.OccupancyTimeoutInSeconds.Should().Be(80);
+        updated?.Name.Should().Be("bob");
+        updated?.OccupancyTimeoutInSeconds.Should().Be(80);
     }
 
     [Fact]

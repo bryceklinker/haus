@@ -19,7 +19,7 @@ public class DeviceTypeOptionsParser : IDeviceTypeOptionsParser
     {
         var jsonArray = ExtractSupportedDevicesJson(markdown);
         var supportedDevices = HausJsonSerializer.Deserialize<SupportedDevice[]>(jsonArray);
-        return supportedDevices.Select(d => d.ToDeviceTypeOption()).ToArray();
+        return supportedDevices?.Select(d => d.ToDeviceTypeOption()).ToArray() ?? [];
     }
 
     private static string ExtractSupportedDevicesJson(string markdown)

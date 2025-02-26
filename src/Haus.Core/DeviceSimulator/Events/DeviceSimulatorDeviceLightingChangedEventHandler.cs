@@ -12,6 +12,11 @@ internal class DeviceSimulatorDeviceLightingChangedEventHandler(IDeviceSimulator
 {
     public Task Handle(RoutableEvent<DeviceLightingChangedEvent> notification, CancellationToken cancellationToken)
     {
+        if (notification.Payload == null)
+        {
+            return Task.CompletedTask;
+        }
+
         var deviceId = notification.Payload.Device.ExternalId;
         var lighting = notification.Payload.Lighting;
         store.PublishNext(s => s.ChangeDeviceLighting(deviceId, lighting));

@@ -44,7 +44,7 @@ public class LightingEntityTests
         var result = current.CalculateTarget(desired);
 
         const double expected = desiredLevel * currentMaxLevelConstraint / desiredMaxLevelConstraint;
-        result.Level.Should().BeEquivalentTo(new LevelLightingEntity(expected, 0, currentMaxLevelConstraint));
+        result?.Level.Should().BeEquivalentTo(new LevelLightingEntity(expected, 0, currentMaxLevelConstraint));
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class LightingEntityTests
 
         const double expected = desiredTemperature * currentMaxTemperatureConstraint / desiredMaxTemperatureConstraint;
         result
-            .Temperature.Should()
+            ?.Temperature.Should()
             .BeEquivalentTo(new TemperatureLightingEntity(expected, 0, currentMaxTemperatureConstraint));
     }
 
@@ -77,7 +77,7 @@ public class LightingEntityTests
 
         var result = current.CalculateTarget(desired);
 
-        result.Level.Should().BeEquivalentTo(new LevelLightingEntity(87, 87));
+        result?.Level.Should().BeEquivalentTo(new LevelLightingEntity(87, 87));
     }
 
     [Fact]
@@ -88,7 +88,7 @@ public class LightingEntityTests
 
         var result = current.CalculateTarget(desired);
 
-        result.Level.Should().BeEquivalentTo(new LevelLightingEntity(100, 100, 1000));
+        result?.Level.Should().BeEquivalentTo(new LevelLightingEntity(100, 100, 1000));
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class LightingEntityTests
 
         var result = current.CalculateTarget(target);
 
-        result.Temperature.Should().BeNull();
+        result?.Temperature.Should().BeNull();
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class LightingEntityTests
 
         var result = current.CalculateTarget(target);
 
-        result.Color.Should().BeNull();
+        result?.Color.Should().BeNull();
     }
 
     [Fact]
@@ -135,9 +135,9 @@ public class LightingEntityTests
 
         var converted = current.ConvertToConstraints(model);
 
-        converted.Level.Value.Should().Be(125.5);
-        converted.Level.Min.Should().Be(1);
-        converted.Level.Max.Should().Be(251);
+        converted?.Level?.Value.Should().Be(125.5);
+        converted?.Level?.Min.Should().Be(1);
+        converted?.Level?.Max.Should().Be(251);
     }
 
     [Fact]
@@ -148,9 +148,9 @@ public class LightingEntityTests
 
         var converted = current.ConvertToConstraints(model);
 
-        converted.Temperature.Value.Should().Be(190.5);
-        converted.Temperature.Min.Should().Be(1);
-        converted.Temperature.Max.Should().Be(254);
+        converted?.Temperature?.Value.Should().Be(190.5);
+        converted?.Temperature?.Min.Should().Be(1);
+        converted?.Temperature?.Max.Should().Be(254);
     }
 
     [Fact]
@@ -165,6 +165,6 @@ public class LightingEntityTests
 
         var converted = current.ConvertToConstraints(model);
 
-        converted.Color.Should().BeEquivalentTo(new ColorLightingEntity(123, 123, 123));
+        converted?.Color.Should().BeEquivalentTo(new ColorLightingEntity(123, 123, 123));
     }
 }

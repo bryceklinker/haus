@@ -13,7 +13,7 @@ namespace Haus.Api.Client.Rooms;
 public interface IRoomsApiClient : IApiClient
 {
     Task<ListResult<RoomModel>> GetRoomsAsync();
-    Task<RoomModel> GetRoomAsync(long id);
+    Task<RoomModel?> GetRoomAsync(long id);
     Task<ListResult<DeviceModel>> GetDevicesInRoomAsync(long roomId);
     Task<HttpResponseMessage> CreateRoomAsync(RoomModel model);
     Task<HttpResponseMessage> UpdateRoomAsync(long id, RoomModel model);
@@ -27,14 +27,15 @@ public class RoomsApiClient(HttpClient httpClient, IOptions<HausApiClientSetting
     : ApiClient(httpClient, options),
         IRoomsApiClient
 {
-    public Task<RoomModel> GetRoomAsync(long id)
+    public Task<RoomModel?> GetRoomAsync(long id)
     {
         return GetAsJsonAsync<RoomModel>($"rooms/{id}");
     }
 
-    public Task<ListResult<DeviceModel>> GetDevicesInRoomAsync(long roomId)
+    public async Task<ListResult<DeviceModel>> GetDevicesInRoomAsync(long roomId)
     {
-        return GetAsJsonAsync<ListResult<DeviceModel>>($"rooms/{roomId}/devices");
+        return await GetAsJsonAsync<ListResult<DeviceModel>>($"rooms/{roomId}/devices")
+            ?? new ListResult<DeviceModel>();
     }
 
     public Task<HttpResponseMessage> CreateRoomAsync(RoomModel model)
@@ -42,9 +43,9 @@ public class RoomsApiClient(HttpClient httpClient, IOptions<HausApiClientSetting
         return PostAsJsonAsync("rooms", model);
     }
 
-    public Task<ListResult<RoomModel>> GetRoomsAsync()
+    public async Task<ListResult<RoomModel>> GetRoomsAsync()
     {
-        return GetAsJsonAsync<ListResult<RoomModel>>("rooms");
+        return await GetAsJsonAsync<ListResult<RoomModel>>("rooms") ?? new ListResult<RoomModel>();
     }
 
     public Task<HttpResponseMessage> UpdateRoomAsync(long id, RoomModel model)

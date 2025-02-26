@@ -23,7 +23,7 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
     private bool IsConnected { get; set; }
     bool IManagedMqttClient.IsConnected => IsConnected;
     bool IMqttClient.IsConnected => IsConnected;
-    private MqttClientOptions Options { get; set; }
+    private MqttClientOptions? Options { get; set; }
 
     event Func<MqttApplicationMessageReceivedEventArgs, Task> IMqttClient.ApplicationMessageReceivedAsync
     {

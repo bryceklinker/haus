@@ -10,7 +10,7 @@ namespace Haus.Core.Rooms.Repositories;
 
 public interface IRoomCommandRepository
 {
-    Task<RoomEntity> GetRoomByDeviceExternalId(string externalId, CancellationToken cancellationToken = default);
+    Task<RoomEntity?> GetRoomByDeviceExternalId(string externalId, CancellationToken cancellationToken = default);
     Task<RoomEntity> GetByIdAsync(long roomId, CancellationToken cancellationToken = default);
     Task<RoomEntity> AddAsync(RoomEntity room, CancellationToken cancellationToken = default);
     Task SaveAsync(RoomEntity room, CancellationToken cancellationToken = default);
@@ -18,13 +18,13 @@ public interface IRoomCommandRepository
 
 public class RoomCommandRepository(HausDbContext context) : IRoomCommandRepository
 {
-    public Task<RoomEntity> GetRoomByDeviceExternalId(string externalId, CancellationToken cancellationToken = default)
+    public Task<RoomEntity?> GetRoomByDeviceExternalId(string externalId, CancellationToken cancellationToken = default)
     {
         return context
             .GetAll<DeviceEntity>()
             .Where(d => d.ExternalId == externalId)
             .Include(d => d.Room)
-            .ThenInclude(r => r.Devices)
+            .ThenInclude(r => r!.Devices)
             .Select(d => d.Room)
             .SingleOrDefaultAsync(cancellationToken);
     }

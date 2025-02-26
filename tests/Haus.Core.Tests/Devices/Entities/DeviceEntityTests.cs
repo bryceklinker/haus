@@ -126,9 +126,9 @@ public class DeviceEntityTest
         entity.UpdateFromModel(model, new FakeDomainEventBus());
 
         entity.LightType.Should().Be(LightType.Temperature);
-        entity.Lighting.State.Should().Be(LightingState.On);
-        entity.Lighting.Level.Should().BeEquivalentTo(new LevelLightingEntity(45));
-        entity.Lighting.Temperature.Should().BeEquivalentTo(new TemperatureLightingEntity(4500));
+        entity.Lighting?.State.Should().Be(LightingState.On);
+        entity.Lighting?.Level.Should().BeEquivalentTo(new LevelLightingEntity(45));
+        entity.Lighting?.Temperature.Should().BeEquivalentTo(new TemperatureLightingEntity(4500));
     }
 
     [Fact]
@@ -228,9 +228,9 @@ public class DeviceEntityTest
 
         entity.UpdateFromModel(model, new FakeDomainEventBus());
 
-        entity.Lighting.State.Should().Be(LightingState.On);
-        entity.Lighting.Level.Should().BeEquivalentTo(new LevelLightingEntity(45, 12, 95));
-        entity.Lighting.Temperature.Should().BeEquivalentTo(new TemperatureLightingEntity());
+        entity.Lighting?.State.Should().Be(LightingState.On);
+        entity.Lighting?.Level.Should().BeEquivalentTo(new LevelLightingEntity(45, 12, 95));
+        entity.Lighting?.Temperature.Should().BeEquivalentTo(new TemperatureLightingEntity());
     }
 
     [Fact]
@@ -246,9 +246,9 @@ public class DeviceEntityTest
 
         entity.UpdateFromModel(model, new FakeDomainEventBus());
 
-        entity.Lighting.State.Should().Be(LightingState.On);
-        entity.Lighting.Level.Should().BeEquivalentTo(new LevelLightingEntity(45, 12, 95));
-        entity.Lighting.Color.Should().BeEquivalentTo(new ColorLightingEntity());
+        entity.Lighting?.State.Should().Be(LightingState.On);
+        entity.Lighting?.Level.Should().BeEquivalentTo(new LevelLightingEntity(45, 12, 95));
+        entity.Lighting?.Color.Should().BeEquivalentTo(new ColorLightingEntity());
     }
 
     [Fact]
@@ -270,9 +270,9 @@ public class DeviceEntityTest
         var model = new DeviceModel(DeviceType: DeviceType.Light, LightType: LightType.Temperature);
         light.UpdateFromModel(model, new FakeDomainEventBus());
 
-        light.Lighting.State.Should().Be(LightingState.On);
-        light.Lighting.Level.Should().BeEquivalentTo(room.Lighting.Level);
-        light.Lighting.Temperature.Should().BeEquivalentTo(room.Lighting.Temperature);
+        light.Lighting?.State.Should().Be(LightingState.On);
+        light.Lighting?.Level.Should().BeEquivalentTo(room.Lighting?.Level);
+        light.Lighting?.Temperature.Should().BeEquivalentTo(room.Lighting?.Temperature);
     }
 
     [Fact]
@@ -331,10 +331,10 @@ public class DeviceEntityTest
         var events = domainEventBus.GetEvents.OfType<DeviceLightingChangedDomainEvent>().ToList();
         events.Should().HaveCount(1);
         events[0].Device.Should().Be(light);
-        events[0].Lighting.State.Should().Be(LightingState.On);
-        events[0].Lighting.Level.Should().BeEquivalentTo(new LevelLightingEntity(50));
-        events[0].Lighting.Color.Should().BeNull();
-        events[0].Lighting.Temperature.Should().BeNull();
+        events[0].Lighting?.State.Should().Be(LightingState.On);
+        events[0].Lighting?.Level.Should().BeEquivalentTo(new LevelLightingEntity(50));
+        events[0].Lighting?.Color.Should().BeNull();
+        events[0].Lighting?.Temperature.Should().BeNull();
     }
 
     [Fact]
@@ -346,7 +346,7 @@ public class DeviceEntityTest
 
         light.TurnOff(new FakeDomainEventBus());
 
-        light.Lighting.State.Should().Be(LightingState.Off);
+        light.Lighting?.State.Should().Be(LightingState.Off);
     }
 
     [Fact]
@@ -357,7 +357,7 @@ public class DeviceEntityTest
 
         light.TurnOn(new FakeDomainEventBus());
 
-        light.Lighting.State.Should().Be(LightingState.On);
+        light.Lighting?.State.Should().Be(LightingState.On);
     }
 
     [Fact]

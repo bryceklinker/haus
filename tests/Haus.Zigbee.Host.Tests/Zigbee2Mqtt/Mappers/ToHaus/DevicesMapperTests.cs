@@ -74,10 +74,10 @@ public class GetDevicesMapperTests
         var result = _mapper.Map(message).Single();
 
         var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
-        @event.Type.Should().Be(DeviceDiscoveredEvent.Type);
-        @event.Payload.Id.Should().Be("hello");
+        @event?.Type.Should().Be(DeviceDiscoveredEvent.Type);
+        @event?.Payload?.Id.Should().Be("hello");
         @event
-            .Payload.Metadata.Should()
+            ?.Payload?.Metadata.Should()
             .ContainEquivalentOf(new MetadataModel("model", "65"))
             .And.ContainEquivalentOf(new MetadataModel("vendor", "76"))
             .And.ContainEquivalentOf(new MetadataModel("description", "my desc"))
@@ -99,7 +99,7 @@ public class GetDevicesMapperTests
         var result = _mapper.Map(message).Single();
 
         var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
-        @event.Payload.DeviceType.Should().Be(DeviceType.Light);
+        @event?.Payload?.DeviceType.Should().Be(DeviceType.Light);
     }
 
     [Fact]

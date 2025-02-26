@@ -16,6 +16,7 @@ public class HausToZigbeeMapper(IEnumerable<IToZigbeeMapper> mappers) : IHausToZ
     public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
     {
         var command = HausJsonSerializer.Deserialize<HausCommand>(message.PayloadSegment);
-        return mappers.Where(m => m.IsSupported(command.Type)).SelectMany(m => m.Map(message));
+
+        return mappers.Where(m => command?.Type != null && m.IsSupported(command.Type)).SelectMany(m => m.Map(message));
     }
 }

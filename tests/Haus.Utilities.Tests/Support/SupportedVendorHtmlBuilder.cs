@@ -25,7 +25,7 @@ public class SupportedVendorHtmlBuilder
         </table>
         ";
 
-    private string _name;
+    private string? _name;
     private List<string> _devices = new();
 
     public SupportedVendorHtmlBuilder WithName(string name)

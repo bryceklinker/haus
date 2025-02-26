@@ -10,7 +10,7 @@ public class SensorChangedMapper
     private readonly OccupancyChangedMapper _occupancyChangedMapper = new();
     private readonly TemperatureChangedMapper _temperatureChangedMapper = new();
 
-    public object Map(Zigbee2MqttMessage message)
+    public object? Map(Zigbee2MqttMessage message)
     {
         var multiSensorChanged = new MultiSensorChanged(
             message.GetFriendlyNameFromTopic(),

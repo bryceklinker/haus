@@ -20,7 +20,7 @@ internal class StartDiscoveryCommandHandler(IHausBus hausBus, HausDbContext cont
         var model = new StartDiscoveryModel();
 
         var discovery = await context.GetDiscoveryEntityAsync(cancellationToken).ConfigureAwait(false);
-        discovery.Start();
+        discovery?.Start();
         await context.SaveChangesAsync(cancellationToken);
 
         await Task.WhenAll(

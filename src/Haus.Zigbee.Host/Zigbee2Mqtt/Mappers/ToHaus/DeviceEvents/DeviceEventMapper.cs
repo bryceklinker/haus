@@ -42,14 +42,19 @@ public class DeviceEventMapper(
     private ArraySegment<byte> MapMessageToPayload(Zigbee2MqttMessage message)
     {
         var payload = _sensorChangedMapper.Map(message);
+        if (payload == null)
+        {
+            return [];
+        }
+
         var type = GetHausEventType(payload);
         if (type == UnknownEvent.Type)
             logger.LogWarning("Unknown payload received: {@Payload}", payload);
 
-        return HausJsonSerializer.SerializeToBytes(new HausEvent<object> { Type = type, Payload = payload });
+        return HausJsonSerializer.SerializeToBytes(new HausEvent<object>(type, payload));
     }
 
-    private string GetHausEventType(object payload)
+    private string GetHausEventType(object? payload)
     {
         return payload switch
         {

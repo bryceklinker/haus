@@ -6,7 +6,6 @@ using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Discovery;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Core.Discovery.Commands;
 
@@ -20,7 +19,7 @@ internal class StopDiscoveryCommandHandler(IHausBus hausBus, HausDbContext conte
         var model = new StopDiscoveryModel();
 
         var discovery = await context.GetDiscoveryEntityAsync(cancellationToken).ConfigureAwait(false);
-        discovery.Stop();
+        discovery?.Stop();
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await Task.WhenAll(

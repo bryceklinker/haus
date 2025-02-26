@@ -12,7 +12,7 @@ namespace Haus.Web.Host.DeviceSimulator;
 public class DeviceSimulatorStatePublisher(IDeviceSimulatorStore simulatorStore, IServiceScopeFactory scopeFactory)
     : BackgroundService
 {
-    private IDisposable _subscription;
+    private IDisposable? _subscription;
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {

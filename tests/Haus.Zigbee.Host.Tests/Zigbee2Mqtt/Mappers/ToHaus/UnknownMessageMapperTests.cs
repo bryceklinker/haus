@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using FluentAssertions;
 using Haus.Core.Models;
@@ -47,7 +48,7 @@ public class UnknownMessageMapperTests
         var result = _mapper.Map(message).Single();
 
         var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.PayloadSegment);
-        payload.Topic.Should().Be("zigbeetopic");
+        payload?.Topic.Should().Be("zigbeetopic");
     }
 
     [Fact]
@@ -58,6 +59,7 @@ public class UnknownMessageMapperTests
         var result = _mapper.Map(message).Single();
 
         var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.PayloadSegment);
+        ArgumentNullException.ThrowIfNull(payload);
         JObject.Parse(payload.Payload).Value<string>("Id").Should().Be("my-id");
     }
 }

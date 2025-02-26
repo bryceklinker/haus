@@ -104,7 +104,7 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
                 o =>
                 {
                     o.HttpMessageHandlerFactory = _ => Server.CreateHandler();
-                    o.AccessTokenProvider = () => Task.FromResult(TestingAuthenticationHandler.TestingScheme);
+                    o.AccessTokenProvider = () => Task.FromResult<string?>(TestingAuthenticationHandler.TestingScheme);
                 }
             )
             .Build();
@@ -133,6 +133,9 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
         var apiClient = CreateAuthenticatedClient();
         var createResponse = await apiClient.CreateRoomAsync(new RoomModel(Name: roomName));
         var room = await createResponse.Content.ReadFromJsonAsync<RoomModel>();
+        if (room == null)
+            throw new InvalidOperationException("failed to create room");
+
         await apiClient.AddDevicesToRoomAsync(room.Id, devices.Select(d => d.Id).ToArray());
 
         return (room, devices);
@@ -163,7 +166,7 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
 
     public async Task<DeviceModel> WaitForDeviceToBeDiscovered(
         DeviceType deviceType = DeviceType.Unknown,
-        string externalId = null
+        string? externalId = null
     )
     {
         var actualId = string.IsNullOrWhiteSpace(externalId) ? $"{Guid.NewGuid()}" : externalId;

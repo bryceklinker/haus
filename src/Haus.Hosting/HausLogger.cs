@@ -17,7 +17,7 @@ public class HausLogger : ILogsDirectoryProvider
     private const LogEventLevel DefaultLogLevel = LogEventLevel.Information;
     private const long LogFileSizeLimit = 1024 * 1024 * 8;
     private static readonly string LogsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "haus-logs");
-    private static string AppName { get; set; }
+    private static string AppName { get; set; } = "not_set";
     private static string LogFilePath => Path.Combine(LogsDirectory, $"{AppName}.log");
 
     public string GetLogsDirectory()

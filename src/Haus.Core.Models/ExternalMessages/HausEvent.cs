@@ -9,4 +9,4 @@ public record HausEvent(string? Type = null)
 }
 
 [SkipGeneration]
-public record HausEvent<T>(string? Type = null, T? Payload = default) : HausEvent(Type);
+public record HausEvent<T>(string Type, T Payload) : HausEvent(Type);

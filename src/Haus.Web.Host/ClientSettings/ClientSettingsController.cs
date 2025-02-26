@@ -14,7 +14,7 @@ public class ClientSettingsController(IOptions<AuthOptions> authOptions) : Contr
     private string Domain => authOptions.Value.Domain;
     private string ClientId => authOptions.Value.ClientId;
     private string Audience => authOptions.Value.Audience;
-    private string Version => typeof(Startup).Assembly.GetName().Version?.ToSemanticVersion();
+    private string? Version => typeof(Startup).Assembly.GetName().Version?.ToSemanticVersion();
 
     [AllowAnonymous]
     public IActionResult Get()

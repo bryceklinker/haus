@@ -15,8 +15,8 @@ public class LogsController(IHausBus hausBus, ILogsDirectoryProvider logsDirecto
     public Task<IActionResult> GetLogs(
         [FromQuery] int pageSize = GetLogsParameters.DefaultPageSize,
         [FromQuery] int pageNumber = GetLogsParameters.DefaultPageNumber,
-        [FromQuery] string searchTerm = null,
-        [FromQuery] string level = null
+        [FromQuery] string? searchTerm = null,
+        [FromQuery] string? level = null
     )
     {
         var query = new GetLogsQuery(

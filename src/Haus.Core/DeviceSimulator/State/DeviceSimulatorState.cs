@@ -10,7 +10,7 @@ public interface IDeviceSimulatorState
 {
     DeviceSimulatorStateModel ToModel();
     ImmutableArray<SimulatedDeviceEntity> Devices { get; }
-    SimulatedDeviceEntity GetDeviceById(string deviceId);
+    SimulatedDeviceEntity? GetDeviceById(string deviceId);
     IDeviceSimulatorState AddSimulatedDevice(SimulatedDeviceEntity entity);
     IDeviceSimulatorState Reset();
     IDeviceSimulatorState ChangeDeviceLighting(string deviceId, LightingModel lighting);
@@ -60,7 +60,7 @@ public record DeviceSimulatorState(ImmutableArray<SimulatedDeviceEntity> Devices
         return new DeviceSimulatorStateModel(devices);
     }
 
-    public SimulatedDeviceEntity GetDeviceById(string deviceId)
+    public SimulatedDeviceEntity? GetDeviceById(string deviceId)
     {
         return Devices.FirstOrDefault(d => d.Id == deviceId);
     }

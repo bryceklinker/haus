@@ -13,7 +13,7 @@ namespace Haus.Web.Host.Devices;
 public class DevicesController(IHausBus hausBus) : HausBusController(hausBus)
 {
     [HttpGet("")]
-    public Task<IActionResult> Get([FromQuery] string externalId = null)
+    public Task<IActionResult> Get([FromQuery] string? externalId = null)
     {
         return QueryAsync(new GetDevicesQuery(externalId));
     }

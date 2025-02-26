@@ -35,7 +35,7 @@ public class ChangeDeviceLightingCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
         var updated = await _context.FindByIdAsync<DeviceEntity>(device.Id);
-        updated.Lighting.Level.Should().BeEquivalentTo(new LevelLightingEntity(54));
+        updated?.Lighting?.Level.Should().BeEquivalentTo(new LevelLightingEntity(54));
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class ChangeDeviceLightingCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
         var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
-        hausCommand.Payload.Device.Id.Should().Be(device.Id);
-        hausCommand.Payload.Lighting.Level.Should().BeEquivalentTo(new LevelLightingModel(65));
+        hausCommand.Payload?.Device.Id.Should().Be(device.Id);
+        hausCommand.Payload?.Lighting?.Level.Should().BeEquivalentTo(new LevelLightingModel(65));
     }
 }

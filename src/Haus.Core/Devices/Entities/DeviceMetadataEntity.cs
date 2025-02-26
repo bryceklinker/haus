@@ -2,7 +2,7 @@ using Haus.Core.Common.Entities;
 
 namespace Haus.Core.Devices.Entities;
 
-public record DeviceMetadataEntity(string Key = null, string Value = null) : Metadata(Key, Value)
+public record DeviceMetadataEntity(string Key = "", string Value = "") : Metadata(Key, Value)
 {
     public long Id { get; set; }
     public DeviceEntity Device { get; set; }

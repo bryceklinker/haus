@@ -6,7 +6,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class TemperatureChangedMapper
 {
-    public TemperatureChangedModel Map(Zigbee2MqttMessage message)
+    public TemperatureChangedModel? Map(Zigbee2MqttMessage message)
     {
         if (message.Temperature.IsNull())
             return null;

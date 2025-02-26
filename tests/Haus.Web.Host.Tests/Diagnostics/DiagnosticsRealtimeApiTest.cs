@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Models.Diagnostics;
@@ -35,9 +36,10 @@ public class DiagnosticsRealtimeApiTest
         Eventually.Assert(() =>
         {
             mqttMessages
+                .Where(e => e.Payload != null)
                 .Should()
                 .Contain(e => e.Topic == "my-topic")
-                .And.Contain(e => e.Payload.ToString() == "this is data")
+                .And.Contain(e => e.Payload!.ToString() == "this is data")
                 .And.Contain(e => e.Timestamp == CurrentTime);
         });
     }

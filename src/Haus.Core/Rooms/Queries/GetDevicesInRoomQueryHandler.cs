@@ -21,11 +21,11 @@ public class GetDevicesInRoomQueryHandler(HausDbContext context)
     )
     {
         if (await context.IsMissingAsync<RoomEntity>(request.RoomId).ConfigureAwait(false))
-            return null;
+            return new ListResult<DeviceModel>();
 
         return await context
             .QueryAll<DeviceEntity>()
-            .Where(d => d.Room.Id == request.RoomId)
+            .Where(d => d.Room != null && d.Room.Id == request.RoomId)
             .Select(DeviceEntity.ToModelExpression)
             .ToListResultAsync(cancellationToken)
             .ConfigureAwait(false);

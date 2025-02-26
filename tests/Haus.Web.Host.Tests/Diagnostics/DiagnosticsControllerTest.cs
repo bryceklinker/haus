@@ -17,7 +17,7 @@ public class DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
     public async Task WhenMessageIsReplayedThenMessageIsSentToMqttTopic()
     {
         var mqtt = await factory.GetMqttClient();
-        MqttApplicationMessage received = null;
+        MqttApplicationMessage? received = null;
         await mqtt.SubscribeAsync("my-topic", msg => received = msg);
 
         var model = new MqttDiagnosticsMessageModel { Payload = new { id = 65 }, Topic = "my-topic" };
@@ -26,7 +26,7 @@ public class DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            received.Topic.Should().Be("my-topic");
+            received?.Topic.Should().Be("my-topic");
             JObject.Parse(received.ConvertPayloadToString()).Value<int>("id").Should().Be(65);
         });
     }

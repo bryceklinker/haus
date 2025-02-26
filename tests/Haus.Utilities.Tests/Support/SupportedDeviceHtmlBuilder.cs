@@ -9,7 +9,7 @@ public class SupportedDeviceHtmlBuilder
                             <td><img src=""some.jpg""></td>
                          </tr>";
 
-    private string _model;
+    private string? _model;
 
     public SupportedDeviceHtmlBuilder WithModel(string model)
     {

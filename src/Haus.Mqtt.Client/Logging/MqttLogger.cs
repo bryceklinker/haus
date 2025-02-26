@@ -31,7 +31,7 @@ public class MqttLogger(ILogger<MqttLogger> logger) : IMqttNetLogger
 
     public bool IsEnabled { get; } = true;
 
-    public event EventHandler<MqttNetLogMessagePublishedEventArgs> LogMessagePublished;
+    public event EventHandler<MqttNetLogMessagePublishedEventArgs>? LogMessagePublished;
 
     private static LogLevel ConvertLogLevel(MqttNetLogLevel logLevel)
     {

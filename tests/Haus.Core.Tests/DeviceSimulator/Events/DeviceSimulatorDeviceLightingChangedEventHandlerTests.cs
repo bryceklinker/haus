@@ -41,6 +41,6 @@ public class DeviceSimulatorDeviceLightingChangedEventHandlerTests
 
         _simulatorStore
             .Current.Devices.Should()
-            .Contain(d => d.Id == simulatedLight.Id && d.Lighting.State == LightingState.On);
+            .Contain(d => d.Id == simulatedLight.Id && d.Lighting != null && d.Lighting.State == LightingState.On);
     }
 }

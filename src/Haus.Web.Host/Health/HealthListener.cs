@@ -26,6 +26,11 @@ public class HealthListener(
             return;
 
         var healthReport = HausJsonSerializer.Deserialize<HausHealthReportModel>(message.PayloadSegment);
+        if (healthReport == null)
+        {
+            return;
+        }
+
         using var scope = CreateScope();
         var bus = scope.GetService<IHausBus>();
         await bus.ExecuteCommandAsync(new StoreHealthReportCommand(healthReport));

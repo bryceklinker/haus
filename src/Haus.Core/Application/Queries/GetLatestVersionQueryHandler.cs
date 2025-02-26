@@ -14,15 +14,13 @@ internal class GetLatestVersionQueryHandler(
     ILogger<GetLatestVersionQueryHandler> logger
 ) : IQueryHandler<GetLatestVersionQuery, ApplicationVersionModel>
 {
-    private static readonly Version CurrentVersion = typeof(GetLatestVersionQuery).Assembly.GetName().Version;
-
     public async Task<ApplicationVersionModel> Handle(
         GetLatestVersionQuery request,
         CancellationToken cancellationToken
     )
     {
         var latestRelease = await TryGetLatestRelease();
-        var isNewer = CurrentVersion < latestRelease.Version;
+        var isNewer = GetCurrentVersion() < latestRelease.Version;
         return new ApplicationVersionModel(
             latestRelease.Version.ToSemanticVersion(),
             latestRelease.IsOfficial,
@@ -36,7 +34,8 @@ internal class GetLatestVersionQueryHandler(
     {
         try
         {
-            return await latestReleaseProvider.GetLatestVersionAsync();
+            var latest = await latestReleaseProvider.GetLatestVersionAsync();
+            return latest ?? ReleaseModel.Default;
         }
         catch (Exception e)
         {
@@ -45,7 +44,13 @@ internal class GetLatestVersionQueryHandler(
                 "Failed to get the latest version using provider {Type}",
                 latestReleaseProvider.GetType()
             );
-            return new ReleaseModel(Version.Parse("0.0.0"), false, DateTimeOffset.MinValue, "");
+            return ReleaseModel.Default;
         }
+    }
+
+    private static Version GetCurrentVersion()
+    {
+        var version = typeof(GetLatestVersionQuery).Assembly.GetName().Version;
+        return version == null ? Version.Parse("0.0.0") : version;
     }
 }

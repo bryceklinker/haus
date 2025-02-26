@@ -32,7 +32,7 @@ public class ChangeRoomLightingCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new ChangeRoomLightingCommand(room.Id, lighting));
 
         var updated = await _context.FindByIdAsync<RoomEntity>(room.Id);
-        updated.Lighting.State.Should().Be(LightingState.Off);
+        updated?.Lighting.State.Should().Be(LightingState.Off);
     }
 
     [Fact]
@@ -44,8 +44,8 @@ public class ChangeRoomLightingCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new ChangeRoomLightingCommand(room.Id, lighting));
 
         var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        hausCommand.Payload.Room.Id.Should().Be(room.Id);
-        hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
+        hausCommand.Payload?.Room.Id.Should().Be(room.Id);
+        hausCommand.Payload?.Lighting.State.Should().Be(LightingState.On);
     }
 
     [Fact]

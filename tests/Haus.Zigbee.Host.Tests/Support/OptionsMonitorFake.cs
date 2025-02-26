@@ -9,7 +9,7 @@ public class OptionsMonitorFake<T>(T value) : IOptionsMonitor<T>
     private readonly List<OptionsListenerFake<T>> _listeners = new();
     public T CurrentValue { get; private set; } = value;
 
-    public T Get(string name)
+    public T Get(string? name)
     {
         return CurrentValue;
     }
@@ -21,7 +21,7 @@ public class OptionsMonitorFake<T>(T value) : IOptionsMonitor<T>
         return handler;
     }
 
-    public void TriggerChange(T value, string name = null)
+    public void TriggerChange(T value, string name)
     {
         CurrentValue = value;
         foreach (var listener in _listeners)

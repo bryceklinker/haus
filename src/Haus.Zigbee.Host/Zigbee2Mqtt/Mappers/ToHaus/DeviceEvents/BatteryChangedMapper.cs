@@ -6,7 +6,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class BatteryChangedMapper
 {
-    public BatteryChangedModel Map(Zigbee2MqttMessage message)
+    public BatteryChangedModel? Map(Zigbee2MqttMessage message)
     {
         if (message.Battery.IsNull())
             return null;

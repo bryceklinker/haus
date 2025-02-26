@@ -35,14 +35,14 @@ public class DevicesApiTests
             await _hausClient.UpdateDeviceAsync(device.Id, new DeviceModel { Name = "some-name" });
 
             var updated = await _hausClient.GetDeviceAsync(device.Id);
-            updated.Name.Should().Be("some-name");
+            updated?.Name.Should().Be("some-name");
         });
     }
 
     [Fact]
     public async Task WhenLightingOfDeviceIsChangedThenDeviceLightingChangedEventIsPublished()
     {
-        HausCommand<DeviceLightingChangedEvent> hausCommand = null;
+        HausCommand<DeviceLightingChangedEvent>? hausCommand = null;
         await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(
             DeviceLightingChangedEvent.Type,
             msg => hausCommand = msg
@@ -53,14 +53,14 @@ public class DevicesApiTests
 
         Eventually.Assert(() =>
         {
-            hausCommand.Type.Should().Be(DeviceLightingChangedEvent.Type);
+            hausCommand?.Type.Should().Be(DeviceLightingChangedEvent.Type);
         });
     }
 
     [Fact]
     public async Task WhenDeviceIsTurnedOffThenPublishesChangeLightingWithOffState()
     {
-        HausCommand<DeviceLightingChangedEvent> published = null;
+        HausCommand<DeviceLightingChangedEvent>? published = null;
         await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(
             DeviceLightingChangedEvent.Type,
             msg => published = msg
@@ -71,14 +71,14 @@ public class DevicesApiTests
 
         Eventually.Assert(() =>
         {
-            published.Payload.Lighting.State.Should().Be(LightingState.Off);
+            published?.Payload?.Lighting?.State.Should().Be(LightingState.Off);
         });
     }
 
     [Fact]
     public async Task WhenDeviceIsTurnedOnThenPublishesChangeLightingWithOnState()
     {
-        HausCommand<DeviceLightingChangedEvent> published = null;
+        HausCommand<DeviceLightingChangedEvent>? published = null;
         await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(
             DeviceLightingChangedEvent.Type,
             msg => published = msg
@@ -89,7 +89,7 @@ public class DevicesApiTests
 
         Eventually.Assert(() =>
         {
-            published.Payload.Lighting.State.Should().Be(LightingState.On);
+            published?.Payload?.Lighting?.State.Should().Be(LightingState.On);
         });
     }
 
@@ -101,7 +101,7 @@ public class DevicesApiTests
         await _hausClient.ChangeDeviceLightingConstraintsAsync(device.Id, new LightingConstraintsModel(50, 90));
 
         var updatedDevice = await _hausClient.GetDeviceAsync(device.Id);
-        updatedDevice.Lighting.Level.Min.Should().Be(50);
-        updatedDevice.Lighting.Level.Max.Should().Be(90);
+        updatedDevice?.Lighting?.Level.Min.Should().Be(50);
+        updatedDevice?.Lighting?.Level.Max.Should().Be(90);
     }
 }

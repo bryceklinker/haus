@@ -134,7 +134,7 @@ public class HausApiClient(
         return RoomsApiClient.GetRoomsAsync();
     }
 
-    public Task<RoomModel> GetRoomAsync(long id)
+    public Task<RoomModel?> GetRoomAsync(long id)
     {
         return RoomsApiClient.GetRoomAsync(id);
     }
@@ -179,17 +179,17 @@ public class HausApiClient(
         return DeviceSimulatorApiClient.ResetDeviceSimulatorAsync();
     }
 
-    public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null)
+    public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters? parameters = null)
     {
         return LogsApiClient.GetLogsAsync(parameters);
     }
 
-    public Task<ClientSettingsModel> GetClientSettingsAsync()
+    public Task<ClientSettingsModel?> GetClientSettingsAsync()
     {
         return ClientSettingsApiClient.GetClientSettingsAsync();
     }
 
-    public Task<ApplicationVersionModel> GetLatestVersionAsync()
+    public Task<ApplicationVersionModel?> GetLatestVersionAsync()
     {
         return ApplicationApiClient.GetLatestVersionAsync();
     }

@@ -13,7 +13,7 @@ public record LightingEntity(
 )
 {
     public LightingState State { get; set; } = State;
-    public LevelLightingEntity? Level { get; set; } = Level;
+    public LevelLightingEntity Level { get; set; } = Level ?? new();
     public TemperatureLightingEntity? Temperature { get; set; } = Temperature;
     public ColorLightingEntity? Color { get; set; } = Color;
 
@@ -22,7 +22,7 @@ public record LightingEntity(
 
     public static readonly Expression<Func<LightingEntity, LightingModel>> ToModelExpression = l => new LightingModel(
         l.State,
-        l.Level == null ? null : new LevelLightingModel(l.Level.Value, l.Level.Min, l.Level.Max),
+        new LevelLightingModel(l.Level.Value, l.Level.Min, l.Level.Max),
         l.Temperature == null
             ? null
             : new TemperatureLightingModel(l.Temperature.Value, l.Temperature.Min, l.Temperature.Max),
@@ -36,17 +36,21 @@ public record LightingEntity(
         return ToModelFunc.Value(this);
     }
 
-    public LightingEntity? CalculateTarget(LightingEntity? target)
+    public LightingEntity CalculateTarget(LightingEntity target)
     {
         return CalculateTarget(this, target);
     }
 
-    public LightingEntity? ConvertToConstraints(LightingConstraintsModel model)
+    public LightingEntity ConvertToConstraints(LightingConstraintsModel model)
     {
         var level = new LevelLightingEntity(0, model.MinLevel, model.MaxLevel);
         var temperature =
             model.HasTemperature && Temperature != null
-                ? new TemperatureLightingEntity(0, model.MinTemperature.Value, model.MaxTemperature.Value)
+                ? new TemperatureLightingEntity(
+                    0,
+                    model.MinTemperature.GetValueOrDefault(),
+                    model.MaxTemperature.GetValueOrDefault()
+                )
                 : null;
         var lighting = this with { Level = level, Temperature = temperature };
         return lighting.CalculateTarget(this);
@@ -62,10 +66,10 @@ public record LightingEntity(
         );
     }
 
-    public static LightingEntity? FromEntity(LightingEntity? entity)
+    public static LightingEntity FromEntity(LightingEntity? entity)
     {
         if (entity == null)
-            return null;
+            return new LightingEntity();
 
         return new LightingEntity(
             entity.State,
@@ -75,13 +79,10 @@ public record LightingEntity(
         );
     }
 
-    public static LightingEntity? CalculateTarget(LightingEntity? current, LightingEntity? target)
+    public static LightingEntity CalculateTarget(LightingEntity? current, LightingEntity target)
     {
         if (current == null)
             return target;
-
-        if (target == null)
-            return current;
 
         var level = LevelLightingEntity.CalculateTarget(current.Level, target.Level);
         var temperature = TemperatureLightingEntity.CalculateTarget(current.Temperature, target.Temperature);

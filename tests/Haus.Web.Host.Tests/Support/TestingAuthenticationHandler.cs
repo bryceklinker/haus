@@ -37,6 +37,7 @@ public class TestingAuthenticationHandler(
 
     private bool IsAuthenticatedRequest()
     {
-        return Request.Headers.TryGetValue("Authorization", out var value) && value.Any(v => v.Contains(TestingScheme));
+        return Request.Headers.TryGetValue("Authorization", out var value)
+            && value.Any(v => v != null && v.Contains(TestingScheme));
     }
 }

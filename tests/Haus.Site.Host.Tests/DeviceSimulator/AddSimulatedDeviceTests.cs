@@ -10,7 +10,6 @@ using Haus.Core.Models.DeviceSimulator;
 using Haus.Site.Host.DeviceSimulator;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
@@ -138,7 +137,7 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
     {
         OpenDeviceTypes(page);
 
-        var item = page.FindAllByClass("mud-list-item").First(i => i.TextContent.Contains(Enum.GetName(deviceType)));
+        var item = page.FindAllByClass("mud-list-item").First(i => i.TextContent.Contains(deviceType.ToString()));
         await item.ClickAsync(new MouseEventArgs());
     }
 

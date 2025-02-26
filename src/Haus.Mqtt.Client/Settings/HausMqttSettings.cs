@@ -4,7 +4,7 @@ namespace Haus.Mqtt.Client.Settings;
 
 public class HausMqttSettings
 {
-    public string Server { get; set; }
+    public string Server { get; set; } = "";
     public string EventsTopic { get; init; } = DefaultHausMqttTopics.EventsTopic;
     public string CommandsTopic { get; init; } = DefaultHausMqttTopics.CommandsTopic;
     public string UnknownTopic { get; init; } = DefaultHausMqttTopics.UnknownTopic;

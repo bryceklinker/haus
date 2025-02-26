@@ -1,18 +1,36 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Mqtt.Client.Tests.Support;
 using Haus.Testing.Support.Fakes;
 using MQTTnet;
-using MQTTnet.Client;
 using Xunit;
 
 namespace Haus.Mqtt.Client.Tests;
 
 public class HausMqttClientTest : IAsyncLifetime
 {
-    private FakeMqttClient _fakeMqttClient;
-    private IHausMqttClient _client;
+    private FakeMqttClient? _fakeMqttClient;
+    private IHausMqttClient? _client;
+
+    private IHausMqttClient Client
+    {
+        get
+        {
+            ArgumentNullException.ThrowIfNull(_client);
+            return _client;
+        }
+    }
+
+    private FakeMqttClient FakeMqttClient
+    {
+        get
+        {
+            ArgumentNullException.ThrowIfNull(_fakeMqttClient);
+            return _fakeMqttClient;
+        }
+    }
 
     public async Task InitializeAsync()
     {
@@ -25,8 +43,8 @@ public class HausMqttClientTest : IAsyncLifetime
     [Fact]
     public async Task WhenSubscribingToTopicThenPublishedMessageGoesToSubscriber()
     {
-        MqttApplicationMessage actual = null;
-        await _client.SubscribeAsync(
+        MqttApplicationMessage? actual = null;
+        await Client.SubscribeAsync(
             "bob",
             msg =>
             {
@@ -36,7 +54,7 @@ public class HausMqttClientTest : IAsyncLifetime
         );
 
         var expected = new MqttApplicationMessage { Topic = "bob" };
-        await _fakeMqttClient.EnqueueAsync(expected);
+        await FakeMqttClient.EnqueueAsync(expected);
 
         actual.Should().BeSameAs(expected);
     }
@@ -45,7 +63,7 @@ public class HausMqttClientTest : IAsyncLifetime
     public async Task WhenMultipleSubscribersThenPublishedMessagesGoToAllSubscribers()
     {
         var actuals = new List<MqttApplicationMessage>();
-        await _client.SubscribeAsync(
+        await Client.SubscribeAsync(
             "#",
             msg =>
             {
@@ -53,7 +71,7 @@ public class HausMqttClientTest : IAsyncLifetime
                 return Task.CompletedTask;
             }
         );
-        await _client.SubscribeAsync(
+        await Client.SubscribeAsync(
             "#",
             msg =>
             {
@@ -62,7 +80,7 @@ public class HausMqttClientTest : IAsyncLifetime
             }
         );
 
-        await _fakeMqttClient.EnqueueAsync(new MqttApplicationMessage());
+        await FakeMqttClient.EnqueueAsync(new MqttApplicationMessage());
         actuals.Should().HaveCount(2);
     }
 

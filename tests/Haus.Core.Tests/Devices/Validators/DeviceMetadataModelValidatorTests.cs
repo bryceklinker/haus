@@ -15,7 +15,7 @@ public class DeviceMetadataModelValidatorTests
     [Fact]
     public async Task WhenMetadataHasNullKeyThenReturnsInvalid()
     {
-        var result = await _validator.TestValidateAsync(new MetadataModel(null, "something"));
+        var result = await _validator.TestValidateAsync(new MetadataModel(null!, "something"));
         result.IsValid.Should().BeFalse();
     }
 
@@ -29,7 +29,7 @@ public class DeviceMetadataModelValidatorTests
     [Fact]
     public async Task WhenMetadataValueIsNullThenReturnsInvalid()
     {
-        var result = await _validator.TestValidateAsync(new MetadataModel("something", null));
+        var result = await _validator.TestValidateAsync(new MetadataModel("something", null!));
         result.IsValid.Should().BeFalse();
     }
 

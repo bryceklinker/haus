@@ -30,7 +30,7 @@ public class DeviceTypeResolver(IOptions<HausOptions> options) : IDeviceTypeReso
         return Resolve(metadata.Vendor, metadata.Model);
     }
 
-    public DeviceType Resolve(string vendor, string model)
+    public DeviceType Resolve(string? vendor, string? model)
     {
         var match = GetDeviceTypeFromOptions(vendor, model) ?? GetDeviceTypeFromDefaults(vendor, model);
         return match?.DeviceType ?? DeviceType.Unknown;
@@ -43,22 +43,22 @@ public class DeviceTypeResolver(IOptions<HausOptions> options) : IDeviceTypeReso
             .GetFileInfo("Zigbee2Mqtt/Mappers/ToHaus/Resolvers/DefaultDeviceTypeOptions.json")
             .CreateReadStream();
         using var reader = new StreamReader(stream);
-        return HausJsonSerializer.Deserialize<DeviceTypeOptions[]>(reader.ReadToEnd());
+        return HausJsonSerializer.Deserialize<DeviceTypeOptions[]>(reader.ReadToEnd()) ?? [];
     }
 
-    private DeviceTypeOptions GetDeviceTypeFromOptions(string vendor, string model)
+    private DeviceTypeOptions? GetDeviceTypeFromOptions(string? vendor, string? model)
     {
         return GetDeviceTypeOptionsFromSet(vendor, model, DeviceTypeOptions);
     }
 
-    private static DeviceTypeOptions GetDeviceTypeFromDefaults(string vendor, string model)
+    private static DeviceTypeOptions? GetDeviceTypeFromDefaults(string? vendor, string? model)
     {
         return GetDeviceTypeOptionsFromSet(vendor, model, DefaultOptions);
     }
 
-    private static DeviceTypeOptions GetDeviceTypeOptionsFromSet(
-        string vendor,
-        string model,
+    private static DeviceTypeOptions? GetDeviceTypeOptionsFromSet(
+        string? vendor,
+        string? model,
         IEnumerable<DeviceTypeOptions> set
     )
     {

@@ -25,24 +25,20 @@ public record DeviceEntity : Entity
         d.DeviceType,
         d.LightType,
         d.Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray(),
-        d.Lighting == null
-            ? null
-            : new LightingModel(
-                d.Lighting.State,
-                d.Lighting.Level == null
-                    ? null
-                    : new LevelLightingModel(d.Lighting.Level.Value, d.Lighting.Level.Min, d.Lighting.Level.Max),
-                d.Lighting.Temperature == null
-                    ? null
-                    : new TemperatureLightingModel(
-                        d.Lighting.Temperature.Value,
-                        d.Lighting.Temperature.Min,
-                        d.Lighting.Temperature.Max
-                    ),
-                d.Lighting.Color == null
-                    ? null
-                    : new ColorLightingModel(d.Lighting.Color.Red, d.Lighting.Color.Green, d.Lighting.Color.Blue)
-            )
+        new LightingModel(
+            d.Lighting.State,
+            new LevelLightingModel(d.Lighting.Level.Value, d.Lighting.Level.Min, d.Lighting.Level.Max),
+            d.Lighting.Temperature == null
+                ? null
+                : new TemperatureLightingModel(
+                    d.Lighting.Temperature.Value,
+                    d.Lighting.Temperature.Min,
+                    d.Lighting.Temperature.Max
+                ),
+            d.Lighting.Color == null
+                ? null
+                : new ColorLightingModel(d.Lighting.Color.Red, d.Lighting.Color.Green, d.Lighting.Color.Blue)
+        )
     );
 
     private static readonly Lazy<Func<DeviceEntity, DeviceModel>> ToModelFunc = new(ToModelExpression.Compile);
@@ -54,11 +50,11 @@ public record DeviceEntity : Entity
     public DeviceType DeviceType { get; set; }
     public LightType LightType { get; set; }
 
-    public ICollection<DeviceMetadataEntity> Metadata { get; init; }
+    public ICollection<DeviceMetadataEntity> Metadata { get; init; } = [];
 
     public RoomEntity? Room { get; set; }
 
-    public LightingEntity? Lighting { get; set; }
+    public LightingEntity Lighting { get; set; } = new();
 
     public bool IsLight => DeviceType == DeviceType.Light;
 
@@ -127,7 +123,7 @@ public record DeviceEntity : Entity
 
     public void UpdateFromLightingConstraints(LightingConstraintsModel model, IDomainEventBus domainEventBus)
     {
-        Lighting = (Lighting ?? GenerateDefaultLighting()).ConvertToConstraints(model);
+        Lighting = Lighting.ConvertToConstraints(model);
         if (IsLight)
             ChangeLighting(Lighting, domainEventBus);
     }
@@ -147,7 +143,7 @@ public record DeviceEntity : Entity
         if (existing != null)
             existing.Update(value);
         else
-            Metadata.Add(new DeviceMetadataEntity(key, value));
+            Metadata.Add(new DeviceMetadataEntity(key, value) { Device = this });
     }
 
     public void AssignToRoom(RoomEntity room, IDomainEventBus domainEventBus)
@@ -162,36 +158,30 @@ public record DeviceEntity : Entity
         Room = null;
     }
 
-    public void ChangeLighting(LightingEntity? targetLighting, IDomainEventBus domainEventBus)
+    public void ChangeLighting(LightingEntity targetLighting, IDomainEventBus domainEventBus)
     {
         if (!IsLight)
             throw new InvalidOperationException($"Device with id {Id} is not a light.");
 
-        Lighting = Lighting == null ? targetLighting : Lighting.CalculateTarget(targetLighting);
+        Lighting = Lighting.CalculateTarget(targetLighting);
         domainEventBus.Enqueue(new DeviceLightingChangedDomainEvent(this, Lighting));
     }
 
     public void TurnOff(IDomainEventBus domainEventBus)
     {
-        var lightingCopy = LightingEntity.FromEntity(Lighting ?? GenerateDefaultLighting());
-        if (lightingCopy == null)
-            return;
-
+        var lightingCopy = LightingEntity.FromEntity(Lighting);
         lightingCopy.State = LightingState.Off;
         ChangeLighting(lightingCopy, domainEventBus);
     }
 
     public void TurnOn(IDomainEventBus domainEventBus)
     {
-        var turnOnLighting = LightingEntity.FromEntity(Lighting ?? GenerateDefaultLighting());
-        if (turnOnLighting == null)
-            return;
-
+        var turnOnLighting = LightingEntity.FromEntity(Lighting);
         turnOnLighting.State = LightingState.On;
         ChangeLighting(turnOnLighting, domainEventBus);
     }
 
-    private LightingEntity? GenerateDefaultLighting()
+    private LightingEntity GenerateDefaultLighting()
     {
         return DefaultLightingGeneratorFactory.GetGenerator(DeviceType, LightType).Generate(Lighting, Room?.Lighting);
     }

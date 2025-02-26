@@ -21,7 +21,7 @@ public class TurnOffVacantRoomsCommandHandler(IDomainEventBus domainEventBus, Ha
     {
         var rooms = await context
             .GetRoomsIncludeDevices()
-            .Where(r => r.Lighting.State == LightingState.On)
+            .Where(r => r.Lighting != null && r.Lighting.State == LightingState.On)
             .Where(r => r.LastOccupiedTime.HasValue)
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);

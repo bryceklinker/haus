@@ -28,20 +28,21 @@ public class DevicesMapper(
     public IEnumerable<MqttApplicationMessage> Map(Zigbee2MqttMessage message)
     {
         return message
-            .PayloadArray.Cast<JObject>()
-            .Select(item => new MqttApplicationMessage
-            {
-                Topic = hausOptions.GetEventsTopic(),
-                PayloadSegment = HausJsonSerializer.SerializeToBytes(CreateDeviceDiscoveredEvent(item)),
-            });
+                .PayloadArray?.Cast<JObject>()
+                .Select(item => new MqttApplicationMessage
+                {
+                    Topic = hausOptions.GetEventsTopic(),
+                    PayloadSegment = HausJsonSerializer.SerializeToBytes(CreateDeviceDiscoveredEvent(item)),
+                }) ?? [];
     }
 
     private HausEvent<DeviceDiscoveredEvent> CreateDeviceDiscoveredEvent(JObject jToken)
     {
-        var model = jToken.Value<string>("model");
-        var vendor = jToken.Value<string>("vendor");
+        var model = jToken.Value<string>("model") ?? "";
+        var vendor = jToken.Value<string>("vendor") ?? "";
+        var id = jToken.Value<string>("friendly_name") ?? "";
         return new DeviceDiscoveredEvent(
-            jToken.Value<string>("friendly_name"),
+            id,
             deviceTypeResolver.Resolve(vendor, model),
             CreateDeviceMetadata(jToken)
         ).AsHausEvent();

@@ -19,8 +19,8 @@ public class BatteryChangedMapperTests
 
         var model = _mapper.Map(message);
 
-        model.BatteryLevel.Should().Be(43);
-        model.DeviceId.Should().Be("my-device-id");
+        model?.BatteryLevel.Should().Be(43);
+        model?.DeviceId.Should().Be("my-device-id");
     }
 
     [Fact]

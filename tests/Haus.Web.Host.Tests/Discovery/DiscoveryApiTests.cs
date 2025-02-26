@@ -21,7 +21,7 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         var model = await _client.GetDiscoveryStateAsync();
 
-        model.State.Should().Be(DiscoveryState.Enabled);
+        model?.State.Should().Be(DiscoveryState.Enabled);
     }
 
     [Fact]
@@ -32,13 +32,13 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         var model = await _client.GetDiscoveryStateAsync();
 
-        model.State.Should().Be(DiscoveryState.Disabled);
+        model?.State.Should().Be(DiscoveryState.Disabled);
     }
 
     [Fact]
     public async Task WhenDiscoveryIsStartedThenStartDiscoveryCommandIsPublished()
     {
-        HausCommand<StartDiscoveryModel> hausCommand = null;
+        HausCommand<StartDiscoveryModel>? hausCommand = null;
         await factory.SubscribeToHausCommandsAsync<StartDiscoveryModel>(
             StartDiscoveryModel.Type,
             cmd => hausCommand = cmd
@@ -48,14 +48,14 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            hausCommand.Type.Should().Be(StartDiscoveryModel.Type);
+            hausCommand?.Type.Should().Be(StartDiscoveryModel.Type);
         });
     }
 
     [Fact]
     public async Task WhenDiscoveryStoppedThenStopDiscoveryCommandIsPublished()
     {
-        HausCommand<StopDiscoveryModel> hausCommand = null;
+        HausCommand<StopDiscoveryModel>? hausCommand = null;
         await factory.SubscribeToHausCommandsAsync<StopDiscoveryModel>(
             StopDiscoveryModel.Type,
             cmd => hausCommand = cmd
@@ -65,14 +65,14 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            hausCommand.Type.Should().Be(StopDiscoveryModel.Type);
+            hausCommand?.Type.Should().Be(StopDiscoveryModel.Type);
         });
     }
 
     [Fact]
     public async Task WhenExternalDevicesAreSyncedThenSyncExternalDevicesIsPublished()
     {
-        HausCommand<SyncDiscoveryModel> command = null;
+        HausCommand<SyncDiscoveryModel>? command = null;
         await factory.SubscribeToHausCommandsAsync<SyncDiscoveryModel>(SyncDiscoveryModel.Type, cmd => command = cmd);
 
         var client = factory.CreateAuthenticatedClient();
@@ -80,7 +80,7 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            command.Type.Should().Be(SyncDiscoveryModel.Type);
+            command?.Type.Should().Be(SyncDiscoveryModel.Type);
         });
     }
 }

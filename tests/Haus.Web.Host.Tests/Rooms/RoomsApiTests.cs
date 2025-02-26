@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ public class RoomsApiTests
 
         var result = await response.Content.ReadFromJsonAsync<RoomModel>();
 
-        response.Headers.Location.Should().Be($"{_apiClient.ApiBaseUrl}/rooms/{result.Id}");
+        response.Headers.Location.Should().Be($"{_apiClient.ApiBaseUrl}/rooms/{result?.Id}");
     }
 
     [Fact]
@@ -55,7 +56,7 @@ public class RoomsApiTests
 
         var updated = await _apiClient.GetRoomAsync(room.Id);
 
-        updated.Name.Should().Be("new hotness");
+        updated?.Name.Should().Be("new hotness");
     }
 
     [Fact]
@@ -93,7 +94,7 @@ public class RoomsApiTests
     [Fact]
     public async Task WhenRoomLightingIsSetThenRoomLightingEventPublishedToMqtt()
     {
-        HausCommand<RoomLightingChangedEvent> hausCommand = null;
+        HausCommand<RoomLightingChangedEvent>? hausCommand = null;
         await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
             RoomLightingChangedEvent.Type,
             msg => hausCommand = msg
@@ -104,14 +105,14 @@ public class RoomsApiTests
 
         Eventually.Assert(() =>
         {
-            hausCommand.Type.Should().Be(RoomLightingChangedEvent.Type);
+            hausCommand?.Type.Should().Be(RoomLightingChangedEvent.Type);
         });
     }
 
     [Fact]
     public async Task WhenRoomIsTurnedOffThenRoomLightingEventPublishedWithStateOff()
     {
-        HausCommand<RoomLightingChangedEvent> hausCommand = null;
+        HausCommand<RoomLightingChangedEvent>? hausCommand = null;
         await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
             RoomLightingChangedEvent.Type,
             msg => hausCommand = msg
@@ -122,15 +123,15 @@ public class RoomsApiTests
 
         Eventually.Assert(() =>
         {
-            hausCommand.Type.Should().Be(RoomLightingChangedEvent.Type);
-            hausCommand.Payload.Lighting.State.Should().Be(LightingState.Off);
+            hausCommand?.Type.Should().Be(RoomLightingChangedEvent.Type);
+            hausCommand?.Payload?.Lighting.State.Should().Be(LightingState.Off);
         });
     }
 
     [Fact]
     public async Task WhenRoomIsTurnedOnThenRoomLightingEventPublishedWithStateOn()
     {
-        HausCommand<RoomLightingChangedEvent> hausCommand = null;
+        HausCommand<RoomLightingChangedEvent>? hausCommand = null;
         await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
             RoomLightingChangedEvent.Type,
             msg => hausCommand = msg
@@ -141,8 +142,8 @@ public class RoomsApiTests
 
         Eventually.Assert(() =>
         {
-            hausCommand.Type.Should().Be(RoomLightingChangedEvent.Type);
-            hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
+            hausCommand?.Type.Should().Be(RoomLightingChangedEvent.Type);
+            hausCommand?.Payload?.Lighting.State.Should().Be(LightingState.On);
         });
     }
 
@@ -159,6 +160,9 @@ public class RoomsApiTests
     private async Task<RoomModel> CreateRoomAsync(string name)
     {
         var createResponse = await _apiClient.CreateRoomAsync(new RoomModel(Name: name));
-        return await createResponse.Content.ReadFromJsonAsync<RoomModel>();
+        var room = await createResponse.Content.ReadFromJsonAsync<RoomModel>();
+        if (room == null)
+            throw new InvalidOperationException("failed to create room");
+        return room;
     }
 }

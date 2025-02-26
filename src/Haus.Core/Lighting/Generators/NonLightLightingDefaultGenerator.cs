@@ -4,8 +4,8 @@ namespace Haus.Core.Lighting.Generators;
 
 public class NonLightLightingDefaultGenerator : IDefaultLightingGenerator
 {
-    public LightingEntity Generate(LightingEntity currentLighting, LightingEntity roomLighting)
+    public LightingEntity Generate(LightingEntity? currentLighting, LightingEntity? roomLighting)
     {
-        return null;
+        return new LightingEntity();
     }
 }

@@ -25,11 +25,11 @@ public class ResetDeviceSimulatorCommandHandlerTests
     [Fact]
     public async Task WhenDeviceSimulatorIsResetThenStateIsSetToInitialState()
     {
-        IDeviceSimulatorState state = null;
+        IDeviceSimulatorState? state = null;
         _store.Subscribe(s => state = s);
 
         await _hausBus.ExecuteCommandAsync(new ResetDeviceSimulatorCommand());
 
-        state.Devices.Should().BeEmpty();
+        state?.Devices.Should().BeEmpty();
     }
 }

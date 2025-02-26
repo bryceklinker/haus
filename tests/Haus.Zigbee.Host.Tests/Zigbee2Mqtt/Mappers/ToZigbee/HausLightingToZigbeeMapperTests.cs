@@ -63,9 +63,9 @@ public class HausLightingToZigbeeMapperTests
         result.Value<string>("state").Should().Be("ON");
         result.Value<int>("brightness").Should().Be(54);
         result.Value<int>("color_temp").Should().Be(67);
-        result.Value<JObject>("color").Value<int>("b").Should().Be(234);
-        result.Value<JObject>("color").Value<int>("g").Should().Be(54);
-        result.Value<JObject>("color").Value<int>("r").Should().Be(98);
+        result.Value<JObject>("color")?.Value<int>("b").Should().Be(234);
+        result.Value<JObject>("color")?.Value<int>("g").Should().Be(54);
+        result.Value<JObject>("color")?.Value<int>("r").Should().Be(98);
     }
 
     [Fact]

@@ -25,8 +25,8 @@ public class DeviceLightingChangedDomainEventHandlerTests
         await _hausBus.FlushAsync();
 
         var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
-        hausCommand.Payload.Device.Id.Should().Be(123);
-        hausCommand.Payload.Lighting.Level.Should().BeEquivalentTo(new LevelLightingModel(34.12));
+        hausCommand.Payload?.Device.Id.Should().Be(123);
+        hausCommand.Payload?.Lighting?.Level.Should().BeEquivalentTo(new LevelLightingModel(34.12));
     }
 
     [Fact]

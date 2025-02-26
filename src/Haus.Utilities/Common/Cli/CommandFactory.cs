@@ -24,10 +24,14 @@ public class CommandFactory(ILogger<CommandFactory> logger) : ICommandFactory
         var groupName = args[0];
         var commandName = args[1];
         var command = Commands.SingleOrDefault(c => c.Matches(groupName, commandName));
-        if (command != null)
-            return Activator.CreateInstance(command.CommandType) as ICommand;
+        if (command == null)
+            throw new CommandNotFoundException();
 
-        throw new CommandNotFoundException();
+        var result = Activator.CreateInstance(command.CommandType) as ICommand;
+        if (result == null)
+            throw new InvalidOperationException($"Cannot create command {commandName}");
+
+        return result;
     }
 
     private static KnownCommand[] DiscoverKnownCommands()

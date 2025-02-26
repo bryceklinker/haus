@@ -19,12 +19,12 @@ public class DevicesRealtimeApiTests(HausWebHostApplicationFactory factory, ITes
     public async Task WhenLightIsAddedToRoomThenDeviceLightingChangedEventBroadcast()
     {
         var hub = await factory.CreateHubConnection("events");
-        HausEvent<DeviceLightingChangedEvent> change = null;
+        HausEvent<DeviceLightingChangedEvent>? change = null;
         hub.On<HausEvent<DeviceLightingChangedEvent>>(
             "OnEvent",
             e =>
             {
-                if (e?.Payload?.Device != null)
+                if (e.Payload?.Device != null)
                     change = e;
             }
         );
@@ -36,7 +36,7 @@ public class DevicesRealtimeApiTests(HausWebHostApplicationFactory factory, ITes
             output.WriteLine("**************************************");
             output.WriteLine($"{HausJsonSerializer.Serialize(change)}");
             output.WriteLine("**************************************");
-            change.Payload.Device.Id.Should().Be(device.Id);
+            change?.Payload?.Device.Id.Should().Be(device.Id);
         });
     }
 }

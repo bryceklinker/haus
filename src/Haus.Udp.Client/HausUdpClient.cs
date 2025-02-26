@@ -23,7 +23,7 @@ internal class HausUdpClient(UdpClient client, IOptions<HausUdpSettings> options
     private readonly ConcurrentDictionary<Guid, IHausUdpSubscription> _subscriptions = new();
 
     private int Port => options.Value.Port;
-    private bool HasStarted { get; set; } = false;
+    private bool HasStarted { get; set; }
     private Task? ListeningTask { get; set; }
 
     public Task BroadcastAsync<T>(T value)
@@ -52,7 +52,7 @@ internal class HausUdpClient(UdpClient client, IOptions<HausUdpSettings> options
 
     private Task UnsubscribeAsync(IHausUdpSubscription subscription)
     {
-        _subscriptions.TryRemove(subscription.Id, out subscription);
+        _subscriptions.TryRemove(subscription.Id, out _);
         return Task.CompletedTask;
     }
 

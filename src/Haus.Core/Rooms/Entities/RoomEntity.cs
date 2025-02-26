@@ -22,12 +22,16 @@ public record RoomEntity : Entity
         new LightingModel(
             r.Lighting.State,
             new LevelLightingModel(r.Lighting.Level.Value, r.Lighting.Level.Min, r.Lighting.Level.Max),
-            new TemperatureLightingModel(
-                r.Lighting.Temperature.Value,
-                r.Lighting.Temperature.Min,
-                r.Lighting.Temperature.Max
-            ),
-            new ColorLightingModel(r.Lighting.Color.Red, r.Lighting.Color.Green, r.Lighting.Color.Blue)
+            r.Lighting.Temperature == null
+                ? null
+                : new TemperatureLightingModel(
+                    r.Lighting.Temperature.Value,
+                    r.Lighting.Temperature.Min,
+                    r.Lighting.Temperature.Max
+                ),
+            r.Lighting.Color == null
+                ? null
+                : new ColorLightingModel(r.Lighting.Color.Red, r.Lighting.Color.Green, r.Lighting.Color.Blue)
         )
     );
 
@@ -38,7 +42,7 @@ public record RoomEntity : Entity
 
     public DateTime? LastOccupiedTime { get; set; }
 
-    public LightingEntity? Lighting { get; set; }
+    public LightingEntity Lighting { get; set; } = new();
 
     public ICollection<DeviceEntity> Devices { get; init; }
 

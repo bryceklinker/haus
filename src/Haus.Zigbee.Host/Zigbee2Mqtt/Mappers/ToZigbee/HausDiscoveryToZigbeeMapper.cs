@@ -28,6 +28,7 @@ public class HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZ
     public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
     {
         var command = HausJsonSerializer.Deserialize<HausCommand>(message.PayloadSegment);
+        ArgumentNullException.ThrowIfNull(command);
         return command.Type switch
         {
             StartDiscoveryModel.Type => CreatePermitJoinMessage(true),

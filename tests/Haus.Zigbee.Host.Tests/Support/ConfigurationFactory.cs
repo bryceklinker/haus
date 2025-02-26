@@ -21,18 +21,18 @@ public static class ConfigurationFactory
     {
         return new ConfigurationBuilder()
             .AddInMemoryCollection(
-                new[]
+                new List<KeyValuePair<string, string?>>
                 {
-                    new KeyValuePair<string, string>("Zigbee:OverwriteConfig", "true"),
-                    new KeyValuePair<string, string>("Zigbee:ConfigFile", "./zigbee_data/configuration.yaml"),
-                    new KeyValuePair<string, string>("Zigbee:DataDirectory", "./zigbee_data"),
-                    new KeyValuePair<string, string>("Zigbee:Config:Mqtt:BaseTopic", zigbeeBaseTopic),
-                    new KeyValuePair<string, string>("Haus:Server", "mqtt://localhost:1883"),
-                    new KeyValuePair<string, string>("Haus:EventsTopic", hausEventsTopic),
-                    new KeyValuePair<string, string>("Haus:CommandsTopic", hausCommandsTopic),
-                    new KeyValuePair<string, string>("Haus:UnknownTopic", hausUnknownTopic),
-                    new KeyValuePair<string, string>("Haus:Health", hausHealthTopic),
-                }
+                    new("Zigbee:OverwriteConfig", "true"),
+                    new("Zigbee:ConfigFile", "./zigbee_data/configuration.yaml"),
+                    new("Zigbee:DataDirectory", "./zigbee_data"),
+                    new("Zigbee:Config:Mqtt:BaseTopic", zigbeeBaseTopic),
+                    new("Haus:Server", "mqtt://localhost:1883"),
+                    new("Haus:EventsTopic", hausEventsTopic),
+                    new("Haus:CommandsTopic", hausCommandsTopic),
+                    new("Haus:UnknownTopic", hausUnknownTopic),
+                    new("Haus:Health", hausHealthTopic),
+                }.AsReadOnly()
             )
             .Build();
     }

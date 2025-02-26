@@ -4,7 +4,10 @@ using System.Threading.Tasks;
 
 namespace Haus.Core.Application;
 
-public record ReleaseModel(Version Version, bool IsOfficial, DateTimeOffset CreationDateTime, string Description);
+public record ReleaseModel(Version Version, bool IsOfficial, DateTimeOffset CreationDateTime, string Description)
+{
+    public static readonly ReleaseModel Default = new(Version.Parse("0.0.0"), false, DateTimeOffset.MinValue, "");
+}
 
 public record ReleasePackageModel(int Id, string Name);
 

@@ -11,9 +11,9 @@ namespace Haus.Core.Discovery.Queries;
 
 public class GetDiscoveryQuery : IQuery<DiscoveryModel> { }
 
-internal class GetDiscoveryQueryHandler(HausDbContext context) : IQueryHandler<GetDiscoveryQuery, DiscoveryModel>
+internal class GetDiscoveryQueryHandler(HausDbContext context) : IQueryHandler<GetDiscoveryQuery, DiscoveryModel?>
 {
-    public Task<DiscoveryModel> Handle(GetDiscoveryQuery request, CancellationToken cancellationToken)
+    public Task<DiscoveryModel?> Handle(GetDiscoveryQuery request, CancellationToken cancellationToken)
     {
         return context
             .Set<DiscoveryEntity>()

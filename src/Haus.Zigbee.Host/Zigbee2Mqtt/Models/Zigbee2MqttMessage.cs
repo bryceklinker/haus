@@ -2,27 +2,26 @@ using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Models;
 
-public class Zigbee2MqttMessage(string topic, string? raw = null, JToken? root = null)
+public class Zigbee2MqttMessage(string topic, string raw = "", JToken? root = null)
 {
     private Zigbee2MqttMeta? _meta;
     public string Topic { get; } = topic;
-    public string? Raw { get; } = raw;
+    public string Raw { get; } = raw;
 
     public JObject? PayloadObject => root as JObject;
     public JArray? PayloadArray => root as JArray;
 
     public bool IsJson => root != null;
-    public string? Json => Raw;
-    public string Type => SafeGetValue<string>("type");
-    public string Message => SafeGetValue<string>("message");
-    public bool HasMeta => Meta != null;
+    public string Json => Raw;
+    public string? Type => SafeGetValue<string>("type");
+    public string? Message => SafeGetValue<string>("message");
 
     public Zigbee2MqttMeta? Meta => GetMetaData();
     public int? Battery => SafeGetValue<int?>("battery");
     public int? Illuminance => SafeGetValue<int?>("illuminance");
     public int? IlluminanceLux => SafeGetValue<int?>("illuminance_lux");
     public int? LinkQuality => SafeGetValue<int?>("linkquality");
-    public string MotionSensitivity => SafeGetValue<string>("motion_sensitivity");
+    public string? MotionSensitivity => SafeGetValue<string>("motion_sensitivity");
     public bool? Occupancy => SafeGetValue<bool?>("occupancy");
     public int? OccupancyTimeout => SafeGetValue<int?>("occupancy_timeout");
     public double? Temperature => SafeGetValue<double?>("temperature");
@@ -53,8 +52,11 @@ public class Zigbee2MqttMessage(string topic, string? raw = null, JToken? root =
         if (_meta != null)
             return _meta;
 
-        return PayloadObject.TryGetValue("meta", out _)
-            ? _meta = new Zigbee2MqttMeta(JObject.Parse(PayloadObject.GetValue("meta").ToString()))
+        if (PayloadObject == null)
+            return null;
+
+        return PayloadObject.TryGetValue("meta", out var meta)
+            ? _meta = new Zigbee2MqttMeta(JObject.Parse(meta.ToString()))
             : null;
     }
 }

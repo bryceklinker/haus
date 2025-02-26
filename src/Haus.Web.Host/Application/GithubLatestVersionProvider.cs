@@ -33,7 +33,7 @@ public class GithubLatestReleaseProvider : ILatestReleaseProvider
         };
     }
 
-    public async Task<ReleaseModel> GetLatestVersionAsync()
+    public async Task<ReleaseModel?> GetLatestVersionAsync()
     {
         var githubRelease = await GetLatestGitHubRelease().ConfigureAwait(false);
         var version = githubRelease.TagName.Replace("v", "", StringComparison.OrdinalIgnoreCase);
@@ -51,7 +51,7 @@ public class GithubLatestReleaseProvider : ILatestReleaseProvider
         return githubRelease.Assets.Select(a => new ReleasePackageModel(a.Id, a.Name)).ToArray();
     }
 
-    public async Task<Stream> DownloadLatestPackage(int id)
+    public async Task<Stream?> DownloadLatestPackage(int id)
     {
         var githubRelease = await GetLatestGitHubRelease().ConfigureAwait(false);
         var asset = githubRelease.Assets.Single(p => p.Id == id);

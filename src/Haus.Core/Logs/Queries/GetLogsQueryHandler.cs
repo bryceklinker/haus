@@ -12,7 +12,7 @@ using Haus.Cqrs.Queries;
 
 namespace Haus.Core.Logs.Queries;
 
-public record GetLogsQuery(string LogsDirectory, GetLogsParameters Parameters = null)
+public record GetLogsQuery(string LogsDirectory, GetLogsParameters? Parameters = null)
     : IQuery<ListResult<LogEntryModel>>
 {
     public int PageSize => Parameters?.PageSize ?? GetLogsParameters.DefaultPageSize;
@@ -28,10 +28,7 @@ internal class GetLogsQueryHandler(ILogEntryModelFactory logEntryFactory, ILogEn
         var logFiles = GetFilesFromLogDirectoryInDescendingOrder(request.LogsDirectory);
 
         var entries = new List<LogEntryModel>();
-        await foreach (
-            var entry in GetLogEntriesFromFiles(logFiles, request, cancellationToken)
-                .WithCancellation(cancellationToken)
-        )
+        await foreach (var entry in GetLogEntriesFromFiles(logFiles, request, cancellationToken))
             entries.Add(entry);
         return entries.ToListResult();
     }

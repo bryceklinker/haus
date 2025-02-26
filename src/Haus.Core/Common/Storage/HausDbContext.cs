@@ -24,7 +24,7 @@ public class HausDbContext(DbContextOptions<HausDbContext> options) : DbContext(
         return !pendingMigrations.Any();
     }
 
-    public Task<DiscoveryEntity> GetDiscoveryEntityAsync(CancellationToken token)
+    public Task<DiscoveryEntity?> GetDiscoveryEntityAsync(CancellationToken token)
     {
         return Set<DiscoveryEntity>().SingleOrDefaultAsync(token);
     }
@@ -58,9 +58,9 @@ public class HausDbContext(DbContextOptions<HausDbContext> options) : DbContext(
         return !await DoesExistAsync<TEntity>(id).ConfigureAwait(false);
     }
 
-    public async Task<TEntity> FindByAsync<TEntity>(
+    public async Task<TEntity?> FindByAsync<TEntity>(
         Expression<Func<TEntity, bool>> expression,
-        Func<IQueryable<TEntity>, IQueryable<TEntity>> configureQuery = null,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? configureQuery = null,
         CancellationToken token = default
     )
         where TEntity : class, IEntity
@@ -71,9 +71,9 @@ public class HausDbContext(DbContextOptions<HausDbContext> options) : DbContext(
         return await queryable.SingleOrDefaultAsync(expression, token).ConfigureAwait(false);
     }
 
-    public async Task<TEntity> FindByIdAsync<TEntity>(
+    public async Task<TEntity?> FindByIdAsync<TEntity>(
         long id,
-        Func<IQueryable<TEntity>, IQueryable<TEntity>> configureQuery = null,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? configureQuery = null,
         CancellationToken token = default
     )
         where TEntity : class, IEntity
@@ -83,7 +83,7 @@ public class HausDbContext(DbContextOptions<HausDbContext> options) : DbContext(
 
     public async Task<TEntity> FindByIdOrThrowAsync<TEntity>(
         long id,
-        Func<IQueryable<TEntity>, IQueryable<TEntity>> configureQuery = null,
+        Func<IQueryable<TEntity>, IQueryable<TEntity>>? configureQuery = null,
         CancellationToken cancellationToken = default
     )
         where TEntity : class, IEntity
@@ -109,10 +109,10 @@ public class HausDbContext(DbContextOptions<HausDbContext> options) : DbContext(
     )
         where TEntity : class, IEntity
     {
-        return !await GetAll<TEntity>()
+        return await GetAll<TEntity>()
             .Where(e => e.Id != id)
             .Select(propertySelector)
-            .AnyAsync(v => v.Equals(value), token)
+            .AnyAsync(v => v != null && v.Equals(value), token)
             .ConfigureAwait(false);
     }
 }

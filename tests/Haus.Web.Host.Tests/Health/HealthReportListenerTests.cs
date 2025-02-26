@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Models.Common;
@@ -17,7 +16,7 @@ public class ExternalHealthListenerTests(HausWebHostApplicationFactory factory)
     [Fact]
     public async Task WhenHealthReportReceivedThenReportChecksAreInHausHealthReport()
     {
-        HausHealthReportModel report = null;
+        HausHealthReportModel? report = null;
         var hub = await factory.CreateHubConnection("health");
         hub.On<HausHealthReportModel>("OnHealth", r => report = r);
 
@@ -33,7 +32,7 @@ public class ExternalHealthListenerTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            report.Checks.Should().Contain(c => c.Name == "External");
+            report?.Checks.Should().Contain(c => c.Name == "External");
         });
     }
 }

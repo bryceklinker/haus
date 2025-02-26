@@ -8,7 +8,7 @@ public interface IDeviceSimulatorStore : IObservable<IDeviceSimulatorState>
 {
     IDeviceSimulatorState Current { get; }
 
-    SimulatedDeviceEntity GetDeviceById(string deviceId);
+    SimulatedDeviceEntity? GetDeviceById(string deviceId);
     void Publish(IDeviceSimulatorState state);
     void PublishNext(Func<IDeviceSimulatorState, IDeviceSimulatorState> generateNextState);
 }
@@ -19,7 +19,7 @@ public class DeviceSimulatorStore : IDeviceSimulatorStore
 
     public IDeviceSimulatorState Current => _subject.Value;
 
-    public SimulatedDeviceEntity GetDeviceById(string deviceId)
+    public SimulatedDeviceEntity? GetDeviceById(string deviceId)
     {
         return Current.GetDeviceById(deviceId);
     }

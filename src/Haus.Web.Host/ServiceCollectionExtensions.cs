@@ -25,8 +25,6 @@ namespace Haus.Web.Host;
 
 public static class ServiceCollectionExtensions
 {
-    private static readonly string MigrationsAssembly = typeof(HausDbContext).Assembly.GetName().Name;
-
     public static IServiceCollection AddHausWebHost(this IServiceCollection services, IConfiguration configuration)
     {
         return services
@@ -38,7 +36,7 @@ public static class ServiceCollectionExtensions
                     {
                         sqlite
                             .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)
-                            .MigrationsAssembly(MigrationsAssembly);
+                            .MigrationsAssembly(GetMigrationsAssemblyName());
                     }
                 );
             })
@@ -47,7 +45,7 @@ public static class ServiceCollectionExtensions
             .Configure<GitHubSettings>(opts =>
             {
                 configuration.Bind("GitHub", opts);
-                opts.PersonalAccessToken = configuration["GITHUB_TOKEN"];
+                opts.PersonalAccessToken = configuration["GITHUB_TOKEN"] ?? "";
             })
             .AddHausMqtt()
             .AddMediatR(cfg =>
@@ -134,5 +132,12 @@ public static class ServiceCollectionExtensions
         });
 
         return services;
+    }
+
+    private static string GetMigrationsAssemblyName()
+    {
+        var name = typeof(HausDbContext).Assembly.GetName().Name;
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        return name;
     }
 }

@@ -14,7 +14,7 @@ public interface IHausMqttSubscription
 public class HausMqttSubscription(
     string topic,
     Func<MqttApplicationMessage, Task> handler,
-    Func<IHausMqttSubscription, Task> unsubscribe = null
+    Func<IHausMqttSubscription, Task>? unsubscribe = null
 ) : IHausMqttSubscription
 {
     public Guid Id { get; } = Guid.NewGuid();
@@ -32,6 +32,9 @@ public class HausMqttSubscription(
 
     public async Task UnsubscribeAsync()
     {
+        if (unsubscribe == null)
+            return;
+
         await unsubscribe.Invoke(this).ConfigureAwait(false);
     }
 }

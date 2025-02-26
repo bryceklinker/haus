@@ -16,11 +16,11 @@ public class Zigbee2MqttMessageFactory(ILogger<Zigbee2MqttMessageFactory> logger
 {
     public Zigbee2MqttMessage Create(MqttApplicationMessage message)
     {
-        var payloadAsString = message.PayloadSegment != null ? Encoding.UTF8.GetString(message.PayloadSegment) : null;
+        var payloadAsString = Encoding.UTF8.GetString(message.PayloadSegment);
         return new Zigbee2MqttMessage(message.Topic, payloadAsString, CreateJObjectFromPayload(payloadAsString));
     }
 
-    private JToken CreateJObjectFromPayload(string payload)
+    private JToken? CreateJObjectFromPayload(string payload)
     {
         try
         {

@@ -25,8 +25,8 @@ public class RoomLightingChangedDomainEventHandlerTests
         await _hausBus.FlushAsync();
 
         var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        hausCommand.Payload.Room.Id.Should().Be(89);
-        hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
+        hausCommand.Payload?.Room.Id.Should().Be(89);
+        hausCommand.Payload?.Lighting.State.Should().Be(LightingState.On);
     }
 
     [Fact]

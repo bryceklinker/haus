@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Models;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Zigbee.Host.Configuration;
@@ -30,25 +31,21 @@ public class InterviewSuccessfulMapper : IToHausMapper
     public bool IsSupported(Zigbee2MqttMessage message)
     {
         return message.Topic == $"{_zigbeeOptions.GetBaseTopic()}/bridge/log"
-            && message.Message == "interview_successful"
-            && message.Type == "pairing";
+            && message is { Message: "interview_successful", Type: "pairing" };
     }
 
     public IEnumerable<MqttApplicationMessage> Map(Zigbee2MqttMessage zigbeeMessage)
     {
+        var id = zigbeeMessage.Meta?.FriendlyName ?? "";
+        var meta = zigbeeMessage.Meta;
+        var deviceType = meta == null ? DeviceType.Unknown : _deviceTypeResolver.Resolve(meta);
+        var metadata = meta?.Root.ToDeviceMetadata() ?? [];
+        var payload = new DeviceDiscoveredEvent(id, deviceType, metadata.ToArray());
         yield return new MqttApplicationMessage
         {
             Topic = EventsTopic,
             PayloadSegment = HausJsonSerializer.SerializeToBytes(
-                new HausEvent<DeviceDiscoveredEvent>
-                {
-                    Type = DeviceDiscoveredEvent.Type,
-                    Payload = new DeviceDiscoveredEvent(
-                        zigbeeMessage.Meta.FriendlyName,
-                        _deviceTypeResolver.Resolve(zigbeeMessage.Meta),
-                        zigbeeMessage.Meta.Root.ToDeviceMetadata().ToArray()
-                    ),
-                }
+                new HausEvent<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, payload)
             ),
         };
     }

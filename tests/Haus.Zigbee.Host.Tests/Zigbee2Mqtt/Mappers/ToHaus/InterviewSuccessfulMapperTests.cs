@@ -104,11 +104,11 @@ public class InterviewSuccessfulMapperTests
         var result = _mapper.Map(message).Single();
 
         var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
-        hausEvent.Type.Should().Be(DeviceDiscoveredEvent.Type);
-        hausEvent.Payload.Id.Should().Be("this-is-an-id");
-        hausEvent.Payload.DeviceType.Should().Be(DeviceType.Unknown);
+        hausEvent?.Type.Should().Be(DeviceDiscoveredEvent.Type);
+        hausEvent?.Payload?.Id.Should().Be("this-is-an-id");
+        hausEvent?.Payload?.DeviceType.Should().Be(DeviceType.Unknown);
         hausEvent
-            .Payload.Metadata.Should()
+            ?.Payload?.Metadata.Should()
             .ContainEquivalentOf(new MetadataModel("description", "my description"))
             .And.ContainEquivalentOf(new MetadataModel("model", "this is a model"))
             .And.ContainEquivalentOf(new MetadataModel("vendor", "Philips"));
@@ -133,6 +133,6 @@ public class InterviewSuccessfulMapperTests
         var result = _mapper.Map(message).Single();
 
         var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
-        hausEvent.Payload.DeviceType.Should().Be(DeviceType.Light);
+        hausEvent?.Payload?.DeviceType.Should().Be(DeviceType.Light);
     }
 }

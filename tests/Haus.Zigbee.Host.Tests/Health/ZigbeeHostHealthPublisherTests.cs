@@ -19,8 +19,8 @@ namespace Haus.Zigbee.Host.Tests.Health;
 
 public class ZigbeeHostHealthPublisherTests : IAsyncLifetime
 {
-    private ZigbeeHostHealthPublisher _publisher;
-    private IHausMqttClient _mqttClient;
+    private ZigbeeHostHealthPublisher? _publisher;
+    private IHausMqttClient? _mqttClient;
 
     public async Task InitializeAsync()
     {
@@ -35,25 +35,25 @@ public class ZigbeeHostHealthPublisherTests : IAsyncLifetime
     [Fact]
     public async Task WhenReceivesHealthyReportThenPublishesHealthReportToMqtt()
     {
-        HausHealthReportModel actual = null;
-        await _mqttClient.SubscribeToHausHealthAsync(r => actual = r);
+        HausHealthReportModel? actual = null;
+        await _mqttClient!.SubscribeToHausHealthAsync(r => actual = r);
 
         var report = new HealthReport(
             new Dictionary<string, HealthReportEntry>(),
             HealthStatus.Healthy,
             TimeSpan.FromMilliseconds(200)
         );
-        await _publisher.PublishAsync(report);
+        await _publisher!.PublishAsync(report);
 
         Eventually.Assert(() =>
         {
-            actual.IsOk.Should().BeTrue();
-            actual.Status.Should().Be(HealthStatus.Healthy);
+            actual?.IsOk.Should().BeTrue();
+            actual?.Status.Should().Be(HealthStatus.Healthy);
         });
     }
 
     public async Task DisposeAsync()
     {
-        await _mqttClient.DisposeAsync();
+        await _mqttClient!.DisposeAsync();
     }
 }

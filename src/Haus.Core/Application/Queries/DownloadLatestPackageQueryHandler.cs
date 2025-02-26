@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ public class DownloadLatestPackageQueryHandler(
         try
         {
             var stream = await latestReleaseProvider.DownloadLatestPackage(request.PackageId).ConfigureAwait(false);
-            return DownloadLatestPackageResult.Ok(stream);
+            return DownloadLatestPackageResult.Ok(stream ?? new MemoryStream());
         }
         catch (Exception e)
         {

@@ -16,7 +16,7 @@ public class ApplicationApiTests(HausWebHostApplicationFactory factory)
     {
         var latestVersion = await _client.GetLatestVersionAsync();
 
-        latestVersion.Version.Should().NotBeNullOrWhiteSpace();
+        latestVersion?.Version.Should().NotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -36,6 +36,6 @@ public class ApplicationApiTests(HausWebHostApplicationFactory factory)
         var response = await _client.DownloadLatestPackageAsync(packagesResult.Items[0].Id);
 
         response.IsSuccessStatusCode.Should().BeTrue();
-        response.Content.Headers.ContentType.MediaType.Should().Be("application/octet-stream");
+        response.Content.Headers.ContentType?.MediaType.Should().Be("application/octet-stream");
     }
 }

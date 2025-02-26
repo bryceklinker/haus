@@ -6,7 +6,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class OccupancyChangedMapper
 {
-    public OccupancyChangedModel Map(Zigbee2MqttMessage message)
+    public OccupancyChangedModel? Map(Zigbee2MqttMessage message)
     {
         if (message.Occupancy.IsNull())
             return null;

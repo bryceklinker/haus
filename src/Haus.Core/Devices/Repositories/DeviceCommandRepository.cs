@@ -10,7 +10,7 @@ namespace Haus.Core.Devices.Repositories;
 public interface IDeviceCommandRepository
 {
     Task<DeviceEntity> GetById(long id, CancellationToken token = default);
-    Task<DeviceEntity> GetByExternalId(string externalId, CancellationToken token = default);
+    Task<DeviceEntity?> GetByExternalId(string externalId, CancellationToken token = default);
     Task<DeviceEntity> AddAsync(DeviceEntity device, CancellationToken token = default);
     Task SaveAsync(DeviceEntity device, CancellationToken token = default);
 }
@@ -22,7 +22,7 @@ public class DeviceCommandRepository(HausDbContext context) : IDeviceCommandRepo
         return context.FindByIdOrThrowAsync<DeviceEntity>(id, AddIncludes, token);
     }
 
-    public Task<DeviceEntity> GetByExternalId(string externalId, CancellationToken token = default)
+    public Task<DeviceEntity?> GetByExternalId(string externalId, CancellationToken token = default)
     {
         return context.FindByAsync<DeviceEntity>(d => d.ExternalId == externalId, AddIncludes, token);
     }

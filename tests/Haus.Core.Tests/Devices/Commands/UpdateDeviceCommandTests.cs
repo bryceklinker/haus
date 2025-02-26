@@ -31,7 +31,7 @@ public class UpdateDeviceCommandTests
         await _hausBus.ExecuteCommandAsync(new UpdateDeviceCommand(model));
 
         var updated = await _context.FindAsync<DeviceEntity>(original.Id);
-        updated.Name.Should().Be("hi-bob");
+        updated?.Name.Should().Be("hi-bob");
     }
 
     [Fact]

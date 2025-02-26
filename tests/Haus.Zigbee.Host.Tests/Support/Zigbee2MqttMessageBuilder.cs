@@ -14,10 +14,10 @@ public class Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOpt
     private static readonly string DevicesTopicPath = $"{ConfigPath}/devices";
     private const string InterviewSuccessful = "interview_successful";
     private const string PairingType = "pairing";
-    private string _topicPath;
-    private string _state;
+    private string? _topicPath;
+    private string? _state;
     private JObject _payloadObject = new();
-    private JArray _payloadArray = new();
+    private JArray _payloadArray = [];
 
     public Zigbee2MqttMessageBuilder WithStateTopic()
     {
@@ -116,7 +116,7 @@ public class Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOpt
         return this;
     }
 
-    public Zigbee2MqttMessageBuilder WithDeviceInPayload(Action<JObject> configureDevice = null)
+    public Zigbee2MqttMessageBuilder WithDeviceInPayload(Action<JObject>? configureDevice = null)
     {
         var device = new JObject();
         configureDevice?.Invoke(device);
@@ -142,6 +142,7 @@ public class Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOpt
         try
         {
             var payloadAsString = GetRootMessageAsJson();
+            ArgumentNullException.ThrowIfNull(payloadAsString);
             return new MqttApplicationMessage
             {
                 Topic = $"{baseTopicName}/{_topicPath}",
@@ -159,7 +160,9 @@ public class Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOpt
     {
         try
         {
-            return Zigbee2MqttMessage.FromJToken($"{baseTopicName}/{_topicPath}", JToken.Parse(GetRootMessageAsJson()));
+            var json = GetRootMessageAsJson();
+            ArgumentNullException.ThrowIfNull(json);
+            return Zigbee2MqttMessage.FromJToken($"{baseTopicName}/{_topicPath}", JToken.Parse(json));
         }
         finally
         {
@@ -168,7 +171,7 @@ public class Zigbee2MqttMessageBuilder(string baseTopicName = Defaults.ZigbeeOpt
         }
     }
 
-    private string GetRootMessageAsJson()
+    private string? GetRootMessageAsJson()
     {
         if (_topicPath == StateTopicPath)
             return _state;

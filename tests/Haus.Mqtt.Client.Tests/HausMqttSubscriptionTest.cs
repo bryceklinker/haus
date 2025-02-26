@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Mqtt.Client.Tests.Support;
@@ -9,7 +10,16 @@ namespace Haus.Mqtt.Client.Tests;
 
 public class HausMqttSubscriptionTest : IAsyncLifetime
 {
-    private IHausMqttClient _client;
+    private IHausMqttClient? _client;
+
+    private IHausMqttClient Client
+    {
+        get
+        {
+            ArgumentNullException.ThrowIfNull(_client);
+            return _client;
+        }
+    }
 
     public async Task InitializeAsync()
     {
@@ -19,8 +29,8 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
     [Fact]
     public async Task WhenExecutedForMessageWithDifferentTopicThenSubscriberIsNotExecuted()
     {
-        MqttApplicationMessage actual = null;
-        await _client.SubscribeAsync(
+        MqttApplicationMessage? actual = null;
+        await Client.SubscribeAsync(
             "one",
             msg =>
             {
@@ -29,7 +39,7 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
             }
         );
 
-        await _client.PublishAsync(new MqttApplicationMessage { Topic = "other" });
+        await Client.PublishAsync(new MqttApplicationMessage { Topic = "other" });
 
         actual.Should().BeNull();
     }
@@ -37,8 +47,8 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
     [Fact]
     public async Task WhenSubscribedToAllTopicsThenExecuteAlwaysInvokesSubscriber()
     {
-        MqttApplicationMessage actual = null;
-        await _client.SubscribeAsync(
+        MqttApplicationMessage? actual = null;
+        await Client.SubscribeAsync(
             "#",
             msg =>
             {
@@ -48,7 +58,7 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
         );
 
         var expected = new MqttApplicationMessage { Topic = "other" };
-        await _client.PublishAsync(expected);
+        await Client.PublishAsync(expected);
 
         Eventually.Assert(() =>
         {
@@ -60,7 +70,7 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
     public async Task WhenUnsubscribedThenNoLongerReceivesMessages()
     {
         var wasCalled = false;
-        var subscription = await _client.SubscribeAsync(
+        var subscription = await Client.SubscribeAsync(
             "#",
             _ =>
             {
@@ -70,7 +80,7 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
         );
 
         await subscription.UnsubscribeAsync();
-        await _client.PublishAsync(new MqttApplicationMessage { Topic = "idk" });
+        await Client.PublishAsync(new MqttApplicationMessage { Topic = "idk" });
         await Task.Delay(1000);
 
         wasCalled.Should().BeFalse();
@@ -78,6 +88,6 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        await _client.DisposeAsync();
+        await Client.DisposeAsync();
     }
 }

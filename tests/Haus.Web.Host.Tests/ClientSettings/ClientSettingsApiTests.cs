@@ -19,9 +19,9 @@ public class ClientSettingsApiTests(HausWebHostApplicationFactory factory)
     {
         var settings = await _client.GetClientSettingsAsync();
 
-        settings.Auth.Domain.Should().Be(_configuration["Auth:Domain"]);
-        settings.Auth.ClientId.Should().Be(_configuration["Auth:ClientId"]);
-        settings.Auth.Audience.Should().Be(_configuration["Auth:Audience"]);
+        settings?.Auth.Domain.Should().Be(_configuration["Auth:Domain"]);
+        settings?.Auth.ClientId.Should().Be(_configuration["Auth:ClientId"]);
+        settings?.Auth.Audience.Should().Be(_configuration["Auth:Audience"]);
     }
 
     [Fact]
@@ -32,6 +32,6 @@ public class ClientSettingsApiTests(HausWebHostApplicationFactory factory)
 
         var settings = await _client.GetClientSettingsAsync();
 
-        settings.Version.Should().Be(expected);
+        settings?.Version.Should().Be(expected);
     }
 }

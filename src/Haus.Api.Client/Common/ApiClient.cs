@@ -18,7 +18,15 @@ public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSet
 {
     private const string ApiPath = "api";
 
-    public string BaseUrl => options.Value.BaseUrl;
+    public string BaseUrl
+    {
+        get
+        {
+            ArgumentNullException.ThrowIfNull(options.Value.BaseUrl);
+            return options.Value.BaseUrl;
+        }
+    }
+
     public string ApiBaseUrl => UrlUtility.Join(null, BaseUrl, ApiPath);
     protected HttpClient HttpClient { get; } = httpClient;
 

@@ -28,14 +28,14 @@ public class DeviceSimulatorRealtimeApiTests
 
         var hub = await _factory.CreateHubConnection("device-simulator");
 
-        DeviceSimulatorStateModel state = null;
+        DeviceSimulatorStateModel? state = null;
         hub.On<DeviceSimulatorStateModel>("OnState", s => state = s);
 
         await _client.AddSimulatedDeviceAsync(new SimulatedDeviceModel());
 
         Eventually.Assert(() =>
         {
-            state.Devices.Should().HaveCount(1);
+            state?.Devices.Should().HaveCount(1);
         });
     }
 }

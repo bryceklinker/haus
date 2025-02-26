@@ -19,8 +19,8 @@ public class TemperatureChangedMapperTests
 
         var model = _mapper.Map(message);
 
-        model.DeviceId.Should().Be("1234");
-        model.Temperature.Should().Be(65);
+        model?.DeviceId.Should().Be("1234");
+        model?.Temperature.Should().Be(65);
     }
 
     [Fact]

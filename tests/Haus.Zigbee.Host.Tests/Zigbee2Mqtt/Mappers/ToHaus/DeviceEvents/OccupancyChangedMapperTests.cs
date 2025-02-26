@@ -21,10 +21,10 @@ public class OccupancyChangedMapperTests
 
         var model = _mapper.Map(message);
 
-        model.DeviceId.Should().Be("motions");
-        model.Occupancy.Should().BeTrue();
-        model.Timeout.Should().Be(123);
-        model.Sensitivity.Should().Be("low");
+        model?.DeviceId.Should().Be("motions");
+        model?.Occupancy.Should().BeTrue();
+        model?.Timeout.Should().Be(123);
+        model?.Sensitivity.Should().Be("low");
     }
 
     [Fact]

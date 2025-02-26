@@ -21,7 +21,7 @@ public static class HausMqttClientExtensions
             topicName,
             msg =>
             {
-                HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausEvent<T> evt);
+                HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausEvent<T>? evt);
                 if (evt?.Type == eventType)
                     handler.Invoke(evt);
             }
@@ -39,7 +39,7 @@ public static class HausMqttClientExtensions
             topicName,
             msg =>
             {
-                HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausCommand<T> command);
+                HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausCommand<T>? command);
                 if (command?.Type == commandType)
                     handler.Invoke(command);
             }
@@ -56,7 +56,10 @@ public static class HausMqttClientExtensions
             topicName,
             msg =>
             {
-                if (HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausHealthReportModel report))
+                if (
+                    HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausHealthReportModel? report)
+                    && report != null
+                )
                     handler.Invoke(report);
             }
         );

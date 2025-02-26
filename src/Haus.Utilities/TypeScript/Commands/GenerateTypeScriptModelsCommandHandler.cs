@@ -8,7 +8,6 @@ using Haus.Core.Models;
 using Haus.Cqrs.Commands;
 using Haus.Utilities.Common.Cli;
 using Haus.Utilities.TypeScript.GenerateModels;
-using MediatR;
 
 namespace Haus.Utilities.TypeScript.Commands;
 
@@ -59,6 +58,8 @@ public class GenerateTypeScriptModelsCommandHandler(ITypeScriptModelGenerator ge
 
     private static IEnumerable<Type> GetAllTypesInCoreModels()
     {
-        return Assembly.GetAssembly(typeof(HausJsonSerializer)).GetExportedTypes();
+        var assembly = Assembly.GetAssembly(typeof(HausJsonSerializer));
+        ArgumentNullException.ThrowIfNull(assembly);
+        return assembly.GetExportedTypes();
     }
 }

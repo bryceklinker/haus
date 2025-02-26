@@ -15,7 +15,7 @@ public class HealthRealtimeApiTests(HausWebHostApplicationFactory factory)
     public async Task WhenListeningForStatusUpdatesThenServiceHealthIsReceived()
     {
         var hub = await factory.CreateHubConnection("health");
-        HausHealthReportModel health = null;
+        HausHealthReportModel? health = null;
         hub.On<HausHealthReportModel>("OnHealth", h => health = h);
 
         Eventually.Assert(() =>

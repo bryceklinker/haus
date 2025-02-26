@@ -5,7 +5,7 @@ using Haus.Core.Models.Lighting;
 namespace Haus.Core.Models.DeviceSimulator;
 
 public record SimulatedDeviceModel(
-    string? Id = null,
+    string Id = "",
     DeviceType DeviceType = DeviceType.Unknown,
     bool IsOccupied = false,
     MetadataModel[]? Metadata = null,

@@ -36,8 +36,8 @@ public class RoomEntityTests
         var light = new DeviceEntity(deviceType: DeviceType.Light);
         room.AddDevice(light, new FakeDomainEventBus());
 
-        light.Lighting.State.Should().Be(room.Lighting.State);
-        light.Lighting.Level.Should().BeEquivalentTo(room.Lighting.Level);
+        light.Lighting?.State.Should().Be(room.Lighting?.State);
+        light.Lighting?.Level.Should().BeEquivalentTo(room.Lighting?.Level);
     }
 
     [Fact]
@@ -107,8 +107,8 @@ public class RoomEntityTests
     {
         var room = RoomEntity.CreateFromModel(new RoomModel());
 
-        room.Lighting.Level.Min.Should().Be(0);
-        room.Lighting.Level.Max.Should().Be(100);
+        room.Lighting?.Level?.Min.Should().Be(0);
+        room.Lighting?.Level?.Max.Should().Be(100);
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class RoomEntityTests
         var lighting = new LightingEntity { State = LightingState.On };
         room.ChangeLighting(lighting, new FakeDomainEventBus());
 
-        room.Lighting.State.Should().Be(LightingState.On);
+        room.Lighting?.State.Should().Be(LightingState.On);
     }
 
     [Fact]
@@ -132,8 +132,8 @@ public class RoomEntityTests
         var lighting = new LightingEntity { State = LightingState.On };
         room.ChangeLighting(lighting, new FakeDomainEventBus());
 
-        light.Lighting.State.Should().Be(LightingState.On);
-        light.Lighting.Level.Should().BeEquivalentTo(room.Lighting.Level);
+        light.Lighting?.State.Should().Be(LightingState.On);
+        light.Lighting?.Level.Should().BeEquivalentTo(room.Lighting?.Level);
     }
 
     [Fact]
@@ -157,7 +157,7 @@ public class RoomEntityTests
 
         room.TurnOff(fakeDomainEventBus);
 
-        room.Lighting.State.Should().Be(LightingState.Off);
+        room.Lighting?.State.Should().Be(LightingState.Off);
     }
 
     [Fact]
@@ -169,7 +169,7 @@ public class RoomEntityTests
 
         room.TurnOn(fakeDomainEventBus);
 
-        room.Lighting.State.Should().Be(LightingState.On);
+        room.Lighting?.State.Should().Be(LightingState.On);
     }
 
     [Fact]
@@ -216,7 +216,7 @@ public class RoomEntityTests
 
         room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus());
 
-        room.Lighting.State.Should().Be(LightingState.On);
+        room.Lighting?.State.Should().Be(LightingState.On);
     }
 
     [Fact]
@@ -238,7 +238,7 @@ public class RoomEntityTests
         room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus());
         room.ChangeOccupancy(new OccupancyChangedModel(""), new FakeDomainEventBus());
 
-        room.Lighting.State.Should().Be(LightingState.On);
+        room.Lighting?.State.Should().Be(LightingState.On);
     }
 
     [Fact]
@@ -251,6 +251,6 @@ public class RoomEntityTests
         await Task.Delay(TimeSpan.FromSeconds(2));
         room.ChangeOccupancy(new OccupancyChangedModel(""), new FakeDomainEventBus());
 
-        room.Lighting.State.Should().Be(LightingState.Off);
+        room.Lighting?.State.Should().Be(LightingState.Off);
     }
 }

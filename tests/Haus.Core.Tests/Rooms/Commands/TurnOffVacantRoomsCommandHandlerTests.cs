@@ -33,7 +33,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var updatedRoom = await _context.FindByIdAsync<RoomEntity>(room.Id);
-        updatedRoom.Lighting.State.Should().Be(LightingState.Off);
+        updatedRoom?.Lighting.State.Should().Be(LightingState.Off);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var updatedRoom = await _context.FindByIdAsync<RoomEntity>(room.Id);
-        updatedRoom.Lighting.State.Should().Be(LightingState.On);
+        updatedRoom?.Lighting.State.Should().Be(LightingState.On);
         _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().BeEmpty();
     }
 

@@ -17,7 +17,9 @@ internal class MultiSensorChangedEventHandler(IHausBus hausBus) : IEventHandler<
 
     private IEnumerable<Task> GetPublishTasks(MultiSensorChanged change, CancellationToken token)
     {
-        if (change.HasOccupancy)
+        if (change.OccupancyChanged != null)
+        {
             yield return hausBus.PublishAsync(RoutableEvent.FromEvent(change.OccupancyChanged), token);
+        }
     }
 }

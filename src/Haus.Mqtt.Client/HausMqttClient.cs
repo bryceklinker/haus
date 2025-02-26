@@ -112,7 +112,7 @@ internal class HausMqttClient : IHausMqttClient
 
     private Task Unsubscribe(IHausMqttSubscription subscription)
     {
-        _subscriptions.TryRemove(subscription.Id, out subscription);
+        _subscriptions.TryRemove(subscription.Id, out _);
         return Task.CompletedTask;
     }
 }

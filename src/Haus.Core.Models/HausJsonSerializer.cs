@@ -38,7 +38,7 @@ public static class HausJsonSerializer
         return JsonSerializer.Deserialize<T>(json, options ?? DefaultOptions);
     }
 
-    public static string Serialize(object value, JsonSerializerOptions? options = null)
+    public static string Serialize(object? value, JsonSerializerOptions? options = null)
     {
         return JsonSerializer.Serialize(value, options ?? DefaultOptions);
     }

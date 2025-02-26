@@ -48,7 +48,7 @@ public class TriggerOccupancyChangedHandlerTests
     {
         await _hausBus.ExecuteCommandAsync(new TriggerOccupancyChangedCommand(_simulatedDeviceId));
 
-        _simulatorStore.GetDeviceById(_simulatedDeviceId).IsOccupied.Should().BeTrue();
+        _simulatorStore.GetDeviceById(_simulatedDeviceId)?.IsOccupied.Should().BeTrue();
     }
 
     [Fact]

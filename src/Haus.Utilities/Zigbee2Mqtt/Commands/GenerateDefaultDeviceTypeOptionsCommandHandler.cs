@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +10,6 @@ using Haus.Cqrs.Commands;
 using Haus.Utilities.Common.Cli;
 using Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 using Haus.Zigbee.Host.Configuration;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Utilities.Zigbee2Mqtt.Commands;
@@ -66,11 +64,11 @@ public class GenerateDefaultDeviceTypeOptionsCommandHandler(
         if (!File.Exists(DefaultDeviceTypeOptionsPath))
         {
             logger.LogInformation("Could not find defaults file at {FilePath}", DefaultDeviceTypeOptionsPath);
-            return Array.Empty<DeviceTypeOptions>();
+            return [];
         }
 
         var defaultsJson = await File.ReadAllTextAsync(DefaultDeviceTypeOptionsPath);
-        return HausJsonSerializer.Deserialize<DeviceTypeOptions[]>(defaultsJson);
+        return HausJsonSerializer.Deserialize<DeviceTypeOptions[]>(defaultsJson) ?? [];
     }
 
     private async Task WriteDefaultsOptions(IEnumerable<DeviceTypeOptions> options)

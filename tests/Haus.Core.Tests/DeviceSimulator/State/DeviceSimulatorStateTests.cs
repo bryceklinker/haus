@@ -54,7 +54,7 @@ public class DeviceSimulatorStateTests
         state
             .Devices.Should()
             .HaveCount(1)
-            .And.OnlyContain(e => e.Id == deviceId && e.Lighting.State == LightingState.On);
+            .And.OnlyContain(e => e.Id == deviceId && e.Lighting != null && e.Lighting.State == LightingState.On);
     }
 
     [Fact]

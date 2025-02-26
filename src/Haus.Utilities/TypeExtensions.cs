@@ -55,7 +55,7 @@ public static class TypeExtensions
             || type.GetCustomAttributes<SkipGenerationAttribute>().Any();
     }
 
-    public static Type GetTypeThatRequiresImport(this Type type)
+    public static Type? GetTypeThatRequiresImport(this Type type)
     {
         if (!type.IsNativeTypeScriptType())
             return type;
@@ -63,6 +63,7 @@ public static class TypeExtensions
         if (type.IsArray)
         {
             var elementType = type.GetElementType();
+            ArgumentNullException.ThrowIfNull(elementType);
             return elementType.IsNativeTypeScriptType() ? null : elementType;
         }
 
@@ -83,9 +84,11 @@ public static class TypeExtensions
         if (type.IsArray)
         {
             var elementType = type.GetElementType();
+            ArgumentNullException.ThrowIfNull(elementType);
+
             var elementTypeName = elementType.IsNativeTypeScriptType()
                 ? elementType.ToTypeScriptType(context)
-                : context.GetModelForType(elementType).ModelName;
+                : context.GetModelForType(elementType)!.ModelName;
             return $"Array<{elementTypeName}>";
         }
 
