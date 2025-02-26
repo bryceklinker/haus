@@ -17,7 +17,6 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
     private readonly List<MqttApplicationMessage> _publishedMessages = [];
     private readonly MqttClientEvents _events = new();
 
-    public bool IsDisposed { get; private set; }
     public bool IsStarted { get; private set; }
 
     private bool IsConnected { get; set; }
@@ -37,7 +36,7 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
         remove => _events.ConnectedEvent.RemoveHandler(value);
     }
 
-    public event Func<MqttClientConnectingEventArgs, Task> ConnectingAsync;
+    public event Func<MqttClientConnectingEventArgs, Task>? ConnectingAsync;
 
     event Func<MqttClientDisconnectedEventArgs, Task> IMqttClient.DisconnectedAsync
     {
@@ -45,15 +44,15 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
         remove => _events.DisconnectedEvent.RemoveHandler(value);
     }
 
-    public event Func<InspectMqttPacketEventArgs, Task> InspectPacketAsync;
-    MqttClientOptions IMqttClient.Options => Options;
+    public event Func<InspectMqttPacketEventArgs, Task>? InspectPacketAsync;
+    MqttClientOptions IMqttClient.Options => Options ?? new MqttClientOptions();
 
     ManagedMqttClientOptions IManagedMqttClient.Options => new() { ClientOptions = Options };
 
     public IMqttClient InternalClient => this;
 
     public int PendingApplicationMessagesCount { get; } = 0;
-    public event Func<ApplicationMessageProcessedEventArgs, Task> ApplicationMessageProcessedAsync;
+    public event Func<ApplicationMessageProcessedEventArgs, Task>? ApplicationMessageProcessedAsync;
 
     event Func<MqttApplicationMessageReceivedEventArgs, Task> IManagedMqttClient.ApplicationMessageReceivedAsync
     {
@@ -61,7 +60,7 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
         remove => _events.ApplicationMessageReceivedEvent.RemoveHandler(value);
     }
 
-    public event Func<ApplicationMessageSkippedEventArgs, Task> ApplicationMessageSkippedAsync;
+    public event Func<ApplicationMessageSkippedEventArgs, Task>? ApplicationMessageSkippedAsync;
 
     event Func<MqttClientConnectedEventArgs, Task> IManagedMqttClient.ConnectedAsync
     {
@@ -69,8 +68,8 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
         remove => _events.ConnectedEvent.RemoveHandler(value);
     }
 
-    public event Func<ConnectingFailedEventArgs, Task> ConnectingFailedAsync;
-    public event Func<EventArgs, Task> ConnectionStateChangedAsync;
+    public event Func<ConnectingFailedEventArgs, Task>? ConnectingFailedAsync;
+    public event Func<EventArgs, Task>? ConnectionStateChangedAsync;
 
     event Func<MqttClientDisconnectedEventArgs, Task> IManagedMqttClient.DisconnectedAsync
     {
@@ -78,18 +77,15 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
         remove => _events.DisconnectedEvent.RemoveHandler(value);
     }
 
-    public event Func<ManagedProcessFailedEventArgs, Task> SynchronizingSubscriptionsFailedAsync;
-    public event Func<SubscriptionsChangedEventArgs, Task> SubscriptionsChangedAsync;
+    public event Func<ManagedProcessFailedEventArgs, Task>? SynchronizingSubscriptionsFailedAsync;
+    public event Func<SubscriptionsChangedEventArgs, Task>? SubscriptionsChangedAsync;
 
     public MqttApplicationMessage[] PublishedMessages => _publishedMessages.ToArray();
 
-    public Exception PingException { get; set; }
-    public Exception ConnectException { get; set; }
+    public Exception? PingException { get; set; }
+    public Exception? ConnectException { get; set; }
 
-    public void Dispose()
-    {
-        IsDisposed = true;
-    }
+    public void Dispose() { }
 
     public Task StartAsync(ManagedMqttClientOptions options)
     {
