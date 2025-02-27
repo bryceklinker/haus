@@ -29,6 +29,15 @@ public static class RenderedFragmentExtensions
         return fragment.FindAll(tag).FindByOptions(configureOptions).First();
     }
 
+    public static IElement FindByClass(
+        this IRenderedFragment fragment,
+        string className,
+        Func<FindOptions, FindOptions>? configureOptions = null
+    )
+    {
+        return fragment.FindAllByClass(className, configureOptions).First();
+    }
+
     public static IElement[] FindAllByClass(
         this IRenderedFragment fragment,
         string className,

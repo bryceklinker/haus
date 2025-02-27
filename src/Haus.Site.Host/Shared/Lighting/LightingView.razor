@@ -1,0 +1,164 @@
+@using System.Reactive.Linq
+@using System.Reactive.Subjects
+@using Haus.Core.Models.Lighting
+@implements IDisposable
+
+<MudPaper>
+    @if (Lighting == null)
+    {
+        <MudText Typo="Typo.h3">no lighting available</MudText>
+    }
+    else
+    {
+        <MudSlider T="double"
+                   Min="Lighting.Level.Min"
+                   Value="Lighting.Level.Value"
+                   Max="Lighting.Level.Max"
+                   Class="level"
+                   ValueChanged="HandleLevelChanged">
+            Level
+        </MudSlider>
+        
+        @if (Lighting.Temperature != null)
+        {
+            <MudSlider T="double"
+                       Min="Lighting.Temperature.Min"
+                       Value="Lighting.Temperature.Value"
+                       Max="Lighting.Temperature.Max"
+                       Class="temperature"
+                       ValueChanged="HandleTemperatureChanged" />
+        }
+        
+        @if (Lighting.Color != null)
+        {
+            <MudSlider T="byte"
+                       Min="0"
+                       Value="Lighting.Color.Red"
+                       Max="255"
+                       Class="red"
+                       Vertical="@true"
+                       ValueChanged="HandleRedChanged">
+                Red
+            </MudSlider>
+            
+            <MudSlider T="byte"
+                       Min="0"
+                       Value="Lighting.Color.Green"
+                       Max="255"
+                       Class="green"
+                       Vertical="@true"
+                       ValueChanged="HandleGreenChanged">
+                Green
+            </MudSlider>
+            
+            <MudSlider T="byte"
+                       Min="0"
+                       Value="Lighting.Color.Blue"
+                       Max="255"
+                       Class="blue"
+                       Vertical="@true"
+                       ValueChanged="HandleBlueChanged">
+                Blue
+            </MudSlider>
+        }
+    }
+</MudPaper>
+
+@code {
+    private BehaviorSubject<LightingModel?> _lightingSubject = new(null);
+    private IDisposable? _subscription;
+
+    [Parameter]
+    public LightingModel? Lighting
+    {
+        get => _lightingSubject.Value ?? null;
+        set => ResetLightingSubject(value);
+    }
+
+    [Parameter] public EventCallback<LightingModel> OnLightingChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ResetLightingSubject(Lighting);
+    }
+
+    private void HandleLevelChanged(double level)
+    {
+        ArgumentNullException.ThrowIfNull(Lighting);
+
+        _lightingSubject.OnNext(Lighting with
+        {
+            Level = Lighting.Level with
+            {
+                Value = level
+            }
+        });
+    }
+
+    private void HandleTemperatureChanged(double temp)
+    {
+        ArgumentNullException.ThrowIfNull(Lighting?.Temperature);
+
+        _lightingSubject.OnNext(Lighting with
+        {
+            Temperature = Lighting.Temperature with
+            {
+                Value = temp
+            }
+        });
+    }
+
+    private void HandleRedChanged(byte red)
+    {
+        ArgumentNullException.ThrowIfNull(Lighting?.Color);
+
+        _lightingSubject.OnNext(Lighting with
+        {
+            Color = Lighting.Color with
+            {
+                Red = red
+            }
+        });
+    }
+    
+    private void HandleGreenChanged(byte green)
+    {
+        ArgumentNullException.ThrowIfNull(Lighting?.Color);
+
+        _lightingSubject.OnNext(Lighting with
+        {
+            Color = Lighting.Color with
+            {
+                Green = green
+            }
+        });
+    }
+    
+    private void HandleBlueChanged(byte blue)
+    {
+        ArgumentNullException.ThrowIfNull(Lighting?.Color);
+
+        _lightingSubject.OnNext(Lighting with
+        {
+            Color = Lighting.Color with
+            {
+                Blue = blue
+            }
+        });
+    }
+    
+    private void ResetLightingSubject(LightingModel? lighting)
+    {
+        _subscription?.Dispose();
+        _lightingSubject = new BehaviorSubject<LightingModel?>(lighting);
+        _subscription = _lightingSubject
+            .Throttle(TimeSpan.FromMilliseconds(200))
+            .Select(l => OnLightingChanged.InvokeAsync(l))
+            .Subscribe();
+    }
+    
+    public void Dispose()
+    {
+        _subscription?.Dispose();
+    }
+}

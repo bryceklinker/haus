@@ -1,6 +1,7 @@
 using Bogus;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
+using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 
 namespace Haus.Testing.Support;
@@ -12,7 +13,7 @@ public static class HausModelFactory
     public static DeviceModel DeviceModel()
     {
         return new DeviceModel(
-            Id: Faker.Random.Number(),
+            Id: Faker.Random.Long(),
             RoomId: null,
             Name: Faker.Company.CompanyName(),
             ExternalId: Faker.Random.Uuid().ToString(),
@@ -30,6 +31,16 @@ public static class HausModelFactory
 
     public static RoomModel RoomModel()
     {
-        return new RoomModel(Id: Faker.Random.Number(), Name: Faker.Company.CompanyName(), Lighting: null);
+        return new RoomModel(
+            Id: Faker.Random.Long(),
+            Name: Faker.Company.CompanyName(),
+            OccupancyTimeoutInSeconds: Faker.Random.Int(),
+            Lighting: null
+        );
+    }
+
+    public static LightingModel LightingModel()
+    {
+        return new LightingModel(State: Faker.Random.Enum<LightingState>(), Level: new LevelLightingModel());
     }
 }

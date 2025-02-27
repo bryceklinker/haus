@@ -1,0 +1,52 @@
+@page "/rooms/{roomId:long?}"
+@using Haus.Api.Client.Rooms
+@using Haus.Core.Models.Common
+@using Haus.Core.Models.Rooms
+@using Haus.Site.Host.Rooms.Detail
+
+@inject IRoomsApiClient RoomsClient;
+@inject NavigationManager Navigation;
+
+<LoadingContent IsLoading="IsLoading" LoadingText="loading rooms...">
+    <MudList T="RoomModel">
+        @foreach (var room in Rooms.Items)
+        {
+            <MudListItem T="RoomModel" 
+                         Text="@room.Name"
+                         OnClick="() => HandleRoomSelected(room)"/>
+        }
+    </MudList>
+    
+    @if (SelectedRoom != null)
+    {
+        <RoomDetail Room="SelectedRoom" />
+    }
+</LoadingContent>
+
+@code {
+    [Parameter]
+    public long? RoomId { get; set; }
+
+    private bool IsLoading { get; set; }
+    private ListResult<RoomModel> Rooms { get; set; } = new();
+    private RoomModel? SelectedRoom { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        Rooms = await RoomsClient.GetRoomsAsync();
+        IsLoading = false;
+    }
+
+    protected override void OnParametersSet()
+    {
+        SelectedRoom = RoomId != null
+            ? Rooms.Items.SingleOrDefault(r => r.Id == RoomId)
+            : null;
+    }
+
+    private void HandleRoomSelected(RoomModel room)
+    {
+        Navigation.NavigateTo($"/rooms/{room.Id}");
+    }
+}

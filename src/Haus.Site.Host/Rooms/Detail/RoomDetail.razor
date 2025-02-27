@@ -1,0 +1,12 @@
+@using Haus.Core.Models.Rooms
+
+<MudPaper>
+    <MudTextField T="string" InputId="name" Value="Room.Name" />
+    
+    <MudTextField T="int" InputId="occupancyTimeout" Value="Room.OccupancyTimeoutInSeconds" />
+</MudPaper>
+
+@code {
+    [Parameter]
+    public required RoomModel Room { get; set; }
+}

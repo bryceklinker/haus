@@ -7,11 +7,5 @@ public record LightingModel(
     ColorLightingModel? Color = null
 )
 {
-    public LevelLightingModel Level { get; } = Level ?? new LevelLightingModel();
-
-    [OptionalGeneration]
-    public TemperatureLightingModel? Temperature { get; } = Temperature;
-
-    [OptionalGeneration]
-    public ColorLightingModel? Color { get; } = Color;
+    public LevelLightingModel Level { get; init; } = Level ?? new LevelLightingModel();
 }
