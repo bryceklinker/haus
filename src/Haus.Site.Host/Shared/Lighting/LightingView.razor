@@ -1,5 +1,6 @@
 @using System.Reactive.Linq
 @using System.Reactive.Subjects
+@using System.Threading
 @using Haus.Core.Models.Lighting
 @implements IDisposable
 
@@ -10,7 +11,15 @@
     }
     else
     {
+        <MudSwitch T="LightingState"
+                   Disabled="Disabled"
+                   Value="Lighting.State" 
+                   ValueChanged="HandleStateChanged">
+            State
+        </MudSwitch>
+        
         <MudSlider T="double"
+                   Disabled="Disabled"
                    Min="Lighting.Level.Min"
                    Value="Lighting.Level.Value"
                    Max="Lighting.Level.Max"
@@ -22,6 +31,7 @@
         @if (Lighting.Temperature != null)
         {
             <MudSlider T="double"
+                       Disabled="Disabled"
                        Min="Lighting.Temperature.Min"
                        Value="Lighting.Temperature.Value"
                        Max="Lighting.Temperature.Max"
@@ -32,6 +42,7 @@
         @if (Lighting.Color != null)
         {
             <MudSlider T="byte"
+                       Disabled="Disabled"
                        Min="0"
                        Value="Lighting.Color.Red"
                        Max="255"
@@ -42,6 +53,7 @@
             </MudSlider>
             
             <MudSlider T="byte"
+                       Disabled="Disabled"
                        Min="0"
                        Value="Lighting.Color.Green"
                        Max="255"
@@ -52,6 +64,7 @@
             </MudSlider>
             
             <MudSlider T="byte"
+                       Disabled="Disabled"
                        Min="0"
                        Value="Lighting.Color.Blue"
                        Max="255"
@@ -69,6 +82,9 @@
     private IDisposable? _subscription;
 
     [Parameter]
+    public bool Disabled { get; set; }
+    
+    [Parameter]
     public LightingModel? Lighting
     {
         get => _lightingSubject.Value ?? null;
@@ -82,6 +98,16 @@
         ResetLightingSubject(Lighting);
     }
 
+    private void HandleStateChanged(LightingState state)
+    {
+        ArgumentNullException.ThrowIfNull(Lighting);
+        
+        _lightingSubject.OnNext(Lighting with
+        {
+            State = state
+        });
+    }
+    
     private void HandleLevelChanged(double level)
     {
         ArgumentNullException.ThrowIfNull(Lighting);
@@ -153,7 +179,7 @@
         _lightingSubject = new BehaviorSubject<LightingModel?>(lighting);
         _subscription = _lightingSubject
             .Throttle(TimeSpan.FromMilliseconds(200))
-            .Select(l => OnLightingChanged.InvokeAsync(l))
+            .Select(l => InvokeAsync(() => OnLightingChanged.InvokeAsync(l)))
             .Subscribe();
     }
     

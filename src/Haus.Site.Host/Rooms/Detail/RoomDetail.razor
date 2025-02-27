@@ -1,12 +1,35 @@
+@using Haus.Api.Client.Rooms
+@using Haus.Core.Models.Lighting
 @using Haus.Core.Models.Rooms
+@using Haus.Site.Host.Shared.Lighting
+
+@inject IRoomsApiClient RoomsClient;
 
 <MudPaper>
     <MudTextField T="string" InputId="name" Value="Room.Name" />
     
     <MudTextField T="int" InputId="occupancyTimeout" Value="Room.OccupancyTimeoutInSeconds" />
+    
+    <LightingView Lighting="Room.Lighting"
+                  Disabled="IsUpdatingLighting"
+                  OnLightingChanged="HandleLightingChanged"/>
 </MudPaper>
 
 @code {
     [Parameter]
     public required RoomModel Room { get; set; }
+    
+    public bool IsUpdatingLighting { get; set; }
+
+    private async Task HandleLightingChanged(LightingModel? lighting)
+    {
+        if (lighting == null)
+        {
+            return;
+        }
+
+        IsUpdatingLighting = true;
+        await RoomsClient.ChangeRoomLightingAsync(Room.Id, lighting);
+        IsUpdatingLighting = false;
+    }
 }

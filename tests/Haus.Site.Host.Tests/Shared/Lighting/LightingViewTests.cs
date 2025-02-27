@@ -20,6 +20,54 @@ public class LightingViewTests : HausSiteTestContext
     }
 
     [Fact]
+    public void WhenRenderedDisabledThenAllInputsAreDisabled()
+    {
+        var lighting = HausModelFactory.LightingModel() with
+        {
+            Temperature = new TemperatureLightingModel(),
+            Color = new ColorLightingModel(),
+            Level = new LevelLightingModel(),
+        };
+        var view = RenderLighting(lighting, Disabled: true);
+
+        view.FindByComponent<MudSwitch<LightingState>>().Instance.Disabled.Should().BeTrue();
+        FindSliderByClass<double>(view, "level").Instance.Disabled.Should().BeTrue();
+        FindSliderByClass<double>(view, "temperature").Instance.Disabled.Should().BeTrue();
+        FindSliderByClass<byte>(view, "red").Instance.Disabled.Should().BeTrue();
+        FindSliderByClass<byte>(view, "green").Instance.Disabled.Should().BeTrue();
+        FindSliderByClass<byte>(view, "blue").Instance.Disabled.Should().BeTrue();
+    }
+
+    [Fact]
+    public void WhenRenderedThenShowsLightingState()
+    {
+        var lighting = HausModelFactory.LightingModel() with { State = LightingState.On };
+        var view = RenderLighting(lighting);
+
+        var state = view.FindByComponent<MudSwitch<LightingState>>();
+        state.Instance.Value.Should().Be(LightingState.On);
+    }
+
+    [Fact]
+    public async Task WhenLightingStateIsChangedThenNotifiesLightingChanged()
+    {
+        var lighting = HausModelFactory.LightingModel() with { State = LightingState.On };
+        LightingModel? newLighting = null;
+        var view = RenderLighting(lighting, l => newLighting = l);
+
+        var state = view.FindByComponent<MudSwitch<LightingState>>();
+        await view.InvokeAsync(async () =>
+        {
+            await state.Instance.ValueChanged.InvokeAsync(LightingState.Off);
+        });
+
+        Eventually.Assert(() =>
+        {
+            newLighting?.State.Should().Be(LightingState.Off);
+        });
+    }
+
+    [Fact]
     public void WhenRenderedThenLevelSliderIsLimitedByLighting()
     {
         var lighting = HausModelFactory.LightingModel() with
@@ -170,12 +218,14 @@ public class LightingViewTests : HausSiteTestContext
 
     private IRenderedComponent<LightingView> RenderLighting(
         LightingModel? lighting,
-        Action<LightingModel>? onChanged = null
+        Action<LightingModel>? onChanged = null,
+        bool Disabled = false
     )
     {
         return Context.RenderComponent<LightingView>(opts =>
         {
             opts.Add(o => o.Lighting, lighting);
+            opts.Add(o => o.Disabled, Disabled);
             if (onChanged != null)
             {
                 opts.Add(o => o.OnLightingChanged, onChanged);
