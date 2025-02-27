@@ -1,6 +1,5 @@
 using System;
 using System.Numerics;
-using System.Reactive;
 using System.Threading.Tasks;
 using Haus.Core.Models.Lighting;
 using Haus.Site.Host.Shared.Lighting;
