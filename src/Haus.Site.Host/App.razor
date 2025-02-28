@@ -3,7 +3,7 @@
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(ShellLayout)">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(ShellLayoutView)">
             <Authorizing>
                 <p>Determining session state, please wait...</p>
             </Authorizing>
@@ -16,7 +16,7 @@
     </Found>
     <NotFound>
         <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(ShellLayout)">
+        <LayoutView Layout="@typeof(ShellLayoutView)">
             <p role="alert">Sorry, there's nothing at this address.</p>
         </LayoutView>
     </NotFound>

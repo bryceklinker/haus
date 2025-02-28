@@ -7,7 +7,7 @@
 @inject NavigationManager Navigation
 @inject IDeviceApiClient DevicesClient
 
-<LoadingContent IsLoading="IsLoading">
+<LoadingContentView IsLoading="IsLoading">
     <MudList T="DeviceModel">
         @foreach (var device in Devices.Items)
         {
@@ -20,9 +20,9 @@
 
     @if (SelectedDevice != null)
     {
-        <DeviceDetail Device="SelectedDevice"/>
+        <DeviceDetailView Device="SelectedDevice"/>
     }
-</LoadingContent>
+</LoadingContentView>
 
 
 @code {

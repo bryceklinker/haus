@@ -3,7 +3,7 @@
 <MudList T="MetadataModel">
     @foreach (var item in Items)
     {
-        <EditableMetadataListItem Item="item" 
+        <EditableMetadataListItemView Item="item" 
                                   OnItemChanged="v => HandleItemChanged(item, v)" />
     }
 </MudList>

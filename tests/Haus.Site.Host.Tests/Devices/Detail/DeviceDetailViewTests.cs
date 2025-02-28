@@ -7,14 +7,14 @@ using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Devices.Detail;
 
-public class DeviceDetailTests : HausSiteTestContext
+public class DeviceDetailViewTests : HausSiteTestContext
 {
     [Fact]
     public void WhenRenderedThenShowsDeviceInformation()
     {
         var device = HausModelFactory.DeviceModel();
 
-        var page = Context.RenderComponent<DeviceDetail>(opts =>
+        var page = Context.RenderComponent<DeviceDetailView>(opts =>
         {
             opts.Add(p => p.Device, device);
         });
@@ -34,7 +34,7 @@ public class DeviceDetailTests : HausSiteTestContext
             Metadata = [new MetadataModel(Key: "Watts", Value: "Lots")],
         };
 
-        var page = Context.RenderComponent<DeviceDetail>(opts =>
+        var page = Context.RenderComponent<DeviceDetailView>(opts =>
         {
             opts.Add(p => p.Device, device);
         });
@@ -56,7 +56,7 @@ public class DeviceDetailTests : HausSiteTestContext
             ],
         };
 
-        var page = Context.RenderComponent<DeviceDetail>(opts =>
+        var page = Context.RenderComponent<DeviceDetailView>(opts =>
         {
             opts.Add(p => p.Device, device);
         });

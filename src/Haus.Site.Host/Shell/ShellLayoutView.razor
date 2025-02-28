@@ -7,8 +7,8 @@
 <MudDialogProvider />
 
 <MudLayout>
-    <ShellHeader OnMenuToggled="HandleToggleDrawer"  ThemeMode="_themeMode" OnThemeToggled="HandleToggleThemeMode" />
-    <ShellDrawer IsOpen="_isDrawerOpen" />
+    <ShellHeaderView OnMenuToggled="HandleToggleDrawer"  ThemeMode="_themeMode" OnThemeToggled="HandleToggleThemeMode" />
+    <ShellDrawerView IsOpen="_isDrawerOpen" />
     
     <MudMainContent>
         @Body

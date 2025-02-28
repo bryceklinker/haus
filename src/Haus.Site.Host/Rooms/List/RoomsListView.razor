@@ -7,7 +7,7 @@
 @inject IRoomsApiClient RoomsClient;
 @inject NavigationManager Navigation;
 
-<LoadingContent IsLoading="IsLoading" LoadingText="loading rooms...">
+<LoadingContentView IsLoading="IsLoading" LoadingText="loading rooms...">
     <MudList T="RoomModel">
         @foreach (var room in Rooms.Items)
         {
@@ -19,9 +19,9 @@
     
     @if (SelectedRoom != null)
     {
-        <RoomDetail Room="SelectedRoom" />
+        <RoomDetailView Room="SelectedRoom" />
     }
-</LoadingContent>
+</LoadingContentView>
 
 @code {
     [Parameter]

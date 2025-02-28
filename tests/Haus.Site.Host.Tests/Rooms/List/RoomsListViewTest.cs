@@ -10,7 +10,7 @@ using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Rooms.List;
 
-public class RoomsListTest : HausSiteTestContext
+public class RoomsListViewTest : HausSiteTestContext
 {
     private const string RoomsUrl = "/api/rooms";
 
@@ -19,7 +19,7 @@ public class RoomsListTest : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>(), opts => opts.WithDelayMs(500));
 
-        var page = Context.RenderComponent<RoomsList>();
+        var page = Context.RenderComponent<RoomsListView>();
 
         page.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
     }
@@ -34,7 +34,7 @@ public class RoomsListTest : HausSiteTestContext
             )
         );
 
-        var page = Context.RenderComponent<RoomsList>();
+        var page = Context.RenderComponent<RoomsListView>();
 
         Eventually.Assert(() =>
         {
@@ -50,7 +50,7 @@ public class RoomsListTest : HausSiteTestContext
             new ListResult<RoomModel>([HausModelFactory.RoomModel() with { Name = "Living Room" }])
         );
 
-        var page = Context.RenderComponent<RoomsList>();
+        var page = Context.RenderComponent<RoomsListView>();
 
         Eventually.Assert(() =>
         {
@@ -66,7 +66,7 @@ public class RoomsListTest : HausSiteTestContext
             new ListResult<RoomModel>([HausModelFactory.RoomModel() with { Id = 78 }])
         );
 
-        var page = Context.RenderComponent<RoomsList>();
+        var page = Context.RenderComponent<RoomsListView>();
         await page.InvokeAsync(async () =>
         {
             await page.FindByComponent<MudListItem<RoomModel>>().Instance.OnClick.InvokeAsync(new MouseEventArgs());

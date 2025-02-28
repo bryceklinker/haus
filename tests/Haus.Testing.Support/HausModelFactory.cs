@@ -1,8 +1,10 @@
 using Bogus;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
+using Haus.Core.Models.Health;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Haus.Testing.Support;
 
@@ -42,5 +44,23 @@ public static class HausModelFactory
     public static LightingModel LightingModel()
     {
         return new LightingModel(State: Faker.Random.Enum<LightingState>(), Level: new LevelLightingModel());
+    }
+
+    public static HausHealthReportModel HealthReportModel()
+    {
+        return new HausHealthReportModel(
+            Status: Faker.Random.Enum<HealthStatus>(),
+            DurationOfCheckInMilliseconds: Faker.Random.Double(),
+            []
+        );
+    }
+
+    public static HausHealthCheckModel HealthCheckModel()
+    {
+        return new HausHealthCheckModel(
+            Name: Faker.Hacker.Noun(),
+            Status: Faker.Random.Enum<HealthStatus>(),
+            DurationOfCheckInMilliseconds: Faker.Random.Double()
+        );
     }
 }

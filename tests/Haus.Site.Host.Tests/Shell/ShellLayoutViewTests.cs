@@ -6,12 +6,12 @@ using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Shell;
 
-public class ShellLayoutTests : HausSiteTestContext
+public class ShellLayoutViewTests : HausSiteTestContext
 {
     [Fact]
     public async Task WhenMenuIsToggledThenMenuIsClosed()
     {
-        var shell = Context.RenderComponent<ShellLayout>();
+        var shell = Context.RenderComponent<ShellLayoutView>();
 
         await shell.FindByTag("button").ClickAsync(new MouseEventArgs());
 
@@ -21,7 +21,7 @@ public class ShellLayoutTests : HausSiteTestContext
     [Fact]
     public async Task WhenMenuIsToggledTwiceThenMenuIsOpen()
     {
-        var shell = Context.RenderComponent<ShellLayout>();
+        var shell = Context.RenderComponent<ShellLayoutView>();
 
         await shell.FindByTag("button").ClickAsync(new MouseEventArgs());
         await shell.FindByTag("button").ClickAsync(new MouseEventArgs());
@@ -32,7 +32,7 @@ public class ShellLayoutTests : HausSiteTestContext
     [Fact]
     public async Task WhenThemeModeIsToggledTrueThenThemeIsDark()
     {
-        var shell = Context.RenderComponent<ShellLayout>();
+        var shell = Context.RenderComponent<ShellLayoutView>();
 
         await shell.InvokeAsync(async () =>
         {
@@ -45,7 +45,7 @@ public class ShellLayoutTests : HausSiteTestContext
     [Fact]
     public async Task WhenThemeModeIsToggledThenThemeIsLight()
     {
-        var shell = Context.RenderComponent<ShellLayout>();
+        var shell = Context.RenderComponent<ShellLayoutView>();
 
         await shell.InvokeAsync(async () =>
         {

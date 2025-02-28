@@ -1,6 +1,6 @@
 using System;
 using Haus.Api.Client;
-using Haus.Site.Host.Shared.SignalR;
+using Haus.Site.Host.Shared.Realtime;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +36,7 @@ public static class ServiceCollectionExtensions
             opts.ProviderOptions.ResponseType = "code";
             opts.ProviderOptions.AdditionalProviderParameters.Add("audience", authAudience);
         });
-        services.AddSingleton<ISignalRConnectionFactory, SignalRConnectionFactory>();
+        services.AddSingleton<IRealtimeDataFactory, SignalRRealtimeDataFactory>();
         return services;
     }
 }

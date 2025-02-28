@@ -15,7 +15,7 @@ using MudBlazor;
 
 namespace Haus.Site.Host.Tests.DeviceSimulator;
 
-public class AddSimulatedDeviceTests : HausSiteTestContext
+public class AddSimulatedDeviceViewTests : HausSiteTestContext
 {
     private const string DeviceTypesUrl = "/api/device-types";
     private const string DeviceSimulatorDevicesUrl = "/api/device-simulator/devices";
@@ -30,7 +30,7 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
             opts => opts.WithDelay(TimeSpan.FromSeconds(1))
         );
 
-        var page = Context.RenderComponent<AddSimulatedDevice>();
+        var page = Context.RenderComponent<AddSimulatedDeviceView>();
 
         Eventually.Assert(() =>
         {
@@ -43,7 +43,7 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
     {
         await SetupDeviceTypes(DeviceType.Switch, DeviceType.Light);
 
-        var page = Context.RenderComponent<AddSimulatedDevice>();
+        var page = Context.RenderComponent<AddSimulatedDeviceView>();
         OpenDeviceTypes(page);
 
         Eventually.Assert(() =>
@@ -58,7 +58,7 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
         await SetupDeviceTypes(DeviceType.Switch, DeviceType.Light);
         await SetupSaveSimulatedDevice();
 
-        var page = Context.RenderComponent<AddSimulatedDevice>();
+        var page = Context.RenderComponent<AddSimulatedDeviceView>();
         await SelectDeviceType(page, DeviceType.Switch);
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
@@ -72,7 +72,7 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
         await SetupDeviceTypes(DeviceType.Switch, DeviceType.Light);
         await SetupSaveSimulatedDevice();
 
-        var page = Context.RenderComponent<AddSimulatedDevice>();
+        var page = Context.RenderComponent<AddSimulatedDeviceView>();
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
         _savedDevices.Should().HaveCount(0);
@@ -84,7 +84,7 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
         await SetupDeviceTypes(DeviceType.Switch, DeviceType.Light);
         await SetupSaveSimulatedDevice();
 
-        var page = Context.RenderComponent<AddSimulatedDevice>();
+        var page = Context.RenderComponent<AddSimulatedDeviceView>();
         await FindAddMetadata(page).ClickAsync(new MouseEventArgs());
         await EnterMetadata(page, "external", "true");
 
@@ -126,14 +126,14 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
         );
     }
 
-    private void OpenDeviceTypes(IRenderedComponent<AddSimulatedDevice> page)
+    private void OpenDeviceTypes(IRenderedComponent<AddSimulatedDeviceView> page)
     {
         page.WaitForAssertion(() => page.FindAll("div.mud-popover").Should().HaveCountGreaterThan(0));
         page.Find("div.mud-input-control").Click();
         page.WaitForAssertion(() => page.FindAll("div.mud-popover-open").Should().HaveCountGreaterThan(0));
     }
 
-    private async Task SelectDeviceType(IRenderedComponent<AddSimulatedDevice> page, DeviceType deviceType)
+    private async Task SelectDeviceType(IRenderedComponent<AddSimulatedDeviceView> page, DeviceType deviceType)
     {
         OpenDeviceTypes(page);
 
@@ -141,17 +141,17 @@ public class AddSimulatedDeviceTests : HausSiteTestContext
         await item.ClickAsync(new MouseEventArgs());
     }
 
-    private static IElement FindSaveButton(IRenderedComponent<AddSimulatedDevice> page)
+    private static IElement FindSaveButton(IRenderedComponent<AddSimulatedDeviceView> page)
     {
         return page.FindByRole("button", opts => opts.WithText("save"));
     }
 
-    private static IElement FindAddMetadata(IRenderedComponent<AddSimulatedDevice> page)
+    private static IElement FindAddMetadata(IRenderedComponent<AddSimulatedDeviceView> page)
     {
         return page.FindByRole("button", opts => opts.WithText("add metadata"));
     }
 
-    private static async Task EnterMetadata(IRenderedComponent<AddSimulatedDevice> page, string key, string value)
+    private static async Task EnterMetadata(IRenderedComponent<AddSimulatedDeviceView> page, string key, string value)
     {
         var keyInput = page.FindByComponent<MudTextField<string>>(opts => opts.WithId("key"));
         await keyInput.InvokeAsync(() => keyInput.Instance.SetText(key));

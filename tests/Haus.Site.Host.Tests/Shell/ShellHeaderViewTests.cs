@@ -7,13 +7,13 @@ using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Shell;
 
-public class ShellHeaderTests : HausSiteTestContext
+public class ShellHeaderViewTests : HausSiteTestContext
 {
     [Fact]
     public async Task WhenMenuClickedThenNotifiesMenuToggled()
     {
         var toggled = false;
-        var header = Context.RenderComponent<ShellHeader>(p => p.Add(h => h.OnMenuToggled, () => toggled = true));
+        var header = Context.RenderComponent<ShellHeaderView>(p => p.Add(h => h.OnMenuToggled, () => toggled = true));
 
         await header.FindByTag("button").ClickAsync(new MouseEventArgs());
 
@@ -25,7 +25,7 @@ public class ShellHeaderTests : HausSiteTestContext
     {
         var themeMode = ThemeMode.Light;
 
-        var header = Context.RenderComponent<ShellHeader>(p =>
+        var header = Context.RenderComponent<ShellHeaderView>(p =>
             p.Add(h => h.OnThemeToggled, (mode) => themeMode = mode)
         );
 

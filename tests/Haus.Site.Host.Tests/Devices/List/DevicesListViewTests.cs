@@ -12,7 +12,7 @@ using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Devices.List;
 
-public class DevicesListTests : HausSiteTestContext
+public class DevicesListViewTests : HausSiteTestContext
 {
     private const string DevicesUrl = "/api/devices";
 
@@ -21,7 +21,7 @@ public class DevicesListTests : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>(), opts => opts.WithDelayMs(1000));
 
-        var page = Context.RenderComponent<DevicesList>();
+        var page = Context.RenderComponent<DevicesListView>();
 
         page.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
     }
@@ -36,7 +36,7 @@ public class DevicesListTests : HausSiteTestContext
             )
         );
 
-        var page = Context.RenderComponent<DevicesList>();
+        var page = Context.RenderComponent<DevicesListView>();
 
         Eventually.Assert(() =>
         {
@@ -54,7 +54,7 @@ public class DevicesListTests : HausSiteTestContext
             )
         );
 
-        var page = Context.RenderComponent<DevicesList>();
+        var page = Context.RenderComponent<DevicesListView>();
 
         Eventually.Assert(() =>
         {
@@ -74,7 +74,7 @@ public class DevicesListTests : HausSiteTestContext
             )
         );
 
-        var page = Context.RenderComponent<DevicesList>();
+        var page = Context.RenderComponent<DevicesListView>();
         var deviceItem = page.FindByComponent<MudListItem<DeviceModel>>();
         await page.InvokeAsync(async () =>
         {

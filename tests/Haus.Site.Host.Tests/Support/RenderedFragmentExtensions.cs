@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AngleSharp.Diffing.Extensions;
 using AngleSharp.Dom;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Support;
@@ -80,6 +82,19 @@ public static class RenderedFragmentExtensions
         where T : IComponent
     {
         return fragment.FindComponents<T>().FindByOptions(configureOptions);
+    }
+
+    public static async Task ClickAsync(this IRenderedComponent<MudButton> button)
+    {
+        await button.InvokeAsync(async () =>
+        {
+            await button.Instance.OnClick.InvokeAsync(new MouseEventArgs());
+        });
+    }
+
+    public static T? GetValue<T>(this IRenderedComponent<MudTextField<T>> field)
+    {
+        return field.Instance.Value;
     }
 
     private static string CreateRoleSelector(string role)

@@ -9,14 +9,14 @@ using Haus.Testing.Support;
 
 namespace Haus.Site.Host.Tests.Rooms.Detail;
 
-public class RoomDetailTests : HausSiteTestContext
+public class RoomDetailViewTests : HausSiteTestContext
 {
     [Fact]
     public void WhenRenderedThenShowsRoomInformation()
     {
         var room = HausModelFactory.RoomModel();
 
-        var page = Context.RenderComponent<RoomDetail>(opts =>
+        var page = Context.RenderComponent<RoomDetailView>(opts =>
         {
             opts.Add(o => o.Room, room);
         });
@@ -36,7 +36,7 @@ public class RoomDetailTests : HausSiteTestContext
         );
         var room = HausModelFactory.RoomModel() with { Id = 8 };
 
-        var page = Context.RenderComponent<RoomDetail>(opts =>
+        var page = Context.RenderComponent<RoomDetailView>(opts =>
         {
             opts.Add(o => o.Room, room);
         });
@@ -64,7 +64,7 @@ public class RoomDetailTests : HausSiteTestContext
         await HausApiHandler.SetupPutAsJson("/api/rooms/8/lighting", new { }, opts => opts.WithDelayMs(500));
 
         var room = HausModelFactory.RoomModel() with { Id = 8 };
-        var page = Context.RenderComponent<RoomDetail>(opts =>
+        var page = Context.RenderComponent<RoomDetailView>(opts =>
         {
             opts.Add(o => o.Room, room);
         });

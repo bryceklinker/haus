@@ -4,26 +4,25 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 
-namespace Haus.Site.Host.Shared.SignalR;
+namespace Haus.Site.Host.Shared.Realtime;
 
-public interface ISignalRConnectionFactory
+public interface IRealtimeDataFactory
 {
-    Task<HubConnection> CreateAsync(string hubName);
+    Task<IRealtimeDataSubscriber> CreateSubscriber(string source);
 }
 
-public class SignalRConnectionFactory(IConfiguration config, IAccessTokenProvider tokenProvider)
-    : ISignalRConnectionFactory
+public class SignalRRealtimeDataFactory(IConfiguration config, IAccessTokenProvider tokenProvider) : IRealtimeDataFactory
 {
     private string? ApiUrl => config.GetValue<string>("Api:BaseUrl");
-
-    public Task<HubConnection> CreateAsync(string hubName)
+    
+    public Task<IRealtimeDataSubscriber> CreateSubscriber(string source)
     {
         ArgumentException.ThrowIfNullOrEmpty(ApiUrl);
 
         var connection = new HubConnectionBuilder()
             .WithAutomaticReconnect()
             .WithUrl(
-                $"{ApiUrl}/hubs/{hubName}",
+                $"{ApiUrl}/hubs/{source}",
                 opts =>
                 {
                     opts.AccessTokenProvider = async () =>
@@ -34,7 +33,6 @@ public class SignalRConnectionFactory(IConfiguration config, IAccessTokenProvide
                 }
             )
             .Build();
-
-        return Task.FromResult(connection);
+        return Task.FromResult<IRealtimeDataSubscriber>(new SignalRRealtimeDataSubscriber(connection));
     }
 }

@@ -9,7 +9,7 @@ public record HausHealthCheckModel(
     string Name,
     HealthStatus Status,
     double DurationOfCheckInMilliseconds,
-    string? Description = null,
+    [property: OptionalGeneration] string? Description = null,
     string? ExceptionMessage = null,
     string[]? Tags = null
 )
@@ -20,12 +20,7 @@ public record HausHealthCheckModel(
 
     public double DurationOfCheckInSeconds => TimeSpan.FromMilliseconds(DurationOfCheckInMilliseconds).TotalSeconds;
 
-    [OptionalGeneration]
-    public string? Description { get; } = Description;
-
-    [OptionalGeneration]
-    public string? ExceptionMessage { get; } = ExceptionMessage;
-    public string[] Tags { get; } = Tags ?? [];
+    public string[] Tags { get; init; } = Tags ?? [];
 
     public static HausHealthCheckModel FromHealthReportEntry(KeyValuePair<string, HealthReportEntry> entry)
     {

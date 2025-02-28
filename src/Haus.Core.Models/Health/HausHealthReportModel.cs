@@ -15,8 +15,6 @@ public record HausHealthReportModel(
     public bool IsWarn { get; } = Status == HealthStatus.Degraded;
     public bool IsError => Status == HealthStatus.Unhealthy;
 
-    public HausHealthCheckModel[] Checks { get; } = Checks ?? Array.Empty<HausHealthCheckModel>();
-
     public double DurationOfCheckInSeconds { get; } =
         TimeSpan.FromMilliseconds(DurationOfCheckInMilliseconds).TotalSeconds;
 

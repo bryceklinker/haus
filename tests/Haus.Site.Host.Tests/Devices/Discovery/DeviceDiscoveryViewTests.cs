@@ -12,7 +12,7 @@ using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Devices.Discovery;
 
-public class DeviceDiscoveryTests : HausSiteTestContext
+public class DeviceDiscoveryViewTests : HausSiteTestContext
 {
     private const string RoomsUrl = "/api/rooms";
     private const string DevicesUrl = "/api/devices";
@@ -23,7 +23,7 @@ public class DeviceDiscoveryTests : HausSiteTestContext
         await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>(), opts => opts.WithDelayMs(1000));
         await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>(), opts => opts.WithDelayMs(1000));
 
-        var page = Context.RenderComponent<DeviceDiscovery>();
+        var page = Context.RenderComponent<DeviceDiscoveryView>();
 
         Eventually.Assert(() =>
         {
@@ -53,7 +53,7 @@ public class DeviceDiscoveryTests : HausSiteTestContext
             )
         );
 
-        var page = Context.RenderComponent<DeviceDiscovery>();
+        var page = Context.RenderComponent<DeviceDiscoveryView>();
 
         Eventually.Assert(() =>
         {
@@ -92,7 +92,7 @@ public class DeviceDiscoveryTests : HausSiteTestContext
             )
         );
 
-        var page = Context.RenderComponent<DeviceDiscovery>();
+        var page = Context.RenderComponent<DeviceDiscoveryView>();
 
         Eventually.Assert(() =>
         {
@@ -118,7 +118,7 @@ public class DeviceDiscoveryTests : HausSiteTestContext
             opts => opts.WithCapture(r => postRequest = r)
         );
 
-        var page = Context.RenderComponent<DeviceDiscovery>();
+        var page = Context.RenderComponent<DeviceDiscoveryView>();
         var unAssignedZone = page.FindByComponent<MudDropZone<DeviceModel>>(opts =>
             opts.WithText("unassigned devices")
         );

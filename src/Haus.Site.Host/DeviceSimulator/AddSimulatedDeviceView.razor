@@ -11,7 +11,7 @@
 
 <MudPopoverProvider />
 
-<LoadingContent IsLoading="IsLoading" LoadingText="Loading Device Types...">
+<LoadingContentView IsLoading="IsLoading" LoadingText="Loading Device Types...">
     <MudPaper>
         <MudForm>
             <MudSelect Required @bind-Value="DeviceType"  onvaRequiredError="You must select a device type">
@@ -26,7 +26,7 @@
                 </MudButton>
             </MudPaper>
             
-            <EditableMetadataList @bind-Items="Metadata" />
+            <EditableMetadataListView @bind-Items="Metadata" />
         </MudForm>    
     </MudPaper>
     <MudPaper>
@@ -36,7 +36,7 @@
             Save
         </MudButton>
     </MudPaper>
-</LoadingContent>
+</LoadingContentView>
 
 @code {
     public bool IsLoading { get; set; }

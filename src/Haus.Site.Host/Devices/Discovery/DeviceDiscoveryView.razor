@@ -8,7 +8,7 @@
 @inject IDeviceApiClient DevicesClient;
 @inject IRoomsApiClient RoomsClient;
 
-<LoadingContent IsLoading="IsLoading" LoadingText="Loading rooms and devices...">
+<LoadingContentView IsLoading="IsLoading" LoadingText="Loading rooms and devices...">
     <MudDropContainer T="DeviceModel" Items="Devices" ItemsSelector="IsDeviceInRoom" ItemDropped="HandleDeviceDropped">
         <ChildContent>
             @foreach (var room in Rooms)
@@ -26,7 +26,7 @@
             <MudPaper Class="device" >@context.DisplayText</MudPaper>
         </ItemRenderer>
     </MudDropContainer>
-</LoadingContent>
+</LoadingContentView>
 
 
 @code {
