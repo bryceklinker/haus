@@ -1,5 +1,15 @@
 <MudDrawer Open="IsOpen">
-
+    <MudNavMenu>
+        <MudNavLink Href="/welcome">Welcome</MudNavLink>
+        <AuthorizeView>
+            <Authorized>
+                <MudNavLink Href="/devices">Devices</MudNavLink>
+                <MudNavLink Href="/device-simulator">Device Simulator</MudNavLink>
+                <MudNavLink Href="/health">Health</MudNavLink>
+                <MudNavLink Href="/rooms">Rooms</MudNavLink>
+            </Authorized>
+        </AuthorizeView>
+    </MudNavMenu>
 </MudDrawer>
 
 @code {

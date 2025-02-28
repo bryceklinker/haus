@@ -1,0 +1,11 @@
+@page "/welcome"
+@using Haus.Site.Host.Shared.Auth
+
+<AuthorizeView>
+    <Authorized>
+        <MudText Typo="Typo.h3">Welcome to Haus @context.User.Identity?.Name!</MudText>
+    </Authorized>
+    <NotAuthorized>
+        <CurrentUserView />
+    </NotAuthorized>
+</AuthorizeView>

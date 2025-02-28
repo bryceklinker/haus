@@ -1,4 +1,5 @@
 @using Haus.Site.Host.Shared.Theming
+@using Haus.Site.Host.Shared.Auth
 <MudAppBar Color="Color.Primary">
     <MudIconButton Icon="@Icons.Material.Filled.Menu"
                    Color="Color.Inherit" 
@@ -8,6 +9,7 @@
     </MudIconButton>
     <MudText Typo="Typo.h3">HAUS</MudText>
     <MudSpacer />
+    <CurrentUserView />
     <MudSwitch T="bool" Value="_isDarkMode" ValueChanged="value => HandleThemeModeChanged(value)" />
 </MudAppBar>
 

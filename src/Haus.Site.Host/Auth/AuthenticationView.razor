@@ -1,0 +1,38 @@
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Configuration
+
+@page "/authentication/{action}"
+
+@inject NavigationManager Navigation
+@inject IConfiguration Configuration
+
+<RemoteAuthenticatorView Action="@Action">
+    <CompletingLoggingIn>
+        @{
+            FinishLogin();
+        }
+    </CompletingLoggingIn>
+    <LogOut>
+        @{
+            StartLogout();
+        }
+    </LogOut>
+</RemoteAuthenticatorView>
+
+@code {
+    [Parameter] public required string Action { get; set; }
+
+    private void FinishLogin()
+    {
+        Navigation.NavigateTo("/welcome");
+    }
+    
+    private void StartLogout()
+    {
+        var domain = Configuration.GetValue<string>("Auth:Domain");
+        var clientId = Configuration.GetValue<string>("Auth:ClientId");
+        ArgumentException.ThrowIfNullOrWhiteSpace(domain);
+        ArgumentException.ThrowIfNullOrWhiteSpace(clientId);
+        Navigation.NavigateTo($"https://{domain}/v2/logout?client_id=${clientId}");
+    }
+}

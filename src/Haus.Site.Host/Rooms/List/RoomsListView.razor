@@ -4,6 +4,8 @@
 @using Haus.Core.Models.Rooms
 @using Haus.Site.Host.Rooms.Detail
 
+@attribute [Authorize]
+
 @inject IRoomsApiClient RoomsClient;
 @inject NavigationManager Navigation;
 

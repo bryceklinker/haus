@@ -9,6 +9,7 @@
   "config": {
     "web_host_client": "./src/Haus.Web.Host/client-app",
     "web_host": "./src/Haus.Web.Host",
+    "site_host": "./src/Haus.Site.Host",
     "zigbee_host": "./src/Haus.Zigbee.Host",
     "acceptance_tests": "./tests/Haus.Acceptance.Tests"
   },
@@ -16,6 +17,7 @@
     "web_host:install": "cd $npm_package_config_web_host_client && yarn install",
     "web_host:start": "cd $npm_package_config_web_host && dotnet run",
     "web_host_client:test": "cd $npm_package_config_web_host_client && yarn test",
+    "site_host:start": "cd $npm_package_config_site_host && dotnet run",
     "acceptance_tests:install": "cd $npm_package_config_acceptance_tests && yarn install",
     "acceptance_tests:test": "cd $npm_package_config_acceptance_tests && yarn test",
     "zigbee_host:start": "cd $npm_package_config_zigbee_host && dotnet run",

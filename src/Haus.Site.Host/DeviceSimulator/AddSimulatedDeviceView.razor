@@ -6,6 +6,9 @@
 @using Haus.Core.Models.Devices
 @using Haus.Core.Models.DeviceSimulator
 @using Haus.Site.Host.Shared.Metadata
+
+@attribute [Authorize]
+
 @inject IDeviceApiClient DeviceClient
 @inject IDeviceSimulatorApiClient SimulatorClient;
 

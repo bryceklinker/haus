@@ -36,7 +36,7 @@ public static class ServiceCollectionExtensions
             opts.ProviderOptions.ResponseType = "code";
             opts.ProviderOptions.AdditionalProviderParameters.Add("audience", authAudience);
         });
-        services.AddSingleton<IRealtimeDataFactory, SignalRRealtimeDataFactory>();
+        services.AddTransient<IRealtimeDataFactory, SignalRRealtimeDataFactory>();
         return services;
     }
 }

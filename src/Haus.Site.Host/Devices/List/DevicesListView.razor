@@ -1,8 +1,11 @@
 @page "/devices/{deviceId:long?}"
+
 @using Haus.Api.Client.Devices
 @using Haus.Core.Models.Common
 @using Haus.Core.Models.Devices
 @using Haus.Site.Host.Devices.Detail
+
+@attribute [Authorize]
 
 @inject NavigationManager Navigation
 @inject IDeviceApiClient DevicesClient
