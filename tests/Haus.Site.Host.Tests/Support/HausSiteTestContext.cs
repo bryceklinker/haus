@@ -10,6 +10,7 @@ using Haus.Testing.Support;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MudBlazor;
 using MudBlazor.Services;
 
 namespace Haus.Site.Host.Tests.Support;
@@ -77,5 +78,17 @@ public class HausSiteTestContext : IAsyncLifetime
     protected InMemoryRealtimeDataSubscriber GetSubscriber(string hubName)
     {
         return _realtimeDataFactory.GetSubscriber(hubName);
+    }
+
+    protected async Task<IRenderedComponent<MudDialogProvider>> RenderDialogAsync<T>()
+        where T : IComponent
+    {
+        var provider = Context.RenderComponent<MudDialogProvider>();
+        var dialogService = Context.Services.GetRequiredService<IDialogService>();
+        await provider.InvokeAsync(async () =>
+        {
+            await dialogService.ShowAsync<T>();
+        });
+        return provider;
     }
 }

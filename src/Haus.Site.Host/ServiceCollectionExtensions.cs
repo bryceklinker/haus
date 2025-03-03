@@ -1,13 +1,11 @@
 using System;
 using Haus.Api.Client;
-using Haus.Site.Host.Shared.Logging;
 using Haus.Site.Host.Shared.Realtime;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
-using Serilog;
 
 namespace Haus.Site.Host;
 
@@ -25,7 +23,6 @@ public static class ServiceCollectionExtensions
         ArgumentException.ThrowIfNullOrEmpty(authClientId, nameof(authClientId));
         ArgumentException.ThrowIfNullOrEmpty(authAudience, nameof(authAudience));
 
-        services.AddLogging(log => log.AddSerilog(HausSiteHostLogConfigurator.CreateLogger()));
         services.AddMudServices();
         services.AddScoped<AuthorizationMessageHandler>(sp =>
         {

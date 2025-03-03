@@ -1,10 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Haus.Site.Host.Shared.Logging;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
-using Serilog;
 
 namespace Haus.Site.Host.Shared.Realtime;
 
@@ -30,7 +28,6 @@ public class SignalRRealtimeDataFactory(IConfiguration config, IAccessTokenProvi
                     };
                 }
             )
-            .ConfigureLogging(log => log.AddSerilog(HausSiteHostLogConfigurator.CreateLogger()))
             .Build();
         return Task.FromResult<IRealtimeDataSubscriber>(new SignalRRealtimeDataSubscriber(connection));
     }

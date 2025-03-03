@@ -58,6 +58,11 @@ public static class RenderedFragmentExtensions
         return fragment.FindAll(CreateRoleSelector(role)).FindByOptions(configureOptions).First();
     }
 
+    public static IRenderedComponent<MudButton> FindMudButtonByText(this IRenderedFragment fragment, string text)
+    {
+        return fragment.FindByComponent<MudButton>(opts => opts.WithText(text));
+    }
+
     public static IRenderedComponent<MudTextField<T>> FindMudTextFieldById<T>(
         this IRenderedFragment fragment,
         string id
