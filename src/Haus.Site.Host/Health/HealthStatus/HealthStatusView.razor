@@ -1,8 +1,11 @@
 @using Haus.Core.Models
 @using Haus.Core.Models.Health
 @using Haus.Site.Host.Shared.Realtime
+@using Microsoft.Extensions.Logging
 
 @implements IAsyncDisposable
+
+@inject ILoggerFactory LoggerFactory
 @inject IRealtimeDataFactory RealtimeDataFactory
 
 <LoadingContentView IsLoading="State != RealtimeDataState.Connected" LoadingText="Connecting to health hub...">
@@ -27,9 +30,11 @@
     
     protected override async Task OnInitializedAsync()
     {
-        Subscriber = await RealtimeDataFactory.CreateSubscriber(HausSignalRHubNames.Health);
+        var logger = LoggerFactory.CreateLogger("health");
+        Subscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Health);
         Subscriber.Subscribe<HausHealthReportModel>("OnHealth", async report =>
         {
+            logger.LogInformation("received health report: {@Report}", report);
             await InvokeAsync(() =>
             {
                 LatestHealth = report;

@@ -1,4 +1,5 @@
 using System.IO;
+using Haus.Core.Models;
 using Haus.Hosting;
 using Haus.Web.Host.Common.Events;
 using Haus.Web.Host.Common.SignalR;
@@ -47,10 +48,10 @@ public class Startup
             .UseAuthorization()
             .UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<DiagnosticsHub>(HubPatterns.DiagnosticsHub);
-                endpoints.MapHub<DeviceSimulatorHub>(HubPatterns.DeviceSimulatorHub);
-                endpoints.MapHub<EventsHub>(HubPatterns.EventsHub);
-                endpoints.MapHub<HealthHub>(HubPatterns.HealthHub);
+                endpoints.MapHub<DiagnosticsHub>(HausRealtimeSources.Diagnostics);
+                endpoints.MapHub<DeviceSimulatorHub>(HausRealtimeSources.DeviceSimulator);
+                endpoints.MapHub<EventsHub>(HausRealtimeSources.Events);
+                endpoints.MapHub<HealthHub>(HausRealtimeSources.Health);
                 endpoints.MapControllers();
             });
 

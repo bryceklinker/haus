@@ -10,7 +10,7 @@ public class HealthViewTests : HausSiteTestContext
     [Fact]
     public void WhenRenderedThenShowsCurrentHealth()
     {
-        var hub = GetSubscriber(HausSignalRHubNames.Health);
+        var hub = GetSubscriber(HausRealtimeSources.Health);
 
         RenderView<HealthView>();
 

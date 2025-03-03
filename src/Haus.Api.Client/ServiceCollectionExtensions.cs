@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using Haus.Api.Client.Options;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,9 +13,8 @@ public static class ServiceCollectionExtensions
     )
     {
         services.AddOptions<HausApiClientSettings>().Configure(configureSettings);
-
         services
-            .AddSingleton<IHausApiClientFactory, HausApiClientFactory>()
+            .AddTransient<IHausApiClientFactory, HausApiClientFactory>()
             .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDeviceClient())
             .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateDiagnosticsClient())
             .AddTransient(p => p.GetRequiredService<IHausApiClientFactory>().CreateRoomsClient())

@@ -16,7 +16,7 @@ public class HealthStatusViewTests : HausSiteTestContext
 
     public HealthStatusViewTests()
     {
-        _healthSubscriber = GetSubscriber(HausSignalRHubNames.Health);
+        _healthSubscriber = GetSubscriber(HausRealtimeSources.Health);
     }
 
     [Fact]

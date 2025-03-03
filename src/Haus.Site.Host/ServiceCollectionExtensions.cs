@@ -1,10 +1,13 @@
 using System;
 using Haus.Api.Client;
+using Haus.Site.Host.Shared.Logging;
 using Haus.Site.Host.Shared.Realtime;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
+using Serilog;
 
 namespace Haus.Site.Host;
 
@@ -22,13 +25,23 @@ public static class ServiceCollectionExtensions
         ArgumentException.ThrowIfNullOrEmpty(authClientId, nameof(authClientId));
         ArgumentException.ThrowIfNullOrEmpty(authAudience, nameof(authAudience));
 
+        services.AddLogging(log => log.AddSerilog(HausSiteHostLogConfigurator.CreateLogger()));
         services.AddMudServices();
+        services.AddScoped<AuthorizationMessageHandler>(sp =>
+        {
+            var tokenProvider = sp.GetRequiredService<IAccessTokenProvider>();
+            var navigation = sp.GetRequiredService<NavigationManager>();
+            var handler = new AuthorizationMessageHandler(tokenProvider, navigation);
+            handler.ConfigureHandler([apiUrl]);
+            return handler;
+        });
         services
             .AddHausApiClient(opts =>
             {
                 opts.BaseUrl = apiUrl;
             })
-            .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+            .AddHttpMessageHandler<AuthorizationMessageHandler>();
+
         services.AddOidcAuthentication(opts =>
         {
             opts.ProviderOptions.ClientId = authClientId;
@@ -36,7 +49,7 @@ public static class ServiceCollectionExtensions
             opts.ProviderOptions.ResponseType = "code";
             opts.ProviderOptions.AdditionalProviderParameters.Add("audience", authAudience);
         });
-        services.AddTransient<IRealtimeDataFactory, SignalRRealtimeDataFactory>();
+        services.AddScoped<IRealtimeDataFactory, SignalRRealtimeDataFactory>();
         return services;
     }
 }
