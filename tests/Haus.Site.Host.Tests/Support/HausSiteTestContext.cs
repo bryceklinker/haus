@@ -20,6 +20,8 @@ public class HausSiteTestContext : IAsyncLifetime
     private readonly InMemoryHttpClientFactory _httpClientFactory;
     private readonly InMemoryRealtimeDataFactory _realtimeDataFactory;
     protected TestContext Context { get; }
+
+    protected TestAuthorizationContext AuthContext { get; }
     protected InMemoryHttpMessageHandler HausApiHandler => _httpClientFactory.GetHandler(HausApiClientNames.Default);
 
     protected IRenderedComponent<T> RenderView<T>(
@@ -41,6 +43,12 @@ public class HausSiteTestContext : IAsyncLifetime
             opts.SnackbarConfiguration.HideTransitionDuration = 0;
             opts.PopoverOptions.CheckForPopoverProvider = false;
         });
+
+        Context.Services.AddCascadingAuthenticationState();
+        Context.Services.AddAuthorizationCore();
+        AuthContext = Context.AddTestAuthorization();
+        AuthContext.SetAuthorized("bob");
+
         Context.Services.AddHausApiClient(opts =>
         {
             opts.BaseUrl = ConfigureHttpResponseOptions.DefaultBaseUrl;

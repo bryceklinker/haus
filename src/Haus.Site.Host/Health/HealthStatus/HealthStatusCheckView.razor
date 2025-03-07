@@ -1,27 +1,23 @@
 @using Haus.Core.Models.Health
 
-<MudPaper>
-    <MudButton OnClick="() => IsExpanded = !IsExpanded">
-        @Check.Name
-    </MudButton>
-    
-    <MudCollapse Expanded="IsExpanded">
-        <MudTextField T="string"
-                      InputId="description"
-                      Value="@Check.Description" />
-        <MudTextField T="double"
-                      InputId="duration"
-                      Value="@Check.DurationOfCheckInSeconds" />
-        <MudTextField T="string"
-                      InputId="error"
-                      Value="@Check.ExceptionMessage" />
-    </MudCollapse>
-</MudPaper>
 
+@if (Check != null)
+{
+    <MudExpansionPanels>
+        <MudExpansionPanel Text="@Check.Name">
+            <MudTextField T="string"
+                          InputId="description"
+                          Value="@Check.Description"/>
+            <MudTextField T="double?"
+                          InputId="duration"
+                          Value="@Check.DurationOfCheckInSeconds"/>
+            <MudTextField T="string"
+                          InputId="error"
+                          Value="@Check.ExceptionMessage"/>
+        </MudExpansionPanel>
+    </MudExpansionPanels>   
+}
 
 @code {
-    [Parameter]
-    public required HausHealthCheckModel Check { get; set; }
-    
-    private bool IsExpanded { get; set; }
+    [Parameter] public HausHealthCheckModel? Check { get; set; }
 }

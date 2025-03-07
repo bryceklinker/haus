@@ -94,15 +94,14 @@ public class HealthStatusViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await view.FindByComponent<MudButton>().ClickAsync();
+            await view.FindByComponent<MudExpansionPanel>().Instance.ToggleExpansionAsync();
         });
 
         Eventually.Assert(() =>
         {
-            view.FindByComponent<MudCollapse>().Instance.Expanded.Should().BeTrue();
-            view.FindComponent<MudButton>().Nodes.ToHtml().Should().Contain(check.Name);
+            view.FindByComponent<MudExpansionPanel>().Instance.Text.Should().Be(check.Name);
             view.FindMudTextFieldById<string>("description").GetValue().Should().Be("hello");
-            view.FindMudTextFieldById<double>("duration").GetValue().Should().Be(9);
+            view.FindMudTextFieldById<double?>("duration").GetValue().Should().Be(9);
             view.FindMudTextFieldById<string>("error").GetValue().Should().Be("bad things");
         });
     }

@@ -11,6 +11,6 @@ public class ShellDrawerViewTests : HausSiteTestContext
     {
         var view = RenderView<ShellDrawerView>();
 
-        view.FindAllByComponent<MudNavLink>().Should().HaveCount(4);
+        view.FindAllByComponent<MudNavLink>().Should().HaveCount(5);
     }
 }

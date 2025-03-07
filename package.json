@@ -26,8 +26,8 @@
     "postinstall": "yarn web_host:install && yarn acceptance_tests:install",
     "dotnet:test": "dotnet test",
     "test": "yarn dotnet:test && yarn web_host_client:test && yarn acceptance_tests:test",
-    "start": "concurrently -c \"green.bold,yellow.bold\" \"npm:*:start\"",
-    "start:watch": "concurrently -c \"green.bold,yellow.bold\" \"npm:*:start:watch\"",
+    "start": "concurrently -c \"green.bold,blue.bold,yellow.bold\" \"npm:*:start\"",
+    "start:watch": "concurrently -c \"green.bold,blue.bold,yellow.bold\" \"npm:*:start:watch\"",
     "prestart:docker": "./scripts/publish-app.sh"
   },
   "devDependencies": {

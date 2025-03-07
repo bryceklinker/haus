@@ -1,15 +1,15 @@
 @using Haus.Site.Host.Shared.Theming
 @inherits LayoutComponentBase
 
-<MudThemeProvider IsDarkMode="IsDarkMode" Theme="_theme" />
-<MudPopoverProvider />
-<MudSnackbarProvider />
-<MudDialogProvider />
+<MudThemeProvider IsDarkMode="IsDarkMode" Theme="_theme"/>
+<MudPopoverProvider/>
+<MudSnackbarProvider/>
+<MudDialogProvider/>
 
-<MudLayout>
-    <ShellHeaderView OnMenuToggled="HandleToggleDrawer"  ThemeMode="_themeMode" OnThemeToggled="HandleToggleThemeMode" />
-    <ShellDrawerView IsOpen="_isDrawerOpen" />
-    
+<MudLayout Class="d-flex flex-1">
+    <ShellHeaderView OnMenuToggled="HandleToggleDrawer" ThemeMode="_themeMode" OnThemeToggled="HandleToggleThemeMode"/>
+    <ShellDrawerView IsOpen="_isDrawerOpen"/>
+
     <MudMainContent>
         @Body
     </MudMainContent>
@@ -31,4 +31,5 @@
     {
         _themeMode = mode;
     }
+
 }

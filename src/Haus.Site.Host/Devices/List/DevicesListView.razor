@@ -11,20 +11,22 @@
 @inject IDeviceApiClient DevicesClient
 
 <LoadingContentView IsLoading="IsLoading">
-    <MudList T="DeviceModel">
-        @foreach (var device in Devices.Items)
-        {
-            <MudListItem T="DeviceModel"
-                         Text="@device.Name"
-                         SecondaryText="@device.DeviceType.Humanize(LetterCasing.Title)"
-                         OnClick="() => HandleDeviceSelected(device)"/>
-        }
-    </MudList>
+    <MudPaper Class="d-flex flex-row" >
+        <MudList T="DeviceModel">
+            @foreach (var device in Devices.Items)
+            {
+                <MudListItem T="DeviceModel"
+                             Text="@device.Name"
+                             SecondaryText="@device.DeviceType.Humanize(LetterCasing.Title)"
+                             OnClick="() => HandleDeviceSelected(device)"/>
+            }
+        </MudList>
 
-    @if (SelectedDevice != null)
-    {
-        <DeviceDetailView Device="SelectedDevice"/>
-    }
+        @if (SelectedDevice != null)
+        {
+            <DeviceDetailView Device="SelectedDevice"/>
+        }
+    </MudPaper>
 </LoadingContentView>
 
 
@@ -53,4 +55,5 @@
     {
         Navigation.NavigateTo($"/devices/{device.Id}");
     }
+
 }

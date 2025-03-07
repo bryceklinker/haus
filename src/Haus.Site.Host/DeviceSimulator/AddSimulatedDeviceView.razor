@@ -17,7 +17,7 @@
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading Device Types...">
     <MudPaper>
         <MudForm>
-            <MudSelect Required @bind-Value="DeviceType"  onvaRequiredError="You must select a device type">
+            <MudSelect Required @bind-Value="DeviceType" RequiredError="You must select a device type">
                 @foreach (var type in DeviceTypes.Items)
                 {
                     <MudSelectItem T="DeviceType?" Value="type"/>

@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using Haus.Core.Models;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Haus.Site.Host.Shared.Realtime;
 
@@ -17,6 +19,10 @@ public class SignalRRealtimeDataFactory(IConfiguration config, IAccessTokenProvi
 
         var connection = new HubConnectionBuilder()
             .WithAutomaticReconnect()
+            .AddJsonProtocol(opts =>
+            {
+                opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
+            })
             .WithUrl(
                 $"{ApiUrl}{source}",
                 opts =>

@@ -44,7 +44,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         await SetupDeviceTypes(DeviceType.Switch, DeviceType.Light);
 
         var page = Context.RenderComponent<AddSimulatedDeviceView>();
-        OpenDeviceTypes(page);
+        await OpenDeviceTypes(page);
 
         Eventually.Assert(() =>
         {
@@ -126,19 +126,22 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         );
     }
 
-    private void OpenDeviceTypes(IRenderedComponent<AddSimulatedDeviceView> page)
+    private async Task OpenDeviceTypes(IRenderedComponent<AddSimulatedDeviceView> view)
     {
-        page.WaitForAssertion(() => page.FindAll("div.mud-popover").Should().HaveCountGreaterThan(0));
-        page.Find("div.mud-input-control").Click();
-        page.WaitForAssertion(() => page.FindAll("div.mud-popover-open").Should().HaveCountGreaterThan(0));
+        await view.InvokeAsync(async () =>
+        {
+            await view.FindByComponent<MudSelect<DeviceType?>>().Instance.OpenMenu();
+        });
     }
 
-    private async Task SelectDeviceType(IRenderedComponent<AddSimulatedDeviceView> page, DeviceType deviceType)
+    private async Task SelectDeviceType(IRenderedComponent<AddSimulatedDeviceView> view, DeviceType deviceType)
     {
-        OpenDeviceTypes(page);
+        await OpenDeviceTypes(view);
 
-        var item = page.FindAllByClass("mud-list-item").First(i => i.TextContent.Contains(deviceType.ToString()));
-        await item.ClickAsync(new MouseEventArgs());
+        await view.InvokeAsync(async () =>
+        {
+            await view.FindByComponent<MudSelect<DeviceType?>>().Instance.ValueChanged.InvokeAsync(deviceType);
+        });
     }
 
     private static IElement FindSaveButton(IRenderedComponent<AddSimulatedDeviceView> page)

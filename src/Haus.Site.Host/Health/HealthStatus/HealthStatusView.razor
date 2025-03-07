@@ -5,41 +5,36 @@
 
 @implements IAsyncDisposable
 
-@inject ILoggerFactory LoggerFactory
 @inject IRealtimeDataFactory RealtimeDataFactory
 
 <LoadingContentView IsLoading="State != RealtimeDataState.Connected" LoadingText="Connecting to health hub...">
-    <MudPaper>
-        <MudText Class="health-status">@LatestHealth?.Status</MudText>
-        
-        @foreach (var check in HealthChecks)
-        {
-            <HealthStatusCheckView Check="check" />
-        }
-    </MudPaper>
+    @if (LatestHealth != null)
+    {
+        <MudPaper>
+            <MudText Class="health-status">@LatestHealth.Status</MudText>
+
+            @foreach (var check in LatestHealth.Checks)
+            {
+                <HealthStatusCheckView Check="check"/>
+            }
+        </MudPaper>
+    }
 </LoadingContentView>
 
 @code {
     private RealtimeDataState State => Subscriber?.State ?? RealtimeDataState.Disconnected;
-    
+
     private IRealtimeDataSubscriber? Subscriber { get; set; }
-    
+
     private HausHealthReportModel? LatestHealth { get; set; }
 
-    private HausHealthCheckModel[] HealthChecks => LatestHealth?.Checks ?? [];
-    
     protected override async Task OnInitializedAsync()
     {
-        var logger = LoggerFactory.CreateLogger("health");
         Subscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Health);
         Subscriber.Subscribe<HausHealthReportModel>("OnHealth", async report =>
         {
-            logger.LogInformation("received health report: {@Report}", report);
-            await InvokeAsync(() =>
-            {
-                LatestHealth = report;
-                StateHasChanged();
-            });
+            LatestHealth = report;
+            await InvokeAsync(StateHasChanged);
         });
         await Subscriber.StartAsync();
     }

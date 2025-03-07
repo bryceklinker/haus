@@ -39,13 +39,17 @@ public static class ServiceCollectionExtensions
             })
             .AddHttpMessageHandler<AuthorizationMessageHandler>();
 
-        services.AddOidcAuthentication(opts =>
-        {
-            opts.ProviderOptions.ClientId = authClientId;
-            opts.ProviderOptions.Authority = $"https://{authDomain}";
-            opts.ProviderOptions.ResponseType = "code";
-            opts.ProviderOptions.AdditionalProviderParameters.Add("audience", authAudience);
-        });
+        services
+            .AddCascadingAuthenticationState()
+            .AddAuthorizationCore()
+            .AddOidcAuthentication(opts =>
+            {
+                opts.ProviderOptions.ClientId = authClientId;
+                opts.ProviderOptions.Authority = $"https://{authDomain}";
+                opts.ProviderOptions.ResponseType = "code";
+                opts.ProviderOptions.AdditionalProviderParameters.Add("audience", authAudience);
+            });
+
         services.AddScoped<IRealtimeDataFactory, SignalRRealtimeDataFactory>();
         return services;
     }
