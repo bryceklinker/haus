@@ -11,7 +11,10 @@
 @inject IDeviceApiClient DevicesClient
 
 <LoadingContentView IsLoading="IsLoading">
-    <MudPaper Class="d-flex flex-row" >
+    <MudPaper Class="d-flex flex-row">
+        <MudAppBar>
+            <MudNavLink Href="/devices/discovery">Discovery</MudNavLink>
+        </MudAppBar>
         <MudList T="DeviceModel">
             @foreach (var device in Devices.Items)
             {

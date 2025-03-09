@@ -21,7 +21,7 @@ public class DevicesListViewTests : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>(), opts => opts.WithDelayMs(1000));
 
-        var page = Context.RenderComponent<DevicesListView>();
+        var page = RenderView<DevicesListView>();
 
         page.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
     }
@@ -36,7 +36,7 @@ public class DevicesListViewTests : HausSiteTestContext
             )
         );
 
-        var page = Context.RenderComponent<DevicesListView>();
+        var page = RenderView<DevicesListView>();
 
         Eventually.Assert(() =>
         {
@@ -54,7 +54,7 @@ public class DevicesListViewTests : HausSiteTestContext
             )
         );
 
-        var page = Context.RenderComponent<DevicesListView>();
+        var page = RenderView<DevicesListView>();
 
         Eventually.Assert(() =>
         {
@@ -74,7 +74,7 @@ public class DevicesListViewTests : HausSiteTestContext
             )
         );
 
-        var page = Context.RenderComponent<DevicesListView>();
+        var page = RenderView<DevicesListView>();
         var deviceItem = page.FindByComponent<MudListItem<DeviceModel>>();
         await page.InvokeAsync(async () =>
         {
@@ -85,6 +85,20 @@ public class DevicesListViewTests : HausSiteTestContext
         {
             var navigation = page.Services.GetRequiredService<FakeNavigationManager>();
             navigation.Uri.Should().EndWith("/devices/5");
+        });
+    }
+
+    [Fact]
+    public async Task WhenDiscoveryIsTriggeredThenNavigatesToDiscoveryPage()
+    {
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>());
+
+        var view = RenderView<DevicesListView>();
+
+        Eventually.Assert(() =>
+        {
+            var navLink = view.FindByComponent<MudNavLink>(opts => opts.WithText("discovery"));
+            navLink.Instance.Href.Should().Contain("/devices/discovery");
         });
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions.Common;
 using Haus.Api.Client;
 using Haus.Site.Host.Shared.Realtime;
 using Haus.Site.Host.Tests.Support.Http;
@@ -20,9 +21,9 @@ public class HausSiteTestContext : IAsyncLifetime
     private readonly InMemoryHttpClientFactory _httpClientFactory;
     private readonly InMemoryRealtimeDataFactory _realtimeDataFactory;
     protected TestContext Context { get; }
-
     protected TestAuthorizationContext AuthContext { get; }
     protected InMemoryHttpMessageHandler HausApiHandler => _httpClientFactory.GetHandler(HausApiClientNames.Default);
+    protected FakeNavigationManager NavigationManager => Context.Services.GetRequiredService<FakeNavigationManager>();
 
     protected IRenderedComponent<T> RenderView<T>(
         Action<ComponentParameterCollectionBuilder<T>>? parameterBuilder = null
@@ -46,6 +47,7 @@ public class HausSiteTestContext : IAsyncLifetime
 
         Context.Services.AddCascadingAuthenticationState();
         Context.Services.AddAuthorizationCore();
+
         AuthContext = Context.AddTestAuthorization();
         AuthContext.SetAuthorized("bob");
 
