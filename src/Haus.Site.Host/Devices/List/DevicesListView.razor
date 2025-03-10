@@ -12,10 +12,11 @@
 
 <LoadingContentView IsLoading="IsLoading">
     <MudPaper Class="d-flex flex-row">
-        <MudAppBar>
-            <MudNavLink Href="/devices/discovery">Discovery</MudNavLink>
-        </MudAppBar>
+        
         <MudList T="DeviceModel">
+            <MudToolBar>
+                <MudNavLink Href="/devices/discovery">Discovery</MudNavLink>
+            </MudToolBar>
             @foreach (var device in Devices.Items)
             {
                 <MudListItem T="DeviceModel"
