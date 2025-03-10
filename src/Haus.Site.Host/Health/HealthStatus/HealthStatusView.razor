@@ -1,7 +1,6 @@
 @using Haus.Core.Models
 @using Haus.Core.Models.Health
 @using Haus.Site.Host.Shared.Realtime
-@using Microsoft.Extensions.Logging
 
 @implements IAsyncDisposable
 
@@ -11,8 +10,11 @@
     @if (LatestHealth != null)
     {
         <MudPaper>
-            <MudText Class="health-status">@LatestHealth.Status</MudText>
-
+            <MudText Typo="Typo.h5"
+                     Style="@($"background-color: {HealthStatusExtensions.ToColor(LatestHealth.Status, Theme)}")"
+                     Class="pa-4 rounded">
+                @LatestHealth.Status
+            </MudText>
             @foreach (var check in LatestHealth.Checks)
             {
                 <HealthStatusCheckView Check="check"/>
@@ -27,6 +29,7 @@
     private IRealtimeDataSubscriber? Subscriber { get; set; }
 
     private HausHealthReportModel? LatestHealth { get; set; }
+    [CascadingParameter] private MudTheme? Theme { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

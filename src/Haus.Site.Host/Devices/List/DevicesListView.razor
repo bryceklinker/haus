@@ -11,26 +11,29 @@
 @inject IDeviceApiClient DevicesClient
 
 <LoadingContentView IsLoading="IsLoading">
-    <MudPaper Class="d-flex flex-row">
+    <MudGrid>
+        <MudItem xs="4">
+            <MudList T="DeviceModel">
+                <MudToolBar>
+                    <MudNavLink Href="/devices/discovery">Discovery</MudNavLink>
+                </MudToolBar>
+                @foreach (var device in Devices.Items)
+                {
+                    <MudListItem T="DeviceModel"
+                                 Text="@device.Name"
+                                 SecondaryText="@device.DeviceType.Humanize(LetterCasing.Title)"
+                                 OnClick="() => HandleDeviceSelected(device)"/>
+                }
+            </MudList>    
+        </MudItem>
         
-        <MudList T="DeviceModel">
-            <MudToolBar>
-                <MudNavLink Href="/devices/discovery">Discovery</MudNavLink>
-            </MudToolBar>
-            @foreach (var device in Devices.Items)
+        <MudItem xs="8">
+            @if (SelectedDevice != null)
             {
-                <MudListItem T="DeviceModel"
-                             Text="@device.Name"
-                             SecondaryText="@device.DeviceType.Humanize(LetterCasing.Title)"
-                             OnClick="() => HandleDeviceSelected(device)"/>
-            }
-        </MudList>
-
-        @if (SelectedDevice != null)
-        {
-            <DeviceDetailView Device="SelectedDevice"/>
-        }
-    </MudPaper>
+                <DeviceDetailView Device="SelectedDevice"/>
+            }    
+        </MudItem>
+    </MudGrid>
 </LoadingContentView>
 
 

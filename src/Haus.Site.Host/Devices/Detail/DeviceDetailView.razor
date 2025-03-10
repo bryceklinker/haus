@@ -1,24 +1,42 @@
 @using Haus.Core.Models.Devices
 @using Haus.Site.Host.Shared.Metadata
 
-<MudPaper Class="device-detail d-flex flex-column flex-1">
-    <MudTextField T="string"
-                  InputId="name"
-                  Value="Device.Name" />
-    <MudTextField T="DeviceType?"
-                  InputId="deviceType"
-                  Value="Device.DeviceType" />
-    <MudTextField T="string"
-                  InputId="externalId"
-                  Value="Device.ExternalId" />
-    <MudTextField T="LightType"
-                  InputId="lightType"
-                  Value="Device.LightType" />
-    <MudTextField T="long?"
-                  InputId="roomId"
-                  Value="Device.RoomId" />
+<MudPaper Class="pa-4 device-detail">
+    <MudText Typo="Typo.h5">Device Details</MudText>
     
-    <EditableMetadataListView Items="Device.Metadata" />
+    <MudTextField T="string"
+                  FullWidth="true"
+                  Label="Name"
+                  InputId="name"
+                  Value="Device.Name"/>
+    <MudTextField T="DeviceType?"
+                  Label="Device Type"
+                  FullWidth="true"
+                  InputId="deviceType"
+                  Value="Device.DeviceType"/>
+    <MudTextField T="string"
+                  Label="External Id"
+                  FullWidth="true"
+                  InputId="externalId"
+                  Value="Device.ExternalId"/>
+    <MudTextField T="LightType"
+                  Label="Light Type"
+                  FullWidth="true"
+                  InputId="lightType"
+                  Value="Device.LightType"/>
+    <MudTextField T="long?"
+                  Label="Room Id"
+                  FullWidth="true"
+                  InputId="roomId"
+                  Value="Device.RoomId"/>
+
+    @if (Device.Metadata.Length > 0)
+    {
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h4">Metadata</MudText>
+            <EditableMetadataListView Items="Device.Metadata"/>
+        </MudPaper>    
+    }
 </MudPaper>
 
 @code {

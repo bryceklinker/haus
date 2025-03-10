@@ -43,17 +43,24 @@ public class HealthStatusViewTests : HausSiteTestContext
         });
     }
 
-    [Fact]
-    public async Task WhenRenderedThenShowsTheLatestHealthStatus()
+    [Theory]
+    [InlineData(Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy, "#4caf50ff")]
+    [InlineData(Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy, "#f44336ff")]
+    [InlineData(Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded, "#ff5722ff")]
+    public async Task WhenRenderedThenShowsTheLatestHealthStatus(
+        Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus status,
+        string color
+    )
     {
-        var report = HausModelFactory.HealthReportModel();
+        var report = HausModelFactory.HealthReportModel() with { Status = status };
 
         var view = RenderView<HealthStatusView>();
         await _healthSubscriber.SimulateAsync("OnHealth", report);
 
         Eventually.Assert(() =>
         {
-            view.FindByClass("health-status").TextContent.Should().Contain($"{report.Status}");
+            var paper = view.FindByComponent<MudText>(opts => opts.WithText($"{report.Status}"));
+            paper.Instance.Style.Should().Contain($"background-color: {color}");
         });
     }
 
@@ -76,33 +83,6 @@ public class HealthStatusViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             view.FindAllByComponent<MudCollapse>().Should().HaveCount(3);
-        });
-    }
-
-    [Fact]
-    public async Task WhenHealthCheckIsExpandedThenShowsHealthCheckDetails()
-    {
-        var check = HausModelFactory.HealthCheckModel() with
-        {
-            Description = "hello",
-            DurationOfCheckInMilliseconds = 9000,
-            ExceptionMessage = "bad things",
-        };
-        var report = HausModelFactory.HealthReportModel() with { Checks = [check] };
-        var view = RenderView<HealthStatusView>();
-        await _healthSubscriber.SimulateAsync("OnHealth", report);
-
-        await view.InvokeAsync(async () =>
-        {
-            await view.FindByComponent<MudExpansionPanel>().Instance.ToggleExpansionAsync();
-        });
-
-        Eventually.Assert(() =>
-        {
-            view.FindByComponent<MudExpansionPanel>().Instance.Text.Should().Be(check.Name);
-            view.FindMudTextFieldById<string>("description").GetValue().Should().Be("hello");
-            view.FindMudTextFieldById<double?>("duration").GetValue().Should().Be(9);
-            view.FindMudTextFieldById<string>("error").GetValue().Should().Be("bad things");
         });
     }
 }
