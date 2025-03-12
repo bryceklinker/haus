@@ -2,32 +2,39 @@
 @using Haus.Api.Client.Rooms
 @using Haus.Core.Models.Common
 @using Haus.Core.Models.Rooms
+@using Haus.Site.Host.Rooms.AddRoom
 @using Haus.Site.Host.Rooms.Detail
 
 @attribute [Authorize]
 
+@inject IDialogService DialogService;
 @inject IRoomsApiClient RoomsClient;
 @inject NavigationManager Navigation;
 
 <LoadingContentView IsLoading="IsLoading" LoadingText="loading rooms...">
-    <MudList T="RoomModel">
-        @foreach (var room in Rooms.Items)
-        {
-            <MudListItem T="RoomModel" 
-                         Text="@room.Name"
-                         OnClick="() => HandleRoomSelected(room)"/>
-        }
-    </MudList>
-    
-    @if (SelectedRoom != null)
-    {
-        <RoomDetailView Room="SelectedRoom" />
-    }
+    <MudGrid>
+        <MudItem xs="3">
+            <MudList T="RoomModel">
+                @foreach (var room in Rooms.Items)
+                {
+                    <MudListItem T="RoomModel"
+                                 Text="@room.Name"
+                                 OnClick="() => HandleRoomSelected(room)"/>
+                }
+            </MudList>
+            <MudFab StartIcon="@Icons.Material.Filled.Add" OnClick="HandleAddRoom"/>
+        </MudItem>
+        <MudItem xs="9">
+            @if (SelectedRoom != null)
+            {
+                <RoomDetailView Room="SelectedRoom"/>
+            }
+        </MudItem>
+    </MudGrid>
 </LoadingContentView>
 
 @code {
-    [Parameter]
-    public long? RoomId { get; set; }
+    [Parameter] public long? RoomId { get; set; }
 
     private bool IsLoading { get; set; }
     private ListResult<RoomModel> Rooms { get; set; } = new();
@@ -51,4 +58,10 @@
     {
         Navigation.NavigateTo($"/rooms/{room.Id}");
     }
+
+    private async Task HandleAddRoom()
+    {
+        await DialogService.ShowAsync<AddRoomDialogView>();
+    }
+
 }

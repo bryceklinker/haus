@@ -5,31 +5,31 @@
 
 @inject IRoomsApiClient RoomsClient;
 
-<MudPaper>
-    <MudTextField T="string" InputId="name" Value="Room.Name" />
-    
-    <MudTextField T="int" InputId="occupancyTimeout" Value="Room.OccupancyTimeoutInSeconds" />
-    
-    <LightingView Lighting="Room.Lighting"
-                  Disabled="IsUpdatingLighting"
-                  OnLightingChanged="HandleLightingChanged"/>
-</MudPaper>
+<MudGrid Class="pa-4">
+    <MudItem xs="12">
+        <MudTextField T="string" InputId="name" Label="Name" Value="Room.Name"/>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField T="int" InputId="occupancyTimeout" Label="Occupancy Timeout" Value="Room.OccupancyTimeoutInSeconds"/>
+    </MudItem>
+    <MudItem xs="12">
+        <LightingView Lighting="Room.Lighting"
+                      OnLightingChanged="HandleLightingChanged"/>    
+    </MudItem>
+</MudGrid>
 
 @code {
     [Parameter]
     public required RoomModel Room { get; set; }
-    
-    public bool IsUpdatingLighting { get; set; }
 
     private async Task HandleLightingChanged(LightingModel? lighting)
     {
-        if (lighting == null)
+        if (lighting == null || lighting == Room.Lighting)
         {
             return;
         }
 
-        IsUpdatingLighting = true;
         await RoomsClient.ChangeRoomLightingAsync(Room.Id, lighting);
-        IsUpdatingLighting = false;
+        Room = await RoomsClient.GetRoomAsync(Room.Id) ?? Room;
     }
 }

@@ -1,89 +1,112 @@
 @using System.Reactive.Linq
 @using System.Reactive.Subjects
-@using System.Threading
 @using Haus.Core.Models.Lighting
 @implements IDisposable
 
-<MudPaper>
-    @if (Lighting == null)
-    {
-        <MudText Typo="Typo.h3">no lighting available</MudText>
-    }
-    else
-    {
-        <MudSwitch T="LightingState"
-                   Disabled="Disabled"
-                   Value="Lighting.State" 
-                   ValueChanged="HandleStateChanged">
-            State
-        </MudSwitch>
-        
-        <MudSlider T="double"
-                   Disabled="Disabled"
-                   Min="Lighting.Level.Min"
-                   Value="Lighting.Level.Value"
-                   Max="Lighting.Level.Max"
-                   Class="level"
-                   ValueChanged="HandleLevelChanged">
-            Level
-        </MudSlider>
-        
-        @if (Lighting.Temperature != null)
-        {
+@if (Lighting == null)
+{
+    <MudText Typo="Typo.h3">no lighting available</MudText>
+}
+else
+{
+    <MudGrid>
+        <MudItem>
+            <MudText Typo="Typo.h5">Room Lighting</MudText>
+        </MudItem>
+        <MudItem xs="12">
+            <MudSwitch T="bool"
+                       Disabled="Disabled"
+                       Value="Lighting.State == LightingState.On"
+                       ValueChanged="HandleStateChanged">
+                State (@Lighting.State)
+            </MudSwitch>
+        </MudItem>
+        <MudItem xs="12">
             <MudSlider T="double"
                        Disabled="Disabled"
-                       Min="Lighting.Temperature.Min"
-                       Value="Lighting.Temperature.Value"
-                       Max="Lighting.Temperature.Max"
-                       Class="temperature"
-                       ValueChanged="HandleTemperatureChanged" />
-        }
-        
-        @if (Lighting.Color != null)
-        {
-            <MudSlider T="byte"
-                       Disabled="Disabled"
-                       Min="0"
-                       Value="Lighting.Color.Red"
-                       Max="255"
-                       Class="red"
-                       Vertical="@true"
-                       ValueChanged="HandleRedChanged">
-                Red
+                       Min="Lighting.Level.Min"
+                       Value="Lighting.Level.Value"
+                       Max="Lighting.Level.Max"
+                       UserAttributes="@CreateSliderAttributes("level")"
+                       ValueChanged="HandleLevelChanged">
+                Level (@Lighting.Level.Value %)
             </MudSlider>
-            
-            <MudSlider T="byte"
-                       Disabled="Disabled"
-                       Min="0"
-                       Value="Lighting.Color.Green"
-                       Max="255"
-                       Class="green"
-                       Vertical="@true"
-                       ValueChanged="HandleGreenChanged">
-                Green
-            </MudSlider>
-            
-            <MudSlider T="byte"
-                       Disabled="Disabled"
-                       Min="0"
-                       Value="Lighting.Color.Blue"
-                       Max="255"
-                       Class="blue"
-                       Vertical="@true"
-                       ValueChanged="HandleBlueChanged">
-                Blue
-            </MudSlider>
-        }
-    }
-</MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            @if (Lighting.Temperature != null)
+            {
+                <MudSlider T="double"
+                           Disabled="Disabled"
+                           Min="Lighting.Temperature.Min"
+                           Value="Lighting.Temperature.Value"
+                           Max="Lighting.Temperature.Max"
+                           UserAttributes="@CreateSliderAttributes("temperature")"
+                           ValueChanged="HandleTemperatureChanged">
+                    Temperature (@Lighting.Temperature.Value K)
+                </MudSlider>
+            }
+        </MudItem>
+        <MudItem xs="12">
+            @if (Lighting.Color != null)
+            {
+                <MudGrid Class="mt-8 mb-16">
+                    <MudItem xs="2">
+                        <MudSlider T="byte"
+                                   Disabled="Disabled"
+                                   Min="0"
+                                   Value="Lighting.Color.Red"
+                                   Max="255"
+                                   UserAttributes="@CreateSliderAttributes("red")"
+                                   Immediate="true"
+                                   Vertical="@true"
+                                   ValueChanged="HandleRedChanged">
+                            Red (@Lighting.Color.Red.ToHex())
+                        </MudSlider>
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudSlider T="byte"
+                                   Disabled="Disabled"
+                                   Min="0"
+                                   Value="Lighting.Color.Green"
+                                   Max="255"
+                                   Immediate="true"
+                                   UserAttributes="@CreateSliderAttributes("green")"
+                                   Vertical="@true"
+                                   ValueChanged="HandleGreenChanged">
+                            Green (@Lighting.Color.Green.ToHex())
+                        </MudSlider>
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudSlider T="byte"
+                                   Disabled="Disabled"
+                                   Min="0"
+                                   Value="Lighting.Color.Blue"
+                                   Max="255"
+                                   Immediate="true"
+                                   UserAttributes="@CreateSliderAttributes("blue")"
+                                   Vertical="true"
+                                   ValueChanged="HandleBlueChanged">
+                            Blue (@Lighting.Color.Blue.ToHex())
+                        </MudSlider>
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudPaper Class="pa-16" Style="@($"background-color: {Lighting.Color.ToHex()}")" />
+                        <MudText>
+                            @Lighting.Color.ToHex()
+                        </MudText>
+                    </MudItem>
+                </MudGrid>
+            }
+        </MudItem>
+    </MudGrid>
+}
 
 @code {
     private BehaviorSubject<LightingModel?> _lightingSubject = new(null);
-    private IDisposable? _subscription;
-
-    [Parameter]
-    public bool Disabled { get; set; }
+    private IDisposable? _subscription; 
     
+    [Parameter] public bool Disabled { get; set; }
+
     [Parameter]
     public LightingModel? Lighting
     {
@@ -98,16 +121,16 @@
         ResetLightingSubject(Lighting);
     }
 
-    private void HandleStateChanged(LightingState state)
+    private void HandleStateChanged(bool state)
     {
         ArgumentNullException.ThrowIfNull(Lighting);
-        
+
         _lightingSubject.OnNext(Lighting with
         {
-            State = state
+            State = state ? LightingState.On : LightingState.Off
         });
     }
-    
+
     private void HandleLevelChanged(double level)
     {
         ArgumentNullException.ThrowIfNull(Lighting);
@@ -146,7 +169,7 @@
             }
         });
     }
-    
+
     private void HandleGreenChanged(byte green)
     {
         ArgumentNullException.ThrowIfNull(Lighting?.Color);
@@ -159,7 +182,7 @@
             }
         });
     }
-    
+
     private void HandleBlueChanged(byte blue)
     {
         ArgumentNullException.ThrowIfNull(Lighting?.Color);
@@ -172,19 +195,28 @@
             }
         });
     }
-    
+
+    private Dictionary<string, object?> CreateSliderAttributes(string id)
+    {
+        return new Dictionary<string, object?>
+        {
+            { "id", id }
+        };
+    }
+
     private void ResetLightingSubject(LightingModel? lighting)
     {
         _subscription?.Dispose();
         _lightingSubject = new BehaviorSubject<LightingModel?>(lighting);
         _subscription = _lightingSubject
-            .Throttle(TimeSpan.FromMilliseconds(200))
+            .Throttle(TimeSpan.FromMilliseconds(300))
             .Select(l => InvokeAsync(() => OnLightingChanged.InvokeAsync(l)))
             .Subscribe();
     }
-    
+
     public void Dispose()
     {
         _subscription?.Dispose();
     }
+
 }

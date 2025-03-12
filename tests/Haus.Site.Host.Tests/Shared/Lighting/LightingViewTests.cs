@@ -16,7 +16,7 @@ public class LightingViewTests : HausSiteTestContext
     {
         var view = RenderLighting(null);
 
-        view.FindByClass("mud-paper").TextContent.Should().Contain("no lighting");
+        view.FindByComponent<MudText>().Markup.Should().Contain("no lighting");
     }
 
     [Fact]
@@ -28,14 +28,14 @@ public class LightingViewTests : HausSiteTestContext
             Color = new ColorLightingModel(),
             Level = new LevelLightingModel(),
         };
-        var view = RenderLighting(lighting, Disabled: true);
+        var view = RenderLighting(lighting, disabled: true);
 
         view.FindByComponent<MudSwitch<LightingState>>().Instance.Disabled.Should().BeTrue();
-        FindSliderByClass<double>(view, "level").Instance.Disabled.Should().BeTrue();
-        FindSliderByClass<double>(view, "temperature").Instance.Disabled.Should().BeTrue();
-        FindSliderByClass<byte>(view, "red").Instance.Disabled.Should().BeTrue();
-        FindSliderByClass<byte>(view, "green").Instance.Disabled.Should().BeTrue();
-        FindSliderByClass<byte>(view, "blue").Instance.Disabled.Should().BeTrue();
+        FindSliderById<double>(view, "level").Instance.Disabled.Should().BeTrue();
+        FindSliderById<double>(view, "temperature").Instance.Disabled.Should().BeTrue();
+        FindSliderById<byte>(view, "red").Instance.Disabled.Should().BeTrue();
+        FindSliderById<byte>(view, "green").Instance.Disabled.Should().BeTrue();
+        FindSliderById<byte>(view, "blue").Instance.Disabled.Should().BeTrue();
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class LightingViewTests : HausSiteTestContext
         };
         var view = RenderLighting(lighting);
 
-        var level = FindSliderByClass<double>(view, "level");
+        var level = FindSliderById<double>(view, "level");
 
         level.Instance.Value.Should().Be(60);
         level.Instance.Min.Should().Be(20);
@@ -92,7 +92,7 @@ public class LightingViewTests : HausSiteTestContext
         };
         var view = RenderLighting(lighting);
 
-        var temp = FindSliderByClass<double>(view, "temperature");
+        var temp = FindSliderById<double>(view, "temperature");
         temp.Instance.Min.Should().Be(2000);
         temp.Instance.Value.Should().Be(4700);
         temp.Instance.Max.Should().Be(6500);
@@ -104,7 +104,7 @@ public class LightingViewTests : HausSiteTestContext
         var lighting = HausModelFactory.LightingModel() with { Color = new ColorLightingModel(Red: 100) };
         var view = RenderLighting(lighting);
 
-        var red = FindSliderByClass<byte>(view, "red");
+        var red = FindSliderById<byte>(view, "red");
         red.Instance.Min.Should().Be(0);
         red.Instance.Value.Should().Be(100);
         red.Instance.Max.Should().Be(255);
@@ -116,7 +116,7 @@ public class LightingViewTests : HausSiteTestContext
         var lighting = HausModelFactory.LightingModel() with { Color = new ColorLightingModel(Green: 50) };
         var view = RenderLighting(lighting);
 
-        var green = FindSliderByClass<byte>(view, "green");
+        var green = FindSliderById<byte>(view, "green");
         green.Instance.Min.Should().Be(0);
         green.Instance.Value.Should().Be(50);
         green.Instance.Max.Should().Be(255);
@@ -128,7 +128,7 @@ public class LightingViewTests : HausSiteTestContext
         var lighting = HausModelFactory.LightingModel() with { Color = new ColorLightingModel(Blue: 150) };
         var view = RenderLighting(lighting);
 
-        var blue = FindSliderByClass<byte>(view, "blue");
+        var blue = FindSliderById<byte>(view, "blue");
         blue.Instance.Min.Should().Be(0);
         blue.Instance.Value.Should().Be(150);
         blue.Instance.Max.Should().Be(255);
@@ -143,7 +143,7 @@ public class LightingViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await FindSliderByClass<double>(view, "level").Instance.ValueChanged.InvokeAsync(40);
+            await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(40);
         });
 
         Eventually.Assert(() =>
@@ -164,7 +164,7 @@ public class LightingViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await FindSliderByClass<double>(view, "temperature").Instance.ValueChanged.InvokeAsync(6000);
+            await FindSliderById<double>(view, "temperature").Instance.ValueChanged.InvokeAsync(6000);
         });
 
         Eventually.Assert(() =>
@@ -182,10 +182,10 @@ public class LightingViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await FindSliderByClass<double>(view, "level").Instance.ValueChanged.InvokeAsync(40);
-            await FindSliderByClass<double>(view, "level").Instance.ValueChanged.InvokeAsync(42);
-            await FindSliderByClass<double>(view, "level").Instance.ValueChanged.InvokeAsync(44);
-            await FindSliderByClass<double>(view, "level").Instance.ValueChanged.InvokeAsync(46);
+            await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(40);
+            await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(42);
+            await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(44);
+            await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(46);
             await Task.Delay(250);
         });
 
@@ -205,11 +205,11 @@ public class LightingViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await FindSliderByClass<double>(view, "level").Instance.ValueChanged.InvokeAsync(40);
-            await FindSliderByClass<double>(view, "temperature").Instance.ValueChanged.InvokeAsync(4000);
-            await FindSliderByClass<byte>(view, "red").Instance.ValueChanged.InvokeAsync(44);
-            await FindSliderByClass<byte>(view, "green").Instance.ValueChanged.InvokeAsync(46);
-            await FindSliderByClass<byte>(view, "blue").Instance.ValueChanged.InvokeAsync(46);
+            await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(40);
+            await FindSliderById<double>(view, "temperature").Instance.ValueChanged.InvokeAsync(4000);
+            await FindSliderById<byte>(view, "red").Instance.ValueChanged.InvokeAsync(44);
+            await FindSliderById<byte>(view, "green").Instance.ValueChanged.InvokeAsync(46);
+            await FindSliderById<byte>(view, "blue").Instance.ValueChanged.InvokeAsync(46);
             await Task.Delay(250);
         });
 
@@ -219,13 +219,13 @@ public class LightingViewTests : HausSiteTestContext
     private IRenderedComponent<LightingView> RenderLighting(
         LightingModel? lighting,
         Action<LightingModel>? onChanged = null,
-        bool Disabled = false
+        bool disabled = false
     )
     {
         return Context.RenderComponent<LightingView>(opts =>
         {
             opts.Add(o => o.Lighting, lighting);
-            opts.Add(o => o.Disabled, Disabled);
+            opts.Add(o => o.Disabled, disabled);
             if (onChanged != null)
             {
                 opts.Add(o => o.OnLightingChanged, onChanged);
@@ -233,12 +233,9 @@ public class LightingViewTests : HausSiteTestContext
         });
     }
 
-    private static IRenderedComponent<MudSlider<T>> FindSliderByClass<T>(
-        IRenderedComponent<LightingView> view,
-        string className
-    )
+    private static IRenderedComponent<MudSlider<T>> FindSliderById<T>(IRenderedComponent<LightingView> view, string id)
         where T : struct, INumber<T>
     {
-        return view.FindByComponent<MudSlider<T>>(opts => opts.WithClassName(className));
+        return view.FindByComponent<MudSlider<T>>(opts => opts.WithId(id));
     }
 }

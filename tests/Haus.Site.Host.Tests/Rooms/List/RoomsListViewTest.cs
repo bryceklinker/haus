@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Rooms;
+using Haus.Site.Host.Rooms.AddRoom;
 using Haus.Site.Host.Rooms.List;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
@@ -19,7 +20,7 @@ public class RoomsListViewTest : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>(), opts => opts.WithDelayMs(500));
 
-        var page = Context.RenderComponent<RoomsListView>();
+        var page = RenderView<RoomsListView>();
 
         page.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
     }
@@ -34,7 +35,7 @@ public class RoomsListViewTest : HausSiteTestContext
             )
         );
 
-        var page = Context.RenderComponent<RoomsListView>();
+        var page = RenderView<RoomsListView>();
 
         Eventually.Assert(() =>
         {
@@ -50,7 +51,7 @@ public class RoomsListViewTest : HausSiteTestContext
             new ListResult<RoomModel>([HausModelFactory.RoomModel() with { Name = "Living Room" }])
         );
 
-        var page = Context.RenderComponent<RoomsListView>();
+        var page = RenderView<RoomsListView>();
 
         Eventually.Assert(() =>
         {
@@ -66,16 +67,33 @@ public class RoomsListViewTest : HausSiteTestContext
             new ListResult<RoomModel>([HausModelFactory.RoomModel() with { Id = 78 }])
         );
 
-        var page = Context.RenderComponent<RoomsListView>();
-        await page.InvokeAsync(async () =>
+        var view = RenderView<RoomsListView>();
+        await view.InvokeAsync(async () =>
         {
-            await page.FindByComponent<MudListItem<RoomModel>>().Instance.OnClick.InvokeAsync(new MouseEventArgs());
+            await view.FindByComponent<MudListItem<RoomModel>>().Instance.OnClick.InvokeAsync(new MouseEventArgs());
         });
 
         Eventually.Assert(() =>
         {
             var navigation = Context.Services.GetRequiredService<FakeNavigationManager>();
             navigation.Uri.Should().EndWith("/rooms/78");
+        });
+    }
+
+    [Fact]
+    public async Task WhenAddRoomStartedThenShowsAddRoomDialog()
+    {
+        await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>());
+
+        var view = RenderView<RoomsListView>();
+        await view.InvokeAsync(async () =>
+        {
+            await view.FindByComponent<MudFab>().Instance.OnClick.InvokeAsync(new MouseEventArgs());
+        });
+
+        Eventually.Assert(() =>
+        {
+            view.FindAllByComponent<MudDialogContainer>().Should().HaveCount(1);
         });
     }
 }
