@@ -11,16 +11,22 @@
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading rooms and devices...">
     <MudDropContainer T="DeviceModel" Items="Devices" ItemsSelector="IsDeviceInRoom" ItemDropped="HandleDeviceDropped">
         <ChildContent>
-            @foreach (var room in Rooms)
-            {
-                <MudDropZone T="DeviceModel" Identifier="@room.Id.ToString()" >
-                    <MudText Typo="Typo.h3">@room.Name</MudText>
-                </MudDropZone>
-            }
-            <MudDropZone T="DeviceModel"
-                         Identifier="@UnassignedDeviceRoomId">
-                <MudText Typo="Typo.h3">Unassigned Devices</MudText>
-            </MudDropZone>
+            <MudGrid>
+                <MudItem xs="6">
+                    @foreach (var room in Rooms)
+                    {
+                        <MudDropZone T="DeviceModel" Identifier="@room.Id.ToString()">
+                            <MudText Typo="Typo.h3">@room.Name</MudText>
+                        </MudDropZone>
+                    }        
+                </MudItem>
+                <MudItem xs="6">
+                    <MudDropZone T="DeviceModel"
+                                 Identifier="@UnassignedDeviceRoomId">
+                        <MudText Typo="Typo.h3">Unassigned Devices</MudText>
+                    </MudDropZone>    
+                </MudItem>
+            </MudGrid>
         </ChildContent>
         <ItemRenderer>
             <MudPaper Class="device" >@context.DisplayText</MudPaper>
@@ -67,6 +73,8 @@
         
         long.TryParse(droppedItem.DropzoneIdentifier, out var roomId);
         await RoomsClient.AddDevicesToRoomAsync(roomId, droppedItem.Item.Id);
+        var devices = await DevicesClient.GetDevicesAsync();
+        Devices = devices.Items;
     }
 
 }
