@@ -85,6 +85,7 @@ public class RoomsListViewTest : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>());
 
+        var dialogProvider = Context.RenderComponent<MudDialogProvider>();
         var view = RenderView<RoomsListView>();
         await view.InvokeAsync(async () =>
         {
@@ -93,7 +94,7 @@ public class RoomsListViewTest : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudDialogContainer>().Should().HaveCount(1);
+            dialogProvider.FindAllByComponent<AddRoomDialogView>().Should().HaveCount(1);
         });
     }
 }

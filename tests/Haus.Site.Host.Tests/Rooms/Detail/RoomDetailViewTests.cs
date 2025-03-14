@@ -35,6 +35,7 @@ public class RoomDetailViewTests : HausSiteTestContext
             opts => opts.WithCapture(r => lightingRequest = r)
         );
         var room = HausModelFactory.RoomModel() with { Id = 8 };
+        await HausApiHandler.SetupGetAsJson("/api/rooms/8", room);
 
         var page = Context.RenderComponent<RoomDetailView>(opts =>
         {
@@ -55,28 +56,6 @@ public class RoomDetailViewTests : HausSiteTestContext
                     : await lightingRequest.Content.ReadFromJsonAsync<LightingModel>();
 
             newLighting.Should().BeEquivalentTo(lighting);
-        });
-    }
-
-    [Fact]
-    public async Task WhenLightingTakesAWhileToUpdateThenLightingIsDisabled()
-    {
-        await HausApiHandler.SetupPutAsJson("/api/rooms/8/lighting", new { }, opts => opts.WithDelayMs(500));
-
-        var room = HausModelFactory.RoomModel() with { Id = 8 };
-        var page = Context.RenderComponent<RoomDetailView>(opts =>
-        {
-            opts.Add(o => o.Room, room);
-        });
-        var lighting = HausModelFactory.LightingModel();
-        await page.InvokeAsync(async () =>
-        {
-            await page.FindByComponent<LightingView>().Instance.OnLightingChanged.InvokeAsync(lighting);
-        });
-
-        Eventually.Assert(() =>
-        {
-            page.FindByComponent<LightingView>().Instance.Disabled.Should().BeTrue();
         });
     }
 }

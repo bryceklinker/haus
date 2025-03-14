@@ -25,14 +25,6 @@ public class HausSiteTestContext : IAsyncLifetime
     protected InMemoryHttpMessageHandler HausApiHandler => _httpClientFactory.GetHandler(HausApiClientNames.Default);
     protected FakeNavigationManager NavigationManager => Context.Services.GetRequiredService<FakeNavigationManager>();
 
-    protected IRenderedComponent<T> RenderView<T>(
-        Action<ComponentParameterCollectionBuilder<T>>? parameterBuilder = null
-    )
-        where T : IComponent
-    {
-        return Context.RenderComponent(parameterBuilder);
-    }
-
     protected HausSiteTestContext()
     {
         Context = new TestContext();
@@ -88,6 +80,14 @@ public class HausSiteTestContext : IAsyncLifetime
     protected InMemoryRealtimeDataSubscriber GetSubscriber(string hubName)
     {
         return _realtimeDataFactory.GetSubscriber(hubName);
+    }
+
+    protected IRenderedComponent<T> RenderView<T>(
+        Action<ComponentParameterCollectionBuilder<T>>? parameterBuilder = null
+    )
+        where T : IComponent
+    {
+        return Context.RenderComponent(parameterBuilder);
     }
 
     protected async Task<IRenderedComponent<MudDialogProvider>> RenderDialogAsync<T>()

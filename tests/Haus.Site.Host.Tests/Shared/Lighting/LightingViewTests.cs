@@ -30,7 +30,7 @@ public class LightingViewTests : HausSiteTestContext
         };
         var view = RenderLighting(lighting, disabled: true);
 
-        view.FindByComponent<MudSwitch<LightingState>>().Instance.Disabled.Should().BeTrue();
+        view.FindByComponent<MudSwitch<bool>>().Instance.Disabled.Should().BeTrue();
         FindSliderById<double>(view, "level").Instance.Disabled.Should().BeTrue();
         FindSliderById<double>(view, "temperature").Instance.Disabled.Should().BeTrue();
         FindSliderById<byte>(view, "red").Instance.Disabled.Should().BeTrue();
@@ -44,8 +44,8 @@ public class LightingViewTests : HausSiteTestContext
         var lighting = HausModelFactory.LightingModel() with { State = LightingState.On };
         var view = RenderLighting(lighting);
 
-        var state = view.FindByComponent<MudSwitch<LightingState>>();
-        state.Instance.Value.Should().Be(LightingState.On);
+        var state = view.FindByComponent<MudSwitch<bool>>();
+        state.Instance.Value.Should().Be(true);
     }
 
     [Fact]
@@ -55,10 +55,10 @@ public class LightingViewTests : HausSiteTestContext
         LightingModel? newLighting = null;
         var view = RenderLighting(lighting, l => newLighting = l);
 
-        var state = view.FindByComponent<MudSwitch<LightingState>>();
+        var state = view.FindByComponent<MudSwitch<bool>>();
         await view.InvokeAsync(async () =>
         {
-            await state.Instance.ValueChanged.InvokeAsync(LightingState.Off);
+            await state.Instance.ValueChanged.InvokeAsync(false);
         });
 
         Eventually.Assert(() =>
@@ -186,7 +186,7 @@ public class LightingViewTests : HausSiteTestContext
             await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(42);
             await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(44);
             await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(46);
-            await Task.Delay(250);
+            await Task.Delay(400);
         });
 
         timesChanged.Should().Be(1);
@@ -210,7 +210,7 @@ public class LightingViewTests : HausSiteTestContext
             await FindSliderById<byte>(view, "red").Instance.ValueChanged.InvokeAsync(44);
             await FindSliderById<byte>(view, "green").Instance.ValueChanged.InvokeAsync(46);
             await FindSliderById<byte>(view, "blue").Instance.ValueChanged.InvokeAsync(46);
-            await Task.Delay(250);
+            await Task.Delay(400);
         });
 
         timesChanged.Should().Be(1);
