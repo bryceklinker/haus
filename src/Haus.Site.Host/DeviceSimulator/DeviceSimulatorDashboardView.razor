@@ -5,14 +5,20 @@
 
 @implements IAsyncDisposable
 
-@inject IRealtimeDataFactory RealtimeDataFactory
+@inject NavigationManager Navigation;
+@inject IRealtimeDataFactory RealtimeDataFactory;
 
 <LoadingContentView IsLoading="State != RealtimeDataState.Connected">
+    <MudToolBar>
+        <MudButton OnClick="HandleAddSimulatedDevice">
+            Add Simulated Device
+        </MudButton>
+    </MudToolBar>
     @if (SimulatorState != null)
     {
         @foreach (var simulatedDevice in SimulatorState.Devices)
         {
-            <SimulatedDeviceView SimulatedDevice="simulatedDevice" />
+            <SimulatedDeviceView SimulatedDevice="simulatedDevice"/>
         }
     }
 </LoadingContentView>
@@ -41,5 +47,10 @@
         {
             await _subscriber.DisposeAsync();
         }
+    }
+
+    private void HandleAddSimulatedDevice()
+    {
+        Navigation.NavigateTo("/device-simulator/add");
     }
 }

@@ -9,36 +9,35 @@
 
 @attribute [Authorize]
 
-@inject IDeviceApiClient DeviceClient
+@inject NavigationManager Navigation;
+@inject IDeviceApiClient DeviceClient;
 @inject IDeviceSimulatorApiClient SimulatorClient;
 
-<MudPopoverProvider />
-
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading Device Types...">
-    <MudPaper>
-        <MudForm>
-            <MudSelect Required @bind-Value="DeviceType" RequiredError="You must select a device type">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudSelect FullWidth="true" Required @bind-Value="DeviceType" Label="Device Type" RequiredError="You must select a device type">
                 @foreach (var type in DeviceTypes.Items)
                 {
                     <MudSelectItem T="DeviceType?" Value="type"/>
                 }
-            </MudSelect>
-            <MudPaper>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => AddMetadataRow()">
-                    Add Metadata
-                </MudButton>
-            </MudPaper>
-            
-            <EditableMetadataListView @bind-Items="Metadata" />
-        </MudForm>    
-    </MudPaper>
-    <MudPaper>
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   OnClick="() => HandleSave()">
-            Save
-        </MudButton>
-    </MudPaper>
+            </MudSelect>    
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => AddMetadataRow()">
+                Add Metadata
+            </MudButton>
+
+            <EditableMetadataListView @bind-Items="Metadata"/>
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="() => HandleSave()">
+                Save
+            </MudButton>    
+        </MudItem>
+    </MudGrid>
 </LoadingContentView>
 
 @code {
@@ -70,10 +69,12 @@
             DeviceType = DeviceType.Value,
             Metadata = Metadata.ToArray()
         });
+        Navigation.NavigateTo("/device-simulator");
     }
 
     private void AddMetadataRow()
     {
         Metadata = Metadata.Append(new MetadataModel("", "")).ToArray();
     }
+
 }

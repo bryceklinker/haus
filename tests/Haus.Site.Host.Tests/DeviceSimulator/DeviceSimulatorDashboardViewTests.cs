@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FluentAssertions.Common;
 using Haus.Core.Models;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Site.Host.DeviceSimulator;
@@ -61,6 +62,22 @@ public class DeviceSimulatorDashboardViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             view.FindAllByComponent<SimulatedDeviceView>().Should().HaveCount(3);
+        });
+    }
+
+    [Fact]
+    public async Task WhenAddingDeviceThenOpensAddSimulatedDeviceDialog()
+    {
+        var view = RenderView<DeviceSimulatorDashboardView>();
+
+        await view.InvokeAsync(async () =>
+        {
+            await view.FindMudButtonByText("add simulated device").ClickAsync();
+        });
+
+        Eventually.Assert(() =>
+        {
+            NavigationManager.Uri.Should().EndWith("/device-simulator/add");
         });
     }
 }

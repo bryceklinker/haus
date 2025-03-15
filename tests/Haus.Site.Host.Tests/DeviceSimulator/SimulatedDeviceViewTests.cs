@@ -1,7 +1,10 @@
+using System.Net.Http;
+using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Site.Host.DeviceSimulator;
+using Haus.Site.Host.Shared.Lighting;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
 using MudBlazor;
@@ -40,6 +43,65 @@ public class SimulatedDeviceViewTests : HausSiteTestContext
         var valueField = view.FindMudTextFieldById<string>("value").Instance;
         valueField.Disabled.Should().BeTrue();
         valueField.Value.Should().Be("bob");
+    }
+
+    [Fact]
+    public void WhenSimulatedDeviceIsALightThenShowsLighting()
+    {
+        var device = HausModelFactory.SimulatedDeviceModel() with
+        {
+            DeviceType = DeviceType.Light,
+            Lighting = HausModelFactory.LightingModel(),
+        };
+
+        var view = RenderWithDevice(device);
+
+        var lighting = view.FindByComponent<LightingView>();
+        lighting.Instance.Lighting.Should().Be(device.Lighting);
+        lighting.Instance.Disabled.Should().BeTrue();
+    }
+
+    [Fact]
+    public void WhenSimulatedDeviceIsMotiongSensorThenAllowsOccupancyToggle()
+    {
+        var device = HausModelFactory.SimulatedDeviceModel() with
+        {
+            DeviceType = DeviceType.MotionSensor,
+            IsOccupied = true,
+        };
+
+        var view = RenderWithDevice(device);
+
+        var toggle = view.FindByComponent<MudSwitch<bool>>();
+        toggle.Instance.Value.Should().BeTrue();
+        toggle.Instance.Disabled.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task WhenSimulatedDeviceTriggersOccupancyChangeThenChangesDeviceOccupancy()
+    {
+        var device = HausModelFactory.SimulatedDeviceModel() with
+        {
+            DeviceType = DeviceType.MotionSensor,
+            IsOccupied = true,
+        };
+        HttpRequestMessage? request = null;
+        await HausApiHandler.SetupPostAsJson(
+            $"/api/device-simulator/devices/{device.Id}/trigger-occupancy-change",
+            new { },
+            opts => opts.WithCapture(r => request = r)
+        );
+
+        var view = RenderWithDevice(device);
+        await view.InvokeAsync(async () =>
+        {
+            await view.FindMudButtonByText("trigger occupancy change").ClickAsync();
+        });
+
+        Eventually.Assert(() =>
+        {
+            request.Should().NotBeNull();
+        });
     }
 
     private IRenderedComponent<SimulatedDeviceView> RenderWithDevice(SimulatedDeviceModel device)

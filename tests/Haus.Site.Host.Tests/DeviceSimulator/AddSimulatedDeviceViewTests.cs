@@ -30,7 +30,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
             opts => opts.WithDelay(TimeSpan.FromSeconds(1))
         );
 
-        var page = Context.RenderComponent<AddSimulatedDeviceView>();
+        var page = RenderView<AddSimulatedDeviceView>();
 
         Eventually.Assert(() =>
         {
@@ -43,12 +43,13 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
     {
         await SetupDeviceTypes(DeviceType.Switch, DeviceType.Light);
 
-        var page = Context.RenderComponent<AddSimulatedDeviceView>();
+        var popover = RenderView<MudPopoverProvider>();
+        var page = RenderView<AddSimulatedDeviceView>();
         await OpenDeviceTypes(page);
 
         Eventually.Assert(() =>
         {
-            page.FindAllByClass("mud-list-item").Should().HaveCount(2);
+            popover.FindAllByComponent<MudSelectItem<DeviceType?>>().Should().HaveCount(2);
         });
     }
 
@@ -58,7 +59,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         await SetupDeviceTypes(DeviceType.Switch, DeviceType.Light);
         await SetupSaveSimulatedDevice();
 
-        var page = Context.RenderComponent<AddSimulatedDeviceView>();
+        var page = RenderView<AddSimulatedDeviceView>();
         await SelectDeviceType(page, DeviceType.Switch);
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
@@ -67,12 +68,25 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
     }
 
     [Fact]
+    public async Task WhenSavedThenGoesBackToPreviousPage()
+    {
+        await SetupDeviceTypes(DeviceType.Switch, DeviceType.Light);
+        await SetupSaveSimulatedDevice();
+
+        var page = RenderView<AddSimulatedDeviceView>();
+        await SelectDeviceType(page, DeviceType.Switch);
+        await FindSaveButton(page).ClickAsync(new MouseEventArgs());
+
+        NavigationManager.Uri.Should().EndWith("/device-simulator");
+    }
+
+    [Fact]
     public async Task WhenDeviceTypeHasNotBeenSelectedThenSaveIsPrevented()
     {
         await SetupDeviceTypes(DeviceType.Switch, DeviceType.Light);
         await SetupSaveSimulatedDevice();
 
-        var page = Context.RenderComponent<AddSimulatedDeviceView>();
+        var page = RenderView<AddSimulatedDeviceView>();
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
         _savedDevices.Should().HaveCount(0);
@@ -84,7 +98,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         await SetupDeviceTypes(DeviceType.Switch, DeviceType.Light);
         await SetupSaveSimulatedDevice();
 
-        var page = Context.RenderComponent<AddSimulatedDeviceView>();
+        var page = RenderView<AddSimulatedDeviceView>();
         await FindAddMetadata(page).ClickAsync(new MouseEventArgs());
         await EnterMetadata(page, "external", "true");
 

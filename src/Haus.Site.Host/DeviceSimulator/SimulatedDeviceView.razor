@@ -1,4 +1,10 @@
+@using Haus.Api.Client.DeviceSimulator
+@using Haus.Core.Models.Devices
 @using Haus.Core.Models.DeviceSimulator
+@using Haus.Core.Models.Lighting
+@using Haus.Site.Host.Shared.Lighting
+
+@inject IDeviceSimulatorApiClient DeviceSimulatorClient;
 
 @if (SimulatedDevice != null)
 {
@@ -34,10 +40,55 @@
                     }
                 </ChildContent>
             </MudExpansionPanel>
+            @if (IsLight && Lighting != null)
+            {
+                <MudExpansionPanel>
+                    <TitleContent>
+                        <MudText Typo="Typo.h5">Lighting</MudText>
+                    </TitleContent>
+                    <ChildContent>
+                        <LightingView Disabled="true" 
+                                      Lighting="Lighting" />
+                    </ChildContent>
+                </MudExpansionPanel>    
+            }
+            @if (IsMotionSensor)
+            {
+                <MudExpansionPanel>
+                    <TitleContent>
+                        <MudText Typo="Typo.h5">Occupancy</MudText>
+                    </TitleContent>
+                    <ChildContent>
+                        <MudSwitch T="bool"
+                                   Label="Is Occupied?"
+                                   Value="IsOccupied"
+                                   Disabled="true" />
+                        <MudButton OnClick="HandleTriggerOccupancyChange">
+                            Trigger Occupancy Change
+                        </MudButton>
+                    </ChildContent>
+                </MudExpansionPanel>
+            }
         </MudExpansionPanels>
     </MudPaper>
 }
 
 @code {
     [Parameter] public SimulatedDeviceModel? SimulatedDevice { get; set; }
+
+    public bool IsLight => SimulatedDevice?.DeviceType == DeviceType.Light;
+    public bool IsMotionSensor => SimulatedDevice?.DeviceType == DeviceType.MotionSensor;
+    public bool IsOccupied => SimulatedDevice?.IsOccupied == true;
+
+    public LightingModel? Lighting => SimulatedDevice?.Lighting;
+
+    private async Task HandleTriggerOccupancyChange()
+    {
+        if (SimulatedDevice == null)
+        {
+            return;
+        }
+
+        await DeviceSimulatorClient.TriggerOccupancyChange(SimulatedDevice.Id);
+    }
 }
