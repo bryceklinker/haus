@@ -1,6 +1,8 @@
 @using Haus.Api.Client.Rooms
 @using Haus.Core.Models.Rooms
 
+@attribute [Authorize]
+
 @inject IRoomsApiClient RoomsClient;
 
 <MudDialog>

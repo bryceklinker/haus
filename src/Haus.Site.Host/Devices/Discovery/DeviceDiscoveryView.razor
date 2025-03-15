@@ -5,6 +5,8 @@
 
 @page "/devices/discovery"
 
+@attribute [Authorize]
+
 @inject IDeviceApiClient DevicesClient;
 @inject IRoomsApiClient RoomsClient;
 

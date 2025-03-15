@@ -3,6 +3,8 @@
 @using Haus.Core.Models.Rooms
 @using Haus.Site.Host.Shared.Lighting
 
+@attribute [Authorize]
+
 @inject IRoomsApiClient RoomsClient;
 
 <MudGrid Class="pa-4">

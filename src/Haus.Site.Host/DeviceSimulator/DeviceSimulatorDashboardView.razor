@@ -3,31 +3,39 @@
 @using Haus.Core.Models.DeviceSimulator
 @using Haus.Site.Host.Shared.Realtime
 
+@attribute [Authorize]
+
 @implements IAsyncDisposable
 
 @inject NavigationManager Navigation;
 @inject IRealtimeDataFactory RealtimeDataFactory;
 
 <LoadingContentView IsLoading="State != RealtimeDataState.Connected">
-    <MudToolBar>
-        <MudButton OnClick="HandleAddSimulatedDevice">
+    <MudToolBar Class="mb-4 mud-elevation-2">
+        <MudButton OnClick="HandleAddSimulatedDevice" Variant="Variant.Outlined" Color="Color.Primary">
             Add Simulated Device
         </MudButton>
     </MudToolBar>
+    
     @if (SimulatorState != null)
     {
-        @foreach (var simulatedDevice in SimulatorState.Devices)
-        {
-            <SimulatedDeviceView SimulatedDevice="simulatedDevice"/>
-        }
+        <MudGrid>
+            @foreach (var simulatedDevice in SimulatorState.Devices)
+            {
+                <MudItem xs="6">
+                    <SimulatedDeviceView SimulatedDevice="simulatedDevice"/>    
+                </MudItem>
+                
+            }
+        </MudGrid>
     }
 </LoadingContentView>
 
 @code {
     private IRealtimeDataSubscriber? _subscriber;
-    
+
     private RealtimeDataState State => _subscriber?.State ?? RealtimeDataState.Disconnected;
-    
+
     private DeviceSimulatorStateModel? SimulatorState { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -53,4 +61,5 @@
     {
         Navigation.NavigateTo("/device-simulator/add");
     }
+
 }

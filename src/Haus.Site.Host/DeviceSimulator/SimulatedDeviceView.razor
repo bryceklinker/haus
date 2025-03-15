@@ -4,6 +4,8 @@
 @using Haus.Core.Models.Lighting
 @using Haus.Site.Host.Shared.Lighting
 
+@attribute [Authorize]
+
 @inject IDeviceSimulatorApiClient DeviceSimulatorClient;
 
 @if (SimulatedDevice != null)
@@ -27,12 +29,14 @@
                 <ChildContent>
                     @foreach (var metadata in SimulatedDevice.Metadata)
                     {
-                        <MudStack Row="true">
+                        <MudStack Row="true" Spacing="4" Class="mt-4">
                             <MudTextField T="string"
+                                          Label="Key"
                                           InputId="key"
                                           Disabled="true"
                                           Value="metadata.Key"/>
                             <MudTextField T="string"
+                                          Label="Value"
                                           InputId="value"
                                           Disabled="true"
                                           Value="metadata.Value" />
@@ -40,7 +44,8 @@
                     }
                 </ChildContent>
             </MudExpansionPanel>
-            @if (IsLight && Lighting != null)
+            
+            @if (SimulatedDevice?.DeviceType == DeviceType.Light && Lighting != null)
             {
                 <MudExpansionPanel>
                     <TitleContent>
@@ -52,6 +57,7 @@
                     </ChildContent>
                 </MudExpansionPanel>    
             }
+            
             @if (IsMotionSensor)
             {
                 <MudExpansionPanel>
@@ -76,7 +82,6 @@
 @code {
     [Parameter] public SimulatedDeviceModel? SimulatedDevice { get; set; }
 
-    public bool IsLight => SimulatedDevice?.DeviceType == DeviceType.Light;
     public bool IsMotionSensor => SimulatedDevice?.DeviceType == DeviceType.MotionSensor;
     public bool IsOccupied => SimulatedDevice?.IsOccupied == true;
 
