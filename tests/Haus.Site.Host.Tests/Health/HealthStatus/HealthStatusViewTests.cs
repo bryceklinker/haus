@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using AngleSharp;
 using Haus.Core.Models;
+using Haus.Core.Models.Health;
 using Haus.Site.Host.Health.HealthStatus;
 using Haus.Site.Host.Tests.Support;
 using Haus.Site.Host.Tests.Support.Realtime;
@@ -20,7 +21,7 @@ public class HealthStatusViewTests : HausSiteTestContext
     }
 
     [Fact]
-    public void WhenRenderedThenConnectsToHealthHub()
+    public void WhenRenderedThenConnectsToRealtimeHealth()
     {
         RenderView<HealthStatusView>();
 
@@ -55,7 +56,7 @@ public class HealthStatusViewTests : HausSiteTestContext
         var report = HausModelFactory.HealthReportModel() with { Status = status };
 
         var view = RenderView<HealthStatusView>();
-        await _healthSubscriber.SimulateAsync("OnHealth", report);
+        await _healthSubscriber.SimulateAsync(HausHealthEventNames.OnHealth, report);
 
         Eventually.Assert(() =>
         {
@@ -78,7 +79,7 @@ public class HealthStatusViewTests : HausSiteTestContext
         };
 
         var view = RenderView<HealthStatusView>();
-        await _healthSubscriber.SimulateAsync("OnHealth", report);
+        await _healthSubscriber.SimulateAsync(HausHealthEventNames.OnHealth, report);
 
         Eventually.Assert(() =>
         {

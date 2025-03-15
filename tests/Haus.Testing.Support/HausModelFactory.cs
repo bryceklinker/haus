@@ -1,6 +1,7 @@
 using Bogus;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
+using Haus.Core.Models.DeviceSimulator;
 using Haus.Core.Models.Health;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
@@ -62,5 +63,21 @@ public static class HausModelFactory
             Status: Faker.Random.Enum<HealthStatus>(),
             DurationOfCheckInMilliseconds: Faker.Random.Double()
         );
+    }
+
+    public static SimulatedDeviceModel SimulatedDeviceModel()
+    {
+        return new SimulatedDeviceModel(
+            Id: $"{Faker.Random.Uuid()}",
+            DeviceType: DeviceType.Unknown,
+            IsOccupied: false,
+            Lighting: null,
+            Metadata: [Core.Models.Common.MetadataModel.Simulated()]
+        );
+    }
+
+    public static DeviceSimulatorStateModel DeviceSimulatorStateModel()
+    {
+        return new DeviceSimulatorStateModel(Devices: []);
     }
 }

@@ -1,0 +1,43 @@
+@using Haus.Core.Models.DeviceSimulator
+
+@if (SimulatedDevice != null)
+{
+    <MudPaper>
+        <MudTextField T="string"
+                      InputId="id"
+                      Disabled="true"
+                      Value="SimulatedDevice.Id"/>
+
+        <MudTextField T="string"
+                      InputId="deviceType"
+                      Disabled="true"
+                      Value="SimulatedDevice.DeviceType.ToString()"/>
+
+        <MudExpansionPanels>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudText Typo="Typo.h5">Metadata</MudText>
+                </TitleContent>
+                <ChildContent>
+                    @foreach (var metadata in SimulatedDevice.Metadata)
+                    {
+                        <MudStack Row="true">
+                            <MudTextField T="string"
+                                          InputId="key"
+                                          Disabled="true"
+                                          Value="metadata.Key"/>
+                            <MudTextField T="string"
+                                          InputId="value"
+                                          Disabled="true"
+                                          Value="metadata.Value" />
+                        </MudStack>
+                    }
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    </MudPaper>
+}
+
+@code {
+    [Parameter] public SimulatedDeviceModel? SimulatedDevice { get; set; }
+}

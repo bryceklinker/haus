@@ -34,7 +34,7 @@
     protected override async Task OnInitializedAsync()
     {
         Subscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Health);
-        Subscriber.Subscribe<HausHealthReportModel>("OnHealth", async report =>
+        Subscriber.Subscribe<HausHealthReportModel>(HausHealthEventNames.OnHealth, async report =>
         {
             LatestHealth = report;
             await InvokeAsync(StateHasChanged);
