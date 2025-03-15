@@ -10,7 +10,7 @@
 @inject NavigationManager Navigation;
 @inject IRealtimeDataFactory RealtimeDataFactory;
 
-<LoadingContentView IsLoading="State != RealtimeDataState.Connected">
+<LoadingContentView IsLoading="State != RealtimeDataState.Connected" LoadingText="Connecting to Device Simulator...">
     <MudToolBar Class="mb-4 mud-elevation-2">
         <MudButton OnClick="HandleAddSimulatedDevice" Variant="Variant.Outlined" Color="Color.Primary">
             Add Simulated Device
