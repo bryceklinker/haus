@@ -1,11 +1,14 @@
+using System.Dynamic;
 using Bogus;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Core.Models.Health;
 using Haus.Core.Models.Lighting;
+using Haus.Core.Models.Logs;
 using Haus.Core.Models.Rooms;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 
 namespace Haus.Testing.Support;
 
@@ -79,5 +82,15 @@ public static class HausModelFactory
     public static DeviceSimulatorStateModel DeviceSimulatorStateModel()
     {
         return new DeviceSimulatorStateModel(Devices: []);
+    }
+
+    public static LogEntryModel LogEntryModel()
+    {
+        return new LogEntryModel(
+            Timestamp: Faker.Date.Recent().ToUniversalTime().ToString("O"),
+            Level: Faker.PickRandom<LogLevel>().ToString(),
+            Message: Faker.Lorem.Sentence(),
+            Value: new ExpandoObject()
+        );
     }
 }

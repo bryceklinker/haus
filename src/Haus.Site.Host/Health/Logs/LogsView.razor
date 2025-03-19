@@ -1,0 +1,65 @@
+@using System.Threading
+@using Haus.Api.Client.Logs
+@using Haus.Core.Models.Common
+@using Haus.Core.Models.Logs
+
+@implements IDisposable;
+
+@inject ILogsApiClient LogsClient;
+
+<LoadingContentView IsLoading="IsLoading" LoadingText="Loading recent logs...">
+    <MudList T="LogEntryModel">
+        @foreach (var log in Logs.Items)
+        {
+            <MudListItem T="LogEntryModel">
+                <LogEntryView LogEntry="log" />
+            </MudListItem>
+        }
+    </MudList>
+</LoadingContentView>
+
+
+@code {
+    private bool IsLoading { get; set; }
+    private ListResult<LogEntryModel> Logs { get; set; } = new([]);
+    private PeriodicTimer? Timer { get; set; }
+
+    [Parameter] public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(3);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshLogsAsync();
+        await StartRefreshingLogs(RefreshInterval);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await StartRefreshingLogs(RefreshInterval);
+    }
+
+    public void Dispose()
+    {
+        Timer?.Dispose();
+    }
+
+    private async Task StartRefreshingLogs(TimeSpan timeSpan)
+    {
+        Timer?.Dispose();
+        Timer = new PeriodicTimer(timeSpan);
+        while (await Timer.WaitForNextTickAsync())
+        {
+            await RefreshLogsAsync();
+        }
+    }
+
+    private async Task RefreshLogsAsync()
+    {
+        await InvokeAsync(() => IsLoading = true);
+        var logs = await LogsClient.GetLogsAsync();
+        await InvokeAsync(() =>
+        {
+            Logs = logs;
+            IsLoading = false;
+        });
+    }
+}

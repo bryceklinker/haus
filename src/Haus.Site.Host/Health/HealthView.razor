@@ -1,7 +1,16 @@
 @page "/health"
 
 @using Haus.Site.Host.Health.HealthStatus
+@using Haus.Site.Host.Health.Logs
 
 @attribute [Authorize]
 
-<HealthStatusView />
+<MudGrid>
+    <MudItem xs="6">
+        <HealthStatusView />
+    </MudItem>    
+    <MudItem xs="6">
+        <LogsView />
+    </MudItem>
+</MudGrid>
+
