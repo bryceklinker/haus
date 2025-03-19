@@ -54,12 +54,17 @@
 
     private async Task RefreshLogsAsync()
     {
-        await InvokeAsync(() => IsLoading = true);
+        await InvokeAsync(() =>
+        {
+            IsLoading = true;
+            StateHasChanged();
+        });
         var logs = await LogsClient.GetLogsAsync();
         await InvokeAsync(() =>
         {
             Logs = logs;
             IsLoading = false;
+            StateHasChanged();
         });
     }
 }

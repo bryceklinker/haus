@@ -3,6 +3,7 @@ using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Logs;
 using Haus.Site.Host.Health;
+using Haus.Site.Host.Health.Events;
 using Haus.Site.Host.Health.Logs;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
@@ -15,13 +16,13 @@ public class HealthViewTests : HausSiteTestContext
     public async Task WhenRenderedThenShowsCurrentHealth()
     {
         await SetupHealthApis();
-        var hub = GetSubscriber(HausRealtimeSources.Health);
+        var subscriber = GetSubscriber(HausRealtimeSources.Health);
 
         RenderView<HealthView>();
 
         Eventually.Assert(() =>
         {
-            hub.IsStarted.Should().BeTrue();
+            subscriber.IsStarted.Should().BeTrue();
         });
     }
 
@@ -34,6 +35,18 @@ public class HealthViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             view.FindAllByComponent<LogsView>().Should().HaveCount(1);
+        });
+    }
+
+    [Fact]
+    public async Task WhenRenderedThenShowsEventsView()
+    {
+        await SetupHealthApis();
+        var view = RenderView<HealthView>();
+
+        Eventually.Assert(() =>
+        {
+            view.FindAllByComponent<EventsView>().Should().HaveCount(1);
         });
     }
 

@@ -1,0 +1,29 @@
+@using System.Text.Json
+@using Haus.Core.Models
+@using Haus.Core.Models.ExternalMessages
+
+@if (Event != null)
+{
+    <MudExpansionPanel>
+        <TitleContent>
+            <MudText Typo="Typo.h5">
+                @Event.Type (@Event.Timestamp)
+            </MudText>
+        </TitleContent>
+        <ChildContent>
+            <pre>@FormatPayload(Event.Payload)</pre>
+        </ChildContent>
+    </MudExpansionPanel>
+}
+
+@code {
+    [Parameter] public HausEvent<dynamic>? Event { get; set; }
+
+    private string FormatPayload(dynamic payload)
+    {
+        return HausJsonSerializer.Serialize(payload, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+    }
+}

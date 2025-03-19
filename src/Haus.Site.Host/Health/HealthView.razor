@@ -2,14 +2,18 @@
 
 @using Haus.Site.Host.Health.HealthStatus
 @using Haus.Site.Host.Health.Logs
+@using Haus.Site.Host.Health.Events
 
 @attribute [Authorize]
 
 <MudGrid>
     <MudItem xs="6">
         <HealthStatusView />
-    </MudItem>    
+    </MudItem>
     <MudItem xs="6">
+        <EventsView />
+    </MudItem>
+    <MudItem xs="12">
         <LogsView />
     </MudItem>
 </MudGrid>

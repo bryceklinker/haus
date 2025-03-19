@@ -1,12 +1,10 @@
 using System.Threading.Tasks;
-using AngleSharp;
 using Haus.Core.Models;
 using Haus.Core.Models.Health;
 using Haus.Site.Host.Health.HealthStatus;
 using Haus.Site.Host.Tests.Support;
 using Haus.Site.Host.Tests.Support.Realtime;
 using Haus.Testing.Support;
-using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Health.HealthStatus;

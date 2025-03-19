@@ -1,8 +1,10 @@
 using System.Dynamic;
 using Bogus;
+using Haus.Core.Common.Events;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
+using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Health;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Logs;
