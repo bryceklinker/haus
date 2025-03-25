@@ -7,17 +7,26 @@
 
 @inject ILogsApiClient LogsClient;
 
-<LoadingContentView IsLoading="IsLoading" LoadingText="Loading recent logs...">
+<MudPaper>
+    <MudStack Row="true">
+        <MudText Typo="Typo.h4">
+            Recent Logs
+        </MudText>
+        @if (IsLoading)
+        {
+            <MudProgressCircular Indeterminate="true" />
+        }
+    </MudStack>
+
     <MudList T="LogEntryModel">
         @foreach (var log in Logs.Items)
         {
             <MudListItem T="LogEntryModel">
-                <LogEntryView LogEntry="log" />
+                <LogEntryView LogEntry="log"/>
             </MudListItem>
         }
-    </MudList>
-</LoadingContentView>
-
+    </MudList>    
+</MudPaper>
 
 @code {
     private bool IsLoading { get; set; }
@@ -54,6 +63,11 @@
 
     private async Task RefreshLogsAsync()
     {
+        if (IsLoading)
+        {
+            return;
+        }
+
         await InvokeAsync(() =>
         {
             IsLoading = true;
@@ -67,4 +81,5 @@
             StateHasChanged();
         });
     }
+
 }

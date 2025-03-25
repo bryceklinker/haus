@@ -4,10 +4,10 @@
 
 @if (Event != null)
 {
-    <MudExpansionPanel>
+    <MudExpansionPanel Style="max-height: 100%">
         <TitleContent>
             <MudText Typo="Typo.h5">
-                @Event.Type (@Event.Timestamp)
+                @Event.Type (@Event.Timestamp.FormatTimestamp())
             </MudText>
         </TitleContent>
         <ChildContent>

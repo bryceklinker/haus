@@ -66,4 +66,26 @@ public class LogsViewTests : HausSiteTestContext
             requestCount.Should().BeGreaterThan(1);
         });
     }
+
+    [Fact]
+    public async Task WhenAutoRefreshTakesAwhileThenSkipsNextRefresh()
+    {
+        var requestCount = 0;
+        await HausApiHandler.SetupGetAsJson(
+            "/api/logs",
+            new ListResult<LogEntryModel>([]),
+            opts => opts.WithCapture(r => requestCount++).WithDelayMs(1000)
+        );
+
+        RenderView<LogsView>(opts =>
+        {
+            opts.Add(c => c.RefreshInterval, TimeSpan.FromMilliseconds(200));
+        });
+
+        await Task.Delay(TimeSpan.FromMilliseconds(1200));
+        Eventually.Assert(() =>
+        {
+            requestCount.Should().Be(2);
+        });
+    }
 }
