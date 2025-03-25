@@ -12,6 +12,6 @@ public static class DateTimeExtensions
 
     public static string FormatTimestamp(this DateTimeOffset timestamp)
     {
-        return timestamp.ToLocalTime().Humanize();
+        return timestamp.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
     }
 }
