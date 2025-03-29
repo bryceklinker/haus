@@ -15,13 +15,12 @@ public class MqttDiagnosticsMessageFactory(IClock clock) : IMqttDiagnosticsMessa
 {
     public MqttDiagnosticsMessageModel Create(string topic, ArraySegment<byte> payload)
     {
-        return new MqttDiagnosticsMessageModel
-        {
-            Id = $"{Guid.NewGuid()}",
-            Timestamp = clock.LocalNow,
-            Topic = topic,
-            Payload = GetPayloadFromBytes(payload),
-        };
+        return new MqttDiagnosticsMessageModel(
+            Id: $"{Guid.NewGuid()}",
+            Timestamp: clock.LocalNow,
+            Topic: topic,
+            Payload: GetPayloadFromBytes(payload)
+        );
     }
 
     private static object? GetPayloadFromBytes(ArraySegment<byte> bytes)

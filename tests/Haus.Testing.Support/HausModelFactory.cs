@@ -4,6 +4,7 @@ using Haus.Core.Common.Events;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.DeviceSimulator;
+using Haus.Core.Models.Diagnostics;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Health;
 using Haus.Core.Models.Lighting;
@@ -93,6 +94,16 @@ public static class HausModelFactory
             Level: Faker.PickRandom<LogLevel>().ToString(),
             Message: Faker.Lorem.Sentence(),
             Value: new ExpandoObject()
+        );
+    }
+
+    public static MqttDiagnosticsMessageModel MqttDiagnosticsMessageModel()
+    {
+        return new MqttDiagnosticsMessageModel(
+            Id: Faker.Random.Uuid().ToString(),
+            Timestamp: Faker.Date.Recent().ToUniversalTime(),
+            Topic: Faker.Lorem.Sentence(),
+            Payload: new { }
         );
     }
 }

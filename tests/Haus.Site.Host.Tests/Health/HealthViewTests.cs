@@ -7,6 +7,8 @@ using Haus.Site.Host.Health.Events;
 using Haus.Site.Host.Health.Logs;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Health;
 
@@ -47,6 +49,20 @@ public class HealthViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             view.FindAllByComponent<EventsView>().Should().HaveCount(1);
+        });
+    }
+
+    [Fact]
+    public async Task WhenNavigatingToDiagnosticsThenNavigatesUserToDiagnostics()
+    {
+        await SetupHealthApis();
+        var view = RenderView<HealthView>();
+
+        await view.FindByComponent<MudButton>(opts => opts.WithText("Diagnostics")).ClickAsync();
+
+        Eventually.Assert(() =>
+        {
+            NavigationManager.Uri.Should().EndWith("/health/diagnostics");
         });
     }
 

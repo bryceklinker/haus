@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -20,7 +21,7 @@ public class DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
         MqttApplicationMessage? received = null;
         await mqtt.SubscribeAsync("my-topic", msg => received = msg);
 
-        var model = new MqttDiagnosticsMessageModel { Payload = new { id = 65 }, Topic = "my-topic" };
+        var model = HausModelFactory.MqttDiagnosticsMessageModel();
         var client = factory.CreateAuthenticatedClient();
         await client.ReplayDiagnosticsMessageAsync(model);
 
@@ -35,7 +36,7 @@ public class DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
     public async Task WhenUnauthenticatedClientReplaysMessageThenRespondsWithUnauthorized()
     {
         var client = factory.CreateUnauthenticatedClient();
-        var response = await client.ReplayDiagnosticsMessageAsync(new MqttDiagnosticsMessageModel());
+        var response = await client.ReplayDiagnosticsMessageAsync(HausModelFactory.MqttDiagnosticsMessageModel());
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }

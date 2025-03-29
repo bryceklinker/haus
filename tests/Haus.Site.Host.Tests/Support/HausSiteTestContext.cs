@@ -77,9 +77,9 @@ public class HausSiteTestContext : IAsyncLifetime
         await Context.Services.DisposeAsync();
     }
 
-    protected InMemoryRealtimeDataSubscriber GetSubscriber(string hubName)
+    protected InMemoryRealtimeDataSubscriber GetSubscriber(string source)
     {
-        return _realtimeDataFactory.GetSubscriber(hubName);
+        return _realtimeDataFactory.GetSubscriber(source);
     }
 
     protected IRenderedComponent<T> RenderView<T>(
