@@ -12,6 +12,8 @@ namespace Haus.Site.Host.Tests.Health.Diagnostics;
 
 public class DiagnosticsMessageViewTests : HausSiteTestContext
 {
+    private const string ReplayUrl = "/api/diagnostics/replay";
+
     [Fact]
     public void WhenRenderedThenShowsMessageContent()
     {
@@ -34,7 +36,7 @@ public class DiagnosticsMessageViewTests : HausSiteTestContext
     [Fact]
     public async Task WhenMessageIsReplayingThenReplayIsDisabled()
     {
-        await HausApiHandler.SetupPostAsJson("/api/diagnostics/replay", new { }, opts => opts.WithDelayMs(1000));
+        await HausApiHandler.SetupPostAsJson(ReplayUrl, new { }, opts => opts.WithDelayMs(500));
 
         var message = HausModelFactory.MqttDiagnosticsMessageModel();
 
@@ -43,23 +45,23 @@ public class DiagnosticsMessageViewTests : HausSiteTestContext
             opts.Add(c => c.Message, message);
         });
 
-        await view.FindByComponent<MudButton>().ClickAsync();
+        var invokeTask = view.InvokeAsync(async () =>
+        {
+            await view.FindByComponent<MudButton>().ClickAsync();
+        });
 
         Eventually.Assert(() =>
         {
             view.FindByComponent<MudButton>().Instance.Disabled.Should().BeTrue();
         });
+        await invokeTask;
     }
 
     [Fact]
     public async Task WhenMessageIsReplayedThenSendsMessageToApi()
     {
         HttpRequestMessage? req = null;
-        await HausApiHandler.SetupPostAsJson(
-            "/api/diagnostics/replay",
-            new { },
-            opts => opts.WithCapture(r => req = r)
-        );
+        await HausApiHandler.SetupPostAsJson(ReplayUrl, new { }, opts => opts.WithCapture(r => req = r));
         var message = HausModelFactory.MqttDiagnosticsMessageModel();
 
         var view = RenderView<DiagnosticsMessageView>(opts =>

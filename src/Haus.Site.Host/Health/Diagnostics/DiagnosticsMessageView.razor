@@ -15,7 +15,10 @@
             <MudGrid>
                 <MudItem xs="12">
                     <MudToolBar>
-                        <MudButton OnClick="ReplayMessage" Disabled="@IsReplaying" Variant="Variant.Filled" Color="Color.Primary">
+                        <MudButton OnClick="async () => await ReplayMessage()" 
+                                   Disabled="IsReplaying" 
+                                   Variant="Variant.Filled" 
+                                   Color="Color.Primary">
                             Replay
                         </MudButton>
                     </MudToolBar>
@@ -32,7 +35,7 @@
     [Parameter]
     public MqttDiagnosticsMessageModel? Message { get; set; }
 
-    private bool IsReplaying { get; set; }
+    public bool IsReplaying { get; set; }
     
     private async Task ReplayMessage()
     {
