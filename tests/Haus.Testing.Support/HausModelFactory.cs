@@ -53,6 +53,11 @@ public static class HausModelFactory
         return new LightingModel(State: Faker.Random.Enum<LightingState>(), Level: new LevelLightingModel());
     }
 
+    public static LightingConstraintsModel LightingConstraintsModel()
+    {
+        return new LightingConstraintsModel(MinLevel: 0, MaxLevel: 100, MinTemperature: null, MaxTemperature: null);
+    }
+
     public static HausHealthReportModel HealthReportModel()
     {
         return new HausHealthReportModel(

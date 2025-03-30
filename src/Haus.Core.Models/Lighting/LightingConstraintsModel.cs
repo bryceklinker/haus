@@ -8,11 +8,5 @@ public record LightingConstraintsModel(
 )
 {
     [OptionalGeneration]
-    public double? MinTemperature { get; } = MinTemperature;
-
-    [OptionalGeneration]
-    public double? MaxTemperature { get; } = MaxTemperature;
-
-    [OptionalGeneration]
     public bool HasTemperature => MinTemperature.HasValue && MaxTemperature.HasValue;
 }
