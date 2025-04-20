@@ -1,3 +1,4 @@
 haus-web/
 haus-zigbee/
 node_modules/
+playwright/.auth/

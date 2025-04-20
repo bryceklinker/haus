@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Haus.Core.Models.Lighting;
+using Haus.Core.Models.Rooms;
 using Haus.Site.Host.Rooms.Detail;
 using Haus.Site.Host.Shared.Lighting;
 using Haus.Site.Host.Tests.Support;
@@ -16,13 +17,35 @@ public class RoomDetailViewTests : HausSiteTestContext
     {
         var room = HausModelFactory.RoomModel();
 
-        var page = Context.RenderComponent<RoomDetailView>(opts =>
+        var view = RenderDetail(room);
+
+        view.FindMudTextFieldById<string?>("name").Instance.Value.Should().Be(room.Name);
+        view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.Value.Should().Be(room.OccupancyTimeoutInSeconds);
+    }
+
+    [Fact]
+    public async Task WhenRoomIsModifiedAndSavedThenUpdatesRoom()
+    {
+        HttpRequestMessage? request = null;
+        await HausApiHandler.SetupPutAsJson("/api/rooms/90", new { }, opts => opts.WithCapture(r => request = r));
+
+        var room = HausModelFactory.RoomModel() with { Id = 90 };
+
+        var view = RenderDetail(room);
+
+        await view.InvokeAsync(async () =>
         {
-            opts.Add(o => o.Room, room);
+            await view.FindMudTextFieldById<string?>("name").Instance.SetText("bill");
+            await view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.SetText("500");
+            await view.FindMudButtonByText("save").ClickAsync();
         });
 
-        page.FindMudTextFieldById<string>("name").Instance.Value.Should().Be(room.Name);
-        page.FindMudTextFieldById<int>("occupancyTimeout").Instance.Value.Should().Be(room.OccupancyTimeoutInSeconds);
+        await Eventually.AssertAsync(async () =>
+        {
+            var model = request?.Content != null ? await request.Content.ReadFromJsonAsync<RoomModel>() : null;
+            model?.OccupancyTimeoutInSeconds.Should().Be(500);
+            model?.Name.Should().Be("bill");
+        });
     }
 
     [Fact]
@@ -37,15 +60,12 @@ public class RoomDetailViewTests : HausSiteTestContext
         var room = HausModelFactory.RoomModel() with { Id = 8 };
         await HausApiHandler.SetupGetAsJson("/api/rooms/8", room);
 
-        var page = Context.RenderComponent<RoomDetailView>(opts =>
-        {
-            opts.Add(o => o.Room, room);
-        });
+        var view = RenderDetail(room);
 
         var lighting = HausModelFactory.LightingModel();
-        await page.InvokeAsync(async () =>
+        await view.InvokeAsync(async () =>
         {
-            await page.FindByComponent<LightingView>().Instance.OnLightingChanged.InvokeAsync(lighting);
+            await view.FindByComponent<LightingView>().Instance.OnLightingChanged.InvokeAsync(lighting);
         });
 
         await Eventually.AssertAsync(async () =>
@@ -56,6 +76,14 @@ public class RoomDetailViewTests : HausSiteTestContext
                     : await lightingRequest.Content.ReadFromJsonAsync<LightingModel>();
 
             newLighting.Should().BeEquivalentTo(lighting);
+        });
+    }
+
+    private IRenderedComponent<RoomDetailView> RenderDetail(RoomModel room)
+    {
+        return RenderView<RoomDetailView>(opts =>
+        {
+            opts.Add(o => o.Room, room);
         });
     }
 }

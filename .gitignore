@@ -25,3 +25,4 @@ coveragereport/
 .vs/
 haus_mqtt/
 .envrc
+/**/TestResults/
