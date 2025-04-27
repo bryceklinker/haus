@@ -1,8 +1,6 @@
-using System;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Haus.Core.Models.Diagnostics;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
 using MQTTnet;
@@ -21,7 +19,11 @@ public class DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
         MqttApplicationMessage? received = null;
         await mqtt.SubscribeAsync("my-topic", msg => received = msg);
 
-        var model = HausModelFactory.MqttDiagnosticsMessageModel();
+        var model = HausModelFactory.MqttDiagnosticsMessageModel() with
+        {
+            Topic = "my-topic",
+            Payload = new { id = 65 },
+        };
         var client = factory.CreateAuthenticatedClient();
         await client.ReplayDiagnosticsMessageAsync(model);
 
