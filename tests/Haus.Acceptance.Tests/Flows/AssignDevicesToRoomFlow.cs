@@ -35,10 +35,9 @@ public class AssignDevicesToRoomFlow : PageTest
         var originalAssignedDevicesCount = 0;
         await Eventually.AssertAsync(async () =>
         {
-            originalUnassignedDevicesCount = (await Page.QuerySelectorAllAsync(UnassignedDeviceDropItemSelector)).Count;
-            originalAssignedDevicesCount = (
-                await Page.QuerySelectorAllAsync(DevicesAssignedToFirstRoomDropItemSelector)
-            ).Count;
+            originalUnassignedDevicesCount = await Page.CssLocator(UnassignedDeviceDropItemSelector).CountAsync();
+            originalAssignedDevicesCount = await Page.CssLocator(DevicesAssignedToFirstRoomDropItemSelector)
+                .CountAsync();
             Assert.That(originalAssignedDevicesCount, Is.GreaterThanOrEqualTo(1));
             Assert.That(originalUnassignedDevicesCount, Is.GreaterThanOrEqualTo(1));
         });
