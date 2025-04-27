@@ -20,7 +20,7 @@ runs:
 
     - name: Install Dev Certs
       shell: bash
-      run: dotnet dev-certs https --trust    
+      run: sudo dotnet dev-certs https --trust
     
     - name: Prepare Build
       shell: bash

@@ -118,11 +118,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Site.Host", "src\Haus.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haus.Site.Host.Tests", "tests\Haus.Site.Host.Tests\Haus.Site.Host.Tests.csproj", "{F278910B-016A-4545-A899-976CF8B2F8B6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "local-mosquitto", "local-mosquitto", "{5E477A0C-C9F9-430E-B50B-B186B61644C5}"
-	ProjectSection(SolutionItems) = preProject
-		local-mosquitto\mosquitto.conf = local-mosquitto\mosquitto.conf
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".husky", ".husky", "{E724738F-E78C-4011-A77F-291F2AAF1DCB}"
 	ProjectSection(SolutionItems) = preProject
 		.husky\task-runner.json = .husky\task-runner.json

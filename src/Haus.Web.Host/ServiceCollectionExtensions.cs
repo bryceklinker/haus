@@ -113,12 +113,6 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddHausSpa(this IServiceCollection services, string rootPath)
-    {
-        services.AddSpaStaticFiles(spa => spa.RootPath = rootPath);
-        return services;
-    }
-
     public static IServiceCollection AddHausHealthChecks(this IServiceCollection services)
     {
         services.AddHealthChecks().AddHausMqttHealthChecks().AddDbContextCheck<HausDbContext>();

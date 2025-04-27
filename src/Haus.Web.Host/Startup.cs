@@ -16,7 +16,6 @@ namespace Haus.Web.Host;
 
 public class Startup
 {
-    private const string ClientAppRoot = "./client-app";
     private readonly IConfiguration _configuration;
 
     public Startup(IConfiguration configuration)
@@ -32,7 +31,6 @@ public class Startup
             .AddHausAuthentication(_configuration)
             .AddHausRestApi()
             .AddHausRealtimeApi()
-            .AddHausSpa(Path.Combine(ClientAppRoot, "dist"))
             .AddHausHealthChecks();
     }
 
@@ -41,7 +39,7 @@ public class Startup
         if (env.IsDevelopment())
             app.UseDeveloperExceptionPage();
 
-        app.UseHausRequestLogging().UseHttpsRedirection().UseCors().UseStaticFiles().UseSpaStaticFiles();
+        app.UseHausRequestLogging().UseHttpsRedirection().UseCors();
 
         app.UseRouting()
             .UseAuthentication()
@@ -54,12 +52,5 @@ public class Startup
                 endpoints.MapHub<HealthHub>(HausRealtimeSources.Health);
                 endpoints.MapControllers();
             });
-
-        app.UseSpa(spa =>
-        {
-            spa.Options.SourcePath = ClientAppRoot;
-            if (env.IsDevelopment())
-                spa.UseAngularCliServer("start");
-        });
     }
 }
