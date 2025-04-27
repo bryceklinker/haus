@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
 
@@ -20,8 +21,16 @@ public static class PageExtensions
         await page.GetByLabel(label).Nth(index).FillAsync(value);
     }
 
-    public static ILocator CssLocator(this IPage page, string selector)
+    public static ILocator CssLocator(this IPage page, string selector, PageLocatorOptions? options = null)
     {
-        return page.Locator($"css={selector}");
+        return page.Locator($"css={selector}", options);
+    }
+
+    public static ILocator CssLocatorWithText(this IPage page, string selector, string text)
+    {
+        return page.CssLocator(
+            selector,
+            new PageLocatorOptions { HasTextRegex = new Regex(text, RegexOptions.IgnoreCase) }
+        );
     }
 }

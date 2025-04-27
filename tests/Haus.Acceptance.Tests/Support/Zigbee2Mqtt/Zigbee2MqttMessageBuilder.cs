@@ -53,7 +53,7 @@ public class Zigbee2MqttMessageBuilder
             new Dictionary<string, string?>
             {
                 { "friendly_name", friendlyName },
-                { "vendor", "Phillips" },
+                { "vendor", "Philips" },
                 { "model", "929002335001" },
             }
         );
@@ -65,7 +65,7 @@ public class Zigbee2MqttMessageBuilder
             new Dictionary<string, string?>
             {
                 { "friendly_name", friendlyName },
-                { "vendor", "Phillips" },
+                { "vendor", "Philips" },
                 { "model", "9290012607" },
             }
         );

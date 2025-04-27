@@ -1,20 +1,13 @@
+using System;
 using System.Threading.Tasks;
 using Haus.Acceptance.Tests.Support;
 using Haus.Acceptance.Tests.Support.Zigbee2Mqtt;
-using Haus.Testing.Support;
 
 namespace Haus.Acceptance.Tests.Flows;
 
 [TestFixture]
 public class AssignDevicesToRoomFlow : HausPageTest
 {
-    private const string UnassignedDevicesIdentifier = "'unassigned'";
-    private const string UnassignedDropZoneSelector = $".mud-drop-zone[identifier={UnassignedDevicesIdentifier}]";
-    private const string UnassignedDeviceDropItemSelector = $"{UnassignedDropZoneSelector} > .mud-drop-item";
-    private const string FirstUnassignedDeviceDropItemSelector = $"{UnassignedDeviceDropItemSelector}:nth-of-type(1)";
-    private const string FirstRoomDropZoneSelector = $".mud-drop-zone:not([identifier={UnassignedDevicesIdentifier}])";
-    private const string DevicesAssignedToFirstRoomDropItemSelector = $"{FirstRoomDropZoneSelector} > .mud-drop-item";
-
     private Zigbee2MqttPublisher _zigbee2MqttPublisher;
 
     [SetUp]
@@ -27,48 +20,29 @@ public class AssignDevicesToRoomFlow : HausPageTest
     [Test]
     public async Task AssignDeviceToRoom()
     {
+        var lightId = $"{Guid.NewGuid()}";
+        var sensorId = $"{Guid.NewGuid()}";
+        var roomName = $"{Guid.NewGuid()}";
         await Page.PerformLoginAsync(HausUser.Default);
 
-        await PublishPhillipsLight("new_light");
-        await AddRoom("new_hotness");
+        await _zigbee2MqttPublisher.PublishPhilipsLight(lightId);
+        await _zigbee2MqttPublisher.PublishPhilipsMotionSensor(sensorId);
+        await AddRoom(roomName);
 
         await Page.ClickLinkAsync("Devices");
         await Page.ClickLinkAsync("Discovery");
 
-        var originalUnassignedDevicesCount = 0;
-        var originalAssignedDevicesCount = 0;
-        await Eventually.AssertAsync(async () =>
-        {
-            originalUnassignedDevicesCount = await Page.CssLocator(UnassignedDeviceDropItemSelector).CountAsync();
-            originalAssignedDevicesCount = await Page.CssLocator(DevicesAssignedToFirstRoomDropItemSelector)
-                .CountAsync();
-            Assert.That(originalAssignedDevicesCount, Is.GreaterThanOrEqualTo(1));
-            Assert.That(originalUnassignedDevicesCount, Is.GreaterThanOrEqualTo(1));
-        });
+        await Page.GetByText(lightId).DragToAsync(Page.GetByText(roomName));
+        await Page.GetByText(sensorId).DragToAsync(Page.GetByText(roomName));
 
-        await Page.DragAndDropAsync(FirstUnassignedDeviceDropItemSelector, FirstRoomDropZoneSelector);
-
-        await Expect(Page.CssLocator(UnassignedDeviceDropItemSelector))
-            .ToHaveCountAsync(originalUnassignedDevicesCount - 1);
-        await Expect(Page.CssLocator(DevicesAssignedToFirstRoomDropItemSelector))
-            .ToHaveCountAsync(originalAssignedDevicesCount + 1);
+        await Expect(Page.CssLocatorWithText(".mud-drop-zone", roomName)).ToContainTextAsync(lightId);
+        await Expect(Page.CssLocatorWithText(".mud-drop-zone", roomName)).ToContainTextAsync(sensorId);
     }
 
     [TearDown]
     public async Task AfterEach()
     {
         await Context.StopTracingAsync();
-    }
-
-    private async Task PublishPhillipsLight(string friendlyName)
-    {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithLogTopic()
-            .WithInterviewSuccessful()
-            .WithPairing()
-            .WithPhillipsLightMeta(friendlyName)
-            .Build();
-        await _zigbee2MqttPublisher.PublishAsJsonAsync(message);
     }
 
     private async Task AddRoom(string roomName)

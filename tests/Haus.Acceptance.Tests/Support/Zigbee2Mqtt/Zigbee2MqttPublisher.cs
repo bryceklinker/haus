@@ -17,4 +17,26 @@ public class Zigbee2MqttPublisher(IHausMqttClient client)
             }
         );
     }
+
+    public async Task PublishPhilipsLight(string externalId)
+    {
+        var message = new Zigbee2MqttMessageBuilder()
+            .WithLogTopic()
+            .WithInterviewSuccessful()
+            .WithPairing()
+            .WithPhillipsLightMeta(externalId)
+            .Build();
+        await PublishAsJsonAsync(message);
+    }
+
+    public async Task PublishPhilipsMotionSensor(string externalId)
+    {
+        var message = new Zigbee2MqttMessageBuilder()
+            .WithLogTopic()
+            .WithInterviewSuccessful()
+            .WithPairing()
+            .WithPhillipsMotionSensorMeta(externalId)
+            .Build();
+        await PublishAsJsonAsync(message);
+    }
 }
