@@ -13,7 +13,7 @@
     "acceptance_tests": "./tests/Haus.Acceptance.Tests"
   },
   "scripts": {
-    "web_host:wait": "wait-on tcp:5001",
+    "web_host:wait": "wait-on tcp:5001 && wait-on $npm_package_config_web_host/haus.db",
     "web_host:start": "cd $npm_package_config_web_host && dotnet run",
     "web_host:start:watch": "DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1 cd $npm_package_config_web_host && dotnet watch",
     "site_host:wait":"wait-on tcp:5002",
