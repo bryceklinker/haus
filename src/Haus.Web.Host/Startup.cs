@@ -39,7 +39,9 @@ public class Startup
         if (env.IsDevelopment())
             app.UseDeveloperExceptionPage();
 
-        app.UseHausRequestLogging().UseHttpsRedirection().UseCors();
+        app.UseHausRequestLogging().UseCors();
+        if (!env.IsAcceptance())
+            app.UseHttpsRedirection();
 
         app.UseRouting()
             .UseAuthentication()
