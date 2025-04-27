@@ -20,7 +20,7 @@
     "site_host:start": "cd $npm_package_config_site_host && dotnet run",
     "site_host:start:watch": "DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1 cd $npm_package_config_site_host && dotnet watch",
     "wait": "yarn web_host:wait && yarn site_host:wait",
-    "acceptance_tests:test": "cd $npm_package_config_acceptance_tests && dotnet test",
+    "acceptance_tests:test": "cd $npm_package_config_acceptance_tests && dotnet test --no-restore",
     "acceptance": "concurrently --kill-others --success first \"yarn start\" \"yarn wait && yarn acceptance_tests:test\"",
     "zigbee_host:start": "cd $npm_package_config_zigbee_host && dotnet run",
     "start": "concurrently -c \"green.bold,blue.bold,yellow.bold\" \"npm:*:start\"",
