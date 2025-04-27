@@ -10,6 +10,8 @@ namespace Haus.Core.Common.Storage.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("PRAGMA foreign_keys = OFF;", suppressTransaction: true);
+
             migrationBuilder.DropForeignKey(name: "FK_DeviceMetadata_Devices_DeviceId", table: "DeviceMetadata");
 
             migrationBuilder.AlterColumn<string>(
@@ -42,11 +44,15 @@ namespace Haus.Core.Common.Storage.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade
             );
+
+            migrationBuilder.Sql("PRAGMA foreign_keys = ON;", suppressTransaction: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("PRAGMA foreign_keys = OFF;", suppressTransaction: true);
+
             migrationBuilder.DropForeignKey(name: "FK_DeviceMetadata_Devices_DeviceId", table: "DeviceMetadata");
 
             migrationBuilder.AlterColumn<string>(
@@ -74,6 +80,8 @@ namespace Haus.Core.Common.Storage.Migrations
                 principalTable: "Devices",
                 principalColumn: "Id"
             );
+
+            migrationBuilder.Sql("PRAGMA foreign_keys = ON;", suppressTransaction: true);
         }
     }
 }
