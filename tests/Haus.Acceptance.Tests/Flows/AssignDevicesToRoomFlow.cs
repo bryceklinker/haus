@@ -1,14 +1,12 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Haus.Acceptance.Tests.Support;
+using Haus.Acceptance.Tests.Support.Zigbee2Mqtt;
 using Haus.Testing.Support;
-using Microsoft.Playwright;
-using Microsoft.Playwright.NUnit;
 
 namespace Haus.Acceptance.Tests.Flows;
 
 [TestFixture]
-public class AssignDevicesToRoomFlow : PageTest
+public class AssignDevicesToRoomFlow : HausPageTest
 {
     private const string UnassignedDevicesIdentifier = "'unassigned'";
     private const string UnassignedDropZoneSelector = $".mud-drop-zone[identifier={UnassignedDevicesIdentifier}]";
@@ -17,16 +15,22 @@ public class AssignDevicesToRoomFlow : PageTest
     private const string FirstRoomDropZoneSelector = $".mud-drop-zone:not([identifier={UnassignedDevicesIdentifier}])";
     private const string DevicesAssignedToFirstRoomDropItemSelector = $"{FirstRoomDropZoneSelector} > .mud-drop-item";
 
+    private Zigbee2MqttPublisher _zigbee2MqttPublisher;
+
     [SetUp]
     public async Task BeforeEach()
     {
         await Context.StartTracingAsync();
+        _zigbee2MqttPublisher = await GetZigbee2MqttPublisher();
     }
 
     [Test]
     public async Task AssignDeviceToRoom()
     {
         await Page.PerformLoginAsync(HausUser.Default);
+
+        await PublishPhillipsLight("new_light");
+        await AddRoom("new_hotness");
 
         await Page.ClickLinkAsync("Devices");
         await Page.ClickLinkAsync("Discovery");
@@ -54,5 +58,24 @@ public class AssignDevicesToRoomFlow : PageTest
     public async Task AfterEach()
     {
         await Context.StopTracingAsync();
+    }
+
+    private async Task PublishPhillipsLight(string friendlyName)
+    {
+        var message = new Zigbee2MqttMessageBuilder()
+            .WithLogTopic()
+            .WithInterviewSuccessful()
+            .WithPairing()
+            .WithPhillipsLightMeta(friendlyName)
+            .Build();
+        await _zigbee2MqttPublisher.PublishAsJsonAsync(message);
+    }
+
+    private async Task AddRoom(string roomName)
+    {
+        await Page.ClickLinkAsync("Rooms");
+        await Page.CssLocator(".mud-fab").ClickAsync();
+        await Page.EnterTextAsync("name", roomName);
+        await Page.ClickButtonAsync("Save");
     }
 }
