@@ -19,4 +19,9 @@ public static class PageExtensions
     {
         await page.GetByLabel(label).Nth(index).FillAsync(value);
     }
+
+    public static ILocator CssLocator(this IPage page, string selector)
+    {
+        return page.Locator($"css={selector}");
+    }
 }

@@ -16,6 +16,10 @@
       <Folder Include="playwright\.auth\" />
     </ItemGroup>
     
+    <ItemGroup>
+      <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj" />
+    </ItemGroup>
+    
     <Target Name="InstallBrowsers" AfterTargets="Build">
         <Exec Command="pwsh bin/$(Configuration)/net9.0/playwright.ps1 install" />
     </Target>
