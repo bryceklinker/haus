@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Haus.Acceptance.Tests.Support.Pages;
 using Microsoft.Playwright;
 
 namespace Haus.Acceptance.Tests.Support;

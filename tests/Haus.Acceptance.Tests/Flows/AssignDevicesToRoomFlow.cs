@@ -27,29 +27,21 @@ public class AssignDevicesToRoomFlow : HausPageTest
 
         await _zigbee2MqttPublisher.PublishPhilipsLight(lightId);
         await _zigbee2MqttPublisher.PublishPhilipsMotionSensor(sensorId);
-        await AddRoom(roomName);
+        var rooms = await Page.NavigateToRoomsAsync();
+        await rooms.AddRoomAsync(roomName);
 
-        await Page.ClickLinkAsync("Devices");
-        await Page.ClickLinkAsync("Discovery");
+        var devices = await Page.NavigateToDevicesAsync();
+        var discovery = await devices.NavigateToDiscoveryAsync();
+        await discovery.AssignDeviceToRoomAsync(lightId, roomName);
+        await discovery.AssignDeviceToRoomAsync(sensorId, roomName);
 
-        await Page.GetByText(lightId).DragToAsync(Page.GetByText(roomName));
-        await Page.GetByText(sensorId).DragToAsync(Page.GetByText(roomName));
-
-        await Expect(Page.CssLocatorWithText(".mud-drop-zone", roomName)).ToContainTextAsync(lightId);
-        await Expect(Page.CssLocatorWithText(".mud-drop-zone", roomName)).ToContainTextAsync(sensorId);
+        await Expect(discovery.GetRoomDropZone(roomName)).ToContainTextAsync(lightId);
+        await Expect(discovery.GetRoomDropZone(roomName)).ToContainTextAsync(sensorId);
     }
 
     [TearDown]
     public async Task AfterEach()
     {
         await Context.StopTracingAsync();
-    }
-
-    private async Task AddRoom(string roomName)
-    {
-        await Page.ClickLinkAsync("Rooms");
-        await Page.CssLocator(".mud-fab").ClickAsync();
-        await Page.EnterTextAsync("name", roomName);
-        await Page.ClickButtonAsync("Save");
     }
 }
