@@ -22,6 +22,6 @@ public class DevicesDiscoveryPage(IPage page)
 
     public ILocator GetUnassignedDevicesDropZone()
     {
-        return page.CssLocatorWithText(".mud-drop-zone", "unassinged");
+        return page.CssLocatorWithText(".mud-drop-zone", "unassigned");
     }
 }
