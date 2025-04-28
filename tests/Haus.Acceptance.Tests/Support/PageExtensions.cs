@@ -29,9 +29,6 @@ public static class PageExtensions
 
     public static ILocator CssLocatorWithText(this IPage page, string selector, string text)
     {
-        return page.CssLocator(
-            selector,
-            new PageLocatorOptions { HasTextRegex = new Regex(text, RegexOptions.IgnoreCase) }
-        );
+        return page.CssLocator(selector, new PageLocatorOptions { HasText = text });
     }
 }
