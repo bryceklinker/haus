@@ -1,6 +1,4 @@
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Haus.Acceptance.Tests.Support.Pages;
 using Microsoft.Playwright;
 
 namespace Haus.Acceptance.Tests.Support;
@@ -25,10 +23,5 @@ public static class PageExtensions
     public static ILocator CssLocator(this IPage page, string selector, PageLocatorOptions? options = null)
     {
         return page.Locator($"css={selector}", options);
-    }
-
-    public static ILocator CssLocatorWithText(this IPage page, string selector, string text)
-    {
-        return page.CssLocator(selector, new PageLocatorOptions { HasText = text });
     }
 }

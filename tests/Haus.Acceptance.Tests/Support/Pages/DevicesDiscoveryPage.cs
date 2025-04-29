@@ -17,11 +17,11 @@ public class DevicesDiscoveryPage(IPage page)
 
     public ILocator GetRoomDropZone(string roomName)
     {
-        return page.CssLocatorWithText(".mud-drop-zone", roomName);
+        return page.CssLocator($".mud-drop-zone[room-name~='{roomName}']");
     }
 
     public ILocator GetUnassignedDevicesDropZone()
     {
-        return page.CssLocatorWithText(".mud-drop-zone", "unassigned devices");
+        return page.CssLocator(".mud-drop-zone[identifier~='unassigned']");
     }
 }

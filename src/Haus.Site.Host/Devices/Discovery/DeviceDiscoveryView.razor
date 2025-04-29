@@ -17,7 +17,9 @@
                 <MudItem xs="6">
                     @foreach (var room in Rooms)
                     {
-                        <MudDropZone T="DeviceModel" Identifier="@room.Id.ToString()">
+                        <MudDropZone T="DeviceModel" 
+                                     UserAttributes="GetRoomAttributes(room)" 
+                                     Identifier="@room.Id.ToString()">
                             <MudText Typo="Typo.h3">@room.Name</MudText>
                         </MudDropZone>
                     }        
@@ -31,7 +33,10 @@
             </MudGrid>
         </ChildContent>
         <ItemRenderer>
-            <MudPaper Class="device" >@context.DisplayText</MudPaper>
+            <MudPaper UserAttributes="GetDeviceItemAttributes(context)"
+                      Class="device">
+                @context.DisplayText
+            </MudPaper>
         </ItemRenderer>
     </MudDropContainer>
 </LoadingContentView>
@@ -79,4 +84,19 @@
         Devices = devices.Items;
     }
 
+    private Dictionary<string, object?> GetDeviceItemAttributes(DeviceModel model)
+    {
+        return new Dictionary<string, object?>
+        {
+            { "device-id", model.Id }
+        };
+    }
+
+    private Dictionary<string, object?> GetRoomAttributes(RoomModel model)
+    {
+        return new Dictionary<string, object?>
+        {
+            {"room-name", model.Name}
+        };
+    }
 }
