@@ -16,6 +16,4 @@ public record DeviceModel(
 ) : IdentityModel
 {
     public MetadataModel[] Metadata { get; init; } = Metadata ?? [];
-
-    public string DisplayText => $"({DeviceType.Humanize(LetterCasing.Title)}) {Name}";
 }

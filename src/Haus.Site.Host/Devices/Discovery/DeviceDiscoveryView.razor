@@ -35,7 +35,13 @@
         <ItemRenderer>
             <MudPaper UserAttributes="GetDeviceItemAttributes(context)"
                       Class="device">
-                @context.DisplayText
+                <MudStack>
+                    <MudStack Row="true">
+                        <MudText Typo="Typo.body1">(@context.DeviceType.Humanize(LetterCasing.Title))</MudText>
+                        <MudText Typo="Typo.body1">@context.Name</MudText>
+                    </MudStack>
+                    <MudText Typo="Typo.body2">@context.ExternalId</MudText>
+                </MudStack>
             </MudPaper>
         </ItemRenderer>
     </MudDropContainer>
@@ -88,7 +94,7 @@
     {
         return new Dictionary<string, object?>
         {
-            { "device-id", model.Id }
+            { "external-id", model.ExternalId }
         };
     }
 
