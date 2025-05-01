@@ -35,6 +35,7 @@ public class SignalRRealtimeDataFactory(IConfiguration config, IAccessTokenProvi
                 }
             )
             .Build();
+
         return Task.FromResult<IRealtimeDataSubscriber>(new SignalRRealtimeDataSubscriber(connection));
     }
 }

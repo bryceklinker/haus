@@ -3,7 +3,7 @@ using Haus.Core.Models.ExternalMessages;
 
 namespace Haus.Core.Models.Devices.Events;
 
-public record DeviceCreatedEvent(DeviceModel device) : IHausEventCreator<DeviceCreatedEvent>
+public record DeviceCreatedEvent(DeviceModel Device) : IHausEventCreator<DeviceCreatedEvent>
 {
     public const string Type = "device_created";
 

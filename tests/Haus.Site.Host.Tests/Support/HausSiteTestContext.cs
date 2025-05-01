@@ -57,7 +57,7 @@ public class HausSiteTestContext : IAsyncLifetime
         Context.Services.Replace<IRealtimeDataFactory>(_realtimeDataFactory);
     }
 
-    public async Task InitializeAsync()
+    public virtual async Task InitializeAsync()
     {
         var hostedServices = Context.Services.GetServices<IHostedService>();
         foreach (var service in hostedServices)

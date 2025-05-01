@@ -1,11 +1,15 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
+using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;
 using Haus.Site.Host.Devices.Discovery;
 using Haus.Site.Host.Tests.Support;
+using Haus.Site.Host.Tests.Support.Realtime;
 using Haus.Testing.Support;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
@@ -16,6 +20,20 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 {
     private const string RoomsUrl = "/api/rooms";
     private const string DevicesUrl = "/api/devices";
+    private readonly InMemoryRealtimeDataSubscriber _devicesSubscriber;
+
+    public DeviceDiscoveryViewTests()
+    {
+        _devicesSubscriber = GetSubscriber(HausRealtimeSources.Events);
+    }
+
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+
+        await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>());
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>());
+    }
 
     [Fact]
     public async Task WhenRenderedThenShowsLoading()
@@ -28,6 +46,17 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             page.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
+        });
+    }
+
+    [Fact]
+    public void WhenRenderedThenConnectsToEvents()
+    {
+        RenderView<DeviceDiscoveryView>();
+
+        Eventually.Assert(() =>
+        {
+            _devicesSubscriber.IsStarted.Should().BeTrue();
         });
     }
 
@@ -133,6 +162,22 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         {
             var content = postRequest?.Content != null ? await postRequest.Content.ReadFromJsonAsync<long[]>() : [];
             content.Should().Contain(76L);
+        });
+    }
+
+    [Fact]
+    public async Task WhenDeviceIsDiscoveredThenShowsDeviceInUnassignedDevices()
+    {
+        var device = HausModelFactory.DeviceModel();
+        var view = Context.RenderComponent<DeviceDiscoveryView>();
+        await _devicesSubscriber.SimulateAsync(
+            HausEventsEventNames.OnEvent,
+            new DeviceCreatedEvent(device).AsHausEvent()
+        );
+
+        Eventually.Assert(() =>
+        {
+            view.FindAllByComponent<MudPaper>(opts => opts.WithText(device.ExternalId)).Should().HaveCount(1);
         });
     }
 }

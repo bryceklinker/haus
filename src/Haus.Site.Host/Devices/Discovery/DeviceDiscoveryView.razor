@@ -1,17 +1,29 @@
 @using Haus.Api.Client.Devices
 @using Haus.Api.Client.Rooms
+@using Haus.Core.Models
 @using Haus.Core.Models.Devices
+@using Haus.Core.Models.Devices.Events
+@using Haus.Core.Models.ExternalMessages
 @using Haus.Core.Models.Rooms
+@using Haus.Site.Host.Shared.Realtime
+@using Microsoft.Extensions.Logging
 
 @page "/devices/discovery"
 
 @attribute [Authorize]
 
+@implements IAsyncDisposable;
+
+@inject ILogger<DeviceDiscoveryView> Logger;
 @inject IDeviceApiClient DevicesClient;
 @inject IRoomsApiClient RoomsClient;
+@inject IRealtimeDataFactory RealtimeDataFactory;
 
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading rooms and devices...">
-    <MudDropContainer T="DeviceModel" Items="Devices" ItemsSelector="IsDeviceInRoom" ItemDropped="HandleDeviceDropped">
+    <MudDropContainer T="DeviceModel" 
+                      Items="Devices"
+                      ItemsSelector="IsDeviceInRoom" 
+                      ItemDropped="HandleDeviceDropped">
         <ChildContent>
             <MudGrid>
                 <MudItem xs="6">
@@ -34,22 +46,20 @@
         </ChildContent>
         <ItemRenderer>
             <MudPaper UserAttributes="GetDeviceItemAttributes(context)"
-                      Class="device">
+                      Outlined="true"
+                      Class="device ma-4 pa-2">
                 <MudStack>
-                    <MudStack Row="true">
-                        <MudText Typo="Typo.body1">(@context.DeviceType.Humanize(LetterCasing.Title))</MudText>
-                        <MudText Typo="Typo.body1">@context.Name</MudText>
-                    </MudStack>
-                    <MudText Typo="Typo.body2">@context.ExternalId</MudText>
+                    <MudText Typo="Typo.body1">Device Type: (@context.DeviceType.Humanize(LetterCasing.Title))</MudText>
+                    <MudText Typo="Typo.body2">External Id: @context.ExternalId</MudText>
                 </MudStack>
             </MudPaper>
         </ItemRenderer>
     </MudDropContainer>
 </LoadingContentView>
 
-
 @code {
     private const string UnassignedDeviceRoomId = "unassigned";
+    private IRealtimeDataSubscriber? _eventsSubscriber;
 
     private RoomModel[] Rooms { get; set; } = [];
     private DeviceModel[] Devices { get; set; } = [];
@@ -59,6 +69,10 @@
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
+        _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
+        _eventsSubscriber.Subscribe<HausEvent<DeviceCreatedEvent>>(HausEventsEventNames.OnEvent, HandleDeviceCreated);
+        await _eventsSubscriber.StartAsync();
+        
         var roomsList = await RoomsClient.GetRoomsAsync();
         Rooms = roomsList.Items;
 
@@ -67,6 +81,26 @@
         IsLoading = false;
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        if (_eventsSubscriber != null)
+        {
+            await _eventsSubscriber.DisposeAsync();    
+        }
+    }
+
+    private async Task HandleDeviceCreated(HausEvent<DeviceCreatedEvent> @event)
+    {
+        var device = @event.Payload.Device;
+        if (@event.Type != DeviceCreatedEvent.Type)
+        {
+            return;
+        }
+        
+        Devices = [..Devices, device];
+        await InvokeAsync(StateHasChanged);
+    }
+    
     private static bool IsDeviceInRoom(DeviceModel device, string roomId)
     {
         if (device.RoomId == null)
