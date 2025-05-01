@@ -20,7 +20,7 @@ publish/
 coverage.*
 coveragereport/
 .DS_Store
-**/haus.db*
+**/*.db*
 **/haus-logs/
 .vs/
 haus_mqtt/

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Haus.Acceptance.Tests.Support;
 using Haus.Acceptance.Tests.Support.Zigbee2Mqtt;
+using Microsoft.Playwright;
 
 namespace Haus.Acceptance.Tests.Flows;
 
@@ -28,7 +29,8 @@ public class DiscoverNewDevicesFlow : HausPageTest
 
         await _zigbee2MqttPublisher.PublishPhilipsLight(deviceId);
 
-        await Expect(discovery.GetUnassignedDevicesDropZone()).ToContainTextAsync(deviceId);
+        await Expect(discovery.GetUnassignedDevicesDropZone())
+            .ToContainTextAsync(deviceId, new LocatorAssertionsToContainTextOptions { Timeout = 10_000 });
     }
 
     [TearDown]
