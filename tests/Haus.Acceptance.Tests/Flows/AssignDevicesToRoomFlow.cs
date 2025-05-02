@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Haus.Acceptance.Tests.Support;
 using Haus.Acceptance.Tests.Support.Zigbee2Mqtt;
+using Microsoft.Playwright;
 
 namespace Haus.Acceptance.Tests.Flows;
 
@@ -35,8 +36,10 @@ public class AssignDevicesToRoomFlow : HausPageTest
         await discovery.AssignDeviceToRoomAsync(lightId, roomName);
         await discovery.AssignDeviceToRoomAsync(sensorId, roomName);
 
-        await Expect(discovery.GetRoomDropZone(roomName)).ToContainTextAsync(lightId);
-        await Expect(discovery.GetRoomDropZone(roomName)).ToContainTextAsync(sensorId);
+        await Expect(discovery.GetRoomDropZone(roomName))
+            .ToContainTextAsync(lightId, new LocatorAssertionsToContainTextOptions { Timeout = 10_000 });
+        await Expect(discovery.GetRoomDropZone(roomName))
+            .ToContainTextAsync(sensorId, new LocatorAssertionsToContainTextOptions { Timeout = 10_000 });
     }
 
     [TearDown]

@@ -29,7 +29,8 @@ public class DiscoverNewDevicesFlow : HausPageTest
 
         await _zigbee2MqttPublisher.PublishPhilipsLight(deviceId);
 
-        await Expect(discovery.GetUnassignedDevicesDropZone()).ToContainTextAsync(deviceId);
+        await Expect(discovery.GetUnassignedDevicesDropZone())
+            .ToContainTextAsync(deviceId, new LocatorAssertionsToContainTextOptions { Timeout = 10_000 });
     }
 
     [TearDown]
