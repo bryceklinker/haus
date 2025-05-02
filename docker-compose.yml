@@ -47,6 +47,19 @@ services:
     links:
       - haus_mqtt
 
+  haus_sit:
+    container_name: haus_site
+    restart: always
+    image: bryceklinker/personal:haus-site-latest
+    ports:
+      - "5002:80"
+      - "5003:443"
+    volumes:
+      - ./cert.crt:/etc/nginx/certs/cert.crt
+      - ./cert.key:/etc/nginx/certs/cert.key
+    links:
+      - haus_web
+
   zigbee2mqtt:
     container_name: haus_zigbee2mqtt
     image: koenkk/zigbee2mqtt:latest
