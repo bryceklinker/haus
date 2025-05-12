@@ -6,8 +6,10 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Health;
 
 public class Zigbee2MqttHealthCheck : IHealthCheck
 {
-    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
-        CancellationToken cancellationToken = new())
+    public Task<HealthCheckResult> CheckHealthAsync(
+        HealthCheckContext context,
+        CancellationToken cancellationToken = new()
+    )
     {
         return Task.FromResult(HealthCheckResult.Healthy());
     }

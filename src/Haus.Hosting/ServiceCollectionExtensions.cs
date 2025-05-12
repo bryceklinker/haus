@@ -7,8 +7,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHausLogging(this IServiceCollection services)
     {
-        return services
-            .AddSingleton<ILogsDirectoryProvider, HausLogger>()
-            .AddLogging(builder => builder.AddSerilog());
+        return services.AddSingleton<ILogsDirectoryProvider, HausLogger>().AddLogging(builder => builder.AddSerilog());
     }
 }

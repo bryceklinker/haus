@@ -33,7 +33,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var updatedRoom = await _context.FindByIdAsync<RoomEntity>(room.Id);
-        updatedRoom.Lighting.State.Should().Be(LightingState.Off);
+        updatedRoom?.Lighting.State.Should().Be(LightingState.Off);
     }
 
     [Fact]
@@ -44,8 +44,8 @@ public class TurnOffVacantRoomsCommandHandlerTests
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var lightingChange = _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        lightingChange.Payload.Lighting.State.Should().Be(LightingState.Off);
-        lightingChange.Payload.Room.Id.Should().Be(room.Id);
+        lightingChange.Payload?.Lighting.State.Should().Be(LightingState.Off);
+        lightingChange.Payload?.Room.Id.Should().Be(room.Id);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var updatedRoom = await _context.FindByIdAsync<RoomEntity>(room.Id);
-        updatedRoom.Lighting.State.Should().Be(LightingState.On);
+        updatedRoom?.Lighting.State.Should().Be(LightingState.On);
         _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().BeEmpty();
     }
 
@@ -75,11 +75,14 @@ public class TurnOffVacantRoomsCommandHandlerTests
     [Fact]
     public async Task WhenRoomLightingIsOffThenRoomLightingIsNotChanged()
     {
-        _context.AddRoom("off", r =>
-        {
-            r.ChangeLighting(new LightingEntity(), new FakeDomainEventBus());
-            r.ChangeOccupancy(new OccupancyChangedModel("idk", true), new FakeDomainEventBus());
-        });
+        _context.AddRoom(
+            "off",
+            r =>
+            {
+                r.ChangeLighting(new LightingEntity(), new FakeDomainEventBus());
+                r.ChangeOccupancy(new OccupancyChangedModel("idk", true), new FakeDomainEventBus());
+            }
+        );
 
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
@@ -98,7 +101,8 @@ public class TurnOffVacantRoomsCommandHandlerTests
 
     private RoomEntity AddOccupiedRoom(int occupancyTimeoutInSeconds = 0)
     {
-        return _context.AddRoom("one",
+        return _context.AddRoom(
+            "one",
             e =>
             {
                 e.OccupancyTimeoutInSeconds = occupancyTimeoutInSeconds;

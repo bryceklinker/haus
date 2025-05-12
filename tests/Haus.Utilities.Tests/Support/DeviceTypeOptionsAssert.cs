@@ -12,8 +12,12 @@ public static class DeviceTypeOptionsAssert
         Assert.Contains(options, d => d.Matches(vendor, model));
     }
 
-    public static void AssertContains(string vendor, string model, DeviceType deviceType,
-        IEnumerable<DeviceTypeOptions> options)
+    public static void AssertContains(
+        string vendor,
+        string model,
+        DeviceType deviceType,
+        IEnumerable<DeviceTypeOptions> options
+    )
     {
         Assert.Contains(options, d => d.Matches(vendor, model) && d.DeviceType == deviceType);
     }

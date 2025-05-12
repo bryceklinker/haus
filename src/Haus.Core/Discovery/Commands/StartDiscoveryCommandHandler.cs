@@ -12,29 +12,21 @@ namespace Haus.Core.Discovery.Commands;
 
 public record StartDiscoveryCommand : ICommand;
 
-internal class StartDiscoveryCommandHandler : AsyncRequestHandler<StartDiscoveryCommand>,
-    ICommandHandler<StartDiscoveryCommand>
+internal class StartDiscoveryCommandHandler(IHausBus hausBus, HausDbContext context)
+    : ICommandHandler<StartDiscoveryCommand>
 {
-    private readonly HausDbContext _context;
-    private readonly IHausBus _hausBus;
-
-    public StartDiscoveryCommandHandler(IHausBus hausBus, HausDbContext context)
-    {
-        _hausBus = hausBus;
-        _context = context;
-    }
-
-    protected override async Task Handle(StartDiscoveryCommand request, CancellationToken cancellationToken)
+    public async Task Handle(StartDiscoveryCommand request, CancellationToken cancellationToken)
     {
         var model = new StartDiscoveryModel();
 
-        var discovery = await _context.GetDiscoveryEntityAsync(cancellationToken).ConfigureAwait(false);
-        discovery.Start();
-        await _context.SaveChangesAsync(cancellationToken);
+        var discovery = await context.GetDiscoveryEntityAsync(cancellationToken).ConfigureAwait(false);
+        discovery?.Start();
+        await context.SaveChangesAsync(cancellationToken);
 
         await Task.WhenAll(
-            _hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken),
-            _hausBus.PublishAsync(RoutableEvent.FromEvent(new DiscoveryStartedEvent()), cancellationToken)
-        ).ConfigureAwait(false);
+                hausBus.PublishAsync(RoutableCommand.FromEvent(model), cancellationToken),
+                hausBus.PublishAsync(RoutableEvent.FromEvent(new DiscoveryStartedEvent()), cancellationToken)
+            )
+            .ConfigureAwait(false);
     }
 }

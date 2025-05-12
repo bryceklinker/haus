@@ -34,6 +34,9 @@ public class RoomsRealtimeApiTests
 
         await _client.CreateRoomAsync(new RoomModel(Name: $"{Guid.NewGuid()}"));
 
-        Eventually.Assert(() => { items.Should().Contain(i => i.Type == RoomCreatedEvent.Type); });
+        Eventually.Assert(() =>
+        {
+            items.Should().Contain(i => i.Type == RoomCreatedEvent.Type);
+        });
     }
 }

@@ -11,10 +11,10 @@ namespace Haus.Api.Client.Devices;
 
 public interface IDeviceApiClient : IApiClient
 {
-    Task<DeviceModel> GetDeviceAsync(long id);
+    Task<DeviceModel?> GetDeviceAsync(long id);
     Task<ListResult<DeviceType>> GetDeviceTypesAsync();
     Task<ListResult<LightType>> GetLightTypesAsync();
-    Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null);
+    Task<ListResult<DeviceModel>> GetDevicesAsync(string? externalId = null);
     Task UpdateDeviceAsync(long deviceId, DeviceModel model);
     Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model);
     Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model);
@@ -22,34 +22,34 @@ public interface IDeviceApiClient : IApiClient
     Task<HttpResponseMessage> TurnLightOnAsync(long deviceId);
 }
 
-public class DevicesApiClient : ApiClient, IDeviceApiClient
+public class DevicesApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+    : ApiClient(httpClient, options),
+        IDeviceApiClient
 {
-    public DevicesApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-        : base(httpClient, options)
-    {
-    }
-
-    public Task<DeviceModel> GetDeviceAsync(long id)
+    public Task<DeviceModel?> GetDeviceAsync(long id)
     {
         return GetAsJsonAsync<DeviceModel>($"devices/{id}");
     }
 
-    public Task<ListResult<DeviceType>> GetDeviceTypesAsync()
+    public async Task<ListResult<DeviceType>> GetDeviceTypesAsync()
     {
-        return GetAsJsonAsync<ListResult<DeviceType>>("device-types");
+        var result = await GetAsJsonAsync<ListResult<DeviceType>>("device-types").ConfigureAwait(false);
+        return result ?? new ListResult<DeviceType>();
     }
 
-    public Task<ListResult<LightType>> GetLightTypesAsync()
+    public async Task<ListResult<LightType>> GetLightTypesAsync()
     {
-        return GetAsJsonAsync<ListResult<LightType>>("light-types");
+        var result = await GetAsJsonAsync<ListResult<LightType>>("light-types").ConfigureAwait(false);
+        return result ?? new ListResult<LightType>();
     }
 
-    public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
+    public async Task<ListResult<DeviceModel>> GetDevicesAsync(string? externalId = null)
     {
-        return GetAsJsonAsync<ListResult<DeviceModel>>("devices", new QueryParameters
-        {
-            { nameof(externalId), externalId }
-        });
+        var queryParameters = new QueryParameters();
+        if (!string.IsNullOrWhiteSpace(externalId))
+            queryParameters.Add("externalId", externalId);
+        var result = await GetAsJsonAsync<ListResult<DeviceModel>>("devices", queryParameters).ConfigureAwait(false);
+        return result ?? new ListResult<DeviceModel>();
     }
 
     public Task UpdateDeviceAsync(long deviceId, DeviceModel model)

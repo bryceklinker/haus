@@ -5,19 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Haus.Cqrs.Queries;
 
-internal class LoggingQueryBus : LoggingBus, IQueryBus
+internal class LoggingQueryBus(IQueryBus queryBus, ILogger<LoggingQueryBus> logger) : LoggingBus(logger), IQueryBus
 {
-    private readonly IQueryBus _queryBus;
-
-    public LoggingQueryBus(IQueryBus queryBus, ILogger<LoggingQueryBus> logger)
-        : base(logger)
-    {
-        _queryBus = queryBus;
-    }
-
     public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default)
     {
-        return await ExecuteWithLoggingAsync(query, () => _queryBus.ExecuteAsync(query, token), token)
+        return await ExecuteWithLoggingAsync(query, () => queryBus.ExecuteAsync(query, token), token)
             .ConfigureAwait(false);
     }
 
@@ -28,8 +20,12 @@ internal class LoggingQueryBus : LoggingBus, IQueryBus
 
     protected override void LogError<TInput>(TInput input, Exception exception, long elapsedMilliseconds)
     {
-        Logger.LogError("Query {Query} failed to execute after {ElapsedTime}ms: {Exception}", input, exception,
-            elapsedMilliseconds);
+        Logger.LogError(
+            "Query {Query} failed to execute after {ElapsedTime}ms: {Exception}",
+            input,
+            exception,
+            elapsedMilliseconds
+        );
     }
 
     protected override void LogStarted<TInput>(TInput input)

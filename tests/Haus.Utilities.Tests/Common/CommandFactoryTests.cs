@@ -7,17 +7,12 @@ namespace Haus.Utilities.Tests.Common;
 
 public class CommandFactoryTests
 {
-    private readonly CommandFactory _commandFactory;
-
-    public CommandFactoryTests()
-    {
-        _commandFactory = new CommandFactory(new NullLogger<CommandFactory>());
-    }
+    private readonly CommandFactory _commandFactory = new(new NullLogger<CommandFactory>());
 
     [Fact]
     public void WhenCommandGroupAndNameMatchesCommandThenReturnsAnInstanceOfTheMatchingCommand()
     {
-        var command = _commandFactory.Create(new[] { "zigbee2mqtt", "generate-device-type-defaults" });
+        var command = _commandFactory.Create(["zigbee2mqtt", "generate-device-type-defaults"]);
 
         Assert.IsType<GenerateDefaultDeviceTypeOptionsCommand>(command);
     }

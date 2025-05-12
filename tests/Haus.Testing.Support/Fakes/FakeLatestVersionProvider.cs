@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Haus.Core.Application;
 
@@ -7,12 +8,12 @@ namespace Haus.Testing.Support.Fakes;
 
 public class FakeLatestReleaseProvider : ILatestReleaseProvider
 {
-    private ReleaseModel Latest { get; set; }
-    private ReleasePackageModel[] Packages { get; set; }
+    private ReleaseModel? Latest { get; set; }
+    private ReleasePackageModel[]? Packages { get; set; }
     private Dictionary<int, byte[]> PackageBytes { get; } = new();
-    private Exception Exception { get; set; }
+    private Exception? Exception { get; set; }
 
-    public Task<ReleaseModel> GetLatestVersionAsync()
+    public Task<ReleaseModel?> GetLatestVersionAsync()
     {
         if (Exception != null)
             throw Exception;
@@ -25,15 +26,15 @@ public class FakeLatestReleaseProvider : ILatestReleaseProvider
         if (Exception != null)
             throw Exception;
 
-        return Task.FromResult(Packages);
+        return Task.FromResult(Packages ?? []);
     }
 
-    public Task<byte[]> DownloadLatestPackage(int id)
+    public Task<Stream?> DownloadLatestPackage(int id)
     {
         if (Exception != null)
             throw Exception;
 
-        return Task.FromResult(PackageBytes[id]);
+        return Task.FromResult<Stream?>(new MemoryStream(PackageBytes[id]));
     }
 
     public void SetupLatestVersion(ReleaseModel model)

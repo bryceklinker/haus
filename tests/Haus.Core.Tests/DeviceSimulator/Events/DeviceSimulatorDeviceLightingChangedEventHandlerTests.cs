@@ -22,7 +22,8 @@ public class DeviceSimulatorDeviceLightingChangedEventHandlerTests
     {
         _simulatorStore = new DeviceSimulatorStore();
         _hausBus = HausBusFactory.Create(configureServices: services =>
-            services.Replace<IDeviceSimulatorStore>(_simulatorStore));
+            services.Replace<IDeviceSimulatorStore>(_simulatorStore)
+        );
     }
 
     [Fact]
@@ -33,10 +34,13 @@ public class DeviceSimulatorDeviceLightingChangedEventHandlerTests
         var lighting = new LightingModel(LightingState.On);
         _simulatorStore.PublishNext(s => s.AddSimulatedDevice(simulatedLight));
         await _hausBus.PublishAsync(
-            RoutableEvent.FromEvent(new DeviceLightingChangedEvent(new DeviceModel(ExternalId: simulatedLight.Id),
-                lighting)));
+            RoutableEvent.FromEvent(
+                new DeviceLightingChangedEvent(new DeviceModel(ExternalId: simulatedLight.Id), lighting)
+            )
+        );
 
-        _simulatorStore.Current.Devices.Should()
-            .Contain(d => d.Id == simulatedLight.Id && d.Lighting.State == LightingState.On);
+        _simulatorStore
+            .Current.Devices.Should()
+            .Contain(d => d.Id == simulatedLight.Id && d.Lighting != null && d.Lighting.State == LightingState.On);
     }
 }

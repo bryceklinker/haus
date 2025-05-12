@@ -1,0 +1,40 @@
+@using Haus.Core.Models
+@using Haus.Core.Models.ExternalMessages
+@using Haus.Site.Host.Shared.Realtime
+
+@implements IAsyncDisposable;
+
+@inject IRealtimeDataFactory RealtimeDataFactory;
+
+<LoadingContentView IsLoading="State != RealtimeDataState.Connected" LoadingText="Connecting to events hub...">
+    <MudExpansionPanels>
+        @foreach (var evt in Events)
+        {
+            <EventView Event="evt" />
+        }
+    </MudExpansionPanels>
+</LoadingContentView>
+
+@code {
+    private RealtimeDataState State => Subscriber?.State ?? RealtimeDataState.Disconnected;
+    private IRealtimeDataSubscriber? Subscriber { get; set; }
+
+    private HausEvent<dynamic>[] Events { get; set; } = [];
+    
+    protected override async Task OnInitializedAsync()
+    {
+        Subscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
+        Subscriber.Subscribe(HausEventsEventNames.OnEvent, async (HausEvent<dynamic> @event) =>
+        {
+            Events = Events.Append(@event).ToArray();
+            await InvokeAsync(StateHasChanged);
+        });
+        await Subscriber.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (Subscriber != null) await Subscriber.DisposeAsync();
+    }
+
+}

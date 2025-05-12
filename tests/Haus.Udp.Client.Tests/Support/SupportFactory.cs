@@ -12,7 +12,10 @@ public class SupportFactory : IDisposable
         _scope = new ServiceCollection()
             .AddHausUdp()
             .AddLogging()
-            .Configure<HausUdpSettings>(opts => { opts.Port = port; })
+            .Configure<HausUdpSettings>(opts =>
+            {
+                opts.Port = port;
+            })
             .BuildServiceProvider()
             .CreateScope();
     }

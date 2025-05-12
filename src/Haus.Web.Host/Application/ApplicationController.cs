@@ -10,13 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Haus.Web.Host.Application;
 
 [Route("api/application")]
-public class ApplicationController : HausBusController
+public class ApplicationController(IHausBus hausBus) : HausBusController(hausBus)
 {
-    public ApplicationController(IHausBus hausBus)
-        : base(hausBus)
-    {
-    }
-
     [HttpGet("latest-version")]
     public Task<IActionResult> GetLatestVersion()
     {
@@ -36,8 +31,8 @@ public class ApplicationController : HausBusController
         var httpStatusCode = result.Status.ToHttpStatus();
         return httpStatusCode switch
         {
-            HttpStatusCode.OK => File(result.Bytes, MediaTypeNames.Application.Octet),
-            _ => StatusCode((int)httpStatusCode)
+            HttpStatusCode.OK => File(result.Stream, MediaTypeNames.Application.Octet),
+            _ => StatusCode((int)httpStatusCode),
         };
     }
 }

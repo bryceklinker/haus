@@ -1,0 +1,20 @@
+@using Haus.Core.Models.ExternalMessages
+
+@if (Event != null)
+{
+    <MudExpansionPanel Style="max-height: 100%">
+        <TitleContent>
+            <MudText Typo="Typo.h5">
+                @Event.Type (@Event.Timestamp.FormatTimestamp())
+            </MudText>
+        </TitleContent>
+        <ChildContent>
+            <pre>@FormatJsonExtensions.FormatAsJson(Event.Payload)</pre>
+        </ChildContent>
+    </MudExpansionPanel>
+}
+
+@code {
+    [Parameter] public HausEvent<dynamic>? Event { get; set; }
+
+}

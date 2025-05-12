@@ -8,20 +8,11 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
 
-public interface IUnknownMessageMapper : IToHausMapper
+public interface IUnknownMessageMapper : IToHausMapper { }
+
+public class UnknownMessageMapper(IOptionsMonitor<HausOptions> options) : IUnknownMessageMapper
 {
-}
-
-public class UnknownMessageMapper : IUnknownMessageMapper
-{
-    private readonly IOptionsMonitor<HausOptions> _options;
-
-    private string UnknownTopicName => _options.CurrentValue.UnknownTopic;
-
-    public UnknownMessageMapper(IOptionsMonitor<HausOptions> options)
-    {
-        _options = options;
-    }
+    private string UnknownTopicName => options.CurrentValue.UnknownTopic;
 
     public bool IsSupported(Zigbee2MqttMessage message)
     {
@@ -34,7 +25,7 @@ public class UnknownMessageMapper : IUnknownMessageMapper
         yield return new MqttApplicationMessage
         {
             Topic = UnknownTopicName,
-            Payload = HausJsonSerializer.SerializeToBytes(model)
+            PayloadSegment = HausJsonSerializer.SerializeToBytes(model),
         };
     }
 }

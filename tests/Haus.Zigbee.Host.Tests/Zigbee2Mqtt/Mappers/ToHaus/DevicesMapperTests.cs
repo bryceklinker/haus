@@ -26,9 +26,7 @@ public class GetDevicesMapperTests
     [Fact]
     public void WhenTopicIsConfigDevicesThenIsSupported()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithDevicesTopic()
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithDevicesTopic().BuildZigbee2MqttMessage();
 
         _mapper.IsSupported(message).Should().BeTrue();
     }
@@ -36,9 +34,7 @@ public class GetDevicesMapperTests
     [Fact]
     public void WhenTopicIsNotConfigDevicesThenUnsupported()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithTopicPath("idk")
-            .BuildZigbee2MqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithTopicPath("idk").BuildZigbee2MqttMessage();
 
         _mapper.IsSupported(message).Should().BeFalse();
     }
@@ -48,7 +44,10 @@ public class GetDevicesMapperTests
     {
         var message = new Zigbee2MqttMessageBuilder()
             .WithDevicesTopic()
-            .WithDeviceInPayload(device => { device.Add("friendly_name", "boom"); })
+            .WithDeviceInPayload(device =>
+            {
+                device.Add("friendly_name", "boom");
+            })
             .BuildZigbee2MqttMessage();
 
         var result = _mapper.Map(message).ToArray();
@@ -74,10 +73,11 @@ public class GetDevicesMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.Payload);
-        @event.Type.Should().Be(DeviceDiscoveredEvent.Type);
-        @event.Payload.Id.Should().Be("hello");
-        @event.Payload.Metadata.Should()
+        var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
+        @event?.Type.Should().Be(DeviceDiscoveredEvent.Type);
+        @event?.Payload?.Id.Should().Be("hello");
+        @event
+            ?.Payload?.Metadata.Should()
             .ContainEquivalentOf(new MetadataModel("model", "65"))
             .And.ContainEquivalentOf(new MetadataModel("vendor", "76"))
             .And.ContainEquivalentOf(new MetadataModel("description", "my desc"))
@@ -98,8 +98,8 @@ public class GetDevicesMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.Payload);
-        @event.Payload.DeviceType.Should().Be(DeviceType.Light);
+        var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
+        @event?.Payload?.DeviceType.Should().Be(DeviceType.Light);
     }
 
     [Fact]

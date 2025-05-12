@@ -6,23 +6,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Haus.Cqrs.Events;
 
-internal class LoggingEventBus : LoggingBus, IEventBus
+internal class LoggingEventBus(IEventBus eventBus, ILogger<LoggingEventBus> logger) : LoggingBus(logger), IEventBus
 {
-    private readonly IEventBus _eventBus;
-
-    public LoggingEventBus(IEventBus eventBus, ILogger<LoggingEventBus> logger)
-        : base(logger)
+    public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken token = default)
+        where TEvent : IEvent
     {
-        _eventBus = eventBus;
-    }
-
-    public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken token = default) where TEvent : IEvent
-    {
-        await ExecuteWithLoggingAsync(@event, async () =>
-            {
-                await _eventBus.PublishAsync(@event, token).ConfigureAwait(false);
-                return Unit.Value;
-            }, token)
+        await ExecuteWithLoggingAsync(
+                @event,
+                async () =>
+                {
+                    await eventBus.PublishAsync(@event, token).ConfigureAwait(false);
+                    return Unit.Value;
+                },
+                token
+            )
             .ConfigureAwait(false);
     }
 
@@ -33,8 +30,12 @@ internal class LoggingEventBus : LoggingBus, IEventBus
 
     protected override void LogError<TInput>(TInput input, Exception exception, long elapsedMilliseconds)
     {
-        Logger.LogError(exception, "Event {@Event} failed to publish after {@ElapsedTime}ms", input,
-            elapsedMilliseconds);
+        Logger.LogError(
+            exception,
+            "Event {@Event} failed to publish after {@ElapsedTime}ms",
+            input,
+            elapsedMilliseconds
+        );
     }
 
     protected override void LogStarted<TInput>(TInput input)

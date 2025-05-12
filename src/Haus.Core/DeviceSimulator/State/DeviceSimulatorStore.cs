@@ -8,23 +8,18 @@ public interface IDeviceSimulatorStore : IObservable<IDeviceSimulatorState>
 {
     IDeviceSimulatorState Current { get; }
 
-    SimulatedDeviceEntity GetDeviceById(string deviceId);
+    SimulatedDeviceEntity? GetDeviceById(string deviceId);
     void Publish(IDeviceSimulatorState state);
     void PublishNext(Func<IDeviceSimulatorState, IDeviceSimulatorState> generateNextState);
 }
 
 public class DeviceSimulatorStore : IDeviceSimulatorStore
 {
-    private readonly BehaviorSubject<IDeviceSimulatorState> _subject;
+    private readonly BehaviorSubject<IDeviceSimulatorState> _subject = new(DeviceSimulatorState.Initial);
 
     public IDeviceSimulatorState Current => _subject.Value;
 
-    public DeviceSimulatorStore()
-    {
-        _subject = new BehaviorSubject<IDeviceSimulatorState>(DeviceSimulatorState.Initial);
-    }
-
-    public SimulatedDeviceEntity GetDeviceById(string deviceId)
+    public SimulatedDeviceEntity? GetDeviceById(string deviceId)
     {
         return Current.GetDeviceById(deviceId);
     }

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Haus.Api.Client.Options;
+using Haus.Core.Models;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client.Common;
@@ -13,46 +14,47 @@ public interface IApiClient
     string BaseUrl { get; }
 }
 
-public abstract class ApiClient : IApiClient
+public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) : IApiClient
 {
     private const string ApiPath = "api";
-    private readonly IOptions<HausApiClientSettings> _options;
 
-    public string BaseUrl => UrlUtility.Join(null, _options.Value.BaseUrl);
+    public string BaseUrl
+    {
+        get
+        {
+            ArgumentNullException.ThrowIfNull(options.Value.BaseUrl);
+            return options.Value.BaseUrl;
+        }
+    }
+
     public string ApiBaseUrl => UrlUtility.Join(null, BaseUrl, ApiPath);
-    protected HttpClient HttpClient { get; }
+    protected HttpClient HttpClient { get; } = httpClient;
 
-    protected ApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-    {
-        HttpClient = httpClient;
-        _options = options;
-    }
-
-    protected Task<T> GetAsJsonAsync<T>(string path, QueryParameters parameters = null)
+    protected async Task<T?> GetAsJsonAsync<T>(string path, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
-        return HttpClient.GetFromJsonAsync<T>(fullUrl);
+        return await HttpClient.GetFromJsonAsync<T>(fullUrl, HausJsonSerializer.DefaultOptions);
     }
 
-    protected Task<HttpResponseMessage> PostAsJsonAsync<T>(string path, T data, QueryParameters parameters = null)
+    protected Task<HttpResponseMessage> PostAsJsonAsync<T>(string path, T data, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
-        return HttpClient.PostAsJsonAsync(fullUrl, data);
+        return HttpClient.PostAsJsonAsync(fullUrl, data, HausJsonSerializer.DefaultOptions);
     }
 
-    protected Task<HttpResponseMessage> PostEmptyContentAsync(string path, QueryParameters parameters = null)
+    protected Task<HttpResponseMessage> PostEmptyContentAsync(string path, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
-        return HttpClient.PostAsync(fullUrl, new ByteArrayContent(Array.Empty<byte>()));
+        return HttpClient.PostAsync(fullUrl, new ByteArrayContent([]));
     }
 
-    protected Task<HttpResponseMessage> PutAsJsonAsync<T>(string path, T data, QueryParameters parameters = null)
+    protected Task<HttpResponseMessage> PutAsJsonAsync<T>(string path, T data, QueryParameters? parameters = null)
     {
         var fullUrl = GetFullUrl(path, parameters);
-        return HttpClient.PutAsJsonAsync(fullUrl, data);
+        return HttpClient.PutAsJsonAsync(fullUrl, data, HausJsonSerializer.DefaultOptions);
     }
 
-    protected string GetFullUrl(string path, QueryParameters parameters = null)
+    protected string GetFullUrl(string path, QueryParameters? parameters = null)
     {
         return UrlUtility.Join(parameters, ApiBaseUrl, path);
     }

@@ -35,12 +35,7 @@ namespace Haus.Web.Host.Tests.Support;
 
 public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
 {
-    private readonly FakeClock _clock;
-
-    public HausWebHostApplicationFactory()
-    {
-        _clock = new FakeClock();
-    }
+    private readonly FakeClock _clock = new();
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
@@ -57,18 +52,25 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
         builder.ConfigureTestServices(services =>
         {
             services.AddSingleton<IClock>(_clock);
-            services.AddHausApiClient(opts => { opts.BaseUrl = Server.BaseAddress.ToString(); })
+            services.AddHausApiClient(opts =>
+            {
+                opts.BaseUrl = Server.BaseAddress.ToString();
+            });
+            services
                 .RemoveAll(typeof(IHttpClientFactory))
                 .AddSingleton<IHttpClientFactory>(new FakeHttpClientFactory(CreateHttpClientWithAuth));
 
-            services.AddAuthentication(opts =>
+            services
+                .AddAuthentication(opts =>
                 {
                     opts.DefaultAuthenticateScheme = TestingAuthenticationHandler.TestingScheme;
                     opts.DefaultChallengeScheme = TestingAuthenticationHandler.TestingScheme;
                     opts.DefaultScheme = TestingAuthenticationHandler.TestingScheme;
                 })
                 .AddScheme<AuthenticationSchemeOptions, TestingAuthenticationHandler>(
-                    TestingAuthenticationHandler.TestingScheme, _ => { });
+                    TestingAuthenticationHandler.TestingScheme,
+                    _ => { }
+                );
             services.Configure<HealthCheckPublisherOptions>(opts =>
             {
                 opts.Delay = TimeSpan.Zero;
@@ -93,14 +95,18 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
     {
         CreateClient();
         var connection = new HubConnectionBuilder()
-            .AddJsonProtocol(opts => { opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions; })
+            .AddJsonProtocol(opts =>
+            {
+                opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
+            })
             .WithUrl(
                 $"http://localhost/hubs/{hub}",
                 o =>
                 {
                     o.HttpMessageHandlerFactory = _ => Server.CreateHandler();
-                    o.AccessTokenProvider = () => Task.FromResult(TestingAuthenticationHandler.TestingScheme);
-                })
+                    o.AccessTokenProvider = () => Task.FromResult<string?>(TestingAuthenticationHandler.TestingScheme);
+                }
+            )
             .Build();
         await connection.StartAsync();
         return connection;
@@ -112,26 +118,24 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
         return await creator.CreateClient();
     }
 
-    public async Task<(RoomModel, DeviceModel)> AddRoomWithDevice(
-        string roomName,
-        DeviceType deviceType)
+    public async Task<(RoomModel, DeviceModel)> AddRoomWithDevice(string roomName, DeviceType deviceType)
     {
         var (room, devices) = await AddRoomWithDevices(roomName, deviceType);
         return (room, devices.Single());
     }
 
-    public async Task<(RoomModel, DeviceModel[])> AddRoomWithDevices(
-        string roomName,
-        params DeviceType[] deviceTypes)
+    public async Task<(RoomModel, DeviceModel[])> AddRoomWithDevices(string roomName, params DeviceType[] deviceTypes)
     {
-        var discoverDeviceTasks = deviceTypes
-            .Select(type => WaitForDeviceToBeDiscovered(type));
+        var discoverDeviceTasks = deviceTypes.Select(type => WaitForDeviceToBeDiscovered(type));
 
         var devices = await Task.WhenAll(discoverDeviceTasks);
 
         var apiClient = CreateAuthenticatedClient();
         var createResponse = await apiClient.CreateRoomAsync(new RoomModel(Name: roomName));
         var room = await createResponse.Content.ReadFromJsonAsync<RoomModel>();
+        if (room == null)
+            throw new InvalidOperationException("failed to create room");
+
         await apiClient.AddDevicesToRoomAsync(room.Id, devices.Select(d => d.Id).ToArray());
 
         return (room, devices);
@@ -151,10 +155,7 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
 
     public async Task SubscribeToRoomLightingChangedCommandsAsync(Action<HausCommand<RoomLightingChangedEvent>> handler)
     {
-        await SubscribeToHausCommandsAsync(
-            RoomLightingChangedEvent.Type,
-            handler
-        );
+        await SubscribeToHausCommandsAsync(RoomLightingChangedEvent.Type, handler);
     }
 
     public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator)
@@ -165,7 +166,8 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
 
     public async Task<DeviceModel> WaitForDeviceToBeDiscovered(
         DeviceType deviceType = DeviceType.Unknown,
-        string externalId = null)
+        string? externalId = null
+    )
     {
         var actualId = string.IsNullOrWhiteSpace(externalId) ? $"{Guid.NewGuid()}" : externalId;
         await PublishHausEventAsync(new DeviceDiscoveredEvent(actualId, deviceType));
@@ -186,8 +188,9 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
     private HttpClient CreateHttpClientWithAuth()
     {
         var client = CreateClient();
-        client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue(TestingAuthenticationHandler.TestingScheme);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            TestingAuthenticationHandler.TestingScheme
+        );
         return client;
     }
 }

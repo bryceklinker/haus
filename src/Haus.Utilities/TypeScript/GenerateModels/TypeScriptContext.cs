@@ -9,7 +9,7 @@ namespace Haus.Utilities.TypeScript.GenerateModels;
 public interface ITypeScriptGeneratorContext
 {
     bool IsMissingModelForType(Type type);
-    TypeScriptModel GetModelForType(Type type);
+    TypeScriptModel? GetModelForType(Type type);
     void Add(TypeScriptModel model);
     TypescriptBarrelModel GetBarrel();
 }
@@ -28,7 +28,7 @@ public class TypeScriptGeneratorContext : ITypeScriptGeneratorContext
         return !_models.ContainsKey(type);
     }
 
-    public TypeScriptModel GetModelForType(Type type)
+    public TypeScriptModel? GetModelForType(Type type)
     {
         return IsMissingModelForType(type) ? null : _models[type];
     }

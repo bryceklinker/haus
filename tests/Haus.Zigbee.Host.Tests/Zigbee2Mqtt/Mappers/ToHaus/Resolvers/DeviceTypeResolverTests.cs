@@ -14,18 +14,14 @@ public class DeviceTypeResolverTests
     public DeviceTypeResolverTests()
     {
         var options = OptionsFactory.CreateHausOptions();
-        options.Value.DeviceTypeOptions = new[]
-        {
-            new DeviceTypeOptions("Old", "Klinker", DeviceType.Light)
-        };
+        options.Value.DeviceTypeOptions = [new DeviceTypeOptions("Old", "Klinker", DeviceType.Light)];
         _resolver = new DeviceTypeResolver(options);
     }
 
     [Fact]
     public void WhenMetadataDoesNotMatchAnythingThenReturnsUnknownDeviceType()
     {
-        var meta = new Zigbee2MqttMetaBuilder()
-            .BuildMeta();
+        var meta = new Zigbee2MqttMetaBuilder().BuildMeta();
 
         _resolver.Resolve(meta).Should().Be(DeviceType.Unknown);
     }
@@ -33,10 +29,7 @@ public class DeviceTypeResolverTests
     [Fact]
     public void WhenMetadataModelMatchesThenReturnsDeviceTypeFromDefaults()
     {
-        var meta = new Zigbee2MqttMetaBuilder()
-            .WithModel("929002335001")
-            .WithVendor("Philips")
-            .BuildMeta();
+        var meta = new Zigbee2MqttMetaBuilder().WithModel("929002335001").WithVendor("Philips").BuildMeta();
 
         _resolver.Resolve(meta).Should().Be(DeviceType.Light);
     }
@@ -44,13 +37,12 @@ public class DeviceTypeResolverTests
     [Fact]
     public void WhenMetadataIsMultiFunctionDeviceThenReturnsDeviceTypeWithEachValue()
     {
-        var meta = new Zigbee2MqttMetaBuilder()
-            .WithModel("9290012607")
-            .WithVendor("Philips")
-            .BuildMeta();
+        var meta = new Zigbee2MqttMetaBuilder().WithModel("9290012607").WithVendor("Philips").BuildMeta();
 
         var deviceType = _resolver.Resolve(meta);
-        deviceType.Should().HaveFlag(DeviceType.LightSensor)
+        deviceType
+            .Should()
+            .HaveFlag(DeviceType.LightSensor)
             .And.HaveFlag(DeviceType.MotionSensor)
             .And.HaveFlag(DeviceType.TemperatureSensor);
     }
@@ -60,7 +52,9 @@ public class DeviceTypeResolverTests
     {
         var deviceType = _resolver.Resolve("Philips", "9290012607");
 
-        deviceType.Should().HaveFlag(DeviceType.LightSensor)
+        deviceType
+            .Should()
+            .HaveFlag(DeviceType.LightSensor)
             .And.HaveFlag(DeviceType.MotionSensor)
             .And.HaveFlag(DeviceType.TemperatureSensor);
     }
@@ -68,10 +62,7 @@ public class DeviceTypeResolverTests
     [Fact]
     public void WhenMetadataIsInOptionsThenReturnsDeviceTypeFromOptions()
     {
-        var meta = new Zigbee2MqttMetaBuilder()
-            .WithModel("Klinker")
-            .WithVendor("Old")
-            .BuildMeta();
+        var meta = new Zigbee2MqttMetaBuilder().WithModel("Klinker").WithVendor("Old").BuildMeta();
 
         var deviceType = _resolver.Resolve(meta);
 

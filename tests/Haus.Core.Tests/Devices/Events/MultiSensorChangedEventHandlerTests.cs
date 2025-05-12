@@ -11,12 +11,7 @@ namespace Haus.Core.Tests.Devices.Events;
 
 public class MultiSensorChangedEventHandlerTests
 {
-    private readonly CapturingHausBus _hausBus;
-
-    public MultiSensorChangedEventHandlerTests()
-    {
-        _hausBus = HausBusFactory.CreateCapturingBus();
-    }
+    private readonly CapturingHausBus _hausBus = HausBusFactory.CreateCapturingBus();
 
     [Fact]
     public async Task WhenMultiSensorChangedHasOccupancyThenPublishesOccupancyChangedEvent()
@@ -26,7 +21,6 @@ public class MultiSensorChangedEventHandlerTests
 
         await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
-        _hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>()
-            .Should().HaveCount(1);
+        _hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>().Should().HaveCount(1);
     }
 }

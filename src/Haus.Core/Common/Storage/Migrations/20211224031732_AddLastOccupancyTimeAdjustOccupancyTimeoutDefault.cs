@@ -17,20 +17,20 @@ namespace Haus.Core.Common.Storage.Migrations
                 defaultValue: 300,
                 oldClrType: typeof(int),
                 oldType: "INTEGER",
-                oldDefaultValue: 0);
+                oldDefaultValue: 0
+            );
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "LastOccupiedTime",
                 table: "Rooms",
                 type: "TEXT",
-                nullable: true);
+                nullable: true
+            );
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "LastOccupiedTime",
-                table: "Rooms");
+            migrationBuilder.DropColumn(name: "LastOccupiedTime", table: "Rooms");
 
             migrationBuilder.AlterColumn<int>(
                 name: "OccupancyTimeoutInSeconds",
@@ -40,7 +40,8 @@ namespace Haus.Core.Common.Storage.Migrations
                 defaultValue: 0,
                 oldClrType: typeof(int),
                 oldType: "INTEGER",
-                oldDefaultValue: 300);
+                oldDefaultValue: 300
+            );
         }
     }
 }

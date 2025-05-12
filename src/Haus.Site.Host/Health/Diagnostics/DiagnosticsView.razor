@@ -1,0 +1,46 @@
+@page "/health/diagnostics"
+@using Haus.Core.Models
+@using Haus.Core.Models.Diagnostics
+@using Haus.Site.Host.Shared.Realtime
+
+@attribute [Authorize]
+@implements IAsyncDisposable
+@inject IRealtimeDataFactory RealtimeDataFactory;
+
+<LoadingContentView IsLoading="DiagnosticsSubscriber?.State != RealtimeDataState.Connected"
+                    LoadingText="Connecting to realtime diagnostics...">
+    <MudText Typo="Typo.h3">
+        Diagnostics Messages
+    </MudText>
+
+    <MudExpansionPanels>
+        @foreach (var message in Messages)
+        {
+            <DiagnosticsMessageView Message="message"/>
+        }
+    </MudExpansionPanels>
+</LoadingContentView>
+
+@code {
+    private IRealtimeDataSubscriber? DiagnosticsSubscriber { get; set; }
+
+    private List<MqttDiagnosticsMessageModel> Messages { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        DiagnosticsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Diagnostics);
+        DiagnosticsSubscriber.Subscribe<MqttDiagnosticsMessageModel>(DiagnosticsEventNames.MqttMessage, async (model) =>
+        {
+            Messages = [model, ..Messages];
+            await InvokeAsync(StateHasChanged);
+        });
+        await DiagnosticsSubscriber.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (DiagnosticsSubscriber != null)
+            await DiagnosticsSubscriber.DisposeAsync();
+    }
+
+}

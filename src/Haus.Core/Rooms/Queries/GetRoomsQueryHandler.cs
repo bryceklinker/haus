@@ -11,18 +11,12 @@ namespace Haus.Core.Rooms.Queries;
 
 public record GetRoomsQuery : IQuery<ListResult<RoomModel>>;
 
-public class GetRoomsQueryHandler : IQueryHandler<GetRoomsQuery, ListResult<RoomModel>>
+public class GetRoomsQueryHandler(HausDbContext context) : IQueryHandler<GetRoomsQuery, ListResult<RoomModel>>
 {
-    private readonly HausDbContext _context;
-
-    public GetRoomsQueryHandler(HausDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<ListResult<RoomModel>> Handle(GetRoomsQuery request, CancellationToken cancellationToken)
     {
-        return await _context.QueryAll<RoomEntity>()
+        return await context
+            .QueryAll<RoomEntity>()
             .Select(RoomEntity.ToModelExpression)
             .ToListResultAsync(cancellationToken)
             .ConfigureAwait(false);

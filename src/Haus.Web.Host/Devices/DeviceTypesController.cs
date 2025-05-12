@@ -7,12 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Haus.Web.Host.Devices;
 
 [Route("api/device-types")]
-public class DeviceTypesController : HausBusController
+public class DeviceTypesController(IHausBus hausBus) : HausBusController(hausBus)
 {
-    public DeviceTypesController(IHausBus hausBus) : base(hausBus)
-    {
-    }
-
     [HttpGet]
     public Task<IActionResult> GetAll()
     {

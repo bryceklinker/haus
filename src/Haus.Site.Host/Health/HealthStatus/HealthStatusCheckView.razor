@@ -1,0 +1,36 @@
+@using Haus.Core.Models.Health
+
+@if (Check != null)
+{
+    <MudExpansionPanels>
+        <MudExpansionPanel>
+            <TitleContent>
+                <MudPaper Class="pa-4" Style="@($"background-color: {HealthStatusExtensions.ToColor(Check.Status, Theme)}")">
+                    @Check.Name
+                </MudPaper>
+            </TitleContent>
+            <ChildContent>
+                <MudTextField T="string"
+                              Label="Description"
+                              ReadOnly="true"
+                              InputId="description"
+                              Value="@Check.Description"/>
+                <MudTextField T="double?"
+                              Label="Check Duration"
+                              ReadOnly="true"
+                              InputId="duration"
+                              Value="@Check.DurationOfCheckInSeconds"/>
+                <MudTextField T="string"
+                              Label="Exception"
+                              ReadOnly="true"
+                              InputId="error"
+                              Value="@Check.ExceptionMessage"/>    
+            </ChildContent>
+        </MudExpansionPanel>
+    </MudExpansionPanels>   
+}
+
+@code {
+    [Parameter] public HausHealthCheckModel? Check { get; set; }
+    [CascadingParameter] public MudTheme? Theme { get; set; }
+}

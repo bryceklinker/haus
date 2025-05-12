@@ -11,7 +11,11 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHausUtilities(this IServiceCollection services)
     {
-        return services.AddMediatR(typeof(ServiceCollectionExtensions).Assembly)
+        return services
+            .AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
+            })
             .AddHttpClient()
             .AddHausLogging()
             .AddTransient<ITypeScriptModelGenerator, TypeScriptModelGenerator>()

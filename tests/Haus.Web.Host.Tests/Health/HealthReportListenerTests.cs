@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Models.Common;
@@ -12,31 +11,28 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Health;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class ExternalHealthListenerTests
+public class ExternalHealthListenerTests(HausWebHostApplicationFactory factory)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-
-    public ExternalHealthListenerTests(HausWebHostApplicationFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task WhenHealthReportReceivedThenReportChecksAreInHausHealthReport()
     {
-        HausHealthReportModel report = null;
-        var hub = await _factory.CreateHubConnection("health");
+        HausHealthReportModel? report = null;
+        var hub = await factory.CreateHubConnection("health");
         hub.On<HausHealthReportModel>("OnHealth", r => report = r);
 
-        var mqttClient = await _factory.GetMqttClient();
+        var mqttClient = await factory.GetMqttClient();
         var publishedChecks = new[]
         {
-            new HausHealthCheckModel("External", HealthStatus.Healthy, 66, "External Check", null,
-                Array.Empty<string>())
+            new HausHealthCheckModel("External", HealthStatus.Healthy, 66, "External Check", null, []),
         };
-        await mqttClient.PublishAsync(DefaultHausMqttTopics.HealthTopic,
-            new HausHealthReportModel(HealthStatus.Healthy, 55, publishedChecks));
+        await mqttClient.PublishAsync(
+            DefaultHausMqttTopics.HealthTopic,
+            new HausHealthReportModel(HealthStatus.Healthy, 55, publishedChecks)
+        );
 
-        Eventually.Assert(() => { report.Checks.Should().Contain(c => c.Name == "External"); });
+        Eventually.Assert(() =>
+        {
+            report?.Checks.Should().Contain(c => c.Name == "External");
+        });
     }
 }

@@ -11,16 +11,13 @@ public class HausHealthReportModelTests
     [Fact]
     public void WhenChecksAreAppendedThenReturnsReportWithAdditionalChecks()
     {
-        var checksToAppend = new[]
-        {
-            new HausHealthCheckModel("one", HealthStatus.Healthy, 4)
-        };
+        var checksToAppend = new[] { new HausHealthCheckModel("one", HealthStatus.Healthy, 4) };
 
         var report = new HausHealthReportModel(
-                HealthStatus.Healthy,
-                4,
-                new[] { new HausHealthCheckModel("boom", HealthStatus.Healthy, 4) })
-            .AppendChecks(checksToAppend);
+            HealthStatus.Healthy,
+            4,
+            [new HausHealthCheckModel("boom", HealthStatus.Healthy, 4)]
+        ).AppendChecks(checksToAppend);
 
         report.Checks.Should().HaveCount(2);
     }
@@ -28,8 +25,9 @@ public class HausHealthReportModelTests
     [Fact]
     public void WhenChecksAreAppendedWithUnhealthyStatusThenReportStatusIsUnhealthy()
     {
-        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, Array.Empty<HausHealthCheckModel>())
-            .AppendChecks(new[] { new HausHealthCheckModel("one", HealthStatus.Unhealthy, 1) });
+        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, []).AppendChecks(
+            [new HausHealthCheckModel("one", HealthStatus.Unhealthy, 1)]
+        );
 
         report.Status.Should().Be(HealthStatus.Unhealthy);
     }
@@ -37,8 +35,9 @@ public class HausHealthReportModelTests
     [Fact]
     public void WhenChecksAreAppendedWithDegradedStatusThenReportIsDegraded()
     {
-        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, Array.Empty<HausHealthCheckModel>())
-            .AppendChecks(new[] { new HausHealthCheckModel("one", HealthStatus.Degraded, 1) });
+        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, []).AppendChecks(
+            [new HausHealthCheckModel("one", HealthStatus.Degraded, 1)]
+        );
 
         report.Status.Should().Be(HealthStatus.Degraded);
     }
@@ -46,13 +45,11 @@ public class HausHealthReportModelTests
     [Fact]
     public void WhenChecksAreAppendedThenSumsEachCheckAsDurationForReport()
     {
-        var report = new HausHealthReportModel(HealthStatus.Healthy, 5, new[]
-        {
-            new HausHealthCheckModel("", HealthStatus.Degraded, 5)
-        }).AppendChecks(new[]
-        {
-            new HausHealthCheckModel("", HealthStatus.Healthy, 4)
-        });
+        var report = new HausHealthReportModel(
+            HealthStatus.Healthy,
+            5,
+            new[] { new HausHealthCheckModel("", HealthStatus.Degraded, 5) }
+        ).AppendChecks([new HausHealthCheckModel("", HealthStatus.Healthy, 4)]);
 
         report.DurationOfCheckInMilliseconds.Should().Be(9);
     }
@@ -60,8 +57,9 @@ public class HausHealthReportModelTests
     [Fact]
     public void WhenChecksAreEmptyThenDurationIsZero()
     {
-        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, Array.Empty<HausHealthCheckModel>())
-            .AppendChecks(Array.Empty<HausHealthCheckModel>());
+        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, []).AppendChecks(
+            Array.Empty<HausHealthCheckModel>()
+        );
 
         report.DurationOfCheckInMilliseconds.Should().Be(0);
     }

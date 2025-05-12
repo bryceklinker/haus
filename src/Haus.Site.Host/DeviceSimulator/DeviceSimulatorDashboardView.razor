@@ -1,0 +1,65 @@
+@page "/device-simulator"
+@using Haus.Core.Models
+@using Haus.Core.Models.DeviceSimulator
+@using Haus.Site.Host.Shared.Realtime
+
+@attribute [Authorize]
+
+@implements IAsyncDisposable
+
+@inject NavigationManager Navigation;
+@inject IRealtimeDataFactory RealtimeDataFactory;
+
+<LoadingContentView IsLoading="State != RealtimeDataState.Connected" LoadingText="Connecting to Device Simulator...">
+    <MudToolBar Class="mb-4 mud-elevation-2">
+        <MudButton OnClick="HandleAddSimulatedDevice" Variant="Variant.Outlined" Color="Color.Primary">
+            Add Simulated Device
+        </MudButton>
+    </MudToolBar>
+    
+    @if (SimulatorState != null)
+    {
+        <MudGrid>
+            @foreach (var simulatedDevice in SimulatorState.Devices)
+            {
+                <MudItem xs="6">
+                    <SimulatedDeviceView SimulatedDevice="simulatedDevice"/>    
+                </MudItem>
+                
+            }
+        </MudGrid>
+    }
+</LoadingContentView>
+
+@code {
+    private IRealtimeDataSubscriber? _subscriber;
+
+    private RealtimeDataState State => _subscriber?.State ?? RealtimeDataState.Disconnected;
+
+    private DeviceSimulatorStateModel? SimulatorState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _subscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.DeviceSimulator);
+        _subscriber.Subscribe<DeviceSimulatorStateModel>(DeviceSimulatorEventNames.OnState, async simulatorState =>
+        {
+            SimulatorState = simulatorState;
+            await InvokeAsync(StateHasChanged);
+        });
+        await _subscriber.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_subscriber != null)
+        {
+            await _subscriber.DisposeAsync();
+        }
+    }
+
+    private void HandleAddSimulatedDevice()
+    {
+        Navigation.NavigateTo("/device-simulator/add");
+    }
+
+}

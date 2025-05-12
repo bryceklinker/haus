@@ -42,8 +42,8 @@ public class OccupancyChangedEventHandlerTests
         await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
         var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        hausCommand.Payload.Room.Id.Should().Be(_room.Id);
-        hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
+        hausCommand.Payload?.Room.Id.Should().Be(_room.Id);
+        hausCommand.Payload?.Lighting.State.Should().Be(LightingState.On);
     }
 
     [Fact]
@@ -62,8 +62,8 @@ public class OccupancyChangedEventHandlerTests
         await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
         var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        hausCommand.Payload.Room.Id.Should().Be(_room.Id);
-        hausCommand.Payload.Lighting.State.Should().Be(LightingState.Off);
+        hausCommand.Payload?.Room.Id.Should().Be(_room.Id);
+        hausCommand.Payload?.Lighting.State.Should().Be(LightingState.Off);
     }
 
     [Fact]
@@ -74,7 +74,6 @@ public class OccupancyChangedEventHandlerTests
         var change = new OccupancyChangedModel(sensor.ExternalId, true);
         await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
-        _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>()
-            .Should().BeEmpty();
+        _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().BeEmpty();
     }
 }

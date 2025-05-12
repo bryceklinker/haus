@@ -31,8 +31,8 @@ public class ChangeDeviceLightingConstraintsCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(command);
 
         var updated = await _context.FindByIdAsync<DeviceEntity>(device.Id);
-        updated.Lighting.Level.Min.Should().Be(12);
-        updated.Lighting.Level.Max.Should().Be(90);
+        updated?.Lighting?.Level.Min.Should().Be(12);
+        updated?.Lighting?.Level.Max.Should().Be(90);
     }
 
     [Fact]

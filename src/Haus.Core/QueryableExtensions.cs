@@ -10,7 +10,8 @@ public static class QueryableExtensions
 {
     public static async Task<ListResult<T>> ToListResultAsync<T>(
         this IQueryable<T> source,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         return new ListResult<T>(await source.ToArrayAsync(cancellationToken).ConfigureAwait(false));
     }

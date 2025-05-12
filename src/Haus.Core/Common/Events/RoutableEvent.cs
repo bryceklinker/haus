@@ -17,7 +17,7 @@ public record RoutableEvent<T> : RoutableEvent
 {
     private readonly HausEvent<T> _hausEvent;
 
-    public string Type => _hausEvent.Type;
+    public string Type => _hausEvent.Type ?? "";
     public T Payload => _hausEvent.Payload;
     public string Timestamp => _hausEvent.Timestamp;
 

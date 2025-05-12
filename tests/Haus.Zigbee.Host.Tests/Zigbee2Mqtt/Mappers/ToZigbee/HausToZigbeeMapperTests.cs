@@ -22,8 +22,7 @@ public class HausToZigbeeMapperTests
     public HausToZigbeeMapperTests()
     {
         var config = ConfigurationFactory.CreateConfig(Zigbee2MqttBaseTopic);
-        var mappers = ServiceProviderFactory.Create(config)
-            .GetServices<IToZigbeeMapper>();
+        var mappers = ServiceProviderFactory.Create(config).GetServices<IToZigbeeMapper>();
 
         _mapper = new HausToZigbeeMapper(mappers);
     }
@@ -31,53 +30,46 @@ public class HausToZigbeeMapperTests
     [Fact]
     public void WhenStartDiscoveryCommandReceivedThenReturnsPermitJoinTrueMessage()
     {
-        var original = new StartDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new StartDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
         result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join");
-        result.Payload.Should().BeEncodedString("true");
+        result.PayloadSegment.Should().BeEncodedString("true");
     }
 
     [Fact]
     public void WhenStopDiscoveryCommandReceivedThenReturnsPermitJoinFalseMessage()
     {
-        var original = new StopDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new StopDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
         result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join");
-        result.Payload.Should().BeEncodedString("false");
+        result.PayloadSegment.Should().BeEncodedString("false");
     }
 
     [Fact]
     public void WhenSyncDevicesCommandReceivedThenReturnsZigbeeGetDevices()
     {
-        var original = new SyncDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
         result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/devices/get");
-        result.Payload.Should().BeEmpty();
+        result.PayloadSegment.Should().BeEmpty();
     }
 
     [Fact]
     public void WhenDeviceLightingCommandReceivedThenReturnsSetDeviceMessage()
     {
-        var original =
-            new DeviceLightingChangedEvent(new DeviceModel { ExternalId = "my-ext-id" }, new LightingModel())
-                .AsHausCommand()
-                .ToMqttMessage("haus/commands");
+        var original = new DeviceLightingChangedEvent(new DeviceModel { ExternalId = "my-ext-id" }, new LightingModel())
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
-        var payload = JObject.Parse(Encoding.UTF8.GetString(result.Payload));
+        var payload = JObject.Parse(Encoding.UTF8.GetString(result.PayloadSegment));
         result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/my-ext-id/set");
         payload.Value<string>("state").Should().Be("OFF");
     }

@@ -18,7 +18,8 @@ public class TypeScriptGeneratorContextTests
         var barrel = context.GetBarrel();
 
         barrel.FileName.Should().Be("index.ts");
-        barrel.Contents.Should()
+        barrel
+            .Contents.Should()
             .Contain("export * from './simple-model'")
             .And.Contain("export * from './string'")
             .And.Contain("export * from './object'");

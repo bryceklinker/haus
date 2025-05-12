@@ -9,14 +9,9 @@ using MQTTnet;
 
 namespace Haus.Web.Host.Common.Mqtt;
 
-public class MqttMessageRouter : MqttBackgroundServiceListener
+public class MqttMessageRouter(IHausMqttClientFactory hausMqttClientFactory, IServiceScopeFactory scopeFactory)
+    : MqttBackgroundServiceListener(hausMqttClientFactory, scopeFactory)
 {
-    public MqttMessageRouter(IHausMqttClientFactory hausMqttClientFactory,
-        IServiceScopeFactory scopeFactory)
-        : base(hausMqttClientFactory, scopeFactory)
-    {
-    }
-
     protected override async Task OnMessageReceived(MqttApplicationMessage message)
     {
         await RouteMqttMessage(message);
@@ -26,7 +21,7 @@ public class MqttMessageRouter : MqttBackgroundServiceListener
     {
         using var scope = CreateScope();
         var eventFactory = scope.GetService<IRoutableEventFactory>();
-        var @event = eventFactory.Create(message.Payload);
+        var @event = eventFactory.Create(message.PayloadSegment);
         if (@event == null)
             return;
 

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using FluentAssertions;
 using Haus.Core.Models;
@@ -18,10 +19,7 @@ public class UnknownMessageMapperTests
 
     public UnknownMessageMapperTests()
     {
-        var options = new OptionsMonitorFake<HausOptions>(new HausOptions
-        {
-            UnknownTopic = UnknownTopicName
-        });
+        var options = new OptionsMonitorFake<HausOptions>(new HausOptions { UnknownTopic = UnknownTopicName });
         _mapper = new UnknownMessageMapper(options);
     }
 
@@ -49,21 +47,19 @@ public class UnknownMessageMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.Payload);
-        payload.Topic.Should().Be("zigbeetopic");
+        var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.PayloadSegment);
+        payload?.Topic.Should().Be("zigbeetopic");
     }
 
     [Fact]
     public void WhenMappedThenZigbeePayloadIsInMessagePayload()
     {
-        var message = Zigbee2MqttMessage.FromJToken("", JObject.FromObject(new
-        {
-            Id = "my-id"
-        }));
+        var message = Zigbee2MqttMessage.FromJToken("", JObject.FromObject(new { Id = "my-id" }));
 
         var result = _mapper.Map(message).Single();
 
-        var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.Payload);
+        var payload = HausJsonSerializer.Deserialize<UnknownModel>(result.PayloadSegment);
+        ArgumentNullException.ThrowIfNull(payload);
         JObject.Parse(payload.Payload).Value<string>("Id").Should().Be("my-id");
     }
 }

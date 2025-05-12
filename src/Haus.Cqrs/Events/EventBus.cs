@@ -10,18 +10,11 @@ public interface IEventBus
         where TEvent : IEvent;
 }
 
-internal class EventBus : IEventBus
+internal class EventBus(IMediator mediator) : IEventBus
 {
-    private readonly IMediator _mediator;
-
-    public EventBus(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken token = default)
         where TEvent : IEvent
     {
-        await _mediator.Publish(@event, token).ConfigureAwait(false);
+        await mediator.Publish(@event, token).ConfigureAwait(false);
     }
 }

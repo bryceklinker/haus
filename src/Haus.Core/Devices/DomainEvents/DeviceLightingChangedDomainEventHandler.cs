@@ -17,21 +17,15 @@ public record DeviceLightingChangedDomainEvent(DeviceEntity Device, LightingEnti
     public LightingModel LightingModel => Lighting.ToModel();
 }
 
-internal class DeviceLightingChangedDomainEventHandler : IDomainEventHandler<DeviceLightingChangedDomainEvent>
+internal class DeviceLightingChangedDomainEventHandler(IHausBus hausBus)
+    : IDomainEventHandler<DeviceLightingChangedDomainEvent>
 {
-    private readonly IHausBus _hausBus;
-
-    public DeviceLightingChangedDomainEventHandler(IHausBus hausBus)
-    {
-        _hausBus = hausBus;
-    }
-
     public Task Handle(DeviceLightingChangedDomainEvent notification, CancellationToken cancellationToken)
     {
         var @event = new DeviceLightingChangedEvent(notification.DeviceModel, notification.LightingModel);
         return Task.WhenAll(
-            _hausBus.PublishAsync(RoutableCommand.FromEvent(@event), cancellationToken),
-            _hausBus.PublishAsync(RoutableEvent.FromEvent(@event), cancellationToken)
+            hausBus.PublishAsync(RoutableCommand.FromEvent(@event), cancellationToken),
+            hausBus.PublishAsync(RoutableEvent.FromEvent(@event), cancellationToken)
         );
     }
 }

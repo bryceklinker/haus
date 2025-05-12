@@ -8,7 +8,6 @@ public class DeviceModelValidator : AbstractValidator<DeviceModel>
     public DeviceModelValidator()
     {
         RuleFor(d => d.Name).Required();
-        RuleForEach(d => d.Metadata)
-            .SetValidator(new DeviceMetadataModelValidator());
+        RuleForEach(d => d.Metadata).SetValidator(new DeviceMetadataModelValidator());
     }
 }

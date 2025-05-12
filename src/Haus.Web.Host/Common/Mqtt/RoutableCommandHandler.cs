@@ -10,26 +10,20 @@ using MQTTnet;
 
 namespace Haus.Web.Host.Common.Mqtt;
 
-internal class RoutableCommandHandler : IEventHandler<RoutableCommand>
+internal class RoutableCommandHandler(IOptions<HausMqttSettings> mqttOptions, IHausMqttClientFactory clientFactory)
+    : IEventHandler<RoutableCommand>
 {
-    private readonly IOptions<HausMqttSettings> _mqttOptions;
-    private readonly IHausMqttClientFactory _clientFactory;
-
-    private string CommandsTopic => _mqttOptions.Value.CommandsTopic;
-
-    public RoutableCommandHandler(IOptions<HausMqttSettings> mqttOptions, IHausMqttClientFactory clientFactory)
-    {
-        _mqttOptions = mqttOptions;
-        _clientFactory = clientFactory;
-    }
+    private string CommandsTopic => mqttOptions.Value.CommandsTopic;
 
     public async Task Handle(RoutableCommand notification, CancellationToken cancellationToken)
     {
-        var hausMqttClient = await _clientFactory.CreateClient();
-        await hausMqttClient.PublishAsync(new MqttApplicationMessage
-        {
-            Topic = CommandsTopic,
-            Payload = HausJsonSerializer.SerializeToBytes(notification.HausCommand)
-        });
+        var hausMqttClient = await clientFactory.CreateClient();
+        await hausMqttClient.PublishAsync(
+            new MqttApplicationMessage
+            {
+                Topic = CommandsTopic,
+                PayloadSegment = HausJsonSerializer.SerializeToBytes(notification.HausCommand),
+            }
+        );
     }
 }

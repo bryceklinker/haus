@@ -1,0 +1,31 @@
+@using Haus.Core.Models.Logs
+@using Microsoft.Extensions.Logging
+
+@if (LogEntry != null)
+{
+    <MudListItem T="LogEntryModel"
+                 Icon="@DetermineIcon(LogEntry)"
+                 Text="@($"[{LogEntry.Level}] {LogEntry.Timestamp}")"
+                 SecondaryText="@LogEntry.Message"/>
+}
+
+@code {
+    [Parameter] public LogEntryModel? LogEntry { get; set; }
+
+    private string DetermineIcon(LogEntryModel entry)
+    {
+        var logLevel = Enum.TryParse<LogLevel>(entry.Level, out var level)
+            ? level
+            : LogLevel.None;
+
+        return logLevel switch
+        {
+            LogLevel.Debug => Icons.Material.Filled.BugReport,
+            LogLevel.Warning => Icons.Material.Filled.Warning,
+            LogLevel.Error => Icons.Material.Filled.Error,
+            LogLevel.Critical => Icons.Material.Filled.Sick,
+            _ => Icons.Material.Filled.Info
+        };
+    }
+
+}

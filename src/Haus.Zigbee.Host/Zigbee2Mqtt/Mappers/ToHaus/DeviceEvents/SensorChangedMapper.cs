@@ -5,20 +5,12 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class SensorChangedMapper
 {
-    private readonly BatteryChangedMapper _batteryChangedMapper;
-    private readonly IlluminanceChangedMapper _illuminanceChangedMapper;
-    private readonly OccupancyChangedMapper _occupancyChangedMapper;
-    private readonly TemperatureChangedMapper _temperatureChangedMapper;
+    private readonly BatteryChangedMapper _batteryChangedMapper = new();
+    private readonly IlluminanceChangedMapper _illuminanceChangedMapper = new();
+    private readonly OccupancyChangedMapper _occupancyChangedMapper = new();
+    private readonly TemperatureChangedMapper _temperatureChangedMapper = new();
 
-    public SensorChangedMapper()
-    {
-        _batteryChangedMapper = new BatteryChangedMapper();
-        _illuminanceChangedMapper = new IlluminanceChangedMapper();
-        _occupancyChangedMapper = new OccupancyChangedMapper();
-        _temperatureChangedMapper = new TemperatureChangedMapper();
-    }
-
-    public object Map(Zigbee2MqttMessage message)
+    public object? Map(Zigbee2MqttMessage message)
     {
         var multiSensorChanged = new MultiSensorChanged(
             message.GetFriendlyNameFromTopic(),
@@ -28,8 +20,6 @@ public class SensorChangedMapper
             _batteryChangedMapper.Map(message)
         );
 
-        return multiSensorChanged.HasMultipleChanges
-            ? multiSensorChanged
-            : multiSensorChanged.GetSingleChange();
+        return multiSensorChanged.HasMultipleChanges ? multiSensorChanged : multiSensorChanged.GetSingleChange();
     }
 }

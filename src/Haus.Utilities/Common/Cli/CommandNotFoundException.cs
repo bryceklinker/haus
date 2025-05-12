@@ -2,6 +2,4 @@ using System;
 
 namespace Haus.Utilities.Common.Cli;
 
-public class CommandNotFoundException : Exception
-{
-}
+public class CommandNotFoundException : Exception { }

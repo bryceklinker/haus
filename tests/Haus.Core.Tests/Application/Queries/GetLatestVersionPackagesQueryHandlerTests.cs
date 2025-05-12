@@ -37,7 +37,9 @@ public class GetLatestVersionPackagesQueryHandlerTests
         var result = await _hausBus.ExecuteQueryAsync(new GetLatestVersionPackagesQuery());
 
         result.Count.Should().Be(3);
-        result.Items.Should().HaveCount(3)
+        result
+            .Items.Should()
+            .HaveCount(3)
             .And.ContainEquivalentOf(new ApplicationPackageModel(5, "idk"))
             .And.ContainEquivalentOf(new ApplicationPackageModel(9, "hello"))
             .And.ContainEquivalentOf(new ApplicationPackageModel(7, "something"));

@@ -1,0 +1,54 @@
+@using Haus.Api.Client.Rooms
+@using Haus.Core.Models.Rooms
+
+@attribute [Authorize]
+
+@inject IRoomsApiClient RoomsClient;
+
+<MudDialog>
+    <TitleContent>
+        Add Room
+    </TitleContent>
+    
+    <DialogContent>
+        <MudPaper>
+            <MudTextField T="string"
+                          Label="Name"
+                          InputId="name"
+                          Disabled="IsSaving"
+                          @bind-Value="Name"
+            />
+        </MudPaper>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Disabled="IsSaving" OnClick="HandleCancel">Cancel</MudButton>
+        <MudButton Disabled="IsSaving" Color="Color.Primary" OnClick="HandleSave">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public IMudDialogInstance? Dialog { get; set; }
+    
+    public string? Name { get; set; }
+
+    public bool IsSaving { get; set; }
+    
+    private async Task HandleSave()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            return;
+        }
+
+        IsSaving = true;
+        await RoomsClient.CreateRoomAsync(new RoomModel(Name: Name));
+        IsSaving = false;
+        Dialog?.Close();
+    }
+
+    private void HandleCancel()
+    {
+        Dialog?.Cancel();
+    }
+}

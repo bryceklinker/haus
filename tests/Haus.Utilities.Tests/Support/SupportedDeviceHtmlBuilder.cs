@@ -2,13 +2,14 @@ namespace Haus.Utilities.Tests.Support;
 
 public class SupportedDeviceHtmlBuilder
 {
-    private const string Html = @"<tr>
+    private const string Html =
+        @"<tr>
                             <td><a>{{model}}</a></td>
                             <td>description</td>
                             <td><img src=""some.jpg""></td>
                          </tr>";
 
-    private string _model;
+    private string? _model;
 
     public SupportedDeviceHtmlBuilder WithModel(string model)
     {

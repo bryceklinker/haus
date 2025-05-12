@@ -1,0 +1,53 @@
+@using Haus.Core.Models
+@using Haus.Core.Models.Health
+@using Haus.Site.Host.Shared.Realtime
+
+@implements IAsyncDisposable
+
+@inject IRealtimeDataFactory RealtimeDataFactory
+
+<LoadingContentView IsLoading="State != RealtimeDataState.Connected" LoadingText="Connecting to health hub...">
+    @if (LatestHealth != null)
+    {
+        <MudPaper>
+            <MudText Typo="Typo.h5"
+                     Style="@($"background-color: {HealthStatusExtensions.ToColor(LatestHealth.Status, Theme)}")"
+                     Class="pa-4 rounded">
+                @LatestHealth.Status
+            </MudText>
+            @foreach (var check in LatestHealth.Checks)
+            {
+                <HealthStatusCheckView Check="check"/>
+            }
+        </MudPaper>
+    }
+</LoadingContentView>
+
+@code {
+    private RealtimeDataState State => Subscriber?.State ?? RealtimeDataState.Disconnected;
+
+    private IRealtimeDataSubscriber? Subscriber { get; set; }
+
+    private HausHealthReportModel? LatestHealth { get; set; }
+    [CascadingParameter] private MudTheme? Theme { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Subscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Health);
+        Subscriber.Subscribe<HausHealthReportModel>(HausHealthEventNames.OnHealth, async report =>
+        {
+            LatestHealth = report;
+            await InvokeAsync(StateHasChanged);
+        });
+        await Subscriber.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (Subscriber != null)
+        {
+            await Subscriber.DisposeAsync();
+        }
+    }
+
+}

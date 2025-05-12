@@ -1,4 +1,6 @@
+using System;
 using System.Dynamic;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using Haus.Core.Logs.Queries;
@@ -21,27 +23,24 @@ public class LogEntryModelFactory : ILogEntryModelFactory
 
     public LogEntryModel CreateFromLine(string line)
     {
-        ExpandoObject value = HausJsonSerializer.Deserialize<dynamic>(line,
-            new JsonSerializerOptions(HausJsonSerializer.DefaultOptions)
-            {
-                Converters =
+        ExpandoObject value =
+            HausJsonSerializer.Deserialize<dynamic>(
+                line,
+                new JsonSerializerOptions(HausJsonSerializer.DefaultOptions)
                 {
-                    new DynamicJsonConverter()
+                    Converters = { new DynamicJsonConverter() },
                 }
-            });
+            ) ?? new ExpandoObject();
 
-        var timestamp = GetValue(TimestampKey, value);
+        var timestamp = GetValue(TimestampKey, value) ?? DateTime.MinValue.ToString(CultureInfo.InvariantCulture);
         var level = GetValue(LevelKey, value) ?? LogLevel.Information.ToString();
-        var message = GetValue(MessageKey, value);
+        var message = GetValue(MessageKey, value) ?? "";
         return new LogEntryModel(timestamp, level, message, value);
     }
 
-    private static string GetValue(string key, ExpandoObject value)
+    private static string? GetValue(string key, ExpandoObject value)
     {
-        var result = value
-            .Where(pair => pair.Key == key)
-            .Select(pair => pair.Value)
-            .FirstOrDefault();
+        var result = value.Where(pair => pair.Key == key).Select(pair => pair.Value).FirstOrDefault();
 
         return result?.ToString();
     }

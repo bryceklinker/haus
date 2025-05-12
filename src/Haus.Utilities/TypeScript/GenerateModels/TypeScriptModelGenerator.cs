@@ -21,16 +21,13 @@ public class TypeScriptModelGenerator : ITypeScriptModelGenerator
             return;
 
         var filename = $"{type.ToTypeScriptFileName()}.ts";
-        var contents = type.IsEnum
-            ? GenerateTypeScriptEnum(type)
-            : GenerateTypeScriptInterface(type, context);
+        var contents = type.IsEnum ? GenerateTypeScriptEnum(type) : GenerateTypeScriptInterface(type, context);
         context.Add(new TypeScriptModel(type, filename, contents));
     }
 
     private string GenerateTypeScriptEnum(Type type)
     {
-        var values = Enum.GetNames(type)
-            .Select(value => $"\t{value} = '{value}',");
+        var values = Enum.GetNames(type).Select(value => $"\t{value} = '{value}',");
 
         var enumerationValues = string.Join(Environment.NewLine, values);
         return new StringBuilder()
@@ -53,42 +50,49 @@ public class TypeScriptModelGenerator : ITypeScriptModelGenerator
 
     private string GenerateImportStatements(Type type, ITypeScriptGeneratorContext context)
     {
-        var imports = GetTypesToImport(type, context)
-            .Select(GenerateImportStatement);
+        var imports = GetTypesToImport(type, context).Select(GenerateImportStatement);
         return string.Join(Environment.NewLine, imports);
     }
 
     private string GenerateTypeScriptInterfaceDeclaration(Type type, ITypeScriptGeneratorContext context)
     {
-        if (!type.BaseType.RequiresTypescriptImport())
+        var baseType = type.BaseType;
+        ArgumentNullException.ThrowIfNull(baseType);
+
+        if (!baseType.RequiresTypescriptImport())
             return $"export interface {type.ToTypescriptTypeName()} {{";
 
-        var baseModel = context.GetModelForType(type.BaseType);
-        return $"export interface {type.ToTypescriptTypeName()} extends {baseModel.ModelName} {{";
+        var baseModel = context.GetModelForType(baseType);
+        return $"export interface {type.ToTypescriptTypeName()} extends {baseModel?.ModelName} {{";
     }
 
-    private string GenerateImportStatement(TypeScriptModel model)
+    private string GenerateImportStatement(TypeScriptModel? model)
     {
-        var fileName = Path.GetFileNameWithoutExtension(model.FileName);
-        return $"import {{{model.ModelName}}} from './{fileName}';";
+        var fileName = Path.GetFileNameWithoutExtension(model?.FileName);
+        return $"import {{{model?.ModelName}}} from './{fileName}';";
     }
 
-    private IEnumerable<TypeScriptModel> GetTypesToImport(Type type, ITypeScriptGeneratorContext context)
+    private IEnumerable<TypeScriptModel?> GetTypesToImport(Type type, ITypeScriptGeneratorContext context)
     {
         var propertyInfos = type.GetProperties();
-        var importTypes = propertyInfos.Select(p => p.PropertyType)
+        var importTypes = propertyInfos
+            .Select(p => p.PropertyType)
             .Where(t => t.RequiresTypescriptImport())
             .Select(t => t.GetTypeThatRequiresImport())
-            .Select(t => GetOrGenerateModelForType(t, context));
+            .Where(t => t != null)
+            .Select(t => GetOrGenerateModelForType(t!, context));
 
         if (type.BaseType != null && type.BaseType.RequiresTypescriptImport())
-            importTypes =
-                importTypes.Append(GetOrGenerateModelForType(type.BaseType.GetTypeThatRequiresImport(), context));
+        {
+            var modelType = type.BaseType.GetTypeThatRequiresImport();
+            ArgumentNullException.ThrowIfNull(modelType);
+            importTypes = importTypes.Append(GetOrGenerateModelForType(modelType, context));
+        }
 
         return importTypes.ToArray();
     }
 
-    private TypeScriptModel GetOrGenerateModelForType(Type type, ITypeScriptGeneratorContext context)
+    private TypeScriptModel? GetOrGenerateModelForType(Type type, ITypeScriptGeneratorContext context)
     {
         if (context.IsMissingModelForType(type))
             Generate(type, context);
@@ -109,7 +113,7 @@ public class TypeScriptModelGenerator : ITypeScriptModelGenerator
         var propertyName = property.Name.Camelize();
         var typescriptPropertyType = property.PropertyType.IsNativeTypeScriptType()
             ? property.PropertyType.ToTypeScriptType(context)
-            : context.GetModelForType(property.PropertyType).ModelName;
+            : context.GetModelForType(property.PropertyType)?.ModelName;
 
         if (property.IsOptional())
             return $"\t{propertyName}?: {typescriptPropertyType};";

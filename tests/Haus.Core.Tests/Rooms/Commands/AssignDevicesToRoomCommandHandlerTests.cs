@@ -56,9 +56,7 @@ public class AssignDevicesToRoomCommandHandlerTests
         var command = new AssignDevicesToRoomCommand(room.Id, device.Id);
         await _hausBus.ExecuteCommandAsync(command);
 
-        _context.GetRoomsIncludeDevices().Should()
-            .HaveCount(1)
-            .And.Contain(r => r.Devices.Contains(device));
+        _context.GetRoomsIncludeDevices().Should().HaveCount(1).And.Contain(r => r.Devices.Contains(device));
     }
 
     [Fact]
@@ -73,10 +71,7 @@ public class AssignDevicesToRoomCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(command);
 
         var updatedRoom = _context.GetRoomsIncludeDevices().Single();
-        updatedRoom.Devices.Should().HaveCount(3)
-            .And.Contain(first)
-            .And.Contain(second)
-            .And.Contain(third);
+        updatedRoom.Devices.Should().HaveCount(3).And.Contain(first).And.Contain(second).And.Contain(third);
     }
 
     [Fact]

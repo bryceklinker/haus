@@ -12,7 +12,7 @@ using Haus.Cqrs.Queries;
 
 namespace Haus.Core.Logs.Queries;
 
-public record GetLogsQuery(string LogsDirectory, GetLogsParameters Parameters = null)
+public record GetLogsQuery(string LogsDirectory, GetLogsParameters? Parameters = null)
     : IQuery<ListResult<LogEntryModel>>
 {
     public int PageSize => Parameters?.PageSize ?? GetLogsParameters.DefaultPageSize;
@@ -20,26 +20,15 @@ public record GetLogsQuery(string LogsDirectory, GetLogsParameters Parameters = 
     public int SkipCount => (PageNumber - 1) * PageSize;
 }
 
-internal class GetLogsQueryHandler : IQueryHandler<GetLogsQuery, ListResult<LogEntryModel>>
+internal class GetLogsQueryHandler(ILogEntryModelFactory logEntryFactory, ILogEntryFilterer logEntryFilterer)
+    : IQueryHandler<GetLogsQuery, ListResult<LogEntryModel>>
 {
-    private readonly ILogEntryModelFactory _logEntryFactory;
-    private readonly ILogEntryFilterer _logEntryFilterer;
-
-    public GetLogsQueryHandler(ILogEntryModelFactory logEntryFactory, ILogEntryFilterer logEntryFilterer)
-    {
-        _logEntryFactory = logEntryFactory;
-        _logEntryFilterer = logEntryFilterer;
-    }
-
-    public async Task<ListResult<LogEntryModel>> Handle(
-        GetLogsQuery request,
-        CancellationToken cancellationToken)
+    public async Task<ListResult<LogEntryModel>> Handle(GetLogsQuery request, CancellationToken cancellationToken)
     {
         var logFiles = GetFilesFromLogDirectoryInDescendingOrder(request.LogsDirectory);
 
         var entries = new List<LogEntryModel>();
-        await foreach (var entry in GetLogEntriesFromFiles(logFiles, request, cancellationToken)
-                           .WithCancellation(cancellationToken))
+        await foreach (var entry in GetLogEntriesFromFiles(logFiles, request, cancellationToken))
             entries.Add(entry);
         return entries.ToListResult();
     }
@@ -47,7 +36,8 @@ internal class GetLogsQueryHandler : IQueryHandler<GetLogsQuery, ListResult<LogE
     private async IAsyncEnumerable<LogEntryModel> GetLogEntriesFromFiles(
         IEnumerable<string> files,
         GetLogsQuery query,
-        [EnumeratorCancellation] CancellationToken token)
+        [EnumeratorCancellation] CancellationToken token
+    )
     {
         var numberOfLinesSkipped = 0;
         var numberOfEntriesReturned = 0;
@@ -78,29 +68,24 @@ internal class GetLogsQueryHandler : IQueryHandler<GetLogsQuery, ListResult<LogE
     private async Task<IEnumerable<LogEntryModel>> GetLogEntriesFromFile(
         string filePath,
         GetLogsQuery query,
-        CancellationToken token)
+        CancellationToken token
+    )
     {
         var lines = await File.ReadAllLinesAsync(filePath, token).ConfigureAwait(false);
-        var matchingEntries = _logEntryFilterer.Filter(lines.Select(_logEntryFactory.CreateFromLine), query.Parameters);
+        var matchingEntries = logEntryFilterer.Filter(lines.Select(logEntryFactory.CreateFromLine), query.Parameters);
         return matchingEntries.OrderByDescending(e => e.Timestamp);
     }
 
     private static IEnumerable<string> GetFilesFromLogDirectoryInDescendingOrder(string logsDirectory)
     {
-        return Directory.GetFiles(logsDirectory)
-            .OrderByDescending(GetLogFileNumber)
-            .ToArray();
+        return Directory.GetFiles(logsDirectory).OrderByDescending(GetLogFileNumber).ToArray();
     }
 
     private static int GetLogFileNumber(string path)
     {
         var fileName = Path.GetFileNameWithoutExtension(path);
-        var numberString = fileName.Contains("_")
-            ? fileName.Split('_')[1]
-            : "0";
+        var numberString = fileName.Contains("_") ? fileName.Split('_')[1] : "0";
 
-        return int.TryParse(numberString, out var number)
-            ? number
-            : int.MinValue;
+        return int.TryParse(numberString, out var number) ? number : int.MinValue;
     }
 }

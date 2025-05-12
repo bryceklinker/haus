@@ -23,7 +23,7 @@ public class RoomModelValidatorTests
     [Fact]
     public async Task WhenNameIsMissingThenReturnsInvalid()
     {
-        var result = await _validator.TestValidateAsync(new RoomModel(Name: null));
+        var result = await _validator.TestValidateAsync(new RoomModel(Name: null!));
 
         result.IsValid.Should().BeFalse();
     }

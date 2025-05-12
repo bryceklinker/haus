@@ -1,6 +1,7 @@
 <Project>
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <MicrosoftPackageVersion>6.0.0</MicrosoftPackageVersion>
+        <TargetFramework>net9.0</TargetFramework>
+        <MicrosoftPackageVersion>9.0.4</MicrosoftPackageVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 </Project>

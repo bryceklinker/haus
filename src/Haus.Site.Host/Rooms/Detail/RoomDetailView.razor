@@ -1,0 +1,72 @@
+@using Haus.Api.Client.Rooms
+@using Haus.Core.Models.Lighting
+@using Haus.Core.Models.Rooms
+@using Haus.Site.Host.Shared.Lighting
+
+@attribute [Authorize]
+
+@inject IRoomsApiClient RoomsClient;
+
+@if (Room != null)
+{
+    <MudGrid Class="pa-4">
+        <MudItem xs="12">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField T="string?" InputId="name" Label="Name" @bind-Value="Name"/>
+                </MudItem>    
+                <MudItem xs="12">
+                    <MudTextField T="int?" InputId="occupancyTimeout" Label="Occupancy Timeout" @bind-Value="OccupancyTimeout"/>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudButton OnClick="SaveRoom">Save</MudButton>
+                </MudItem>
+            </MudGrid>
+        
+        </MudItem>
+        <MudItem xs="12">
+        
+        </MudItem>
+        <MudItem xs="12">
+            <LightingView Lighting="Room.Lighting"
+                          OnLightingChanged="HandleLightingChanged"/>
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+    [Parameter]
+    public RoomModel? Room { get; set; }
+
+    public string? Name { get; set; }
+    public int? OccupancyTimeout { get; set; }
+    
+    private async Task SaveRoom()
+    {
+        if (Room == null)
+        {
+            return;
+        }
+
+        var update = new RoomModel(Id: Room.Id, Name: Name ?? "", OccupancyTimeoutInSeconds: OccupancyTimeout.GetValueOrDefault());
+        await RoomsClient.UpdateRoomAsync(Room.Id, update);
+    }
+    
+    private async Task HandleLightingChanged(LightingModel? lighting)
+    {
+        if (lighting == null || lighting == Room?.Lighting)
+        {
+            return;
+        }
+
+        await RoomsClient.ChangeRoomLightingAsync(Room.Id, lighting);
+        Room = await RoomsClient.GetRoomAsync(Room.Id) ?? Room;
+    }
+
+    protected override void OnParametersSet()
+    {
+        Name = Room?.Name;
+        OccupancyTimeout = Room?.OccupancyTimeoutInSeconds;
+    }
+
+}

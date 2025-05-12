@@ -1,0 +1,21 @@
+
+@if (IsLoading)
+{
+    <MudProgressCircular Indeterminate="true" />
+    <MudText Typo="Typo.h3">@LoadingText</MudText>
+}
+
+@if (!IsLoading)
+{
+    @ChildContent;
+}
+
+@code {
+    [Parameter] public bool IsLoading { get; set; }
+    
+    [Parameter]
+    public required string LoadingText { get; set; }
+    
+    [Parameter]
+    public required RenderFragment ChildContent { get; set; }
+}

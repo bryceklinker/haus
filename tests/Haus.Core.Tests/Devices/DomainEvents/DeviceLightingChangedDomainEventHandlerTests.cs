@@ -13,12 +13,7 @@ namespace Haus.Core.Tests.Devices.DomainEvents;
 
 public class DeviceLightingChangedDomainEventHandlerTests
 {
-    private readonly CapturingHausBus _hausBus;
-
-    public DeviceLightingChangedDomainEventHandlerTests()
-    {
-        _hausBus = HausBusFactory.CreateCapturingBus();
-    }
+    private readonly CapturingHausBus _hausBus = HausBusFactory.CreateCapturingBus();
 
     [Fact]
     public async Task WhenDeviceLightingChangedThenRoutableCommandIsPublished()
@@ -30,8 +25,8 @@ public class DeviceLightingChangedDomainEventHandlerTests
         await _hausBus.FlushAsync();
 
         var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
-        hausCommand.Payload.Device.Id.Should().Be(123);
-        hausCommand.Payload.Lighting.Level.Should().BeEquivalentTo(new LevelLightingModel(34.12));
+        hausCommand.Payload?.Device.Id.Should().Be(123);
+        hausCommand.Payload?.Lighting?.Level.Should().BeEquivalentTo(new LevelLightingModel(34.12));
     }
 
     [Fact]

@@ -6,18 +6,11 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Haus.Web.Host.Common.Events;
 
-internal class RoutableEventsToSignalrHandler<T> : IEventHandler<T>
+internal class RoutableEventsToSignalrHandler<T>(IHubContext<EventsHub> hub) : IEventHandler<T>
     where T : RoutableEvent
 {
-    private readonly IHubContext<EventsHub> _hub;
-
-    public RoutableEventsToSignalrHandler(IHubContext<EventsHub> hub)
-    {
-        _hub = hub;
-    }
-
     public Task Handle(T notification, CancellationToken cancellationToken)
     {
-        return _hub.BroadcastAsync("OnEvent", notification);
+        return hub.BroadcastAsync("OnEvent", notification);
     }
 }

@@ -8,36 +8,23 @@ namespace Haus.Core.Diagnostics.Factories;
 
 public interface IMqttDiagnosticsMessageFactory
 {
-    MqttDiagnosticsMessageModel Create(string topic, byte[] payload);
+    MqttDiagnosticsMessageModel Create(string topic, ArraySegment<byte> payload);
 }
 
-public class MqttDiagnosticsMessageFactory : IMqttDiagnosticsMessageFactory
+public class MqttDiagnosticsMessageFactory(IClock clock) : IMqttDiagnosticsMessageFactory
 {
-    private readonly IClock _clock;
-
-    public MqttDiagnosticsMessageFactory(IClock clock)
+    public MqttDiagnosticsMessageModel Create(string topic, ArraySegment<byte> payload)
     {
-        _clock = clock;
+        return new MqttDiagnosticsMessageModel(
+            Id: $"{Guid.NewGuid()}",
+            Timestamp: clock.LocalNow,
+            Topic: topic,
+            Payload: GetPayloadFromBytes(payload)
+        );
     }
 
-    public MqttDiagnosticsMessageModel Create(string topic, byte[] payload)
+    private static object? GetPayloadFromBytes(ArraySegment<byte> bytes)
     {
-        return new MqttDiagnosticsMessageModel
-        {
-            Id = $"{Guid.NewGuid()}",
-            Timestamp = _clock.LocalNow,
-            Topic = topic,
-            Payload = GetPayloadFromBytes(payload)
-        };
-    }
-
-    private static object GetPayloadFromBytes(byte[] bytes)
-    {
-        if (bytes == null)
-            return null;
-
-        return HausJsonSerializer.TryDeserialize(bytes, out object payload)
-            ? payload
-            : Encoding.UTF8.GetString(bytes);
+        return HausJsonSerializer.TryDeserialize(bytes, out object? payload) ? payload : Encoding.UTF8.GetString(bytes);
     }
 }

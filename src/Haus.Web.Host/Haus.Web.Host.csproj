@@ -16,7 +16,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion)"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(MicrosoftPackageVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Octokit" Version="0.50.0"/>
+        <PackageReference Include="Octokit" Version="13.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -24,17 +24,5 @@
         <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj"/>
         <ProjectReference Include="..\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj"/>
     </ItemGroup>
-
-    <Target Name="RunBundler" AfterTargets="ComputeFilesToPublish">
-        <Exec Command="yarn install" WorkingDirectory="./client-app"/>
-        <Exec Command="yarn build" WorkingDirectory="./client-app"/>
-        <ItemGroup>
-            <DistFiles Include="client-app/dist/**"/>
-            <ResolvedFiletoPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-                <RelativePath>%(DistFiles.Identity)</RelativePath>
-                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-            </ResolvedFiletoPublish>
-        </ItemGroup>
-    </Target>
 
 </Project>

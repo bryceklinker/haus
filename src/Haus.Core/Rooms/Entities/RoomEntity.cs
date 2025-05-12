@@ -15,20 +15,25 @@ namespace Haus.Core.Rooms.Entities;
 
 public record RoomEntity : Entity
 {
-    public static readonly Expression<Func<RoomEntity, RoomModel>> ToModelExpression =
-        r => new RoomModel(
-            r.Id,
-            r.Name,
-            r.OccupancyTimeoutInSeconds,
-            new LightingModel(
-                r.Lighting.State,
-                new LevelLightingModel(r.Lighting.Level.Value, r.Lighting.Level.Min, r.Lighting.Level.Max),
-                new TemperatureLightingModel(r.Lighting.Temperature.Value, r.Lighting.Temperature.Min,
-                    r.Lighting.Temperature.Max),
-                new ColorLightingModel(r.Lighting.Color.Red, r.Lighting.Color.Green, r.Lighting.Color.Blue)
-            )
-        );
-
+    public static readonly Expression<Func<RoomEntity, RoomModel>> ToModelExpression = r => new RoomModel(
+        r.Id,
+        r.Name,
+        r.OccupancyTimeoutInSeconds,
+        new LightingModel(
+            r.Lighting.State,
+            new LevelLightingModel(r.Lighting.Level.Value, r.Lighting.Level.Min, r.Lighting.Level.Max),
+            r.Lighting.Temperature == null
+                ? null
+                : new TemperatureLightingModel(
+                    r.Lighting.Temperature.Value,
+                    r.Lighting.Temperature.Min,
+                    r.Lighting.Temperature.Max
+                ),
+            r.Lighting.Color == null
+                ? null
+                : new ColorLightingModel(r.Lighting.Color.Red, r.Lighting.Color.Green, r.Lighting.Color.Blue)
+        )
+    );
 
     private static readonly Lazy<Func<RoomEntity, RoomModel>> ToModelFunc = new(ToModelExpression.Compile);
 
@@ -37,31 +42,36 @@ public record RoomEntity : Entity
 
     public DateTime? LastOccupiedTime { get; set; }
 
-    public LightingEntity Lighting { get; set; }
+    public LightingEntity Lighting { get; set; } = new();
 
-    public ICollection<DeviceEntity> Devices { get; set; }
+    public ICollection<DeviceEntity> Devices { get; init; }
 
     public IEnumerable<DeviceEntity> Lights => Devices.Where(d => d.IsLight);
 
     public RoomEntity()
-        : this(0, null)
-    {
-    }
+        : this(0, "") { }
 
     public RoomEntity(
         long id,
         string name,
         int occupancyTimeoutInSeconds = RoomDefaults.OccupancyTimeoutInSeconds,
         DateTime? lastOccupiedTime = null,
-        LightingEntity lighting = null,
-        ICollection<DeviceEntity> devices = null)
+        LightingEntity? lighting = null,
+        ICollection<DeviceEntity>? devices = null
+    )
     {
         Id = id;
         OccupancyTimeoutInSeconds = occupancyTimeoutInSeconds;
         LastOccupiedTime = lastOccupiedTime;
-        Name = name ?? string.Empty;
-        Lighting = lighting ?? new LightingEntity(LightingDefaults.State, new LevelLightingEntity(),
-            new TemperatureLightingEntity(), new ColorLightingEntity());
+        Name = name;
+        Lighting =
+            lighting
+            ?? new LightingEntity(
+                LightingDefaults.State,
+                new LevelLightingEntity(),
+                new TemperatureLightingEntity(),
+                new ColorLightingEntity()
+            );
         Devices = devices ?? new List<DeviceEntity>();
     }
 
@@ -72,11 +82,7 @@ public record RoomEntity : Entity
 
     public static RoomEntity CreateFromModel(RoomModel model)
     {
-        return new RoomEntity
-        {
-            Name = model.Name,
-            OccupancyTimeoutInSeconds = model.OccupancyTimeoutInSeconds
-        };
+        return new RoomEntity { Name = model.Name, OccupancyTimeoutInSeconds = model.OccupancyTimeoutInSeconds };
     }
 
     public void UpdateFromModel(RoomModel roomModel)

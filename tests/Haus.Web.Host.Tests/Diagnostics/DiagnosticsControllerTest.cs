@@ -1,7 +1,6 @@
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Haus.Core.Models.Diagnostics;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
 using MQTTnet;
@@ -11,33 +10,26 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Diagnostics;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class DiagnosticsControllerTest
+public class DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-
-    public DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task WhenMessageIsReplayedThenMessageIsSentToMqttTopic()
     {
-        var mqtt = await _factory.GetMqttClient();
-        MqttApplicationMessage received = null;
+        var mqtt = await factory.GetMqttClient();
+        MqttApplicationMessage? received = null;
         await mqtt.SubscribeAsync("my-topic", msg => received = msg);
 
-        var model = new MqttDiagnosticsMessageModel
+        var model = HausModelFactory.MqttDiagnosticsMessageModel() with
         {
+            Topic = "my-topic",
             Payload = new { id = 65 },
-            Topic = "my-topic"
         };
-        var client = _factory.CreateAuthenticatedClient();
+        var client = factory.CreateAuthenticatedClient();
         await client.ReplayDiagnosticsMessageAsync(model);
 
         Eventually.Assert(() =>
         {
-            received.Topic.Should().Be("my-topic");
+            received?.Topic.Should().Be("my-topic");
             JObject.Parse(received.ConvertPayloadToString()).Value<int>("id").Should().Be(65);
         });
     }
@@ -45,8 +37,8 @@ public class DiagnosticsControllerTest
     [Fact]
     public async Task WhenUnauthenticatedClientReplaysMessageThenRespondsWithUnauthorized()
     {
-        var client = _factory.CreateUnauthenticatedClient();
-        var response = await client.ReplayDiagnosticsMessageAsync(new MqttDiagnosticsMessageModel());
+        var client = factory.CreateUnauthenticatedClient();
+        var response = await client.ReplayDiagnosticsMessageAsync(HausModelFactory.MqttDiagnosticsMessageModel());
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }

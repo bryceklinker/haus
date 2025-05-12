@@ -12,14 +12,7 @@ public class HealthCheckEntityTests
     [Fact]
     public void WhenCreatedFromModelThenPopulatesEntityFromModel()
     {
-        var model = new HausHealthCheckModel(
-            "What",
-            HealthStatus.Degraded,
-            66,
-            "What up",
-            "not good",
-            new[] { "something" }
-        );
+        var model = new HausHealthCheckModel("What", HealthStatus.Degraded, 66, "What up", "not good", ["something"]);
 
         var entity = HealthCheckEntity.FromModel(model, DateTimeOffset.UtcNow);
 
@@ -45,14 +38,7 @@ public class HealthCheckEntityTests
     [Fact]
     public void WhenUpdatedFromModelThenEntityIsPopulatedFromModel()
     {
-        var model = new HausHealthCheckModel(
-            "three",
-            HealthStatus.Unhealthy,
-            5,
-            "good",
-            "exception",
-            new[] { "boom" }
-        );
+        var model = new HausHealthCheckModel("three", HealthStatus.Unhealthy, 5, "good", "exception", ["boom"]);
 
         var entity = new HealthCheckEntity();
         entity.UpdateFromModel(model, DateTimeOffset.UtcNow);
@@ -74,10 +60,10 @@ public class HealthCheckEntityTests
             Name = "Checky",
             Description = "Hola",
             Status = HealthStatus.Healthy,
-            Tags = new[] { "welp" },
+            Tags = ["welp"],
             ExceptionMessage = "failure",
             DurationOfCheckInMilliseconds = 66,
-            LastUpdatedTimestamp = DateTimeOffset.UtcNow
+            LastUpdatedTimestamp = DateTimeOffset.UtcNow,
         };
 
         var model = entity.ToModel();
@@ -96,7 +82,7 @@ public class HealthCheckEntityTests
         var entity = new HealthCheckEntity
         {
             Status = HealthStatus.Healthy,
-            LastUpdatedTimestamp = DateTimeOffset.UtcNow.AddHours(-1)
+            LastUpdatedTimestamp = DateTimeOffset.UtcNow.AddHours(-1.1),
         };
 
         var model = entity.ToModel();

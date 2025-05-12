@@ -6,7 +6,7 @@ namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class IlluminanceChangedMapper
 {
-    public IlluminanceChangedModel Map(Zigbee2MqttMessage message)
+    public IlluminanceChangedModel? Map(Zigbee2MqttMessage message)
     {
         if (message.Illuminance.IsNull())
             return null;

@@ -4,18 +4,12 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Zigbee.Host.Tests.Support;
 
-public class OptionsMonitorFake<T> : IOptionsMonitor<T>
+public class OptionsMonitorFake<T>(T value) : IOptionsMonitor<T>
 {
-    private readonly List<OptionsListenerFake<T>> _listeners;
-    public T CurrentValue { get; private set; }
+    private readonly List<OptionsListenerFake<T>> _listeners = new();
+    public T CurrentValue { get; private set; } = value;
 
-    public OptionsMonitorFake(T value)
-    {
-        CurrentValue = value;
-        _listeners = new List<OptionsListenerFake<T>>();
-    }
-
-    public T Get(string name)
+    public T Get(string? name)
     {
         return CurrentValue;
     }
@@ -27,9 +21,10 @@ public class OptionsMonitorFake<T> : IOptionsMonitor<T>
         return handler;
     }
 
-    public void TriggerChange(T value, string name = null)
+    public void TriggerChange(T value, string name)
     {
         CurrentValue = value;
-        foreach (var listener in _listeners) listener.Trigger(value, name);
+        foreach (var listener in _listeners)
+            listener.Trigger(value, name);
     }
 }

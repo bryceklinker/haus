@@ -12,33 +12,32 @@ public interface ICommandFactory
     ICommand Create(string[] args);
 }
 
-public class CommandFactory : ICommandFactory
+public class CommandFactory(ILogger<CommandFactory> logger) : ICommandFactory
 {
-    private readonly ILogger<CommandFactory> _logger;
     private static readonly Lazy<KnownCommand[]> KnownCommands = new(DiscoverKnownCommands);
 
     private IEnumerable<KnownCommand> Commands => KnownCommands.Value;
 
-    public CommandFactory(ILogger<CommandFactory> logger)
-    {
-        _logger = logger;
-    }
-
     public ICommand Create(string[] args)
     {
-        _logger.LogInformation("Args: {Args}", string.Join(" ", args));
+        logger.LogInformation("Args: {Args}", string.Join(" ", args));
         var groupName = args[0];
         var commandName = args[1];
         var command = Commands.SingleOrDefault(c => c.Matches(groupName, commandName));
-        if (command != null)
-            return Activator.CreateInstance(command.CommandType) as ICommand;
+        if (command == null)
+            throw new CommandNotFoundException();
 
-        throw new CommandNotFoundException();
+        var result = Activator.CreateInstance(command.CommandType) as ICommand;
+        if (result == null)
+            throw new InvalidOperationException($"Cannot create command {commandName}");
+
+        return result;
     }
 
     private static KnownCommand[] DiscoverKnownCommands()
     {
-        return typeof(CommandFactory).Assembly.GetExportedTypes()
+        return typeof(CommandFactory)
+            .Assembly.GetExportedTypes()
             .Where(t => t.GetCustomAttribute<CommandAttribute>() != null)
             .Select(t => new KnownCommand(t))
             .ToArray();

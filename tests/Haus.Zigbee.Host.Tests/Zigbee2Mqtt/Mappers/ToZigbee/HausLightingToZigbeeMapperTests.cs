@@ -54,44 +54,39 @@ public class HausLightingToZigbeeMapperTests
             LightingState.On,
             new LevelLightingModel(54),
             new TemperatureLightingModel(67),
-            new ColorLightingModel(98, 54, 234));
+            new ColorLightingModel(98, 54, 234)
+        );
 
         var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
         result.Value<string>("state").Should().Be("ON");
         result.Value<int>("brightness").Should().Be(54);
         result.Value<int>("color_temp").Should().Be(67);
-        result.Value<JObject>("color").Value<int>("b").Should().Be(234);
-        result.Value<JObject>("color").Value<int>("g").Should().Be(54);
-        result.Value<JObject>("color").Value<int>("r").Should().Be(98);
+        result.Value<JObject>("color")?.Value<int>("b").Should().Be(234);
+        result.Value<JObject>("color")?.Value<int>("g").Should().Be(54);
+        result.Value<JObject>("color")?.Value<int>("r").Should().Be(98);
     }
 
     [Fact]
     public void WhenLightingIsMissingTemperatureThenColorTempIsMissingFromPayload()
     {
-        var lighting = new LightingModel(
-            LightingState.On,
-            new LevelLightingModel(12, 0, 254)
-        );
+        var lighting = new LightingModel(LightingState.On, new LevelLightingModel(12, 0, 254));
 
         var message = _mapper.Map(CreateMqttMessage(lighting)).Single();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
         result.TryGetValue("color_temp", out _).Should().BeFalse();
     }
 
     [Fact]
     public void WhenLightingIsMissingColorThenColorIsMissingFromPayload()
     {
-        var lighting = new LightingModel(
-            LightingState.On,
-            new LevelLightingModel(12, 0, 254)
-        );
+        var lighting = new LightingModel(LightingState.On, new LevelLightingModel(12, 0, 254));
 
         var message = _mapper.Map(CreateMqttMessage(lighting)).Single();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
         result.TryGetValue("color", out _).Should().BeFalse();
     }
 
@@ -103,7 +98,7 @@ public class HausLightingToZigbeeMapperTests
         var original = CreateMqttMessage(model);
         var message = _mapper.Map(original).Single();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
         Assert.Equal("ON", result.Value<string>("state"));
     }
 
@@ -114,11 +109,12 @@ public class HausLightingToZigbeeMapperTests
             LightingState.Off,
             new LevelLightingModel(54),
             new TemperatureLightingModel(67),
-            new ColorLightingModel(98, 54, 234));
+            new ColorLightingModel(98, 54, 234)
+        );
 
         var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.Payload));
+        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
         result.Value<string>("state").Should().Be("OFF");
         result.TryGetValue("brightness", out _).Should().BeFalse();
         result.TryGetValue("color_temp", out _).Should().BeFalse();
@@ -127,8 +123,6 @@ public class HausLightingToZigbeeMapperTests
 
     private MqttApplicationMessage CreateMqttMessage(LightingModel lighting)
     {
-        return new DeviceLightingChangedEvent(_device, lighting)
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        return new DeviceLightingChangedEvent(_device, lighting).AsHausCommand().ToMqttMessage("haus/commands");
     }
 }

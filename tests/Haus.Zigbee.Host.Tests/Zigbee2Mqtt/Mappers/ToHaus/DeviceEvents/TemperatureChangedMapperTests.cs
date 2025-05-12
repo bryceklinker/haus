@@ -7,12 +7,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class TemperatureChangedMapperTests
 {
-    private readonly TemperatureChangedMapper _mapper;
-
-    public TemperatureChangedMapperTests()
-    {
-        _mapper = new TemperatureChangedMapper();
-    }
+    private readonly TemperatureChangedMapper _mapper = new();
 
     [Fact]
     public void WhenTemperatureChangedThenReturnsPopulatedTemperatureChanged()
@@ -24,8 +19,8 @@ public class TemperatureChangedMapperTests
 
         var model = _mapper.Map(message);
 
-        model.DeviceId.Should().Be("1234");
-        model.Temperature.Should().Be(65);
+        model?.DeviceId.Should().Be("1234");
+        model?.Temperature.Should().Be(65);
     }
 
     [Fact]

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Sensors;
@@ -16,25 +17,17 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
-public class DeviceEventMapper : ToHausMapperBase
+public class DeviceEventMapper(
+    IOptionsMonitor<HausOptions> options,
+    IOptions<ZigbeeOptions> zigbeeOptions,
+    ILogger<DeviceEventMapper> logger
+) : ToHausMapperBase(options)
 {
-    private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
-    private readonly ILogger<DeviceEventMapper> _logger;
-    private readonly SensorChangedMapper _sensorChangedMapper;
-
-    public DeviceEventMapper(IOptionsMonitor<HausOptions> options, IOptions<ZigbeeOptions> zigbeeOptions,
-        ILogger<DeviceEventMapper> logger)
-        : base(options)
-    {
-        _zigbeeOptions = zigbeeOptions;
-        _logger = logger;
-        _sensorChangedMapper = new SensorChangedMapper();
-    }
+    private readonly SensorChangedMapper _sensorChangedMapper = new();
 
     public override bool IsSupported(Zigbee2MqttMessage message)
     {
-        return message.Topic.StartsWith(_zigbeeOptions.GetBaseTopic())
-               && message.Topic.Split('/').Length == 2;
+        return message.Topic.StartsWith(zigbeeOptions.GetBaseTopic()) && message.Topic.Split('/').Length == 2;
     }
 
     public override IEnumerable<MqttApplicationMessage> Map(Zigbee2MqttMessage message)
@@ -42,24 +35,26 @@ public class DeviceEventMapper : ToHausMapperBase
         yield return new MqttApplicationMessage
         {
             Topic = EventTopicName,
-            Payload = MapMessageToPayload(message)
+            PayloadSegment = MapMessageToPayload(message),
         };
     }
 
-    private byte[] MapMessageToPayload(Zigbee2MqttMessage message)
+    private ArraySegment<byte> MapMessageToPayload(Zigbee2MqttMessage message)
     {
         var payload = _sensorChangedMapper.Map(message);
-        var type = GetHausEventType(payload);
-        if (type == UnknownEvent.Type) _logger.LogWarning("Unknown payload received: {@Payload}", payload);
-
-        return HausJsonSerializer.SerializeToBytes(new HausEvent<object>
+        if (payload == null)
         {
-            Type = type,
-            Payload = payload
-        });
+            return [];
+        }
+
+        var type = GetHausEventType(payload);
+        if (type == UnknownEvent.Type)
+            logger.LogWarning("Unknown payload received: {@Payload}", payload);
+
+        return HausJsonSerializer.SerializeToBytes(new HausEvent<object>(type, payload));
     }
 
-    private string GetHausEventType(object payload)
+    private string GetHausEventType(object? payload)
     {
         return payload switch
         {
@@ -68,7 +63,7 @@ public class DeviceEventMapper : ToHausMapperBase
             BatteryChangedModel => BatteryChangedModel.Type,
             OccupancyChangedModel => OccupancyChangedModel.Type,
             TemperatureChangedModel => TemperatureChangedModel.Type,
-            _ => UnknownEvent.Type
+            _ => UnknownEvent.Type,
         };
     }
 }

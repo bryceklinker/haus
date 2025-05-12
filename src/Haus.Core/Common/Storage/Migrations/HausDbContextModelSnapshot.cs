@@ -15,7 +15,7 @@ namespace Haus.Core.Common.Storage.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
             modelBuilder.Entity("Haus.Core.Devices.Entities.DeviceEntity", b =>
                 {
@@ -54,7 +54,7 @@ namespace Haus.Core.Common.Storage.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long?>("DeviceId")
+                    b.Property<long>("DeviceId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Key")
@@ -113,6 +113,7 @@ namespace Haus.Core.Common.Storage.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Tags")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -233,7 +234,8 @@ namespace Haus.Core.Common.Storage.Migrations
 
                             b1.Navigation("Color");
 
-                            b1.Navigation("Level");
+                            b1.Navigation("Level")
+                                .IsRequired();
 
                             b1.Navigation("Temperature");
                         });
@@ -247,7 +249,9 @@ namespace Haus.Core.Common.Storage.Migrations
                 {
                     b.HasOne("Haus.Core.Devices.Entities.DeviceEntity", "Device")
                         .WithMany("Metadata")
-                        .HasForeignKey("DeviceId");
+                        .HasForeignKey("DeviceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Device");
                 });
@@ -338,12 +342,14 @@ namespace Haus.Core.Common.Storage.Migrations
 
                             b1.Navigation("Color");
 
-                            b1.Navigation("Level");
+                            b1.Navigation("Level")
+                                .IsRequired();
 
                             b1.Navigation("Temperature");
                         });
 
-                    b.Navigation("Lighting");
+                    b.Navigation("Lighting")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Haus.Core.Devices.Entities.DeviceEntity", b =>

@@ -14,7 +14,6 @@ using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
 using Haus.Web.Host.Health;
 using Haus.Web.Host.Rooms;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -26,29 +25,33 @@ namespace Haus.Web.Host;
 
 public static class ServiceCollectionExtensions
 {
-    private static readonly string MigrationsAssembly = typeof(HausDbContext).Assembly.GetName().Name;
-
     public static IServiceCollection AddHausWebHost(this IServiceCollection services, IConfiguration configuration)
     {
         return services
             .AddHausCore(opts =>
             {
-                opts.UseSqlite(configuration["Database:ConnectionString"], sqlite =>
-                {
-                    sqlite
-                        .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)
-                        .MigrationsAssembly(MigrationsAssembly);
-                });
+                opts.UseSqlite(
+                    configuration["Database:ConnectionString"],
+                    sqlite =>
+                    {
+                        sqlite
+                            .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)
+                            .MigrationsAssembly(GetMigrationsAssemblyName());
+                    }
+                );
             })
             .Configure<AuthOptions>(configuration.GetSection("Auth"))
             .Configure<HausMqttSettings>(configuration.GetSection("Mqtt"))
             .Configure<GitHubSettings>(opts =>
             {
                 configuration.Bind("GitHub", opts);
-                opts.PersonalAccessToken = configuration["GITHUB_TOKEN"];
+                opts.PersonalAccessToken = configuration["GITHUB_TOKEN"] ?? "";
             })
             .AddHausMqtt()
-            .AddMediatR(typeof(ServiceCollectionExtensions).Assembly)
+            .AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
+            })
             .AddTransient<ILatestReleaseProvider, GithubLatestReleaseProvider>()
             .AddHostedService<MqttMessageRouter>()
             .AddHostedService<DiagnosticsMqttListener>()
@@ -58,71 +61,77 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IHealthCheckPublisher, HealthPublisher>();
     }
 
-    public static IServiceCollection AddHausAuthentication(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddHausAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
-        var authenticatedUserPolicy = new AuthorizationPolicyBuilder()
-            .RequireAuthenticatedUser()
-            .Build();
+        var authenticatedUserPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 
-        services.AddAuthentication(opts =>
-        {
-            opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(opts =>
-        {
-            opts.Audience = configuration.GetValue<string>("Auth:Audience");
-            opts.Authority = $"https://{configuration.GetValue<string>("Auth:Domain")}";
-            opts.Events = new JwtBearerEvents
+        services
+            .AddAuthentication(opts =>
             {
-                OnMessageReceived = JwtAuthEventHandlers.HandleMessageReceived
-            };
+                opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(opts =>
+            {
+                opts.Audience = configuration.GetValue<string>("Auth:Audience");
+                opts.Authority = $"https://{configuration.GetValue<string>("Auth:Domain")}";
+                opts.Events = new JwtBearerEvents { OnMessageReceived = JwtAuthEventHandlers.HandleMessageReceived };
+            });
+        return services.AddAuthorization(opts =>
+        {
+            opts.DefaultPolicy = authenticatedUserPolicy;
         });
-        return services.AddAuthorization(opts => { opts.DefaultPolicy = authenticatedUserPolicy; });
     }
 
     public static IServiceCollection AddHausRestApi(this IServiceCollection services)
     {
-        services.AddControllers()
-            .AddControllersAsServices();
+        services.AddControllers().AddControllersAsServices();
         return services.AddCors(opts =>
         {
             opts.AddDefaultPolicy(policy =>
             {
-                policy.AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowAnyOrigin();
+                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
             });
         });
     }
 
     public static IServiceCollection AddHausRealtimeApi(this IServiceCollection services)
     {
-        services.AddSignalR(opts => { opts.EnableDetailedErrors = true; }).AddJsonProtocol(opts =>
-        {
-            opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
-        });
-        return services;
-    }
-
-    public static IServiceCollection AddHausSpa(this IServiceCollection services, string rootPath)
-    {
-        services.AddSpaStaticFiles(spa => spa.RootPath = rootPath);
+        services
+            .AddSignalR(opts =>
+            {
+                opts.EnableDetailedErrors = true;
+            })
+            .AddJsonProtocol(opts =>
+            {
+                opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
+            });
         return services;
     }
 
     public static IServiceCollection AddHausHealthChecks(this IServiceCollection services)
     {
-        services
-            .AddHealthChecks()
-            .AddHausMqttHealthChecks()
-            .AddDbContextCheck<HausDbContext>();
+        services.AddHealthChecks().AddHausMqttHealthChecks().AddDbContextCheck<HausDbContext>();
 
-        services.AddSingleton<ILastKnownHealthCache, LastKnownHealthCache>()
+        services
+            .AddSingleton<ILastKnownHealthCache, LastKnownHealthCache>()
             .AddMemoryCache(opts => opts.ExpirationScanFrequency = TimeSpan.FromMinutes(1));
-        services.Configure<HealthCheckPublisherOptions>(opts => { opts.Period = TimeSpan.FromSeconds(10); });
+        services.Configure<HealthCheckPublisherOptions>(opts =>
+        {
+            opts.Period = TimeSpan.FromSeconds(10);
+        });
 
         return services;
+    }
+
+    private static string GetMigrationsAssemblyName()
+    {
+        var name = typeof(HausDbContext).Assembly.GetName().Name;
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        return name;
     }
 }

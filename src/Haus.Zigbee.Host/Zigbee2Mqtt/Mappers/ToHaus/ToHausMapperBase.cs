@@ -6,16 +6,9 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
 
-public abstract class ToHausMapperBase : IToHausMapper
+public abstract class ToHausMapperBase(IOptionsMonitor<HausOptions> hausOptions) : IToHausMapper
 {
-    private readonly IOptionsMonitor<HausOptions> _hausOptions;
-
-    protected string EventTopicName => _hausOptions.CurrentValue.EventsTopic;
-
-    protected ToHausMapperBase(IOptionsMonitor<HausOptions> hausOptions)
-    {
-        _hausOptions = hausOptions;
-    }
+    protected string EventTopicName => hausOptions.CurrentValue.EventsTopic;
 
     public abstract bool IsSupported(Zigbee2MqttMessage message);
 

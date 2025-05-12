@@ -20,7 +20,9 @@ publish/
 coverage.*
 coveragereport/
 .DS_Store
-**/haus.db*
+**/*.db*
 **/haus-logs/
 .vs/
-.env-cmdrc.json
+haus_mqtt/
+.envrc
+/**/TestResults/

@@ -5,7 +5,8 @@ namespace Haus.Utilities.Tests.Support;
 
 public class SupportedVendorHtmlBuilder
 {
-    private const string Html = @"
+    private const string Html =
+        @"
         <h3>
             {{name}}
             <a href=""#{{name}}"">#</a>
@@ -24,7 +25,7 @@ public class SupportedVendorHtmlBuilder
         </table>
         ";
 
-    private string _name;
+    private string? _name;
     private List<string> _devices = new();
 
     public SupportedVendorHtmlBuilder WithName(string name)
@@ -45,8 +46,7 @@ public class SupportedVendorHtmlBuilder
     {
         try
         {
-            return Html.Replace("{{name}}", _name)
-                .Replace("{{devices}}", string.Join(" ", _devices));
+            return Html.Replace("{{name}}", _name).Replace("{{devices}}", string.Join(" ", _devices));
         }
         finally
         {

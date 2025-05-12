@@ -23,16 +23,17 @@ public record HealthCheckEntity : Entity
             c.Tags
         );
 
-    private static readonly Lazy<Func<HealthCheckEntity, HausHealthCheckModel>> ToModelFunc =
-        new(ToModelExpression.Compile);
+    private static readonly Lazy<Func<HealthCheckEntity, HausHealthCheckModel>> ToModelFunc = new(
+        ToModelExpression.Compile
+    );
 
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
     public HealthStatus Status { get; set; }
-    public string Description { get; set; }
-    public string ExceptionMessage { get; set; }
+    public string? Description { get; set; }
+    public string? ExceptionMessage { get; set; }
     public double DurationOfCheckInMilliseconds { get; set; }
     public DateTimeOffset LastUpdatedTimestamp { get; set; }
-    public string[] Tags { get; set; }
+    public string[] Tags { get; set; } = [];
 
     public static HealthCheckEntity FromModel(HausHealthCheckModel model, DateTimeOffset timestamp)
     {

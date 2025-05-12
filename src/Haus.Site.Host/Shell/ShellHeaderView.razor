@@ -1,0 +1,37 @@
+@using Haus.Site.Host.Shared.Theming
+@using Haus.Site.Host.Shared.Auth
+<MudAppBar Color="Color.Primary">
+    <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                   Color="Color.Inherit" 
+                   Edge="Edge.Start"
+                   OnClick="() => OnMenuToggled.InvokeAsync()">
+        
+    </MudIconButton>
+    <MudText Typo="Typo.h3">HAUS</MudText>
+    <MudSpacer />
+    <CurrentUserView />
+    <MudSwitch T="bool" Value="_isDarkMode" ValueChanged="value => HandleThemeModeChanged(value)" />
+</MudAppBar>
+
+@code {
+    private bool _isDarkMode = true;
+    
+    [Parameter]
+    public EventCallback OnMenuToggled { get; set; }
+    
+    [Parameter]
+    public EventCallback<ThemeMode> OnThemeToggled { get; set; }
+    
+    [Parameter]
+    public ThemeMode ThemeMode { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _isDarkMode = ThemeMode == ThemeMode.Dark;
+    }
+
+    private async Task HandleThemeModeChanged(bool isDarkMode)
+    {
+        await OnThemeToggled.InvokeAsync(isDarkMode ? ThemeMode.Dark : ThemeMode.Light);
+    }
+}

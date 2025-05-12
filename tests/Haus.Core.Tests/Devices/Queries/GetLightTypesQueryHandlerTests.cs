@@ -10,12 +10,7 @@ namespace Haus.Core.Tests.Devices.Queries;
 
 public class GetLightTypesQueryHandlerTests
 {
-    private readonly IHausBus _hausBus;
-
-    public GetLightTypesQueryHandlerTests()
-    {
-        _hausBus = HausBusFactory.Create();
-    }
+    private readonly IHausBus _hausBus = HausBusFactory.Create();
 
     [Fact]
     public async Task WhenGettingLightTypesThenReturnsExcludesNone()
@@ -31,7 +26,9 @@ public class GetLightTypesQueryHandlerTests
         var result = await _hausBus.ExecuteQueryAsync(new GetLightTypesQuery());
 
         result.Count.Should().Be(3);
-        result.Items.Should().HaveCount(3)
+        result
+            .Items.Should()
+            .HaveCount(3)
             .And.Contain(LightType.Color)
             .And.Contain(LightType.Level)
             .And.Contain(LightType.Temperature);

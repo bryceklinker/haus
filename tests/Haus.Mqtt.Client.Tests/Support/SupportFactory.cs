@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using Haus.Mqtt.Client.Settings;
+using Haus.Mqtt.Client.Wrappers;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
 using Microsoft.Extensions.DependencyInjection;
-using MQTTnet;
 
 namespace Haus.Mqtt.Client.Tests.Support;
 
@@ -31,7 +31,10 @@ public class SupportFactory
             .AddHausMqtt()
             .AddLogging()
             .Replace<IMqttFactory>(FakeClientFactory)
-            .Configure<HausMqttSettings>(opts => { opts.Server = "mqtt://localhost"; })
+            .Configure<HausMqttSettings>(opts =>
+            {
+                opts.Server = "mqtt://localhost:1883";
+            })
             .BuildServiceProvider();
     }
 }

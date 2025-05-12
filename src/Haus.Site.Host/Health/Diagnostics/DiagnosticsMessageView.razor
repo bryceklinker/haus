@@ -1,0 +1,51 @@
+@using Haus.Api.Client.Diagnostics
+@using Haus.Core.Models.Diagnostics
+
+@inject IDiagnosticsApiClient DiagnosticsClient;
+
+@if (Message != null)
+{
+    <MudExpansionPanel>
+        <TitleContent>
+            <MudText Typo="Typo.h5">
+                @Message.Topic: @Message.Id (@Message.Timestamp.FormatTimestamp())
+            </MudText>
+        </TitleContent>
+        <ChildContent>
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudToolBar>
+                        <MudButton OnClick="async () => await ReplayMessage()" 
+                                   Disabled="IsReplaying" 
+                                   Variant="Variant.Filled" 
+                                   Color="Color.Primary">
+                            Replay
+                        </MudButton>
+                    </MudToolBar>
+                </MudItem>
+                <MudItem xs="12">
+                    <pre>@Message.Payload.FormatAsJson()</pre>        
+                </MudItem>
+            </MudGrid>
+        </ChildContent>
+    </MudExpansionPanel>    
+}
+
+@code {
+    [Parameter]
+    public MqttDiagnosticsMessageModel? Message { get; set; }
+
+    public bool IsReplaying { get; set; }
+    
+    private async Task ReplayMessage()
+    {
+        if (Message == null)
+        {
+            return;
+        }
+
+        IsReplaying = true;
+        await DiagnosticsClient.ReplayDiagnosticsMessageAsync(Message);
+        IsReplaying = false;
+    }
+}

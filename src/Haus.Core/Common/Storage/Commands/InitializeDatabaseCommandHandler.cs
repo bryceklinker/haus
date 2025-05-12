@@ -9,22 +9,15 @@ namespace Haus.Core.Common.Storage.Commands;
 
 public record InitializeDatabaseCommand : ICommand;
 
-internal class InitializeDatabaseCommandHandler : AsyncRequestHandler<InitializeDatabaseCommand>,
-    ICommandHandler<InitializeDatabaseCommand>
+internal class InitializeDatabaseCommandHandler(HausDbContext context) : ICommandHandler<InitializeDatabaseCommand>
 {
-    private readonly HausDbContext _context;
-
-    public InitializeDatabaseCommandHandler(HausDbContext context)
+    public async Task Handle(InitializeDatabaseCommand request, CancellationToken cancellationToken)
     {
-        _context = context;
-    }
-
-    protected override async Task Handle(InitializeDatabaseCommand request, CancellationToken cancellationToken)
-    {
-        var allMigrations = _context.Database.GetMigrations();
-        var appliedMigrations =
-            await _context.Database.GetAppliedMigrationsAsync(cancellationToken).ConfigureAwait(false);
+        var allMigrations = context.Database.GetMigrations();
+        var appliedMigrations = await context
+            .Database.GetAppliedMigrationsAsync(cancellationToken)
+            .ConfigureAwait(false);
         if (allMigrations.Count() != appliedMigrations.Count())
-            await _context.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+            await context.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 }

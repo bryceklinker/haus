@@ -1,0 +1,36 @@
+@page "/health"
+
+@using Haus.Site.Host.Health.HealthStatus
+@using Haus.Site.Host.Health.Logs
+@using Haus.Site.Host.Health.Events
+
+@inject NavigationManager Navigation;
+
+@attribute [Authorize]
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudToolBar>
+            <MudButton OnClick="NavigateToDiagnostics">Diagnostics</MudButton>
+        </MudToolBar>
+    </MudItem>
+    <MudItem xs="12">
+        <HealthStatusView/>
+    </MudItem>
+    <MudItem xs="6">
+        <EventsView/>
+    </MudItem>
+    <MudItem xs="6">
+        <LogsView/>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    private void NavigateToDiagnostics()
+    {
+        Navigation.NavigateTo("/health/diagnostics");
+    }
+
+}
+

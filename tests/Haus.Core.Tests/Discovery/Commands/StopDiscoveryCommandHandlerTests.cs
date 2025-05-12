@@ -31,7 +31,10 @@ public class StopDiscoveryCommandHandlerTests
     {
         await _hausBus.ExecuteCommandAsync(_command);
 
-        _context.Set<DiscoveryEntity>().Should().HaveCount(1)
+        _context
+            .Set<DiscoveryEntity>()
+            .Should()
+            .HaveCount(1)
             .And.ContainEquivalentOf(new DiscoveryEntity(), opts => opts.Excluding(d => d.Id));
     }
 

@@ -11,16 +11,9 @@ public interface IDomainEventBus
     Task FlushAsync(CancellationToken token = default);
 }
 
-internal class DomainEventBus : IDomainEventBus
+internal class DomainEventBus(IMediator mediator) : IDomainEventBus
 {
-    private readonly ConcurrentQueue<IDomainEvent> _events;
-    private readonly IMediator _mediator;
-
-    public DomainEventBus(IMediator mediator)
-    {
-        _mediator = mediator;
-        _events = new ConcurrentQueue<IDomainEvent>();
-    }
+    private readonly ConcurrentQueue<IDomainEvent> _events = new();
 
     public void Enqueue(IDomainEvent domainEvent)
     {
@@ -30,6 +23,6 @@ internal class DomainEventBus : IDomainEventBus
     public async Task FlushAsync(CancellationToken token = default)
     {
         foreach (var domainEvent in _events)
-            await _mediator.Publish(domainEvent, token);
+            await mediator.Publish(domainEvent, token);
     }
 }

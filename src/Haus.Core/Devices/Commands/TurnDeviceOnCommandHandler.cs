@@ -9,23 +9,14 @@ namespace Haus.Core.Devices.Commands;
 
 public record TurnDeviceOnCommand(long DeviceId) : ICommand;
 
-internal class TurnDeviceOnCommandHandler : AsyncRequestHandler<TurnDeviceOnCommand>,
-    ICommandHandler<TurnDeviceOnCommand>
+internal class TurnDeviceOnCommandHandler(IDomainEventBus domainEventBus, IDeviceCommandRepository repository)
+    : ICommandHandler<TurnDeviceOnCommand>
 {
-    private readonly IDeviceCommandRepository _repository;
-    private readonly IDomainEventBus _domainEventBus;
-
-    public TurnDeviceOnCommandHandler(IDomainEventBus domainEventBus, IDeviceCommandRepository repository)
+    public async Task Handle(TurnDeviceOnCommand request, CancellationToken cancellationToken)
     {
-        _domainEventBus = domainEventBus;
-        _repository = repository;
-    }
-
-    protected override async Task Handle(TurnDeviceOnCommand request, CancellationToken cancellationToken)
-    {
-        var device = await _repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
-        device.TurnOn(_domainEventBus);
-        await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
-        await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
+        var device = await repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
+        device.TurnOn(domainEventBus);
+        await repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
+        await domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 }

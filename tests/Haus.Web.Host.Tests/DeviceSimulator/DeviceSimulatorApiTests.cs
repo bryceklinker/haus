@@ -30,7 +30,7 @@ public class DeviceSimulatorApiTests
     [Fact]
     public async Task WhenSimulatedDeviceIsAddedThenPublishesDeviceDiscoveredEvent()
     {
-        DeviceDiscoveredEvent discoveredEvent = null;
+        DeviceDiscoveredEvent? discoveredEvent = null;
         await _factory.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
             DeviceDiscoveredEvent.Type,
             evt => discoveredEvent = evt.Payload
@@ -38,7 +38,10 @@ public class DeviceSimulatorApiTests
 
         await _client.AddSimulatedDeviceAsync(new SimulatedDeviceModel(DeviceType: DeviceType.Light));
 
-        Eventually.Assert(() => { discoveredEvent.DeviceType.Should().Be(DeviceType.Light); });
+        Eventually.Assert(() =>
+        {
+            discoveredEvent?.DeviceType.Should().Be(DeviceType.Light);
+        });
     }
 
     [Fact]
@@ -48,13 +51,16 @@ public class DeviceSimulatorApiTests
         await _client.AddSimulatedDeviceAsync(new SimulatedDeviceModel(DeviceType: DeviceType.Light));
         await _client.AddSimulatedDeviceAsync(new SimulatedDeviceModel(DeviceType: DeviceType.Light));
 
-        DeviceSimulatorStateModel state = null;
+        DeviceSimulatorStateModel? state = null;
 
         var hub = await _factory.CreateHubConnection("device-simulator");
         hub.On<DeviceSimulatorStateModel>("OnState", s => state = s);
 
         await _client.ResetDeviceSimulatorAsync();
-        Eventually.Assert(() => { state.Devices.Should().BeEmpty(); });
+        Eventually.Assert(() =>
+        {
+            state?.Devices.Should().BeEmpty();
+        });
     }
 
     [Fact]
@@ -63,16 +69,21 @@ public class DeviceSimulatorApiTests
         var simulator = new SimulatedDeviceModel($"{Guid.NewGuid()}", DeviceType.MotionSensor);
         await _client.AddSimulatedDeviceAsync(simulator);
         var device = await _factory.WaitForDeviceToBeDiscovered(simulator.DeviceType, simulator.Id);
-        var room = await (await _client.CreateRoomAsync(new RoomModel(Name: $"{Guid.NewGuid()}"))).Content
-            .ReadFromJsonAsync<RoomModel>();
+        var roomResponse = await _client.CreateRoomAsync(new RoomModel(Name: $"{Guid.NewGuid()}"));
+        var room = await roomResponse.Content.ReadFromJsonAsync<RoomModel>();
+        ArgumentNullException.ThrowIfNull(room);
+
         await _client.AddDevicesToRoomAsync(room.Id, device.Id);
 
         await _client.TriggerOccupancyChange(simulator.Id);
 
-        await Eventually.AssertAsync(async () =>
-        {
-            var updatedRoom = await _client.GetRoomAsync(room.Id);
-            updatedRoom.Lighting.State.Should().Be(LightingState.On);
-        }, TimeSpan.FromSeconds(10).TotalMilliseconds);
+        await Eventually.AssertAsync(
+            async () =>
+            {
+                var updatedRoom = await _client.GetRoomAsync(room.Id);
+                updatedRoom?.Lighting.State.Should().Be(LightingState.On);
+            },
+            TimeSpan.FromSeconds(10).TotalMilliseconds
+        );
     }
 }

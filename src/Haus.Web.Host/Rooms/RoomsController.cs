@@ -10,12 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Haus.Web.Host.Rooms;
 
 [Route("api/rooms")]
-public class RoomsController : HausBusController
+public class RoomsController(IHausBus hausBus) : HausBusController(hausBus)
 {
-    public RoomsController(IHausBus hausBus) : base(hausBus)
-    {
-    }
-
     [HttpGet]
     public Task<IActionResult> GetAll()
     {

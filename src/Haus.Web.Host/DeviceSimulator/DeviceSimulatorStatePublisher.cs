@@ -9,23 +9,14 @@ using Microsoft.Extensions.Hosting;
 
 namespace Haus.Web.Host.DeviceSimulator;
 
-public class DeviceSimulatorStatePublisher : BackgroundService
+public class DeviceSimulatorStatePublisher(IDeviceSimulatorStore simulatorStore, IServiceScopeFactory scopeFactory)
+    : BackgroundService
 {
-    private readonly IDeviceSimulatorStore _simulatorStore;
-    private readonly IServiceScopeFactory _scopeFactory;
-    private IDisposable _subscription;
-
-    public DeviceSimulatorStatePublisher(
-        IDeviceSimulatorStore simulatorStore,
-        IServiceScopeFactory scopeFactory)
-    {
-        _simulatorStore = simulatorStore;
-        _scopeFactory = scopeFactory;
-    }
+    private IDisposable? _subscription;
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _subscription = _simulatorStore.SubscribeAsync(PublishSimulatorStateAsync);
+        _subscription = simulatorStore.SubscribeAsync(PublishSimulatorStateAsync);
         return Task.CompletedTask;
     }
 
@@ -37,7 +28,7 @@ public class DeviceSimulatorStatePublisher : BackgroundService
 
     private async Task PublishSimulatorStateAsync(IDeviceSimulatorState state)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
         var hubContext = scope.GetService<IHubContext<DeviceSimulatorHub>>();
         await hubContext.BroadcastAsync("OnState", state.ToModel()).ConfigureAwait(false);
     }

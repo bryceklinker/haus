@@ -1,0 +1,142 @@
+@using Haus.Api.Client.Devices
+@using Haus.Api.Client.Rooms
+@using Haus.Core.Models
+@using Haus.Core.Models.Devices
+@using Haus.Core.Models.Devices.Events
+@using Haus.Core.Models.ExternalMessages
+@using Haus.Core.Models.Rooms
+@using Haus.Site.Host.Shared.Realtime
+@using Microsoft.Extensions.Logging
+
+@page "/devices/discovery"
+
+@attribute [Authorize]
+
+@implements IAsyncDisposable;
+
+@inject ILogger<DeviceDiscoveryView> Logger;
+@inject IDeviceApiClient DevicesClient;
+@inject IRoomsApiClient RoomsClient;
+@inject IRealtimeDataFactory RealtimeDataFactory;
+
+<LoadingContentView IsLoading="IsLoading" LoadingText="Loading rooms and devices...">
+    <MudDropContainer T="DeviceModel" 
+                      Items="Devices"
+                      ItemsSelector="IsDeviceInRoom" 
+                      ItemDropped="HandleDeviceDropped">
+        <ChildContent>
+            <MudGrid>
+                <MudItem xs="6">
+                    @foreach (var room in Rooms)
+                    {
+                        <MudDropZone T="DeviceModel" 
+                                     UserAttributes="GetRoomAttributes(room)" 
+                                     Identifier="@room.Id.ToString()">
+                            <MudText Typo="Typo.h3">@room.Name</MudText>
+                        </MudDropZone>
+                    }        
+                </MudItem>
+                <MudItem xs="6">
+                    <MudDropZone T="DeviceModel"
+                                 Identifier="@UnassignedDeviceRoomId">
+                        <MudText Typo="Typo.h3">Unassigned Devices</MudText>
+                    </MudDropZone>    
+                </MudItem>
+            </MudGrid>
+        </ChildContent>
+        <ItemRenderer>
+            <MudPaper UserAttributes="GetDeviceItemAttributes(context)"
+                      Outlined="true"
+                      Class="device ma-4 pa-2">
+                <MudStack>
+                    <MudText Typo="Typo.body1">Device Type: (@context.DeviceType.Humanize(LetterCasing.Title))</MudText>
+                    <MudText Typo="Typo.body2">External Id: @context.ExternalId</MudText>
+                </MudStack>
+            </MudPaper>
+        </ItemRenderer>
+    </MudDropContainer>
+</LoadingContentView>
+
+@code {
+    private const string UnassignedDeviceRoomId = "unassigned";
+    private IRealtimeDataSubscriber? _eventsSubscriber;
+
+    private RoomModel[] Rooms { get; set; } = [];
+    private DeviceModel[] Devices { get; set; } = [];
+
+    private bool IsLoading { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
+        _eventsSubscriber.Subscribe<HausEvent<DeviceCreatedEvent>>(HausEventsEventNames.OnEvent, HandleDeviceCreated);
+        await _eventsSubscriber.StartAsync();
+        
+        var roomsList = await RoomsClient.GetRoomsAsync();
+        Rooms = roomsList.Items;
+
+        var devicesList = await DevicesClient.GetDevicesAsync();
+        Devices = devicesList.Items;
+        IsLoading = false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_eventsSubscriber != null)
+        {
+            await _eventsSubscriber.DisposeAsync();    
+        }
+    }
+
+    private async Task HandleDeviceCreated(HausEvent<DeviceCreatedEvent> @event)
+    {
+        var device = @event.Payload.Device;
+        if (@event.Type != DeviceCreatedEvent.Type)
+        {
+            return;
+        }
+        
+        Devices = [..Devices, device];
+        await InvokeAsync(StateHasChanged);
+    }
+    
+    private static bool IsDeviceInRoom(DeviceModel device, string roomId)
+    {
+        if (device.RoomId == null)
+        {
+            return roomId == UnassignedDeviceRoomId;
+        }
+
+        return roomId == device.RoomId.ToString();
+    }
+
+    private async Task HandleDeviceDropped(MudItemDropInfo<DeviceModel> droppedItem)
+    {
+        if (droppedItem.Item == null)
+        {
+            return;
+        }
+        
+        long.TryParse(droppedItem.DropzoneIdentifier, out var roomId);
+        await RoomsClient.AddDevicesToRoomAsync(roomId, droppedItem.Item.Id);
+        var devices = await DevicesClient.GetDevicesAsync();
+        Devices = devices.Items;
+    }
+
+    private Dictionary<string, object?> GetDeviceItemAttributes(DeviceModel model)
+    {
+        return new Dictionary<string, object?>
+        {
+            { "external-id", model.ExternalId }
+        };
+    }
+
+    private Dictionary<string, object?> GetRoomAttributes(RoomModel model)
+    {
+        return new Dictionary<string, object?>
+        {
+            {"room-name", model.Name}
+        };
+    }
+}

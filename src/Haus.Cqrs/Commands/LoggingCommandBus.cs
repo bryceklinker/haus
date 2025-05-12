@@ -6,28 +6,26 @@ using Microsoft.Extensions.Logging;
 
 namespace Haus.Cqrs.Commands;
 
-internal class LoggingCommandBus : LoggingBus, ICommandBus
+internal class LoggingCommandBus(ICommandBus commandBus, ILogger<LoggingCommandBus> logger)
+    : LoggingBus(logger),
+        ICommandBus
 {
-    private readonly ICommandBus _commandBus;
-
-    public LoggingCommandBus(ICommandBus commandBus, ILogger<LoggingCommandBus> logger)
-        : base(logger)
-    {
-        _commandBus = commandBus;
-    }
-
     public async Task ExecuteAsync(ICommand command, CancellationToken token = default)
     {
-        await ExecuteWithLoggingAsync(command, async () =>
-        {
-            await _commandBus.ExecuteAsync(command, token).ConfigureAwait(false);
-            return Unit.Value;
-        }, token);
+        await ExecuteWithLoggingAsync(
+            command,
+            async () =>
+            {
+                await commandBus.ExecuteAsync(command, token).ConfigureAwait(false);
+                return Unit.Value;
+            },
+            token
+        );
     }
 
     public async Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, CancellationToken token = default)
     {
-        return await ExecuteWithLoggingAsync(command, () => _commandBus.ExecuteAsync(command, token), token);
+        return await ExecuteWithLoggingAsync(command, () => commandBus.ExecuteAsync(command, token), token);
     }
 
     protected override void LogFinished<TInput>(TInput input, long elapsedMilliseconds)
@@ -37,8 +35,12 @@ internal class LoggingCommandBus : LoggingBus, ICommandBus
 
     protected override void LogError<TInput>(TInput input, Exception exception, long elapsedMilliseconds)
     {
-        Logger.LogError(exception, "Command {@Command} failed to execute after {@ElapsedTime}ms", input,
-            elapsedMilliseconds);
+        Logger.LogError(
+            exception,
+            "Command {@Command} failed to execute after {@ElapsedTime}ms",
+            input,
+            elapsedMilliseconds
+        );
     }
 
     protected override void LogStarted<TInput>(TInput input)

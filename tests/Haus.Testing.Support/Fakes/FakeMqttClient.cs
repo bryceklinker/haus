@@ -5,14 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Client.Connecting;
-using MQTTnet.Client.Disconnecting;
-using MQTTnet.Client.ExtendedAuthenticationExchange;
-using MQTTnet.Client.Options;
-using MQTTnet.Client.Publishing;
-using MQTTnet.Client.Receiving;
-using MQTTnet.Client.Subscribing;
-using MQTTnet.Client.Unsubscribing;
+using MQTTnet.Client.Internal;
+using MQTTnet.Diagnostics;
 using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Packets;
 
@@ -20,92 +14,96 @@ namespace Haus.Testing.Support.Fakes;
 
 public class FakeMqttClient : IManagedMqttClient, IMqttClient
 {
-    private readonly List<MqttApplicationMessage> _publishedMessages = new();
-    public bool IsDisposed { get; private set; }
+    private readonly List<MqttApplicationMessage> _publishedMessages = [];
+    private readonly MqttClientEvents _events = new();
+
     public bool IsStarted { get; private set; }
-    public IMqttApplicationMessageReceivedHandler ApplicationMessageReceivedHandler { get; set; }
 
     private bool IsConnected { get; set; }
     bool IManagedMqttClient.IsConnected => IsConnected;
     bool IMqttClient.IsConnected => IsConnected;
+    private MqttClientOptions? Options { get; set; }
 
-    private IMqttClientOptions Options { get; set; }
-    IMqttClientOptions IMqttClient.Options => Options;
-
-    IManagedMqttClientOptions IManagedMqttClient.Options => new ManagedMqttClientOptions
+    event Func<MqttApplicationMessageReceivedEventArgs, Task> IMqttClient.ApplicationMessageReceivedAsync
     {
-        ClientOptions = Options
-    };
+        add => _events.ApplicationMessageReceivedEvent.AddHandler(value);
+        remove => _events.ApplicationMessageReceivedEvent.RemoveHandler(value);
+    }
+
+    event Func<MqttClientConnectedEventArgs, Task> IMqttClient.ConnectedAsync
+    {
+        add => _events.ConnectedEvent.AddHandler(value);
+        remove => _events.ConnectedEvent.RemoveHandler(value);
+    }
+
+    public event Func<MqttClientConnectingEventArgs, Task>? ConnectingAsync;
+
+    event Func<MqttClientDisconnectedEventArgs, Task> IMqttClient.DisconnectedAsync
+    {
+        add => _events.DisconnectedEvent.AddHandler(value);
+        remove => _events.DisconnectedEvent.RemoveHandler(value);
+    }
+
+    public event Func<InspectMqttPacketEventArgs, Task>? InspectPacketAsync;
+    MqttClientOptions IMqttClient.Options => Options ?? new MqttClientOptions();
+
+    ManagedMqttClientOptions IManagedMqttClient.Options => new() { ClientOptions = Options };
 
     public IMqttClient InternalClient => this;
 
-    public int PendingApplicationMessagesCount { get; private set; }
+    public int PendingApplicationMessagesCount { get; } = 0;
+    public event Func<ApplicationMessageProcessedEventArgs, Task>? ApplicationMessageProcessedAsync;
 
-    private IMqttClientConnectedHandler ConnectedHandler { get; set; }
-
-    IMqttClientConnectedHandler IMqttClient.ConnectedHandler
+    event Func<MqttApplicationMessageReceivedEventArgs, Task> IManagedMqttClient.ApplicationMessageReceivedAsync
     {
-        get => ConnectedHandler;
-        set => ConnectedHandler = value;
+        add => _events.ApplicationMessageReceivedEvent.AddHandler(value);
+        remove => _events.ApplicationMessageReceivedEvent.RemoveHandler(value);
     }
 
-    IMqttClientConnectedHandler IManagedMqttClient.ConnectedHandler
+    public event Func<ApplicationMessageSkippedEventArgs, Task>? ApplicationMessageSkippedAsync;
+
+    event Func<MqttClientConnectedEventArgs, Task> IManagedMqttClient.ConnectedAsync
     {
-        get => ConnectedHandler;
-        set => ConnectedHandler = value;
+        add => _events.ConnectedEvent.AddHandler(value);
+        remove => _events.ConnectedEvent.RemoveHandler(value);
     }
 
-    private IMqttClientDisconnectedHandler DisconnectedHandler { get; set; }
+    public event Func<ConnectingFailedEventArgs, Task>? ConnectingFailedAsync;
+    public event Func<EventArgs, Task>? ConnectionStateChangedAsync;
 
-    IMqttClientDisconnectedHandler IMqttClient.DisconnectedHandler
+    event Func<MqttClientDisconnectedEventArgs, Task> IManagedMqttClient.DisconnectedAsync
     {
-        get => DisconnectedHandler;
-        set => DisconnectedHandler = value;
+        add => _events.DisconnectedEvent.AddHandler(value);
+        remove => _events.DisconnectedEvent.RemoveHandler(value);
     }
 
-    IMqttClientDisconnectedHandler IManagedMqttClient.DisconnectedHandler
-    {
-        get => DisconnectedHandler;
-        set => DisconnectedHandler = value;
-    }
+    public event Func<ManagedProcessFailedEventArgs, Task>? SynchronizingSubscriptionsFailedAsync;
+    public event Func<SubscriptionsChangedEventArgs, Task>? SubscriptionsChangedAsync;
 
-    public IApplicationMessageProcessedHandler ApplicationMessageProcessedHandler { get; set; }
-    public IApplicationMessageSkippedHandler ApplicationMessageSkippedHandler { get; set; }
-    public IConnectingFailedHandler ConnectingFailedHandler { get; set; }
-    public ISynchronizingSubscriptionsFailedHandler SynchronizingSubscriptionsFailedHandler { get; set; }
     public MqttApplicationMessage[] PublishedMessages => _publishedMessages.ToArray();
 
-    public Exception PingException { get; set; }
-    public Exception ConnectException { get; set; }
+    public Exception? PingException { get; set; }
+    public Exception? ConnectException { get; set; }
 
-    public async Task<MqttClientPublishResult> PublishAsync(MqttApplicationMessage applicationMessage,
-        CancellationToken cancellationToken)
-    {
-        await ApplicationMessageReceivedHandler.HandleApplicationMessageReceivedAsync(
-            new MqttApplicationMessageReceivedEventArgs("", applicationMessage, new MqttPublishPacket(),
-                (_, _) => Task.CompletedTask));
-        return new MqttClientPublishResult();
-    }
+    public void Dispose() { }
 
-    public void Dispose()
+    public Task StartAsync(ManagedMqttClientOptions options)
     {
-        IsDisposed = true;
-    }
+        if (ConnectException != null)
+            throw ConnectException;
 
-    public Task StartAsync(IManagedMqttClientOptions options)
-    {
         IsStarted = true;
+        IsConnected = true;
         Options = options.ClientOptions;
         return Task.CompletedTask;
     }
 
-    public Task StopAsync()
+    public Task StopAsync(bool cleanDisconnect = true)
     {
-        IsStarted = false;
-        return Task.CompletedTask;
+        throw new NotImplementedException();
     }
 
-    public Task<MqttClientConnectResult> ConnectAsync(IMqttClientOptions options, CancellationToken cancellationToken)
+    public Task<MqttClientConnectResult> ConnectAsync(MqttClientOptions options, CancellationToken cancellationToken)
     {
         if (ConnectException != null)
             throw ConnectException;
@@ -121,6 +119,26 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
         return Task.CompletedTask;
     }
 
+    public async Task EnqueueAsync(MqttApplicationMessage applicationMessage)
+    {
+        _publishedMessages.Add(applicationMessage);
+        await _events
+            .ApplicationMessageReceivedEvent.InvokeAsync(
+                new MqttApplicationMessageReceivedEventArgs(
+                    "",
+                    applicationMessage,
+                    new MqttPublishPacket(),
+                    (_, _) => Task.CompletedTask
+                )
+            )
+            .ConfigureAwait(false);
+    }
+
+    public async Task EnqueueAsync(ManagedMqttApplicationMessage applicationMessage)
+    {
+        await EnqueueAsync(applicationMessage.ApplicationMessage);
+    }
+
     Task IMqttClient.PingAsync(CancellationToken cancellationToken)
     {
         if (PingException == null)
@@ -129,22 +147,51 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
         throw PingException;
     }
 
-    public Task SendExtendedAuthenticationExchangeDataAsync(MqttExtendedAuthenticationExchangeData data,
-        CancellationToken cancellationToken)
+    public async Task<MqttClientPublishResult> PublishAsync(
+        MqttApplicationMessage applicationMessage,
+        CancellationToken cancellationToken = new CancellationToken()
+    )
+    {
+        await EnqueueAsync(applicationMessage);
+        return new MqttClientPublishResult(0, MqttClientPublishReasonCode.Success, "", Array.Empty<MqttUserProperty>());
+    }
+
+    public Task SendExtendedAuthenticationExchangeDataAsync(
+        MqttExtendedAuthenticationExchangeData data,
+        CancellationToken cancellationToken
+    )
     {
         throw new NotImplementedException();
     }
 
-    public Task<MqttClientSubscribeResult> SubscribeAsync(MqttClientSubscribeOptions options,
-        CancellationToken cancellationToken)
+    public Task<MqttClientSubscribeResult> SubscribeAsync(
+        MqttClientSubscribeOptions options,
+        CancellationToken cancellationToken
+    )
     {
-        return Task.FromResult(new MqttClientSubscribeResult());
+        return Task.FromResult(
+            new MqttClientSubscribeResult(
+                0,
+                Array.Empty<MqttClientSubscribeResultItem>(),
+                "",
+                Array.Empty<MqttUserProperty>()
+            )
+        );
     }
 
-    public Task<MqttClientUnsubscribeResult> UnsubscribeAsync(MqttClientUnsubscribeOptions options,
-        CancellationToken cancellationToken)
+    public Task<MqttClientUnsubscribeResult> UnsubscribeAsync(
+        MqttClientUnsubscribeOptions options,
+        CancellationToken cancellationToken
+    )
     {
-        return Task.FromResult(new MqttClientUnsubscribeResult());
+        return Task.FromResult(
+            new MqttClientUnsubscribeResult(
+                0,
+                Array.Empty<MqttClientUnsubscribeResultItem>(),
+                "",
+                Array.Empty<MqttUserProperty>()
+            )
+        );
     }
 
     Task IManagedMqttClient.PingAsync(CancellationToken cancellationToken)
@@ -156,22 +203,17 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
 
     public Task SubscribeAsync(IEnumerable<MqttTopicFilter> topicFilters)
     {
-        return SubscribeAsync(new MqttClientSubscribeOptions
-        {
-            TopicFilters = topicFilters.ToList()
-        }, CancellationToken.None);
+        return SubscribeAsync(
+            new MqttClientSubscribeOptions { TopicFilters = topicFilters.ToList() },
+            CancellationToken.None
+        );
     }
 
     public Task UnsubscribeAsync(IEnumerable<string> topics)
     {
-        return UnsubscribeAsync(new MqttClientUnsubscribeOptions
-        {
-            TopicFilters = topics.ToList()
-        }, CancellationToken.None);
-    }
-
-    public async Task PublishAsync(ManagedMqttApplicationMessage applicationMessages)
-    {
-        await PublishAsync(applicationMessages.ApplicationMessage, CancellationToken.None);
+        return UnsubscribeAsync(
+            new MqttClientUnsubscribeOptions { TopicFilters = topics.ToList() },
+            CancellationToken.None
+        );
     }
 }

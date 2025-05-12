@@ -1,0 +1,51 @@
+@using Haus.Core.Models.Devices
+@using Haus.Site.Host.Shared.Metadata
+
+@attribute [Authorize]
+
+<MudPaper Class="pa-4 device-detail">
+    <MudText Typo="Typo.h5">Device Details</MudText>
+    
+    <MudTextField T="string"
+                  FullWidth="true"
+                  Label="Name"
+                  ReadOnly="true"
+                  InputId="name"
+                  Value="Device.Name"/>
+    <MudTextField T="DeviceType?"
+                  Label="Device Type"
+                  FullWidth="true"
+                  ReadOnly="true"
+                  InputId="deviceType"
+                  Value="Device.DeviceType"/>
+    <MudTextField T="string"
+                  Label="External Id"
+                  FullWidth="true"
+                  ReadOnly="true"
+                  InputId="externalId"
+                  Value="Device.ExternalId"/>
+    <MudTextField T="LightType"
+                  Label="Light Type"
+                  FullWidth="true"
+                  ReadOnly="true"
+                  InputId="lightType"
+                  Value="Device.LightType"/>
+    <MudTextField T="long?"
+                  Label="Room Id"
+                  FullWidth="true"
+                  ReadOnly="true"
+                  InputId="roomId"
+                  Value="Device.RoomId"/>
+
+    @if (Device.Metadata.Length > 0)
+    {
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h4">Metadata</MudText>
+            <EditableMetadataListView Items="Device.Metadata"/>
+        </MudPaper>    
+    }
+</MudPaper>
+
+@code {
+    [Parameter] public required DeviceModel Device { get; set; }
+}

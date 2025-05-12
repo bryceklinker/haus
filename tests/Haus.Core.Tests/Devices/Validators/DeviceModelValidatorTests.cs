@@ -11,12 +11,7 @@ namespace Haus.Core.Tests.Devices.Validators;
 
 public class DeviceModelValidatorTests
 {
-    private readonly IValidator<DeviceModel> _validator;
-
-    public DeviceModelValidatorTests()
-    {
-        _validator = new DeviceModelValidator();
-    }
+    private readonly IValidator<DeviceModel> _validator = new DeviceModelValidator();
 
     [Fact]
     public async Task WhenNameIsNullThenReturnsInvalid()
@@ -35,7 +30,7 @@ public class DeviceModelValidatorTests
     [Fact]
     public async Task WhenMetadataHasNullKeyThenReturnsInvalid()
     {
-        var model = new DeviceModel(Name: "one", Metadata: new[] { new MetadataModel() });
+        var model = new DeviceModel(Name: "one", Metadata: [new MetadataModel(null!, null!)]);
 
         var result = await _validator.TestValidateAsync(model);
 

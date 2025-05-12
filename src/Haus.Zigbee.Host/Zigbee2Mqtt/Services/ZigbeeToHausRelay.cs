@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Mqtt.Client;
@@ -9,30 +10,39 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Services;
 
-public class ZigbeeToHausRelay : BackgroundService
+public class ZigbeeToHausRelay(
+    IMqttMessageMapper mqttMessageMapper,
+    IZigbeeMqttClientFactory zigbeeMqttFactory,
+    ILogger<ZigbeeToHausRelay> logger
+) : BackgroundService
 {
-    private readonly IZigbeeMqttClientFactory _zigbeeMqttFactory;
-    private readonly ILogger<ZigbeeToHausRelay> _logger;
-    private readonly IMqttMessageMapper _mqttMessageMapper;
+    private IHausMqttClient? _zigbeeMqttClient;
+    private IHausMqttClient? _hausMqttClient;
 
-    private IHausMqttClient ZigbeeMqttClient { get; set; }
-    private IHausMqttClient HausMqttClient { get; set; }
-
-    public ZigbeeToHausRelay(IMqttMessageMapper mqttMessageMapper,
-        IZigbeeMqttClientFactory zigbeeMqttFactory,
-        ILogger<ZigbeeToHausRelay> logger)
+    private IHausMqttClient ZigbeeMqttClient
     {
-        _mqttMessageMapper = mqttMessageMapper;
-        _zigbeeMqttFactory = zigbeeMqttFactory;
-        _logger = logger;
+        get
+        {
+            ArgumentNullException.ThrowIfNull(_zigbeeMqttClient);
+            return _zigbeeMqttClient;
+        }
+    }
+
+    private IHausMqttClient HausMqttClient
+    {
+        get
+        {
+            ArgumentNullException.ThrowIfNull(_hausMqttClient);
+            return _hausMqttClient;
+        }
     }
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
-        ZigbeeMqttClient = await _zigbeeMqttFactory.CreateZigbeeClient();
+        _zigbeeMqttClient = await zigbeeMqttFactory.CreateZigbeeClient();
         await ZigbeeMqttClient.SubscribeAsync("#", ZigbeeMessageHandler);
 
-        HausMqttClient = await _zigbeeMqttFactory.CreateHausClient();
+        _hausMqttClient = await zigbeeMqttFactory.CreateHausClient();
         await HausMqttClient.SubscribeAsync("#", HausMessageHandler);
         await base.StartAsync(cancellationToken);
     }
@@ -46,7 +56,8 @@ public class ZigbeeToHausRelay : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested) await Task.Delay(1000, stoppingToken);
+        while (!stoppingToken.IsCancellationRequested)
+            await Task.Delay(1000, stoppingToken);
     }
 
     private async Task HausMessageHandler(MqttApplicationMessage arg)
@@ -61,15 +72,13 @@ public class ZigbeeToHausRelay : BackgroundService
 
     private async Task HandleMqttMessage(MqttApplicationMessage mqttMessage, IHausMqttClient targetMqtt)
     {
-        var messageToSend = _mqttMessageMapper.Map(mqttMessage);
-        if (messageToSend == null)
-            return;
+        var messageToSend = mqttMessageMapper.Map(mqttMessage);
 
         foreach (var message in messageToSend)
         {
-            _logger.LogInformation("Sending message to {@Topic}...", message.Topic);
+            logger.LogInformation("Sending message to {@Topic}...", message.Topic);
             await targetMqtt.PublishAsync(message).ConfigureAwait(false);
-            _logger.LogInformation("Sent message to {@Topic}", message.Topic);
+            logger.LogInformation("Sent message to {@Topic}", message.Topic);
         }
     }
 }

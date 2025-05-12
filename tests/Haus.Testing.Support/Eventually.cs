@@ -4,13 +4,8 @@ using Polly;
 
 namespace Haus.Testing.Support;
 
-public class EventuallyException : Exception
-{
-    public EventuallyException(Exception innerException, double timeout)
-        : base($"Eventually failed after {timeout} ms.", innerException)
-    {
-    }
-}
+public class EventuallyException(Exception innerException, double timeout)
+    : Exception($"Eventually failed after {timeout} ms.", innerException);
 
 public static class Eventually
 {
@@ -21,9 +16,7 @@ public static class Eventually
     {
         try
         {
-            Policy.Handle<Exception>()
-                .WaitAndRetry(DelayGenerator.Generate(timeout, delay))
-                .Execute(assertion);
+            Policy.Handle<Exception>().WaitAndRetry(DelayGenerator.Generate(timeout, delay)).Execute(assertion);
         }
         catch (Exception e)
         {
@@ -31,12 +24,16 @@ public static class Eventually
         }
     }
 
-    public static async Task AssertAsync(Func<Task> assertion, double timeout = DefaultTimeout,
-        int delay = DefaultDelay)
+    public static async Task AssertAsync(
+        Func<Task> assertion,
+        double timeout = DefaultTimeout,
+        int delay = DefaultDelay
+    )
     {
         try
         {
-            await Policy.Handle<Exception>()
+            await Policy
+                .Handle<Exception>()
                 .WaitAndRetryAsync(DelayGenerator.Generate(timeout, delay))
                 .ExecuteAsync(assertion);
         }

@@ -8,5 +8,5 @@ public enum LightType
     None,
     Level,
     Temperature,
-    Color
+    Color,
 }

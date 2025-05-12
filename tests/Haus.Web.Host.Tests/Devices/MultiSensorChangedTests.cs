@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Models.Devices;
@@ -14,33 +15,27 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Devices;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class MultiSensorChangedTests
+public class MultiSensorChangedTests(HausWebHostApplicationFactory factory)
 {
-    private readonly HausWebHostApplicationFactory _factory;
-
-    public MultiSensorChangedTests(HausWebHostApplicationFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task WhenMultiSensorChangedWithOccupancyThenRoomLightingChangedPublished()
     {
         const DeviceType multiSensorDeviceType =
             DeviceType.MotionSensor | DeviceType.LightSensor | DeviceType.TemperatureSensor;
-        var (room, sensor) = await _factory.AddRoomWithDevice("sup", multiSensorDeviceType);
+        var (room, sensor) = await factory.AddRoomWithDevice("sup", multiSensorDeviceType);
 
         var commands = new ConcurrentBag<HausCommand<RoomLightingChangedEvent>>();
-        await _factory.SubscribeToRoomLightingChangedCommandsAsync(commands.Add);
-        await _factory.PublishHausEventAsync(new MultiSensorChanged(
-            sensor.ExternalId,
-            new OccupancyChangedModel(sensor.ExternalId, true)
-        ));
+        await factory.SubscribeToRoomLightingChangedCommandsAsync(commands.Add);
+        await factory.PublishHausEventAsync(
+            new MultiSensorChanged(sensor.ExternalId, new OccupancyChangedModel(sensor.ExternalId, true))
+        );
 
         Eventually.Assert(() =>
         {
-            commands.Should()
-                .Contain(cmd => cmd.Payload.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On);
+            commands
+                .Where(cmd => cmd.Payload != null)
+                .Should()
+                .Contain(cmd => cmd.Payload!.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On);
         });
     }
 }

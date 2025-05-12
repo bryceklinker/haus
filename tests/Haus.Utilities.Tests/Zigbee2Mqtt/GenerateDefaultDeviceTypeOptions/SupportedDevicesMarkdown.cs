@@ -2,7 +2,8 @@ namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 
 public class SupportedDevicesMarkdown
 {
-    public static readonly string Sample = @"
+    public static readonly string Sample =
+        @"
 ---
 sidebar: false
 editLink: false

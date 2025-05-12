@@ -9,22 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Core.Discovery.Queries;
 
-public class GetDiscoveryQuery : IQuery<DiscoveryModel>
+public class GetDiscoveryQuery : IQuery<DiscoveryModel> { }
+
+internal class GetDiscoveryQueryHandler(HausDbContext context) : IQueryHandler<GetDiscoveryQuery, DiscoveryModel?>
 {
-}
-
-internal class GetDiscoveryQueryHandler : IQueryHandler<GetDiscoveryQuery, DiscoveryModel>
-{
-    private readonly HausDbContext _context;
-
-    public GetDiscoveryQueryHandler(HausDbContext context)
+    public Task<DiscoveryModel?> Handle(GetDiscoveryQuery request, CancellationToken cancellationToken)
     {
-        _context = context;
-    }
-
-    public Task<DiscoveryModel> Handle(GetDiscoveryQuery request, CancellationToken cancellationToken)
-    {
-        return _context.Set<DiscoveryEntity>()
+        return context
+            .Set<DiscoveryEntity>()
             .Select(DiscoveryEntity.ToModelExpression)
             .SingleOrDefaultAsync(cancellationToken);
     }

@@ -12,13 +12,10 @@ public interface IDiagnosticsApiClient : IApiClient
     Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model);
 }
 
-public class DiagnosticsApiClient : ApiClient, IDiagnosticsApiClient
+public class DiagnosticsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+    : ApiClient(httpClient, options),
+        IDiagnosticsApiClient
 {
-    public DiagnosticsApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
-        : base(httpClient, options)
-    {
-    }
-
     public Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
     {
         return PostAsJsonAsync("diagnostics/replay", model);

@@ -14,35 +14,24 @@ public interface IMqttMessageMapper
     MqttApplicationMessage[] Map(MqttApplicationMessage original);
 }
 
-public class MqttMessageMapper : IMqttMessageMapper
+public class MqttMessageMapper(
+    IOptionsMonitor<HausOptions> hausOptions,
+    IOptions<ZigbeeOptions> zigbeeOptions,
+    IZigbeeToHausMapper zigbeeToHausMapper,
+    IHausToZigbeeMapper hausToZigbeeMapper
+) : IMqttMessageMapper
 {
-    private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
-    private readonly IZigbeeToHausMapper _zigbeeToHausMapper;
-    private readonly IHausToZigbeeMapper _hausToZigbeeMapper;
-    private readonly IOptionsMonitor<HausOptions> _hausOptions;
-
-    private string Zigbee2MqttBaseTopic => _zigbeeOptions.Value.Config.Mqtt.BaseTopic;
-    private string HausCommandsTopic => _hausOptions.CurrentValue.CommandsTopic;
-
-    public MqttMessageMapper(IOptionsMonitor<HausOptions> hausOptions,
-        IOptions<ZigbeeOptions> zigbeeOptions,
-        IZigbeeToHausMapper zigbeeToHausMapper,
-        IHausToZigbeeMapper hausToZigbeeMapper)
-    {
-        _hausOptions = hausOptions;
-        _zigbeeOptions = zigbeeOptions;
-        _zigbeeToHausMapper = zigbeeToHausMapper;
-        _hausToZigbeeMapper = hausToZigbeeMapper;
-    }
+    private string Zigbee2MqttBaseTopic => zigbeeOptions.Value.Config.Mqtt.BaseTopic;
+    private string HausCommandsTopic => hausOptions.CurrentValue.CommandsTopic;
 
     public MqttApplicationMessage[] Map(MqttApplicationMessage original)
     {
         if (original.Topic.StartsWith(Zigbee2MqttBaseTopic))
-            return _zigbeeToHausMapper.Map(original).ToArray();
+            return zigbeeToHausMapper.Map(original).ToArray();
 
         if (original.Topic == HausCommandsTopic)
-            return _hausToZigbeeMapper.Map(original).ToArray();
+            return hausToZigbeeMapper.Map(original).ToArray();
 
-        return Array.Empty<MqttApplicationMessage>();
+        return [];
     }
 }

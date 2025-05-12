@@ -16,8 +16,7 @@ public class QueryParameters : IEnumerable
 
     public override string ToString()
     {
-        var parameters = _parameters
-            .Select(kvp => $"{kvp.Key}={HttpUtility.UrlEncode(kvp.Value)}");
+        var parameters = _parameters.Select(kvp => $"{kvp.Key}={HttpUtility.UrlEncode(kvp.Value)}");
         return string.Join("&", parameters);
     }
 

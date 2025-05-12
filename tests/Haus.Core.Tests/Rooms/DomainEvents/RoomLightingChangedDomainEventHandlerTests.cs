@@ -13,12 +13,7 @@ namespace Haus.Core.Tests.Rooms.DomainEvents;
 
 public class RoomLightingChangedDomainEventHandlerTests
 {
-    private readonly CapturingHausBus _hausBus;
-
-    public RoomLightingChangedDomainEventHandlerTests()
-    {
-        _hausBus = HausBusFactory.CreateCapturingBus();
-    }
+    private readonly CapturingHausBus _hausBus = HausBusFactory.CreateCapturingBus();
 
     [Fact]
     public async Task WhenRoomLightingChangedThenRoutableCommandIsPublished()
@@ -30,8 +25,8 @@ public class RoomLightingChangedDomainEventHandlerTests
         await _hausBus.FlushAsync();
 
         var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        hausCommand.Payload.Room.Id.Should().Be(89);
-        hausCommand.Payload.Lighting.State.Should().Be(LightingState.On);
+        hausCommand.Payload?.Room.Id.Should().Be(89);
+        hausCommand.Payload?.Lighting.State.Should().Be(LightingState.On);
     }
 
     [Fact]

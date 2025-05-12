@@ -1,0 +1,25 @@
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject NavigationManager Navigation
+
+<AuthorizeView>
+    <Authorized>
+        Hello, @context.User.Identity?.Name
+        <MudButton OnClick="HandleLogout">Logout</MudButton>
+    </Authorized>
+    <NotAuthorized>
+        <MudButton OnClick="HandleLogin">Login</MudButton>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    private void HandleLogout()
+    {
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+
+    private void HandleLogin()
+    {
+        Navigation.NavigateToLogin("authentication/login");
+    }
+}

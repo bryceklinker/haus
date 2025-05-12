@@ -7,29 +7,29 @@
   "license": "MIT",
   "private": true,
   "config": {
-    "web_host_client": "./src/Haus.Web.Host/client-app",
     "web_host": "./src/Haus.Web.Host",
+    "site_host": "./src/Haus.Site.Host",
     "zigbee_host": "./src/Haus.Zigbee.Host",
     "acceptance_tests": "./tests/Haus.Acceptance.Tests"
   },
   "scripts": {
-    "web_host:install": "cd $npm_package_config_web_host_client && yarn install",
-    "web_host:start": "cd $npm_package_config_web_host && dotnet run",
-    "web_host_client:test": "cd $npm_package_config_web_host_client && yarn test",
-    "acceptance_tests:install": "cd $npm_package_config_acceptance_tests && yarn install",
-    "acceptance_tests:test": "cd $npm_package_config_acceptance_tests && yarn test",
+    "web_host:wait": "wait-on tcp:5000 && wait-on $npm_package_config_web_host/haus_acceptance.db",
+    "web_host:start": "cd $npm_package_config_web_host && dotnet run --launch-profile acceptance",
+    "web_host:start:watch": "DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1 cd $npm_package_config_web_host && dotnet watch",
+    "site_host:wait":"wait-on tcp:5002",
+    "site_host:start": "cd $npm_package_config_site_host && dotnet run --launch-profile acceptance",
+    "site_host:start:watch": "DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1 cd $npm_package_config_site_host && dotnet watch",
+    "wait": "yarn web_host:wait && yarn site_host:wait",
+    "acceptance_tests:test": "cd $npm_package_config_acceptance_tests && dotnet test --no-restore",
+    "acceptance": "concurrently --kill-others --success first \"yarn start\" \"yarn wait && yarn acceptance_tests:test\"",
     "zigbee_host:start": "cd $npm_package_config_zigbee_host && dotnet run",
-    "postinstall": "yarn web_host:install && yarn acceptance_tests:install",
-    "dotnet:test": "dotnet test",
-    "test": "env-cmd -e acceptance yarn dotnet:test && yarn web_host_client:test && yarn acceptance_tests:test",
-    "start": "env-cmd -e dev concurrently -c \"green.bold,yellow.bold\" \"npm:*:start\"",
-    "prestart:docker": "./scripts/publish-app.sh",
-    "start:docker": ""
+    "start": "concurrently -c \"green.bold,blue.bold,yellow.bold\" \"npm:*:start\"",
+    "start:watch": "concurrently -c \"green.bold,blue.bold,yellow.bold\" \"npm:*:start:watch\"",
+    "prestart:docker": "./scripts/publish-app.sh"
   },
   "devDependencies": {
-    "concurrently": "6.4.0",
-    "dotenv": "10.0.0",
-    "env-cmd": "10.1.0",
-    "wait-on": "6.0.0"
+    "concurrently": "9.1.2",
+    "dotenv": "16.5.0",
+    "wait-on": "8.0.3"
   }
 }

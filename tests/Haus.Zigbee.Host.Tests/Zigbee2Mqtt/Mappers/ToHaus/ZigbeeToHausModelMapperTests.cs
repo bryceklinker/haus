@@ -42,10 +42,7 @@ public class ZigbeeToHausModelMapperTests
     [Fact]
     public void WhenStateMessageThenReturnsUnknownMessage()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithStateTopic()
-            .WithState("online")
-            .BuildMqttMessage();
+        var message = new Zigbee2MqttMessageBuilder().WithStateTopic().WithState("online").BuildMqttMessage();
 
         var result = _mapper.Map(message).Single();
 

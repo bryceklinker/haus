@@ -1,3 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="../../dependencies/framework-version.xml"/>
+    
+    <ItemGroup>
+        <PackageReference Include="NUnit" Version="4.3.2" />
+        <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
+        <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.52.0" />
+        <PackageReference Include="NUnit.Analyzers" Version="4.7.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="playwright\.auth\" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj" />
+    </ItemGroup>
+    
+    <Target Name="InstallBrowsers" AfterTargets="Build">
+        <Exec Command="pwsh bin/$(Configuration)/net9.0/playwright.ps1 install --with-deps" />
+    </Target>
 </Project>

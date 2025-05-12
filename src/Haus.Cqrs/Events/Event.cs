@@ -2,6 +2,4 @@ using MediatR;
 
 namespace Haus.Cqrs.Events;
 
-public interface IEvent : INotification
-{
-}
+public interface IEvent : INotification { }

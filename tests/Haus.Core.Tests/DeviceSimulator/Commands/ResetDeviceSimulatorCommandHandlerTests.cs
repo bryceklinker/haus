@@ -18,17 +18,18 @@ public class ResetDeviceSimulatorCommandHandlerTests
     {
         _store = new DeviceSimulatorStore();
         _hausBus = HausBusFactory.Create(configureServices: services =>
-            services.Replace<IDeviceSimulatorStore>(_store));
+            services.Replace<IDeviceSimulatorStore>(_store)
+        );
     }
 
     [Fact]
     public async Task WhenDeviceSimulatorIsResetThenStateIsSetToInitialState()
     {
-        IDeviceSimulatorState state = null;
+        IDeviceSimulatorState? state = null;
         _store.Subscribe(s => state = s);
 
         await _hausBus.ExecuteCommandAsync(new ResetDeviceSimulatorCommand());
 
-        state.Devices.Should().BeEmpty();
+        state?.Devices.Should().BeEmpty();
     }
 }

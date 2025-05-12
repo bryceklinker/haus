@@ -13,14 +13,13 @@ namespace Haus.Core.Common.Storage.Migrations
                 table: "Rooms",
                 type: "INTEGER",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 0
+            );
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "OccupancyTimeoutInSeconds",
-                table: "Rooms");
+            migrationBuilder.DropColumn(name: "OccupancyTimeoutInSeconds", table: "Rooms");
         }
     }
 }

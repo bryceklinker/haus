@@ -12,30 +12,20 @@ namespace Haus.Core.Devices.Commands;
 
 public record ChangeDeviceLightingCommand(long DeviceId, LightingModel Lighting) : ICommand;
 
-internal class ChangeDeviceLightingCommandHandler : AsyncRequestHandler<ChangeDeviceLightingCommand>,
-    ICommandHandler<ChangeDeviceLightingCommand>
+internal class ChangeDeviceLightingCommandHandler(IDomainEventBus domainEventBus, IDeviceCommandRepository repository)
+    : ICommandHandler<ChangeDeviceLightingCommand>
 {
-    private readonly IDeviceCommandRepository _repository;
-    private readonly IDomainEventBus _domainEventBus;
-
-    public ChangeDeviceLightingCommandHandler(IDomainEventBus domainEventBus, IDeviceCommandRepository repository)
+    public async Task Handle(ChangeDeviceLightingCommand request, CancellationToken cancellationToken)
     {
-        _domainEventBus = domainEventBus;
-        _repository = repository;
-    }
-
-    protected override async Task Handle(ChangeDeviceLightingCommand request, CancellationToken cancellationToken)
-    {
-        var device = await _repository.GetById(request.DeviceId, cancellationToken)
-            .ConfigureAwait(false);
+        var device = await repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
 
         if (!device.IsLight)
             throw new InvalidOperationException($"Device with id {device.Id} is not a light");
 
         var lighting = LightingEntity.FromModel(request.Lighting);
-        device.ChangeLighting(lighting, _domainEventBus);
-        await _repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
+        device.ChangeLighting(lighting, domainEventBus);
+        await repository.SaveAsync(device, cancellationToken).ConfigureAwait(false);
 
-        await _domainEventBus.FlushAsync(cancellationToken);
+        await domainEventBus.FlushAsync(cancellationToken);
     }
 }

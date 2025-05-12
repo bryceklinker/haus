@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using FluentValidation;
@@ -7,24 +8,19 @@ namespace Haus.Core.Common;
 
 public class HausValidationException : ValidationException
 {
-    public HausValidationException(string message) : base(message)
-    {
-    }
+    public HausValidationException(string message)
+        : base(message) { }
 
-    public HausValidationException(string message, IEnumerable<ValidationFailure> errors) : base(message, errors)
-    {
-    }
+    public HausValidationException(string message, IEnumerable<ValidationFailure> errors)
+        : base(message, errors) { }
 
-    public HausValidationException(string message, IEnumerable<ValidationFailure> errors, bool appendDefaultMessage) :
-        base(message, errors, appendDefaultMessage)
-    {
-    }
+    public HausValidationException(string message, IEnumerable<ValidationFailure> errors, bool appendDefaultMessage)
+        : base(message, errors, appendDefaultMessage) { }
 
-    public HausValidationException(IEnumerable<ValidationFailure> errors) : base(errors)
-    {
-    }
+    public HausValidationException(IEnumerable<ValidationFailure> errors)
+        : base(errors) { }
 
-    public HausValidationException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
+    [Obsolete("Obsolete")]
+    public HausValidationException(SerializationInfo info, StreamingContext context)
+        : base(info, context) { }
 }

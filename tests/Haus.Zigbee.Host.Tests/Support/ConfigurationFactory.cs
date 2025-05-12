@@ -11,25 +11,29 @@ public static class ConfigurationFactory
     public const string DefaultHausUnknownTopic = Defaults.HausOptions.UnknownTopic;
     public const string DefaultHausHealthTopic = Defaults.HausOptions.HealthTopic;
 
-    public static IConfiguration CreateConfig(string zigbeeBaseTopic = DefaultZigbeeBaseTopic,
+    public static IConfiguration CreateConfig(
+        string zigbeeBaseTopic = DefaultZigbeeBaseTopic,
         string hausEventsTopic = DefaultHausEventsTopic,
         string hausCommandsTopic = DefaultHausCommandsTopic,
         string hausUnknownTopic = DefaultHausUnknownTopic,
-        string hausHealthTopic = DefaultHausHealthTopic)
+        string hausHealthTopic = DefaultHausHealthTopic
+    )
     {
         return new ConfigurationBuilder()
-            .AddInMemoryCollection(new[]
-            {
-                new KeyValuePair<string, string>("Zigbee:OverwriteConfig", "true"),
-                new KeyValuePair<string, string>("Zigbee:ConfigFile", "./zigbee_data/configuration.yaml"),
-                new KeyValuePair<string, string>("Zigbee:DataDirectory", "./zigbee_data"),
-                new KeyValuePair<string, string>("Zigbee:Config:Mqtt:BaseTopic", zigbeeBaseTopic),
-                new KeyValuePair<string, string>("Haus:Server", "mqtt://localhost"),
-                new KeyValuePair<string, string>("Haus:EventsTopic", hausEventsTopic),
-                new KeyValuePair<string, string>("Haus:CommandsTopic", hausCommandsTopic),
-                new KeyValuePair<string, string>("Haus:UnknownTopic", hausUnknownTopic),
-                new KeyValuePair<string, string>("Haus:Health", hausHealthTopic)
-            })
+            .AddInMemoryCollection(
+                new List<KeyValuePair<string, string?>>
+                {
+                    new("Zigbee:OverwriteConfig", "true"),
+                    new("Zigbee:ConfigFile", "./zigbee_data/configuration.yaml"),
+                    new("Zigbee:DataDirectory", "./zigbee_data"),
+                    new("Zigbee:Config:Mqtt:BaseTopic", zigbeeBaseTopic),
+                    new("Haus:Server", "mqtt://localhost:1883"),
+                    new("Haus:EventsTopic", hausEventsTopic),
+                    new("Haus:CommandsTopic", hausCommandsTopic),
+                    new("Haus:UnknownTopic", hausUnknownTopic),
+                    new("Haus:Health", hausHealthTopic),
+                }.AsReadOnly()
+            )
             .Build();
     }
 }

@@ -15,56 +15,47 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Rooms;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class RoomOccupancyTests : IAsyncLifetime
+public class RoomOccupancyTests
 {
     private readonly HausWebHostApplicationFactory _factory;
     private readonly IHausApiClient _apiClient;
     private readonly ConcurrentBag<RoomLightingChangedEvent> _roomLightingCommands;
-    private RoomModel _room;
-    private DeviceModel _device;
 
     public RoomOccupancyTests(HausWebHostApplicationFactory factory)
     {
         _factory = factory;
         _apiClient = _factory.CreateAuthenticatedClient();
-        _roomLightingCommands = new ConcurrentBag<RoomLightingChangedEvent>();
-    }
-
-    public async Task InitializeAsync()
-    {
-        var (room, device) = await _factory.AddRoomWithDevice($"{Guid.NewGuid()}", DeviceType.MotionSensor);
-        await _factory.SubscribeToRoomLightingChangedCommandsAsync(
-            cmd => _roomLightingCommands.Add(cmd.Payload)
-        );
-        _room = room;
-        _device = device;
+        _roomLightingCommands = [];
     }
 
     [Fact]
     public async Task WhenRoomHasMotionSensorThenRoomStaysOnDuringOccupancyTimeout()
     {
-        await _factory.PublishHausEventAsync(new OccupancyChangedModel(_device.ExternalId, true));
+        var (room, device) = await SetupRoomWithDevice();
+        await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId, true));
         await Task.Delay(TimeSpan.FromSeconds(3));
         _roomLightingCommands.Clear();
 
-        await _factory.PublishHausEventAsync(new OccupancyChangedModel(_device.ExternalId));
+        await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId));
         await Task.Delay(TimeSpan.FromSeconds(3));
 
         Eventually.Assert(() =>
         {
-            _roomLightingCommands.Should()
-                .NotContain(cmd => cmd.Room.Id == _room.Id && cmd.Lighting.State == LightingState.Off);
+            _roomLightingCommands
+                .Should()
+                .NotContain(cmd => cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.Off);
         });
     }
 
     [Fact]
     public async Task WhenRoomHasMotionSensorThenRoomTurnsOffAfterOccupancyTimeout()
     {
-        await _apiClient.UpdateRoomAsync(_room.Id, new RoomModel(_room.Id, _room.Name, 0));
+        var (room, device) = await SetupRoomWithDevice();
+        await _apiClient.UpdateRoomAsync(room.Id, new RoomModel(room.Id, room.Name, 0));
 
-        await _factory.PublishHausEventAsync(new OccupancyChangedModel(_device.ExternalId, true));
+        await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId, true));
         await Task.Delay(TimeSpan.FromSeconds(3));
-        await _factory.PublishHausEventAsync(new OccupancyChangedModel(_device.ExternalId));
+        await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId));
 
         Eventually.Assert(() =>
         {
@@ -75,8 +66,9 @@ public class RoomOccupancyTests : IAsyncLifetime
     [Fact]
     public async Task WhenRoomRemainsVacantThenRoomLightingIsTurnedOff()
     {
-        await _apiClient.UpdateRoomAsync(_room.Id, new RoomModel(_room.Id, _room.Name, 0));
-        await _factory.PublishHausEventAsync(new OccupancyChangedModel(_device.ExternalId, true));
+        var (room, device) = await SetupRoomWithDevice();
+        await _apiClient.UpdateRoomAsync(room.Id, new RoomModel(room.Id, room.Name, 0));
+        await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId, true));
         await Task.Delay(TimeSpan.FromSeconds(3));
 
         Eventually.Assert(() =>
@@ -85,8 +77,16 @@ public class RoomOccupancyTests : IAsyncLifetime
         });
     }
 
-    public Task DisposeAsync()
+    private async Task<(RoomModel, DeviceModel)> SetupRoomWithDevice()
     {
-        return Task.CompletedTask;
+        var result = await _factory.AddRoomWithDevice($"{Guid.NewGuid()}", DeviceType.MotionSensor);
+        await _factory.SubscribeToRoomLightingChangedCommandsAsync(cmd =>
+        {
+            if (cmd.Payload != null)
+            {
+                _roomLightingCommands.Add(cmd.Payload);
+            }
+        });
+        return result;
     }
 }

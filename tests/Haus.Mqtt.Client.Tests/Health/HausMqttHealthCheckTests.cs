@@ -26,7 +26,7 @@ public class HausMqttHealthCheckTests
     [Fact]
     public async Task WhenConnectionToMqttWorksThenReturnsHealthy()
     {
-        var result = await _healthCheck.CheckHealthAsync(null);
+        var result = await _healthCheck.CheckHealthAsync(new HealthCheckContext());
 
         result.Status.Should().Be(HealthStatus.Healthy);
     }
@@ -36,7 +36,7 @@ public class HausMqttHealthCheckTests
     {
         _mqttClient.ConnectException = new Exception();
 
-        var result = await _healthCheck.CheckHealthAsync(null);
+        var result = await _healthCheck.CheckHealthAsync(new HealthCheckContext());
 
         result.Status.Should().Be(HealthStatus.Unhealthy);
     }
@@ -46,7 +46,7 @@ public class HausMqttHealthCheckTests
     {
         _mqttClient.PingException = new Exception();
 
-        var result = await _healthCheck.CheckHealthAsync(null);
+        var result = await _healthCheck.CheckHealthAsync(new HealthCheckContext());
 
         result.Status.Should().Be(HealthStatus.Unhealthy);
     }

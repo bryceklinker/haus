@@ -7,27 +7,17 @@ using MediatR;
 
 namespace Haus.Core.Discovery.Commands;
 
-public class InitializeDiscoveryCommand : ICommand
+public class InitializeDiscoveryCommand : ICommand { }
+
+public class InitializeDiscoveryCommandHandler(HausDbContext context) : ICommandHandler<InitializeDiscoveryCommand>
 {
-}
-
-public class InitializeDiscoveryCommandHandler : AsyncRequestHandler<InitializeDiscoveryCommand>,
-    ICommandHandler<InitializeDiscoveryCommand>
-{
-    private readonly HausDbContext _context;
-
-    public InitializeDiscoveryCommandHandler(HausDbContext context)
+    public async Task Handle(InitializeDiscoveryCommand request, CancellationToken cancellationToken)
     {
-        _context = context;
-    }
-
-    protected override async Task Handle(InitializeDiscoveryCommand request, CancellationToken cancellationToken)
-    {
-        var discovery = await _context.GetDiscoveryEntityAsync(cancellationToken);
+        var discovery = await context.GetDiscoveryEntityAsync(cancellationToken);
         if (discovery != null)
             return;
 
-        _context.Add(new DiscoveryEntity());
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Add(new DiscoveryEntity());
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

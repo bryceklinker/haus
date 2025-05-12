@@ -31,8 +31,8 @@ public class TurnRoomOffCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new TurnRoomOffCommand(room.Id));
 
         var publishedCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        publishedCommand.Payload.Room.Id.Should().Be(room.Id);
-        publishedCommand.Payload.Lighting.State.Should().Be(LightingState.Off);
+        publishedCommand.Payload?.Room.Id.Should().Be(room.Id);
+        publishedCommand.Payload?.Lighting.State.Should().Be(LightingState.Off);
     }
 
     [Fact]

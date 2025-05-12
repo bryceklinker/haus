@@ -1,18 +1,36 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Mqtt.Client.Tests.Support;
 using Haus.Testing.Support.Fakes;
 using MQTTnet;
-using MQTTnet.Client;
 using Xunit;
 
 namespace Haus.Mqtt.Client.Tests;
 
 public class HausMqttClientTest : IAsyncLifetime
 {
-    private FakeMqttClient _fakeMqttClient;
-    private IHausMqttClient _client;
+    private FakeMqttClient? _fakeMqttClient;
+    private IHausMqttClient? _client;
+
+    private IHausMqttClient Client
+    {
+        get
+        {
+            ArgumentNullException.ThrowIfNull(_client);
+            return _client;
+        }
+    }
+
+    private FakeMqttClient FakeMqttClient
+    {
+        get
+        {
+            ArgumentNullException.ThrowIfNull(_fakeMqttClient);
+            return _fakeMqttClient;
+        }
+    }
 
     public async Task InitializeAsync()
     {
@@ -25,15 +43,18 @@ public class HausMqttClientTest : IAsyncLifetime
     [Fact]
     public async Task WhenSubscribingToTopicThenPublishedMessageGoesToSubscriber()
     {
-        MqttApplicationMessage actual = null;
-        await _client.SubscribeAsync("bob", msg =>
-        {
-            actual = msg;
-            return Task.CompletedTask;
-        });
+        MqttApplicationMessage? actual = null;
+        await Client.SubscribeAsync(
+            "bob",
+            msg =>
+            {
+                actual = msg;
+                return Task.CompletedTask;
+            }
+        );
 
         var expected = new MqttApplicationMessage { Topic = "bob" };
-        await _fakeMqttClient.PublishAsync(expected);
+        await FakeMqttClient.EnqueueAsync(expected);
 
         actual.Should().BeSameAs(expected);
     }
@@ -42,18 +63,24 @@ public class HausMqttClientTest : IAsyncLifetime
     public async Task WhenMultipleSubscribersThenPublishedMessagesGoToAllSubscribers()
     {
         var actuals = new List<MqttApplicationMessage>();
-        await _client.SubscribeAsync("#", msg =>
-        {
-            actuals.Add(msg);
-            return Task.CompletedTask;
-        });
-        await _client.SubscribeAsync("#", msg =>
-        {
-            actuals.Add(msg);
-            return Task.CompletedTask;
-        });
+        await Client.SubscribeAsync(
+            "#",
+            msg =>
+            {
+                actuals.Add(msg);
+                return Task.CompletedTask;
+            }
+        );
+        await Client.SubscribeAsync(
+            "#",
+            msg =>
+            {
+                actuals.Add(msg);
+                return Task.CompletedTask;
+            }
+        );
 
-        await _fakeMqttClient.PublishAsync(new MqttApplicationMessage());
+        await FakeMqttClient.EnqueueAsync(new MqttApplicationMessage());
         actuals.Should().HaveCount(2);
     }
 

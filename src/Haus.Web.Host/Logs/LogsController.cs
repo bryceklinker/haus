@@ -9,25 +9,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace Haus.Web.Host.Logs;
 
 [Route("api/logs")]
-public class LogsController : HausBusController
+public class LogsController(IHausBus hausBus, ILogsDirectoryProvider logsDirectoryProvider) : HausBusController(hausBus)
 {
-    private readonly ILogsDirectoryProvider _logsDirectoryProvider;
-
-    public LogsController(IHausBus hausBus, ILogsDirectoryProvider logsDirectoryProvider)
-        : base(hausBus)
-    {
-        _logsDirectoryProvider = logsDirectoryProvider;
-    }
-
     [HttpGet]
     public Task<IActionResult> GetLogs(
         [FromQuery] int pageSize = GetLogsParameters.DefaultPageSize,
         [FromQuery] int pageNumber = GetLogsParameters.DefaultPageNumber,
-        [FromQuery] string searchTerm = null,
-        [FromQuery] string level = null)
+        [FromQuery] string? searchTerm = null,
+        [FromQuery] string? level = null
+    )
     {
         var query = new GetLogsQuery(
-            _logsDirectoryProvider.GetLogsDirectory(),
+            logsDirectoryProvider.GetLogsDirectory(),
             new GetLogsParameters(pageNumber, pageSize, searchTerm, level)
         );
         return QueryAsync(query);

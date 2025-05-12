@@ -1,23 +1,16 @@
 using System;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using MQTTnet.Diagnostics.Logger;
+using MQTTnet.Diagnostics;
 
 namespace Haus.Mqtt.Client.Logging;
 
-public class MqttLogger : IMqttNetLogger
+public class MqttLogger(ILogger<MqttLogger> logger) : IMqttNetLogger
 {
-    private readonly ILogger<MqttLogger> _logger;
-
-    public MqttLogger(ILogger<MqttLogger> logger)
-    {
-        _logger = logger;
-    }
-
     public void Publish(MqttNetLogLevel level, string source, string message, object[] parameters, Exception exception)
     {
         var convertedLogLevel = ConvertLogLevel(level);
-        _logger.Log(convertedLogLevel, exception, message, parameters);
+        logger.Log(convertedLogLevel, exception, message, parameters);
 
         var logMessagePublishedEvent = LogMessagePublished;
         if (logMessagePublishedEvent != null)
@@ -29,14 +22,16 @@ public class MqttLogger : IMqttNetLogger
                 Source = source,
                 Level = level,
                 Message = message,
-                Exception = exception
+                Exception = exception,
             };
 
             logMessagePublishedEvent.Invoke(this, new MqttNetLogMessagePublishedEventArgs(logMessage));
         }
     }
 
-    public event EventHandler<MqttNetLogMessagePublishedEventArgs> LogMessagePublished;
+    public bool IsEnabled { get; } = true;
+
+    public event EventHandler<MqttNetLogMessagePublishedEventArgs>? LogMessagePublished;
 
     private static LogLevel ConvertLogLevel(MqttNetLogLevel logLevel)
     {
@@ -46,7 +41,7 @@ public class MqttLogger : IMqttNetLogger
             MqttNetLogLevel.Warning => LogLevel.Warning,
             MqttNetLogLevel.Info => LogLevel.Information,
             MqttNetLogLevel.Verbose => LogLevel.Debug,
-            _ => LogLevel.Debug
+            _ => LogLevel.Debug,
         };
     }
 }

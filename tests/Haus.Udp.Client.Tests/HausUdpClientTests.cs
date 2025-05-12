@@ -23,18 +23,21 @@ public class HausUdpClientTests : IDisposable
     [Fact]
     public async Task WhenBroadcastIsSentThenUdpMessageIsReceived()
     {
-        ServiceLocationModel model = null;
+        ServiceLocationModel? model = null;
         await _client.SubscribeAsync<ServiceLocationModel>(m => model = m);
 
         await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "192.168.1.1", 5000));
 
-        Eventually.Assert(() => { model.Name.Should().Be(KnownServices.Web); });
+        Eventually.Assert(() =>
+        {
+            model?.Name.Should().Be(KnownServices.Web);
+        });
     }
 
     [Fact]
     public async Task WhenSubscriberUsesAsyncMethodThenSubscriberReceivesMessages()
     {
-        ServiceLocationModel model = null;
+        ServiceLocationModel? model = null;
         await _client.SubscribeAsync<ServiceLocationModel>(m =>
         {
             model = m;
@@ -43,13 +46,16 @@ public class HausUdpClientTests : IDisposable
 
         await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "1.1.1.1", 600));
 
-        Eventually.Assert(() => { model.Name.Should().Be(KnownServices.Web); });
+        Eventually.Assert(() =>
+        {
+            model?.Name.Should().Be(KnownServices.Web);
+        });
     }
 
     [Fact]
     public async Task WhenBroadcastIsSentAfterUnsubscribingThenNoMessageIsReceived()
     {
-        ServiceLocationModel model = null;
+        ServiceLocationModel? model = null;
         var subscription = await _client.SubscribeAsync<ServiceLocationModel>(m => model = m);
         await subscription.UnsubscribeAsync();
 

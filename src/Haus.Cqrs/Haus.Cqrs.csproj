@@ -3,7 +3,7 @@
     <Import Project="../../dependencies/framework-version.xml"/>
 
     <ItemGroup>
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0"/>
+        <PackageReference Include="MediatR" Version="12.5.0"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftPackageVersion)"/>
     </ItemGroup>
 

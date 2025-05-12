@@ -1,0 +1,31 @@
+@using Haus.Core.Models.Common
+
+<MudListItem T="MetadataModel">
+    <MudStack Row="true">
+        <MudTextField T="string"
+                      Required
+                      Label="Key"
+                      Value="Item.Key"
+                      InputId="key"
+                      ValueChanged="v => HandleChange(v, Item.Value)"/>
+        <MudTextField T="string"
+                      Required
+                      Label="Value"
+                      InputId="value"
+                      Value="Item.Value"
+                      ValueChanged="v => HandleChange(Item.Key, v)"/>    
+    </MudStack>
+</MudListItem>
+
+@code {
+    [Parameter]
+    public required MetadataModel Item { get; set; }
+
+    [Parameter] 
+    public EventCallback<MetadataModel> OnItemChanged { get; set; }
+
+    protected async Task HandleChange(string key, string value)
+    {
+        await OnItemChanged.InvokeAsync(new MetadataModel(key, value));
+    }
+}

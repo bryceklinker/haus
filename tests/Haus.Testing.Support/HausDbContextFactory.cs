@@ -8,9 +8,7 @@ public static class HausDbContextFactory
 {
     public static HausDbContext Create()
     {
-        var options = new DbContextOptionsBuilder<HausDbContext>()
-            .UseInMemoryDatabase($"{Guid.NewGuid()}")
-            .Options;
+        var options = new DbContextOptionsBuilder<HausDbContext>().UseInMemoryDatabase($"{Guid.NewGuid()}").Options;
 
         return new HausDbContext(options);
     }

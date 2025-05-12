@@ -14,30 +14,24 @@ namespace Haus.Core.Rooms.Commands;
 
 public record TurnOffVacantRoomsCommand : ICommand;
 
-public class TurnOffVacantRoomsCommandHandler : AsyncRequestHandler<TurnOffVacantRoomsCommand>,
-    ICommandHandler<TurnOffVacantRoomsCommand>
+public class TurnOffVacantRoomsCommandHandler(IDomainEventBus domainEventBus, HausDbContext context)
+    : ICommandHandler<TurnOffVacantRoomsCommand>
 {
-    private readonly IDomainEventBus _domainEventBus;
-    private readonly HausDbContext _context;
-
-    public TurnOffVacantRoomsCommandHandler(IDomainEventBus domainEventBus, HausDbContext context)
+    public async Task Handle(TurnOffVacantRoomsCommand request, CancellationToken cancellationToken)
     {
-        _domainEventBus = domainEventBus;
-        _context = context;
-    }
-
-    protected override async Task Handle(TurnOffVacantRoomsCommand request, CancellationToken cancellationToken)
-    {
-        var rooms = await _context.GetRoomsIncludeDevices()
-            .Where(r => r.Lighting.State == LightingState.On)
+        var rooms = await context
+            .GetRoomsIncludeDevices()
+            .Where(r => r.Lighting != null && r.Lighting.State == LightingState.On)
             .Where(r => r.LastOccupiedTime.HasValue)
-            .ToArrayAsync(cancellationToken).ConfigureAwait(false);
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
         foreach (var room in rooms)
             room.ChangeOccupancy(
                 new OccupancyChangedModel(RoomDefaults.SimulatedOccupancyChangeDeviceId),
-                _domainEventBus);
+                domainEventBus
+            );
 
-        await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        await _domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
+        await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        await domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 }

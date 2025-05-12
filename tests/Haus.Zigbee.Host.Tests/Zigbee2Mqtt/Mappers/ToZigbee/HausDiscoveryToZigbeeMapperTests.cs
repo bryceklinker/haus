@@ -45,39 +45,33 @@ public class HausDiscoveryToZigbeeMapperTests
     [Fact]
     public void WhenStartDiscoveryIsMappedThenReturnsPermitJoinTrue()
     {
-        var original = new StartDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new StartDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
         Assert.Equal($"{ZigbeeBaseTopic}/bridge/config/permit_join", result.Topic);
-        Assert.Equal("true", Encoding.UTF8.GetString(result.Payload));
+        Assert.Equal("true", Encoding.UTF8.GetString(result.PayloadSegment));
     }
 
     [Fact]
     public void WhenStopDiscoveryIsMappedThenReturnsPermitJoinFalse()
     {
-        var original = new StopDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new StopDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
         Assert.Equal($"{ZigbeeBaseTopic}/bridge/config/permit_join", result.Topic);
-        Assert.Equal("false", Encoding.UTF8.GetString(result.Payload));
+        Assert.Equal("false", Encoding.UTF8.GetString(result.PayloadSegment));
     }
 
     [Fact]
     public void WhenSyncDiscoveryIsMappedThenReturnsGetDevices()
     {
-        var original = new SyncDiscoveryModel()
-            .AsHausCommand()
-            .ToMqttMessage("haus/commands");
+        var original = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
         var result = _mapper.Map(original).Single();
 
         Assert.Equal($"{ZigbeeBaseTopic}/bridge/config/devices/get", result.Topic);
-        Assert.Empty(result.Payload);
+        Assert.Equal(0, result.PayloadSegment.Count);
     }
 }

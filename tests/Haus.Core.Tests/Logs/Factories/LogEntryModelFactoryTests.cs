@@ -14,12 +14,7 @@ public class LogEntryModelFactoryTests
     private const string MissingLevelLine =
         @"{""@t"":""2021-01-17T15:27:12.3515550Z"",""@m"":""Enqueuing domain event RoomLightingChangedDomainEvent..."",""@i"":""fc362093"",""SourceContext"":""Haus.Cqrs.DomainEvents.LoggingDomainEventBus"",""ActionId"":""e27aedd7-9bf7-4069-9d3c-ce458cd24545"",""ActionName"":""Haus.Web.Host.Rooms.RoomsController.ChangeLighting (Haus.Web.Host)"",""RequestId"":""0HM5QVHBISRUP:00000007"",""RequestPath"":""/api/rooms/1/lighting"",""ConnectionId"":""0HM5QVHBISRUP"",""Application"":""Haus Web""}";
 
-    private readonly LogEntryModelFactory _factory;
-
-    public LogEntryModelFactoryTests()
-    {
-        _factory = new LogEntryModelFactory();
-    }
+    private readonly LogEntryModelFactory _factory = new();
 
     [Fact]
     public void WhenLogLineProvidedThenCreatesLogEntryFromLine()
@@ -28,9 +23,11 @@ public class LogEntryModelFactoryTests
 
         entry.Timestamp.Should().Be("2021-01-17T15:27:12.3639990Z");
         entry.Level.Should().Be("Debug");
-        entry.Message.Should()
+        entry
+            .Message.Should()
             .Be(
-                "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\"");
+                "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\""
+            );
     }
 
     [Fact]
@@ -41,9 +38,12 @@ public class LogEntryModelFactoryTests
         var json = HausJsonSerializer.Serialize(entry.Value);
         var jObject = JObject.Parse(json);
 
-        jObject.Value<string>("@m").Should()
+        jObject
+            .Value<string>("@m")
+            .Should()
             .Be(
-                "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\"");
+                "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\""
+            );
     }
 
     [Fact]

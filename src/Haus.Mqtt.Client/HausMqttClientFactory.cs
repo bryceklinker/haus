@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Concurrent;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Haus.Mqtt.Client.Settings;
+using Haus.Mqtt.Client.Wrappers;
 using Microsoft.Extensions.Options;
-using MQTTnet;
-using MQTTnet.Diagnostics.Logger;
-using MQTTnet.Extensions;
+using MQTTnet.Diagnostics;
 using MQTTnet.Extensions.ManagedClient;
 
 namespace Haus.Mqtt.Client;
@@ -16,22 +16,15 @@ public interface IHausMqttClientFactory : IAsyncDisposable
     Task<IHausMqttClient> CreateClient(string url);
 }
 
-internal class HausMqttClientFactory : IHausMqttClientFactory
+internal class HausMqttClientFactory(
+    IOptions<HausMqttSettings> options,
+    IMqttFactory mqttFactory,
+    IMqttNetLogger logger
+) : IHausMqttClientFactory
 {
-    private readonly IOptions<HausMqttSettings> _options;
-    private readonly IMqttFactory _mqttFactory;
-    private readonly IMqttNetLogger _logger;
-    private readonly ConcurrentDictionary<string, Task<IHausMqttClient>> _clients;
+    private readonly ConcurrentDictionary<string, Task<IHausMqttClient>> _clients = new();
 
-    private string MqttServer => _options.Value.Server;
-
-    public HausMqttClientFactory(IOptions<HausMqttSettings> options, IMqttFactory mqttFactory, IMqttNetLogger logger)
-    {
-        _options = options;
-        _mqttFactory = mqttFactory;
-        _logger = logger;
-        _clients = new ConcurrentDictionary<string, Task<IHausMqttClient>>();
-    }
+    private string MqttServer => options.Value.Server;
 
     public Task<IHausMqttClient> CreateClient()
     {
@@ -67,12 +60,16 @@ internal class HausMqttClientFactory : IHausMqttClientFactory
 
     private async Task<IHausMqttClient> CreateMqttClient(string url)
     {
-        var client = _mqttFactory.CreateManagedMqttClient(_logger);
-        var options = new ManagedMqttClientOptionsBuilder()
-            .WithClientOptions(opts => { opts.WithConnectionUri(new Uri(url)); })
+        var uri = new Uri(url);
+        var client = mqttFactory.CreateManagedMqttClient(logger);
+        var options1 = new ManagedMqttClientOptionsBuilder()
+            .WithClientOptions(opts =>
+            {
+                opts.WithTcpServer(uri.Host, uri.Port, AddressFamily.InterNetwork);
+            })
             .Build();
-        await client.StartAsync(options).ConfigureAwait(false);
-        return new HausMqttClient(client, _options, () => RemovedDisposedClient(url));
+        await client.StartAsync(options1).ConfigureAwait(false);
+        return new HausMqttClient(client, options, () => RemovedDisposedClient(url));
     }
 
     private void RemovedDisposedClient(string url)

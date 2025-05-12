@@ -26,10 +26,16 @@ public class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
-        return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
+        return Microsoft
+            .Extensions.Hosting.Host.CreateDefaultBuilder(args)
             .UseHausLogging("Haus Zigbee")
             .UseSystemd()
             .UseWindowsService()
-            .ConfigureServices((ctx, services) => { services.AddHausZigbee(ctx.Configuration); });
+            .ConfigureServices(
+                (ctx, services) =>
+                {
+                    services.AddHausZigbee(ctx.Configuration);
+                }
+            );
     }
 }

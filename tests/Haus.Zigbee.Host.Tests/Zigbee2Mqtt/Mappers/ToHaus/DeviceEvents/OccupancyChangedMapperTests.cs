@@ -7,12 +7,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class OccupancyChangedMapperTests
 {
-    private readonly OccupancyChangedMapper _mapper;
-
-    public OccupancyChangedMapperTests()
-    {
-        _mapper = new OccupancyChangedMapper();
-    }
+    private readonly OccupancyChangedMapper _mapper = new();
 
     [Fact]
     public void WhenOccupancyChangedThenReturnsPopulatedOccupancyChanged()
@@ -26,10 +21,10 @@ public class OccupancyChangedMapperTests
 
         var model = _mapper.Map(message);
 
-        model.DeviceId.Should().Be("motions");
-        model.Occupancy.Should().BeTrue();
-        model.Timeout.Should().Be(123);
-        model.Sensitivity.Should().Be("low");
+        model?.DeviceId.Should().Be("motions");
+        model?.Occupancy.Should().BeTrue();
+        model?.Timeout.Should().Be(123);
+        model?.Sensitivity.Should().Be("low");
     }
 
     [Fact]

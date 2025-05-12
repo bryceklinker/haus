@@ -7,21 +7,16 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Application;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class ApplicationApiTests
+public class ApplicationApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly IHausApiClient _client;
-
-    public ApplicationApiTests(HausWebHostApplicationFactory factory)
-    {
-        _client = factory.CreateAuthenticatedClient();
-    }
+    private readonly IHausApiClient _client = factory.CreateAuthenticatedClient();
 
     [Fact]
     public async Task WhenGettingLatestVersionThenReturnsLatestReleaseOnGithub()
     {
         var latestVersion = await _client.GetLatestVersionAsync();
 
-        latestVersion.Version.Should().NotBeNullOrWhiteSpace();
+        latestVersion?.Version.Should().NotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -41,6 +36,6 @@ public class ApplicationApiTests
         var response = await _client.DownloadLatestPackageAsync(packagesResult.Items[0].Id);
 
         response.IsSuccessStatusCode.Should().BeTrue();
-        response.Content.Headers.ContentType.MediaType.Should().Be("application/octet-stream");
+        response.Content.Headers.ContentType?.MediaType.Should().Be("application/octet-stream");
     }
 }

@@ -4,7 +4,7 @@ set -ex
 source ./scripts/variables.sh
 
 function main() {
-  yarn acceptance_tests:test
+  yarn acceptance
 }
 
 main

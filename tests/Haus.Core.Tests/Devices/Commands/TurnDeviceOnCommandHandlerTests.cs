@@ -32,8 +32,8 @@ public class TurnDeviceOnCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new TurnDeviceOnCommand(device.Id));
 
         var publishedCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
-        publishedCommand.Payload.Device.Id.Should().Be(device.Id);
-        publishedCommand.Payload.Lighting.State.Should().Be(LightingState.On);
+        publishedCommand.Payload?.Device.Id.Should().Be(device.Id);
+        publishedCommand.Payload?.Lighting?.State.Should().Be(LightingState.On);
     }
 
     [Fact]

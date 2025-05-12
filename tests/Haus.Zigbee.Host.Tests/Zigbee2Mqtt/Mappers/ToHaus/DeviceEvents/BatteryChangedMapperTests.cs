@@ -7,12 +7,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 
 public class BatteryChangedMapperTests
 {
-    private readonly BatteryChangedMapper _mapper;
-
-    public BatteryChangedMapperTests()
-    {
-        _mapper = new BatteryChangedMapper();
-    }
+    private readonly BatteryChangedMapper _mapper = new();
 
     [Fact]
     public void WhenBatteryChangedThenReturnsPopulatedBatteryChanged()
@@ -24,8 +19,8 @@ public class BatteryChangedMapperTests
 
         var model = _mapper.Map(message);
 
-        model.BatteryLevel.Should().Be(43);
-        model.DeviceId.Should().Be("my-device-id");
+        model?.BatteryLevel.Should().Be(43);
+        model?.DeviceId.Should().Be("my-device-id");
     }
 
     [Fact]

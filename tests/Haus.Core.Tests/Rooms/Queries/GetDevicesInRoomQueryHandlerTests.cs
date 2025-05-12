@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Haus.Core.Common.Storage;
+using Haus.Core.Models.Common;
+using Haus.Core.Models.Devices;
 using Haus.Core.Rooms.Queries;
 using Haus.Core.Tests.Support;
 using Haus.Cqrs;
@@ -32,18 +34,20 @@ public class GetDevicesInRoomQueryHandlerTests
         var result = await _hausBus.ExecuteQueryAsync(new GetDevicesInRoomQuery(room.Id));
 
         result.Count.Should().Be(3);
-        result.Items.Should().HaveCount(3)
+        result
+            .Items.Should()
+            .HaveCount(3)
             .And.Contain(d => d.ExternalId == "one")
             .And.Contain(d => d.ExternalId == "two")
             .And.Contain(d => d.ExternalId == "three");
     }
 
     [Fact]
-    public async Task WhenRoomIsMissingThenReturnsNull()
+    public async Task WhenRoomIsMissingThenReturnsEmptyList()
     {
         var result = await _hausBus.ExecuteQueryAsync(new GetDevicesInRoomQuery(65));
 
-        result.Should().BeNull();
+        result.Should().BeEquivalentTo(new ListResult<DeviceModel>());
     }
 
     [Fact]

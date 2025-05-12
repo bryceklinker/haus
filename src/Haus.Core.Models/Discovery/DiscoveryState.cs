@@ -6,5 +6,5 @@ namespace Haus.Core.Models.Discovery;
 public enum DiscoveryState
 {
     Enabled,
-    Disabled
+    Disabled,
 }

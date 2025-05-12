@@ -36,18 +36,22 @@ public class DeviceDiscoveredEventHandlerTest
     [Fact]
     public async Task WhenDeviceDiscoveredMultipleTimesThenDeviceIsUpdatedFromEvent()
     {
-        var device = _context.AddDevice("three");
+        _context.AddDevice("three");
 
-        var @event = RoutableEvent.FromEvent(new DeviceDiscoveredEvent("three", Metadata: new[]
-        {
-            new MetadataModel("Model", "Help")
-        }));
+        var @event = RoutableEvent.FromEvent(
+            new DeviceDiscoveredEvent("three", Metadata: [new MetadataModel("Model", "Help")])
+        );
         await _hausBus.PublishAsync(@event);
 
         _context.Set<DeviceEntity>().Should().HaveCount(1);
-        _context.Set<DeviceEntity>().Single().Metadata
-            .Should().ContainEquivalentOf(new DeviceMetadataEntity("Model", "Help"), opts =>
-                opts.Excluding(m => m.Device).Excluding(m => m.Id));
+        _context
+            .Set<DeviceEntity>()
+            .Single()
+            .Metadata.Should()
+            .ContainEquivalentOf(
+                new DeviceMetadataEntity("Model", "Help"),
+                opts => opts.Excluding(m => m.Device).Excluding(m => m.Id)
+            );
     }
 
     [Fact]

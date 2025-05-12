@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -29,12 +30,13 @@ public class DownloadLatestPackageQueryHandlerTests
     [Fact]
     public async Task WhenDownloadingPackageThenReturnsPackageBytesFromProvider()
     {
-        _latestReleaseProvider.SetupPackageDownload(6, new byte[] { 3, 2, 1 });
+        _latestReleaseProvider.SetupPackageDownload(6, [3, 2, 1]);
 
         var result = await _hausBus.ExecuteQueryAsync(new DownloadLatestPackageQuery(6));
 
         result.Status.Should().Be(DownloadStatus.Ok);
-        result.Bytes.Should().BeEquivalentTo(new byte[] { 3, 2, 1 });
+        var bytes = await ReadResultAsByteArrayAsync(result);
+        bytes.Should().BeEquivalentTo(new byte[] { 3, 2, 1 });
     }
 
     [Fact]
@@ -45,19 +47,22 @@ public class DownloadLatestPackageQueryHandlerTests
         var result = await _hausBus.ExecuteQueryAsync(new DownloadLatestPackageQuery(8));
 
         result.Status.Should().Be(DownloadStatus.NotFound);
-        result.Bytes.Should().BeEmpty();
+        var bytes = await ReadResultAsByteArrayAsync(result);
+        bytes.Should().BeEmpty();
     }
 
     [Fact]
     public async Task WhenDownloadingPackageFailsWithInternalServerErrorThenReturnsErrorDownloadResult()
     {
-        _latestReleaseProvider.SetupFailure(new HttpRequestException("", new Exception(),
-            HttpStatusCode.InternalServerError));
+        _latestReleaseProvider.SetupFailure(
+            new HttpRequestException("", new Exception(), HttpStatusCode.InternalServerError)
+        );
 
         var result = await _hausBus.ExecuteQueryAsync(new DownloadLatestPackageQuery(8));
 
         result.Status.Should().Be(DownloadStatus.Error);
-        result.Bytes.Should().BeEmpty();
+        var bytes = await ReadResultAsByteArrayAsync(result);
+        bytes.Should().BeEmpty();
     }
 
     [Fact]
@@ -68,6 +73,14 @@ public class DownloadLatestPackageQueryHandlerTests
         var result = await _hausBus.ExecuteQueryAsync(new DownloadLatestPackageQuery(8));
 
         result.Status.Should().Be(DownloadStatus.Error);
-        result.Bytes.Should().BeEmpty();
+        var bytes = await ReadResultAsByteArrayAsync(result);
+        bytes.Should().BeEmpty();
+    }
+
+    private static async Task<byte[]> ReadResultAsByteArrayAsync(DownloadLatestPackageResult result)
+    {
+        using var stream = new MemoryStream();
+        await result.Stream.CopyToAsync(stream);
+        return stream.ToArray();
     }
 }

@@ -10,15 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Haus.Web.Host.Devices;
 
 [Route("api/devices")]
-public class DevicesController : HausBusController
+public class DevicesController(IHausBus hausBus) : HausBusController(hausBus)
 {
-    public DevicesController(IHausBus hausBus)
-        : base(hausBus)
-    {
-    }
-
     [HttpGet("")]
-    public Task<IActionResult> Get([FromQuery] string externalId = null)
+    public Task<IActionResult> Get([FromQuery] string? externalId = null)
     {
         return QueryAsync(new GetDevicesQuery(externalId));
     }
@@ -36,8 +31,7 @@ public class DevicesController : HausBusController
     }
 
     [HttpPut("{id}/lighting-constraints")]
-    public Task<IActionResult> ChangeLightingConstraints([FromRoute] long id,
-        [FromBody] LightingConstraintsModel model)
+    public Task<IActionResult> ChangeLightingConstraints([FromRoute] long id, [FromBody] LightingConstraintsModel model)
     {
         return CommandAsync(new ChangeDeviceLightingConstraintsCommand(id, model));
     }

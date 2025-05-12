@@ -24,7 +24,7 @@ public class MqttDiagnosticsMessageFactoryTests
     [Fact]
     public void WhenCreatedWithNullBytesThenReturnsNullPayload()
     {
-        var model = _factory.Create("something", null);
+        var model = _factory.Create("something", []);
 
         model.Topic.Should().Be("something");
         model.Payload.Should().BeNull();
@@ -36,7 +36,7 @@ public class MqttDiagnosticsMessageFactoryTests
         var model = _factory.Create("something", Array.Empty<byte>());
 
         model.Topic.Should().Be("something");
-        model.Payload.Should().Be("");
+        model.Payload.Should().BeNull();
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class MqttDiagnosticsMessageFactoryTests
         var model = _factory.Create("my-topic", HausJsonSerializer.SerializeToBytes(new { id = 45 }));
 
         model.Topic.Should().Be("my-topic");
-        JObject.Parse(model.Payload.ToString()).Value<int>("id").Should().Be(45);
+        JObject.Parse($"{model.Payload}").Value<int>("id").Should().Be(45);
     }
 
     [Fact]

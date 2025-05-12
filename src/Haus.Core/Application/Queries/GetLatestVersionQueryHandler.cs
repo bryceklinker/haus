@@ -9,44 +9,48 @@ namespace Haus.Core.Application.Queries;
 
 public record GetLatestVersionQuery : IQuery<ApplicationVersionModel>;
 
-internal class GetLatestVersionQueryHandler : IQueryHandler<GetLatestVersionQuery, ApplicationVersionModel>
+internal class GetLatestVersionQueryHandler(
+    ILatestReleaseProvider latestReleaseProvider,
+    ILogger<GetLatestVersionQueryHandler> logger
+) : IQueryHandler<GetLatestVersionQuery, ApplicationVersionModel>
 {
-    private static readonly Version CurrentVersion = typeof(GetLatestVersionQuery).Assembly.GetName().Version;
-
-    private readonly ILatestReleaseProvider _latestReleaseProvider;
-    private readonly ILogger<GetLatestVersionQueryHandler> _logger;
-
-    public GetLatestVersionQueryHandler(ILatestReleaseProvider latestReleaseProvider,
-        ILogger<GetLatestVersionQueryHandler> logger)
-    {
-        _latestReleaseProvider = latestReleaseProvider;
-        _logger = logger;
-    }
-
-    public async Task<ApplicationVersionModel> Handle(GetLatestVersionQuery request,
-        CancellationToken cancellationToken)
+    public async Task<ApplicationVersionModel> Handle(
+        GetLatestVersionQuery request,
+        CancellationToken cancellationToken
+    )
     {
         var latestRelease = await TryGetLatestRelease();
-        var isNewer = CurrentVersion < latestRelease.Version;
+        var isNewer = GetCurrentVersion() < latestRelease.Version;
         return new ApplicationVersionModel(
             latestRelease.Version.ToSemanticVersion(),
             latestRelease.IsOfficial,
             isNewer,
             latestRelease.CreationDateTime,
-            latestRelease.Description);
+            latestRelease.Description
+        );
     }
 
     private async Task<ReleaseModel> TryGetLatestRelease()
     {
         try
         {
-            return await _latestReleaseProvider.GetLatestVersionAsync();
+            var latest = await latestReleaseProvider.GetLatestVersionAsync();
+            return latest ?? ReleaseModel.Default;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed to get the latest version using provider {Type}",
-                _latestReleaseProvider.GetType());
-            return new ReleaseModel(Version.Parse("0.0.0"), false, DateTimeOffset.MinValue, "");
+            logger.LogError(
+                e,
+                "Failed to get the latest version using provider {Type}",
+                latestReleaseProvider.GetType()
+            );
+            return ReleaseModel.Default;
         }
+    }
+
+    private static Version GetCurrentVersion()
+    {
+        var version = typeof(GetLatestVersionQuery).Assembly.GetName().Version;
+        return version == null ? Version.Parse("0.0.0") : version;
     }
 }

@@ -8,6 +8,6 @@ public static class PropertyInfoExtensions
     public static bool IsOptional(this PropertyInfo propertyInfo)
     {
         return propertyInfo.GetCustomAttribute<OptionalGenerationAttribute>() != null
-               || propertyInfo.PropertyType.IsNullable();
+            || propertyInfo.PropertyType.IsNullable();
     }
 }

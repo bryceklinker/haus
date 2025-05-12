@@ -8,12 +8,7 @@ namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 
 public class DeviceTypeOptionsParserTests
 {
-    private readonly DeviceTypeOptionsParser _parser;
-
-    public DeviceTypeOptionsParserTests()
-    {
-        _parser = new DeviceTypeOptionsParser();
-    }
+    private readonly DeviceTypeOptionsParser _parser = new();
 
     [Fact]
     public void WhenGettingDeviceTypeOptionsThenReturnsAllDeviceTypesFromScriptTag()
@@ -30,9 +25,7 @@ public class DeviceTypeOptionsParserTests
     {
         var markdown = SupportedDevicesMarkdown.Sample;
 
-        var options = _parser
-            .Parse(markdown)
-            .ToArray();
+        var options = _parser.Parse(markdown).ToArray();
 
         options[0].Model.Should().Be("RS 227 T");
         options[0].Vendor.Should().Be("Innr");

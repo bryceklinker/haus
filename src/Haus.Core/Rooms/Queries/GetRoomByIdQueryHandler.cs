@@ -12,18 +12,12 @@ namespace Haus.Core.Rooms.Queries;
 
 public record GetRoomByIdQuery(long Id) : GetByIdQuery<RoomModel>(Id);
 
-internal class GetRoomByIdQueryHandler : IQueryHandler<GetRoomByIdQuery, RoomModel>
+internal class GetRoomByIdQueryHandler(HausDbContext context) : IQueryHandler<GetRoomByIdQuery, RoomModel?>
 {
-    private readonly HausDbContext _context;
-
-    public GetRoomByIdQueryHandler(HausDbContext context)
+    public async Task<RoomModel?> Handle(GetRoomByIdQuery request, CancellationToken cancellationToken)
     {
-        _context = context;
-    }
-
-    public async Task<RoomModel> Handle(GetRoomByIdQuery request, CancellationToken cancellationToken)
-    {
-        return await _context.QueryAll<RoomEntity>()
+        return await context
+            .QueryAll<RoomEntity>()
             .Where(r => r.Id == request.Id)
             .Select(RoomEntity.ToModelExpression)
             .SingleOrDefaultAsync(cancellationToken)

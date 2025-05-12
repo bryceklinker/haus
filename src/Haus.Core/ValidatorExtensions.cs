@@ -7,8 +7,11 @@ namespace Haus.Core;
 
 public static class ValidatorExtensions
 {
-    public static async Task HausValidateAndThrowAsync<T>(this IValidator<T> validator, T instance,
-        CancellationToken token = default)
+    public static async Task HausValidateAndThrowAsync<T>(
+        this IValidator<T> validator,
+        T instance,
+        CancellationToken token = default
+    )
     {
         try
         {

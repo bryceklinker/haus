@@ -12,30 +12,22 @@ public interface IZigbeeMqttClientFactory
     Task<IHausMqttClient> CreateHausClient();
 }
 
-public class ZigbeeMqttClientFactory : IZigbeeMqttClientFactory
+public class ZigbeeMqttClientFactory(
+    IOptions<ZigbeeOptions> zigbeeOptions,
+    IOptions<HausOptions> hausOptions,
+    IHausMqttClientFactory mqttFactory
+) : IZigbeeMqttClientFactory
 {
-    private readonly IOptions<ZigbeeOptions> _zigbeeOptions;
-    private readonly IOptions<HausOptions> _hausOptions;
-    private readonly IHausMqttClientFactory _mqttFactory;
-
-    private string ZigbeeMqttUrl => _zigbeeOptions.Value.Config.Mqtt.Server;
-    private string HausMqttUrl => _hausOptions.Value.Server;
-
-    public ZigbeeMqttClientFactory(IOptions<ZigbeeOptions> zigbeeOptions, IOptions<HausOptions> hausOptions,
-        IHausMqttClientFactory mqttFactory)
-    {
-        _zigbeeOptions = zigbeeOptions;
-        _hausOptions = hausOptions;
-        _mqttFactory = mqttFactory;
-    }
+    private string ZigbeeMqttUrl => zigbeeOptions.Value.Config.Mqtt.Server;
+    private string HausMqttUrl => hausOptions.Value.Server;
 
     public Task<IHausMqttClient> CreateZigbeeClient()
     {
-        return _mqttFactory.CreateClient(ZigbeeMqttUrl);
+        return mqttFactory.CreateClient(ZigbeeMqttUrl);
     }
 
     public Task<IHausMqttClient> CreateHausClient()
     {
-        return _mqttFactory.CreateClient(HausMqttUrl);
+        return mqttFactory.CreateClient(HausMqttUrl);
     }
 }

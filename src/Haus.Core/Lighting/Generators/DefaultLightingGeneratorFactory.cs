@@ -13,7 +13,7 @@ public static class DefaultLightingGeneratorFactory
         {
             LightType.Temperature => new TemperatureLightingDefaultGenerator(),
             LightType.Color => new ColorLightingDefaultGenerator(),
-            _ => new LeveLightingDefaultGenerator()
+            _ => new LeveLightingDefaultGenerator(),
         };
     }
 }

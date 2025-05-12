@@ -4,5 +4,5 @@ public enum DownloadStatus
 {
     Ok,
     NotFound,
-    Error
+    Error,
 }

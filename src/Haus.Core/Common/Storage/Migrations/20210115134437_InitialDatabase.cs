@@ -10,21 +10,20 @@ namespace Haus.Core.Common.Storage.Migrations
                 name: "Discovery",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    State = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<long>(type: "INTEGER", nullable: false).Annotation("Sqlite:Autoincrement", true),
+                    State = table.Column<string>(type: "TEXT", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Discovery", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<long>(type: "INTEGER", nullable: false).Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Lighting_State = table.Column<string>(type: "TEXT", nullable: true),
                     Lighting_Level_Value = table.Column<double>(type: "REAL", nullable: true),
@@ -35,12 +34,13 @@ namespace Haus.Core.Common.Storage.Migrations
                     Lighting_Temperature_Max = table.Column<double>(type: "REAL", nullable: true),
                     Lighting_Color_Red = table.Column<byte>(type: "INTEGER", nullable: true),
                     Lighting_Color_Green = table.Column<byte>(type: "INTEGER", nullable: true),
-                    Lighting_Color_Blue = table.Column<byte>(type: "INTEGER", nullable: true)
+                    Lighting_Color_Blue = table.Column<byte>(type: "INTEGER", nullable: true),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Rooms", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Devices",
@@ -61,7 +61,7 @@ namespace Haus.Core.Common.Storage.Migrations
                     Lighting_Temperature_Max = table.Column<double>(type: "REAL", nullable: true),
                     Lighting_Color_Red = table.Column<byte>(type: "INTEGER", nullable: true),
                     Lighting_Color_Green = table.Column<byte>(type: "INTEGER", nullable: true),
-                    Lighting_Color_Blue = table.Column<byte>(type: "INTEGER", nullable: true)
+                    Lighting_Color_Blue = table.Column<byte>(type: "INTEGER", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -71,18 +71,19 @@ namespace Haus.Core.Common.Storage.Migrations
                         column: x => x.RoomId,
                         principalTable: "Rooms",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
+                        onDelete: ReferentialAction.Restrict
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "DeviceMetadata",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<long>(type: "INTEGER", nullable: false).Annotation("Sqlite:Autoincrement", true),
                     DeviceId = table.Column<long>(type: "INTEGER", nullable: true),
                     Key = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false)
+                    Value = table.Column<string>(type: "TEXT", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -92,33 +93,29 @@ namespace Haus.Core.Common.Storage.Migrations
                         column: x => x.DeviceId,
                         principalTable: "Devices",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
+                        onDelete: ReferentialAction.Restrict
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceMetadata_DeviceId",
                 table: "DeviceMetadata",
-                column: "DeviceId");
+                column: "DeviceId"
+            );
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Devices_RoomId",
-                table: "Devices",
-                column: "RoomId");
+            migrationBuilder.CreateIndex(name: "IX_Devices_RoomId", table: "Devices", column: "RoomId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "DeviceMetadata");
+            migrationBuilder.DropTable(name: "DeviceMetadata");
 
-            migrationBuilder.DropTable(
-                name: "Discovery");
+            migrationBuilder.DropTable(name: "Discovery");
 
-            migrationBuilder.DropTable(
-                name: "Devices");
+            migrationBuilder.DropTable(name: "Devices");
 
-            migrationBuilder.DropTable(
-                name: "Rooms");
+            migrationBuilder.DropTable(name: "Rooms");
         }
     }
 }

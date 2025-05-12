@@ -8,12 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Haus.Web.Host.Discovery;
 
 [Route("api/discovery")]
-public class DiscoveryController : HausBusController
+public class DiscoveryController(IHausBus hausBus) : HausBusController(hausBus)
 {
-    public DiscoveryController(IHausBus hausBus) : base(hausBus)
-    {
-    }
-
     [HttpGet("state")]
     public Task<IActionResult> GetDiscovery()
     {

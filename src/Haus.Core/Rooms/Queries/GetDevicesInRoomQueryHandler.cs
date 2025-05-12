@@ -12,23 +12,20 @@ namespace Haus.Core.Rooms.Queries;
 
 public record GetDevicesInRoomQuery(long RoomId) : IQuery<ListResult<DeviceModel>>;
 
-public class GetDevicesInRoomQueryHandler : IQueryHandler<GetDevicesInRoomQuery, ListResult<DeviceModel>>
+public class GetDevicesInRoomQueryHandler(HausDbContext context)
+    : IQueryHandler<GetDevicesInRoomQuery, ListResult<DeviceModel>>
 {
-    private readonly HausDbContext _context;
-
-    public GetDevicesInRoomQueryHandler(HausDbContext context)
+    public async Task<ListResult<DeviceModel>> Handle(
+        GetDevicesInRoomQuery request,
+        CancellationToken cancellationToken
+    )
     {
-        _context = context;
-    }
+        if (await context.IsMissingAsync<RoomEntity>(request.RoomId).ConfigureAwait(false))
+            return new ListResult<DeviceModel>();
 
-    public async Task<ListResult<DeviceModel>> Handle(GetDevicesInRoomQuery request,
-        CancellationToken cancellationToken)
-    {
-        if (await _context.IsMissingAsync<RoomEntity>(request.RoomId).ConfigureAwait(false))
-            return null;
-
-        return await _context.QueryAll<DeviceEntity>()
-            .Where(d => d.Room.Id == request.RoomId)
+        return await context
+            .QueryAll<DeviceEntity>()
+            .Where(d => d.Room != null && d.Room.Id == request.RoomId)
             .Select(DeviceEntity.ToModelExpression)
             .ToListResultAsync(cancellationToken)
             .ConfigureAwait(false);

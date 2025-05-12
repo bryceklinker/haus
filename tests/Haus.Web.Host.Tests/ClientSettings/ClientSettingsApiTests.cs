@@ -9,25 +9,19 @@ using Xunit;
 namespace Haus.Web.Host.Tests.ClientSettings;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class ClientSettingsApiTests
+public class ClientSettingsApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly IHausApiClient _client;
-    private readonly IConfiguration _configuration;
-
-    public ClientSettingsApiTests(HausWebHostApplicationFactory factory)
-    {
-        _configuration = factory.Services.GetRequiredService<IConfiguration>();
-        _client = factory.CreateUnauthenticatedClient();
-    }
+    private readonly IHausApiClient _client = factory.CreateUnauthenticatedClient();
+    private readonly IConfiguration _configuration = factory.Services.GetRequiredService<IConfiguration>();
 
     [Fact]
     public async Task WhenGettingClientSettingsThenReturnsAuthSettings()
     {
         var settings = await _client.GetClientSettingsAsync();
 
-        settings.Auth.Domain.Should().Be(_configuration["Auth:Domain"]);
-        settings.Auth.ClientId.Should().Be(_configuration["Auth:ClientId"]);
-        settings.Auth.Audience.Should().Be(_configuration["Auth:Audience"]);
+        settings?.Auth.Domain.Should().Be(_configuration["Auth:Domain"]);
+        settings?.Auth.ClientId.Should().Be(_configuration["Auth:ClientId"]);
+        settings?.Auth.Audience.Should().Be(_configuration["Auth:Audience"]);
     }
 
     [Fact]
@@ -38,6 +32,6 @@ public class ClientSettingsApiTests
 
         var settings = await _client.GetClientSettingsAsync();
 
-        settings.Version.Should().Be(expected);
+        settings?.Version.Should().Be(expected);
     }
 }

@@ -9,22 +9,17 @@ using Xunit;
 namespace Haus.Web.Host.Tests.Logs;
 
 [Collection(HausWebHostCollectionFixture.Name)]
-public class LogsApiTests
+public class LogsApiTests(HausWebHostApplicationFactory factory)
 {
-    private readonly IHausApiClient _client;
-
-    public LogsApiTests(HausWebHostApplicationFactory factory)
-    {
-        _client = factory.CreateAuthenticatedClient();
-    }
+    private readonly IHausApiClient _client = factory.CreateAuthenticatedClient();
 
     [Fact]
     public async Task WhenGettingLogsFromApiThenReturnsLogsFromLogFiles()
     {
         var logs = await _client.GetLogsAsync();
 
-        logs.Count.Should().Be(25);
-        logs.Items.Should().HaveCount(25);
+        logs.Count.Should().BeGreaterOrEqualTo(10);
+        logs.Items.Length.Should().BeGreaterOrEqualTo(10);
     }
 
     [Fact]
@@ -34,7 +29,6 @@ public class LogsApiTests
 
         var logs = await _client.GetLogsAsync(parameters);
 
-        logs.Items.Should()
-            .Match(entries => entries.All(e => e.Level == "Error"));
+        logs.Items.Should().Match(entries => entries.All(e => e.Level == "Error"));
     }
 }

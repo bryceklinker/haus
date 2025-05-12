@@ -1,0 +1,105 @@
+@using Haus.Core.Models.Lighting
+
+@if (Constraints != null)
+{
+    <MudPaper>
+        <MudTextField T="double"
+                      FullWidth
+                      InputId="minLevel"
+                      Value="Constraints.MinLevel"
+                      ValueChanged="HandleMinLevelChanged"
+                      Label="Min Level" />
+
+        <MudTextField T="double"
+                      FullWidth
+                      InputId="maxLevel"
+                      Value="Constraints.MaxLevel"
+                      ValueChanged="HandleMaxLevelChanged"
+                      Label="Max Level" />
+        
+        @if (Constraints.MinTemperature != null)
+        {
+            <MudTextField T="double?"
+                          FullWidth
+                          InputId="minTemperature"
+                          Value="Constraints.MinTemperature"
+                          ValueChanged="HandleMinTemperatureChanged"
+                          Label="Min Temperature" />
+        }
+
+        @if (Constraints.MaxTemperature != null)
+        {
+            <MudTextField T="double?"
+                          FullWidth
+                          InputId="maxTemperature"
+                          Value="Constraints.MaxTemperature"
+                          ValueChanged="HandleMaxTemperatureChanged"
+                          Label="Max Temperature" />
+        }
+    </MudPaper>
+}
+
+@code {
+    [Parameter]
+    public LightingConstraintsModel? Constraints { get; set; }
+    
+    [Parameter]
+    public EventCallback<LightingConstraintsModel> OnChanged { get; set; }
+
+    private async Task HandleMinLevelChanged(double minLevel)
+    {
+        if (Constraints == null)
+        {
+            return;
+        }
+        
+        await NotifyChanged(Constraints with
+        {
+            MinLevel = minLevel
+        });
+    }
+
+    private async Task HandleMaxLevelChanged(double maxLevel)
+    {
+        if (Constraints == null)
+        {
+            return;
+        }
+        
+        await NotifyChanged(Constraints with
+        {
+            MaxLevel = maxLevel
+        });
+    }
+    
+    private async Task HandleMinTemperatureChanged(double? minTemperature)
+    {
+        if (Constraints == null)
+        {
+            return;
+        }
+        
+        await NotifyChanged(Constraints with
+        {
+            MinTemperature = minTemperature
+        });
+    }
+    
+    private async Task HandleMaxTemperatureChanged(double? maxTemperature)
+    {
+        if (Constraints == null)
+        {
+            return;
+        }
+        
+        await NotifyChanged(Constraints with
+        {
+            MaxTemperature = maxTemperature
+        });
+    }
+
+    private async Task NotifyChanged(LightingConstraintsModel model)
+    {
+        await OnChanged.InvokeAsync(model);
+    }
+}

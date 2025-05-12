@@ -11,21 +11,14 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
 
-public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
+public class HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZigbeeMapper
 {
     private static readonly string[] SupportedTypes =
     {
         StartDiscoveryModel.Type,
         StopDiscoveryModel.Type,
-        SyncDiscoveryModel.Type
+        SyncDiscoveryModel.Type,
     };
-
-    private readonly IOptions<ZigbeeOptions> _options;
-
-    public HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options)
-    {
-        _options = options;
-    }
 
     public bool IsSupported(string type)
     {
@@ -34,13 +27,14 @@ public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
 
     public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
     {
-        var command = HausJsonSerializer.Deserialize<HausCommand>(message.Payload);
+        var command = HausJsonSerializer.Deserialize<HausCommand>(message.PayloadSegment);
+        ArgumentNullException.ThrowIfNull(command);
         return command.Type switch
         {
             StartDiscoveryModel.Type => CreatePermitJoinMessage(true),
             StopDiscoveryModel.Type => CreatePermitJoinMessage(false),
             SyncDiscoveryModel.Type => CreateGetDevicesMessage(),
-            _ => throw new InvalidOperationException($"Command with {command.Type} is not supported")
+            _ => throw new InvalidOperationException($"Command with {command.Type} is not supported"),
         };
     }
 
@@ -48,8 +42,8 @@ public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
     {
         yield return new MqttApplicationMessage
         {
-            Topic = $"{_options.GetBaseTopic()}/bridge/config/devices/get",
-            Payload = Array.Empty<byte>()
+            Topic = $"{options.GetBaseTopic()}/bridge/config/devices/get",
+            PayloadSegment = ArraySegment<byte>.Empty,
         };
     }
 
@@ -57,8 +51,8 @@ public class HausDiscoveryToZigbeeMapper : IToZigbeeMapper
     {
         yield return new MqttApplicationMessage
         {
-            Topic = $"{_options.GetBaseTopic()}/bridge/config/permit_join",
-            Payload = Encoding.UTF8.GetBytes(permitJoin.ToString().ToLowerInvariant())
+            Topic = $"{options.GetBaseTopic()}/bridge/config/permit_join",
+            PayloadSegment = Encoding.UTF8.GetBytes(permitJoin.ToString().ToLowerInvariant()),
         };
     }
 }

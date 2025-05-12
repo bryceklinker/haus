@@ -17,30 +17,19 @@ public interface IHausUdpClient : IAsyncDisposable, IDisposable
     Task<IHausUdpSubscription> SubscribeAsync<T>(Func<T, Task> handler);
 }
 
-internal class HausUdpClient : IHausUdpClient
+internal class HausUdpClient(UdpClient client, IOptions<HausUdpSettings> options) : IHausUdpClient
 {
-    private readonly UdpClient _client;
-    private readonly IOptions<HausUdpSettings> _options;
-    private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly ConcurrentDictionary<Guid, IHausUdpSubscription> _subscriptions;
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private readonly ConcurrentDictionary<Guid, IHausUdpSubscription> _subscriptions = new();
 
-    private int Port => _options.Value.Port;
+    private int Port => options.Value.Port;
     private bool HasStarted { get; set; }
-    private Task ListeningTask { get; set; }
-
-    public HausUdpClient(UdpClient client, IOptions<HausUdpSettings> options)
-    {
-        _client = client;
-        _options = options;
-        _cancellationTokenSource = new CancellationTokenSource();
-        _subscriptions = new ConcurrentDictionary<Guid, IHausUdpSubscription>();
-        HasStarted = false;
-    }
+    private Task? ListeningTask { get; set; }
 
     public Task BroadcastAsync<T>(T value)
     {
-        var bytes = HausJsonSerializer.SerializeToBytes(value);
-        return _client.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Broadcast, Port));
+        var bytes = HausJsonSerializer.SerializeToBytes(value).ToArray();
+        return client.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Broadcast, Port));
     }
 
     public Task<IHausUdpSubscription> SubscribeAsync<T>(Action<T> handler)
@@ -63,7 +52,7 @@ internal class HausUdpClient : IHausUdpClient
 
     private Task UnsubscribeAsync(IHausUdpSubscription subscription)
     {
-        _subscriptions.TryRemove(subscription.Id, out subscription);
+        _subscriptions.TryRemove(subscription.Id, out _);
         return Task.CompletedTask;
     }
 
@@ -80,7 +69,7 @@ internal class HausUdpClient : IHausUdpClient
     {
         while (!token.IsCancellationRequested)
         {
-            var data = await _client.ReceiveAsync().ConfigureAwait(false);
+            var data = await client.ReceiveAsync(token).ConfigureAwait(false);
             var tasks = _subscriptions.Values.Select(s => s.ExecuteAsync(data.Buffer));
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
@@ -102,9 +91,10 @@ internal class HausUdpClient : IHausUdpClient
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!disposing) return;
+        if (!disposing)
+            return;
 
-        _client.Dispose();
+        client.Dispose();
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource.Dispose();
     }

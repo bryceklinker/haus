@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Events;
@@ -9,16 +10,9 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToZigbee;
 
-public class HausLightingToZigbeeMapper : IToZigbeeMapper
+public class HausLightingToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZigbeeMapper
 {
-    private readonly IOptions<ZigbeeOptions> _options;
-
-    private string ZigbeeBaseTopic => _options.Value.Config.Mqtt.BaseTopic;
-
-    public HausLightingToZigbeeMapper(IOptions<ZigbeeOptions> options)
-    {
-        _options = options;
-    }
+    private string ZigbeeBaseTopic => options.Value.Config.Mqtt.BaseTopic;
 
     public bool IsSupported(string type)
     {
@@ -27,36 +21,39 @@ public class HausLightingToZigbeeMapper : IToZigbeeMapper
 
     public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
     {
-        var command = HausJsonSerializer.Deserialize<HausCommand<DeviceLightingChangedEvent>>(message.Payload);
+        var command = HausJsonSerializer.Deserialize<HausCommand<DeviceLightingChangedEvent>>(message.PayloadSegment);
+        ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(command.Payload);
+        ArgumentNullException.ThrowIfNull(command.Payload.Lighting);
+
         var device = command.Payload.Device;
         yield return new MqttApplicationMessage
         {
             Topic = $"{ZigbeeBaseTopic}/{device.ExternalId}/set",
-            Payload = CreateLightingPayload(command.Payload.Lighting)
+            PayloadSegment = CreateLightingPayload(command.Payload.Lighting),
         };
     }
 
-    private static byte[] CreateLightingPayload(LightingModel lighting)
+    private static ArraySegment<byte> CreateLightingPayload(LightingModel lighting)
     {
         if (lighting.State == LightingState.Off)
-            return HausJsonSerializer.SerializeToBytes(new
-            {
-                state = lighting.State.ToString().ToUpperInvariant()
-            });
+            return HausJsonSerializer.SerializeToBytes(new { state = lighting.State.ToString().ToUpperInvariant() });
 
-        return HausJsonSerializer.SerializeToBytes(new
-        {
-            state = lighting.State.ToString().ToUpperInvariant(),
-            brightness = lighting.Level == null ? default(double?) : lighting.Level.Value,
-            color_temp = lighting.Temperature == null ? default(double?) : lighting.Temperature.Value,
-            color = lighting.Color == null
-                ? null
-                : new
-                {
-                    b = lighting.Color.Blue,
-                    g = lighting.Color.Green,
-                    r = lighting.Color.Red
-                }
-        });
+        return HausJsonSerializer.SerializeToBytes(
+            new
+            {
+                state = lighting.State.ToString().ToUpperInvariant(),
+                brightness = lighting.Level.Value,
+                color_temp = lighting.Temperature?.Value,
+                color = lighting.Color == null
+                    ? null
+                    : new
+                    {
+                        b = lighting.Color.Blue,
+                        g = lighting.Color.Green,
+                        r = lighting.Color.Red,
+                    },
+            }
+        );
     }
 }

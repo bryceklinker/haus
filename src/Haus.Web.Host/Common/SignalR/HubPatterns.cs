@@ -1,16 +1,18 @@
 using System.Linq;
+using Haus.Core.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace Haus.Web.Host.Common.SignalR;
 
 public static class HubPatterns
 {
-    public const string DiagnosticsHub = "/hubs/diagnostics";
-    public const string DeviceSimulatorHub = "/hubs/device-simulator";
-    public const string EventsHub = "/hubs/events";
-    public const string HealthHub = "/hubs/health";
-
-    private static readonly string[] All = { DiagnosticsHub, DeviceSimulatorHub, EventsHub, HealthHub };
+    private static readonly string[] All =
+    [
+        HausRealtimeSources.Diagnostics,
+        HausRealtimeSources.DeviceSimulator,
+        HausRealtimeSources.Events,
+        HausRealtimeSources.Health,
+    ];
 
     public static bool MatchesHub(PathString path)
     {

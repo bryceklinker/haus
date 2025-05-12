@@ -12,27 +12,18 @@ namespace Haus.Core.DeviceSimulator.Commands;
 
 public record TriggerOccupancyChangedCommand(string SimulatorId) : ICommand;
 
-public class TriggerOccupancyChangedCommandHandler : AsyncRequestHandler<TriggerOccupancyChangedCommand>,
-    ICommandHandler<TriggerOccupancyChangedCommand>
+public class TriggerOccupancyChangedCommandHandler(IDeviceSimulatorStore store, IHausBus hausBus)
+    : ICommandHandler<TriggerOccupancyChangedCommand>
 {
-    private readonly IDeviceSimulatorStore _store;
-    private readonly IHausBus _hausBus;
-
-    public TriggerOccupancyChangedCommandHandler(IDeviceSimulatorStore store, IHausBus hausBus)
+    public async Task Handle(TriggerOccupancyChangedCommand request, CancellationToken cancellationToken)
     {
-        _store = store;
-        _hausBus = hausBus;
-    }
+        store.PublishNext(s => s.ChangeOccupancy(request.SimulatorId));
 
-    protected override async Task Handle(TriggerOccupancyChangedCommand request, CancellationToken cancellationToken)
-    {
-        _store.PublishNext(s => s.ChangeOccupancy(request.SimulatorId));
-
-        var device = _store.GetDeviceById(request.SimulatorId);
+        var device = store.GetDeviceById(request.SimulatorId);
         if (device == null)
             throw new SimulatorNotFoundException(request.SimulatorId);
 
         var simulatedEvent = SimulatedEvent.FromEvent(new OccupancyChangedModel(device.Id, device.IsOccupied));
-        await _hausBus.PublishAsync(simulatedEvent, cancellationToken).ConfigureAwait(false);
+        await hausBus.PublishAsync(simulatedEvent, cancellationToken).ConfigureAwait(false);
     }
 }

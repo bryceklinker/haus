@@ -1,0 +1,26 @@
+@using Haus.Core.Models.Common
+
+<MudList T="MetadataModel">
+    @foreach (var item in Items)
+    {
+        <EditableMetadataListItemView Item="item" 
+                                  OnItemChanged="v => HandleItemChanged(item, v)" />
+    }
+</MudList>
+
+@code
+{
+    [Parameter]
+    public MetadataModel[] Items { get; set; } = [];
+    
+    [Parameter]
+    public EventCallback<MetadataModel[]> ItemsChanged { get; set; }
+
+    private async Task HandleItemChanged(MetadataModel current, MetadataModel updated)
+    {
+        var updatedList = Items
+            .Select(i => i == current ? updated : i)
+            .ToArray();
+        await ItemsChanged.InvokeAsync(updatedList);
+    }
+}

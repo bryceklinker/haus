@@ -24,37 +24,32 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client;
 
-public interface IHausApiClient :
-    IDeviceApiClient,
-    IDiagnosticsApiClient,
-    IRoomsApiClient,
-    IDeviceSimulatorApiClient,
-    IDiscoveryApiClient,
-    ILogsApiClient,
-    IClientSettingsApiClient,
-    IApplicationApiClient
+public interface IHausApiClient
+    : IDeviceApiClient,
+        IDiagnosticsApiClient,
+        IRoomsApiClient,
+        IDeviceSimulatorApiClient,
+        IDiscoveryApiClient,
+        ILogsApiClient,
+        IClientSettingsApiClient,
+        IApplicationApiClient { }
+
+public class HausApiClient(
+    IHausApiClientFactory factory,
+    HttpClient httpClient,
+    IOptions<HausApiClientSettings> options
+) : ApiClient(httpClient, options), IHausApiClient
 {
-}
+    private IDeviceApiClient DeviceApiClient => factory.CreateDeviceClient();
+    private IDiagnosticsApiClient DiagnosticsApiClient => factory.CreateDiagnosticsClient();
+    private IRoomsApiClient RoomsApiClient => factory.CreateRoomsClient();
+    private IDeviceSimulatorApiClient DeviceSimulatorApiClient => factory.CreateDeviceSimulatorClient();
+    private IDiscoveryApiClient DiscoveryApiClient => factory.CreateDiscoveryClient();
+    private ILogsApiClient LogsApiClient => factory.CreateLogsClient();
+    private IClientSettingsApiClient ClientSettingsApiClient => factory.CreateClientSettingsClient();
+    private IApplicationApiClient ApplicationApiClient => factory.CreateApplicationClient();
 
-public class HausApiClient : ApiClient, IHausApiClient
-{
-    private readonly IHausApiClientFactory _factory;
-    private IDeviceApiClient DeviceApiClient => _factory.CreateDeviceClient();
-    private IDiagnosticsApiClient DiagnosticsApiClient => _factory.CreateDiagnosticsClient();
-    private IRoomsApiClient RoomsApiClient => _factory.CreateRoomsClient();
-    private IDeviceSimulatorApiClient DeviceSimulatorApiClient => _factory.CreateDeviceSimulatorClient();
-    private IDiscoveryApiClient DiscoveryApiClient => _factory.CreateDiscoveryClient();
-    private ILogsApiClient LogsApiClient => _factory.CreateLogsClient();
-    private IClientSettingsApiClient ClientSettingsApiClient => _factory.CreateClientSettingsClient();
-    private IApplicationApiClient ApplicationApiClient => _factory.CreateApplicationClient();
-
-    public HausApiClient(IHausApiClientFactory factory, HttpClient httpClient, IOptions<HausApiClientSettings> options)
-        : base(httpClient, options)
-    {
-        _factory = factory;
-    }
-
-    public Task<DiscoveryModel> GetDiscoveryStateAsync()
+    public Task<DiscoveryModel?> GetDiscoveryStateAsync()
     {
         return DiscoveryApiClient.GetDiscoveryStateAsync();
     }
@@ -74,7 +69,7 @@ public class HausApiClient : ApiClient, IHausApiClient
         return DiscoveryApiClient.SyncDevicesAsync();
     }
 
-    public Task<DeviceModel> GetDeviceAsync(long id)
+    public Task<DeviceModel?> GetDeviceAsync(long id)
     {
         return DeviceApiClient.GetDeviceAsync(id);
     }
@@ -109,7 +104,7 @@ public class HausApiClient : ApiClient, IHausApiClient
         return DeviceApiClient.TurnLightOnAsync(deviceId);
     }
 
-    public Task<ListResult<DeviceModel>> GetDevicesAsync(string externalId = null)
+    public Task<ListResult<DeviceModel>> GetDevicesAsync(string? externalId = null)
     {
         return DeviceApiClient.GetDevicesAsync(externalId);
     }
@@ -139,7 +134,7 @@ public class HausApiClient : ApiClient, IHausApiClient
         return RoomsApiClient.GetRoomsAsync();
     }
 
-    public Task<RoomModel> GetRoomAsync(long id)
+    public Task<RoomModel?> GetRoomAsync(long id)
     {
         return RoomsApiClient.GetRoomAsync(id);
     }
@@ -184,17 +179,17 @@ public class HausApiClient : ApiClient, IHausApiClient
         return DeviceSimulatorApiClient.ResetDeviceSimulatorAsync();
     }
 
-    public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters parameters = null)
+    public Task<ListResult<LogEntryModel>> GetLogsAsync(GetLogsParameters? parameters = null)
     {
         return LogsApiClient.GetLogsAsync(parameters);
     }
 
-    public Task<ClientSettingsModel> GetClientSettingsAsync()
+    public Task<ClientSettingsModel?> GetClientSettingsAsync()
     {
         return ClientSettingsApiClient.GetClientSettingsAsync();
     }
 
-    public Task<ApplicationVersionModel> GetLatestVersionAsync()
+    public Task<ApplicationVersionModel?> GetLatestVersionAsync()
     {
         return ApplicationApiClient.GetLatestVersionAsync();
     }

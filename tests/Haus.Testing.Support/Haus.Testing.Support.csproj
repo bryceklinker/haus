@@ -7,9 +7,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="6.2.0"/>
+        <PackageReference Include="FluentAssertions" Version="7.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Polly" Version="7.2.2"/>
+        <PackageReference Include="Polly" Version="8.5.2"/>
+        <PackageReference Include="Bogus" Version="35.6.3" />
     </ItemGroup>
 
 </Project>

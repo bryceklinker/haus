@@ -6,5 +6,5 @@ namespace Haus.Core.Models.Lighting;
 public enum LightingState
 {
     On,
-    Off
+    Off,
 }

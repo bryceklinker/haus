@@ -25,7 +25,8 @@ public class TriggerOccupancyChangedHandlerTests
         _simulatedDeviceId = $"{Guid.NewGuid()}";
         _simulatorStore = new DeviceSimulatorStore();
         _simulatorStore.PublishNext(s =>
-            s.AddSimulatedDevice(new SimulatedDeviceEntity(_simulatedDeviceId, DeviceType.MotionSensor)));
+            s.AddSimulatedDevice(new SimulatedDeviceEntity(_simulatedDeviceId, DeviceType.MotionSensor))
+        );
 
         _hausBus = HausBusFactory.CreateCapturingBus(_simulatorStore);
     }
@@ -35,7 +36,10 @@ public class TriggerOccupancyChangedHandlerTests
     {
         await _hausBus.ExecuteCommandAsync(new TriggerOccupancyChangedCommand(_simulatedDeviceId));
 
-        _hausBus.GetPublishedEvents<SimulatedEvent>().Should().HaveCount(1)
+        _hausBus
+            .GetPublishedEvents<SimulatedEvent>()
+            .Should()
+            .HaveCount(1)
             .And.Contain(e => e.HausEvent is HausEvent<OccupancyChangedModel>);
     }
 
@@ -44,7 +48,7 @@ public class TriggerOccupancyChangedHandlerTests
     {
         await _hausBus.ExecuteCommandAsync(new TriggerOccupancyChangedCommand(_simulatedDeviceId));
 
-        _simulatorStore.GetDeviceById(_simulatedDeviceId).IsOccupied.Should().BeTrue();
+        _simulatorStore.GetDeviceById(_simulatedDeviceId)?.IsOccupied.Should().BeTrue();
     }
 
     [Fact]

@@ -11,35 +11,30 @@ public interface IHausMqttSubscription
     Task UnsubscribeAsync();
 }
 
-public class HausMqttSubscription : IHausMqttSubscription
+public class HausMqttSubscription(
+    string topic,
+    Func<MqttApplicationMessage, Task> handler,
+    Func<IHausMqttSubscription, Task>? unsubscribe = null
+) : IHausMqttSubscription
 {
-    private readonly string _topic;
-    private readonly Func<MqttApplicationMessage, Task> _handler;
-    private readonly Func<IHausMqttSubscription, Task> _unsubscribe;
+    public Guid Id { get; } = Guid.NewGuid();
 
-    public Guid Id { get; }
-
-    public HausMqttSubscription(string topic, Func<MqttApplicationMessage, Task> handler,
-        Func<IHausMqttSubscription, Task> unsubscribe = null)
+    private bool IsSubscribedToTopic(string topic1)
     {
-        Id = Guid.NewGuid();
-        _topic = topic;
-        _handler = handler;
-        _unsubscribe = unsubscribe;
-    }
-
-    private bool IsSubscribedToTopic(string topic)
-    {
-        return topic == _topic || _topic == "#";
+        return topic1 == topic || topic == "#";
     }
 
     public async Task ExecuteAsync(MqttApplicationMessage message)
     {
-        if (IsSubscribedToTopic(message.Topic)) await _handler.Invoke(message);
+        if (IsSubscribedToTopic(message.Topic))
+            await handler.Invoke(message);
     }
 
     public async Task UnsubscribeAsync()
     {
-        await _unsubscribe.Invoke(this).ConfigureAwait(false);
+        if (unsubscribe == null)
+            return;
+
+        await unsubscribe.Invoke(this).ConfigureAwait(false);
     }
 }
