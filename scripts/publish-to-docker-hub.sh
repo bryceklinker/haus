@@ -4,7 +4,8 @@ set -ex
 source ./scripts/variables.sh
 
 function login() {
-  docker login -u "${DOCKER_HUB_USERNAME}" -p "${DOCKER_HUB_ACCESS_TOKEN}"
+  echo "skipped..."
+#  docker login -u "${DOCKER_HUB_USERNAME}" -p "${DOCKER_HUB_ACCESS_TOKEN}"
 }
 
 function build_service_docker_image() {
@@ -34,7 +35,8 @@ function build_site_docker_image() {
 }
 
 function publish_docker_images() {
-  docker push --all-tags "${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}"
+  echo "skipped..."
+#  docker push --all-tags "${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}"
 }
 
 function main() {

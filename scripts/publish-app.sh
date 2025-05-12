@@ -32,7 +32,6 @@ function main() {
   dotnet_publish "${WEB_HOST_PROJECT}" "${WEB_HOST_PUBLISH_DIRECTORY}"
   dotnet_publish "${ZIGBEE_HOST_PROJECT}" "${ZIGBEE_HOST_PUBLISH_DIRECTORY}"
   
-  
   package_service
 }
 
