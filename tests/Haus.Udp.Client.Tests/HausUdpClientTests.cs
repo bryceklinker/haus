@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Models.ServiceLocation;
 using Haus.Testing.Support;
 using Haus.Udp.Client.Tests.Support;
@@ -30,7 +29,7 @@ public class HausUdpClientTests : IDisposable
 
         Eventually.Assert(() =>
         {
-            model?.Name.Should().Be(KnownServices.Web);
+            Assert.Equal(KnownServices.Web, model?.Name);
         });
     }
 
@@ -48,7 +47,7 @@ public class HausUdpClientTests : IDisposable
 
         Eventually.Assert(() =>
         {
-            model?.Name.Should().Be(KnownServices.Web);
+            Assert.Equal(KnownServices.Web, model?.Name);
         });
     }
 
@@ -62,7 +61,7 @@ public class HausUdpClientTests : IDisposable
         await _client.BroadcastAsync(new ServiceLocationModel(KnownServices.Web, "192.168.1.1", 777));
         await Task.Delay(1000);
 
-        model.Should().BeNull();
+        Assert.Null(model);
     }
 
     public void Dispose()
