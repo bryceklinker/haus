@@ -1,5 +1,5 @@
 using System;
-using FluentAssertions;
+using System.Linq;
 using Haus.Core.Models.Health;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Xunit;
@@ -19,7 +19,7 @@ public class HausHealthReportModelTests
             [new HausHealthCheckModel("boom", HealthStatus.Healthy, 4)]
         ).AppendChecks(checksToAppend);
 
-        report.Checks.Should().HaveCount(2);
+        Assert.Equal(2, report.Checks.Count());
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class HausHealthReportModelTests
             [new HausHealthCheckModel("one", HealthStatus.Unhealthy, 1)]
         );
 
-        report.Status.Should().Be(HealthStatus.Unhealthy);
+        Assert.Equal(HealthStatus.Unhealthy, report.Status);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class HausHealthReportModelTests
             [new HausHealthCheckModel("one", HealthStatus.Degraded, 1)]
         );
 
-        report.Status.Should().Be(HealthStatus.Degraded);
+        Assert.Equal(HealthStatus.Degraded, report.Status);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class HausHealthReportModelTests
             new[] { new HausHealthCheckModel("", HealthStatus.Degraded, 5) }
         ).AppendChecks([new HausHealthCheckModel("", HealthStatus.Healthy, 4)]);
 
-        report.DurationOfCheckInMilliseconds.Should().Be(9);
+        Assert.Equal(9, report.DurationOfCheckInMilliseconds);
     }
 
     [Fact]
@@ -61,6 +61,6 @@ public class HausHealthReportModelTests
             Array.Empty<HausHealthCheckModel>()
         );
 
-        report.DurationOfCheckInMilliseconds.Should().Be(0);
+        Assert.Equal(0, report.DurationOfCheckInMilliseconds);
     }
 }
