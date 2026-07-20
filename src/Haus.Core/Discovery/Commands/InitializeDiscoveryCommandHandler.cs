@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Haus.Core.Common.Storage;
 using Haus.Core.Discovery.Entities;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Core.Discovery.Commands;
 

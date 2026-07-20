@@ -10,7 +10,6 @@ using Haus.Core.Models.Rooms.Events;
 using Haus.Core.Rooms.Repositories;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Core.Rooms.Commands;
 

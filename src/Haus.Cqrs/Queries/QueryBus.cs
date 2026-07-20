@@ -1,6 +1,6 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 
 namespace Haus.Cqrs.Queries;
 
@@ -9,10 +9,11 @@ public interface IQueryBus
     Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default);
 }
 
-internal class QueryBus(IMediator mediator) : IQueryBus
+internal class QueryBus(IServiceProvider services) : IQueryBus
 {
-    public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default)
+    public Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, CancellationToken token = default)
     {
-        return await mediator.Send(query, token).ConfigureAwait(false);
+        var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
+        return HandlerInvoker.InvokeAsync<TResult>(services, handlerType, query, token);
     }
 }

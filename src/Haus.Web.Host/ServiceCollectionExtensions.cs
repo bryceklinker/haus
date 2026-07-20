@@ -3,6 +3,7 @@ using Haus.Core;
 using Haus.Core.Application;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models;
+using Haus.Cqrs;
 using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Settings;
 using Haus.Web.Host.Application;
@@ -48,10 +49,7 @@ public static class ServiceCollectionExtensions
                 opts.PersonalAccessToken = configuration["GITHUB_TOKEN"] ?? "";
             })
             .AddHausMqtt()
-            .AddMediatR(cfg =>
-            {
-                cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
-            })
+            .AddHausCqrs(typeof(ServiceCollectionExtensions).Assembly)
             .AddTransient<ILatestReleaseProvider, GithubLatestReleaseProvider>()
             .AddHostedService<MqttMessageRouter>()
             .AddHostedService<DiagnosticsMqttListener>()

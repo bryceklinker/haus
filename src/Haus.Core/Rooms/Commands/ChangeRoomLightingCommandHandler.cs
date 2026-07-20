@@ -5,7 +5,6 @@ using Haus.Core.Models.Lighting;
 using Haus.Core.Rooms.Repositories;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
-using MediatR;
 
 namespace Haus.Core.Rooms.Commands;
 

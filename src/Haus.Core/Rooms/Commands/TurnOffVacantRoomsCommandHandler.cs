@@ -7,7 +7,6 @@ using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Core.Rooms.Commands;

@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 
 namespace Haus.Cqrs.DomainEvents;
 
@@ -11,7 +11,7 @@ public interface IDomainEventBus
     Task FlushAsync(CancellationToken token = default);
 }
 
-internal class DomainEventBus(IMediator mediator) : IDomainEventBus
+internal class DomainEventBus(IServiceProvider services) : IDomainEventBus
 {
     private readonly ConcurrentQueue<IDomainEvent> _events = new();
 
@@ -23,6 +23,9 @@ internal class DomainEventBus(IMediator mediator) : IDomainEventBus
     public async Task FlushAsync(CancellationToken token = default)
     {
         foreach (var domainEvent in _events)
-            await mediator.Publish(domainEvent, token);
+        {
+            var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(domainEvent.GetType());
+            await HandlerInvoker.InvokeAllAsync(services, handlerType, domainEvent, token).ConfigureAwait(false);
+        }
     }
 }
