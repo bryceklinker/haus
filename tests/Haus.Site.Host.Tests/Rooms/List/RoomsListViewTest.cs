@@ -75,7 +75,7 @@ public class RoomsListViewTest : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            var navigation = Context.Services.GetRequiredService<FakeNavigationManager>();
+            var navigation = Context.Services.GetRequiredService<BunitNavigationManager>();
             navigation.Uri.Should().EndWith("/rooms/78");
         });
     }
@@ -85,7 +85,7 @@ public class RoomsListViewTest : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>());
 
-        var dialogProvider = Context.RenderComponent<MudDialogProvider>();
+        var dialogProvider = Context.Render<MudDialogProvider>();
         var view = RenderView<RoomsListView>();
         await view.InvokeAsync(async () =>
         {

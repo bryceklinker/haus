@@ -83,7 +83,7 @@ public class DevicesListViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            var navigation = page.Services.GetRequiredService<FakeNavigationManager>();
+            var navigation = page.Services.GetRequiredService<BunitNavigationManager>();
             navigation.Uri.Should().EndWith("/devices/5");
         });
     }

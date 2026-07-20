@@ -171,9 +171,9 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
     private static async Task EnterMetadata(IRenderedComponent<AddSimulatedDeviceView> page, string key, string value)
     {
         var keyInput = page.FindByComponent<MudTextField<string>>(opts => opts.WithId("key"));
-        await keyInput.InvokeAsync(() => keyInput.Instance.SetText(key));
+        await keyInput.InvokeAsync(() => keyInput.Instance.SetTextAsync(key));
 
         var valueInput = page.FindByComponent<MudTextField<string>>(opts => opts.WithId("value"));
-        await valueInput.InvokeAsync(() => valueInput.Instance.SetText(value));
+        await valueInput.InvokeAsync(() => valueInput.Instance.SetTextAsync(value));
     }
 }

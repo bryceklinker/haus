@@ -2,6 +2,8 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Bunit;
+using Bunit.TestDoubles;
 using FluentAssertions.Common;
 using Haus.Api.Client;
 using Haus.Site.Host.Shared.Realtime;
@@ -20,14 +22,14 @@ public class HausSiteTestContext : IAsyncLifetime
 {
     private readonly InMemoryHttpClientFactory _httpClientFactory;
     private readonly InMemoryRealtimeDataFactory _realtimeDataFactory;
-    protected TestContext Context { get; }
-    protected TestAuthorizationContext AuthContext { get; }
+    protected BunitContext Context { get; }
+    protected BunitAuthorizationContext AuthContext { get; }
     protected InMemoryHttpMessageHandler HausApiHandler => _httpClientFactory.GetHandler(HausApiClientNames.Default);
-    protected FakeNavigationManager NavigationManager => Context.Services.GetRequiredService<FakeNavigationManager>();
+    protected BunitNavigationManager NavigationManager => Context.Services.GetRequiredService<BunitNavigationManager>();
 
     protected HausSiteTestContext()
     {
-        Context = new TestContext();
+        Context = new BunitContext();
         Context.JSInterop.Mode = JSRuntimeMode.Loose;
 
         Context.Services.AddMudServices(opts =>
@@ -40,7 +42,7 @@ public class HausSiteTestContext : IAsyncLifetime
         Context.Services.AddCascadingAuthenticationState();
         Context.Services.AddAuthorizationCore();
 
-        AuthContext = Context.AddTestAuthorization();
+        AuthContext = Context.AddAuthorization();
         AuthContext.SetAuthorized("bob");
 
         Context.Services.AddHausApiClient(opts =>
@@ -87,13 +89,13 @@ public class HausSiteTestContext : IAsyncLifetime
     )
         where T : IComponent
     {
-        return Context.RenderComponent(parameterBuilder);
+        return Context.Render(parameterBuilder);
     }
 
     protected async Task<IRenderedComponent<MudDialogProvider>> RenderDialogAsync<T>()
         where T : IComponent
     {
-        var provider = Context.RenderComponent<MudDialogProvider>();
+        var provider = Context.Render<MudDialogProvider>();
         var dialogService = Context.Services.GetRequiredService<IDialogService>();
         await provider.InvokeAsync(async () =>
         {

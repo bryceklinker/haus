@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MicrosoftPackageVersion)"/>
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="$(MicrosoftPackageVersion)"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
         <PackageReference Include="Polly.Extensions.Http" Version="3.0.0"/>
     </ItemGroup>
 

@@ -4,6 +4,7 @@ using Haus.Site.Host.Devices.Detail;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
 using MudBlazor;
+using MudBlazor.Extensions;
 
 namespace Haus.Site.Host.Tests.Devices.Detail;
 
@@ -14,13 +15,13 @@ public class DeviceDetailViewTests : HausSiteTestContext
     {
         var device = HausModelFactory.DeviceModel();
 
-        var page = Context.RenderComponent<DeviceDetailView>(opts =>
+        var page = Context.Render<DeviceDetailView>(opts =>
         {
             opts.Add(p => p.Device, device);
         });
 
-        page.FindMudTextFieldById<string>("name").Instance.Value.Should().Be(device.Name);
-        page.FindMudTextFieldById<DeviceType?>("deviceType").Instance.Value.Should().Be(device.DeviceType);
+        page.FindMudTextFieldById<string>("name").Instance.GetState(x => x.Value).Should().Be(device.Name);
+        page.FindMudTextFieldById<DeviceType?>("deviceType").Instance.GetState(x => x.Value).Should().Be(device.DeviceType);
         page.FindMudTextFieldById<string>("externalId").Instance.Value.Should().Be(device.ExternalId);
         page.FindMudTextFieldById<LightType>("lightType").Instance.Value.Should().Be(device.LightType);
         page.FindMudTextFieldById<long?>("roomId").Instance.Value.Should().Be(device.RoomId);
@@ -34,7 +35,7 @@ public class DeviceDetailViewTests : HausSiteTestContext
             Metadata = [new MetadataModel(Key: "Watts", Value: "Lots")],
         };
 
-        var page = Context.RenderComponent<DeviceDetailView>(opts =>
+        var page = Context.Render<DeviceDetailView>(opts =>
         {
             opts.Add(p => p.Device, device);
         });
@@ -56,7 +57,7 @@ public class DeviceDetailViewTests : HausSiteTestContext
             ],
         };
 
-        var page = Context.RenderComponent<DeviceDetailView>(opts =>
+        var page = Context.Render<DeviceDetailView>(opts =>
         {
             opts.Add(p => p.Device, device);
         });

@@ -13,7 +13,7 @@ public class ShellHeaderViewTests : HausSiteTestContext
     public async Task WhenMenuClickedThenNotifiesMenuToggled()
     {
         var toggled = false;
-        var header = Context.RenderComponent<ShellHeaderView>(p => p.Add(h => h.OnMenuToggled, () => toggled = true));
+        var header = Context.Render<ShellHeaderView>(p => p.Add(h => h.OnMenuToggled, () => toggled = true));
 
         await header.FindByTag("button").ClickAsync(new MouseEventArgs());
 
@@ -25,9 +25,7 @@ public class ShellHeaderViewTests : HausSiteTestContext
     {
         var themeMode = ThemeMode.Light;
 
-        var header = Context.RenderComponent<ShellHeaderView>(p =>
-            p.Add(h => h.OnThemeToggled, (mode) => themeMode = mode)
-        );
+        var header = Context.Render<ShellHeaderView>(p => p.Add(h => h.OnThemeToggled, (mode) => themeMode = mode));
 
         await header.InvokeAsync(async () =>
         {

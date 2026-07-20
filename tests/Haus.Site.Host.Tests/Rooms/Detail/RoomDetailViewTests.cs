@@ -7,6 +7,7 @@ using Haus.Site.Host.Rooms.Detail;
 using Haus.Site.Host.Shared.Lighting;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
+using MudBlazor.Extensions;
 
 namespace Haus.Site.Host.Tests.Rooms.Detail;
 
@@ -19,8 +20,8 @@ public class RoomDetailViewTests : HausSiteTestContext
 
         var view = RenderDetail(room);
 
-        view.FindMudTextFieldById<string?>("name").Instance.Value.Should().Be(room.Name);
-        view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.Value.Should().Be(room.OccupancyTimeoutInSeconds);
+        view.FindMudTextFieldById<string?>("name").Instance.GetState(x => x.Value).Should().Be(room.Name);
+        view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.GetState(x => x.Value).Should().Be(room.OccupancyTimeoutInSeconds);
     }
 
     [Fact]
@@ -35,8 +36,8 @@ public class RoomDetailViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await view.FindMudTextFieldById<string?>("name").Instance.SetText("bill");
-            await view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.SetText("500");
+            await view.FindMudTextFieldById<string?>("name").Instance.SetTextAsync("bill");
+            await view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.SetTextAsync("500");
             await view.FindMudButtonByText("save").ClickAsync();
         });
 

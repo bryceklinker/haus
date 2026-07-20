@@ -110,7 +110,7 @@ public class LightingConstraintsViewTests : HausSiteTestContext
     {
         await view.InvokeAsync(async () =>
         {
-            await view.FindMudTextFieldById<T>(inputId).Instance.SetText($"{value}");
+            await view.FindMudTextFieldById<T>(inputId).Instance.SetTextAsync($"{value}");
         });
     }
 }

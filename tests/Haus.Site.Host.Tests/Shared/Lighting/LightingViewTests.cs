@@ -6,6 +6,7 @@ using Haus.Site.Host.Shared.Lighting;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
 using MudBlazor;
+using MudBlazor.Extensions;
 
 namespace Haus.Site.Host.Tests.Shared.Lighting;
 
@@ -45,7 +46,7 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var state = view.FindByComponent<MudSwitch<bool>>();
-        state.Instance.Value.Should().Be(true);
+        state.Instance.GetState(x => x.Value).Should().Be(true);
     }
 
     [Fact]
@@ -78,7 +79,7 @@ public class LightingViewTests : HausSiteTestContext
 
         var level = FindSliderById<double>(view, "level");
 
-        level.Instance.Value.Should().Be(60);
+        level.Instance.GetState(x => x.Value).Should().Be(60);
         level.Instance.Min.Should().Be(20);
         level.Instance.Max.Should().Be(80);
     }
@@ -222,7 +223,7 @@ public class LightingViewTests : HausSiteTestContext
         bool disabled = false
     )
     {
-        return Context.RenderComponent<LightingView>(opts =>
+        return Context.Render<LightingView>(opts =>
         {
             opts.Add(o => o.Lighting, lighting);
             opts.Add(o => o.Disabled, disabled);

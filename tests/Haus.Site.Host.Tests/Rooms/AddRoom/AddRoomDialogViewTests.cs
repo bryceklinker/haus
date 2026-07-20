@@ -32,7 +32,7 @@ public class AddRoomDialogViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await view.FindMudTextFieldById<string>("name").Instance.SetText("Living Room");
+            await view.FindMudTextFieldById<string>("name").Instance.SetTextAsync("Living Room");
             await view.FindMudButtonByText("save").ClickAsync();
         });
 
@@ -70,7 +70,7 @@ public class AddRoomDialogViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await view.FindMudTextFieldById<string>("name").Instance.SetText("Living Room");
+            await view.FindMudTextFieldById<string>("name").Instance.SetTextAsync("Living Room");
             await view.FindMudButtonByText("save").ClickAsync();
         });
 
@@ -89,7 +89,7 @@ public class AddRoomDialogViewTests : HausSiteTestContext
 
         var invokeTask = view.InvokeAsync(async () =>
         {
-            await view.FindMudTextFieldById<string>("name").Instance.SetText("Living Room");
+            await view.FindMudTextFieldById<string>("name").Instance.SetTextAsync("Living Room");
             await view.FindMudButtonByText("save").ClickAsync();
         });
 
