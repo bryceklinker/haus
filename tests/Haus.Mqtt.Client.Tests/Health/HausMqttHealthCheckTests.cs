@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Mqtt.Client.Health;
 using Haus.Mqtt.Client.Tests.Support;
 using Haus.Testing.Support.Fakes;
@@ -28,7 +27,7 @@ public class HausMqttHealthCheckTests
     {
         var result = await _healthCheck.CheckHealthAsync(new HealthCheckContext());
 
-        result.Status.Should().Be(HealthStatus.Healthy);
+        Assert.Equal(HealthStatus.Healthy, result.Status);
     }
 
     [Fact]
@@ -38,7 +37,7 @@ public class HausMqttHealthCheckTests
 
         var result = await _healthCheck.CheckHealthAsync(new HealthCheckContext());
 
-        result.Status.Should().Be(HealthStatus.Unhealthy);
+        Assert.Equal(HealthStatus.Unhealthy, result.Status);
     }
 
     [Fact]
@@ -48,6 +47,6 @@ public class HausMqttHealthCheckTests
 
         var result = await _healthCheck.CheckHealthAsync(new HealthCheckContext());
 
-        result.Status.Should().Be(HealthStatus.Unhealthy);
+        Assert.Equal(HealthStatus.Unhealthy, result.Status);
     }
 }
