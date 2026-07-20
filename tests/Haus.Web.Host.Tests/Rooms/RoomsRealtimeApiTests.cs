@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;
@@ -36,7 +35,7 @@ public class RoomsRealtimeApiTests
 
         Eventually.Assert(() =>
         {
-            items.Should().Contain(i => i.Type == RoomCreatedEvent.Type);
+            Assert.Contains(items, i => i.Type == RoomCreatedEvent.Type);
         });
     }
 }

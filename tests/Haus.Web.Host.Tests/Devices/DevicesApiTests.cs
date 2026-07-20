@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
@@ -35,7 +34,10 @@ public class DevicesApiTests
             await _hausClient.UpdateDeviceAsync(device.Id, new DeviceModel { Name = "some-name" });
 
             var updated = await _hausClient.GetDeviceAsync(device.Id);
-            updated?.Name.Should().Be("some-name");
+            if (updated != null)
+            {
+                Assert.Equal("some-name", updated.Name);
+            }
         });
     }
 
@@ -53,7 +55,10 @@ public class DevicesApiTests
 
         Eventually.Assert(() =>
         {
-            hausCommand?.Type.Should().Be(DeviceLightingChangedEvent.Type);
+            if (hausCommand != null)
+            {
+                Assert.Equal(DeviceLightingChangedEvent.Type, hausCommand.Type);
+            }
         });
     }
 
@@ -71,7 +76,10 @@ public class DevicesApiTests
 
         Eventually.Assert(() =>
         {
-            published?.Payload?.Lighting?.State.Should().Be(LightingState.Off);
+            if (published?.Payload?.Lighting != null)
+            {
+                Assert.Equal(LightingState.Off, published.Payload.Lighting.State);
+            }
         });
     }
 
@@ -89,7 +97,10 @@ public class DevicesApiTests
 
         Eventually.Assert(() =>
         {
-            published?.Payload?.Lighting?.State.Should().Be(LightingState.On);
+            if (published?.Payload?.Lighting != null)
+            {
+                Assert.Equal(LightingState.On, published.Payload.Lighting.State);
+            }
         });
     }
 
@@ -101,7 +112,10 @@ public class DevicesApiTests
         await _hausClient.ChangeDeviceLightingConstraintsAsync(device.Id, new LightingConstraintsModel(50, 90));
 
         var updatedDevice = await _hausClient.GetDeviceAsync(device.Id);
-        updatedDevice?.Lighting?.Level.Min.Should().Be(50);
-        updatedDevice?.Lighting?.Level.Max.Should().Be(90);
+        if (updatedDevice?.Lighting != null)
+        {
+            Assert.Equal(50, updatedDevice.Lighting.Level.Min);
+            Assert.Equal(90, updatedDevice.Lighting.Level.Max);
+        }
     }
 }

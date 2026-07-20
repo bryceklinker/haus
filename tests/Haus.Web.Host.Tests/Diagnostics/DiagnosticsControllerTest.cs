@@ -1,6 +1,5 @@
 using System.Net;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
 using MQTTnet;
@@ -29,8 +28,11 @@ public class DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            received?.Topic.Should().Be("my-topic");
-            JObject.Parse(received.ConvertPayloadToString()).Value<int>("id").Should().Be(65);
+            if (received != null)
+            {
+                Assert.Equal("my-topic", received.Topic);
+            }
+            Assert.Equal(65, JObject.Parse(received.ConvertPayloadToString()).Value<int>("id"));
         });
     }
 
@@ -40,6 +42,6 @@ public class DiagnosticsControllerTest(HausWebHostApplicationFactory factory)
         var client = factory.CreateUnauthenticatedClient();
         var response = await client.ReplayDiagnosticsMessageAsync(HausModelFactory.MqttDiagnosticsMessageModel());
 
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }

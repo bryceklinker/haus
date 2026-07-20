@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.Logs;
 using Haus.Web.Host.Tests.Support;
@@ -18,8 +17,8 @@ public class LogsApiTests(HausWebHostApplicationFactory factory)
     {
         var logs = await _client.GetLogsAsync();
 
-        logs.Count.Should().BeGreaterOrEqualTo(10);
-        logs.Items.Length.Should().BeGreaterOrEqualTo(10);
+        Assert.True(logs.Count >= 10);
+        Assert.True(logs.Items.Length >= 10);
     }
 
     [Fact]
@@ -29,6 +28,6 @@ public class LogsApiTests(HausWebHostApplicationFactory factory)
 
         var logs = await _client.GetLogsAsync(parameters);
 
-        logs.Items.Should().Match(entries => entries.All(e => e.Level == "Error"));
+        Assert.True(logs.Items.All(e => e.Level == "Error"));
     }
 }

@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Models.Health;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
@@ -20,7 +19,7 @@ public class HealthRealtimeApiTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            health.Should().NotBeNull();
+            Assert.NotNull(health);
         });
     }
 }

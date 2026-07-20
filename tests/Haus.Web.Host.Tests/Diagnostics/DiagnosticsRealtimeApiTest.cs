@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Models.Diagnostics;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
@@ -35,12 +34,10 @@ public class DiagnosticsRealtimeApiTest
         await mqttClient.PublishAsync("my-topic", "this is data");
         Eventually.Assert(() =>
         {
-            mqttMessages
-                .Where(e => e.Payload != null)
-                .Should()
-                .Contain(e => e.Topic == "my-topic")
-                .And.Contain(e => e.Payload!.ToString() == "this is data")
-                .And.Contain(e => e.Timestamp == CurrentTime);
+            var filteredMessages = mqttMessages.Where(e => e.Payload != null);
+            Assert.Contains(filteredMessages, e => e.Topic == "my-topic");
+            Assert.Contains(filteredMessages, e => e.Payload!.ToString() == "this is data");
+            Assert.Contains(filteredMessages, e => e.Timestamp == CurrentTime);
         });
     }
 }

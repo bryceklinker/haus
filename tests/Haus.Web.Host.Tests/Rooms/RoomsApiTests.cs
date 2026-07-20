@@ -2,7 +2,6 @@ using System;
 using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Lighting;
@@ -33,7 +32,7 @@ public class RoomsApiTests
 
         var result = await _apiClient.GetRoomsAsync();
 
-        result.Items.Should().Contain(r => r.Name == "Johnny");
+        Assert.Contains(result.Items, r => r.Name == "Johnny");
     }
 
     [Fact]
@@ -43,7 +42,7 @@ public class RoomsApiTests
 
         var result = await response.Content.ReadFromJsonAsync<RoomModel>();
 
-        response.Headers.Location.Should().Be($"{_apiClient.ApiBaseUrl}/rooms/{result?.Id}");
+        Assert.Equal(new Uri($"{_apiClient.ApiBaseUrl}/rooms/{result?.Id}"), response.Headers.Location);
     }
 
     [Fact]
@@ -56,7 +55,10 @@ public class RoomsApiTests
 
         var updated = await _apiClient.GetRoomAsync(room.Id);
 
-        updated?.Name.Should().Be("new hotness");
+        if (updated != null)
+        {
+            Assert.Equal("new hotness", updated.Name);
+        }
     }
 
     [Fact]
@@ -66,7 +68,7 @@ public class RoomsApiTests
 
         var response = await _apiClient.CreateRoomAsync(new RoomModel(Name: "create-duplicate"));
 
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -76,7 +78,7 @@ public class RoomsApiTests
         var room = await CreateRoomAsync("update-to-be-duplicate");
 
         var response = await _apiClient.UpdateRoomAsync(room.Id, new RoomModel(Name: "duplicate"));
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -87,8 +89,8 @@ public class RoomsApiTests
         await _apiClient.AddDevicesToRoomAsync(room.Id, device.Id);
 
         var result = await _apiClient.GetDevicesInRoomAsync(room.Id);
-        result.Count.Should().Be(1);
-        result.Items.Should().HaveCount(1);
+        Assert.Equal(1, result.Count);
+        Assert.Single(result.Items);
     }
 
     [Fact]
@@ -105,7 +107,10 @@ public class RoomsApiTests
 
         Eventually.Assert(() =>
         {
-            hausCommand?.Type.Should().Be(RoomLightingChangedEvent.Type);
+            if (hausCommand != null)
+            {
+                Assert.Equal(RoomLightingChangedEvent.Type, hausCommand.Type);
+            }
         });
     }
 
@@ -123,8 +128,14 @@ public class RoomsApiTests
 
         Eventually.Assert(() =>
         {
-            hausCommand?.Type.Should().Be(RoomLightingChangedEvent.Type);
-            hausCommand?.Payload?.Lighting.State.Should().Be(LightingState.Off);
+            if (hausCommand != null)
+            {
+                Assert.Equal(RoomLightingChangedEvent.Type, hausCommand.Type);
+            }
+            if (hausCommand?.Payload != null)
+            {
+                Assert.Equal(LightingState.Off, hausCommand.Payload.Lighting.State);
+            }
         });
     }
 
@@ -142,8 +153,14 @@ public class RoomsApiTests
 
         Eventually.Assert(() =>
         {
-            hausCommand?.Type.Should().Be(RoomLightingChangedEvent.Type);
-            hausCommand?.Payload?.Lighting.State.Should().Be(LightingState.On);
+            if (hausCommand != null)
+            {
+                Assert.Equal(RoomLightingChangedEvent.Type, hausCommand.Type);
+            }
+            if (hausCommand?.Payload != null)
+            {
+                Assert.Equal(LightingState.On, hausCommand.Payload.Lighting.State);
+            }
         });
     }
 
@@ -154,7 +171,7 @@ public class RoomsApiTests
 
         var response = await client.CreateRoomAsync(new RoomModel(Name: "something"));
 
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     private async Task<RoomModel> CreateRoomAsync(string name)

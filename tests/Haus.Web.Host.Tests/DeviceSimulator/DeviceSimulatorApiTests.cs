@@ -1,7 +1,6 @@
 using System;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
@@ -40,7 +39,10 @@ public class DeviceSimulatorApiTests
 
         Eventually.Assert(() =>
         {
-            discoveredEvent?.DeviceType.Should().Be(DeviceType.Light);
+            if (discoveredEvent != null)
+            {
+                Assert.Equal(DeviceType.Light, discoveredEvent.DeviceType);
+            }
         });
     }
 
@@ -59,7 +61,10 @@ public class DeviceSimulatorApiTests
         await _client.ResetDeviceSimulatorAsync();
         Eventually.Assert(() =>
         {
-            state?.Devices.Should().BeEmpty();
+            if (state != null)
+            {
+                Assert.Empty(state.Devices);
+            }
         });
     }
 
@@ -81,7 +86,10 @@ public class DeviceSimulatorApiTests
             async () =>
             {
                 var updatedRoom = await _client.GetRoomAsync(room.Id);
-                updatedRoom?.Lighting.State.Should().Be(LightingState.On);
+                if (updatedRoom != null)
+                {
+                    Assert.Equal(LightingState.On, updatedRoom.Lighting.State);
+                }
             },
             TimeSpan.FromSeconds(10).TotalMilliseconds
         );

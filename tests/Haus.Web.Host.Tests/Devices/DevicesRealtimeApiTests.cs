@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
@@ -36,7 +35,10 @@ public class DevicesRealtimeApiTests(HausWebHostApplicationFactory factory, ITes
             output.WriteLine("**************************************");
             output.WriteLine($"{HausJsonSerializer.Serialize(change)}");
             output.WriteLine("**************************************");
-            change?.Payload?.Device.Id.Should().Be(device.Id);
+            if (change?.Payload?.Device != null)
+            {
+                Assert.Equal(device.Id, change.Payload.Device.Id);
+            }
         });
     }
 }
