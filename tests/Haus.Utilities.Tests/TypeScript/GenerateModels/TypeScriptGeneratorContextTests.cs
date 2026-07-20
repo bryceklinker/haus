@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels;
 using Haus.Utilities.TypeScript.GenerateModels;
 using Xunit;
@@ -17,11 +16,9 @@ public class TypeScriptGeneratorContextTests
 
         var barrel = context.GetBarrel();
 
-        barrel.FileName.Should().Be("index.ts");
-        barrel
-            .Contents.Should()
-            .Contain("export * from './simple-model'")
-            .And.Contain("export * from './string'")
-            .And.Contain("export * from './object'");
+        Assert.Equal("index.ts", barrel.FileName);
+        Assert.Contains("export * from './simple-model'", barrel.Contents);
+        Assert.Contains("export * from './string'", barrel.Contents);
+        Assert.Contains("export * from './object'", barrel.Contents);
     }
 }

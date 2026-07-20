@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Core.Models.Devices;
 using Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 using Xunit;
@@ -19,7 +18,7 @@ public class SupportedDeviceTests
 
         var deviceOptions = supportedDevice.ToDeviceTypeOption();
 
-        deviceOptions.DeviceType.Should().Be(deviceType);
+        Assert.Equal(deviceType, deviceOptions.DeviceType);
     }
 
     [Fact]
@@ -29,8 +28,8 @@ public class SupportedDeviceTests
 
         var deviceOptions = supportedDevice.ToDeviceTypeOption();
 
-        deviceOptions.DeviceType.Should().HaveFlag(DeviceType.Light);
-        deviceOptions.DeviceType.Should().HaveFlag(DeviceType.TemperatureSensor);
-        deviceOptions.DeviceType.Should().HaveFlag(DeviceType.MotionSensor);
+        Assert.True(deviceOptions.DeviceType.HasFlag(DeviceType.Light));
+        Assert.True(deviceOptions.DeviceType.HasFlag(DeviceType.TemperatureSensor));
+        Assert.True(deviceOptions.DeviceType.HasFlag(DeviceType.MotionSensor));
     }
 }
