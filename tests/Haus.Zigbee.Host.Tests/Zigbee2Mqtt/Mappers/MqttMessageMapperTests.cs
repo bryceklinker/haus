@@ -1,5 +1,4 @@
 using System.Linq;
-using FluentAssertions;
 using Haus.Core.Models.Discovery;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Tests.Support;
@@ -46,7 +45,7 @@ public class MqttMessageTranslatorTests
 
         var result = _mapper.Map(message).Single();
 
-        result.Topic.Should().Be(HausEventsTopic);
+        Assert.Equal(HausEventsTopic, result.Topic);
     }
 
     [Fact]
@@ -56,7 +55,7 @@ public class MqttMessageTranslatorTests
 
         var result = _mapper.Map(message).Single();
 
-        result.Topic.Should().StartWith(Zigbee2MqttBaseTopic);
+        Assert.StartsWith(Zigbee2MqttBaseTopic, result.Topic);
     }
 
     [Fact]
@@ -66,6 +65,6 @@ public class MqttMessageTranslatorTests
 
         var result = _mapper.Map(message);
 
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 }

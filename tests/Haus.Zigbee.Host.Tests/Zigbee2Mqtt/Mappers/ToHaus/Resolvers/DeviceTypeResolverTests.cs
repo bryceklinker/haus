@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Core.Models.Devices;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Tests.Support;
@@ -23,7 +22,7 @@ public class DeviceTypeResolverTests
     {
         var meta = new Zigbee2MqttMetaBuilder().BuildMeta();
 
-        _resolver.Resolve(meta).Should().Be(DeviceType.Unknown);
+        Assert.Equal(DeviceType.Unknown, _resolver.Resolve(meta));
     }
 
     [Fact]
@@ -31,7 +30,7 @@ public class DeviceTypeResolverTests
     {
         var meta = new Zigbee2MqttMetaBuilder().WithModel("929002335001").WithVendor("Philips").BuildMeta();
 
-        _resolver.Resolve(meta).Should().Be(DeviceType.Light);
+        Assert.Equal(DeviceType.Light, _resolver.Resolve(meta));
     }
 
     [Fact]
@@ -40,11 +39,9 @@ public class DeviceTypeResolverTests
         var meta = new Zigbee2MqttMetaBuilder().WithModel("9290012607").WithVendor("Philips").BuildMeta();
 
         var deviceType = _resolver.Resolve(meta);
-        deviceType
-            .Should()
-            .HaveFlag(DeviceType.LightSensor)
-            .And.HaveFlag(DeviceType.MotionSensor)
-            .And.HaveFlag(DeviceType.TemperatureSensor);
+        Assert.True(deviceType.HasFlag(DeviceType.LightSensor));
+        Assert.True(deviceType.HasFlag(DeviceType.MotionSensor));
+        Assert.True(deviceType.HasFlag(DeviceType.TemperatureSensor));
     }
 
     [Fact]
@@ -52,11 +49,9 @@ public class DeviceTypeResolverTests
     {
         var deviceType = _resolver.Resolve("Philips", "9290012607");
 
-        deviceType
-            .Should()
-            .HaveFlag(DeviceType.LightSensor)
-            .And.HaveFlag(DeviceType.MotionSensor)
-            .And.HaveFlag(DeviceType.TemperatureSensor);
+        Assert.True(deviceType.HasFlag(DeviceType.LightSensor));
+        Assert.True(deviceType.HasFlag(DeviceType.MotionSensor));
+        Assert.True(deviceType.HasFlag(DeviceType.TemperatureSensor));
     }
 
     [Fact]
@@ -66,6 +61,6 @@ public class DeviceTypeResolverTests
 
         var deviceType = _resolver.Resolve(meta);
 
-        deviceType.Should().Be(DeviceType.Light);
+        Assert.Equal(DeviceType.Light, deviceType);
     }
 }

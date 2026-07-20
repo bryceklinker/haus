@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 using Xunit;
@@ -19,8 +18,8 @@ public class TemperatureChangedMapperTests
 
         var model = _mapper.Map(message);
 
-        model?.DeviceId.Should().Be("1234");
-        model?.Temperature.Should().Be(65);
+        Assert.Equal("1234", model?.DeviceId);
+        Assert.Equal(65, model?.Temperature);
     }
 
     [Fact]
@@ -28,6 +27,6 @@ public class TemperatureChangedMapperTests
     {
         var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
 
-        _mapper.Map(message).Should().BeNull();
+        Assert.Null(_mapper.Map(message));
     }
 }
