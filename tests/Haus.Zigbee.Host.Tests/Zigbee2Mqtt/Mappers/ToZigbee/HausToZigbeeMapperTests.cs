@@ -35,7 +35,7 @@ public class HausToZigbeeMapperTests
         var result = _mapper.Map(original).Single();
 
         result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join");
-        result.PayloadSegment.Should().BeEncodedString("true");
+        HausAssert.IsEncodedString("true", result.PayloadSegment);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class HausToZigbeeMapperTests
         var result = _mapper.Map(original).Single();
 
         result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join");
-        result.PayloadSegment.Should().BeEncodedString("false");
+        HausAssert.IsEncodedString("false", result.PayloadSegment);
     }
 
     [Fact]

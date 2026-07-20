@@ -61,7 +61,7 @@ public class MqttDiagnosticsMessageFactoryTests
     {
         var model = _factory.Create("idk", Array.Empty<byte>());
 
-        model.Id.Should().BeAGuid();
+        HausAssert.IsGuid(model.Id);
     }
 
     [Fact]
