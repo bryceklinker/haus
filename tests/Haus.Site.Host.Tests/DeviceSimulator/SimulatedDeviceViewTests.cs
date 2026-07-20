@@ -21,12 +21,12 @@ public class SimulatedDeviceViewTests : HausSiteTestContext
         var view = RenderWithDevice(device);
 
         var idField = view.FindMudTextFieldById<string>("id").Instance;
-        idField.Disabled.Should().BeTrue();
-        idField.Value.Should().Be(device.Id);
+        Assert.True(idField.Disabled);
+        Assert.Equal(device.Id, idField.Value);
 
         var deviceTypeField = view.FindMudTextFieldById<string>("deviceType").Instance;
-        deviceTypeField.Disabled.Should().BeTrue();
-        deviceTypeField.Value.Should().Be($"{DeviceType.LightSensor}");
+        Assert.True(deviceTypeField.Disabled);
+        Assert.Equal($"{DeviceType.LightSensor}", deviceTypeField.Value);
     }
 
     [Fact]
@@ -37,12 +37,12 @@ public class SimulatedDeviceViewTests : HausSiteTestContext
         var view = RenderWithDevice(device);
 
         var keyField = view.FindMudTextFieldById<string>("key").Instance;
-        keyField.Value.Should().Be("bill");
-        keyField.Disabled.Should().BeTrue();
+        Assert.Equal("bill", keyField.Value);
+        Assert.True(keyField.Disabled);
 
         var valueField = view.FindMudTextFieldById<string>("value").Instance;
-        valueField.Disabled.Should().BeTrue();
-        valueField.Value.Should().Be("bob");
+        Assert.True(valueField.Disabled);
+        Assert.Equal("bob", valueField.Value);
     }
 
     [Fact]
@@ -57,8 +57,8 @@ public class SimulatedDeviceViewTests : HausSiteTestContext
         var view = RenderWithDevice(device);
 
         var lighting = view.FindByComponent<LightingView>();
-        lighting.Instance.Lighting.Should().Be(device.Lighting);
-        lighting.Instance.Disabled.Should().BeTrue();
+        Assert.Equal(device.Lighting, lighting.Instance.Lighting);
+        Assert.True(lighting.Instance.Disabled);
     }
 
     [Fact]
@@ -73,8 +73,8 @@ public class SimulatedDeviceViewTests : HausSiteTestContext
         var view = RenderWithDevice(device);
 
         var toggle = view.FindByComponent<MudSwitch<bool>>();
-        toggle.Instance.Value.Should().BeTrue();
-        toggle.Instance.Disabled.Should().BeTrue();
+        Assert.True(toggle.Instance.Value);
+        Assert.True(toggle.Instance.Disabled);
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class SimulatedDeviceViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            request.Should().NotBeNull();
+            Assert.NotNull(request);
         });
     }
 

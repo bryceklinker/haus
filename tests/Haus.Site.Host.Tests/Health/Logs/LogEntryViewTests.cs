@@ -17,9 +17,9 @@ public class LogEntryViewTests : HausSiteTestContext
 
         var view = RenderLogView(logEntry);
 
-        view.Markup.Should().Contain(logEntry.Level);
-        view.Markup.Should().Contain(logEntry.Timestamp);
-        view.Markup.Should().Contain(logEntry.Message);
+        Assert.Contains(logEntry.Level, view.Markup);
+        Assert.Contains(logEntry.Timestamp, view.Markup);
+        Assert.Contains(logEntry.Message, view.Markup);
     }
 
     [Theory]
@@ -34,7 +34,7 @@ public class LogEntryViewTests : HausSiteTestContext
 
         var view = RenderLogView(logEntry);
 
-        view.FindByComponent<MudIcon>().Instance.Icon.Should().Be(icon);
+        Assert.Equal(icon, view.FindByComponent<MudIcon>().Instance.Icon);
     }
 
     private IRenderedComponent<LogEntryView> RenderLogView(LogEntryModel model)

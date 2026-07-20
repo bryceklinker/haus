@@ -1,3 +1,4 @@
+using System.Linq;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Site.Host.Devices.Detail;
@@ -20,11 +21,14 @@ public class DeviceDetailViewTests : HausSiteTestContext
             opts.Add(p => p.Device, device);
         });
 
-        page.FindMudTextFieldById<string>("name").Instance.GetState(x => x.Value).Should().Be(device.Name);
-        page.FindMudTextFieldById<DeviceType?>("deviceType").Instance.GetState(x => x.Value).Should().Be(device.DeviceType);
-        page.FindMudTextFieldById<string>("externalId").Instance.Value.Should().Be(device.ExternalId);
-        page.FindMudTextFieldById<LightType>("lightType").Instance.Value.Should().Be(device.LightType);
-        page.FindMudTextFieldById<long?>("roomId").Instance.Value.Should().Be(device.RoomId);
+        Assert.Equal(device.Name, page.FindMudTextFieldById<string>("name").Instance.GetState(x => x.Value));
+        Assert.Equal(
+            device.DeviceType,
+            page.FindMudTextFieldById<DeviceType?>("deviceType").Instance.GetState(x => x.Value)
+        );
+        Assert.Equal(device.ExternalId, page.FindMudTextFieldById<string>("externalId").Instance.Value);
+        Assert.Equal(device.LightType, page.FindMudTextFieldById<LightType>("lightType").Instance.Value);
+        Assert.Equal(device.RoomId, page.FindMudTextFieldById<long?>("roomId").Instance.Value);
     }
 
     [Fact]
@@ -40,8 +44,8 @@ public class DeviceDetailViewTests : HausSiteTestContext
             opts.Add(p => p.Device, device);
         });
 
-        page.FindMudTextFieldById<string>("key").Instance.Value.Should().Be("Watts");
-        page.FindMudTextFieldById<string>("value").Instance.Value.Should().Be("Lots");
+        Assert.Equal("Watts", page.FindMudTextFieldById<string>("key").Instance.Value);
+        Assert.Equal("Lots", page.FindMudTextFieldById<string>("value").Instance.Value);
     }
 
     [Fact]
@@ -62,6 +66,6 @@ public class DeviceDetailViewTests : HausSiteTestContext
             opts.Add(p => p.Device, device);
         });
 
-        page.FindAllByComponent<MudListItem<MetadataModel>>().Should().HaveCount(3);
+        Assert.Equal(3, page.FindAllByComponent<MudListItem<MetadataModel>>().Count());
     }
 }

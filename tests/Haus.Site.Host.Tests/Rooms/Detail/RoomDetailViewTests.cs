@@ -20,8 +20,11 @@ public class RoomDetailViewTests : HausSiteTestContext
 
         var view = RenderDetail(room);
 
-        view.FindMudTextFieldById<string?>("name").Instance.GetState(x => x.Value).Should().Be(room.Name);
-        view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.GetState(x => x.Value).Should().Be(room.OccupancyTimeoutInSeconds);
+        Assert.Equal(room.Name, view.FindMudTextFieldById<string?>("name").Instance.GetState(x => x.Value));
+        Assert.Equal(
+            room.OccupancyTimeoutInSeconds,
+            view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.GetState(x => x.Value)
+        );
     }
 
     [Fact]
@@ -44,8 +47,8 @@ public class RoomDetailViewTests : HausSiteTestContext
         await Eventually.AssertAsync(async () =>
         {
             var model = request?.Content != null ? await request.Content.ReadFromJsonAsync<RoomModel>() : null;
-            model?.OccupancyTimeoutInSeconds.Should().Be(500);
-            model?.Name.Should().Be("bill");
+            Assert.Equal(500, model?.OccupancyTimeoutInSeconds);
+            Assert.Equal("bill", model?.Name);
         });
     }
 
@@ -76,7 +79,7 @@ public class RoomDetailViewTests : HausSiteTestContext
                     ? null
                     : await lightingRequest.Content.ReadFromJsonAsync<LightingModel>();
 
-            newLighting.Should().BeEquivalentTo(lighting);
+            Assert.Equal(lighting, newLighting);
         });
     }
 
