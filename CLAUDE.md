@@ -8,7 +8,7 @@ HAUS is a home automation system that runs on the user's personal network (only 
 
 ## System requirements
 
-- .NET (SDK pinned in `global.json`, currently 9.0.200, `rollForward: latestMinor`)
+- .NET (SDK pinned in `global.json`, currently 10.0.100, `rollForward: latestMinor`)
 - Node/Yarn (Node version pinned in `.nvmrc`)
 - An MQTT broker (`brew install mosquitto` on macOS; `docker-compose up haus_mqtt` otherwise)
 
@@ -69,7 +69,7 @@ In Docker Compose, `haus_zigbee` and `haus_web` both connect to `haus_mqtt`; `ha
 
 ### CQRS core (`Haus.Cqrs`)
 
-A thin CQRS/mediator layer built on MediatR, exposed through a single facade `IHausBus` (`Haus.Cqrs/HausBus.cs`) with four operations: `ExecuteCommandAsync`, `ExecuteQueryAsync`, `PublishAsync` (events), and `Enqueue`/`FlushAsync` (domain events, inherited from `IDomainEventBus`). Each of Commands/Queries/Events/DomainEvents has its own bus + logging decorator (`LoggingCommandBus`, `LoggingQueryBus`, etc., all built on the shared `LoggingBus` base which times execution and logs start/finish/error). Consumers should only ever depend on `IHausBus`, not the individual sub-buses.
+A thin, dependency-free CQRS/mediator layer with its own reflection-based handler discovery and dispatch (`HandlerInvoker`, `ServiceCollectionExtensions.AddHausCqrs`) — no third-party mediator library. It's exposed through a single facade `IHausBus` (`Haus.Cqrs/HausBus.cs`) with four operations: `ExecuteCommandAsync`, `ExecuteQueryAsync`, `PublishAsync` (events), and `Enqueue`/`FlushAsync` (domain events, inherited from `IDomainEventBus`). Each of Commands/Queries/Events/DomainEvents has its own bus + logging decorator (`LoggingCommandBus`, `LoggingQueryBus`, etc., all built on the shared `LoggingBus` base which times execution and logs start/finish/error). Consumers should only ever depend on `IHausBus`, not the individual sub-buses. Commands and queries require exactly one registered handler (throws if zero or multiple); events and domain events dispatch to zero-to-many handlers.
 
 ### Domain layer (`Haus.Core`)
 
