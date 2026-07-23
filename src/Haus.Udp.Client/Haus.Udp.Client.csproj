@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../../dependencies/framework-version.xml"/>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftPackageVersion)"/>

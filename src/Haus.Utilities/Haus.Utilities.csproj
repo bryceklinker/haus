@@ -1,6 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../../dependencies/version.xml" />
-    <Import Project="../../dependencies/framework-version.xml" />
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>

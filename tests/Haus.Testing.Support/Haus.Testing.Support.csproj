@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../../dependencies/framework-version.xml"/>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Haus.Core\Haus.Core.csproj"/>
