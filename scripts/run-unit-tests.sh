@@ -21,6 +21,7 @@ function main() {
   
   run_dotnet_test "Haus.Core.Models.Tests"
   run_dotnet_test "Haus.Core.Tests"
+  run_dotnet_test "Haus.Cqrs.Tests"
   run_dotnet_test "Haus.Utilities.Tests"
   run_dotnet_test "Haus.Mqtt.Client.Tests"
   run_dotnet_test "Haus.Web.Host.Tests"
