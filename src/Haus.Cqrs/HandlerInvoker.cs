@@ -56,6 +56,7 @@ internal static class HandlerInvoker
         }
         catch (TargetInvocationException e) when (e.InnerException is not null)
         {
+            // Throw() always throws; this satisfies the compiler's control-flow analysis.
             ExceptionDispatchInfo.Capture(e.InnerException).Throw();
             throw;
         }
