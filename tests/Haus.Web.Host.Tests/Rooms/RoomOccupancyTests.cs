@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Sensors.Motion;
@@ -41,9 +40,10 @@ public class RoomOccupancyTests
 
         Eventually.Assert(() =>
         {
-            _roomLightingCommands
-                .Should()
-                .NotContain(cmd => cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.Off);
+            Assert.DoesNotContain(
+                _roomLightingCommands,
+                cmd => cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.Off
+            );
         });
     }
 
@@ -59,7 +59,7 @@ public class RoomOccupancyTests
 
         Eventually.Assert(() =>
         {
-            _roomLightingCommands.Should().Contain(cmd => cmd.Lighting.State == LightingState.Off);
+            Assert.Contains(_roomLightingCommands, cmd => cmd.Lighting.State == LightingState.Off);
         });
     }
 
@@ -73,7 +73,7 @@ public class RoomOccupancyTests
 
         Eventually.Assert(() =>
         {
-            _roomLightingCommands.Should().Contain(cmd => cmd.Lighting.State == LightingState.Off);
+            Assert.Contains(_roomLightingCommands, cmd => cmd.Lighting.State == LightingState.Off);
         });
     }
 

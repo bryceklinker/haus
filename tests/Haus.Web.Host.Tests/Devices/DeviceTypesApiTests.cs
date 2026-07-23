@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.Devices;
 using Haus.Web.Host.Tests.Support;
@@ -18,7 +17,10 @@ public class DeviceTypesApiTests(HausWebHostApplicationFactory factory)
     {
         var types = await _client.GetDeviceTypesAsync();
 
-        types.Count.Should().Be(Enum.GetValues<DeviceType>().Length);
-        types.Items.Should().Contain(Enum.GetValues<DeviceType>());
+        Assert.Equal(Enum.GetValues<DeviceType>().Length, types.Count);
+        foreach (var deviceType in Enum.GetValues<DeviceType>())
+        {
+            Assert.Contains(deviceType, types.Items);
+        }
     }
 }

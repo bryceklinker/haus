@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Testing.Support;
@@ -35,7 +34,10 @@ public class DeviceSimulatorRealtimeApiTests
 
         Eventually.Assert(() =>
         {
-            state?.Devices.Should().HaveCount(1);
+            if (state != null)
+            {
+                Assert.Single(state.Devices);
+            }
         });
     }
 }

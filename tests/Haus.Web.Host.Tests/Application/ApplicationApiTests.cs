@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Web.Host.Tests.Support;
 using Xunit;
@@ -16,7 +15,10 @@ public class ApplicationApiTests(HausWebHostApplicationFactory factory)
     {
         var latestVersion = await _client.GetLatestVersionAsync();
 
-        latestVersion?.Version.Should().NotBeNullOrWhiteSpace();
+        if (latestVersion != null)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(latestVersion.Version));
+        }
     }
 
     [Fact]
@@ -24,8 +26,8 @@ public class ApplicationApiTests(HausWebHostApplicationFactory factory)
     {
         var result = await _client.GetLatestPackagesAsync();
 
-        result.Count.Should().BeGreaterThan(0);
-        result.Items.Should().HaveCountGreaterThan(0);
+        Assert.True(result.Count > 0);
+        Assert.True(result.Items.Length > 0);
     }
 
     [Fact]
@@ -35,7 +37,10 @@ public class ApplicationApiTests(HausWebHostApplicationFactory factory)
 
         var response = await _client.DownloadLatestPackageAsync(packagesResult.Items[0].Id);
 
-        response.IsSuccessStatusCode.Should().BeTrue();
-        response.Content.Headers.ContentType?.MediaType.Should().Be("application/octet-stream");
+        Assert.True(response.IsSuccessStatusCode);
+        if (response.Content.Headers.ContentType != null)
+        {
+            Assert.Equal("application/octet-stream", response.Content.Headers.ContentType.MediaType);
+        }
     }
 }
