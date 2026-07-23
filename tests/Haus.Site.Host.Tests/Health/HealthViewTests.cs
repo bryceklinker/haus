@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Haus.Core.Models;
 using Haus.Core.Models.Common;
@@ -24,7 +25,7 @@ public class HealthViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            subscriber.IsStarted.Should().BeTrue();
+            Assert.True(subscriber.IsStarted);
         });
     }
 
@@ -36,7 +37,7 @@ public class HealthViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<LogsView>().Should().HaveCount(1);
+            Assert.Equal(1, view.FindAllByComponent<LogsView>().Count());
         });
     }
 
@@ -48,7 +49,7 @@ public class HealthViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<EventsView>().Should().HaveCount(1);
+            Assert.Equal(1, view.FindAllByComponent<EventsView>().Count());
         });
     }
 
@@ -62,7 +63,7 @@ public class HealthViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            NavigationManager.Uri.Should().EndWith("/health/diagnostics");
+            Assert.EndsWith("/health/diagnostics", NavigationManager.Uri);
         });
     }
 

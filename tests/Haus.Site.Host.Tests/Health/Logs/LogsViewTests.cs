@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Logs;
@@ -24,7 +25,7 @@ public class LogsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
+            Assert.Equal(1, view.FindAllByComponent<MudProgressCircular>().Count());
         });
     }
 
@@ -42,7 +43,7 @@ public class LogsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<LogEntryView>().Should().HaveCount(3);
+            Assert.Equal(3, view.FindAllByComponent<LogEntryView>().Count());
         });
     }
 
@@ -63,7 +64,7 @@ public class LogsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            requestCount.Should().BeGreaterThan(1);
+            Assert.True(requestCount > 1);
         });
     }
 
@@ -85,7 +86,7 @@ public class LogsViewTests : HausSiteTestContext
         await Task.Delay(TimeSpan.FromMilliseconds(1200));
         Eventually.Assert(() =>
         {
-            requestCount.Should().Be(2);
+            Assert.Equal(2, requestCount);
         });
     }
 }

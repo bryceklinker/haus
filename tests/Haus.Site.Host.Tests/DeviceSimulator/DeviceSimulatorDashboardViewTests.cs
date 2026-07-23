@@ -1,5 +1,5 @@
+using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions.Common;
 using Haus.Core.Models;
 using Haus.Core.Models.DeviceSimulator;
 using Haus.Site.Host.DeviceSimulator;
@@ -28,7 +28,7 @@ public class DeviceSimulatorDashboardViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
+            Assert.Equal(1, view.FindAllByComponent<MudProgressCircular>().Count());
         });
     }
 
@@ -39,7 +39,7 @@ public class DeviceSimulatorDashboardViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            _simulatorSubscriber.IsStarted.Should().BeTrue();
+            Assert.True(_simulatorSubscriber.IsStarted);
         });
     }
 
@@ -61,7 +61,7 @@ public class DeviceSimulatorDashboardViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<SimulatedDeviceView>().Should().HaveCount(3);
+            Assert.Equal(3, view.FindAllByComponent<SimulatedDeviceView>().Count());
         });
     }
 
@@ -77,7 +77,7 @@ public class DeviceSimulatorDashboardViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            NavigationManager.Uri.Should().EndWith("/device-simulator/add");
+            Assert.EndsWith("/device-simulator/add", NavigationManager.Uri);
         });
     }
 }

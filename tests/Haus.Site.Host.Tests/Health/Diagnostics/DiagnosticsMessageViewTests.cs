@@ -27,10 +27,10 @@ public class DiagnosticsMessageViewTests : HausSiteTestContext
             opts.Add(c => c.Message, message);
         });
 
-        view.Markup.Should().Contain(message.Id);
-        view.Markup.Should().Contain(message.Topic);
-        view.Markup.Should().Contain("2023-03-26");
-        view.Markup.Should().Contain("three");
+        Assert.Contains(message.Id, view.Markup);
+        Assert.Contains(message.Topic, view.Markup);
+        Assert.Contains("2023-03-26", view.Markup);
+        Assert.Contains("three", view.Markup);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class DiagnosticsMessageViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindByComponent<MudButton>().Instance.Disabled.Should().BeTrue();
+            Assert.True(view.FindByComponent<MudButton>().Instance.Disabled);
         });
         await invokeTask;
     }
@@ -76,7 +76,7 @@ public class DiagnosticsMessageViewTests : HausSiteTestContext
             var content =
                 req?.Content != null ? await req.Content.ReadFromJsonAsync<MqttDiagnosticsMessageModel>() : null;
 
-            content.Should().BeEquivalentTo(message);
+            Assert.Equivalent(message, content);
         });
     }
 }

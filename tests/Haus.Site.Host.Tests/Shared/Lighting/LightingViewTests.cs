@@ -17,7 +17,7 @@ public class LightingViewTests : HausSiteTestContext
     {
         var view = RenderLighting(null);
 
-        view.FindByComponent<MudText>().Markup.Should().Contain("no lighting");
+        Assert.Contains("no lighting", view.FindByComponent<MudText>().Markup);
     }
 
     [Fact]
@@ -31,12 +31,12 @@ public class LightingViewTests : HausSiteTestContext
         };
         var view = RenderLighting(lighting, disabled: true);
 
-        view.FindByComponent<MudSwitch<bool>>().Instance.Disabled.Should().BeTrue();
-        FindSliderById<double>(view, "level").Instance.Disabled.Should().BeTrue();
-        FindSliderById<double>(view, "temperature").Instance.Disabled.Should().BeTrue();
-        FindSliderById<byte>(view, "red").Instance.Disabled.Should().BeTrue();
-        FindSliderById<byte>(view, "green").Instance.Disabled.Should().BeTrue();
-        FindSliderById<byte>(view, "blue").Instance.Disabled.Should().BeTrue();
+        Assert.True(view.FindByComponent<MudSwitch<bool>>().Instance.Disabled);
+        Assert.True(FindSliderById<double>(view, "level").Instance.Disabled);
+        Assert.True(FindSliderById<double>(view, "temperature").Instance.Disabled);
+        Assert.True(FindSliderById<byte>(view, "red").Instance.Disabled);
+        Assert.True(FindSliderById<byte>(view, "green").Instance.Disabled);
+        Assert.True(FindSliderById<byte>(view, "blue").Instance.Disabled);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var state = view.FindByComponent<MudSwitch<bool>>();
-        state.Instance.GetState(x => x.Value).Should().Be(true);
+        Assert.Equal(true, state.Instance.GetState(x => x.Value));
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class LightingViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            newLighting?.State.Should().Be(LightingState.Off);
+            Assert.Equal(LightingState.Off, newLighting?.State);
         });
     }
 
@@ -79,9 +79,9 @@ public class LightingViewTests : HausSiteTestContext
 
         var level = FindSliderById<double>(view, "level");
 
-        level.Instance.GetState(x => x.Value).Should().Be(60);
-        level.Instance.Min.Should().Be(20);
-        level.Instance.Max.Should().Be(80);
+        Assert.Equal(60, level.Instance.GetState(x => x.Value));
+        Assert.Equal(20, level.Instance.Min);
+        Assert.Equal(80, level.Instance.Max);
     }
 
     [Fact]
@@ -94,9 +94,9 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var temp = FindSliderById<double>(view, "temperature");
-        temp.Instance.Min.Should().Be(2000);
-        temp.Instance.Value.Should().Be(4700);
-        temp.Instance.Max.Should().Be(6500);
+        Assert.Equal(2000, temp.Instance.Min);
+        Assert.Equal(4700, temp.Instance.Value);
+        Assert.Equal(6500, temp.Instance.Max);
     }
 
     [Fact]
@@ -106,9 +106,9 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var red = FindSliderById<byte>(view, "red");
-        red.Instance.Min.Should().Be(0);
-        red.Instance.Value.Should().Be(100);
-        red.Instance.Max.Should().Be(255);
+        Assert.Equal(0, red.Instance.Min);
+        Assert.Equal(100, red.Instance.Value);
+        Assert.Equal(255, red.Instance.Max);
     }
 
     [Fact]
@@ -118,9 +118,9 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var green = FindSliderById<byte>(view, "green");
-        green.Instance.Min.Should().Be(0);
-        green.Instance.Value.Should().Be(50);
-        green.Instance.Max.Should().Be(255);
+        Assert.Equal(0, green.Instance.Min);
+        Assert.Equal(50, green.Instance.Value);
+        Assert.Equal(255, green.Instance.Max);
     }
 
     [Fact]
@@ -130,9 +130,9 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var blue = FindSliderById<byte>(view, "blue");
-        blue.Instance.Min.Should().Be(0);
-        blue.Instance.Value.Should().Be(150);
-        blue.Instance.Max.Should().Be(255);
+        Assert.Equal(0, blue.Instance.Min);
+        Assert.Equal(150, blue.Instance.Value);
+        Assert.Equal(255, blue.Instance.Max);
     }
 
     [Fact]
@@ -149,7 +149,7 @@ public class LightingViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            changed?.Level.Value.Should().Be(40);
+            Assert.Equal(40, changed?.Level.Value);
         });
     }
 
@@ -170,7 +170,7 @@ public class LightingViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            changed?.Temperature?.Value.Should().Be(6000);
+            Assert.Equal(6000, changed?.Temperature?.Value);
         });
     }
 
@@ -190,7 +190,7 @@ public class LightingViewTests : HausSiteTestContext
             await Task.Delay(400);
         });
 
-        timesChanged.Should().Be(1);
+        Assert.Equal(1, timesChanged);
     }
 
     [Fact]
@@ -214,7 +214,7 @@ public class LightingViewTests : HausSiteTestContext
             await Task.Delay(400);
         });
 
-        timesChanged.Should().Be(1);
+        Assert.Equal(1, timesChanged);
     }
 
     private IRenderedComponent<LightingView> RenderLighting(

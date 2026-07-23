@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bunit;
 using Bunit.TestDoubles;
-using FluentAssertions.Common;
 using Haus.Api.Client;
 using Haus.Site.Host.Shared.Realtime;
 using Haus.Site.Host.Tests.Support.Http;

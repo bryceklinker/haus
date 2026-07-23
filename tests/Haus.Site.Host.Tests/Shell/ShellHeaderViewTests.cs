@@ -17,7 +17,7 @@ public class ShellHeaderViewTests : HausSiteTestContext
 
         await header.FindByTag("button").ClickAsync(new MouseEventArgs());
 
-        toggled.Should().BeTrue();
+        Assert.True(toggled);
     }
 
     [Fact]
@@ -32,6 +32,6 @@ public class ShellHeaderViewTests : HausSiteTestContext
             await header.FindComponent<MudSwitch<bool>>().Instance.ValueChanged.InvokeAsync(true);
         });
 
-        themeMode.Should().Be(ThemeMode.Dark);
+        Assert.Equal(ThemeMode.Dark, themeMode);
     }
 }

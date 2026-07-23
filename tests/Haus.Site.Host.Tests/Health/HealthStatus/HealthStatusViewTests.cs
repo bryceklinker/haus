@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Haus.Core.Models;
 using Haus.Core.Models.Health;
@@ -25,7 +26,7 @@ public class HealthStatusViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            _healthSubscriber.IsStarted.Should().BeTrue();
+            Assert.True(_healthSubscriber.IsStarted);
         });
     }
 
@@ -38,7 +39,7 @@ public class HealthStatusViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
+            Assert.Equal(1, view.FindAllByComponent<MudProgressCircular>().Count());
         });
     }
 
@@ -59,7 +60,7 @@ public class HealthStatusViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             var paper = view.FindByComponent<MudText>(opts => opts.WithText($"{report.Status}"));
-            paper.Instance.Style.Should().Contain($"background-color: {color}");
+            Assert.Contains($"background-color: {color}", paper.Instance.Style);
         });
     }
 
@@ -81,7 +82,7 @@ public class HealthStatusViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudCollapse>().Should().HaveCount(3);
+            Assert.Equal(3, view.FindAllByComponent<MudCollapse>().Count());
         });
     }
 }

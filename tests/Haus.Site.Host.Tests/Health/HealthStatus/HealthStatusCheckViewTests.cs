@@ -26,9 +26,9 @@ public class HealthStatusCheckViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindMudTextFieldById<string>("description").GetValue().Should().Be("hello");
-            view.FindMudTextFieldById<double?>("duration").GetValue().Should().Be(9);
-            view.FindMudTextFieldById<string>("error").GetValue().Should().Be("bad things");
+            Assert.Equal("hello", view.FindMudTextFieldById<string>("description").GetValue());
+            Assert.Equal(9, view.FindMudTextFieldById<double?>("duration").GetValue());
+            Assert.Equal("bad things", view.FindMudTextFieldById<string>("error").GetValue());
         });
     }
 
@@ -51,7 +51,7 @@ public class HealthStatusCheckViewTests : HausSiteTestContext
         {
             var panel = view.FindByComponent<MudExpansionPanel>();
             var title = panel.FindByComponent<MudPaper>(opts => opts.WithText(check.Name));
-            title.Instance.Style.Should().Contain($"background-color: {color}");
+            Assert.Contains($"background-color: {color}", title.Instance.Style);
         });
     }
 }

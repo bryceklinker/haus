@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            page.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
+            Assert.Equal(1, page.FindAllByComponent<MudProgressCircular>().Count());
         });
     }
 
@@ -56,7 +57,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            _devicesSubscriber.IsStarted.Should().BeTrue();
+            Assert.True(_devicesSubscriber.IsStarted);
         });
     }
 
@@ -86,7 +87,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            page.FindAllByComponent<MudDropZone<DeviceModel>>().Should().HaveCount(3);
+            Assert.Equal(3, page.FindAllByComponent<MudDropZone<DeviceModel>>().Count());
         });
     }
 
@@ -125,7 +126,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            page.FindAllByComponent<MudPaper>().Should().HaveCount(4);
+            Assert.Equal(4, page.FindAllByComponent<MudPaper>().Count());
         });
     }
 
@@ -161,7 +162,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         await Eventually.AssertAsync(async () =>
         {
             var content = postRequest?.Content != null ? await postRequest.Content.ReadFromJsonAsync<long[]>() : [];
-            content.Should().Contain(76L);
+            Assert.Contains(76L, content);
         });
     }
 
@@ -177,7 +178,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudPaper>(opts => opts.WithText(device.ExternalId)).Should().HaveCount(1);
+            Assert.Equal(1, view.FindAllByComponent<MudPaper>(opts => opts.WithText(device.ExternalId)).Count());
         });
     }
 }

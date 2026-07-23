@@ -21,10 +21,10 @@ public class LightingConstraintsViewTests : HausSiteTestContext
 
         var view = RenderConstraints(model);
 
-        view.FindMudTextFieldById<double>("minLevel").GetValue().Should().Be(20);
-        view.FindMudTextFieldById<double>("maxLevel").GetValue().Should().Be(80);
-        view.FindMudTextFieldById<double?>("minTemperature").GetValue().Should().Be(4000);
-        view.FindMudTextFieldById<double?>("maxTemperature").GetValue().Should().Be(8000);
+        Assert.Equal(20, view.FindMudTextFieldById<double>("minLevel").GetValue());
+        Assert.Equal(80, view.FindMudTextFieldById<double>("maxLevel").GetValue());
+        Assert.Equal(4000, view.FindMudTextFieldById<double?>("minTemperature").GetValue());
+        Assert.Equal(8000, view.FindMudTextFieldById<double?>("maxTemperature").GetValue());
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class LightingConstraintsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            updated.Should().BeEquivalentTo(model with { MinLevel = 30 });
+            Assert.Equal(model with { MinLevel = 30 }, updated);
         });
     }
 
@@ -55,7 +55,7 @@ public class LightingConstraintsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            updated.Should().BeEquivalentTo(model with { MaxLevel = 80 });
+            Assert.Equal(model with { MaxLevel = 80 }, updated);
         });
     }
 
@@ -71,7 +71,7 @@ public class LightingConstraintsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            updated.Should().BeEquivalentTo(model with { MinTemperature = 4000 });
+            Assert.Equal(model with { MinTemperature = 4000 }, updated);
         });
     }
 
@@ -87,7 +87,7 @@ public class LightingConstraintsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            updated.Should().BeEquivalentTo(model with { MaxTemperature = 7000 });
+            Assert.Equal(model with { MaxTemperature = 7000 }, updated);
         });
     }
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Haus.Core.Models;
 using Haus.Core.Models.Diagnostics;
@@ -25,7 +26,7 @@ public class DiagnosticsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            _diagnosticsSubscriber.IsStarted.Should().BeTrue();
+            Assert.True(_diagnosticsSubscriber.IsStarted);
         });
     }
 
@@ -37,7 +38,7 @@ public class DiagnosticsViewTests : HausSiteTestContext
         var view = RenderView<DiagnosticsView>();
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
+            Assert.Equal(1, view.FindAllByComponent<MudProgressCircular>().Count());
         });
     }
 
@@ -60,7 +61,7 @@ public class DiagnosticsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<DiagnosticsMessageView>().Should().HaveCount(3);
+            Assert.Equal(3, view.FindAllByComponent<DiagnosticsMessageView>().Count());
         });
     }
 }
