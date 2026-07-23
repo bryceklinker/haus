@@ -1,5 +1,4 @@
 using System;
-using FluentAssertions;
 using Haus.Core.Common.Events;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Events;
@@ -20,7 +19,7 @@ public class RoutableHausEventFactoryTest
 
         var routableEvent = _factory.Create(bytes);
 
-        routableEvent.Should().BeOfType<RoutableEvent<DeviceDiscoveredEvent>>();
+        Assert.IsType<RoutableEvent<DeviceDiscoveredEvent>>(routableEvent);
     }
 
     [Fact]
@@ -30,7 +29,7 @@ public class RoutableHausEventFactoryTest
 
         var routableEvent = _factory.Create(bytes);
 
-        routableEvent.Should().BeOfType<RoutableEvent<MultiSensorChanged>>();
+        Assert.IsType<RoutableEvent<MultiSensorChanged>>(routableEvent);
     }
 
     [Fact]
@@ -40,7 +39,7 @@ public class RoutableHausEventFactoryTest
 
         var routableEvent = _factory.Create(bytes);
 
-        routableEvent.Should().BeOfType<RoutableEvent<OccupancyChangedModel>>();
+        Assert.IsType<RoutableEvent<OccupancyChangedModel>>(routableEvent);
     }
 
     [Fact]
@@ -50,6 +49,6 @@ public class RoutableHausEventFactoryTest
 
         var routableEvent = _factory.Create(bytes);
 
-        routableEvent.Should().BeNull();
+        Assert.Null(routableEvent);
     }
 }

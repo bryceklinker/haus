@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.DeviceSimulator.Commands;
 using Haus.Core.DeviceSimulator.Entities;
 using Haus.Core.DeviceSimulator.Events;
@@ -36,11 +35,8 @@ public class TriggerOccupancyChangedHandlerTests
     {
         await _hausBus.ExecuteCommandAsync(new TriggerOccupancyChangedCommand(_simulatedDeviceId));
 
-        _hausBus
-            .GetPublishedEvents<SimulatedEvent>()
-            .Should()
-            .HaveCount(1)
-            .And.Contain(e => e.HausEvent is HausEvent<OccupancyChangedModel>);
+        var simulatedEvent = Assert.Single(_hausBus.GetPublishedEvents<SimulatedEvent>());
+        Assert.True(simulatedEvent.HausEvent is HausEvent<OccupancyChangedModel>);
     }
 
     [Fact]
@@ -48,7 +44,7 @@ public class TriggerOccupancyChangedHandlerTests
     {
         await _hausBus.ExecuteCommandAsync(new TriggerOccupancyChangedCommand(_simulatedDeviceId));
 
-        _simulatorStore.GetDeviceById(_simulatedDeviceId)?.IsOccupied.Should().BeTrue();
+        Assert.True(_simulatorStore.GetDeviceById(_simulatedDeviceId)?.IsOccupied);
     }
 
     [Fact]
@@ -56,6 +52,6 @@ public class TriggerOccupancyChangedHandlerTests
     {
         var act = () => _hausBus.ExecuteCommandAsync(new TriggerOccupancyChangedCommand($"{Guid.NewGuid()}"));
 
-        await act.Should().ThrowAsync<SimulatorNotFoundException>();
+        await Assert.ThrowsAsync<SimulatorNotFoundException>(act);
     }
 }

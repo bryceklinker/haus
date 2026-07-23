@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Xunit;
@@ -19,16 +18,15 @@ public class LightingEntityTests
 
         var lighting = LightingEntity.FromModel(model);
 
-        lighting
-            .Should()
-            .BeEquivalentTo(
-                new LightingEntity(
-                    LightingState.On,
-                    new LevelLightingEntity(43.12, 10, 90),
-                    new TemperatureLightingEntity(78, 0, 1000),
-                    new ColorLightingEntity(12, 3, 6)
-                )
-            );
+        Assert.Equal(
+            new LightingEntity(
+                LightingState.On,
+                new LevelLightingEntity(43.12, 10, 90),
+                new TemperatureLightingEntity(78, 0, 1000),
+                new ColorLightingEntity(12, 3, 6)
+            ),
+            lighting
+        );
     }
 
     [Fact]
@@ -44,7 +42,7 @@ public class LightingEntityTests
         var result = current.CalculateTarget(desired);
 
         const double expected = desiredLevel * currentMaxLevelConstraint / desiredMaxLevelConstraint;
-        result?.Level.Should().BeEquivalentTo(new LevelLightingEntity(expected, 0, currentMaxLevelConstraint));
+        Assert.Equal(new LevelLightingEntity(expected, 0, currentMaxLevelConstraint), result?.Level);
     }
 
     [Fact]
@@ -64,9 +62,7 @@ public class LightingEntityTests
         var result = current.CalculateTarget(desired);
 
         const double expected = desiredTemperature * currentMaxTemperatureConstraint / desiredMaxTemperatureConstraint;
-        result
-            ?.Temperature.Should()
-            .BeEquivalentTo(new TemperatureLightingEntity(expected, 0, currentMaxTemperatureConstraint));
+        Assert.Equal(new TemperatureLightingEntity(expected, 0, currentMaxTemperatureConstraint), result?.Temperature);
     }
 
     [Fact]
@@ -77,7 +73,7 @@ public class LightingEntityTests
 
         var result = current.CalculateTarget(desired);
 
-        result?.Level.Should().BeEquivalentTo(new LevelLightingEntity(87, 87));
+        Assert.Equal(new LevelLightingEntity(87, 87), result?.Level);
     }
 
     [Fact]
@@ -88,7 +84,7 @@ public class LightingEntityTests
 
         var result = current.CalculateTarget(desired);
 
-        result?.Level.Should().BeEquivalentTo(new LevelLightingEntity(100, 100, 1000));
+        Assert.Equal(new LevelLightingEntity(100, 100, 1000), result?.Level);
     }
 
     [Fact]
@@ -102,7 +98,7 @@ public class LightingEntityTests
 
         var result = current.CalculateTarget(target);
 
-        result?.Temperature.Should().BeNull();
+        Assert.Null(result?.Temperature);
     }
 
     [Fact]
@@ -113,7 +109,7 @@ public class LightingEntityTests
 
         var result = current.CalculateTarget(target);
 
-        result?.Color.Should().BeNull();
+        Assert.Null(result?.Color);
     }
 
     [Fact]
@@ -124,7 +120,7 @@ public class LightingEntityTests
 
         var result = current.CalculateTarget(desired);
 
-        result.Should().NotBeSameAs(current);
+        Assert.NotSame(current, result);
     }
 
     [Fact]
@@ -135,9 +131,9 @@ public class LightingEntityTests
 
         var converted = current.ConvertToConstraints(model);
 
-        converted?.Level?.Value.Should().Be(125.5);
-        converted?.Level?.Min.Should().Be(1);
-        converted?.Level?.Max.Should().Be(251);
+        Assert.Equal(125.5, converted?.Level?.Value);
+        Assert.Equal(1, converted?.Level?.Min);
+        Assert.Equal(251, converted?.Level?.Max);
     }
 
     [Fact]
@@ -148,9 +144,9 @@ public class LightingEntityTests
 
         var converted = current.ConvertToConstraints(model);
 
-        converted?.Temperature?.Value.Should().Be(190.5);
-        converted?.Temperature?.Min.Should().Be(1);
-        converted?.Temperature?.Max.Should().Be(254);
+        Assert.Equal(190.5, converted?.Temperature?.Value);
+        Assert.Equal(1, converted?.Temperature?.Min);
+        Assert.Equal(254, converted?.Temperature?.Max);
     }
 
     [Fact]
@@ -165,6 +161,6 @@ public class LightingEntityTests
 
         var converted = current.ConvertToConstraints(model);
 
-        converted?.Color.Should().BeEquivalentTo(new ColorLightingEntity(123, 123, 123));
+        Assert.Equal(new ColorLightingEntity(123, 123, 123), converted?.Color);
     }
 }

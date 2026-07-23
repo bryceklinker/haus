@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Discovery.Commands;
 using Haus.Core.Models.Discovery;
 using Haus.Testing.Support;
@@ -16,6 +15,6 @@ public class SyncDiscoveryCommandHandlerTests
     {
         await _hausBus.ExecuteCommandAsync(new SyncDiscoveryCommand());
 
-        _hausBus.GetPublishedHausCommands<SyncDiscoveryModel>().Should().HaveCount(1);
+        Assert.Single(_hausBus.GetPublishedHausCommands<SyncDiscoveryModel>());
     }
 }

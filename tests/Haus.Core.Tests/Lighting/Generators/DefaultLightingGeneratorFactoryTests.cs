@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Core.Lighting.Generators;
 using Haus.Core.Models.Devices;
 using Xunit;
@@ -12,7 +11,7 @@ public class DefaultLightingGeneratorFactoryTests
     {
         var generator = DefaultLightingGeneratorFactory.GetGenerator(DeviceType.Switch, LightType.Level);
 
-        generator.Should().BeAssignableTo<NonLightLightingDefaultGenerator>();
+        Assert.IsAssignableFrom<NonLightLightingDefaultGenerator>(generator);
     }
 
     [Fact]
@@ -20,7 +19,7 @@ public class DefaultLightingGeneratorFactoryTests
     {
         var generator = DefaultLightingGeneratorFactory.GetGenerator(DeviceType.Light, LightType.Level);
 
-        generator.Should().BeAssignableTo<LeveLightingDefaultGenerator>();
+        Assert.IsAssignableFrom<LeveLightingDefaultGenerator>(generator);
     }
 
     [Fact]
@@ -28,7 +27,7 @@ public class DefaultLightingGeneratorFactoryTests
     {
         var generator = DefaultLightingGeneratorFactory.GetGenerator(DeviceType.Light, LightType.Temperature);
 
-        generator.Should().BeAssignableTo<TemperatureLightingDefaultGenerator>();
+        Assert.IsAssignableFrom<TemperatureLightingDefaultGenerator>(generator);
     }
 
     [Fact]
@@ -36,7 +35,7 @@ public class DefaultLightingGeneratorFactoryTests
     {
         var generator = DefaultLightingGeneratorFactory.GetGenerator(DeviceType.Light, LightType.Color);
 
-        generator.Should().BeAssignableTo<ColorLightingDefaultGenerator>();
+        Assert.IsAssignableFrom<ColorLightingDefaultGenerator>(generator);
     }
 
     [Fact]
@@ -44,6 +43,6 @@ public class DefaultLightingGeneratorFactoryTests
     {
         var generator = DefaultLightingGeneratorFactory.GetGenerator(DeviceType.Light, LightType.None);
 
-        generator.Should().BeAssignableTo<LeveLightingDefaultGenerator>();
+        Assert.IsAssignableFrom<LeveLightingDefaultGenerator>(generator);
     }
 }

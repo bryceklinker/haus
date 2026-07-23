@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms.Events;
@@ -25,8 +24,8 @@ public class RoomLightingChangedDomainEventHandlerTests
         await _hausBus.FlushAsync();
 
         var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        hausCommand.Payload?.Room.Id.Should().Be(89);
-        hausCommand.Payload?.Lighting.State.Should().Be(LightingState.On);
+        Assert.Equal(89, hausCommand.Payload?.Room.Id);
+        Assert.Equal(LightingState.On, hausCommand.Payload?.Lighting.State);
     }
 
     [Fact]
@@ -38,6 +37,6 @@ public class RoomLightingChangedDomainEventHandlerTests
 
         await _hausBus.FlushAsync();
 
-        _hausBus.GetPublishedRoutableEvents<RoomLightingChangedEvent>().Should().HaveCount(1);
+        Assert.Single(_hausBus.GetPublishedRoutableEvents<RoomLightingChangedEvent>());
     }
 }

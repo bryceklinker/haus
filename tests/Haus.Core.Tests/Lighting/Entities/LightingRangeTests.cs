@@ -1,5 +1,4 @@
 using System;
-using FluentAssertions;
 using Haus.Core.Lighting.Entities;
 using Xunit;
 
@@ -12,6 +11,6 @@ public class LightingRangeTests
     {
         Action act = () => new LevelLightingEntity().CalculateTargetValue(null);
 
-        act.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(act);
     }
 }

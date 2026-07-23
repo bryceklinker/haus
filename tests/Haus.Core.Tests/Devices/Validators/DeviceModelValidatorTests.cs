@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using FluentValidation;
 using FluentValidation.TestHelper;
 using Haus.Core.Devices.Validators;
@@ -17,14 +16,14 @@ public class DeviceModelValidatorTests
     public async Task WhenNameIsNullThenReturnsInvalid()
     {
         var result = await _validator.TestValidateAsync(new DeviceModel { Name = null });
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Fact]
     public async Task WhenNameIsEmptyThenReturnsInvalid()
     {
         var result = await _validator.TestValidateAsync(new DeviceModel { Name = string.Empty });
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -34,6 +33,6 @@ public class DeviceModelValidatorTests
 
         var result = await _validator.TestValidateAsync(model);
 
-        result.IsValid.Should().BeFalse();
+        Assert.False(result.IsValid);
     }
 }

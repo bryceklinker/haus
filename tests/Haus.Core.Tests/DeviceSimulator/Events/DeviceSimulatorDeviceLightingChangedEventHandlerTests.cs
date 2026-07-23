@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Events;
 using Haus.Core.DeviceSimulator.Entities;
 using Haus.Core.DeviceSimulator.State;
@@ -39,8 +38,9 @@ public class DeviceSimulatorDeviceLightingChangedEventHandlerTests
             )
         );
 
-        _simulatorStore
-            .Current.Devices.Should()
-            .Contain(d => d.Id == simulatedLight.Id && d.Lighting != null && d.Lighting.State == LightingState.On);
+        Assert.Contains(
+            _simulatorStore.Current.Devices,
+            d => d.Id == simulatedLight.Id && d.Lighting != null && d.Lighting.State == LightingState.On
+        );
     }
 }

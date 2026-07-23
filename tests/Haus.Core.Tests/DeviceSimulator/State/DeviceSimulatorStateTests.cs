@@ -1,5 +1,4 @@
 using System;
-using FluentAssertions;
 using Haus.Core.DeviceSimulator.Entities;
 using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Models.Devices;
@@ -18,7 +17,7 @@ public class DeviceSimulatorStateTests
 
         var state = DeviceSimulatorState.Initial.AddSimulatedDevice(entity);
 
-        state.Devices.Should().Contain(entity);
+        Assert.Contains(entity, state.Devices);
     }
 
     [Fact]
@@ -28,7 +27,7 @@ public class DeviceSimulatorStateTests
 
         var state = DeviceSimulatorState.Initial.AddSimulatedDevice(entity).Reset();
 
-        state.Should().Be(DeviceSimulatorState.Initial);
+        Assert.Equal(DeviceSimulatorState.Initial, state);
     }
 
     [Fact]
@@ -38,7 +37,7 @@ public class DeviceSimulatorStateTests
             .Initial.AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel()))
             .ToModel();
 
-        model.Devices.Should().HaveCount(1);
+        Assert.Single(model.Devices);
     }
 
     [Fact]
@@ -51,10 +50,11 @@ public class DeviceSimulatorStateTests
             )
             .ChangeDeviceLighting(deviceId, new LightingModel(LightingState.On));
 
-        state
-            .Devices.Should()
-            .HaveCount(1)
-            .And.OnlyContain(e => e.Id == deviceId && e.Lighting != null && e.Lighting.State == LightingState.On);
+        Assert.Single(state.Devices);
+        Assert.All(
+            state.Devices,
+            e => Assert.True(e.Id == deviceId && e.Lighting != null && e.Lighting.State == LightingState.On)
+        );
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class DeviceSimulatorStateTests
             .Initial.AddSimulatedDevice(SimulatedDeviceEntity.Create(new SimulatedDeviceModel()))
             .ChangeDeviceLighting($"{Guid.NewGuid()}", new LightingModel());
 
-        state.Devices.Should().HaveCount(1);
+        Assert.Single(state.Devices);
     }
 
     [Fact]
@@ -77,7 +77,8 @@ public class DeviceSimulatorStateTests
             )
             .ChangeOccupancy(deviceId);
 
-        state.Devices.Should().HaveCount(1).And.OnlyContain(e => e.Id == deviceId && e.IsOccupied);
+        Assert.Single(state.Devices);
+        Assert.All(state.Devices, e => Assert.True(e.Id == deviceId && e.IsOccupied));
     }
 
     [Fact]
@@ -85,6 +86,6 @@ public class DeviceSimulatorStateTests
     {
         var state = DeviceSimulatorState.Initial.ChangeOccupancy($"{Guid.NewGuid()}");
 
-        state.Should().BeSameAs(DeviceSimulatorState.Initial);
+        Assert.Same(DeviceSimulatorState.Initial, state);
     }
 }

@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Core.Discovery.Entities;
 using Haus.Core.Models.Discovery;
 using Xunit;
@@ -14,7 +13,7 @@ public class DiscoveryEntityTests
 
         entity.Start();
 
-        entity.State.Should().Be(DiscoveryState.Enabled);
+        Assert.Equal(DiscoveryState.Enabled, entity.State);
     }
 
     [Fact]
@@ -25,6 +24,6 @@ public class DiscoveryEntityTests
         entity.Start();
         entity.Stop();
 
-        entity.State.Should().Be(DiscoveryState.Disabled);
+        Assert.Equal(DiscoveryState.Disabled, entity.State);
     }
 }

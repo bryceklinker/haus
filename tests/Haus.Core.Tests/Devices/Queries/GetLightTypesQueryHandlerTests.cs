@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Devices.Queries;
 using Haus.Core.Models.Devices;
 using Haus.Cqrs;
@@ -17,7 +16,7 @@ public class GetLightTypesQueryHandlerTests
     {
         var result = await _hausBus.ExecuteQueryAsync(new GetLightTypesQuery());
 
-        result.Items.Should().NotContain(LightType.None);
+        Assert.DoesNotContain(LightType.None, result.Items);
     }
 
     [Fact]
@@ -25,12 +24,10 @@ public class GetLightTypesQueryHandlerTests
     {
         var result = await _hausBus.ExecuteQueryAsync(new GetLightTypesQuery());
 
-        result.Count.Should().Be(3);
-        result
-            .Items.Should()
-            .HaveCount(3)
-            .And.Contain(LightType.Color)
-            .And.Contain(LightType.Level)
-            .And.Contain(LightType.Temperature);
+        Assert.Equal(3, result.Count);
+        Assert.Equal(3, result.Items.Length);
+        Assert.Contains(LightType.Color, result.Items);
+        Assert.Contains(LightType.Level, result.Items);
+        Assert.Contains(LightType.Temperature, result.Items);
     }
 }

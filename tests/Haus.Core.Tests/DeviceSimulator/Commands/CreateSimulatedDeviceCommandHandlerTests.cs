@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.DeviceSimulator.Commands;
 using Haus.Core.DeviceSimulator.Events;
 using Haus.Core.DeviceSimulator.State;
@@ -29,7 +28,7 @@ public class CreateSimulatedDeviceCommandHandlerTests
         var command = new CreateSimulatedDeviceCommand(new SimulatedDeviceModel());
         await _hausBus.ExecuteCommandAsync(command);
 
-        _store.Current.Devices.Should().HaveCount(1);
+        Assert.Single(_store.Current.Devices);
     }
 
     [Fact]
@@ -38,9 +37,9 @@ public class CreateSimulatedDeviceCommandHandlerTests
         var command = new CreateSimulatedDeviceCommand(new SimulatedDeviceModel());
         await _hausBus.ExecuteCommandAsync(command);
 
-        _hausBus
-            .GetPublishedEvents<SimulatedEvent>()
-            .Should()
-            .ContainSingle(e => e.HausEvent.Type == DeviceDiscoveredEvent.Type);
+        Assert.Single(
+            _hausBus.GetPublishedEvents<SimulatedEvent>(),
+            e => e.HausEvent.Type == DeviceDiscoveredEvent.Type
+        );
     }
 }

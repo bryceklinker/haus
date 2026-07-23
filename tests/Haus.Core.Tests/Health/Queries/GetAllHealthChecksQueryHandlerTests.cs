@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Health.Queries;
 using Haus.Cqrs;
@@ -28,7 +27,7 @@ public class GetAllHealthChecksQueryHandlerTests
 
         var result = await _bus.ExecuteQueryAsync(new GetAllHealthChecksQuery());
 
-        result.Count.Should().Be(3);
-        result.Items.Should().HaveCount(3);
+        Assert.Equal(3, result.Count);
+        Assert.Equal(3, result.Items.Length);
     }
 }

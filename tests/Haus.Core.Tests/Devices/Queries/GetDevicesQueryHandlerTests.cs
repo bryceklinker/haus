@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Queries;
 using Haus.Cqrs;
@@ -28,12 +27,10 @@ public class GetDevicesQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new GetDevicesQuery());
 
-        result.Count.Should().Be(3);
-        result
-            .Items.Should()
-            .HaveCount(3)
-            .And.Contain(i => i.ExternalId == "one")
-            .And.Contain(i => i.ExternalId == "two")
-            .And.Contain(i => i.ExternalId == "three");
+        Assert.Equal(3, result.Count);
+        Assert.Equal(3, result.Items.Length);
+        Assert.Contains(result.Items, i => i.ExternalId == "one");
+        Assert.Contains(result.Items, i => i.ExternalId == "two");
+        Assert.Contains(result.Items, i => i.ExternalId == "three");
     }
 }

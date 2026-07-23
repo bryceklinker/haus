@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Commands;
@@ -31,7 +30,7 @@ public class UpdateDeviceCommandTests
         await _hausBus.ExecuteCommandAsync(new UpdateDeviceCommand(model));
 
         var updated = await _context.FindAsync<DeviceEntity>(original.Id);
-        updated?.Name.Should().Be("hi-bob");
+        Assert.Equal("hi-bob", updated?.Name);
     }
 
     [Fact]
@@ -42,7 +41,7 @@ public class UpdateDeviceCommandTests
 
         await _hausBus.ExecuteCommandAsync(new UpdateDeviceCommand(model));
 
-        _hausBus.GetPublishedRoutableEvents<DeviceUpdatedEvent>().Should().HaveCount(1);
+        Assert.Single(_hausBus.GetPublishedRoutableEvents<DeviceUpdatedEvent>());
     }
 
     [Fact]
@@ -52,7 +51,7 @@ public class UpdateDeviceCommandTests
 
         var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        await act.Should().ThrowAsync<EntityNotFoundException<DeviceEntity>>();
+        await Assert.ThrowsAsync<EntityNotFoundException<DeviceEntity>>(act);
     }
 
     [Fact]
@@ -63,6 +62,6 @@ public class UpdateDeviceCommandTests
 
         var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        await act.Should().ThrowAsync<HausValidationException>();
+        await Assert.ThrowsAsync<HausValidationException>(act);
     }
 }

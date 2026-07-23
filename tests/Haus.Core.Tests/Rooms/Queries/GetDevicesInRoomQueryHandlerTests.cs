@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
@@ -33,13 +32,11 @@ public class GetDevicesInRoomQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new GetDevicesInRoomQuery(room.Id));
 
-        result.Count.Should().Be(3);
-        result
-            .Items.Should()
-            .HaveCount(3)
-            .And.Contain(d => d.ExternalId == "one")
-            .And.Contain(d => d.ExternalId == "two")
-            .And.Contain(d => d.ExternalId == "three");
+        Assert.Equal(3, result.Count);
+        Assert.Equal(3, result.Items.Length);
+        Assert.Contains(result.Items, d => d.ExternalId == "one");
+        Assert.Contains(result.Items, d => d.ExternalId == "two");
+        Assert.Contains(result.Items, d => d.ExternalId == "three");
     }
 
     [Fact]
@@ -47,7 +44,7 @@ public class GetDevicesInRoomQueryHandlerTests
     {
         var result = await _hausBus.ExecuteQueryAsync(new GetDevicesInRoomQuery(65));
 
-        result.Should().BeEquivalentTo(new ListResult<DeviceModel>());
+        Assert.Equivalent(new ListResult<DeviceModel>(), result);
     }
 
     [Fact]
@@ -60,6 +57,6 @@ public class GetDevicesInRoomQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new GetDevicesInRoomQuery(room.Id));
 
-        result.Count.Should().Be(1);
+        Assert.Equal(1, result.Count);
     }
 }
