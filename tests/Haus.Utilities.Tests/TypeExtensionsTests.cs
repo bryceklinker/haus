@@ -1,5 +1,4 @@
 using System;
-using FluentAssertions;
 using Haus.Core.Models;
 using Haus.Utilities.TypeScript.GenerateModels;
 using Xunit;
@@ -20,31 +19,31 @@ public class TypeExtensionsTests
     [InlineData(typeof(bool), "boolean")]
     public void WhenTypeIsANativeTypescriptTypeThenReturnsTypescriptTypeAsString(Type type, string typescriptType)
     {
-        type.IsNativeTypeScriptType().Should().BeTrue();
-        type.ToTypeScriptType(new TypeScriptGeneratorContext()).Should().Be(typescriptType);
+        Assert.True(type.IsNativeTypeScriptType());
+        Assert.Equal(typescriptType, type.ToTypeScriptType(new TypeScriptGeneratorContext()));
     }
 
     [Fact]
     public void WhenTypeIsStaticThenIsSkippableReturnsTrue()
     {
-        typeof(TypeExtensions).IsSkippable().Should().BeTrue();
+        Assert.True(typeof(TypeExtensions).IsSkippable());
     }
 
     [Fact]
     public void WhenTypeIsAttributeThenIsSkippableReturnsTrue()
     {
-        typeof(SkipGenerationAttribute).IsSkippable().Should().BeTrue();
+        Assert.True(typeof(SkipGenerationAttribute).IsSkippable());
     }
 
     [Fact]
     public void WhenTypeIsAnInterfaceThenIsSkippableReturnsTrue()
     {
-        typeof(ITypeScriptGeneratorContext).IsSkippable().Should().BeTrue();
+        Assert.True(typeof(ITypeScriptGeneratorContext).IsSkippable());
     }
 
     [Fact]
     public void PrimitiveArrayTypeShouldNotRequireATypescriptImport()
     {
-        typeof(long[]).RequiresTypescriptImport().Should().BeFalse();
+        Assert.False(typeof(long[]).RequiresTypescriptImport());
     }
 }
