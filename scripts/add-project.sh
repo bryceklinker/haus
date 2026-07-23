@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-SOLUTION_PATH="./Haus.sln"
+SOLUTION_PATH="./Haus.slnx"
 TESTS_DIRECTORY="./tests"
 SOURCE_DIRECTORY="./src"
 

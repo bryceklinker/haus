@@ -1,0 +1,88 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/.build/">
+    <File Path=".csharpierrc.json" />
+    <File Path=".nvmrc" />
+    <File Path="configuration.yaml" />
+    <File Path="docker-compose.yml" />
+    <File Path="global.json" />
+    <File Path="haus-app.service" />
+    <File Path="haus-dockerfile" />
+    <File Path="haus-site-dockerfile" />
+    <File Path="mosquitto.conf" />
+    <File Path="nginx.conf" />
+  </Folder>
+  <Folder Name="/.config/">
+    <File Path=".config/dotnet-tools.json" />
+  </Folder>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/actions/" />
+  <Folder Name="/.github/actions/setup-machine/">
+    <File Path=".github/actions/setup-machine/action.yaml" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/main.yaml" />
+    <File Path=".github/workflows/release.yaml" />
+  </Folder>
+  <Folder Name="/.husky/">
+    <File Path=".husky/pre-commit" />
+    <File Path=".husky/task-runner.json" />
+  </Folder>
+  <Folder Name="/.scm/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Folder Name="/.tasks/">
+    <File Path="package.json" />
+    <File Path="yarn.lock" />
+  </Folder>
+  <Folder Name="/dependencies/">
+    <File Path="dependencies/framework-version.xml" />
+    <File Path="dependencies/hosting.xml" />
+    <File Path="dependencies/tests.xml" />
+    <File Path="dependencies/version.xml" />
+  </Folder>
+  <Folder Name="/docs/">
+    <File Path="readme.md" />
+  </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts/add-project.sh" />
+    <File Path="scripts/create-ef-migration.sh" />
+    <File Path="scripts/linux-install.sh" />
+    <File Path="scripts/prepare-build.sh" />
+    <File Path="scripts/publish-app.sh" />
+    <File Path="scripts/publish-to-docker-hub.sh" />
+    <File Path="scripts/run-acceptance-tests.sh" />
+    <File Path="scripts/run-unit-tests.sh" />
+    <File Path="scripts/variables.sh" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Haus.Api.Client/Haus.Api.Client.csproj" />
+    <Project Path="src/Haus.Core.Models/Haus.Core.Models.csproj" />
+    <Project Path="src/Haus.Core/Haus.Core.csproj" />
+    <Project Path="src/Haus.Cqrs/Haus.Cqrs.csproj" />
+    <Project Path="src/Haus.Hosting/Haus.Hosting.csproj" />
+    <Project Path="src/Haus.Mqtt.Client/Haus.Mqtt.Client.csproj" />
+    <Project Path="src/Haus.Site.Host/Haus.Site.Host.csproj" />
+    <Project Path="src/Haus.Udp.Client/Haus.Udp.Client.csproj" />
+    <Project Path="src/Haus.Utilities/Haus.Utilities.csproj" />
+    <Project Path="src/Haus.Web.Host/Haus.Web.Host.csproj" />
+    <Project Path="src/Haus.Zigbee.Host/Haus.Zigbee.Host.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Haus.Acceptance.Tests/Haus.Acceptance.Tests.csproj" />
+    <Project Path="tests/Haus.Core.Models.Tests/Haus.Core.Models.Tests.csproj" />
+    <Project Path="tests/Haus.Core.Tests/Haus.Core.Tests.csproj" />
+    <Project Path="tests/Haus.Cqrs.Tests/Haus.Cqrs.Tests.csproj" />
+    <Project Path="tests/Haus.Mqtt.Client.Tests/Haus.Mqtt.Client.Tests.csproj" />
+    <Project Path="tests/Haus.Site.Host.Tests/Haus.Site.Host.Tests.csproj" />
+    <Project Path="tests/Haus.Testing.Support/Haus.Testing.Support.csproj" />
+    <Project Path="tests/Haus.Udp.Client.Tests/Haus.Udp.Client.Tests.csproj" />
+    <Project Path="tests/Haus.Utilities.Tests/Haus.Utilities.Tests.csproj" />
+    <Project Path="tests/Haus.Web.Host.Tests/Haus.Web.Host.Tests.csproj" />
+    <Project Path="tests/Haus.Zigbee.Host.Tests/Haus.Zigbee.Host.Tests.csproj" />
+  </Folder>
+</Solution>

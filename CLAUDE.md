@@ -26,7 +26,7 @@ yarn zigbee_host:start       # run only the Zigbee host
 yarn web_host:start          # run only the API host (launch profile: acceptance)
 yarn site_host:start         # run only the Blazor site host (launch profile: acceptance)
 
-dotnet build                 # build the whole solution (Haus.sln)
+dotnet build                 # build the whole solution (Haus.slnx)
 dotnet tool restore          # restore local tools (csharpier, dotnet-ef, coverlet, reportgenerator, husky)
 
 ./scripts/run-unit-tests.sh        # runs all *.Tests projects via coverlet + generates HTML coverage report
@@ -54,7 +54,7 @@ Wraps `dotnet ef migrations add`, using `Haus.Web.Host` as the startup project a
 ```bash
 ./scripts/add-project.sh <dotnet-new-template> <ProjectName>
 ```
-Creates the project under `src/` (or `tests/` for `test` type) and adds it to `Haus.sln`.
+Creates the project under `src/` (or `tests/` for `test` type) and adds it to `Haus.slnx`.
 
 ## Architecture
 
