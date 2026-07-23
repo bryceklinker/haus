@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Mqtt.Client.Tests.Support;
 using Xunit;
 
@@ -15,7 +14,7 @@ public class HausMqttClientFactoryTests
     {
         var client = await _hausClientFactory.CreateClient();
 
-        client.IsStarted.Should().BeTrue();
+        Assert.True(client.IsStarted);
     }
 
     [Fact]
@@ -24,7 +23,7 @@ public class HausMqttClientFactoryTests
         var first = await _hausClientFactory.CreateClient();
         var second = await _hausClientFactory.CreateClient();
 
-        first.Should().BeSameAs(second);
+        Assert.Same(second, first);
     }
 
     [Fact]
@@ -32,7 +31,7 @@ public class HausMqttClientFactoryTests
     {
         var client = await _hausClientFactory.CreateClient();
 
-        client.IsConnected.Should().BeTrue();
+        Assert.True(client.IsConnected);
     }
 
     [Fact]
@@ -41,7 +40,7 @@ public class HausMqttClientFactoryTests
         var standardUrlClient = await _hausClientFactory.CreateClient();
         var otherUrlClient = await _hausClientFactory.CreateClient("mqtt://127.0.0.1:1883");
 
-        standardUrlClient.Should().NotBeSameAs(otherUrlClient);
+        Assert.NotSame(otherUrlClient, standardUrlClient);
     }
 
     [Fact]
@@ -50,7 +49,7 @@ public class HausMqttClientFactoryTests
         var first = await _hausClientFactory.CreateClient(DEFAULT_MQTT_URL);
         var second = await _hausClientFactory.CreateClient(DEFAULT_MQTT_URL);
 
-        first.Should().BeSameAs(second);
+        Assert.Same(second, first);
     }
 
     [Fact]
@@ -60,6 +59,6 @@ public class HausMqttClientFactoryTests
         await first.DisposeAsync();
 
         var second = await _hausClientFactory.CreateClient(DEFAULT_MQTT_URL);
-        first.Should().NotBeSameAs(second);
+        Assert.NotSame(second, first);
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Mqtt.Client.Tests.Support;
 using Haus.Testing.Support.Fakes;
 using MQTTnet;
@@ -56,7 +55,7 @@ public class HausMqttClientTest : IAsyncLifetime
         var expected = new MqttApplicationMessage { Topic = "bob" };
         await FakeMqttClient.EnqueueAsync(expected);
 
-        actual.Should().BeSameAs(expected);
+        Assert.Same(expected, actual);
     }
 
     [Fact]
@@ -81,7 +80,7 @@ public class HausMqttClientTest : IAsyncLifetime
         );
 
         await FakeMqttClient.EnqueueAsync(new MqttApplicationMessage());
-        actuals.Should().HaveCount(2);
+        Assert.Equal(2, actuals.Count);
     }
 
     public Task DisposeAsync()

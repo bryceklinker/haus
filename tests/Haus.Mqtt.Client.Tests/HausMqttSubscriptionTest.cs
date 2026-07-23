@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Mqtt.Client.Tests.Support;
 using Haus.Testing.Support;
 using MQTTnet;
@@ -41,7 +40,7 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
 
         await Client.PublishAsync(new MqttApplicationMessage { Topic = "other" });
 
-        actual.Should().BeNull();
+        Assert.Null(actual);
     }
 
     [Fact]
@@ -62,7 +61,7 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
 
         Eventually.Assert(() =>
         {
-            actual.Should().BeEquivalentTo(expected);
+            Assert.Equivalent(expected, actual);
         });
     }
 
@@ -83,7 +82,7 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
         await Client.PublishAsync(new MqttApplicationMessage { Topic = "idk" });
         await Task.Delay(1000);
 
-        wasCalled.Should().BeFalse();
+        Assert.False(wasCalled);
     }
 
     public async Task DisposeAsync()
