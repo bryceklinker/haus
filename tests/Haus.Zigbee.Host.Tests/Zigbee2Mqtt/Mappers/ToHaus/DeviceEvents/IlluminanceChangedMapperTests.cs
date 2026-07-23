@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 using Xunit;
@@ -20,9 +19,9 @@ public class IlluminanceChangedMapperTests
 
         var model = _mapper.Map(message);
 
-        model?.Illuminance.Should().Be(65);
-        model?.Lux.Should().Be(12);
-        model?.DeviceId.Should().Be("1231");
+        Assert.Equal(65, model?.Illuminance);
+        Assert.Equal(12, model?.Lux);
+        Assert.Equal("1231", model?.DeviceId);
     }
 
     [Fact]
@@ -30,6 +29,6 @@ public class IlluminanceChangedMapperTests
     {
         var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
 
-        _mapper.Map(message).Should().BeNull();
+        Assert.Null(_mapper.Map(message));
     }
 }

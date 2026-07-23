@@ -1,5 +1,4 @@
 using System.Linq;
-using FluentAssertions;
 using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
@@ -28,7 +27,7 @@ public class GetDevicesMapperTests
     {
         var message = new Zigbee2MqttMessageBuilder().WithDevicesTopic().BuildZigbee2MqttMessage();
 
-        _mapper.IsSupported(message).Should().BeTrue();
+        Assert.True(_mapper.IsSupported(message));
     }
 
     [Fact]
@@ -36,7 +35,7 @@ public class GetDevicesMapperTests
     {
         var message = new Zigbee2MqttMessageBuilder().WithTopicPath("idk").BuildZigbee2MqttMessage();
 
-        _mapper.IsSupported(message).Should().BeFalse();
+        Assert.False(_mapper.IsSupported(message));
     }
 
     [Fact]
@@ -52,8 +51,8 @@ public class GetDevicesMapperTests
 
         var result = _mapper.Map(message).ToArray();
 
-        result.Should().ContainSingle();
-        result.Single().Topic.Should().Be(Defaults.HausOptions.EventsTopic);
+        Assert.Single(result);
+        Assert.Equal(Defaults.HausOptions.EventsTopic, result.Single().Topic);
     }
 
     [Fact]
@@ -74,14 +73,12 @@ public class GetDevicesMapperTests
         var result = _mapper.Map(message).Single();
 
         var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
-        @event?.Type.Should().Be(DeviceDiscoveredEvent.Type);
-        @event?.Payload?.Id.Should().Be("hello");
-        @event
-            ?.Payload?.Metadata.Should()
-            .ContainEquivalentOf(new MetadataModel("model", "65"))
-            .And.ContainEquivalentOf(new MetadataModel("vendor", "76"))
-            .And.ContainEquivalentOf(new MetadataModel("description", "my desc"))
-            .And.ContainEquivalentOf(new MetadataModel("powerSource", "Battery"));
+        Assert.Equal(DeviceDiscoveredEvent.Type, @event?.Type);
+        Assert.Equal("hello", @event?.Payload?.Id);
+        Assert.Contains(new MetadataModel("model", "65"), @event?.Payload?.Metadata!);
+        Assert.Contains(new MetadataModel("vendor", "76"), @event?.Payload?.Metadata!);
+        Assert.Contains(new MetadataModel("description", "my desc"), @event?.Payload?.Metadata!);
+        Assert.Contains(new MetadataModel("powerSource", "Battery"), @event?.Payload?.Metadata!);
     }
 
     [Fact]
@@ -99,7 +96,7 @@ public class GetDevicesMapperTests
         var result = _mapper.Map(message).Single();
 
         var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
-        @event?.Payload?.DeviceType.Should().Be(DeviceType.Light);
+        Assert.Equal(DeviceType.Light, @event?.Payload?.DeviceType);
     }
 
     [Fact]
@@ -114,6 +111,6 @@ public class GetDevicesMapperTests
 
         var result = _mapper.Map(message);
 
-        result.Should().HaveCount(3);
+        Assert.Equal(3, result.Count());
     }
 }

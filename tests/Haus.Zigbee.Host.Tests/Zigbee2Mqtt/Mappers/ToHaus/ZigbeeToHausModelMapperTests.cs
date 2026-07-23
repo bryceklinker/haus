@@ -1,5 +1,4 @@
 using System.Linq;
-using FluentAssertions;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories;
@@ -36,7 +35,7 @@ public class ZigbeeToHausModelMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        result.Topic.Should().Be(HausEventTopic);
+        Assert.Equal(HausEventTopic, result.Topic);
     }
 
     [Fact]
@@ -46,7 +45,7 @@ public class ZigbeeToHausModelMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        result.Topic.Should().Be(UnknownEventTopic);
+        Assert.Equal(UnknownEventTopic, result.Topic);
     }
 
     [Fact]
@@ -59,6 +58,6 @@ public class ZigbeeToHausModelMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        result.Topic.Should().Be(HausEventTopic);
+        Assert.Equal(HausEventTopic, result.Topic);
     }
 }

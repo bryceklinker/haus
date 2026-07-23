@@ -1,5 +1,4 @@
 using System.Text;
-using FluentAssertions;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.Factories;
 using Microsoft.Extensions.Logging.Abstractions;
 using MQTTnet;
@@ -16,7 +15,7 @@ public class Zigbee2MqttMessageFactoryTests
     {
         var message = _factory.Create(new MqttApplicationMessage { PayloadSegment = [] });
 
-        message.PayloadObject.Should().BeNull();
+        Assert.Null(message.PayloadObject);
     }
 
     [Fact]
@@ -26,7 +25,7 @@ public class Zigbee2MqttMessageFactoryTests
 
         var message = _factory.Create(new MqttApplicationMessage { PayloadSegment = bytes });
 
-        message.PayloadObject?.Value<int>("id").Should().Be(54);
+        Assert.Equal(54, message.PayloadObject?.Value<int>("id"));
     }
 
     [Fact]
@@ -36,6 +35,6 @@ public class Zigbee2MqttMessageFactoryTests
 
         var message = _factory.Create(new MqttApplicationMessage { PayloadSegment = bytes });
 
-        message.PayloadArray.Should().HaveCount(3);
+        Assert.Equal(3, message.PayloadArray?.Count);
     }
 }

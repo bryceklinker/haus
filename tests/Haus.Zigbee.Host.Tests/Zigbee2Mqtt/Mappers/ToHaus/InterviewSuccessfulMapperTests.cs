@@ -1,5 +1,4 @@
 using System.Linq;
-using FluentAssertions;
 using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
@@ -32,7 +31,7 @@ public class InterviewSuccessfulMapperTests
             .WithInterviewSuccessful()
             .BuildZigbee2MqttMessage();
 
-        _mapper.IsSupported(message).Should().BeTrue();
+        Assert.True(_mapper.IsSupported(message));
     }
 
     [Fact]
@@ -44,7 +43,7 @@ public class InterviewSuccessfulMapperTests
             .WithInterviewSuccessful()
             .BuildZigbee2MqttMessage();
 
-        _mapper.IsSupported(message).Should().BeFalse();
+        Assert.False(_mapper.IsSupported(message));
     }
 
     [Fact]
@@ -56,7 +55,7 @@ public class InterviewSuccessfulMapperTests
             .WithInterviewSuccessful()
             .BuildZigbee2MqttMessage();
 
-        _mapper.IsSupported(message).Should().BeFalse();
+        Assert.False(_mapper.IsSupported(message));
     }
 
     [Fact]
@@ -68,7 +67,7 @@ public class InterviewSuccessfulMapperTests
             .WithMessage("not good")
             .BuildZigbee2MqttMessage();
 
-        _mapper.IsSupported(message).Should().BeFalse();
+        Assert.False(_mapper.IsSupported(message));
     }
 
     [Fact]
@@ -83,7 +82,7 @@ public class InterviewSuccessfulMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        result.Topic.Should().Be(HausEventTopic);
+        Assert.Equal(HausEventTopic, result.Topic);
     }
 
     [Fact]
@@ -104,14 +103,12 @@ public class InterviewSuccessfulMapperTests
         var result = _mapper.Map(message).Single();
 
         var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
-        hausEvent?.Type.Should().Be(DeviceDiscoveredEvent.Type);
-        hausEvent?.Payload?.Id.Should().Be("this-is-an-id");
-        hausEvent?.Payload?.DeviceType.Should().Be(DeviceType.Unknown);
-        hausEvent
-            ?.Payload?.Metadata.Should()
-            .ContainEquivalentOf(new MetadataModel("description", "my description"))
-            .And.ContainEquivalentOf(new MetadataModel("model", "this is a model"))
-            .And.ContainEquivalentOf(new MetadataModel("vendor", "Philips"));
+        Assert.Equal(DeviceDiscoveredEvent.Type, hausEvent?.Type);
+        Assert.Equal("this-is-an-id", hausEvent?.Payload?.Id);
+        Assert.Equal(DeviceType.Unknown, hausEvent?.Payload?.DeviceType);
+        Assert.Contains(new MetadataModel("description", "my description"), hausEvent?.Payload?.Metadata!);
+        Assert.Contains(new MetadataModel("model", "this is a model"), hausEvent?.Payload?.Metadata!);
+        Assert.Contains(new MetadataModel("vendor", "Philips"), hausEvent?.Payload?.Metadata!);
     }
 
     [Fact]
@@ -133,6 +130,6 @@ public class InterviewSuccessfulMapperTests
         var result = _mapper.Map(message).Single();
 
         var hausEvent = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
-        hausEvent?.Payload?.DeviceType.Should().Be(DeviceType.Light);
+        Assert.Equal(DeviceType.Light, hausEvent?.Payload?.DeviceType);
     }
 }

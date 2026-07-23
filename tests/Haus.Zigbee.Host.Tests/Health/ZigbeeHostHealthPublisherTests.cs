@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Models.Health;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
@@ -47,8 +46,8 @@ public class ZigbeeHostHealthPublisherTests : IAsyncLifetime
 
         Eventually.Assert(() =>
         {
-            actual?.IsOk.Should().BeTrue();
-            actual?.Status.Should().Be(HealthStatus.Healthy);
+            Assert.True(actual?.IsOk);
+            Assert.Equal(HealthStatus.Healthy, actual?.Status);
         });
     }
 
