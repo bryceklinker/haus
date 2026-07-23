@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Commands;
 using Haus.Core.Devices.Entities;
@@ -31,8 +30,8 @@ public class ChangeDeviceLightingConstraintsCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(command);
 
         var updated = await _context.FindByIdAsync<DeviceEntity>(device.Id);
-        updated?.Lighting?.Level.Min.Should().Be(12);
-        updated?.Lighting?.Level.Max.Should().Be(90);
+        Assert.Equal(12, updated?.Lighting?.Level.Min);
+        Assert.Equal(90, updated?.Lighting?.Level.Max);
     }
 
     [Fact]
@@ -43,6 +42,6 @@ public class ChangeDeviceLightingConstraintsCommandHandlerTests
         var command = new ChangeDeviceLightingConstraintsCommand(device.Id, new LightingConstraintsModel(12, 100));
         await _hausBus.ExecuteCommandAsync(command);
 
-        _hausBus.GetPublishedRoutableEvents<DeviceLightingChangedEvent>().Should().HaveCount(1);
+        Assert.Single(_hausBus.GetPublishedRoutableEvents<DeviceLightingChangedEvent>());
     }
 }

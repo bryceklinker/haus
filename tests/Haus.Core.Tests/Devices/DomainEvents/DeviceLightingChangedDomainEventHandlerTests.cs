@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Devices.DomainEvents;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Lighting.Entities;
@@ -25,8 +24,8 @@ public class DeviceLightingChangedDomainEventHandlerTests
         await _hausBus.FlushAsync();
 
         var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
-        hausCommand.Payload?.Device.Id.Should().Be(123);
-        hausCommand.Payload?.Lighting?.Level.Should().BeEquivalentTo(new LevelLightingModel(34.12));
+        Assert.Equal(123, hausCommand.Payload?.Device.Id);
+        Assert.Equal(new LevelLightingModel(34.12), hausCommand.Payload?.Lighting?.Level);
     }
 
     [Fact]
@@ -38,6 +37,6 @@ public class DeviceLightingChangedDomainEventHandlerTests
 
         await _hausBus.FlushAsync();
 
-        _hausBus.GetPublishedRoutableEvents<DeviceLightingChangedEvent>().Should().HaveCount(1);
+        Assert.Single(_hausBus.GetPublishedRoutableEvents<DeviceLightingChangedEvent>());
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using FluentAssertions;
 using Haus.Core.Health.Entities;
 using Haus.Core.Models.Health;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -16,12 +15,12 @@ public class HealthCheckEntityTests
 
         var entity = HealthCheckEntity.FromModel(model, DateTimeOffset.UtcNow);
 
-        entity.Name.Should().Be("What");
-        entity.Status.Should().Be(HealthStatus.Degraded);
-        entity.DurationOfCheckInMilliseconds.Should().Be(66);
-        entity.Description.Should().Be("What up");
-        entity.ExceptionMessage.Should().Be("not good");
-        entity.Tags.Should().Contain("something");
+        Assert.Equal("What", entity.Name);
+        Assert.Equal(HealthStatus.Degraded, entity.Status);
+        Assert.Equal(66, entity.DurationOfCheckInMilliseconds);
+        Assert.Equal("What up", entity.Description);
+        Assert.Equal("not good", entity.ExceptionMessage);
+        Assert.Contains("something", entity.Tags);
     }
 
     [Fact]
@@ -32,7 +31,7 @@ public class HealthCheckEntityTests
 
         var entity = HealthCheckEntity.FromModel(model, timestamp);
 
-        entity.LastUpdatedTimestamp.Should().Be(timestamp);
+        Assert.Equal(timestamp, entity.LastUpdatedTimestamp);
     }
 
     [Fact]
@@ -43,12 +42,12 @@ public class HealthCheckEntityTests
         var entity = new HealthCheckEntity();
         entity.UpdateFromModel(model, DateTimeOffset.UtcNow);
 
-        entity.Name.Should().Be("three");
-        entity.Status.Should().Be(HealthStatus.Unhealthy);
-        entity.DurationOfCheckInMilliseconds.Should().Be(5);
-        entity.Description.Should().Be("good");
-        entity.ExceptionMessage.Should().Be("exception");
-        entity.Tags.Should().Contain("boom");
+        Assert.Equal("three", entity.Name);
+        Assert.Equal(HealthStatus.Unhealthy, entity.Status);
+        Assert.Equal(5, entity.DurationOfCheckInMilliseconds);
+        Assert.Equal("good", entity.Description);
+        Assert.Equal("exception", entity.ExceptionMessage);
+        Assert.Contains("boom", entity.Tags);
     }
 
     [Fact]
@@ -68,12 +67,12 @@ public class HealthCheckEntityTests
 
         var model = entity.ToModel();
 
-        model.Name.Should().Be("Checky");
-        model.Description.Should().Be("Hola");
-        model.Status.Should().Be(HealthStatus.Healthy);
-        model.Tags.Should().Contain("welp");
-        model.ExceptionMessage.Should().Be("failure");
-        model.DurationOfCheckInMilliseconds.Should().Be(66);
+        Assert.Equal("Checky", model.Name);
+        Assert.Equal("Hola", model.Description);
+        Assert.Equal(HealthStatus.Healthy, model.Status);
+        Assert.Contains("welp", model.Tags);
+        Assert.Equal("failure", model.ExceptionMessage);
+        Assert.Equal(66, model.DurationOfCheckInMilliseconds);
     }
 
     [Fact]
@@ -87,6 +86,6 @@ public class HealthCheckEntityTests
 
         var model = entity.ToModel();
 
-        model.Status.Should().Be(HealthStatus.Unhealthy);
+        Assert.Equal(HealthStatus.Unhealthy, model.Status);
     }
 }

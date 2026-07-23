@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Lighting;
@@ -32,7 +31,7 @@ public class ChangeRoomLightingCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new ChangeRoomLightingCommand(room.Id, lighting));
 
         var updated = await _context.FindByIdAsync<RoomEntity>(room.Id);
-        updated?.Lighting.State.Should().Be(LightingState.Off);
+        Assert.Equal(LightingState.Off, updated?.Lighting.State);
     }
 
     [Fact]
@@ -44,8 +43,8 @@ public class ChangeRoomLightingCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new ChangeRoomLightingCommand(room.Id, lighting));
 
         var hausCommand = _hausBus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        hausCommand.Payload?.Room.Id.Should().Be(room.Id);
-        hausCommand.Payload?.Lighting.State.Should().Be(LightingState.On);
+        Assert.Equal(room.Id, hausCommand.Payload?.Room.Id);
+        Assert.Equal(LightingState.On, hausCommand.Payload?.Lighting.State);
     }
 
     [Fact]
@@ -55,6 +54,6 @@ public class ChangeRoomLightingCommandHandlerTests
 
         var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        await act.Should().ThrowAsync<EntityNotFoundException<RoomEntity>>();
+        await Assert.ThrowsAsync<EntityNotFoundException<RoomEntity>>(act);
     }
 }

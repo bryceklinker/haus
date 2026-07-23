@@ -1,5 +1,5 @@
 using System.Dynamic;
-using FluentAssertions;
+using System.Linq;
 using Haus.Core.Logs;
 using Haus.Core.Models.Logs;
 using Xunit;
@@ -22,7 +22,7 @@ public class LogEntryFiltererTests
 
         var filtered = _filterer.Filter(entries, null);
 
-        filtered.Should().HaveCount(3);
+        Assert.Equal(3, filtered.Count());
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public class LogEntryFiltererTests
 
         var filtered = _filterer.Filter(entries, new GetLogsParameters(SearchTerm: "hi"));
 
-        filtered.Should().HaveCount(2);
+        Assert.Equal(2, filtered.Count());
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class LogEntryFiltererTests
 
         var filtered = _filterer.Filter(entries, new GetLogsParameters(SearchTerm: "Hi"));
 
-        filtered.Should().HaveCount(2);
+        Assert.Equal(2, filtered.Count());
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class LogEntryFiltererTests
 
         var filtered = _filterer.Filter(entries, new GetLogsParameters(Level: "Warning"));
 
-        filtered.Should().HaveCount(1);
+        Assert.Single(filtered);
     }
 
     [Fact]
@@ -82,6 +82,6 @@ public class LogEntryFiltererTests
 
         var filtered = _filterer.Filter(entries, new GetLogsParameters(Level: "information"));
 
-        filtered.Should().HaveCount(2);
+        Assert.Equal(2, filtered.Count());
     }
 }

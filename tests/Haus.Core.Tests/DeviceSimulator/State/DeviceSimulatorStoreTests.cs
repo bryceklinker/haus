@@ -1,6 +1,5 @@
 using System;
 using System.Reactive.Linq;
-using FluentAssertions;
 using Haus.Core.DeviceSimulator.Entities;
 using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Models.DeviceSimulator;
@@ -15,7 +14,7 @@ public class DeviceSimulatorStoreTests
     {
         var store = new DeviceSimulatorStore();
 
-        store.Current.Should().Be(DeviceSimulatorState.Initial);
+        Assert.Equal(DeviceSimulatorState.Initial, store.Current);
     }
 
     [Fact]
@@ -26,7 +25,7 @@ public class DeviceSimulatorStoreTests
         var store = new DeviceSimulatorStore();
         store.Publish(store.Current.AddSimulatedDevice(device));
 
-        store.Current.Devices.Should().Contain(device);
+        Assert.Contains(device, store.Current.Devices);
     }
 
     [Fact]
@@ -39,6 +38,6 @@ public class DeviceSimulatorStoreTests
 
         store.PublishNext(s => s);
 
-        publishCount.Should().Be(0);
+        Assert.Equal(0, publishCount);
     }
 }

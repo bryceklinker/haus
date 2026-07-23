@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Rooms.Queries;
 using Haus.Cqrs;
@@ -26,7 +25,7 @@ public class GetRoomByIdQueryHandlerTests
 
         var actual = await _hausBus.ExecuteQueryAsync(new GetRoomByIdQuery(existing.Id));
 
-        actual.Name.Should().Be("hotel");
+        Assert.Equal("hotel", actual.Name);
     }
 
     [Fact]
@@ -34,6 +33,6 @@ public class GetRoomByIdQueryHandlerTests
     {
         var actual = await _hausBus.ExecuteQueryAsync(new GetRoomByIdQuery(3234));
 
-        actual.Should().BeNull();
+        Assert.Null(actual);
     }
 }

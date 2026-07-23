@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Application;
 using Haus.Core.Application.Queries;
 using Haus.Core.Models.Application;
@@ -36,13 +35,11 @@ public class GetLatestVersionPackagesQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new GetLatestVersionPackagesQuery());
 
-        result.Count.Should().Be(3);
-        result
-            .Items.Should()
-            .HaveCount(3)
-            .And.ContainEquivalentOf(new ApplicationPackageModel(5, "idk"))
-            .And.ContainEquivalentOf(new ApplicationPackageModel(9, "hello"))
-            .And.ContainEquivalentOf(new ApplicationPackageModel(7, "something"));
+        Assert.Equal(3, result.Count);
+        Assert.Equal(3, result.Items.Length);
+        Assert.Contains(new ApplicationPackageModel(5, "idk"), result.Items);
+        Assert.Contains(new ApplicationPackageModel(9, "hello"), result.Items);
+        Assert.Contains(new ApplicationPackageModel(7, "something"), result.Items);
     }
 
     [Fact]
@@ -56,9 +53,9 @@ public class GetLatestVersionPackagesQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new GetLatestVersionPackagesQuery());
 
-        result.Items[0].Name.Should().Be("a");
-        result.Items[1].Name.Should().Be("b");
-        result.Items[2].Name.Should().Be("c");
+        Assert.Equal("a", result.Items[0].Name);
+        Assert.Equal("b", result.Items[1].Name);
+        Assert.Equal("c", result.Items[2].Name);
     }
 
     [Fact]
@@ -68,7 +65,7 @@ public class GetLatestVersionPackagesQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new GetLatestVersionPackagesQuery());
 
-        result.Count.Should().Be(0);
-        result.Items.Should().BeEmpty();
+        Assert.Equal(0, result.Count);
+        Assert.Empty(result.Items);
     }
 }

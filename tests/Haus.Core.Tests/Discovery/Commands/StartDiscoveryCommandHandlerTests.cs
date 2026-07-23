@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Discovery.Commands;
@@ -31,11 +30,8 @@ public class StartDiscoveryCommandHandlerTests
 
         await _hausBus.ExecuteCommandAsync(command);
 
-        _context
-            .Set<DiscoveryEntity>()
-            .Should()
-            .HaveCount(1)
-            .And.ContainEquivalentOf(new DiscoveryEntity(0, DiscoveryState.Enabled), opts => opts.Excluding(d => d.Id));
+        var entity = Assert.Single(_context.Set<DiscoveryEntity>());
+        Assert.Equal(DiscoveryState.Enabled, entity.State);
     }
 
     [Fact]
@@ -46,7 +42,7 @@ public class StartDiscoveryCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(command);
 
         var routableCommands = _hausBus.GetPublishedEvents<RoutableCommand>();
-        routableCommands.Should().Contain(r => r.HausCommand.Type == StartDiscoveryModel.Type);
+        Assert.Contains(routableCommands, r => r.HausCommand.Type == StartDiscoveryModel.Type);
     }
 
     [Fact]
@@ -56,6 +52,6 @@ public class StartDiscoveryCommandHandlerTests
 
         await _hausBus.ExecuteCommandAsync(command);
 
-        _hausBus.GetPublishedRoutableEvents<DiscoveryStartedEvent>().Should().HaveCount(1);
+        Assert.Single(_hausBus.GetPublishedRoutableEvents<DiscoveryStartedEvent>());
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
@@ -32,9 +31,9 @@ public class CreateRoomCommandHandlerTests
         var result = await _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
 
         var entity = _context.Set<RoomEntity>().Single();
-        entity.Id.Should().Be(result.Id);
-        entity.Name.Should().Be("Backroom");
-        entity.OccupancyTimeoutInSeconds.Should().Be(70);
+        Assert.Equal(result.Id, entity.Id);
+        Assert.Equal("Backroom", entity.Name);
+        Assert.Equal(70, entity.OccupancyTimeoutInSeconds);
     }
 
     [Fact]
@@ -44,7 +43,7 @@ public class CreateRoomCommandHandlerTests
 
         await _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
 
-        _bus.GetPublishedRoutableEvents<RoomCreatedEvent>().Should().HaveCount(1);
+        Assert.Single(_bus.GetPublishedRoutableEvents<RoomCreatedEvent>());
     }
 
     [Fact]
@@ -54,6 +53,6 @@ public class CreateRoomCommandHandlerTests
 
         Func<Task> act = () => _bus.ExecuteCommandAsync(new CreateRoomCommand(model));
 
-        await act.Should().ThrowAsync<HausValidationException>();
+        await Assert.ThrowsAsync<HausValidationException>(act);
     }
 }

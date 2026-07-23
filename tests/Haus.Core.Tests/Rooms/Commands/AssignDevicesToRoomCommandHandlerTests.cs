@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
@@ -32,7 +31,7 @@ public class AssignDevicesToRoomCommandHandlerTests
 
         var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        await act.Should().ThrowAsync<EntityNotFoundException<RoomEntity>>();
+        await Assert.ThrowsAsync<EntityNotFoundException<RoomEntity>>(act);
     }
 
     [Fact]
@@ -44,7 +43,7 @@ public class AssignDevicesToRoomCommandHandlerTests
 
         var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        await act.Should().ThrowAsync<EntityNotFoundException<DeviceEntity>>();
+        await Assert.ThrowsAsync<EntityNotFoundException<DeviceEntity>>(act);
     }
 
     [Fact]
@@ -56,7 +55,8 @@ public class AssignDevicesToRoomCommandHandlerTests
         var command = new AssignDevicesToRoomCommand(room.Id, device.Id);
         await _hausBus.ExecuteCommandAsync(command);
 
-        _context.GetRoomsIncludeDevices().Should().HaveCount(1).And.Contain(r => r.Devices.Contains(device));
+        var updatedRoom = Assert.Single(_context.GetRoomsIncludeDevices());
+        Assert.Contains(device, updatedRoom.Devices);
     }
 
     [Fact]
@@ -71,7 +71,10 @@ public class AssignDevicesToRoomCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(command);
 
         var updatedRoom = _context.GetRoomsIncludeDevices().Single();
-        updatedRoom.Devices.Should().HaveCount(3).And.Contain(first).And.Contain(second).And.Contain(third);
+        Assert.Equal(3, updatedRoom.Devices.Count);
+        Assert.Contains(first, updatedRoom.Devices);
+        Assert.Contains(second, updatedRoom.Devices);
+        Assert.Contains(third, updatedRoom.Devices);
     }
 
     [Fact]
@@ -84,7 +87,7 @@ public class AssignDevicesToRoomCommandHandlerTests
         var command = new AssignDevicesToRoomCommand(room.Id, one.Id, two.Id);
         await _hausBus.ExecuteCommandAsync(command);
 
-        _hausBus.GetPublishedRoutableEvents<DevicesAssignedToRoomEvent>().Should().HaveCount(1);
+        Assert.Single(_hausBus.GetPublishedRoutableEvents<DevicesAssignedToRoomEvent>());
     }
 
     [Fact]
@@ -96,6 +99,6 @@ public class AssignDevicesToRoomCommandHandlerTests
         var command = new AssignDevicesToRoomCommand(room.Id, light.Id);
         await _hausBus.ExecuteCommandAsync(command);
 
-        _hausBus.GetPublishedRoutableEvents<DeviceLightingChangedEvent>().Should().HaveCount(1);
+        Assert.Single(_hausBus.GetPublishedRoutableEvents<DeviceLightingChangedEvent>());
     }
 }

@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Common.Storage.Commands;
 using Haus.Core.Devices.Entities;
@@ -30,7 +29,7 @@ public class ClearDatabaseCommandHandlerTests
 
         await _hausBus.ExecuteCommandAsync(new ClearDatabaseCommand());
 
-        _context.Set<DeviceMetadataEntity>().Should().BeEmpty();
+        Assert.Empty(_context.Set<DeviceMetadataEntity>());
     }
 
     [Fact]
@@ -42,7 +41,7 @@ public class ClearDatabaseCommandHandlerTests
 
         await _hausBus.ExecuteCommandAsync(new ClearDatabaseCommand());
 
-        _context.Set<DeviceEntity>().Should().BeEmpty();
+        Assert.Empty(_context.Set<DeviceEntity>());
     }
 
     [Fact]
@@ -54,6 +53,6 @@ public class ClearDatabaseCommandHandlerTests
 
         await _hausBus.ExecuteCommandAsync(new ClearDatabaseCommand());
 
-        _context.Set<RoomEntity>().Should().BeEmpty();
+        Assert.Empty(_context.Set<RoomEntity>());
     }
 }

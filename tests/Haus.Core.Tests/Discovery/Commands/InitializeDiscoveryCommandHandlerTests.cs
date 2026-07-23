@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Discovery.Commands;
 using Haus.Core.Discovery.Entities;
@@ -26,11 +25,8 @@ public class InitializeDiscoveryCommandHandlerTests
     {
         await _hausBus.ExecuteCommandAsync(new InitializeDiscoveryCommand());
 
-        _context
-            .Set<DiscoveryEntity>()
-            .Should()
-            .HaveCount(1)
-            .And.ContainEquivalentOf(new DiscoveryEntity(0), opts => opts.Excluding(d => d.Id));
+        var entity = Assert.Single(_context.Set<DiscoveryEntity>());
+        Assert.Equal(new DiscoveryEntity(0).State, entity.State);
     }
 
     [Fact]
@@ -40,10 +36,7 @@ public class InitializeDiscoveryCommandHandlerTests
 
         await _hausBus.ExecuteCommandAsync(new InitializeDiscoveryCommand());
 
-        _context
-            .Set<DiscoveryEntity>()
-            .Should()
-            .HaveCount(1)
-            .And.ContainEquivalentOf(new DiscoveryEntity(0, DiscoveryState.Enabled), opts => opts.Excluding(d => d.Id));
+        var entity = Assert.Single(_context.Set<DiscoveryEntity>());
+        Assert.Equal(DiscoveryState.Enabled, entity.State);
     }
 }

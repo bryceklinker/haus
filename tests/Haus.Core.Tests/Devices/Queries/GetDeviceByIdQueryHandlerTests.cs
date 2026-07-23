@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Queries;
 using Haus.Cqrs;
@@ -26,7 +25,7 @@ public class GetDeviceByIdQueryHandlerTests
 
         var model = await _hausBus.ExecuteQueryAsync(new GetDeviceByIdQuery(device.Id));
 
-        model.Name.Should().Be(device.Name);
+        Assert.Equal(device.Name, model.Name);
     }
 
     [Fact]
@@ -34,6 +33,6 @@ public class GetDeviceByIdQueryHandlerTests
     {
         var model = await _hausBus.ExecuteQueryAsync(new GetDeviceByIdQuery(long.MaxValue));
 
-        model.Should().BeNull();
+        Assert.Null(model);
     }
 }

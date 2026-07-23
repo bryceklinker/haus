@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Events;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Entities;
@@ -30,7 +29,7 @@ public class DeviceDiscoveredEventHandlerTest
 
         await _hausBus.PublishAsync(@event);
 
-        _context.Set<DeviceEntity>().Should().HaveCount(1);
+        Assert.Equal(1, _context.Set<DeviceEntity>().Count());
     }
 
     [Fact]
@@ -43,15 +42,8 @@ public class DeviceDiscoveredEventHandlerTest
         );
         await _hausBus.PublishAsync(@event);
 
-        _context.Set<DeviceEntity>().Should().HaveCount(1);
-        _context
-            .Set<DeviceEntity>()
-            .Single()
-            .Metadata.Should()
-            .ContainEquivalentOf(
-                new DeviceMetadataEntity("Model", "Help"),
-                opts => opts.Excluding(m => m.Device).Excluding(m => m.Id)
-            );
+        Assert.Equal(1, _context.Set<DeviceEntity>().Count());
+        Assert.Contains(_context.Set<DeviceEntity>().Single().Metadata, m => m.Key == "Model" && m.Value == "Help");
     }
 
     [Fact]
@@ -61,8 +53,8 @@ public class DeviceDiscoveredEventHandlerTest
 
         await _hausBus.PublishAsync(@event);
 
-        _hausBus.GetPublishedRoutableEvents<DeviceCreatedEvent>().Should().HaveCount(1);
-        _hausBus.GetPublishedRoutableEvents<DeviceUpdatedEvent>().Should().BeEmpty();
+        Assert.Single(_hausBus.GetPublishedRoutableEvents<DeviceCreatedEvent>());
+        Assert.Empty(_hausBus.GetPublishedRoutableEvents<DeviceUpdatedEvent>());
     }
 
     [Fact]
@@ -73,7 +65,7 @@ public class DeviceDiscoveredEventHandlerTest
 
         await _hausBus.PublishAsync(@event);
 
-        _hausBus.GetPublishedRoutableEvents<DeviceUpdatedEvent>().Should().HaveCount(1);
-        _hausBus.GetPublishedRoutableEvents<DeviceCreatedEvent>().Should().BeEmpty();
+        Assert.Single(_hausBus.GetPublishedRoutableEvents<DeviceUpdatedEvent>());
+        Assert.Empty(_hausBus.GetPublishedRoutableEvents<DeviceCreatedEvent>());
     }
 }
