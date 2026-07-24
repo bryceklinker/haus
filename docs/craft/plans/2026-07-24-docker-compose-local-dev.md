@@ -17,8 +17,13 @@ Acceptance criteria (agreed 2026-07-24):
    external broker.
 4. Given CI runs `run-unit-tests.sh` then `run-acceptance-tests.sh`
    unchanged (no edits to `main.yaml`), then acceptance tests boot the full
-   stack via this new compose instead of raw `dotnet run`, and
-   `setup-machine`'s standalone MQTT-broker step is no longer needed.
+   stack via this new compose instead of raw `dotnet run`. (Revised after
+   a verification failure: `setup-machine`'s standalone MQTT-broker step
+   turned out to still be required — `Haus.Web.Host.Tests`, despite
+   living under "unit tests", does real MQTT integration testing against
+   `mqtt://localhost:1883` and runs *before* `yarn start` ever brings up
+   `docker-compose.local.yml`'s own broker. Increment 4 originally removed
+   this step on the mistaken assumption it was now redundant; restored.)
 5. `docker-compose.yml` (the production/deployment file) and
    `scripts/linux-install.sh` are untouched.
 6. Cert generation for haus_site's nginx (`cert.crt`/`cert.key`) is
@@ -166,15 +171,23 @@ first and falls back to `docker-compose`.
      `yarn wait` + the test runner) completes its wait step without
      hanging and reaches the actual test run.
 
-4. **[depends: 3]** Remove the now-redundant "Start MQTT Server" step from
-   `.github/actions/setup-machine/action.yaml`, since MQTT now starts as
-   part of the compose triggered via `yarn start`/`yarn acceptance`.
+4. **[depends: 3]** ~~Remove the now-redundant "Start MQTT Server" step~~ —
+   **reverted after verification**: a CI push showed 16 `Haus.Web.Host.Tests`
+   failures during `run-unit-tests.sh` (before `run-acceptance-tests.sh`/
+   `yarn start` ever runs). That project does real MQTT integration testing
+   (`HausWebHostApplicationFactory`, `appsettings.json`'s
+   `mqtt://localhost:1883`) and needs a broker present for the unit-tests
+   step specifically, independent of `docker-compose.local.yml`'s own
+   broker (different ports, different lifecycle — only started later, by
+   `yarn start`). The standalone step in `setup-machine` is restored and
+   stays; this increment is a no-op.
    - files: `.github/actions/setup-machine/action.yaml`
    - criteria: 4
-   - verify: push and observe a CI run — unit tests step unaffected,
-     acceptance tests step still brings up MQTT successfully (visible in
-     the compose's own logs), and the separate mosquitto-github-action
-     step no longer appears in the CI log.
+   - verify: push and observe a CI run — `run-unit-tests.sh` green
+     (including `Haus.Web.Host.Tests`'s MQTT-dependent tests), and
+     `run-acceptance-tests.sh` still brings up its own broker via the
+     compose (visible in its logs) without conflicting with the
+     standard-port one `setup-machine` starts.
 
 5. **[depends: 3]** Update `CLAUDE.md` / `readme.md` to remove the
    instruction to manually install/start mosquitto for local dev, since
