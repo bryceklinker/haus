@@ -2,7 +2,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Utilities.Common.Cli;
 

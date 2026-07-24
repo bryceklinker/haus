@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Text;
-using FluentAssertions;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
@@ -60,12 +59,12 @@ public class HausLightingToZigbeeMapperTests
         var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
 
         var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
-        result.Value<string>("state").Should().Be("ON");
-        result.Value<int>("brightness").Should().Be(54);
-        result.Value<int>("color_temp").Should().Be(67);
-        result.Value<JObject>("color")?.Value<int>("b").Should().Be(234);
-        result.Value<JObject>("color")?.Value<int>("g").Should().Be(54);
-        result.Value<JObject>("color")?.Value<int>("r").Should().Be(98);
+        Assert.Equal("ON", result.Value<string>("state"));
+        Assert.Equal(54, result.Value<int>("brightness"));
+        Assert.Equal(67, result.Value<int>("color_temp"));
+        Assert.Equal(234, result.Value<JObject>("color")?.Value<int>("b"));
+        Assert.Equal(54, result.Value<JObject>("color")?.Value<int>("g"));
+        Assert.Equal(98, result.Value<JObject>("color")?.Value<int>("r"));
     }
 
     [Fact]
@@ -76,7 +75,7 @@ public class HausLightingToZigbeeMapperTests
         var message = _mapper.Map(CreateMqttMessage(lighting)).Single();
 
         var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
-        result.TryGetValue("color_temp", out _).Should().BeFalse();
+        Assert.False(result.TryGetValue("color_temp", out _));
     }
 
     [Fact]
@@ -87,7 +86,7 @@ public class HausLightingToZigbeeMapperTests
         var message = _mapper.Map(CreateMqttMessage(lighting)).Single();
 
         var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
-        result.TryGetValue("color", out _).Should().BeFalse();
+        Assert.False(result.TryGetValue("color", out _));
     }
 
     [Fact]
@@ -115,10 +114,10 @@ public class HausLightingToZigbeeMapperTests
         var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
 
         var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
-        result.Value<string>("state").Should().Be("OFF");
-        result.TryGetValue("brightness", out _).Should().BeFalse();
-        result.TryGetValue("color_temp", out _).Should().BeFalse();
-        result.TryGetValue("color", out _).Should().BeFalse();
+        Assert.Equal("OFF", result.Value<string>("state"));
+        Assert.False(result.TryGetValue("brightness", out _));
+        Assert.False(result.TryGetValue("color_temp", out _));
+        Assert.False(result.TryGetValue("color", out _));
     }
 
     private MqttApplicationMessage CreateMqttMessage(LightingModel lighting)

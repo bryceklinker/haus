@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
 using Xunit;
@@ -21,10 +20,10 @@ public class OccupancyChangedMapperTests
 
         var model = _mapper.Map(message);
 
-        model?.DeviceId.Should().Be("motions");
-        model?.Occupancy.Should().BeTrue();
-        model?.Timeout.Should().Be(123);
-        model?.Sensitivity.Should().Be("low");
+        Assert.Equal("motions", model?.DeviceId);
+        Assert.True(model?.Occupancy);
+        Assert.Equal(123, model?.Timeout);
+        Assert.Equal("low", model?.Sensitivity);
     }
 
     [Fact]
@@ -32,6 +31,6 @@ public class OccupancyChangedMapperTests
     {
         var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
 
-        _mapper.Map(message).Should().BeNull();
+        Assert.Null(_mapper.Map(message));
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using AngleSharp.Dom.Events;
 using Haus.Core.Models.Common;
@@ -23,7 +24,7 @@ public class DevicesListViewTests : HausSiteTestContext
 
         var page = RenderView<DevicesListView>();
 
-        page.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
+        Assert.Equal(1, page.FindAllByComponent<MudProgressCircular>().Count());
     }
 
     [Fact]
@@ -40,7 +41,7 @@ public class DevicesListViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            page.FindAllByComponent<MudListItem<DeviceModel>>().Should().HaveCount(3);
+            Assert.Equal(3, page.FindAllByComponent<MudListItem<DeviceModel>>().Count());
         });
     }
 
@@ -59,8 +60,8 @@ public class DevicesListViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             var item = page.FindByComponent<MudListItem<DeviceModel>>();
-            item.Instance.Text.Should().Contain("Motions");
-            item.Instance.SecondaryText.Should().Contain("Motion Sensor");
+            Assert.Contains("Motions", item.Instance.Text);
+            Assert.Contains("Motion Sensor", item.Instance.SecondaryText);
         });
     }
 
@@ -83,8 +84,8 @@ public class DevicesListViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            var navigation = page.Services.GetRequiredService<FakeNavigationManager>();
-            navigation.Uri.Should().EndWith("/devices/5");
+            var navigation = page.Services.GetRequiredService<BunitNavigationManager>();
+            Assert.EndsWith("/devices/5", navigation.Uri);
         });
     }
 
@@ -98,7 +99,7 @@ public class DevicesListViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             var navLink = view.FindByComponent<MudNavLink>(opts => opts.WithText("discovery"));
-            navLink.Instance.Href.Should().Contain("/devices/discovery");
+            Assert.Contains("/devices/discovery", navLink.Instance.Href);
         });
     }
 }

@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Core.Logs.Factories;
 using Haus.Core.Models;
 using Newtonsoft.Json.Linq;
@@ -21,13 +20,12 @@ public class LogEntryModelFactoryTests
     {
         var entry = _factory.CreateFromLine(StandardLine);
 
-        entry.Timestamp.Should().Be("2021-01-17T15:27:12.3639990Z");
-        entry.Level.Should().Be("Debug");
-        entry
-            .Message.Should()
-            .Be(
-                "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\""
-            );
+        Assert.Equal("2021-01-17T15:27:12.3639990Z", entry.Timestamp);
+        Assert.Equal("Debug", entry.Level);
+        Assert.Equal(
+            "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\"",
+            entry.Message
+        );
     }
 
     [Fact]
@@ -38,12 +36,10 @@ public class LogEntryModelFactoryTests
         var json = HausJsonSerializer.Serialize(entry.Value);
         var jObject = JObject.Parse(json);
 
-        jObject
-            .Value<string>("@m")
-            .Should()
-            .Be(
-                "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\""
-            );
+        Assert.Equal(
+            "RX (413 bytes) <<< \"Publish: [Topic=haus/commands] [Payload.Length=396] [QoSLevel=AtMostOnce] [Dup=False] [Retain=False] [PacketIdentifier=]\"",
+            jObject.Value<string>("@m")
+        );
     }
 
     [Fact]
@@ -51,6 +47,6 @@ public class LogEntryModelFactoryTests
     {
         var entry = _factory.CreateFromLine(MissingLevelLine);
 
-        entry.Level.Should().Be("Information");
+        Assert.Equal("Information", entry.Level);
     }
 }

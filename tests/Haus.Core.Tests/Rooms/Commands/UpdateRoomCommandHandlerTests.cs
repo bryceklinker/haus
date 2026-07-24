@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Rooms;
@@ -31,8 +30,8 @@ public class UpdateRoomCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(command);
 
         var updated = await _context.FindByIdAsync<RoomEntity>(original.Id);
-        updated?.Name.Should().Be("bob");
-        updated?.OccupancyTimeoutInSeconds.Should().Be(80);
+        Assert.Equal("bob", updated?.Name);
+        Assert.Equal(80, updated?.OccupancyTimeoutInSeconds);
     }
 
     [Fact]
@@ -43,7 +42,7 @@ public class UpdateRoomCommandHandlerTests
         var command = new UpdateRoomCommand(new RoomModel(original.Id, "bob"));
         await _hausBus.ExecuteCommandAsync(command);
 
-        _hausBus.GetPublishedRoutableEvents<RoomUpdatedEvent>().Should().HaveCount(1);
+        Assert.Single(_hausBus.GetPublishedRoutableEvents<RoomUpdatedEvent>());
     }
 
     [Fact]
@@ -54,7 +53,7 @@ public class UpdateRoomCommandHandlerTests
 
         var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        await act.Should().ThrowAsync<HausValidationException>();
+        await Assert.ThrowsAsync<HausValidationException>(act);
     }
 
     [Fact]
@@ -64,6 +63,6 @@ public class UpdateRoomCommandHandlerTests
 
         var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        await act.Should().ThrowAsync<EntityNotFoundException<RoomEntity>>();
+        await Assert.ThrowsAsync<EntityNotFoundException<RoomEntity>>(act);
     }
 }

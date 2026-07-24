@@ -6,7 +6,6 @@ using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Core.DeviceSimulator.Commands;
 

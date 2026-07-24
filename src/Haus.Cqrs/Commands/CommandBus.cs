@@ -1,6 +1,6 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 
 namespace Haus.Cqrs.Commands;
 
@@ -10,15 +10,17 @@ public interface ICommandBus
     Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, CancellationToken token = default);
 }
 
-internal class CommandBus(IMediator mediator) : ICommandBus
+internal class CommandBus(IServiceProvider services) : ICommandBus
 {
-    public async Task ExecuteAsync(ICommand command, CancellationToken token = default)
+    public Task ExecuteAsync(ICommand command, CancellationToken token = default)
     {
-        await mediator.Send(command, token).ConfigureAwait(false);
+        var handlerType = typeof(ICommandHandler<>).MakeGenericType(command.GetType());
+        return HandlerInvoker.InvokeAsync(services, handlerType, command, token);
     }
 
-    public async Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, CancellationToken token = default)
+    public Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, CancellationToken token = default)
     {
-        return await mediator.Send(command, token).ConfigureAwait(false);
+        var handlerType = typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult));
+        return HandlerInvoker.InvokeAsync<TResult>(services, handlerType, command, token);
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Cqrs.Events;
@@ -11,16 +10,7 @@ internal class LoggingEventBus(IEventBus eventBus, ILogger<LoggingEventBus> logg
     public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken token = default)
         where TEvent : IEvent
     {
-        await ExecuteWithLoggingAsync(
-                @event,
-                async () =>
-                {
-                    await eventBus.PublishAsync(@event, token).ConfigureAwait(false);
-                    return Unit.Value;
-                },
-                token
-            )
-            .ConfigureAwait(false);
+        await ExecuteWithLoggingAsync(@event, () => eventBus.PublishAsync(@event, token), token).ConfigureAwait(false);
     }
 
     protected override void LogFinished<TInput>(TInput input, long elapsedMilliseconds)

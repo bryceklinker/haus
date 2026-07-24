@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Discovery.Queries;
 using Haus.Core.Models.Discovery;
@@ -27,7 +26,7 @@ public class GetDiscoveryQueryHandlerTests
 
         var model = await _hausBus.ExecuteQueryAsync(new GetDiscoveryQuery());
 
-        model.State.Should().Be(DiscoveryState.Enabled);
+        Assert.Equal(DiscoveryState.Enabled, model.State);
     }
 
     [Fact]
@@ -35,6 +34,6 @@ public class GetDiscoveryQueryHandlerTests
     {
         var model = await _hausBus.ExecuteQueryAsync(new GetDiscoveryQuery());
 
-        model.Should().BeNull();
+        Assert.Null(model);
     }
 }

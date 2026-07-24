@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Testing.Support;
@@ -24,7 +23,7 @@ public class DiscoveryRealtimeApiTests(HausWebHostApplicationFactory factory)
         await factory.CreateAuthenticatedClient().StartDiscoveryAsync();
         Eventually.Assert(() =>
         {
-            events.Should().Contain(e => e.Type == DiscoveryStartedEvent.Type);
+            Assert.Contains(events, e => e.Type == DiscoveryStartedEvent.Type);
         });
     }
 }

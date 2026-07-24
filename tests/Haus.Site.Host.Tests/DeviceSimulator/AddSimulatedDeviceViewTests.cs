@@ -34,7 +34,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            page.FindComponents<MudProgressCircular>().Should().HaveCount(1);
+            Assert.Equal(1, page.FindComponents<MudProgressCircular>().Count);
         });
     }
 
@@ -49,7 +49,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            popover.FindAllByComponent<MudSelectItem<DeviceType?>>().Should().HaveCount(2);
+            Assert.Equal(2, popover.FindAllByComponent<MudSelectItem<DeviceType?>>().Count());
         });
     }
 
@@ -63,8 +63,8 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         await SelectDeviceType(page, DeviceType.Switch);
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
-        _savedDevices.Should().HaveCount(1);
-        _savedDevices.Should().ContainEquivalentOf(new SimulatedDeviceModel { DeviceType = DeviceType.Switch });
+        Assert.Equal(1, _savedDevices.Count);
+        Assert.Equivalent(new SimulatedDeviceModel { DeviceType = DeviceType.Switch }, _savedDevices.Single());
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         await SelectDeviceType(page, DeviceType.Switch);
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
-        NavigationManager.Uri.Should().EndWith("/device-simulator");
+        Assert.EndsWith("/device-simulator", NavigationManager.Uri);
     }
 
     [Fact]
@@ -89,7 +89,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         var page = RenderView<AddSimulatedDeviceView>();
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
-        _savedDevices.Should().HaveCount(0);
+        Assert.Equal(0, _savedDevices.Count);
     }
 
     [Fact]
@@ -105,16 +105,15 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         await SelectDeviceType(page, DeviceType.Light);
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
-        _savedDevices.Should().HaveCount(1);
-        _savedDevices
-            .Should()
-            .ContainEquivalentOf(
-                new SimulatedDeviceModel
-                {
-                    DeviceType = DeviceType.Light,
-                    Metadata = [new MetadataModel("external", "true")],
-                }
-            );
+        Assert.Equal(1, _savedDevices.Count);
+        Assert.Equivalent(
+            new SimulatedDeviceModel
+            {
+                DeviceType = DeviceType.Light,
+                Metadata = [new MetadataModel("external", "true")],
+            },
+            _savedDevices.Single()
+        );
     }
 
     private async Task SetupDeviceTypes(params DeviceType[] deviceTypes)
@@ -171,9 +170,9 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
     private static async Task EnterMetadata(IRenderedComponent<AddSimulatedDeviceView> page, string key, string value)
     {
         var keyInput = page.FindByComponent<MudTextField<string>>(opts => opts.WithId("key"));
-        await keyInput.InvokeAsync(() => keyInput.Instance.SetText(key));
+        await keyInput.InvokeAsync(() => keyInput.Instance.SetTextAsync(key));
 
         var valueInput = page.FindByComponent<MudTextField<string>>(opts => opts.WithId("value"));
-        await valueInput.InvokeAsync(() => valueInput.Instance.SetText(value));
+        await valueInput.InvokeAsync(() => valueInput.Instance.SetTextAsync(value));
     }
 }

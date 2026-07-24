@@ -1,13 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
-    <Import Project="../../dependencies/hosting.xml"/>
-    <Import Project="../../dependencies/version.xml"/>
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion)"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion)"/>
     </ItemGroup>

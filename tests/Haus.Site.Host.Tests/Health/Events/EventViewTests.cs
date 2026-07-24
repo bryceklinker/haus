@@ -12,9 +12,9 @@ public class EventViewTests : HausSiteTestContext
         var hausEvent = new HausEvent<dynamic>("Hello", new { Name = "Bob" }, "2025-02-12");
         var view = RenderEventView(hausEvent);
 
-        view.Markup.Should().Contain("Hello");
-        view.Markup.Should().Contain("Bob");
-        view.Markup.Should().Contain("2025-02-12");
+        Assert.Contains("Hello", view.Markup);
+        Assert.Contains("Bob", view.Markup);
+        Assert.Contains("2025-02-12", view.Markup);
     }
 
     private IRenderedComponent<EventView> RenderEventView(HausEvent<dynamic> @event)

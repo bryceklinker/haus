@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Web.Host.Tests.Support;
 using Microsoft.Extensions.Configuration;
@@ -19,9 +18,12 @@ public class ClientSettingsApiTests(HausWebHostApplicationFactory factory)
     {
         var settings = await _client.GetClientSettingsAsync();
 
-        settings?.Auth.Domain.Should().Be(_configuration["Auth:Domain"]);
-        settings?.Auth.ClientId.Should().Be(_configuration["Auth:ClientId"]);
-        settings?.Auth.Audience.Should().Be(_configuration["Auth:Audience"]);
+        if (settings != null)
+        {
+            Assert.Equal(_configuration["Auth:Domain"], settings.Auth.Domain);
+            Assert.Equal(_configuration["Auth:ClientId"], settings.Auth.ClientId);
+            Assert.Equal(_configuration["Auth:Audience"], settings.Auth.Audience);
+        }
     }
 
     [Fact]
@@ -32,6 +34,9 @@ public class ClientSettingsApiTests(HausWebHostApplicationFactory factory)
 
         var settings = await _client.GetClientSettingsAsync();
 
-        settings?.Version.Should().Be(expected);
+        if (settings != null)
+        {
+            Assert.Equal(expected, settings.Version);
+        }
     }
 }

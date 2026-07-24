@@ -4,7 +4,6 @@ using Haus.Core.Common.Storage.Commands;
 using Haus.Core.Discovery.Commands;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Core.Common.Commands;
 

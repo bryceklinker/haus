@@ -1,13 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
-	<Import Project="../../dependencies/tests.xml"/>
-	<Import Project="../../dependencies/framework-version.xml"/>
 	
-	<PropertyGroup>
-		<IsPackable>false</IsPackable>
-	</PropertyGroup>
-
 	<ItemGroup>
-		<PackageReference Include="bunit" Version="1.39.5" />
+		<PackageReference Include="bunit" Version="2.7.2" />
 	</ItemGroup>
 
 	<ItemGroup>

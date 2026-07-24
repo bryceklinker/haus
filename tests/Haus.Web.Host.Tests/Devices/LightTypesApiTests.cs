@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.Devices;
 using Haus.Web.Host.Tests.Support;
@@ -17,12 +16,10 @@ public class LightTypesApiTests(HausWebHostApplicationFactory factory)
     {
         var result = await _client.GetLightTypesAsync();
 
-        result.Count.Should().Be(3);
-        result
-            .Items.Should()
-            .HaveCount(3)
-            .And.Contain(LightType.Color)
-            .And.Contain(LightType.Level)
-            .And.Contain(LightType.Temperature);
+        Assert.Equal(3, result.Count);
+        Assert.Equal(3, result.Items.Length);
+        Assert.Contains(LightType.Color, result.Items);
+        Assert.Contains(LightType.Level, result.Items);
+        Assert.Contains(LightType.Temperature, result.Items);
     }
 }

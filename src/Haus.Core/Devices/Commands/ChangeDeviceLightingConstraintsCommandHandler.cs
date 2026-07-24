@@ -4,7 +4,6 @@ using Haus.Core.Devices.Repositories;
 using Haus.Core.Models.Lighting;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Core.Devices.Commands;
 

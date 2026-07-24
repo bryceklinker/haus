@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Storage;
 using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Devices.Sensors.Motion;
@@ -33,7 +32,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var updatedRoom = await _context.FindByIdAsync<RoomEntity>(room.Id);
-        updatedRoom?.Lighting.State.Should().Be(LightingState.Off);
+        Assert.Equal(LightingState.Off, updatedRoom?.Lighting.State);
     }
 
     [Fact]
@@ -44,8 +43,8 @@ public class TurnOffVacantRoomsCommandHandlerTests
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var lightingChange = _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Single();
-        lightingChange.Payload?.Lighting.State.Should().Be(LightingState.Off);
-        lightingChange.Payload?.Room.Id.Should().Be(room.Id);
+        Assert.Equal(LightingState.Off, lightingChange.Payload?.Lighting.State);
+        Assert.Equal(room.Id, lightingChange.Payload?.Room.Id);
     }
 
     [Fact]
@@ -56,8 +55,8 @@ public class TurnOffVacantRoomsCommandHandlerTests
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
         var updatedRoom = await _context.FindByIdAsync<RoomEntity>(room.Id);
-        updatedRoom?.Lighting.State.Should().Be(LightingState.On);
-        _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().BeEmpty();
+        Assert.Equal(LightingState.On, updatedRoom?.Lighting.State);
+        Assert.Empty(_bus.GetPublishedHausCommands<RoomLightingChangedEvent>());
     }
 
     [Fact]
@@ -69,7 +68,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
 
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
-        _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().HaveCount(3);
+        Assert.Equal(3, _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Count());
     }
 
     [Fact]
@@ -86,7 +85,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
 
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
-        _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().BeEmpty();
+        Assert.Empty(_bus.GetPublishedHausCommands<RoomLightingChangedEvent>());
     }
 
     [Fact]
@@ -96,7 +95,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
 
         await _bus.ExecuteCommandAsync(new TurnOffVacantRoomsCommand());
 
-        _bus.GetPublishedHausCommands<RoomLightingChangedEvent>().Should().BeEmpty();
+        Assert.Empty(_bus.GetPublishedHausCommands<RoomLightingChangedEvent>());
     }
 
     private RoomEntity AddOccupiedRoom(int occupancyTimeoutInSeconds = 0)

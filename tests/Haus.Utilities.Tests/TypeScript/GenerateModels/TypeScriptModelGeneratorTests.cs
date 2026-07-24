@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Haus.Core.Models;
 using Haus.Utilities.Tests.TypeScript.GenerateModels.SampleModels;
 using Haus.Utilities.TypeScript.GenerateModels;
@@ -17,11 +16,9 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(SimpleModel), _context);
 
         var models = _context.GetAll();
-        models
-            .Should()
-            .HaveCount(1)
-            .And.Contain(m => m.ModelType == typeof(SimpleModel))
-            .And.Contain(m => m.FileName == "simple-model.ts");
+        Assert.Single(models);
+        Assert.Contains(models, m => m.ModelType == typeof(SimpleModel));
+        Assert.Contains(models, m => m.FileName == "simple-model.ts");
     }
 
     [Fact]
@@ -30,7 +27,7 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(SimpleModel), _context);
 
         var model = _context.GetModelForType(typeof(SimpleModel));
-        model?.Contents.Should().Contain("export interface SimpleModel");
+        Assert.Contains("export interface SimpleModel", model?.Contents);
     }
 
     [Fact]
@@ -39,7 +36,9 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(SimpleModel), _context);
 
         var model = _context.GetModelForType(typeof(SimpleModel));
-        model?.Contents.Should().Contain("id: number;").And.Contain("name: string;").And.Contain("value: number");
+        Assert.Contains("id: number;", model?.Contents);
+        Assert.Contains("name: string;", model?.Contents);
+        Assert.Contains("value: number", model?.Contents);
     }
 
     [Fact]
@@ -48,7 +47,7 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(SlightlyComplexModel), _context);
 
         var models = _context.GetAll();
-        models.Should().HaveCount(2);
+        Assert.Equal(2, models.Length);
     }
 
     [Fact]
@@ -57,10 +56,8 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(SlightlyComplexModel), _context);
 
         var model = _context.GetModelForType(typeof(SlightlyComplexModel));
-        model
-            ?.Contents.Should()
-            .Contain("import {SimpleModel} from './simple-model';")
-            .And.Contain("simple: SimpleModel;");
+        Assert.Contains("import {SimpleModel} from './simple-model';", model?.Contents);
+        Assert.Contains("simple: SimpleModel;", model?.Contents);
     }
 
     [Fact]
@@ -69,7 +66,7 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(GenericType<>), _context);
 
         var model = _context.GetModelForType(typeof(GenericType<>));
-        model?.FileName.Should().Be("generic-type.ts");
+        Assert.Equal("generic-type.ts", model?.FileName);
     }
 
     [Fact]
@@ -78,7 +75,8 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(GenericType<>), _context);
 
         var model = _context.GetModelForType(typeof(GenericType<>));
-        model?.Contents.Should().Contain("export interface GenericType<T>").And.Contain("item: T;");
+        Assert.Contains("export interface GenericType<T>", model?.Contents);
+        Assert.Contains("item: T;", model?.Contents);
     }
 
     [Fact]
@@ -87,12 +85,10 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(GenericType<,,>), _context);
 
         var model = _context.GetModelForType(typeof(GenericType<,,>));
-        model
-            ?.Contents.Should()
-            .Contain("export interface GenericType<T, TR, TU>")
-            .And.Contain("first: T")
-            .And.Contain("second: TR")
-            .And.Contain("third: TU");
+        Assert.Contains("export interface GenericType<T, TR, TU>", model?.Contents);
+        Assert.Contains("first: T", model?.Contents);
+        Assert.Contains("second: TR", model?.Contents);
+        Assert.Contains("third: TU", model?.Contents);
     }
 
     [Fact]
@@ -101,7 +97,8 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(ResultSet<>), _context);
 
         var model = _context.GetModelForType(typeof(ResultSet<>));
-        model?.Contents.Should().Contain("export interface ResultSet<T>").And.Contain("items: Array<T>;");
+        Assert.Contains("export interface ResultSet<T>", model?.Contents);
+        Assert.Contains("items: Array<T>;", model?.Contents);
     }
 
     [Fact]
@@ -109,7 +106,7 @@ public class TypeScriptModelGeneratorTests
     {
         _generator.Generate(typeof(TypeExtensions), _context);
 
-        _context.GetAll().Should().BeEmpty();
+        Assert.Empty(_context.GetAll());
     }
 
     [Fact]
@@ -117,7 +114,7 @@ public class TypeScriptModelGeneratorTests
     {
         _generator.Generate(typeof(ITypeScriptModelGenerator), _context);
 
-        _context.GetAll().Should().BeEmpty();
+        Assert.Empty(_context.GetAll());
     }
 
     [Fact]
@@ -126,8 +123,9 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(SimpleEnum), _context);
 
         var model = _context.GetModelForType(typeof(SimpleEnum));
-        model?.FileName.Should().Be("simple-enum.ts");
-        model?.Contents.Should().Contain("export enum SimpleEnum").And.Contain("Hello = 'Hello',");
+        Assert.Equal("simple-enum.ts", model?.FileName);
+        Assert.Contains("export enum SimpleEnum", model?.Contents);
+        Assert.Contains("Hello = 'Hello',", model?.Contents);
     }
 
     [Fact]
@@ -135,9 +133,9 @@ public class TypeScriptModelGeneratorTests
     {
         _generator.Generate(typeof(ModelWithNullable), _context);
 
-        _context.GetAll().Should().HaveCount(1);
+        Assert.Single(_context.GetAll());
         var model = _context.GetModelForType(typeof(ModelWithNullable));
-        model?.Contents.Should().Contain("id?: number");
+        Assert.Contains("id?: number", model?.Contents);
     }
 
     [Fact]
@@ -145,12 +143,10 @@ public class TypeScriptModelGeneratorTests
     {
         _generator.Generate(typeof(ModelWithArrayOfModels), _context);
 
-        _context.GetAll().Should().HaveCount(2);
+        Assert.Equal(2, _context.GetAll().Length);
         var model = _context.GetModelForType(typeof(ModelWithArrayOfModels));
-        model
-            ?.Contents.Should()
-            .Contain("import {SimpleModel} from './simple-model'")
-            .And.Contain("models: Array<SimpleModel>;");
+        Assert.Contains("import {SimpleModel} from './simple-model'", model?.Contents);
+        Assert.Contains("models: Array<SimpleModel>;", model?.Contents);
     }
 
     [Fact]
@@ -158,14 +154,12 @@ public class TypeScriptModelGeneratorTests
     {
         _generator.Generate(typeof(DerivedFromSimpleModel), _context);
 
-        _context.GetAll().Should().HaveCount(2);
+        Assert.Equal(2, _context.GetAll().Length);
         var model = _context.GetModelForType(typeof(DerivedFromSimpleModel));
-        model
-            ?.Contents.Should()
-            .Contain("export interface DerivedFromSimpleModel extends SimpleModel")
-            .And.Contain("import {SimpleModel} from './simple-model';")
-            .And.NotContain("id: number;")
-            .And.Contain("stuff: string;");
+        Assert.Contains("export interface DerivedFromSimpleModel extends SimpleModel", model?.Contents);
+        Assert.Contains("import {SimpleModel} from './simple-model';", model?.Contents);
+        Assert.DoesNotContain("id: number;", model?.Contents);
+        Assert.Contains("stuff: string;", model?.Contents);
     }
 
     [Fact]
@@ -173,7 +167,7 @@ public class TypeScriptModelGeneratorTests
     {
         _generator.Generate(typeof(Skippable), _context);
 
-        _context.GetAll().Should().BeEmpty();
+        Assert.Empty(_context.GetAll());
     }
 
     [Fact]
@@ -181,7 +175,7 @@ public class TypeScriptModelGeneratorTests
     {
         _generator.Generate(typeof(SkipGenerationAttribute), _context);
 
-        _context.GetAll().Should().BeEmpty();
+        Assert.Empty(_context.GetAll());
     }
 
     [Fact]
@@ -189,7 +183,7 @@ public class TypeScriptModelGeneratorTests
     {
         _generator.Generate(typeof(ModelWithPrimitiveArray), _context);
 
-        _context.GetAll().Should().HaveCount(1);
+        Assert.Single(_context.GetAll());
     }
 
     [Fact]
@@ -198,6 +192,7 @@ public class TypeScriptModelGeneratorTests
         _generator.Generate(typeof(ModelWithOptionalProperty), _context);
 
         var model = _context.GetModelForType(typeof(ModelWithOptionalProperty));
-        model?.Contents.Should().Contain("id?: number;").And.Contain("value?: number");
+        Assert.Contains("id?: number;", model?.Contents);
+        Assert.Contains("value?: number", model?.Contents);
     }
 }

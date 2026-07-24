@@ -13,11 +13,11 @@ public class ShellHeaderViewTests : HausSiteTestContext
     public async Task WhenMenuClickedThenNotifiesMenuToggled()
     {
         var toggled = false;
-        var header = Context.RenderComponent<ShellHeaderView>(p => p.Add(h => h.OnMenuToggled, () => toggled = true));
+        var header = Context.Render<ShellHeaderView>(p => p.Add(h => h.OnMenuToggled, () => toggled = true));
 
         await header.FindByTag("button").ClickAsync(new MouseEventArgs());
 
-        toggled.Should().BeTrue();
+        Assert.True(toggled);
     }
 
     [Fact]
@@ -25,15 +25,13 @@ public class ShellHeaderViewTests : HausSiteTestContext
     {
         var themeMode = ThemeMode.Light;
 
-        var header = Context.RenderComponent<ShellHeaderView>(p =>
-            p.Add(h => h.OnThemeToggled, (mode) => themeMode = mode)
-        );
+        var header = Context.Render<ShellHeaderView>(p => p.Add(h => h.OnThemeToggled, (mode) => themeMode = mode));
 
         await header.InvokeAsync(async () =>
         {
             await header.FindComponent<MudSwitch<bool>>().Instance.ValueChanged.InvokeAsync(true);
         });
 
-        themeMode.Should().Be(ThemeMode.Dark);
+        Assert.Equal(ThemeMode.Dark, themeMode);
     }
 }

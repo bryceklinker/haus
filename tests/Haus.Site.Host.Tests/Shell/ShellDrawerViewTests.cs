@@ -1,3 +1,4 @@
+using System.Linq;
 using Haus.Site.Host.Shell;
 using Haus.Site.Host.Tests.Support;
 using MudBlazor;
@@ -11,6 +12,6 @@ public class ShellDrawerViewTests : HausSiteTestContext
     {
         var view = RenderView<ShellDrawerView>();
 
-        view.FindAllByComponent<MudNavLink>().Should().HaveCount(5);
+        Assert.Equal(5, view.FindAllByComponent<MudNavLink>().Count());
     }
 }

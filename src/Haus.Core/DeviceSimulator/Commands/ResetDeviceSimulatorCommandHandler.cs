@@ -2,7 +2,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.DeviceSimulator.State;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Core.DeviceSimulator.Commands;
 

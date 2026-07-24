@@ -6,7 +6,6 @@ using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
-using MediatR;
 
 namespace Haus.Core.Devices.Commands;
 

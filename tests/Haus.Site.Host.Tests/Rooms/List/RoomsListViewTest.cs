@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Rooms;
@@ -22,7 +23,7 @@ public class RoomsListViewTest : HausSiteTestContext
 
         var page = RenderView<RoomsListView>();
 
-        page.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
+        Assert.Equal(1, page.FindAllByComponent<MudProgressCircular>().Count());
     }
 
     [Fact]
@@ -39,7 +40,7 @@ public class RoomsListViewTest : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            page.FindAllByComponent<MudListItem<RoomModel>>().Should().HaveCount(3);
+            Assert.Equal(3, page.FindAllByComponent<MudListItem<RoomModel>>().Count());
         });
     }
 
@@ -55,7 +56,7 @@ public class RoomsListViewTest : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            page.FindByComponent<MudListItem<RoomModel>>().Instance.Text.Should().Contain("Living Room");
+            Assert.Contains("Living Room", page.FindByComponent<MudListItem<RoomModel>>().Instance.Text);
         });
     }
 
@@ -75,8 +76,8 @@ public class RoomsListViewTest : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            var navigation = Context.Services.GetRequiredService<FakeNavigationManager>();
-            navigation.Uri.Should().EndWith("/rooms/78");
+            var navigation = Context.Services.GetRequiredService<BunitNavigationManager>();
+            Assert.EndsWith("/rooms/78", navigation.Uri);
         });
     }
 
@@ -85,7 +86,7 @@ public class RoomsListViewTest : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>());
 
-        var dialogProvider = Context.RenderComponent<MudDialogProvider>();
+        var dialogProvider = Context.Render<MudDialogProvider>();
         var view = RenderView<RoomsListView>();
         await view.InvokeAsync(async () =>
         {
@@ -94,7 +95,7 @@ public class RoomsListViewTest : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            dialogProvider.FindAllByComponent<AddRoomDialogView>().Should().HaveCount(1);
+            Assert.Equal(1, dialogProvider.FindAllByComponent<AddRoomDialogView>().Count());
         });
     }
 }

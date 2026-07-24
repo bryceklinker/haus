@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Haus.Core.Devices.Repositories;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
-using MediatR;
 
 namespace Haus.Core.Devices.Commands;
 

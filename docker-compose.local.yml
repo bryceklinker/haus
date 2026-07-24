@@ -1,0 +1,63 @@
+services:
+  haus_mqtt:
+    container_name: haus_mqtt_local
+    image: eclipse-mosquitto:latest
+    ports:
+      - "11883:1883"
+      - "18883:8883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  haus_web:
+    container_name: haus_web_local
+    build:
+      context: .
+      dockerfile: haus-dockerfile
+      args:
+        PUBLISH_DIR: publish/haus-web
+        ENTRY_FILE: Haus.Web.Host.dll
+        RUNTIME_ENVIRONMENT: ${RUNTIME_ENVIRONMENT:-Acceptance}
+    ports:
+      - "15000:80"
+    environment:
+      - "ASPNETCORE_URLS=http://+:80"
+      - "Mqtt__Server=mqtt://haus_mqtt:1883"
+      - "Database__ConnectionString=Data Source=/app/data/haus_acceptance.db;"
+    volumes:
+      - haus_web_local_data:/app/data
+    depends_on:
+      - haus_mqtt
+
+  haus_zigbee:
+    container_name: haus_zigbee_local
+    build:
+      context: .
+      dockerfile: haus-dockerfile
+      args:
+        PUBLISH_DIR: publish/haus-zigbee
+        ENTRY_FILE: Haus.Zigbee.Host.dll
+        RUNTIME_ENVIRONMENT: ${RUNTIME_ENVIRONMENT:-Acceptance}
+    environment:
+      - "Haus__Server=mqtt://haus_mqtt:1883"
+      - "Zigbee__Config__Mqtt__Server=mqtt://haus_mqtt:1883"
+    depends_on:
+      - haus_mqtt
+
+  haus_site:
+    container_name: haus_site_local
+    build:
+      context: .
+      dockerfile: haus-site-dockerfile
+      args:
+        PUBLISH_DIR: publish/haus-site
+        RUNTIME_ENVIRONMENT: ${RUNTIME_ENVIRONMENT:-Acceptance}
+    ports:
+      - "15003:443"
+    volumes:
+      - ./cert.crt:/etc/nginx/certs/cert.crt
+      - ./cert.key:/etc/nginx/certs/cert.key
+    depends_on:
+      - haus_web
+
+volumes:
+  haus_web_local_data:

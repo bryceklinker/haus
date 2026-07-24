@@ -1,6 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../../dependencies/version.xml"/>
-    <Import Project="../../dependencies/framework-version.xml"/>
 
     <ItemGroup>
         <ProjectReference Include="..\Haus.Core.Models\Haus.Core.Models.csproj"/>
@@ -8,11 +6,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion)"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftPackageVersion)"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="System.Reactive" Version="6.0.1"/>
+        <PackageReference Include="System.Reactive" Version="7.0.0"/>
     </ItemGroup>
 
 </Project>

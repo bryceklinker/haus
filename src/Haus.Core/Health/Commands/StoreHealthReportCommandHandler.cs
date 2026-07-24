@@ -5,7 +5,6 @@ using Haus.Core.Common.Storage;
 using Haus.Core.Health.Entities;
 using Haus.Core.Models.Health;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Core.Health.Commands;
 

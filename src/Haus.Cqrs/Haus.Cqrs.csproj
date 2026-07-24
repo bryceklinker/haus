@@ -1,9 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../../dependencies/version.xml"/>
-    <Import Project="../../dependencies/framework-version.xml"/>
 
     <ItemGroup>
-        <PackageReference Include="MediatR" Version="12.5.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftPackageVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftPackageVersion)"/>
     </ItemGroup>
 

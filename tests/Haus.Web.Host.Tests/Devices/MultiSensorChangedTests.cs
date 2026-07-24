@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Motion;
@@ -32,10 +31,10 @@ public class MultiSensorChangedTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            commands
-                .Where(cmd => cmd.Payload != null)
-                .Should()
-                .Contain(cmd => cmd.Payload!.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On);
+            Assert.Contains(
+                commands.Where(cmd => cmd.Payload != null),
+                cmd => cmd.Payload!.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On
+            );
         });
     }
 }

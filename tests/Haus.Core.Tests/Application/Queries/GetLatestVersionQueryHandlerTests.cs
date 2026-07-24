@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Application;
 using Haus.Core.Application.Queries;
 using Haus.Cqrs;
@@ -32,11 +31,11 @@ public class GetLatestVersionQueryHandlerTests
 
         var version = await _hausBus.ExecuteQueryAsync(new GetLatestVersionQuery());
 
-        version.Version.Should().Be("999.999.999");
-        version.CreationDate.Should().Be(release.CreationDateTime);
-        version.IsOfficialRelease.Should().BeTrue();
-        version.IsNewer.Should().BeTrue();
-        version.Description.Should().Be("Big Release");
+        Assert.Equal("999.999.999", version.Version);
+        Assert.Equal(release.CreationDateTime, version.CreationDate);
+        Assert.True(version.IsOfficialRelease);
+        Assert.True(version.IsNewer);
+        Assert.Equal("Big Release", version.Description);
     }
 
     [Fact]
@@ -46,10 +45,10 @@ public class GetLatestVersionQueryHandlerTests
 
         var version = await _hausBus.ExecuteQueryAsync(new GetLatestVersionQuery());
 
-        version.Version.Should().Be("0.0.0");
-        version.CreationDate.Should().Be(DateTimeOffset.MinValue);
-        version.IsNewer.Should().BeFalse();
-        version.IsOfficialRelease.Should().BeFalse();
-        version.Description.Should().BeEmpty();
+        Assert.Equal("0.0.0", version.Version);
+        Assert.Equal(DateTimeOffset.MinValue, version.CreationDate);
+        Assert.False(version.IsNewer);
+        Assert.False(version.IsOfficialRelease);
+        Assert.Empty(version.Description);
     }
 }

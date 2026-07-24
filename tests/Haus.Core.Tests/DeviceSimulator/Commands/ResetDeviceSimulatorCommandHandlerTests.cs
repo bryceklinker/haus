@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.DeviceSimulator.Commands;
 using Haus.Core.DeviceSimulator.State;
 using Haus.Cqrs;
@@ -30,6 +29,6 @@ public class ResetDeviceSimulatorCommandHandlerTests
 
         await _hausBus.ExecuteCommandAsync(new ResetDeviceSimulatorCommand());
 
-        state?.Devices.Should().BeEmpty();
+        Assert.Empty(state?.Devices ?? []);
     }
 }

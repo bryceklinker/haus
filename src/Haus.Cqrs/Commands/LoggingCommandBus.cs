@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Cqrs.Commands;
@@ -12,15 +11,8 @@ internal class LoggingCommandBus(ICommandBus commandBus, ILogger<LoggingCommandB
 {
     public async Task ExecuteAsync(ICommand command, CancellationToken token = default)
     {
-        await ExecuteWithLoggingAsync(
-            command,
-            async () =>
-            {
-                await commandBus.ExecuteAsync(command, token).ConfigureAwait(false);
-                return Unit.Value;
-            },
-            token
-        );
+        await ExecuteWithLoggingAsync(command, () => commandBus.ExecuteAsync(command, token), token)
+            .ConfigureAwait(false);
     }
 
     public async Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, CancellationToken token = default)

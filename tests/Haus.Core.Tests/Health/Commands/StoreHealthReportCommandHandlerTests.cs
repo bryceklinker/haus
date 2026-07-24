@@ -1,6 +1,6 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Health.Commands;
@@ -38,7 +38,7 @@ public class StoreHealthReportCommandHandlerTests
 
         await _bus.ExecuteCommandAsync(new StoreHealthReportCommand(report));
 
-        _context.GetAll<HealthCheckEntity>().Should().HaveCount(1);
+        Assert.Single(_context.GetAll<HealthCheckEntity>());
     }
 
     [Fact]
@@ -56,12 +56,9 @@ public class StoreHealthReportCommandHandlerTests
 
         await _bus.ExecuteCommandAsync(new StoreHealthReportCommand(report));
 
-        _context
-            .GetAll<HealthCheckEntity>()
-            .Should()
-            .HaveCount(1)
-            .And.Contain(c => c.Name == "NewHotness")
-            .And.Contain(c => c.LastUpdatedTimestamp == now);
+        var check = Assert.Single(_context.GetAll<HealthCheckEntity>());
+        Assert.Equal("NewHotness", check.Name);
+        Assert.Equal(now, check.LastUpdatedTimestamp);
     }
 
     [Fact]
@@ -78,6 +75,6 @@ public class StoreHealthReportCommandHandlerTests
 
         await _bus.ExecuteCommandAsync(new StoreHealthReportCommand(report));
 
-        _context.GetAll<HealthCheckEntity>().Should().HaveCount(2);
+        Assert.Equal(2, _context.GetAll<HealthCheckEntity>().Count());
     }
 }

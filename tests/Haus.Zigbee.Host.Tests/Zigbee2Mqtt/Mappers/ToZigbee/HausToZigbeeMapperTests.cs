@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Text;
-using FluentAssertions;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Discovery;
@@ -34,8 +33,8 @@ public class HausToZigbeeMapperTests
 
         var result = _mapper.Map(original).Single();
 
-        result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join");
-        result.PayloadSegment.Should().BeEncodedString("true");
+        Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
+        HausAssert.IsEncodedString("true", result.PayloadSegment);
     }
 
     [Fact]
@@ -45,8 +44,8 @@ public class HausToZigbeeMapperTests
 
         var result = _mapper.Map(original).Single();
 
-        result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join");
-        result.PayloadSegment.Should().BeEncodedString("false");
+        Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
+        HausAssert.IsEncodedString("false", result.PayloadSegment);
     }
 
     [Fact]
@@ -56,8 +55,8 @@ public class HausToZigbeeMapperTests
 
         var result = _mapper.Map(original).Single();
 
-        result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/bridge/config/devices/get");
-        result.PayloadSegment.Should().BeEmpty();
+        Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/devices/get", result.Topic);
+        Assert.Equal(0, result.PayloadSegment.Count);
     }
 
     [Fact]
@@ -70,7 +69,7 @@ public class HausToZigbeeMapperTests
         var result = _mapper.Map(original).Single();
 
         var payload = JObject.Parse(Encoding.UTF8.GetString(result.PayloadSegment));
-        result.Topic.Should().Be($"{Zigbee2MqttBaseTopic}/my-ext-id/set");
-        payload.Value<string>("state").Should().Be("OFF");
+        Assert.Equal($"{Zigbee2MqttBaseTopic}/my-ext-id/set", result.Topic);
+        Assert.Equal("OFF", payload.Value<string>("state"));
     }
 }

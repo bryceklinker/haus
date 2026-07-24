@@ -1,5 +1,4 @@
 using System;
-using FluentAssertions;
 using Haus.Core.Common.Entities;
 using Haus.Core.DeviceSimulator.Entities;
 using Haus.Core.Models.Common;
@@ -19,9 +18,9 @@ public class SimulatedDeviceEntityTests
 
         var entity = SimulatedDeviceEntity.Create(model);
 
-        entity.Id.Should().NotBeNullOrWhiteSpace();
-        entity.DeviceType.Should().Be(DeviceType.Light);
-        entity.Metadata.Should().ContainEquivalentOf(new Metadata("simulated", "true"));
+        Assert.False(string.IsNullOrWhiteSpace(entity.Id));
+        Assert.Equal(DeviceType.Light, entity.DeviceType);
+        Assert.Contains(new Metadata("simulated", "true"), entity.Metadata);
     }
 
     [Fact]
@@ -31,7 +30,7 @@ public class SimulatedDeviceEntityTests
 
         var entity = SimulatedDeviceEntity.Create(model);
 
-        entity.Metadata.Should().ContainEquivalentOf(new Metadata("one", "three"));
+        Assert.Contains(new Metadata("one", "three"), entity.Metadata);
     }
 
     [Fact]
@@ -41,9 +40,9 @@ public class SimulatedDeviceEntityTests
 
         var model = entity.ToDeviceDiscoveredModel();
 
-        model.Id.Should().Be(entity.Id);
-        model.DeviceType.Should().Be(entity.DeviceType);
-        model.Metadata.Should().Contain(m => m.Key == "simulated" && m.Value == "true");
+        Assert.Equal(entity.Id, model.Id);
+        Assert.Equal(entity.DeviceType, model.DeviceType);
+        Assert.Contains(model.Metadata, m => m.Key == "simulated" && m.Value == "true");
     }
 
     [Fact]
@@ -55,10 +54,11 @@ public class SimulatedDeviceEntityTests
 
         var model = entity.ToModel();
 
-        model.Id.Should().Be(entity.Id);
-        model.DeviceType.Should().Be(DeviceType.Light);
-        model.IsOccupied.Should().BeFalse();
-        model.Metadata.Should().HaveCount(2).And.ContainEquivalentOf(new MetadataModel("one", "three"));
+        Assert.Equal(entity.Id, model.Id);
+        Assert.Equal(DeviceType.Light, model.DeviceType);
+        Assert.False(model.IsOccupied);
+        Assert.Equal(2, model.Metadata.Length);
+        Assert.Contains(new MetadataModel("one", "three"), model.Metadata);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class SimulatedDeviceEntityTests
 
         var model = entity.ToModel();
 
-        model.Lighting.Should().BeEquivalentTo(new LightingModel());
+        Assert.Equal(new LightingModel(), model.Lighting);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class SimulatedDeviceEntityTests
     {
         var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor).ChangeOccupancy();
 
-        entity.IsOccupied.Should().BeTrue();
+        Assert.True(entity.IsOccupied);
     }
 
     [Fact]
@@ -84,6 +84,6 @@ public class SimulatedDeviceEntityTests
     {
         var entity = new SimulatedDeviceEntity(DeviceType: DeviceType.MotionSensor, IsOccupied: true).ChangeOccupancy();
 
-        entity.IsOccupied.Should().BeFalse();
+        Assert.False(entity.IsOccupied);
     }
 }

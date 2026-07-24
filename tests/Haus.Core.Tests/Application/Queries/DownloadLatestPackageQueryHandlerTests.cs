@@ -3,7 +3,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Application;
 using Haus.Core.Application.Queries;
 using Haus.Cqrs;
@@ -34,9 +33,9 @@ public class DownloadLatestPackageQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new DownloadLatestPackageQuery(6));
 
-        result.Status.Should().Be(DownloadStatus.Ok);
+        Assert.Equal(DownloadStatus.Ok, result.Status);
         var bytes = await ReadResultAsByteArrayAsync(result);
-        bytes.Should().BeEquivalentTo(new byte[] { 3, 2, 1 });
+        Assert.Equal(new byte[] { 3, 2, 1 }, bytes);
     }
 
     [Fact]
@@ -46,9 +45,9 @@ public class DownloadLatestPackageQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new DownloadLatestPackageQuery(8));
 
-        result.Status.Should().Be(DownloadStatus.NotFound);
+        Assert.Equal(DownloadStatus.NotFound, result.Status);
         var bytes = await ReadResultAsByteArrayAsync(result);
-        bytes.Should().BeEmpty();
+        Assert.Empty(bytes);
     }
 
     [Fact]
@@ -60,9 +59,9 @@ public class DownloadLatestPackageQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new DownloadLatestPackageQuery(8));
 
-        result.Status.Should().Be(DownloadStatus.Error);
+        Assert.Equal(DownloadStatus.Error, result.Status);
         var bytes = await ReadResultAsByteArrayAsync(result);
-        bytes.Should().BeEmpty();
+        Assert.Empty(bytes);
     }
 
     [Fact]
@@ -72,9 +71,9 @@ public class DownloadLatestPackageQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new DownloadLatestPackageQuery(8));
 
-        result.Status.Should().Be(DownloadStatus.Error);
+        Assert.Equal(DownloadStatus.Error, result.Status);
         var bytes = await ReadResultAsByteArrayAsync(result);
-        bytes.Should().BeEmpty();
+        Assert.Empty(bytes);
     }
 
     private static async Task<byte[]> ReadResultAsByteArrayAsync(DownloadLatestPackageResult result)

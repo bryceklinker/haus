@@ -1,7 +1,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Logs.Queries;
 using Haus.Core.Models.Logs;
 using Haus.Cqrs;
@@ -27,8 +26,8 @@ public class GetLogsQueryHandlerTests
     {
         var result = await _hausBus.ExecuteQueryAsync(new GetLogsQuery(_logsDirectory));
 
-        result.Count.Should().Be(25);
-        result.Items.Should().HaveCount(25);
+        Assert.Equal(25, result.Count);
+        Assert.Equal(25, result.Items.Length);
     }
 
     [Fact]
@@ -36,8 +35,8 @@ public class GetLogsQueryHandlerTests
     {
         var result = await _hausBus.ExecuteQueryAsync(new GetLogsQuery(_logsDirectory));
 
-        result.Items[0].Timestamp.Should().Be("2021-01-17T15:27:50.5660960Z");
-        result.Items[1].Timestamp.Should().Be("2021-01-17T15:27:50.5659580Z");
+        Assert.Equal("2021-01-17T15:27:50.5660960Z", result.Items[0].Timestamp);
+        Assert.Equal("2021-01-17T15:27:50.5659580Z", result.Items[1].Timestamp);
     }
 
     [Fact]
@@ -45,9 +44,9 @@ public class GetLogsQueryHandlerTests
     {
         var result = await _hausBus.ExecuteQueryAsync(new GetLogsQuery(_logsDirectory, new GetLogsParameters(2)));
 
-        result.Count.Should().Be(25);
-        result.Items[0].Timestamp.Should().Be("2021-01-17T15:27:20.6306500Z");
-        result.Items[1].Timestamp.Should().Be("2021-01-17T15:27:20.6258920Z");
+        Assert.Equal(25, result.Count);
+        Assert.Equal("2021-01-17T15:27:20.6306500Z", result.Items[0].Timestamp);
+        Assert.Equal("2021-01-17T15:27:20.6258920Z", result.Items[1].Timestamp);
     }
 
     [Fact]
@@ -56,7 +55,7 @@ public class GetLogsQueryHandlerTests
         var parameters = new GetLogsParameters(SearchTerm: "Entity Framework Core");
         var result = await _hausBus.ExecuteQueryAsync(new GetLogsQuery(_logsDirectory, parameters));
 
-        result.Items[0].Timestamp.Should().Be("2021-01-17T15:27:45.6356650Z");
+        Assert.Equal("2021-01-17T15:27:45.6356650Z", result.Items[0].Timestamp);
     }
 
     [Fact]
@@ -65,7 +64,7 @@ public class GetLogsQueryHandlerTests
         var parameters = new GetLogsParameters(SearchTerm: "entity FRAMEWORK core");
         var result = await _hausBus.ExecuteQueryAsync(new GetLogsQuery(_logsDirectory, parameters));
 
-        result.Items[0].Timestamp.Should().Be("2021-01-17T15:27:45.6356650Z");
+        Assert.Equal("2021-01-17T15:27:45.6356650Z", result.Items[0].Timestamp);
     }
 
     [Fact]
@@ -75,6 +74,6 @@ public class GetLogsQueryHandlerTests
 
         var result = await _hausBus.ExecuteQueryAsync(new GetLogsQuery(_logsDirectory, parameters));
 
-        result.Items.Should().Match(logs => logs.All(l => l.Level == "Error"));
+        Assert.True(result.Items.All(l => l.Level == "Error"));
     }
 }

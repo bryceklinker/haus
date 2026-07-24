@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Commands;
@@ -32,8 +31,8 @@ public class TurnDeviceOnCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new TurnDeviceOnCommand(device.Id));
 
         var publishedCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
-        publishedCommand.Payload?.Device.Id.Should().Be(device.Id);
-        publishedCommand.Payload?.Lighting?.State.Should().Be(LightingState.On);
+        Assert.Equal(device.Id, publishedCommand.Payload?.Device.Id);
+        Assert.Equal(LightingState.On, publishedCommand.Payload?.Lighting?.State);
     }
 
     [Fact]
@@ -43,6 +42,6 @@ public class TurnDeviceOnCommandHandlerTests
 
         var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        await act.Should().ThrowAsync<EntityNotFoundException<DeviceEntity>>();
+        await Assert.ThrowsAsync<EntityNotFoundException<DeviceEntity>>(act);
     }
 }

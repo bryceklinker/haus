@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Testing.Support;
@@ -23,7 +22,7 @@ public class DeviceDiscoveredTests(HausWebHostApplicationFactory factory)
         {
             var client = factory.CreateAuthenticatedClient();
             var list = await client.GetDevicesAsync();
-            list.Items.Should().Contain(m => m.ExternalId == "my-new-id" && m.DeviceType == deviceType);
+            Assert.Contains(list.Items, m => m.ExternalId == "my-new-id" && m.DeviceType == deviceType);
         });
     }
 
@@ -34,6 +33,6 @@ public class DeviceDiscoveredTests(HausWebHostApplicationFactory factory)
 
         var exception = await Assert.ThrowsAsync<HttpRequestException>(() => client.GetDevicesAsync());
 
-        exception.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        Assert.Equal(HttpStatusCode.Unauthorized, exception.StatusCode);
     }
 }

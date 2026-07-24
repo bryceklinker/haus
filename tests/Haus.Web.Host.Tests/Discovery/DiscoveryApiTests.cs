@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Api.Client;
 using Haus.Core.Models.Discovery;
 using Haus.Core.Models.ExternalMessages;
@@ -21,7 +20,10 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         var model = await _client.GetDiscoveryStateAsync();
 
-        model?.State.Should().Be(DiscoveryState.Enabled);
+        if (model != null)
+        {
+            Assert.Equal(DiscoveryState.Enabled, model.State);
+        }
     }
 
     [Fact]
@@ -32,7 +34,10 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         var model = await _client.GetDiscoveryStateAsync();
 
-        model?.State.Should().Be(DiscoveryState.Disabled);
+        if (model != null)
+        {
+            Assert.Equal(DiscoveryState.Disabled, model.State);
+        }
     }
 
     [Fact]
@@ -48,7 +53,10 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            hausCommand?.Type.Should().Be(StartDiscoveryModel.Type);
+            if (hausCommand != null)
+            {
+                Assert.Equal(StartDiscoveryModel.Type, hausCommand.Type);
+            }
         });
     }
 
@@ -65,7 +73,10 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            hausCommand?.Type.Should().Be(StopDiscoveryModel.Type);
+            if (hausCommand != null)
+            {
+                Assert.Equal(StopDiscoveryModel.Type, hausCommand.Type);
+            }
         });
     }
 
@@ -80,7 +91,10 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            command?.Type.Should().Be(SyncDiscoveryModel.Type);
+            if (command != null)
+            {
+                Assert.Equal(SyncDiscoveryModel.Type, command.Type);
+            }
         });
     }
 }

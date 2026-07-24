@@ -12,8 +12,7 @@ targeting support for many Zigbee devices.
 # System Requirements
 
 - .NET 5
-- MQTT server
-    - This can be obtained on Mac OS using `brew install mosiquitto`
+- Docker (used by `yarn start` to run the full stack, including the MQTT broker - no separate MQTT install needed)
 - Node/NPM
 - Yarn
 

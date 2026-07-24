@@ -8,7 +8,6 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Core.Devices.Commands;
 

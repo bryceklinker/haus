@@ -4,7 +4,6 @@ using Haus.Core.Common.Events;
 using Haus.Core.Models.Discovery;
 using Haus.Cqrs;
 using Haus.Cqrs.Commands;
-using MediatR;
 
 namespace Haus.Core.Discovery.Commands;
 

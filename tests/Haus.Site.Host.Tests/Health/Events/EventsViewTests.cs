@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Haus.Core.Models;
 using Haus.Core.Models.ExternalMessages;
@@ -25,7 +26,7 @@ public class EventsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            _eventsSubscriber.IsStarted.Should().BeTrue();
+            Assert.True(_eventsSubscriber.IsStarted);
         });
     }
 
@@ -38,7 +39,7 @@ public class EventsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudProgressCircular>().Should().HaveCount(1);
+            Assert.Equal(1, view.FindAllByComponent<MudProgressCircular>().Count());
         });
     }
 
@@ -50,8 +51,8 @@ public class EventsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudExpansionPanels>().Should().HaveCount(1);
-            view.FindAllByComponent<MudExpansionPanel>().Should().HaveCount(1);
+            Assert.Equal(1, view.FindAllByComponent<MudExpansionPanels>().Count());
+            Assert.Equal(1, view.FindAllByComponent<MudExpansionPanel>().Count());
         });
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Commands;
@@ -35,7 +34,7 @@ public class ChangeDeviceLightingCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
         var updated = await _context.FindByIdAsync<DeviceEntity>(device.Id);
-        updated?.Lighting?.Level.Should().BeEquivalentTo(new LevelLightingEntity(54));
+        Assert.Equal(new LevelLightingEntity(54), updated?.Lighting?.Level);
     }
 
     [Fact]
@@ -45,7 +44,7 @@ public class ChangeDeviceLightingCommandHandlerTests
 
         var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        await act.Should().ThrowAsync<EntityNotFoundException<DeviceEntity>>();
+        await Assert.ThrowsAsync<EntityNotFoundException<DeviceEntity>>(act);
     }
 
     [Fact]
@@ -57,7 +56,7 @@ public class ChangeDeviceLightingCommandHandlerTests
 
         var act = () => _hausBus.ExecuteCommandAsync(command);
 
-        await act.Should().ThrowAsync<InvalidOperationException>();
+        await Assert.ThrowsAsync<InvalidOperationException>(act);
     }
 
     [Fact]
@@ -69,7 +68,7 @@ public class ChangeDeviceLightingCommandHandlerTests
         await _hausBus.ExecuteCommandAsync(new ChangeDeviceLightingCommand(device.Id, lighting));
 
         var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
-        hausCommand.Payload?.Device.Id.Should().Be(device.Id);
-        hausCommand.Payload?.Lighting?.Level.Should().BeEquivalentTo(new LevelLightingModel(65));
+        Assert.Equal(device.Id, hausCommand.Payload?.Device.Id);
+        Assert.Equal(new LevelLightingModel(65), hausCommand.Payload?.Lighting?.Level);
     }
 }

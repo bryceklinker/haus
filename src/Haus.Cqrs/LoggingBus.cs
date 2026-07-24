@@ -10,6 +10,29 @@ internal abstract class LoggingBus(ILogger logger)
 {
     protected ILogger Logger { get; } = logger;
 
+    protected async Task ExecuteWithLoggingAsync<TInput>(
+        TInput input,
+        Func<Task> executor,
+        CancellationToken token = default
+    )
+    {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        try
+        {
+            LogStarted(input);
+            await executor.Invoke().ConfigureAwait(false);
+            stopwatch.Stop();
+            LogFinished(input, stopwatch.ElapsedMilliseconds);
+        }
+        catch (Exception e)
+        {
+            stopwatch.Stop();
+            LogError(input, e, stopwatch.ElapsedMilliseconds);
+            throw;
+        }
+    }
+
     protected async Task<TOutput> ExecuteWithLoggingAsync<TInput, TOutput>(
         TInput input,
         Func<Task<TOutput>> executor,

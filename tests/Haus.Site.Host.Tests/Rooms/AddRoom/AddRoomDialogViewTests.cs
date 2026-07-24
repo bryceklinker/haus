@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ public class AddRoomDialogViewTests : HausSiteTestContext
     {
         var view = await RenderDialogAsync<AddRoomDialogView>();
 
-        view.FindAllByComponent<MudTextField<string>>().Should().HaveCount(1);
+        Assert.Equal(1, view.FindAllByComponent<MudTextField<string>>().Count());
     }
 
     [Fact]
@@ -32,15 +33,15 @@ public class AddRoomDialogViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await view.FindMudTextFieldById<string>("name").Instance.SetText("Living Room");
+            await view.FindMudTextFieldById<string>("name").Instance.SetTextAsync("Living Room");
             await view.FindMudButtonByText("save").ClickAsync();
         });
 
         await Eventually.AssertAsync(async () =>
         {
-            request.Should().NotBeNull();
+            Assert.NotNull(request);
             var room = request?.Content != null ? await request.Content.ReadFromJsonAsync<RoomModel>() : null;
-            room?.Name.Should().Be("Living Room");
+            Assert.Equal("Living Room", room?.Name);
         });
     }
 
@@ -56,7 +57,7 @@ public class AddRoomDialogViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudDialog>().Should().HaveCount(0);
+            Assert.Empty(view.FindAllByComponent<MudDialog>());
         });
     }
 
@@ -70,13 +71,13 @@ public class AddRoomDialogViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await view.FindMudTextFieldById<string>("name").Instance.SetText("Living Room");
+            await view.FindMudTextFieldById<string>("name").Instance.SetTextAsync("Living Room");
             await view.FindMudButtonByText("save").ClickAsync();
         });
 
         Eventually.Assert(() =>
         {
-            view.FindAllByComponent<MudDialog>().Should().HaveCount(0);
+            Assert.Empty(view.FindAllByComponent<MudDialog>());
         });
     }
 
@@ -89,15 +90,15 @@ public class AddRoomDialogViewTests : HausSiteTestContext
 
         var invokeTask = view.InvokeAsync(async () =>
         {
-            await view.FindMudTextFieldById<string>("name").Instance.SetText("Living Room");
+            await view.FindMudTextFieldById<string>("name").Instance.SetTextAsync("Living Room");
             await view.FindMudButtonByText("save").ClickAsync();
         });
 
         Eventually.Assert(() =>
         {
-            view.FindMudButtonByText("save").Instance.Disabled.Should().BeTrue();
-            view.FindMudButtonByText("cancel").Instance.Disabled.Should().BeTrue();
-            view.FindMudTextFieldById<string>("name").Instance.Disabled.Should().BeTrue();
+            Assert.True(view.FindMudButtonByText("save").Instance.Disabled);
+            Assert.True(view.FindMudButtonByText("cancel").Instance.Disabled);
+            Assert.True(view.FindMudTextFieldById<string>("name").Instance.Disabled);
         });
         await invokeTask;
     }

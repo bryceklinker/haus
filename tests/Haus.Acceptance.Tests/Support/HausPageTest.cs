@@ -21,7 +21,7 @@ public class HausPageTest : PageTest
             .AddOptions()
             .Configure<HausMqttSettings>(opts =>
             {
-                opts.Server = "mqtt://localhost:1883";
+                opts.Server = "mqtt://localhost:11883";
             })
             .BuildServiceProvider();
     }
@@ -30,7 +30,8 @@ public class HausPageTest : PageTest
     {
         return new BrowserNewContextOptions
         {
-            BaseURL = "http://localhost:5002",
+            BaseURL = "https://localhost:15003",
+            IgnoreHTTPSErrors = true,
             ScreenSize = new ScreenSize { Width = 1920, Height = 1080 },
         };
     }

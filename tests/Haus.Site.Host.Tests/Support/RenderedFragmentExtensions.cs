@@ -5,16 +5,18 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AngleSharp.Diffing.Extensions;
 using AngleSharp.Dom;
+using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using MudBlazor.Extensions;
 
 namespace Haus.Site.Host.Tests.Support;
 
 public static class RenderedFragmentExtensions
 {
     public static IElement[] FindAllByTag(
-        this IRenderedFragment fragment,
+        this IRenderedComponent<IComponent> fragment,
         string tag,
         Func<FindOptions, FindOptions>? configureOptions = null
     )
@@ -23,7 +25,7 @@ public static class RenderedFragmentExtensions
     }
 
     public static IElement FindByTag(
-        this IRenderedFragment fragment,
+        this IRenderedComponent<IComponent> fragment,
         string tag,
         Func<FindOptions, FindOptions>? configureOptions = null
     )
@@ -32,7 +34,7 @@ public static class RenderedFragmentExtensions
     }
 
     public static IElement FindByClass(
-        this IRenderedFragment fragment,
+        this IRenderedComponent<IComponent> fragment,
         string className,
         Func<FindOptions, FindOptions>? configureOptions = null
     )
@@ -41,7 +43,7 @@ public static class RenderedFragmentExtensions
     }
 
     public static IElement[] FindAllByClass(
-        this IRenderedFragment fragment,
+        this IRenderedComponent<IComponent> fragment,
         string className,
         Func<FindOptions, FindOptions>? configureOptions = null
     )
@@ -50,7 +52,7 @@ public static class RenderedFragmentExtensions
     }
 
     public static IElement FindByRole(
-        this IRenderedFragment fragment,
+        this IRenderedComponent<IComponent> fragment,
         string role,
         Func<FindOptions, FindOptions>? configureOptions = null
     )
@@ -58,13 +60,16 @@ public static class RenderedFragmentExtensions
         return fragment.FindAll(CreateRoleSelector(role)).FindByOptions(configureOptions).First();
     }
 
-    public static IRenderedComponent<MudButton> FindMudButtonByText(this IRenderedFragment fragment, string text)
+    public static IRenderedComponent<MudButton> FindMudButtonByText(
+        this IRenderedComponent<IComponent> fragment,
+        string text
+    )
     {
         return fragment.FindByComponent<MudButton>(opts => opts.WithText(text));
     }
 
     public static IRenderedComponent<MudTextField<T>> FindMudTextFieldById<T>(
-        this IRenderedFragment fragment,
+        this IRenderedComponent<IComponent> fragment,
         string id
     )
     {
@@ -72,7 +77,7 @@ public static class RenderedFragmentExtensions
     }
 
     public static IRenderedComponent<T> FindByComponent<T>(
-        this IRenderedFragment fragment,
+        this IRenderedComponent<IComponent> fragment,
         Func<FindOptions, FindOptions>? configureOptions = null
     )
         where T : IComponent
@@ -81,7 +86,7 @@ public static class RenderedFragmentExtensions
     }
 
     public static IEnumerable<IRenderedComponent<T>> FindAllByComponent<T>(
-        this IRenderedFragment fragment,
+        this IRenderedComponent<IComponent> fragment,
         Func<FindOptions, FindOptions>? configureOptions = null
     )
         where T : IComponent
@@ -99,7 +104,7 @@ public static class RenderedFragmentExtensions
 
     public static T? GetValue<T>(this IRenderedComponent<MudTextField<T>> field)
     {
-        return field.Instance.Value;
+        return field.Instance.GetState(x => x.Value);
     }
 
     private static string CreateRoleSelector(string role)

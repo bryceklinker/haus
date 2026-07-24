@@ -7,6 +7,7 @@ using Haus.Site.Host.Rooms.Detail;
 using Haus.Site.Host.Shared.Lighting;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
+using MudBlazor.Extensions;
 
 namespace Haus.Site.Host.Tests.Rooms.Detail;
 
@@ -19,8 +20,11 @@ public class RoomDetailViewTests : HausSiteTestContext
 
         var view = RenderDetail(room);
 
-        view.FindMudTextFieldById<string?>("name").Instance.Value.Should().Be(room.Name);
-        view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.Value.Should().Be(room.OccupancyTimeoutInSeconds);
+        Assert.Equal(room.Name, view.FindMudTextFieldById<string?>("name").Instance.GetState(x => x.Value));
+        Assert.Equal(
+            room.OccupancyTimeoutInSeconds,
+            view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.GetState(x => x.Value)
+        );
     }
 
     [Fact]
@@ -35,16 +39,16 @@ public class RoomDetailViewTests : HausSiteTestContext
 
         await view.InvokeAsync(async () =>
         {
-            await view.FindMudTextFieldById<string?>("name").Instance.SetText("bill");
-            await view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.SetText("500");
+            await view.FindMudTextFieldById<string?>("name").Instance.SetTextAsync("bill");
+            await view.FindMudTextFieldById<int?>("occupancyTimeout").Instance.SetTextAsync("500");
             await view.FindMudButtonByText("save").ClickAsync();
         });
 
         await Eventually.AssertAsync(async () =>
         {
             var model = request?.Content != null ? await request.Content.ReadFromJsonAsync<RoomModel>() : null;
-            model?.OccupancyTimeoutInSeconds.Should().Be(500);
-            model?.Name.Should().Be("bill");
+            Assert.Equal(500, model?.OccupancyTimeoutInSeconds);
+            Assert.Equal("bill", model?.Name);
         });
     }
 
@@ -75,7 +79,7 @@ public class RoomDetailViewTests : HausSiteTestContext
                     ? null
                     : await lightingRequest.Content.ReadFromJsonAsync<LightingModel>();
 
-            newLighting.Should().BeEquivalentTo(lighting);
+            Assert.Equal(lighting, newLighting);
         });
     }
 

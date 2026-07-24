@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using FluentAssertions;
 using Haus.Core.Diagnostics.Factories;
 using Haus.Core.Models;
 using Haus.Testing.Support;
@@ -26,8 +25,8 @@ public class MqttDiagnosticsMessageFactoryTests
     {
         var model = _factory.Create("something", []);
 
-        model.Topic.Should().Be("something");
-        model.Payload.Should().BeNull();
+        Assert.Equal("something", model.Topic);
+        Assert.Null(model.Payload);
     }
 
     [Fact]
@@ -35,8 +34,8 @@ public class MqttDiagnosticsMessageFactoryTests
     {
         var model = _factory.Create("something", Array.Empty<byte>());
 
-        model.Topic.Should().Be("something");
-        model.Payload.Should().BeNull();
+        Assert.Equal("something", model.Topic);
+        Assert.Null(model.Payload);
     }
 
     [Fact]
@@ -44,8 +43,8 @@ public class MqttDiagnosticsMessageFactoryTests
     {
         var model = _factory.Create("my-topic", HausJsonSerializer.SerializeToBytes(new { id = 45 }));
 
-        model.Topic.Should().Be("my-topic");
-        JObject.Parse($"{model.Payload}").Value<int>("id").Should().Be(45);
+        Assert.Equal("my-topic", model.Topic);
+        Assert.Equal(45, JObject.Parse($"{model.Payload}").Value<int>("id"));
     }
 
     [Fact]
@@ -53,7 +52,7 @@ public class MqttDiagnosticsMessageFactoryTests
     {
         var model = _factory.Create("my-topic", Encoding.UTF8.GetBytes("hello there"));
 
-        model.Payload.Should().Be("hello there");
+        Assert.Equal("hello there", model.Payload);
     }
 
     [Fact]
@@ -61,7 +60,7 @@ public class MqttDiagnosticsMessageFactoryTests
     {
         var model = _factory.Create("idk", Array.Empty<byte>());
 
-        model.Id.Should().BeAGuid();
+        HausAssert.IsGuid(model.Id);
     }
 
     [Fact]
@@ -70,6 +69,6 @@ public class MqttDiagnosticsMessageFactoryTests
         _clock.SetNow(new DateTime(2020, 9, 23));
         var model = _factory.Create("idk", Array.Empty<byte>());
 
-        model.Timestamp.Should().Be(new DateTime(2020, 9, 23));
+        Assert.Equal(new DateTime(2020, 9, 23), model.Timestamp);
     }
 }

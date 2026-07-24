@@ -6,6 +6,8 @@ bin/
 obj/
 **/*.cert
 **/*.key
+**/*.crt
+**/*.pfx
 dist/
 videos/
 screenshots/

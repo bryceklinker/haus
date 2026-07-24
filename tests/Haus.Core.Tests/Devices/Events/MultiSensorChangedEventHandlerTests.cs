@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Haus.Core.Common.Events;
 using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Motion;
@@ -21,6 +20,6 @@ public class MultiSensorChangedEventHandlerTests
 
         await _hausBus.PublishAsync(RoutableEvent.FromEvent(change));
 
-        _hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>().Should().HaveCount(1);
+        Assert.Single(_hausBus.GetPublishedEvents<RoutableEvent<OccupancyChangedModel>>());
     }
 }
