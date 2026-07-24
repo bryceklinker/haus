@@ -16,10 +16,10 @@ function generate_certs() {
 
   openssl pkcs12 -in "${CERT_PFX_PATH}" \
     -nocerts \
+    -nodes \
     -out "${CERT_KEY_PATH}" \
     -password pass:"${CERT_PASSWORD}" \
-    -passin pass:"${CERT_PASSWORD}" \
-    -passout pass:"${CERT_PASSWORD}"
+    -passin pass:"${CERT_PASSWORD}"
 
   openssl pkcs12 -in "${CERT_PFX_PATH}" \
     -clcerts \
