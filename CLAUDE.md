@@ -10,7 +10,7 @@ HAUS is a home automation system that runs on the user's personal network (only 
 
 - .NET (SDK pinned in `global.json`, currently 10.0.100, `rollForward: latestMinor`)
 - Node/Yarn (Node version pinned in `.nvmrc`)
-- An MQTT broker (`brew install mosquitto` on macOS; `docker-compose up haus_mqtt` otherwise)
+- Docker (used by `yarn start` to run the full stack via `docker-compose.local.yml`, including the MQTT broker — no separate MQTT install needed)
 
 Required environment variables for auth (both plain and `CYPRESS_`-prefixed variants are needed since acceptance tests use Cypress-style env vars): `GITHUB_TOKEN`, `AUTH_DOMAIN`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_AUDIENCE`, `AUTH_USERNAME`, `AUTH_PASSWORD`. See `readme.md` for the full export block.
 
@@ -20,8 +20,8 @@ Run from the repo root (Yarn scripts `cd` into the relevant project via `package
 
 ```bash
 yarn install                 # install JS deps (also runs first-time)
-yarn start                   # run web host, site host, zigbee host together (concurrently)
-yarn start:watch             # same, but with dotnet watch for hot reload
+yarn start                   # publish, generate dev certs, then boot the full stack via docker-compose.local.yml
+yarn start:watch             # run web host, site host, zigbee host directly via dotnet watch (hot reload, no Docker)
 yarn zigbee_host:start       # run only the Zigbee host
 yarn web_host:start          # run only the API host (launch profile: acceptance)
 yarn site_host:start         # run only the Blazor site host (launch profile: acceptance)
@@ -65,7 +65,7 @@ Creates the project under `src/` (or `tests/` for `test` type) and adds it to `H
 - **Haus.Site.Host** — Blazor front end (`App.razor` root), consumes the Web Host API (via `Haus.Api.Client`) and SignalR for realtime updates; served behind nginx in Docker (`nginx.conf`, `haus-site-dockerfile`).
 - **haus_mqtt** — mosquitto broker connecting all services (see `docker-compose.yml`, `mosquitto.conf`).
 
-In Docker Compose, `haus_zigbee` and `haus_web` both connect to `haus_mqtt`; `haus_site` (nginx) proxies to `haus_web`.
+In Docker Compose, `haus_zigbee` and `haus_web` both connect to `haus_mqtt`; `haus_site` (nginx) serves the published Blazor bundle directly — the browser calls `haus_web`'s API itself, nginx does not proxy to it. `docker-compose.yml` is the production deployment file; `docker-compose.local.yml` is a separate compose file (non-standard ports) for one-command local dev/CI startup, building all three .NET services from local source via the same Dockerfiles.
 
 ### CQRS core (`Haus.Cqrs`)
 
@@ -84,9 +84,9 @@ Organized by feature/bounded-context folder, not by technical layer: `Devices`, 
 
 ### Tests
 
-Test projects mirror `src/` 1:1 by name (e.g. `tests/Haus.Core.Tests` ↔ `src/Haus.Core`), with the same feature-folder layout inside. `Haus.Testing.Support` holds shared test infrastructure/fixtures. `Haus.Acceptance.Tests` is a separate end-to-end suite that runs against live `web_host`/`site_host` processes started via the `acceptance` launch profile (see `yarn acceptance` / `run-acceptance-tests.sh`) — Cypress-style env vars (`CYPRESS_AUTH_*`) drive its Auth0 login.
+Test projects mirror `src/` 1:1 by name (e.g. `tests/Haus.Core.Tests` ↔ `src/Haus.Core`), with the same feature-folder layout inside. `Haus.Testing.Support` holds shared test infrastructure/fixtures. `Haus.Acceptance.Tests` is a separate end-to-end suite that runs against the full stack booted via `docker-compose.local.yml` (see `yarn acceptance` / `run-acceptance-tests.sh`) — Cypress-style env vars (`CYPRESS_AUTH_*`) drive its Auth0 login.
 
 ## CI/CD
 
-- **`.github/workflows/main.yaml`** — on push/PR to `main`: sets up the machine (`.github/actions/setup-machine`, which installs .NET/Node, starts a mosquitto broker, trusts dev certs), runs `prepare-build.sh`, `run-unit-tests.sh`, then `run-acceptance-tests.sh`.
+- **`.github/workflows/main.yaml`** — on push/PR to `main`: sets up the machine (`.github/actions/setup-machine`, which installs .NET/Node, trusts dev certs), runs `prepare-build.sh`, `run-unit-tests.sh`, then `run-acceptance-tests.sh` (which boots the stack via `docker-compose.local.yml`).
 - **`.github/workflows/release.yaml`** — manual `workflow_dispatch`: bumps version/tag, publishes app artifacts (`scripts/publish-app.sh`), pushes Docker images (`scripts/publish-to-docker-hub.sh`), and creates a GitHub release with the service package.
