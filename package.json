@@ -13,19 +13,19 @@
     "acceptance_tests": "./tests/Haus.Acceptance.Tests"
   },
   "scripts": {
-    "web_host:wait": "wait-on tcp:5000 && wait-on $npm_package_config_web_host/haus_acceptance.db",
+    "web_host:wait": "wait-on tcp:15000",
     "web_host:start": "cd $npm_package_config_web_host && dotnet run --launch-profile acceptance",
     "web_host:start:watch": "DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1 cd $npm_package_config_web_host && dotnet watch",
-    "site_host:wait":"wait-on tcp:5002",
+    "site_host:wait": "wait-on tcp:15003",
     "site_host:start": "cd $npm_package_config_site_host && dotnet run --launch-profile acceptance",
     "site_host:start:watch": "DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1 cd $npm_package_config_site_host && dotnet watch",
     "wait": "yarn web_host:wait && yarn site_host:wait",
     "acceptance_tests:test": "cd $npm_package_config_acceptance_tests && dotnet test --no-restore",
     "acceptance": "concurrently --kill-others --success first \"yarn start\" \"yarn wait && yarn acceptance_tests:test\"",
     "zigbee_host:start": "cd $npm_package_config_zigbee_host && dotnet run",
-    "start": "concurrently -c \"green.bold,blue.bold,yellow.bold\" \"npm:*:start\"",
+    "start": "./scripts/generate-dev-certs.sh && docker compose -f docker-compose.local.yml up --build",
     "start:watch": "concurrently -c \"green.bold,blue.bold,yellow.bold\" \"npm:*:start:watch\"",
-    "prestart:docker": "./scripts/publish-app.sh"
+    "prestart": "./scripts/publish-app.sh"
   },
   "devDependencies": {
     "concurrently": "9.1.2",

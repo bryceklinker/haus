@@ -12,7 +12,7 @@ public static class LoginExtensions
 
     public static async Task PerformLoginAsync(this IPage page, HausUser user)
     {
-        await page.GotoAsync("http://localhost:5002/welcome");
+        await page.GotoAsync("https://localhost:15003/welcome");
         await page.ClickButtonAsync("Login");
 
         await page.EnterTextAsync("email", user.Email);
