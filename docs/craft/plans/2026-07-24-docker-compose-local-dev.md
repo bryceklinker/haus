@@ -199,3 +199,19 @@ first and falls back to `docker-compose`.
 
 Increments 4 and 5 are mutually independent of each other (disjoint
 files) once 3 lands, but both depend on 3 existing first.
+
+## External dependency found during verification: Auth0 allow-list
+
+A real CI push got the docker-compose stack fully working end-to-end
+(real headless Chrome loads the WASM app via `haus_site_local`, no hangs,
+no cert/nginx/wwwroot issues — all previously-fixed bugs stayed fixed).
+But both remaining acceptance test failures now happen earlier than
+before, timing out waiting for the Auth0 login page's email field
+(`Login.cs`'s `PerformLoginAsync`) rather than at the app-specific UI
+elements they used to fail at. This is consistent with Auth0's
+application settings (allowed callback/logout/web-origin URLs, managed
+in the Auth0 dashboard, outside this repo) whitelisting the old
+`http://localhost:5002` and rejecting/mis-redirecting the new
+`https://localhost:15003`. This can't be fixed from the repo alone —
+resolved by adding the new URL to Auth0's allow-list directly (external
+action, outside this codebase).
