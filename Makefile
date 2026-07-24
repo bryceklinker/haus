@@ -51,6 +51,7 @@ test-unit:
 	docker run -d --name $(MQTT_TEST_CONTAINER) -p $(MQTT_TEST_PORT):1883 \
 		-v $(CURDIR)/mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto:latest >/dev/null; \
 	until bash -c 'echo > /dev/tcp/127.0.0.1/$(MQTT_TEST_PORT)' 2>/dev/null; do sleep 1; done; \
+	export Mqtt__Server="mqtt://localhost:$(MQTT_TEST_PORT)"; \
 	./scripts/run-unit-tests.sh; \
 	status=$$?; \
 	docker rm -f $(MQTT_TEST_CONTAINER) >/dev/null 2>&1 || true; \
