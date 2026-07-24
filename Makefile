@@ -6,6 +6,7 @@ SITE_HOST_DIR := src/Haus.Site.Host
 ZIGBEE_HOST_DIR := src/Haus.Zigbee.Host
 ACCEPTANCE_TESTS_DIR := tests/Haus.Acceptance.Tests
 MQTT_TEST_CONTAINER := haus_mqtt_unit_tests
+MQTT_TEST_PORT := 21883
 
 .PHONY: build certs publish start stop watch web-host site-host zigbee-host \
         test-unit test-acceptance docker-publish add-project migration
@@ -46,13 +47,10 @@ zigbee-host:
 	cd $(ZIGBEE_HOST_DIR) && dotnet run
 
 test-unit:
-	if ! bash -c 'echo > /dev/tcp/127.0.0.1/1883' 2>/dev/null; then \
-		echo "No MQTT broker found on 1883, starting one for the test run"; \
-		docker rm -f $(MQTT_TEST_CONTAINER) >/dev/null 2>&1 || true; \
-		docker run -d --name $(MQTT_TEST_CONTAINER) -p 1883:1883 \
-			-v $(CURDIR)/mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto:latest >/dev/null; \
-		until bash -c 'echo > /dev/tcp/127.0.0.1/1883' 2>/dev/null; do sleep 1; done; \
-	fi; \
+	docker rm -f $(MQTT_TEST_CONTAINER) >/dev/null 2>&1 || true; \
+	docker run -d --name $(MQTT_TEST_CONTAINER) -p $(MQTT_TEST_PORT):1883 \
+		-v $(CURDIR)/mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto:latest >/dev/null; \
+	until bash -c 'echo > /dev/tcp/127.0.0.1/$(MQTT_TEST_PORT)' 2>/dev/null; do sleep 1; done; \
 	./scripts/run-unit-tests.sh; \
 	status=$$?; \
 	docker rm -f $(MQTT_TEST_CONTAINER) >/dev/null 2>&1 || true; \

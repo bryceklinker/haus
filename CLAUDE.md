@@ -86,5 +86,5 @@ Test projects mirror `src/` 1:1 by name (e.g. `tests/Haus.Core.Tests` ↔ `src/H
 
 ## CI/CD
 
-- **`.github/workflows/main.yaml`** — on push/PR to `main`: sets up the machine (`.github/actions/setup-machine`, which installs .NET, starts a standard-port MQTT broker needed by `Haus.Web.Host.Tests`'s real MQTT integration tests, trusts dev certs), runs `make build`, `make test-unit`, then `make test-acceptance` (which separately boots the full stack, including its own MQTT broker on non-standard ports, via `docker-compose.local.yml`).
+- **`.github/workflows/main.yaml`** — on push/PR to `main`: sets up the machine (`.github/actions/setup-machine`, which installs .NET, trusts dev certs), runs `make build`, `make test-unit` (which starts and tears down its own disposable MQTT broker on port 21883 for `Haus.Web.Host.Tests`'s real MQTT integration tests), then `make test-acceptance` (which separately boots the full stack, including its own MQTT broker on non-standard ports, via `docker-compose.local.yml`).
 - **`.github/workflows/release.yaml`** — manual `workflow_dispatch`: bumps version/tag, publishes app artifacts (`make publish`), pushes Docker images (`make docker-publish`), and creates a GitHub release with the service package.
