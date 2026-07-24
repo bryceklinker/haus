@@ -50,6 +50,7 @@ services:
       dockerfile: haus-site-dockerfile
       args:
         PUBLISH_DIR: publish/haus-site
+        RUNTIME_ENVIRONMENT: Acceptance
     ports:
       - "15003:443"
     volumes:

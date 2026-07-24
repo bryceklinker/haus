@@ -215,3 +215,27 @@ in the Auth0 dashboard, outside this repo) whitelisting the old
 `https://localhost:15003`. This can't be fixed from the repo alone —
 resolved by adding the new URL to Auth0's allow-list directly (external
 action, outside this codebase).
+
+After that fix, login succeeded and both acceptance tests returned to
+failing at their original, pre-existing MudBlazor 8→9 UI locators (see
+"Bugs found and fixed" below for one more real bug this uncovered along
+the way). This was the goal all along — reproducing the actual MudBlazor
+issue this side-quest was meant to make easier to debug, not a new
+regression from this feature.
+
+## Fifth bug found: Blazor WASM never loads Acceptance config under nginx
+
+While confirming the above, `web_host`'s logs showed zero non-health-check
+API queries during the whole acceptance run — the browser never
+successfully called any business endpoint. Root cause: Blazor WebAssembly
+only loads `appsettings.{Environment}.json` when something (normally an
+ASP.NET-Core-hosted `dotnet run` dev server) sets a `blazor-environment`
+response header. nginx serves static files and never sets it, so the app
+always fell back to the base `wwwroot/appsettings.json`, which hardcodes
+`Api.BaseUrl` to `https://localhost:5001` — unreachable in this setup
+(confirmed live: the app was hitting port 5001, exactly the hardcoded
+value). Fixed by adding a `RUNTIME_ENVIRONMENT` build arg to
+`haus-site-dockerfile` (default `Production`, a no-op — the production
+deployment is unaffected) that, for non-Production builds, overwrites
+`appsettings.json` with the target environment's file at build time.
+`docker-compose.local.yml` passes `RUNTIME_ENVIRONMENT: Acceptance`.

@@ -1,8 +1,19 @@
 FROM nginx:alpine
 
 ARG PUBLISH_DIR
+ARG RUNTIME_ENVIRONMENT=Production
 
 COPY $PUBLISH_DIR/wwwroot/ /var/www/web
 COPY nginx.conf /etc/nginx/nginx.conf
+
+# Blazor WebAssembly only picks up appsettings.{Environment}.json when a host
+# sets the blazor-environment header (e.g. `dotnet run`). nginx serves static
+# files and never sets it, so the app always falls back to appsettings.json.
+# For non-Production builds, bake the target environment's settings into
+# appsettings.json directly so the static deployment uses the right config.
+RUN if [ "$RUNTIME_ENVIRONMENT" != "Production" ] && [ -f "/var/www/web/appsettings.$RUNTIME_ENVIRONMENT.json" ]; then \
+      cp "/var/www/web/appsettings.$RUNTIME_ENVIRONMENT.json" /var/www/web/appsettings.json; \
+    fi
+
 EXPOSE 80
 EXPOSE 443
