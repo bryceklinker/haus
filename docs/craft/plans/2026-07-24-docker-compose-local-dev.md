@@ -239,3 +239,26 @@ value). Fixed by adding a `RUNTIME_ENVIRONMENT` build arg to
 deployment is unaffected) that, for non-Production builds, overwrites
 `appsettings.json` with the target environment's file at build time.
 `docker-compose.local.yml` passes `RUNTIME_ENVIRONMENT: Acceptance`.
+
+## Consistency follow-up: RUNTIME_ENVIRONMENT on all three Dockerfiles
+
+`haus-dockerfile` (web_host/zigbee_host) didn't have an equivalent build
+arg. Added `ARG RUNTIME_ENVIRONMENT=Production` there too, translated
+into the real .NET environment variables (`ENV
+ASPNETCORE_ENVIRONMENT="${RUNTIME_ENVIRONMENT}"` and `ENV
+DOTNET_ENVIRONMENT="${RUNTIME_ENVIRONMENT}"` — `RUNTIME_ENVIRONMENT`
+itself isn't a .NET-recognized variable, it's this repo's own build-time
+input, deliberately named the same across all three Dockerfiles; each
+translates it into whatever mechanism is actually correct for that
+container: real env vars for the two .NET processes, a baked-in config
+file for the static Blazor WASM site). This let the now-redundant
+explicit `ASPNETCORE_ENVIRONMENT=Acceptance`/`DOTNET_ENVIRONMENT=Acceptance`
+runtime `environment:` lines in `docker-compose.local.yml` be removed —
+one source of truth instead of two.
+
+Also made the value flow through the compose invocation rather than
+being hardcoded per-service: all three `build.args` now read
+`RUNTIME_ENVIRONMENT: ${RUNTIME_ENVIRONMENT:-Acceptance}`, so
+`RUNTIME_ENVIRONMENT=Development ./scripts/docker-compose-local.sh up --build`
+overrides it without editing the file, while the default stays
+`Acceptance` for plain `yarn start`/CI use.
