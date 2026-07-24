@@ -17,6 +17,10 @@ public record DeviceModel(
 {
     public MetadataModel[] Metadata { get; init; } = Metadata ?? [];
 
+    // MudBlazor's MudDropZone keys rendered items by GetHashCode(); the default
+    // record equality includes Metadata (an array, compared by reference), so a
+    // refetched instance of the same device got a new hash every time and broke
+    // Blazor's diffing during drag-and-drop. Identity equality keeps it stable.
     public virtual bool Equals(DeviceModel? other) => other is not null && Id == other.Id;
 
     public override int GetHashCode() => Id.GetHashCode();
