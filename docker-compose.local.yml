@@ -51,7 +51,6 @@ services:
       args:
         PUBLISH_DIR: publish/haus-site
     ports:
-      - "15002:80"
       - "15003:443"
     volumes:
       - ./cert.crt:/etc/nginx/certs/cert.crt

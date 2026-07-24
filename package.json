@@ -23,7 +23,7 @@
     "acceptance_tests:test": "cd $npm_package_config_acceptance_tests && dotnet test --no-restore",
     "acceptance": "concurrently --kill-others --success first \"yarn start\" \"yarn wait && yarn acceptance_tests:test\"",
     "zigbee_host:start": "cd $npm_package_config_zigbee_host && dotnet run",
-    "start": "./scripts/generate-dev-certs.sh && docker compose -f docker-compose.local.yml up --build",
+    "start": "./scripts/generate-dev-certs.sh && ./scripts/docker-compose-local.sh up --build",
     "start:watch": "concurrently -c \"green.bold,blue.bold,yellow.bold\" \"npm:*:start:watch\"",
     "prestart": "./scripts/publish-app.sh"
   },

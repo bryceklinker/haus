@@ -6,9 +6,12 @@ Acceptance criteria (agreed 2026-07-24):
    mosquitto/cert setup), when a developer runs `yarn start`, then MQTT,
    web_host, zigbee_host, and site_host all come up successfully as
    containers with no separately-started dependency required.
-2. Given the new compose is running, when a browser hits
-   `http://localhost:5002`, then the site loads and can reach web_host's
-   API — matching current `yarn start` behavior.
+2. Given the new compose is running, when a browser hits the site's HTTPS
+   port, then the site loads and can reach web_host's API — matching
+   current `yarn start` behavior. (Revised after self-review: the ports
+   below are non-standard — see "Port scheme" — and the plain-HTTP port
+   is not a usable browser entry point, only a redirect target; the
+   canonical entry point is HTTPS.)
 3. Given the new compose is running, when web_host/zigbee_host start, they
    connect to the haus_mqtt container without requiring a pre-existing
    external broker.
@@ -60,6 +63,66 @@ same host path the script already checks, or simplifying the wait to
 rely on `tcp:5000` alone if migrations are confirmed to complete before
 Kestrel binds (observed to be the case in this app's startup ordering).
 
+## Port scheme (added mid-implementation)
+
+This dev machine already runs the real production stack (`docker-compose.yml`)
+on the standard ports (5000/5001 web, 1883/8883 mqtt). `docker-compose.local.yml`
+uses non-standard ports throughout to avoid colliding with it:
+
+- `haus_mqtt`: host `11883`/`18883` → container `1883`/`8883`.
+- `haus_web`: host `15000` → container `80` (HTTP only).
+- `haus_site`: host `15003` → container `443` (HTTPS only — see below).
+
+All wait-on targets, the acceptance test suite's `BaseURL`/MQTT connection
+string, and the Site.Host WASM client's `appsettings.Acceptance.json`
+`Api.BaseUrl` were updated to match. Container-internal env vars
+(`Mqtt__Server=mqtt://haus_mqtt:1883` etc.) are unaffected by this, since
+docker's internal network uses the container's real listening port, not
+the host-side republish.
+
+`haus_site` only publishes its HTTPS port to the host. nginx's `:80` listener
+(added by the nginx.conf fix, see below) still exists inside the container
+for completeness, but since HTTP and HTTPS map to *different*, non-standard
+host ports, an HTTP→HTTPS redirect using `$http_host` cannot correctly target
+the *host's* HTTPS port from inside the container (it has no way to know the
+external port mapping). Publishing the `:80` port anyway would advertise a
+dead end — a client that reaches it always gets redirected back to itself.
+So it's deliberately not published to the host; the canonical, working entry
+point for both the acceptance-test suite and manual browsing is the HTTPS
+port directly.
+
+## Bugs found and fixed while getting this to actually verify
+
+Three pre-existing bugs, shared with the production deployment, blocked
+this feature from working and were fixed as part of it (not new
+functionality, so no acceptance criterion of their own, but load-bearing
+for criteria 1/2):
+
+- `generate-dev-certs.sh`'s openssl-derived `cert.key` was passphrase
+  protected, which nginx can't load non-interactively. Fixed with `-nodes`.
+- `nginx.conf`'s `location /` proxied every request to the container's own
+  HTTPS-only port with plain HTTP, which nginx always rejects. Replaced
+  with a `:80 → :443` redirect and a `:443` server block serving content
+  directly (no self-proxy).
+- `haus-site-dockerfile` copied the whole publish output instead of just
+  `wwwroot/`, so nginx's `root` never actually contained `index.html`
+  (403). Fixed to `COPY $PUBLISH_DIR/wwwroot/ /var/www/web`.
+
+A fourth bug, specific to this feature (not shared with production, since
+production doesn't run the WASM client against a locally-built web_host),
+was found during self-review: `appsettings.Acceptance.json` (the Blazor
+WASM client's runtime config, fetched by the browser) hardcoded
+`Api.BaseUrl` to `http://localhost:5000` — the *production* web_host's
+port. A browser against the local stack would have silently issued API
+calls against the live production instance. Fixed to `http://localhost:15000`.
+
+Self-review also flagged that `package.json`'s `start` script used
+`docker compose` (v2, space-separated) syntax, which is not installed in
+this dev sandbox (only legacy `docker-compose` v1) and wasn't confirmed
+available on the actual GitHub Actions runner either. Fixed by routing
+through `scripts/docker-compose-local.sh`, which tries `docker compose`
+first and falls back to `docker-compose`.
+
 ## Increments
 
 1. **[independent]** Add `scripts/generate-dev-certs.sh`: generates
@@ -78,15 +141,16 @@ Kestrel binds (observed to be the case in this app's startup ordering).
    (mosquitto, mirrors the production compose), `haus_web` and
    `haus_zigbee` (built from `haus-dockerfile`, HTTP-only dev ports,
    `Mqtt__Server` pointing at `haus_mqtt`), and `haus_site` (built from
-   `haus-site-dockerfile`, nginx, cert bind mounts, port 5002).
+   `haus-site-dockerfile`, nginx, cert bind mounts). See "Port scheme"
+   above for the actual (non-standard) ports used.
    - files: new `docker-compose.local.yml`
    - criteria: 1, 2, 3, 5
    - verify: after running `scripts/publish-app.sh` and
      `scripts/generate-dev-certs.sh` once manually, run
-     `docker compose -f docker-compose.local.yml up --build`; confirm all
-     4 containers start, web_host's health check reports the MQTT
-     connection healthy, `curl http://localhost:5002` returns the site's
-     `index.html`, and web_host responds on port 5000.
+     `./scripts/docker-compose-local.sh up --build`; confirm all 4
+     containers start, web_host's health check reports the MQTT
+     connection healthy, `curl -k https://localhost:15003` returns the
+     site's `index.html`, and web_host responds on port 15000.
 
 3. **[depends: 1, 2]** Rewire yarn's `start` script (and add a `prestart`
    hook, reusing today's orphaned `prestart:docker`/`publish-app.sh`
