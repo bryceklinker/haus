@@ -38,12 +38,12 @@ jobs:
           default_bump: ${{ github.event.inputs.version_bump || 'patch' }}
 
       - name: Publish App
-        run: ./scripts/publish-app.sh
+        run: make publish
         env:
           VERSION: ${{ steps.tag_version.outputs.new_tag }}
 
       - name: Publish to Docker Hub
-        run: ./scripts/publish-to-docker-hub.sh
+        run: make docker-publish
         env:
           VERSION: ${{ steps.tag_version.outputs.new_tag }}
 

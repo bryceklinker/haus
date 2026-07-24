@@ -8,11 +8,6 @@ runs:
       with:
         global-json-file: 'global.json'
 
-    - name: Install Node
-      uses: actions/setup-node@v4
-      with:
-        node-version-file: '.nvmrc'
-
     - name: Start MQTT Server
       uses: namoshek/mosquitto-github-action@v0.1.0
       with:
@@ -27,4 +22,4 @@ runs:
     
     - name: Prepare Build
       shell: bash
-      run: ${{ github.workspace }}/scripts/prepare-build.sh
+      run: make -C ${{ github.workspace }} build

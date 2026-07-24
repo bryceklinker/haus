@@ -27,6 +27,11 @@ services:
       - haus_web_local_data:/app/data
     depends_on:
       - haus_mqtt
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/80'"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   haus_zigbee:
     container_name: haus_zigbee_local
@@ -58,6 +63,11 @@ services:
       - ./cert.key:/etc/nginx/certs/cert.key
     depends_on:
       - haus_web
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fk https://localhost/ || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   haus_web_local_data:

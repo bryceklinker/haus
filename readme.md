@@ -12,9 +12,7 @@ targeting support for many Zigbee devices.
 # System Requirements
 
 - .NET 5
-- Docker (used by `yarn start` to run the full stack, including the MQTT broker - no separate MQTT install needed)
-- Node/NPM
-- Yarn
+- Docker (used by `make start` to run the full stack, including the MQTT broker - no separate MQTT install needed)
 
 Currently, this is only intended to be run from the command line with all code available locally.
 
