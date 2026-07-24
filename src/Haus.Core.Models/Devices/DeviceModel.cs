@@ -16,4 +16,8 @@ public record DeviceModel(
 ) : IdentityModel
 {
     public MetadataModel[] Metadata { get; init; } = Metadata ?? [];
+
+    public virtual bool Equals(DeviceModel? other) => other is not null && Id == other.Id;
+
+    public override int GetHashCode() => Id.GetHashCode();
 }
