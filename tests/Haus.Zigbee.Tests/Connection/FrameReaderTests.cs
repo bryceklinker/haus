@@ -38,6 +38,21 @@ public class FrameReaderTests
         Assert.Empty(frames);
     }
 
+    [Fact]
+    public async Task WhenAFrameArrivesSplitAcrossTwoReadsThenItSurfacesOnceCompleted()
+    {
+        var framed = Framed(new byte[] { 0x07, 0x03, 0xAA });
+        _transport.FeedIncoming(framed[..3]);
+
+        var firstFrames = await _reader.ReadFramesAsync(CancellationToken.None);
+
+        _transport.FeedIncoming(framed[3..]);
+        var secondFrames = await _reader.ReadFramesAsync(CancellationToken.None);
+
+        Assert.Empty(firstFrames);
+        Assert.Equal(new[] { new byte[] { 0x07, 0x03, 0xAA } }, secondFrames);
+    }
+
     private static byte[] Framed(byte[] frame)
     {
         var checksum = DeconzCrc.Compute(frame);
