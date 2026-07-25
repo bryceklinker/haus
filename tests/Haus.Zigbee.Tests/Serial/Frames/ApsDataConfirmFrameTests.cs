@@ -46,4 +46,44 @@ public class ApsDataConfirmFrameTests
             decoding.Confirm
         );
     }
+
+    [Fact]
+    public void WhenDecodingGroupModeFrameThenReadsShortAddressWithoutDestinationEndpoint()
+    {
+        var frame = new byte[]
+        {
+            0x04, // command id
+            0x11, // sequence number
+            0x00, // status: success
+            0x0d,
+            0x00, // frame length
+            0x06,
+            0x00, // payload length
+            0x08, // device state
+            0x0a, // request id
+            0x01, // destination address mode: Group
+            0xcd,
+            0xab, // group address 0xabcd
+            0x05, // source endpoint (no destination endpoint present)
+            0xa7, // confirm status: no-ack
+        };
+
+        var decoding = ApsDataConfirmCodec.Decode(frame);
+
+        Assert.True(decoding.IsSuccessful);
+        Assert.Equal(
+            new ApsDataConfirm(
+                SequenceNumber: 0x11,
+                DeviceState: 0x08,
+                RequestId: 0x0a,
+                DestinationAddressMode: DeconzAddressMode.Group,
+                DestinationShortAddress: 0xabcd,
+                DestinationIeeeAddress: null,
+                DestinationEndpoint: null,
+                SourceEndpoint: 0x05,
+                ConfirmStatus: 0xa7
+            ),
+            decoding.Confirm
+        );
+    }
 }

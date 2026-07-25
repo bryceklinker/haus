@@ -48,13 +48,16 @@ public static class ApsDataConfirmCodec
     private const int AddressModeOffset = 9;
     private const int AddressOffset = 10;
 
+    private const int ShortAddressByteLength = 2;
+
     public static ApsDataConfirmDecoding Decode(ReadOnlySpan<byte> frame)
     {
         var addressMode = (DeconzAddressMode)frame[AddressModeOffset];
         var destinationShortAddress = (ushort)(frame[AddressOffset] | (frame[AddressOffset + 1] << 8));
-        var destinationEndpoint = frame[AddressOffset + 2];
-        var sourceEndpoint = frame[AddressOffset + 3];
-        var confirmStatus = frame[AddressOffset + 4];
+        var hasDestinationEndpoint = addressMode != DeconzAddressMode.Group;
+        var afterAddress = AddressOffset + ShortAddressByteLength;
+        var destinationEndpoint = hasDestinationEndpoint ? (byte?)frame[afterAddress] : null;
+        var sourceEndpointOffset = hasDestinationEndpoint ? afterAddress + 1 : afterAddress;
 
         return ApsDataConfirmDecoding.Successful(
             new ApsDataConfirm(
@@ -65,8 +68,8 @@ public static class ApsDataConfirmCodec
                 DestinationShortAddress: destinationShortAddress,
                 DestinationIeeeAddress: null,
                 DestinationEndpoint: destinationEndpoint,
-                SourceEndpoint: sourceEndpoint,
-                ConfirmStatus: confirmStatus
+                SourceEndpoint: frame[sourceEndpointOffset],
+                ConfirmStatus: frame[sourceEndpointOffset + 1]
             )
         );
     }
