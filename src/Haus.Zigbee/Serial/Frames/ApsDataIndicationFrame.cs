@@ -32,9 +32,9 @@ public static class ApsDataIndicationFrameCodec
 {
     private const int StatusOffset = 2;
     private const int DeviceStateOffset = 7;
-    private const int DestinationAddressModeOffset = 8;
-    private const int AddressingOffset = 9;
+    private const int AddressModeAndBeyondOffset = 8;
     private const byte SuccessStatus = 0x00;
+    private const int ReservedByteCount = 2;
 
     public static ApsDataIndicationFrame? Decode(ReadOnlySpan<byte> frame)
     {
@@ -42,61 +42,31 @@ public static class ApsDataIndicationFrameCodec
             return null;
 
         var deviceState = frame[DeviceStateOffset];
-        var destinationAddressMode = (DeconzAddressMode)frame[DestinationAddressModeOffset];
+        var reader = new FrameReader(frame, AddressModeAndBeyondOffset);
 
-        var offset = AddressingOffset;
-        var destinationNwkAddress = default(ushort?);
-        var destinationIeeeAddress = default(IeeeAddress?);
-        if (destinationAddressMode == DeconzAddressMode.Ieee)
-        {
-            destinationIeeeAddress = ReadIeeeAddress(frame, offset);
-            offset += 8;
-        }
-        else
-        {
-            destinationNwkAddress = ReadUInt16(frame, offset);
-            offset += 2;
-        }
+        var destinationAddressMode = (DeconzAddressMode)reader.ReadByte();
+        var isIeeeDestination = destinationAddressMode == DeconzAddressMode.Ieee;
+        var destinationIeeeAddress = isIeeeDestination ? reader.ReadIeeeAddress() : default(IeeeAddress?);
+        var destinationNwkAddress = isIeeeDestination ? default(ushort?) : reader.ReadUInt16();
+        var destinationEndpoint = reader.ReadByte();
 
-        var destinationEndpoint = frame[offset];
-        offset += 1;
-
-        var sourceAddressMode = (DeconzAddressMode)frame[offset];
-        offset += 1;
-        if (sourceAddressMode != DeconzAddressMode.Nwk && sourceAddressMode != DeconzAddressMode.NwkAndIeee)
+        var sourceAddressMode = (DeconzAddressMode)reader.ReadByte();
+        if (!IsSupportedSourceMode(sourceAddressMode))
             return null;
 
-        var sourceNwkAddress = ReadUInt16(frame, offset);
-        offset += 2;
+        var sourceNwkAddress = reader.ReadUInt16();
+        var hasIeeeSource = sourceAddressMode == DeconzAddressMode.NwkAndIeee;
+        var sourceIeeeAddress = hasIeeeSource ? reader.ReadIeeeAddress() : default(IeeeAddress?);
+        var sourceEndpoint = reader.ReadByte();
 
-        var sourceIeeeAddress = default(IeeeAddress?);
-        if (sourceAddressMode == DeconzAddressMode.NwkAndIeee)
-        {
-            sourceIeeeAddress = ReadIeeeAddress(frame, offset);
-            offset += 8;
-        }
+        var profileId = reader.ReadUInt16();
+        var clusterId = reader.ReadUInt16();
+        var asduLength = reader.ReadUInt16();
+        var asduPayload = reader.ReadBytes(asduLength);
 
-        var sourceEndpoint = frame[offset];
-        offset += 1;
-
-        var profileId = ReadUInt16(frame, offset);
-        offset += 2;
-
-        var clusterId = ReadUInt16(frame, offset);
-        offset += 2;
-
-        var asduLength = ReadUInt16(frame, offset);
-        offset += 2;
-
-        var asduPayload = frame.Slice(offset, asduLength).ToArray();
-        offset += asduLength;
-
-        offset += 2; // reserved / protocol-version-dependent bytes
-
-        var linkQualityIndicator = frame[offset];
-        offset += 1;
-
-        var rssi = offset < frame.Length ? (sbyte?)(sbyte)frame[offset] : null;
+        reader.Skip(ReservedByteCount);
+        var linkQualityIndicator = reader.ReadByte();
+        var rssi = reader.HasRemaining ? (sbyte?)(sbyte)reader.ReadByte() : null;
 
         return new ApsDataIndicationFrame(
             deviceState,
@@ -116,16 +86,51 @@ public static class ApsDataIndicationFrameCodec
         );
     }
 
-    private static ushort ReadUInt16(ReadOnlySpan<byte> frame, int offset)
+    private static bool IsSupportedSourceMode(DeconzAddressMode mode)
     {
-        return (ushort)(frame[offset] | (frame[offset + 1] << 8));
+        return mode == DeconzAddressMode.Nwk || mode == DeconzAddressMode.NwkAndIeee;
     }
 
-    private static IeeeAddress ReadIeeeAddress(ReadOnlySpan<byte> frame, int offset)
+    private ref struct FrameReader(ReadOnlySpan<byte> frame, int offset)
     {
-        var value = 0UL;
-        for (var index = 0; index < 8; index++)
-            value |= (ulong)frame[offset + index] << (8 * index);
-        return new IeeeAddress(value);
+        private const int IeeeAddressByteCount = 8;
+
+        private readonly ReadOnlySpan<byte> _frame = frame;
+        private int _offset = offset;
+
+        public readonly bool HasRemaining => _offset < _frame.Length;
+
+        public byte ReadByte()
+        {
+            return _frame[_offset++];
+        }
+
+        public ushort ReadUInt16()
+        {
+            var value = (ushort)(_frame[_offset] | (_frame[_offset + 1] << 8));
+            _offset += 2;
+            return value;
+        }
+
+        public IeeeAddress ReadIeeeAddress()
+        {
+            var value = 0UL;
+            for (var index = 0; index < IeeeAddressByteCount; index++)
+                value |= (ulong)_frame[_offset + index] << (8 * index);
+            _offset += IeeeAddressByteCount;
+            return new IeeeAddress(value);
+        }
+
+        public byte[] ReadBytes(int count)
+        {
+            var bytes = _frame.Slice(_offset, count).ToArray();
+            _offset += count;
+            return bytes;
+        }
+
+        public void Skip(int count)
+        {
+            _offset += count;
+        }
     }
 }
