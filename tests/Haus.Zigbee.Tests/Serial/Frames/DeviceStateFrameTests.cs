@@ -12,4 +12,24 @@ public class DeviceStateFrameTests
 
         Assert.Equal(new byte[] { 0x07, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00 }, request);
     }
+
+    [Fact]
+    public void GivenStatusResponseWhenDecodingThenRecoversNetworkStateAndFlagsFromDeviceStateByte()
+    {
+        byte[] frame = [0x07, 0x2A, 0x00, 0x08, 0x00, 0b0000_1110, 0x00, 0x00];
+
+        var decoded = DeviceStateCodec.Decode(frame);
+
+        Assert.Equal(
+            new DeviceStateFrame(
+                CommandId: 0x07,
+                NetworkState: NetworkState.Connected,
+                ApsDataConfirmAvailable: true,
+                ApsDataIndicationAvailable: true,
+                ConfigurationChanged: false,
+                ApsFreeSlotsAvailable: false
+            ),
+            decoded
+        );
+    }
 }
