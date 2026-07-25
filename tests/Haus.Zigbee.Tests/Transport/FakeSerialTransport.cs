@@ -12,8 +12,15 @@ namespace Haus.Zigbee.Tests.Transport;
 public class FakeSerialTransport : ISerialTransport
 {
     private readonly List<byte> _writtenBytes = new();
+    private readonly Queue<byte> _incomingBytes = new();
 
     public IReadOnlyList<byte> WrittenBytes => _writtenBytes;
+
+    public void FeedIncoming(byte[] bytes)
+    {
+        foreach (var value in bytes)
+            _incomingBytes.Enqueue(value);
+    }
 
     public Task OpenAsync(CancellationToken token) => Task.CompletedTask;
 
@@ -25,5 +32,11 @@ public class FakeSerialTransport : ISerialTransport
         return Task.CompletedTask;
     }
 
-    public Task<int> ReadAsync(Memory<byte> buffer, CancellationToken token) => Task.FromResult(0);
+    public Task<int> ReadAsync(Memory<byte> buffer, CancellationToken token)
+    {
+        var count = 0;
+        while (count < buffer.Length && _incomingBytes.Count > 0)
+            buffer.Span[count++] = _incomingBytes.Dequeue();
+        return Task.FromResult(count);
+    }
 }
