@@ -14,4 +14,14 @@ public class DeconzCrcTests
 
         Assert.Equal(0xFFF6, checksum);
     }
+
+    [Fact]
+    public void GivenFrameWithMatchingTrailingChecksumBytesWhenValidatingThenReportsValid()
+    {
+        byte[] frameWithChecksum = [0x01, 0x02, 0x03, 0x04, 0xF6, 0xFF];
+
+        var isValid = DeconzCrc.IsValid(frameWithChecksum);
+
+        Assert.True(isValid);
+    }
 }

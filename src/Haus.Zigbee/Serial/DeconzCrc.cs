@@ -12,4 +12,12 @@ public static class DeconzCrc
 
         return (ushort)((~sum + 1) & 0xFFFF);
     }
+
+    public static bool IsValid(ReadOnlySpan<byte> frameWithChecksum)
+    {
+        var frame = frameWithChecksum[..^2];
+        var checksum = (ushort)(frameWithChecksum[^2] | (frameWithChecksum[^1] << 8));
+
+        return ((Compute(frame) - checksum) & 0xFFFF) == 0;
+    }
 }
