@@ -36,4 +36,16 @@ public class ReadParameterFrameTests
         Assert.Equal(0x07, response.ParameterId);
         Assert.Equal(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }, response.Value);
     }
+
+    [Fact]
+    public void GivenFailureStatusResponseWithNoValueBytesWhenDecodingThenExposesStatusAndParameterIdWithEmptyValue()
+    {
+        byte[] frame = [0x0A, 0x44, 0x01, 0x08, 0x00, 0x01, 0x00, 0x07];
+
+        var response = ReadParameterFrame.Decode(frame);
+
+        Assert.Equal(0x01, response.Status);
+        Assert.Equal(0x07, response.ParameterId);
+        Assert.Empty(response.Value);
+    }
 }
