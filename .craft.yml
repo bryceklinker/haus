@@ -7,7 +7,7 @@ commands:
   acceptance: make test-acceptance
   run: make watch
   add_project: make add-project TYPE=<template> NAME=<name>
-  format_check: dotnet csharpier check .
+  format_check: dotnet csharpier --check .
 acceptance_env:
   up: docker compose -f docker-compose.local.yml up --build -d --wait
   down: docker compose -f docker-compose.local.yml down
@@ -23,6 +23,13 @@ acceptance_env:
 git:
   main_branch: main
   worktree_dir: .claude/worktrees
+  notes: >
+    The Husky.Net pre-commit hook (CSharpier + dotnet format on staged *.cs) is currently
+    inert in this environment/repo checkout — `dotnet husky install` was never run, so
+    core.hooksPath isn't set (this predates issue #9's work; likely lost when Yarn's
+    postinstall was replaced by the Makefile). Until that's fixed, run `dotnet csharpier
+    --check <files>` manually on any new/changed .cs files before committing — don't rely
+    on the hook to catch formatting.
 paths:
   plans: docs/craft/plans
   design: docs/craft/design
