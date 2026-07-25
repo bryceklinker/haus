@@ -24,4 +24,14 @@ public class DeconzCrcTests
 
         Assert.True(isValid);
     }
+
+    [Fact]
+    public void GivenFrameWithCorruptedTrailingChecksumBytesWhenValidatingThenReportsInvalid()
+    {
+        byte[] frameWithChecksum = [0x01, 0x02, 0x03, 0x04, 0x00, 0x00];
+
+        var isValid = DeconzCrc.IsValid(frameWithChecksum);
+
+        Assert.False(isValid);
+    }
 }
