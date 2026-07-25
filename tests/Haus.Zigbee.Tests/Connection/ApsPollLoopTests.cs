@@ -80,6 +80,19 @@ public class ApsPollLoopTests
         Assert.Equal(expected, _transport.WrittenBytes);
     }
 
+    [Fact]
+    public async Task WhenAConfirmIsReadThenItIsRaisedAsAConfirmReceivedEvent()
+    {
+        _transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
+        _transport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
+        var received = new List<ApsDataConfirm>();
+        _loop.ConfirmReceived += (_, confirm) => received.Add(confirm);
+
+        await _loop.PollOnceAsync(CancellationToken.None);
+
+        Assert.Equal(0x42, Assert.Single(received).RequestId);
+    }
+
     private static byte[] DeviceStateResponse(byte sequenceNumber, byte deviceState)
     {
         return new byte[] { 0x07, sequenceNumber, 0x00, 0x00, 0x00, deviceState };

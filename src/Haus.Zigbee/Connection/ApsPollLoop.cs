@@ -16,6 +16,7 @@ public sealed class ApsPollLoop
     }
 
     public event EventHandler<ApsIndicationReceived>? IndicationReceived;
+    public event EventHandler<ApsDataConfirm>? ConfirmReceived;
 
     public async Task PollOnceAsync(CancellationToken token)
     {
@@ -43,7 +44,11 @@ public sealed class ApsPollLoop
     private async Task DrainConfirmAsync(CancellationToken token)
     {
         var readRequest = ReadConfirmRequest(_sequenceNumber++);
-        await _channel.SendAndReceiveAsync(readRequest, token);
+        var response = await _channel.SendAndReceiveAsync(readRequest, token);
+
+        var decoding = ApsDataConfirmCodec.Decode(response);
+        if (decoding.Confirm is { } confirm)
+            ConfirmReceived?.Invoke(this, confirm);
     }
 
     private static byte[] ReadIndicationRequest(byte sequenceNumber)
