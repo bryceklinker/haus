@@ -1,6 +1,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee;
@@ -39,6 +40,22 @@ public class DeconzConnectionTests
 
         Assert.Equal(new NetworkConfig(expectedMacAddress, 0x1A62, 0x0F), config);
     }
+
+    [Fact]
+    public async Task WhenConnectingThenEachParameterReadUsesADistinctSequenceNumber()
+    {
+        _coordinator.OnRead(MacAddressParameterId, LittleEndianUInt64(0));
+        _coordinator.OnRead(PanIdParameterId, LittleEndianUInt16(0));
+        _coordinator.OnRead(ChannelParameterId, new byte[] { 0 });
+
+        await _connection.ConnectAsync(CancellationToken.None);
+
+        var sequenceNumbers = _coordinator.Requests.Select(SequenceNumberOf).ToArray();
+        Assert.Equal(3, sequenceNumbers.Length);
+        Assert.Equal(sequenceNumbers.Length, sequenceNumbers.Distinct().Count());
+    }
+
+    private static byte SequenceNumberOf(byte[] request) => request[1];
 
     private static byte[] LittleEndianUInt64(ulong value)
     {
