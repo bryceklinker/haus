@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Haus.Zigbee.Zcl;
@@ -23,6 +24,8 @@ public sealed record ZclFrameHeader(
     ushort? ManufacturerCode = null
 );
 
+public sealed record ZclFrameHeaderDecoding(ZclFrameHeader Header, int ByteLength);
+
 public static class ZclFrameHeaderCodec
 {
     private const int ManufacturerSpecificBit = 1 << 2;
@@ -39,6 +42,19 @@ public static class ZclFrameHeaderCodec
         bytes.Add(header.TransactionSequenceNumber);
         bytes.Add(header.CommandId);
         return bytes.ToArray();
+    }
+
+    public static ZclFrameHeaderDecoding Decode(ReadOnlySpan<byte> frame)
+    {
+        var frameControl = frame[0];
+        var header = new ZclFrameHeader(
+            (ZclFrameType)(frameControl & 0b11),
+            (ZclDirection)((frameControl >> 3) & 1),
+            DisableDefaultResponse: (frameControl & (1 << 4)) != 0,
+            TransactionSequenceNumber: frame[1],
+            CommandId: frame[2]
+        );
+        return new ZclFrameHeaderDecoding(header, 3);
     }
 
     private static byte BuildFrameControl(ZclFrameHeader header)
