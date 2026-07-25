@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Haus.Zigbee\Haus.Zigbee.csproj"/>
+        <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj"/>
+    </ItemGroup>
+
+</Project>
