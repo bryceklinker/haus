@@ -47,14 +47,21 @@ public static class ZclFrameHeaderCodec
     public static ZclFrameHeaderDecoding Decode(ReadOnlySpan<byte> frame)
     {
         var frameControl = frame[0];
+        var isManufacturerSpecific = (frameControl & ManufacturerSpecificBit) != 0;
+        var afterManufacturer = isManufacturerSpecific ? 3 : 1;
+        var manufacturerCode = isManufacturerSpecific
+            ? (ushort?)(frame[1] | (frame[2] << 8))
+            : null;
+
         var header = new ZclFrameHeader(
             (ZclFrameType)(frameControl & 0b11),
             (ZclDirection)((frameControl >> 3) & 1),
             DisableDefaultResponse: (frameControl & (1 << 4)) != 0,
-            TransactionSequenceNumber: frame[1],
-            CommandId: frame[2]
+            TransactionSequenceNumber: frame[afterManufacturer],
+            CommandId: frame[afterManufacturer + 1],
+            ManufacturerCode: manufacturerCode
         );
-        return new ZclFrameHeaderDecoding(header, 3);
+        return new ZclFrameHeaderDecoding(header, afterManufacturer + 2);
     }
 
     private static byte BuildFrameControl(ZclFrameHeader header)

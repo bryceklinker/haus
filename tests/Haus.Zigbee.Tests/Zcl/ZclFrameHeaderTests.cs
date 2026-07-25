@@ -73,4 +73,25 @@ public class ZclFrameHeaderTests
             decoding.Header
         );
     }
+
+    [Fact]
+    public void WhenDecodingHeaderWithManufacturerCodeThenReadsCodeAndReportsFiveBytesConsumed()
+    {
+        var frame = new byte[] { 0b0000_0100, 0x34, 0x12, 0x42, 0x00, 0xaa, 0xbb };
+
+        var decoding = ZclFrameHeaderCodec.Decode(frame);
+
+        Assert.Equal(5, decoding.ByteLength);
+        Assert.Equal(
+            new ZclFrameHeader(
+                ZclFrameType.Global,
+                ZclDirection.ClientToServer,
+                DisableDefaultResponse: false,
+                TransactionSequenceNumber: 0x42,
+                CommandId: 0x00,
+                ManufacturerCode: 0x1234
+            ),
+            decoding.Header
+        );
+    }
 }
