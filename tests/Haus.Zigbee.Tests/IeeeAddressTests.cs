@@ -21,4 +21,13 @@ public class IeeeAddressTests
 
         Assert.Equal(address, sameAddress);
     }
+
+    [Fact]
+    public void WhenParsedFromCanonicalStringThenReturnsAddressWithThatValue()
+    {
+        var parsed = IeeeAddress.TryParse("0x00124b0001234567", out var address);
+
+        Assert.True(parsed);
+        Assert.Equal(new IeeeAddress(0x00124b0001234567), address);
+    }
 }
