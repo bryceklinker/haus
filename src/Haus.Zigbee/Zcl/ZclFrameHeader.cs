@@ -52,9 +52,7 @@ public static class ZclFrameHeaderCodec
         var frameControl = frame[0];
         var isManufacturerSpecific = (frameControl & ManufacturerSpecificBit) != 0;
         var afterManufacturer = isManufacturerSpecific ? 3 : 1;
-        var manufacturerCode = isManufacturerSpecific
-            ? (ushort?)(frame[1] | (frame[2] << 8))
-            : null;
+        var manufacturerCode = isManufacturerSpecific ? (ushort?)(frame[1] | (frame[2] << 8)) : null;
 
         var header = new ZclFrameHeader(
             (ZclFrameType)(frameControl & FrameTypeMask),
