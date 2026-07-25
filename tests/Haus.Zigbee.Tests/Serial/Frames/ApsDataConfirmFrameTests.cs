@@ -86,4 +86,51 @@ public class ApsDataConfirmFrameTests
             decoding.Confirm
         );
     }
+
+    [Fact]
+    public void WhenDecodingIeeeModeFrameThenReadsIeeeAddressWithDestinationEndpoint()
+    {
+        var frame = new byte[]
+        {
+            0x04, // command id
+            0x33, // sequence number
+            0x00, // status: success
+            0x13,
+            0x00, // frame length
+            0x0c,
+            0x00, // payload length
+            0x22, // device state
+            0x0c, // request id
+            0x03, // destination address mode: Ieee
+            0x67,
+            0x45,
+            0x23,
+            0x01,
+            0x00,
+            0x4b,
+            0x12,
+            0x00, // IEEE address 0x00124b0001234567
+            0x0b, // destination endpoint
+            0x01, // source endpoint
+            0x00, // confirm status
+        };
+
+        var decoding = ApsDataConfirmCodec.Decode(frame);
+
+        Assert.True(decoding.IsSuccessful);
+        Assert.Equal(
+            new ApsDataConfirm(
+                SequenceNumber: 0x33,
+                DeviceState: 0x22,
+                RequestId: 0x0c,
+                DestinationAddressMode: DeconzAddressMode.Ieee,
+                DestinationShortAddress: null,
+                DestinationIeeeAddress: new IeeeAddress(0x00124b0001234567),
+                DestinationEndpoint: 0x0b,
+                SourceEndpoint: 0x01,
+                ConfirmStatus: 0x00
+            ),
+            decoding.Confirm
+        );
+    }
 }

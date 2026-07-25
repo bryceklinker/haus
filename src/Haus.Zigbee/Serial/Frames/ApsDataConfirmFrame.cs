@@ -49,13 +49,18 @@ public static class ApsDataConfirmCodec
     private const int AddressOffset = 10;
 
     private const int ShortAddressByteLength = 2;
+    private const int IeeeAddressByteLength = 8;
 
     public static ApsDataConfirmDecoding Decode(ReadOnlySpan<byte> frame)
     {
         var addressMode = (DeconzAddressMode)frame[AddressModeOffset];
-        var destinationShortAddress = (ushort)(frame[AddressOffset] | (frame[AddressOffset + 1] << 8));
+        var isIeee = addressMode == DeconzAddressMode.Ieee;
+        var destinationShortAddress = isIeee ? (ushort?)null : ReadUInt16(frame, AddressOffset);
+        var destinationIeeeAddress = isIeee ? (IeeeAddress?)new IeeeAddress(ReadUInt64(frame, AddressOffset)) : null;
+        var addressByteLength = isIeee ? IeeeAddressByteLength : ShortAddressByteLength;
+
         var hasDestinationEndpoint = addressMode != DeconzAddressMode.Group;
-        var afterAddress = AddressOffset + ShortAddressByteLength;
+        var afterAddress = AddressOffset + addressByteLength;
         var destinationEndpoint = hasDestinationEndpoint ? (byte?)frame[afterAddress] : null;
         var sourceEndpointOffset = hasDestinationEndpoint ? afterAddress + 1 : afterAddress;
 
@@ -66,11 +71,24 @@ public static class ApsDataConfirmCodec
                 RequestId: frame[RequestIdOffset],
                 DestinationAddressMode: addressMode,
                 DestinationShortAddress: destinationShortAddress,
-                DestinationIeeeAddress: null,
+                DestinationIeeeAddress: destinationIeeeAddress,
                 DestinationEndpoint: destinationEndpoint,
                 SourceEndpoint: frame[sourceEndpointOffset],
                 ConfirmStatus: frame[sourceEndpointOffset + 1]
             )
         );
+    }
+
+    private static ushort ReadUInt16(ReadOnlySpan<byte> frame, int offset)
+    {
+        return (ushort)(frame[offset] | (frame[offset + 1] << 8));
+    }
+
+    private static ulong ReadUInt64(ReadOnlySpan<byte> frame, int offset)
+    {
+        ulong value = 0;
+        for (var index = 0; index < IeeeAddressByteLength; index++)
+            value |= (ulong)frame[offset + index] << (8 * index);
+        return value;
     }
 }
