@@ -28,7 +28,10 @@ public sealed record ZclFrameHeaderDecoding(ZclFrameHeader Header, int ByteLengt
 
 public static class ZclFrameHeaderCodec
 {
+    private const int FrameTypeMask = 0b11;
     private const int ManufacturerSpecificBit = 1 << 2;
+    private const int DirectionBitShift = 3;
+    private const int DisableDefaultResponseBit = 1 << 4;
 
     public static byte[] Encode(ZclFrameHeader header)
     {
@@ -54,9 +57,9 @@ public static class ZclFrameHeaderCodec
             : null;
 
         var header = new ZclFrameHeader(
-            (ZclFrameType)(frameControl & 0b11),
-            (ZclDirection)((frameControl >> 3) & 1),
-            DisableDefaultResponse: (frameControl & (1 << 4)) != 0,
+            (ZclFrameType)(frameControl & FrameTypeMask),
+            (ZclDirection)((frameControl >> DirectionBitShift) & 1),
+            DisableDefaultResponse: (frameControl & DisableDefaultResponseBit) != 0,
             TransactionSequenceNumber: frame[afterManufacturer],
             CommandId: frame[afterManufacturer + 1],
             ManufacturerCode: manufacturerCode
@@ -68,8 +71,8 @@ public static class ZclFrameHeaderCodec
     {
         var frameControl = (int)header.FrameType;
         frameControl |= header.ManufacturerCode is null ? 0 : ManufacturerSpecificBit;
-        frameControl |= (int)header.Direction << 3;
-        frameControl |= header.DisableDefaultResponse ? 1 << 4 : 0;
+        frameControl |= (int)header.Direction << DirectionBitShift;
+        frameControl |= header.DisableDefaultResponse ? DisableDefaultResponseBit : 0;
         return (byte)frameControl;
     }
 }
