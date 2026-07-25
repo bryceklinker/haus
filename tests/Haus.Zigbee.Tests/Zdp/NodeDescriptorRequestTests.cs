@@ -75,4 +75,38 @@ public class NodeDescriptorRequestTests
         Assert.Equal(ZdoStatus.DeviceNotFound, response.Status);
         Assert.Null(response.Descriptor);
     }
+
+    [Fact]
+    public void WhenDecodingSuccessfulResponseWithTrailingBytesThenIgnoresThemAndReadsFixedFields()
+    {
+        var payload = new byte[]
+        {
+            0x42, // transaction sequence number
+            0x00, // status: success
+            0x34,
+            0x12, // NWKAddrOfInterest = 0x1234
+            0x31, // byte1
+            0x42, // byte2
+            0x8e, // macCapabilityFlags
+            0x0b,
+            0x10, // manufacturerCode
+            0x52, // maxBufferSize
+            0x80,
+            0x00, // maxIncomingTransferSize
+            0x00,
+            0x2c, // serverMask
+            0x80,
+            0x00, // maxOutgoingTransferSize
+            0x00, // deprecated1
+            0xde,
+            0xad, // trailing TLV bytes that must be ignored
+        };
+
+        var response = NodeDescriptorResponseCodec.Decode(payload);
+
+        Assert.NotNull(response);
+        Assert.NotNull(response!.Descriptor);
+        Assert.Equal((ushort)0x0080, response.Descriptor!.MaxOutgoingTransferSize);
+        Assert.Equal(0x00, response.Descriptor.Deprecated1);
+    }
 }
