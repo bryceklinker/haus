@@ -47,4 +47,26 @@ public class ZclAttributeReportParserTests
         Assert.Equal(ZclDataType.Int16, attribute.Value.DataType);
         Assert.Equal(-100, attribute.Value.AsSigned());
     }
+
+    [Fact]
+    public void WhenParsingReadAttributesResponseWithFailedStatusRecordThenSkipsDataAndContinuesToNextRecord()
+    {
+        var payload = new byte[] { 0x01, 0x00, 0x86, 0x00, 0x00, 0x00, 0x29, 0x9c, 0xff };
+
+        var result = ZclAttributeReportParser.ParseReadAttributesResponse(payload);
+
+        Assert.True(result.IsComplete);
+        Assert.Equal(2, result.Attributes.Count);
+
+        var failed = result.Attributes[0];
+        Assert.Equal(0x0001, failed.AttributeId);
+        Assert.Equal(0x86, failed.Status);
+        Assert.Null(failed.Value);
+
+        var succeeded = result.Attributes[1];
+        Assert.Equal(0x0000, succeeded.AttributeId);
+        Assert.Equal(0x00, succeeded.Status);
+        Assert.NotNull(succeeded.Value);
+        Assert.Equal(-100, succeeded.Value.AsSigned());
+    }
 }
