@@ -38,4 +38,12 @@ public class IeeeAddressTests
 
         Assert.False(parsed);
     }
+
+    [Fact]
+    public void WhenParsedFromStringWithFewerThanSixteenHexDigitsThenParsingFails()
+    {
+        var parsed = IeeeAddress.TryParse("0x123", out _);
+
+        Assert.False(parsed);
+    }
 }
