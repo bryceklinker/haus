@@ -34,6 +34,11 @@ public sealed record ApsDestination
     {
         return new ApsDestination(ApsAddressMode.Nwk, networkAddress, default, endpoint);
     }
+
+    public static ApsDestination Ieee(IeeeAddress ieeeAddress, byte endpoint)
+    {
+        return new ApsDestination(ApsAddressMode.Ieee, default, ieeeAddress, endpoint);
+    }
 }
 
 public sealed record ApsDataRequestFrame(
@@ -80,10 +85,34 @@ public static class ApsDataRequestFrameCodec
 
     private static List<byte> EncodeDestination(ApsDestination destination)
     {
+        return destination.Mode switch
+        {
+            ApsAddressMode.Group => EncodeGroup(destination),
+            ApsAddressMode.Nwk => EncodeNwk(destination),
+            _ => EncodeIeee(destination),
+        };
+    }
+
+    private static List<byte> EncodeGroup(ApsDestination destination)
+    {
         var bytes = new List<byte>();
         AddUInt16(bytes, destination.ShortAddress);
-        if (destination.Mode == ApsAddressMode.Nwk)
-            bytes.Add(destination.Endpoint);
+        return bytes;
+    }
+
+    private static List<byte> EncodeNwk(ApsDestination destination)
+    {
+        var bytes = new List<byte>();
+        AddUInt16(bytes, destination.ShortAddress);
+        bytes.Add(destination.Endpoint);
+        return bytes;
+    }
+
+    private static List<byte> EncodeIeee(ApsDestination destination)
+    {
+        var bytes = new List<byte>();
+        AddUInt64(bytes, destination.IeeeAddress.Value);
+        bytes.Add(destination.Endpoint);
         return bytes;
     }
 
@@ -91,5 +120,11 @@ public static class ApsDataRequestFrameCodec
     {
         bytes.Add((byte)(value & 0xff));
         bytes.Add((byte)(value >> 8));
+    }
+
+    private static void AddUInt64(List<byte> bytes, ulong value)
+    {
+        for (var shift = 0; shift < 64; shift += 8)
+            bytes.Add((byte)((value >> shift) & 0xff));
     }
 }
