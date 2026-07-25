@@ -10,10 +10,7 @@ public sealed record ZclReportAttributesResult(IReadOnlyList<ZclAttributeRecord>
 
 public sealed record ZclReadAttributeRecord(ushort AttributeId, byte Status, ZclAttributeValue? Value);
 
-public sealed record ZclReadAttributesResponseResult(
-    IReadOnlyList<ZclReadAttributeRecord> Attributes,
-    bool IsComplete
-);
+public sealed record ZclReadAttributesResponseResult(IReadOnlyList<ZclReadAttributeRecord> Attributes, bool IsComplete);
 
 public static class ZclAttributeReportParser
 {
