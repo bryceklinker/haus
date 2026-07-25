@@ -6,6 +6,9 @@ namespace Haus.Zigbee.Tests.Serial;
 public class SlipDecoderTests
 {
     private const byte End = 0xC0;
+    private const byte Esc = 0xDB;
+    private const byte EscEnd = 0xDC;
+    private const byte EscEsc = 0xDD;
 
     private readonly SlipDecoder _decoder = new();
 
@@ -15,5 +18,15 @@ public class SlipDecoderTests
         var frames = _decoder.Decode(new byte[] { End, 0x01, 0x02, 0x03, End });
 
         Assert.Equal(new[] { new byte[] { 0x01, 0x02, 0x03 } }, frames);
+    }
+
+    [Fact]
+    public void WhenDecodingChunkWithEscapedBytesThenUnescapesThemToLiteralEndAndEsc()
+    {
+        var frames = _decoder.Decode(
+            new byte[] { End, 0x01, Esc, EscEnd, 0x02, Esc, EscEsc, 0x03, End }
+        );
+
+        Assert.Equal(new[] { new byte[] { 0x01, End, 0x02, Esc, 0x03 } }, frames);
     }
 }
