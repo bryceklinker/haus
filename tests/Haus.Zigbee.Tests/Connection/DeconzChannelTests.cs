@@ -29,6 +29,18 @@ public class DeconzChannelTests
         Assert.Equal(Framed(command), _transport.WrittenBytes);
     }
 
+    [Fact]
+    public async Task WhenResponsesArriveThenTheOneMatchingTheSentSequenceNumberIsReturned()
+    {
+        var command = new byte[] { 0x0A, 0x05, 0x01 };
+        _transport.FeedIncoming(Framed(new byte[] { 0x0A, 0x09, 0xFF }));
+        _transport.FeedIncoming(Framed(new byte[] { 0x0A, 0x05, 0x42 }));
+
+        var response = await _channel.SendAndReceiveAsync(command, CancellationToken.None);
+
+        Assert.Equal(new byte[] { 0x0A, 0x05, 0x42 }, response);
+    }
+
     private static byte[] Framed(byte[] frame)
     {
         var checksum = DeconzCrc.Compute(frame);
