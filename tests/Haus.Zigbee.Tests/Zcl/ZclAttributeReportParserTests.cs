@@ -18,4 +18,17 @@ public class ZclAttributeReportParserTests
         Assert.Equal(ZclDataType.Uint16, attribute.Value.DataType);
         Assert.Equal(0x1234ul, attribute.Value.AsUnsigned());
     }
+
+    [Fact]
+    public void WhenParsingReportAttributesWithBoolValueThenDecodesTheBooleanFromASingleByte()
+    {
+        var payload = new byte[] { 0x00, 0x00, 0x10, 0x01 };
+
+        var result = ZclAttributeReportParser.ParseReportAttributes(payload);
+
+        Assert.True(result.IsComplete);
+        var attribute = Assert.Single(result.Attributes);
+        Assert.Equal(ZclDataType.Bool, attribute.Value.DataType);
+        Assert.True(attribute.Value.AsBool());
+    }
 }
