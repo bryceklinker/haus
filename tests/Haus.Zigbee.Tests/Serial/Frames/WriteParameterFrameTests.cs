@@ -14,4 +14,15 @@ public class WriteParameterFrameTests
 
         Assert.Equal(new byte[] { 0x0B, 0x12, 0x00, 0x09, 0x00, 0x02, 0x00, 0x26, 0x1E }, bytes);
     }
+
+    [Fact]
+    public void GivenSuccessfulResponseWhenDecodingThenExposesStatusAndParameterId()
+    {
+        byte[] frame = [0x0B, 0x12, 0x00, 0x08, 0x00, 0x01, 0x00, 0x26];
+
+        var response = WriteParameterFrame.Decode(frame);
+
+        Assert.Equal(0x00, response.Status);
+        Assert.Equal(0x26, response.ParameterId);
+    }
 }
