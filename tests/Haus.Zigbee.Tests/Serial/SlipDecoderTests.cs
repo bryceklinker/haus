@@ -23,9 +23,7 @@ public class SlipDecoderTests
     [Fact]
     public void WhenDecodingChunkWithEscapedBytesThenUnescapesThemToLiteralEndAndEsc()
     {
-        var frames = _decoder.Decode(
-            new byte[] { End, 0x01, Esc, EscEnd, 0x02, Esc, EscEsc, 0x03, End }
-        );
+        var frames = _decoder.Decode(new byte[] { End, 0x01, Esc, EscEnd, 0x02, Esc, EscEsc, 0x03, End });
 
         Assert.Equal(new[] { new byte[] { 0x01, End, 0x02, Esc, 0x03 } }, frames);
     }

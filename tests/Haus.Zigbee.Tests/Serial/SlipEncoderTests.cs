@@ -25,9 +25,6 @@ public class SlipEncoderTests
     {
         var encoded = _encoder.Encode(new byte[] { 0x01, End, 0x02, Esc, 0x03 });
 
-        Assert.Equal(
-            new byte[] { End, 0x01, Esc, EscEnd, 0x02, Esc, EscEsc, 0x03, End },
-            encoded
-        );
+        Assert.Equal(new byte[] { End, 0x01, Esc, EscEnd, 0x02, Esc, EscEsc, 0x03, End }, encoded);
     }
 }
