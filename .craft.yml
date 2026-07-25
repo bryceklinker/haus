@@ -1,0 +1,28 @@
+stack: [dotnet]
+package_manager: dotnet
+commands:
+  install: dotnet tool restore
+  build: make build
+  test: make test-unit
+  acceptance: make test-acceptance
+  run: make watch
+  add_project: make add-project TYPE=<template> NAME=<name>
+  format_check: dotnet csharpier check .
+acceptance_env:
+  up: docker compose -f docker-compose.local.yml up --build -d --wait
+  down: docker compose -f docker-compose.local.yml down
+  database: sqlite (Data Source=haus_acceptance.db, see src/Haus.Web.Host/appsettings.Acceptance.json)
+  notes: >
+    make test-acceptance wraps certs+publish+compose up+dotnet test+compose down end-to-end.
+    No real Zigbee hardware or real zigbee2mqtt exists in this environment or CI — the
+    zigbee2mqtt service only appears in the production docker-compose.yml, not
+    docker-compose.local.yml. Haus.Zigbee.Host's current tests exercise mapping logic via
+    synthetic zigbee2mqtt-shaped MQTT messages; the deCONZ replacement will need an
+    injectable transport seam (ISerialTransport) or simulated deCONZ endpoint instead of
+    real hardware, per docs/craft/design/2026-07-24-replace-zigbee2mqtt-deconz.md.
+git:
+  main_branch: main
+  worktree_dir: .claude/worktrees
+paths:
+  plans: docs/craft/plans
+  design: docs/craft/design
