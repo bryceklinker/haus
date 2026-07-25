@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+
+namespace Haus.Zigbee.Zcl;
+
+public sealed record ZclReadAttributesRequest(byte TransactionSequenceNumber, IReadOnlyList<ushort> AttributeIds);
+
+public static class ZclReadAttributesRequestCodec
+{
+    private const byte ReadAttributesCommandId = 0x00;
+
+    public static byte[] Encode(ZclReadAttributesRequest request)
+    {
+        var header = new ZclFrameHeader(
+            ZclFrameType.Global,
+            ZclDirection.ClientToServer,
+            DisableDefaultResponse: false,
+            request.TransactionSequenceNumber,
+            ReadAttributesCommandId
+        );
+
+        var bytes = new List<byte>(ZclFrameHeaderCodec.Encode(header));
+        foreach (var attributeId in request.AttributeIds)
+        {
+            bytes.Add((byte)(attributeId & 0xff));
+            bytes.Add((byte)(attributeId >> 8));
+        }
+
+        return bytes.ToArray();
+    }
+}
