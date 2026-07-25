@@ -18,6 +18,13 @@ public static class ActiveEndpointsResponseCodec
     {
         var transactionSequenceNumber = payload[0];
         var status = (ZdoStatus)payload[1];
+        if (status != ZdoStatus.Success)
+            return new ActiveEndpointsResponse(
+                transactionSequenceNumber,
+                status,
+                NetworkAddress: 0,
+                Array.Empty<byte>()
+            );
 
         var networkAddress = (ushort)(payload[2] | (payload[3] << 8));
         var endpointCount = payload[4];

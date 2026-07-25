@@ -27,4 +27,16 @@ public class ActiveEndpointsRequestTests
         Assert.Equal(0x1234, response.NetworkAddress);
         Assert.Equal(new byte[] { 0x01, 0x0b }, response.EndpointIds);
     }
+
+    [Fact]
+    public void WhenDecodingNonSuccessResponseThenRecoversStatusWithoutReadingFurtherBytesOrThrowing()
+    {
+        var payload = new byte[] { 0x42, (byte)ZdoStatus.DeviceNotFound };
+
+        var response = ActiveEndpointsResponseCodec.Decode(payload);
+
+        Assert.Equal(0x42, response.TransactionSequenceNumber);
+        Assert.Equal(ZdoStatus.DeviceNotFound, response.Status);
+        Assert.Empty(response.EndpointIds);
+    }
 }
