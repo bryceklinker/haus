@@ -52,4 +52,24 @@ public class DeviceStateFrameTests
             decoded
         );
     }
+
+    [Fact]
+    public void GivenUnsolicitedStatusChangeIndicationWhenDecodingThenDecodesIdenticallyAndExposesIndicationCommandId()
+    {
+        byte[] frame = [0x0E, 0x2A, 0x00, 0x08, 0x00, 0b0000_1110, 0x00, 0x00];
+
+        var decoded = DeviceStateCodec.Decode(frame);
+
+        Assert.Equal(
+            new DeviceStateFrame(
+                CommandId: 0x0E,
+                NetworkState: NetworkState.Connected,
+                ApsDataConfirmAvailable: true,
+                ApsDataIndicationAvailable: true,
+                ConfigurationChanged: false,
+                ApsFreeSlotsAvailable: false
+            ),
+            decoded
+        );
+    }
 }
