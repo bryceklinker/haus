@@ -30,4 +30,12 @@ public class IeeeAddressTests
         Assert.True(parsed);
         Assert.Equal(new IeeeAddress(0x00124b0001234567), address);
     }
+
+    [Fact]
+    public void WhenParsedFromStringMissingPrefixThenParsingFails()
+    {
+        var parsed = IeeeAddress.TryParse("00124b0001234567", out _);
+
+        Assert.False(parsed);
+    }
 }
