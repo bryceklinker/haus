@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Haus.Zigbee.Zcl;
 
@@ -25,15 +26,13 @@ public static class ZclAttributeReportParser
         while (offset < payload.Length)
         {
             var attributeId = ReadUInt16(payload, offset);
-            var dataType = payload[offset + 2];
-            if (!ZclDataTypeWidths.TryGetWidth(dataType, out var width))
+            if (!TryDecodeValue(payload, offset + 2, out var value, out var valueLength))
             {
                 return new ZclReportAttributesResult(attributes, IsComplete: false);
             }
 
-            var rawValue = ReadRawValue(payload, offset + 3, width);
-            attributes.Add(new ZclAttributeRecord(attributeId, new ZclAttributeValue((ZclDataType)dataType, rawValue)));
-            offset += 3 + width;
+            attributes.Add(new ZclAttributeRecord(attributeId, value));
+            offset += 2 + valueLength;
         }
 
         return new ZclReportAttributesResult(attributes, IsComplete: true);
@@ -54,19 +53,36 @@ public static class ZclAttributeReportParser
                 continue;
             }
 
-            var dataType = payload[offset];
-            if (!ZclDataTypeWidths.TryGetWidth(dataType, out var width))
+            if (!TryDecodeValue(payload, offset, out var value, out var valueLength))
             {
                 return new ZclReadAttributesResponseResult(attributes, IsComplete: false);
             }
 
-            var rawValue = ReadRawValue(payload, offset + 1, width);
-            var value = new ZclAttributeValue((ZclDataType)dataType, rawValue);
             attributes.Add(new ZclReadAttributeRecord(attributeId, status, value));
-            offset += 1 + width;
+            offset += valueLength;
         }
 
         return new ZclReadAttributesResponseResult(attributes, IsComplete: true);
+    }
+
+    private static bool TryDecodeValue(
+        ReadOnlySpan<byte> payload,
+        int offset,
+        [NotNullWhen(true)] out ZclAttributeValue? value,
+        out int length
+    )
+    {
+        var dataType = payload[offset];
+        if (!ZclDataTypeWidths.TryGetWidth(dataType, out var width))
+        {
+            value = null;
+            length = 0;
+            return false;
+        }
+
+        value = new ZclAttributeValue((ZclDataType)dataType, ReadRawValue(payload, offset + 1, width));
+        length = 1 + width;
+        return true;
     }
 
     private static ushort ReadUInt16(ReadOnlySpan<byte> payload, int offset) =>
