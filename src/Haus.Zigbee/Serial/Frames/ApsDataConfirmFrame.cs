@@ -42,6 +42,8 @@ public sealed record ApsDataConfirmDecoding
 
 public static class ApsDataConfirmCodec
 {
+    private const int StatusOffset = 2;
+    private const byte SuccessStatus = 0x00;
     private const int SequenceNumberOffset = 1;
     private const int DeviceStateOffset = 7;
     private const int RequestIdOffset = 8;
@@ -53,6 +55,9 @@ public static class ApsDataConfirmCodec
 
     public static ApsDataConfirmDecoding Decode(ReadOnlySpan<byte> frame)
     {
+        if (frame[StatusOffset] != SuccessStatus)
+            return ApsDataConfirmDecoding.Failed;
+
         var addressMode = (DeconzAddressMode)frame[AddressModeOffset];
         var isIeee = addressMode == DeconzAddressMode.Ieee;
         var destinationShortAddress = isIeee ? (ushort?)null : ReadUInt16(frame, AddressOffset);

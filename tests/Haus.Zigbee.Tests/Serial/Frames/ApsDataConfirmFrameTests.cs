@@ -133,4 +133,20 @@ public class ApsDataConfirmFrameTests
             decoding.Confirm
         );
     }
+
+    [Fact]
+    public void WhenDecodingFrameWithNonSuccessStatusThenReportsFailureWithoutThrowing()
+    {
+        var frame = new byte[]
+        {
+            0x04, // command id
+            0x11, // sequence number
+            0x01, // status: not success
+        };
+
+        var decoding = ApsDataConfirmCodec.Decode(frame);
+
+        Assert.False(decoding.IsSuccessful);
+        Assert.Null(decoding.Confirm);
+    }
 }
