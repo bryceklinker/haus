@@ -16,9 +16,7 @@ public class DeviceStateFrameTests
     [Fact]
     public void GivenStatusResponseWhenDecodingThenRecoversNetworkStateAndFlagsFromDeviceStateByte()
     {
-        byte[] frame = [0x07, 0x2A, 0x00, 0x08, 0x00, 0b0000_1110, 0x00, 0x00];
-
-        var decoded = DeviceStateCodec.Decode(frame);
+        var decoded = Decode(commandId: 0x07, deviceState: 0b0000_1110);
 
         Assert.Equal(
             new DeviceStateFrame(
@@ -36,9 +34,7 @@ public class DeviceStateFrameTests
     [Fact]
     public void GivenStatusResponseWithConfigAndFreeSlotBitsWhenDecodingThenRecoversConnectingStateAndThoseFlags()
     {
-        byte[] frame = [0x07, 0x2A, 0x00, 0x08, 0x00, 0b0011_0001, 0x00, 0x00];
-
-        var decoded = DeviceStateCodec.Decode(frame);
+        var decoded = Decode(commandId: 0x07, deviceState: 0b0011_0001);
 
         Assert.Equal(
             new DeviceStateFrame(
@@ -56,9 +52,7 @@ public class DeviceStateFrameTests
     [Fact]
     public void GivenUnsolicitedStatusChangeIndicationWhenDecodingThenDecodesIdenticallyAndExposesIndicationCommandId()
     {
-        byte[] frame = [0x0E, 0x2A, 0x00, 0x08, 0x00, 0b0000_1110, 0x00, 0x00];
-
-        var decoded = DeviceStateCodec.Decode(frame);
+        var decoded = Decode(commandId: 0x0E, deviceState: 0b0000_1110);
 
         Assert.Equal(
             new DeviceStateFrame(
@@ -71,5 +65,11 @@ public class DeviceStateFrameTests
             ),
             decoded
         );
+    }
+
+    private static DeviceStateFrame Decode(byte commandId, byte deviceState)
+    {
+        byte[] frame = [commandId, 0x2A, 0x00, 0x08, 0x00, deviceState, 0x00, 0x00];
+        return DeviceStateCodec.Decode(frame);
     }
 }
