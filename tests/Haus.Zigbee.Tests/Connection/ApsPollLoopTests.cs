@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
@@ -10,6 +11,12 @@ namespace Haus.Zigbee.Tests.Connection;
 
 public class ApsPollLoopTests
 {
+    private const byte NoApsDataAvailable = 0x00;
+    private const byte IndicationAvailable = 0x08;
+
+    private const byte SuccessStatus = 0x00;
+    private const byte NwkAddressMode = 0x02;
+
     private readonly ScriptedSerialTransport _transport = new();
     private readonly ApsPollLoop _loop;
 
@@ -17,9 +24,6 @@ public class ApsPollLoopTests
     {
         _loop = new ApsPollLoop(new DeconzChannel(_transport));
     }
-
-    private const byte NoApsDataAvailable = 0x00;
-    private const byte IndicationAvailable = 0x08;
 
     [Fact]
     public async Task WhenPollingThenTheDeviceStatePollRequestIsSent()
@@ -39,9 +43,9 @@ public class ApsPollLoopTests
 
         await _loop.PollOnceAsync(CancellationToken.None);
 
-        var expected = new List<byte>();
-        expected.AddRange(Framed(DeviceStateCodec.EncodePollRequest(0)));
-        expected.AddRange(Framed(ReadIndicationRequest(sequenceNumber: 1)));
+        var expected = Framed(DeviceStateCodec.EncodePollRequest(0))
+            .Concat(Framed(ReadIndicationRequest(sequenceNumber: 1)))
+            .ToArray();
         Assert.Equal(expected, _transport.WrittenBytes);
     }
 
@@ -57,36 +61,18 @@ public class ApsPollLoopTests
 
     private static byte[] IndicationResponse(byte sequenceNumber)
     {
-        return new byte[]
-        {
-            0x17,
-            sequenceNumber,
-            0x00, // command id, sequence number, success status
-            0x00,
-            0x00, // frame length (ignored by decoder)
-            0x00,
-            0x00, // payload length (ignored by decoder)
-            0x00, // device state
-            0x02,
-            0x00,
-            0x00,
-            0x01, // dest: Nwk mode, addr 0x0000, endpoint 0x01
-            0x02,
-            0x34,
-            0x12,
-            0x01, // source: Nwk mode, addr 0x1234, endpoint 0x01
-            0x04,
-            0x01, // profile id 0x0104
-            0x00,
-            0x00, // cluster id 0x0000
-            0x02,
-            0x00, // asdu length 2
-            0xAA,
-            0xBB, // asdu payload
-            0x00,
-            0x00, // reserved
-            0xFF, // link quality indicator
-        };
+        var header = new byte[] { 0x17, sequenceNumber, SuccessStatus, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        var destination = new byte[] { NwkAddressMode, 0x00, 0x00, 0x01 };
+        var source = new byte[] { NwkAddressMode, 0x34, 0x12, 0x01 };
+        var profileAndCluster = new byte[] { 0x04, 0x01, 0x00, 0x00 };
+        var asdu = new byte[] { 0x02, 0x00, 0xAA, 0xBB };
+        var reservedAndLinkQuality = new byte[] { 0x00, 0x00, 0xFF };
+        return Concat(header, destination, source, profileAndCluster, asdu, reservedAndLinkQuality);
+    }
+
+    private static byte[] Concat(params byte[][] segments)
+    {
+        return segments.SelectMany(segment => segment).ToArray();
     }
 
     private static byte[] Framed(byte[] frame)
