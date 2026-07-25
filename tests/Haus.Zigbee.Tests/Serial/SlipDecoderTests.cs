@@ -29,4 +29,16 @@ public class SlipDecoderTests
 
         Assert.Equal(new[] { new byte[] { 0x01, End, 0x02, Esc, 0x03 } }, frames);
     }
+
+    [Fact]
+    public void WhenFrameIsSplitAcrossPartialReadsThenYieldsItOnlyOnceTheTerminatingEndArrives()
+    {
+        var beforeEscape = _decoder.Decode(new byte[] { End, 0x01, Esc });
+        var afterEscape = _decoder.Decode(new byte[] { EscEnd, 0x02 });
+        var afterEnd = _decoder.Decode(new byte[] { End });
+
+        Assert.Empty(beforeEscape);
+        Assert.Empty(afterEscape);
+        Assert.Equal(new[] { new byte[] { 0x01, End, 0x02 } }, afterEnd);
+    }
 }
