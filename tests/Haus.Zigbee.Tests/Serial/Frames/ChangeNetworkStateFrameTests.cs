@@ -36,4 +36,18 @@ public class ChangeNetworkStateFrameTests
 
         Assert.Equal(new ChangeNetworkStateResponse(Status: 0x00, NetworkState.Connected), response);
     }
+
+    [Theory]
+    [InlineData(NetworkState.Disconnected)]
+    [InlineData(NetworkState.Connecting)]
+    [InlineData(NetworkState.Connected)]
+    [InlineData(NetworkState.Disconnecting)]
+    public void WhenDecodingAnEncodedRequestThenRecoversTheNetworkState(NetworkState networkState)
+    {
+        var response = ChangeNetworkStateFrameCodec.Decode(
+            ChangeNetworkStateFrameCodec.Encode(networkState, sequenceNumber: 0x77)
+        );
+
+        Assert.Equal(networkState, response.NetworkState);
+    }
 }
