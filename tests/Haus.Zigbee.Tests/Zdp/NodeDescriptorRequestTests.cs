@@ -58,4 +58,21 @@ public class NodeDescriptorRequestTests
         Assert.Equal((ushort)0x0080, response.Descriptor.MaxOutgoingTransferSize);
         Assert.Equal(0x00, response.Descriptor.Deprecated1);
     }
+
+    [Fact]
+    public void WhenDecodingNonSuccessResponseThenReturnsStatusWithoutDescriptorAndDoesNotThrow()
+    {
+        var payload = new byte[]
+        {
+            0x42, // transaction sequence number
+            0x81, // status: DeviceNotFound
+        };
+
+        var response = NodeDescriptorResponseCodec.Decode(payload);
+
+        Assert.NotNull(response);
+        Assert.Equal(0x42, response!.TransactionSequenceNumber);
+        Assert.Equal(ZdoStatus.DeviceNotFound, response.Status);
+        Assert.Null(response.Descriptor);
+    }
 }
