@@ -25,6 +25,9 @@ public sealed class ApsPollLoop
 
         if (deviceState.ApsDataIndicationAvailable)
             await DrainIndicationAsync(token);
+
+        if (deviceState.ApsDataConfirmAvailable)
+            await DrainConfirmAsync(token);
     }
 
     private async Task DrainIndicationAsync(CancellationToken token)
@@ -37,8 +40,19 @@ public sealed class ApsPollLoop
             IndicationReceived?.Invoke(this, new ApsIndicationReceived(indication));
     }
 
+    private async Task DrainConfirmAsync(CancellationToken token)
+    {
+        var readRequest = ReadConfirmRequest(_sequenceNumber++);
+        await _channel.SendAndReceiveAsync(readRequest, token);
+    }
+
     private static byte[] ReadIndicationRequest(byte sequenceNumber)
     {
         return [0x17, sequenceNumber, 0x00, 0x08, 0x00, 0x01, 0x00, 0x01];
+    }
+
+    private static byte[] ReadConfirmRequest(byte sequenceNumber)
+    {
+        return [0x04, sequenceNumber, 0x00, 0x07, 0x00, 0x00, 0x00];
     }
 }

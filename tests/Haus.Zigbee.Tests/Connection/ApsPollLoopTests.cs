@@ -13,6 +13,7 @@ public class ApsPollLoopTests
 {
     private const byte NoApsDataAvailable = 0x00;
     private const byte IndicationAvailable = 0x08;
+    private const byte ConfirmAvailable = 0x04;
 
     private const byte SuccessStatus = 0x00;
     private const byte NwkAddressMode = 0x02;
@@ -65,6 +66,20 @@ public class ApsPollLoopTests
         Assert.Equal(new byte[] { 0xAA, 0xBB }, indication.AsduPayload);
     }
 
+    [Fact]
+    public async Task WhenAConfirmIsAvailableThenTheReadConfirmRequestIsSent()
+    {
+        _transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
+        _transport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
+
+        await _loop.PollOnceAsync(CancellationToken.None);
+
+        var expected = Framed(DeviceStateCodec.EncodePollRequest(0))
+            .Concat(Framed(ReadConfirmRequest(sequenceNumber: 1)))
+            .ToArray();
+        Assert.Equal(expected, _transport.WrittenBytes);
+    }
+
     private static byte[] DeviceStateResponse(byte sequenceNumber, byte deviceState)
     {
         return new byte[] { 0x07, sequenceNumber, 0x00, 0x00, 0x00, deviceState };
@@ -84,6 +99,19 @@ public class ApsPollLoopTests
         var asdu = new byte[] { 0x02, 0x00, 0xAA, 0xBB };
         var reservedAndLinkQuality = new byte[] { 0x00, 0x00, 0xFF };
         return Concat(header, destination, source, profileAndCluster, asdu, reservedAndLinkQuality);
+    }
+
+    private static byte[] ReadConfirmRequest(byte sequenceNumber)
+    {
+        return new byte[] { 0x04, sequenceNumber, 0x00, 0x07, 0x00, 0x00, 0x00 };
+    }
+
+    private static byte[] ConfirmResponse(byte sequenceNumber, byte requestId)
+    {
+        var header = new byte[] { 0x04, sequenceNumber, SuccessStatus, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        var requestAndAddress = new byte[] { requestId, NwkAddressMode, 0x34, 0x12 };
+        var endpointsAndStatus = new byte[] { 0x01, 0x01, 0x00 };
+        return Concat(header, requestAndAddress, endpointsAndStatus);
     }
 
     private static byte[] Concat(params byte[][] segments)
