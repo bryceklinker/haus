@@ -58,4 +58,48 @@ public class SimpleDescriptorRequestTests
         Assert.Equal(new ushort[] { 0x0006, 0x0008 }, descriptor.InClusters);
         Assert.Equal(new ushort[] { 0x0019 }, descriptor.OutClusters);
     }
+
+    [Fact]
+    public void WhenDecodingSuccessfulResponseWithNoClustersThenBothListsAreEmpty()
+    {
+        var payload = new byte[]
+        {
+            0x07, // transaction sequence number
+            0x00, // status: success
+            0xcd,
+            0xab, // network address 0xabcd
+            0x08, // descriptor length
+            0x01, // endpoint
+            0x04,
+            0x01, // profile id 0x0104
+            0x00,
+            0x00, // device id 0x0000
+            0x00, // device version
+            0x00, // in cluster count
+            0x00, // out cluster count
+        };
+
+        var response = SimpleDescriptorCodec.DecodeResponse(payload);
+
+        Assert.Equal(ZdoStatus.Success, response.Status);
+        var descriptor = Assert.IsType<SimpleDescriptor>(response.Descriptor);
+        Assert.Empty(descriptor.InClusters);
+        Assert.Empty(descriptor.OutClusters);
+    }
+
+    [Fact]
+    public void WhenDecodingNonSuccessResponseThenReturnsStatusWithoutDescriptorAndDoesNotThrow()
+    {
+        var payload = new byte[]
+        {
+            0x09, // transaction sequence number
+            0x82, // status: invalid endpoint
+        };
+
+        var response = SimpleDescriptorCodec.DecodeResponse(payload);
+
+        Assert.Equal(0x09, response.TransactionSequenceNumber);
+        Assert.Equal(ZdoStatus.InvalidEndpoint, response.Status);
+        Assert.Null(response.Descriptor);
+    }
 }
