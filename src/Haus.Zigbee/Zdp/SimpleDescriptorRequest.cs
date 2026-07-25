@@ -38,30 +38,23 @@ public static class SimpleDescriptorCodec
     {
         var transactionSequenceNumber = payload[0];
         var status = (ZdoStatus)payload[1];
-        if (status != ZdoStatus.Success)
-        {
-            return new SimpleDescriptorResponse(transactionSequenceNumber, status, Descriptor: null);
-        }
+        var descriptor = status == ZdoStatus.Success ? DecodeDescriptor(payload) : null;
+        return new SimpleDescriptorResponse(transactionSequenceNumber, status, descriptor);
+    }
 
-        var networkAddress = ReadUInt16(payload, 2);
-        var endpoint = payload[5];
-        var profileId = ReadUInt16(payload, 6);
-        var deviceId = ReadUInt16(payload, 8);
-        var deviceVersion = payload[10];
-
+    private static SimpleDescriptor DecodeDescriptor(ReadOnlySpan<byte> payload)
+    {
         var inClusters = ReadClusterList(payload, 11, out var afterInClusters);
         var outClusters = ReadClusterList(payload, afterInClusters, out _);
-
-        var descriptor = new SimpleDescriptor(
-            networkAddress,
-            endpoint,
-            profileId,
-            deviceId,
-            deviceVersion,
+        return new SimpleDescriptor(
+            NetworkAddress: ReadUInt16(payload, 2),
+            Endpoint: payload[5],
+            ProfileId: ReadUInt16(payload, 6),
+            DeviceId: ReadUInt16(payload, 8),
+            DeviceVersion: payload[10],
             inClusters,
             outClusters
         );
-        return new SimpleDescriptorResponse(transactionSequenceNumber, status, descriptor);
     }
 
     private static IReadOnlyList<ushort> ReadClusterList(ReadOnlySpan<byte> payload, int offset, out int nextOffset)
