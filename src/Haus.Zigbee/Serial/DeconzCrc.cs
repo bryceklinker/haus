@@ -16,8 +16,8 @@ public static class DeconzCrc
     public static bool IsValid(ReadOnlySpan<byte> frameWithChecksum)
     {
         var frame = frameWithChecksum[..^2];
-        var checksum = (ushort)(frameWithChecksum[^2] | (frameWithChecksum[^1] << 8));
+        var trailingChecksum = (ushort)(frameWithChecksum[^2] | (frameWithChecksum[^1] << 8));
 
-        return ((Compute(frame) - checksum) & 0xFFFF) == 0;
+        return Compute(frame) == trailingChecksum;
     }
 }
