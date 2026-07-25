@@ -6,7 +6,8 @@ public sealed record ZclCommand(
     byte TransactionSequenceNumber,
     byte CommandId,
     byte[] Payload,
-    bool DisableDefaultResponse
+    bool DisableDefaultResponse,
+    ushort? ManufacturerCode = null
 );
 
 public static class ZclCommandBuilder
@@ -18,7 +19,8 @@ public static class ZclCommandBuilder
             ZclDirection.ClientToServer,
             command.DisableDefaultResponse,
             command.TransactionSequenceNumber,
-            command.CommandId
+            command.CommandId,
+            command.ManufacturerCode
         );
 
         var headerBytes = ZclFrameHeaderCodec.Encode(header);

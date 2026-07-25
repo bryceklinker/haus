@@ -34,4 +34,32 @@ public class ZclCommandBuilderTests
 
         Assert.Equal(new byte[] { 0b0001_0001, 0x11, 0x04, 0xfe, 0x0a }, bytes);
     }
+
+    [Fact]
+    public void WhenBuildingManufacturerSpecificCommandThenHeaderCarriesCommandIdAndManufacturerCodeWithPayloadFollowing()
+    {
+        var command = new ZclCommand(
+            TransactionSequenceNumber: 0x05,
+            CommandId: 0x0a,
+            Payload: new byte[] { 0xbb, 0xcc },
+            DisableDefaultResponse: false,
+            ManufacturerCode: 0x100b
+        );
+
+        var bytes = ZclCommandBuilder.Build(command);
+
+        var decoding = ZclFrameHeaderCodec.Decode(bytes);
+        Assert.Equal(
+            new ZclFrameHeader(
+                ZclFrameType.ClusterSpecific,
+                ZclDirection.ClientToServer,
+                DisableDefaultResponse: false,
+                TransactionSequenceNumber: 0x05,
+                CommandId: 0x0a,
+                ManufacturerCode: 0x100b
+            ),
+            decoding.Header
+        );
+        Assert.Equal(new byte[] { 0xbb, 0xcc }, bytes[decoding.ByteLength..]);
+    }
 }
