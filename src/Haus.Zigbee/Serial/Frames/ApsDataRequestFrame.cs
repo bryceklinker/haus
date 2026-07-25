@@ -3,16 +3,9 @@ using Haus.Zigbee;
 
 namespace Haus.Zigbee.Serial.Frames;
 
-public enum ApsAddressMode : byte
-{
-    Group = 0x01,
-    Nwk = 0x02,
-    Ieee = 0x03,
-}
-
 public sealed record ApsDestination
 {
-    private ApsDestination(ApsAddressMode mode, ushort shortAddress, IeeeAddress ieeeAddress, byte endpoint)
+    private ApsDestination(DeconzAddressMode mode, ushort shortAddress, IeeeAddress ieeeAddress, byte endpoint)
     {
         Mode = mode;
         ShortAddress = shortAddress;
@@ -20,24 +13,24 @@ public sealed record ApsDestination
         Endpoint = endpoint;
     }
 
-    public ApsAddressMode Mode { get; }
+    public DeconzAddressMode Mode { get; }
     public ushort ShortAddress { get; }
     public IeeeAddress IeeeAddress { get; }
     public byte Endpoint { get; }
 
     public static ApsDestination Group(ushort groupAddress)
     {
-        return new ApsDestination(ApsAddressMode.Group, groupAddress, default, default);
+        return new ApsDestination(DeconzAddressMode.Group, groupAddress, default, default);
     }
 
     public static ApsDestination Nwk(ushort networkAddress, byte endpoint)
     {
-        return new ApsDestination(ApsAddressMode.Nwk, networkAddress, default, endpoint);
+        return new ApsDestination(DeconzAddressMode.Nwk, networkAddress, default, endpoint);
     }
 
     public static ApsDestination Ieee(IeeeAddress ieeeAddress, byte endpoint)
     {
-        return new ApsDestination(ApsAddressMode.Ieee, default, ieeeAddress, endpoint);
+        return new ApsDestination(DeconzAddressMode.Ieee, default, ieeeAddress, endpoint);
     }
 }
 
@@ -87,8 +80,8 @@ public static class ApsDataRequestFrameCodec
     {
         return destination.Mode switch
         {
-            ApsAddressMode.Group => EncodeGroup(destination),
-            ApsAddressMode.Nwk => EncodeNwk(destination),
+            DeconzAddressMode.Group => EncodeGroup(destination),
+            DeconzAddressMode.Nwk => EncodeNwk(destination),
             _ => EncodeIeee(destination),
         };
     }

@@ -2,13 +2,6 @@ using System;
 
 namespace Haus.Zigbee.Serial.Frames;
 
-public enum DeconzAddressMode : byte
-{
-    Group = 0x01,
-    Nwk = 0x02,
-    Ieee = 0x03,
-}
-
 public sealed record ApsDataConfirm(
     byte SequenceNumber,
     byte DeviceState,
