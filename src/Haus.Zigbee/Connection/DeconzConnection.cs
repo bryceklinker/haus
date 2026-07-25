@@ -26,12 +26,28 @@ public sealed class DeconzConnection
 
     public async Task<NetworkConfig> ConnectAsync(CancellationToken token)
     {
-        var macAddress = new IeeeAddress(
-            BinaryPrimitives.ReadUInt64LittleEndian(await ReadParameterAsync(MacAddressParameterId, token))
-        );
-        var panId = BinaryPrimitives.ReadUInt16LittleEndian(await ReadParameterAsync(PanIdParameterId, token));
-        var channel = (await ReadParameterAsync(ChannelParameterId, token))[0];
+        var macAddress = await ReadMacAddressAsync(token);
+        var panId = await ReadPanIdAsync(token);
+        var channel = await ReadChannelAsync(token);
         return new NetworkConfig(macAddress, panId, channel);
+    }
+
+    private async Task<IeeeAddress> ReadMacAddressAsync(CancellationToken token)
+    {
+        var value = await ReadParameterAsync(MacAddressParameterId, token);
+        return new IeeeAddress(BinaryPrimitives.ReadUInt64LittleEndian(value));
+    }
+
+    private async Task<ushort> ReadPanIdAsync(CancellationToken token)
+    {
+        var value = await ReadParameterAsync(PanIdParameterId, token);
+        return BinaryPrimitives.ReadUInt16LittleEndian(value);
+    }
+
+    private async Task<byte> ReadChannelAsync(CancellationToken token)
+    {
+        var value = await ReadParameterAsync(ChannelParameterId, token);
+        return value[0];
     }
 
     private async Task<byte[]> ReadParameterAsync(byte parameterId, CancellationToken token)
