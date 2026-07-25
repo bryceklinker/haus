@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Serial.Frames;
@@ -14,6 +15,8 @@ public sealed class ApsPollLoop
         _channel = channel;
     }
 
+    public event EventHandler<ApsIndicationReceived>? IndicationReceived;
+
     public async Task PollOnceAsync(CancellationToken token)
     {
         var pollRequest = DeviceStateCodec.EncodePollRequest(_sequenceNumber++);
@@ -27,7 +30,11 @@ public sealed class ApsPollLoop
     private async Task DrainIndicationAsync(CancellationToken token)
     {
         var readRequest = ReadIndicationRequest(_sequenceNumber++);
-        await _channel.SendAndReceiveAsync(readRequest, token);
+        var response = await _channel.SendAndReceiveAsync(readRequest, token);
+
+        var indication = ApsDataIndicationFrameCodec.Decode(response);
+        if (indication is not null)
+            IndicationReceived?.Invoke(this, new ApsIndicationReceived(indication));
     }
 
     private static byte[] ReadIndicationRequest(byte sequenceNumber)

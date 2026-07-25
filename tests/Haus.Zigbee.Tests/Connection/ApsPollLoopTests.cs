@@ -49,6 +49,22 @@ public class ApsPollLoopTests
         Assert.Equal(expected, _transport.WrittenBytes);
     }
 
+    [Fact]
+    public async Task WhenAnIndicationIsReadThenItIsRaisedAsAnIndicationReceivedEvent()
+    {
+        _transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable)));
+        _transport.QueueResponse(Framed(IndicationResponse(sequenceNumber: 1)));
+        var received = new List<ApsIndicationReceived>();
+        _loop.IndicationReceived += (_, indication) => received.Add(indication);
+
+        await _loop.PollOnceAsync(CancellationToken.None);
+
+        var indication = Assert.Single(received).Indication;
+        Assert.Equal(0x1234, indication.SourceNwkAddress);
+        Assert.Equal(0x0000, indication.ClusterId);
+        Assert.Equal(new byte[] { 0xAA, 0xBB }, indication.AsduPayload);
+    }
+
     private static byte[] DeviceStateResponse(byte sequenceNumber, byte deviceState)
     {
         return new byte[] { 0x07, sequenceNumber, 0x00, 0x00, 0x00, deviceState };
