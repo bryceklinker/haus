@@ -4,33 +4,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-HAUS is a home automation system that runs on the user's personal network (only auth touches the cloud, via Auth0). It targets Zigbee devices via Zigbee2Mqtt/MQTT. The system is composed of several .NET services plus a Blazor site, orchestrated with Yarn/concurrently for local dev and Docker Compose for deployment.
+HAUS is a home automation system that runs on the user's personal network (only auth touches the cloud, via Auth0). It targets Zigbee devices via Zigbee2Mqtt/MQTT. The system is composed of several .NET services plus a Blazor site, orchestrated with a Makefile for local dev and Docker Compose for deployment.
 
 ## System requirements
 
 - .NET (SDK pinned in `global.json`, currently 10.0.100, `rollForward: latestMinor`)
-- Node/Yarn (Node version pinned in `.nvmrc`)
-- Docker (used by `yarn start` to run the full stack via `docker-compose.local.yml`, including the MQTT broker — no separate MQTT install needed)
+- Docker (used by `make start` to run the full stack via `docker-compose.local.yml`, including the MQTT broker — no separate MQTT install needed)
 
 Required environment variables for auth (both plain and `CYPRESS_`-prefixed variants are needed since acceptance tests use Cypress-style env vars): `GITHUB_TOKEN`, `AUTH_DOMAIN`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_AUDIENCE`, `AUTH_USERNAME`, `AUTH_PASSWORD`. See `readme.md` for the full export block.
 
 ## Common commands
 
-Run from the repo root (Yarn scripts `cd` into the relevant project via `package.json` `config` paths).
+Run from the repo root (Make targets `cd` into the relevant project as needed; see the `Makefile`).
 
 ```bash
-yarn install                 # install JS deps (also runs first-time)
-yarn start                   # publish, generate dev certs, then boot the full stack via docker-compose.local.yml
-yarn start:watch             # run web host, site host, zigbee host directly via dotnet watch (hot reload, no Docker)
-yarn zigbee_host:start       # run only the Zigbee host
-yarn web_host:start          # run only the API host (launch profile: acceptance)
-yarn site_host:start         # run only the Blazor site host (launch profile: acceptance)
+make start                   # publish, generate dev certs, then boot the full stack via docker-compose.local.yml
+make watch                   # run web host + site host directly via dotnet watch (hot reload, no Docker)
+make zigbee-host             # run only the Zigbee host
+make web-host                # run only the API host (launch profile: acceptance)
+make site-host               # run only the Blazor site host (launch profile: acceptance)
 
-dotnet build                 # build the whole solution (Haus.slnx)
-dotnet tool restore          # restore local tools (csharpier, dotnet-ef, coverlet, reportgenerator, husky)
+dotnet build                  # build the whole solution (Haus.slnx)
+dotnet tool restore           # restore local tools (csharpier, dotnet-ef, coverlet, reportgenerator, husky)
 
-./scripts/run-unit-tests.sh        # runs all *.Tests projects via coverlet + generates HTML coverage report
-./scripts/run-acceptance-tests.sh  # yarn acceptance: boots web+site hosts, waits, runs Haus.Acceptance.Tests
+make test-unit                # runs all *.Tests projects via coverlet + generates HTML coverage report
+make test-acceptance          # boots web+site hosts via docker compose --wait, runs Haus.Acceptance.Tests, tears the stack down
 
 dotnet test tests/Haus.Core.Tests --no-build              # run a single test project
 dotnet test tests/Haus.Core.Tests --filter FullyQualifiedName~SomeTestName  # run a single test
@@ -84,9 +82,9 @@ Organized by feature/bounded-context folder, not by technical layer: `Devices`, 
 
 ### Tests
 
-Test projects mirror `src/` 1:1 by name (e.g. `tests/Haus.Core.Tests` ↔ `src/Haus.Core`), with the same feature-folder layout inside. `Haus.Testing.Support` holds shared test infrastructure/fixtures. `Haus.Acceptance.Tests` is a separate end-to-end suite that runs against the full stack booted via `docker-compose.local.yml` (see `yarn acceptance` / `run-acceptance-tests.sh`) — Cypress-style env vars (`CYPRESS_AUTH_*`) drive its Auth0 login.
+Test projects mirror `src/` 1:1 by name (e.g. `tests/Haus.Core.Tests` ↔ `src/Haus.Core`), with the same feature-folder layout inside. `Haus.Testing.Support` holds shared test infrastructure/fixtures. `Haus.Acceptance.Tests` is a separate end-to-end suite that runs against the full stack booted via `docker-compose.local.yml` (see `make test-acceptance`) — Cypress-style env vars (`CYPRESS_AUTH_*`) drive its Auth0 login.
 
 ## CI/CD
 
-- **`.github/workflows/main.yaml`** — on push/PR to `main`: sets up the machine (`.github/actions/setup-machine`, which installs .NET/Node, starts a standard-port MQTT broker needed by `Haus.Web.Host.Tests`'s real MQTT integration tests, trusts dev certs), runs `prepare-build.sh`, `run-unit-tests.sh`, then `run-acceptance-tests.sh` (which separately boots the full stack, including its own MQTT broker on non-standard ports, via `docker-compose.local.yml`).
-- **`.github/workflows/release.yaml`** — manual `workflow_dispatch`: bumps version/tag, publishes app artifacts (`scripts/publish-app.sh`), pushes Docker images (`scripts/publish-to-docker-hub.sh`), and creates a GitHub release with the service package.
+- **`.github/workflows/main.yaml`** — on push/PR to `main`: sets up the machine (`.github/actions/setup-machine`, which installs .NET, trusts dev certs), runs `make build`, `make test-unit` (which starts and tears down its own disposable MQTT broker on port 21883 for `Haus.Web.Host.Tests`'s real MQTT integration tests), then `make test-acceptance` (which separately boots the full stack, including its own MQTT broker on non-standard ports, via `docker-compose.local.yml`).
+- **`.github/workflows/release.yaml`** — manual `workflow_dispatch`: bumps version/tag, publishes app artifacts (`make publish`), pushes Docker images (`make docker-publish`), and creates a GitHub release with the service package.

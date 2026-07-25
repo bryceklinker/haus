@@ -6,13 +6,13 @@
   </Configurations>
   <Folder Name="/.build/">
     <File Path=".csharpierrc.json" />
-    <File Path=".nvmrc" />
     <File Path="configuration.yaml" />
     <File Path="docker-compose.yml" />
     <File Path="global.json" />
     <File Path="haus-app.service" />
     <File Path="haus-dockerfile" />
     <File Path="haus-site-dockerfile" />
+    <File Path="Makefile" />
     <File Path="mosquitto.conf" />
     <File Path="nginx.conf" />
   </Folder>
@@ -35,10 +35,6 @@
   <Folder Name="/.scm/">
     <File Path=".gitignore" />
   </Folder>
-  <Folder Name="/.tasks/">
-    <File Path="package.json" />
-    <File Path="yarn.lock" />
-  </Folder>
   <Folder Name="/dependencies/">
     <File Path="dependencies/framework-version.xml" />
     <File Path="dependencies/hosting.xml" />
@@ -52,10 +48,8 @@
     <File Path="scripts/add-project.sh" />
     <File Path="scripts/create-ef-migration.sh" />
     <File Path="scripts/linux-install.sh" />
-    <File Path="scripts/prepare-build.sh" />
     <File Path="scripts/publish-app.sh" />
     <File Path="scripts/publish-to-docker-hub.sh" />
-    <File Path="scripts/run-acceptance-tests.sh" />
     <File Path="scripts/run-unit-tests.sh" />
     <File Path="scripts/variables.sh" />
   </Folder>

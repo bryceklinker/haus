@@ -31,10 +31,10 @@ jobs:
         uses: ./.github/actions/setup-machine
 
       - name: Prepare Build
-        run: ./scripts/prepare-build.sh
+        run: make build
 
       - name: Run Unit Tests
-        run: ./scripts/run-unit-tests.sh
+        run: make test-unit
 
       - name: Run Acceptance Tests
-        run: ./scripts/run-acceptance-tests.sh
+        run: make test-acceptance
