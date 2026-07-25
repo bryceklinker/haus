@@ -69,4 +69,17 @@ public class ZclAttributeReportParserTests
         Assert.NotNull(succeeded.Value);
         Assert.Equal(-100, succeeded.Value.AsSigned());
     }
+
+    [Fact]
+    public void WhenParsingReportAttributesWithUnsupportedDataTypeThenReturnsRecordsDecodedBeforeItWithoutThrowing()
+    {
+        var payload = new byte[] { 0x00, 0x00, 0x21, 0x34, 0x12, 0x01, 0x00, 0x42, 0x03, 0x61, 0x62, 0x63 };
+
+        var result = ZclAttributeReportParser.ParseReportAttributes(payload);
+
+        Assert.False(result.IsComplete);
+        var attribute = Assert.Single(result.Attributes);
+        Assert.Equal(0x0000, attribute.AttributeId);
+        Assert.Equal(ZclDataType.Uint16, attribute.Value.DataType);
+    }
 }
