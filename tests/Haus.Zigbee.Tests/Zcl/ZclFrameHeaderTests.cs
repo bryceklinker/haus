@@ -94,4 +94,39 @@ public class ZclFrameHeaderTests
             decoding.Header
         );
     }
+
+    [Fact]
+    public void WhenRoundTrippingHeaderWithoutManufacturerCodeThenDecodeRecoversTheHeader()
+    {
+        var header = new ZclFrameHeader(
+            ZclFrameType.ClusterSpecific,
+            ZclDirection.ServerToClient,
+            DisableDefaultResponse: true,
+            TransactionSequenceNumber: 0x7f,
+            CommandId: 0x01
+        );
+
+        var decoding = ZclFrameHeaderCodec.Decode(ZclFrameHeaderCodec.Encode(header));
+
+        Assert.Equal(header, decoding.Header);
+        Assert.Equal(3, decoding.ByteLength);
+    }
+
+    [Fact]
+    public void WhenRoundTrippingHeaderWithManufacturerCodeThenDecodeRecoversTheHeader()
+    {
+        var header = new ZclFrameHeader(
+            ZclFrameType.Global,
+            ZclDirection.ClientToServer,
+            DisableDefaultResponse: false,
+            TransactionSequenceNumber: 0x03,
+            CommandId: 0x0a,
+            ManufacturerCode: 0xbeef
+        );
+
+        var decoding = ZclFrameHeaderCodec.Decode(ZclFrameHeaderCodec.Encode(header));
+
+        Assert.Equal(header, decoding.Header);
+        Assert.Equal(5, decoding.ByteLength);
+    }
 }
