@@ -59,15 +59,7 @@ public static class ApsDataConfirmCodec
             return ApsDataConfirmDecoding.Failed;
 
         var addressMode = (DeconzAddressMode)frame[AddressModeOffset];
-        var isIeee = addressMode == DeconzAddressMode.Ieee;
-        var destinationShortAddress = isIeee ? (ushort?)null : ReadUInt16(frame, AddressOffset);
-        var destinationIeeeAddress = isIeee ? (IeeeAddress?)new IeeeAddress(ReadUInt64(frame, AddressOffset)) : null;
-        var addressByteLength = isIeee ? IeeeAddressByteLength : ShortAddressByteLength;
-
-        var hasDestinationEndpoint = addressMode != DeconzAddressMode.Group;
-        var afterAddress = AddressOffset + addressByteLength;
-        var destinationEndpoint = hasDestinationEndpoint ? (byte?)frame[afterAddress] : null;
-        var sourceEndpointOffset = hasDestinationEndpoint ? afterAddress + 1 : afterAddress;
+        var destination = DecodeDestination(frame, addressMode);
 
         return ApsDataConfirmDecoding.Successful(
             new ApsDataConfirm(
@@ -75,14 +67,38 @@ public static class ApsDataConfirmCodec
                 DeviceState: frame[DeviceStateOffset],
                 RequestId: frame[RequestIdOffset],
                 DestinationAddressMode: addressMode,
-                DestinationShortAddress: destinationShortAddress,
-                DestinationIeeeAddress: destinationIeeeAddress,
-                DestinationEndpoint: destinationEndpoint,
-                SourceEndpoint: frame[sourceEndpointOffset],
-                ConfirmStatus: frame[sourceEndpointOffset + 1]
+                DestinationShortAddress: destination.ShortAddress,
+                DestinationIeeeAddress: destination.IeeeAddress,
+                DestinationEndpoint: destination.Endpoint,
+                SourceEndpoint: frame[destination.SourceEndpointOffset],
+                ConfirmStatus: frame[destination.SourceEndpointOffset + 1]
             )
         );
     }
+
+    private static DestinationAddressing DecodeDestination(ReadOnlySpan<byte> frame, DeconzAddressMode mode)
+    {
+        if (mode == DeconzAddressMode.Ieee)
+        {
+            var ieeeAddress = new IeeeAddress(ReadUInt64(frame, AddressOffset));
+            var afterIeee = AddressOffset + IeeeAddressByteLength;
+            return new DestinationAddressing(null, ieeeAddress, frame[afterIeee], afterIeee + 1);
+        }
+
+        var shortAddress = ReadUInt16(frame, AddressOffset);
+        var afterShort = AddressOffset + ShortAddressByteLength;
+        if (mode == DeconzAddressMode.Group)
+            return new DestinationAddressing(shortAddress, null, null, afterShort);
+
+        return new DestinationAddressing(shortAddress, null, frame[afterShort], afterShort + 1);
+    }
+
+    private readonly record struct DestinationAddressing(
+        ushort? ShortAddress,
+        IeeeAddress? IeeeAddress,
+        byte? Endpoint,
+        int SourceEndpointOffset
+    );
 
     private static ushort ReadUInt16(ReadOnlySpan<byte> frame, int offset)
     {
