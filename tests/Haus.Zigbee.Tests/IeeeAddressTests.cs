@@ -46,4 +46,15 @@ public class IeeeAddressTests
 
         Assert.False(parsed);
     }
+
+    [Theory]
+    [InlineData("0x0000000000000001")]
+    [InlineData("0x00124b0001234567")]
+    [InlineData("0xffffffffffffffff")]
+    public void WhenParsedAndFormattedBackThenReturnsTheOriginalCanonicalString(string canonical)
+    {
+        IeeeAddress.TryParse(canonical, out var address);
+
+        Assert.Equal(canonical, address.ToString());
+    }
 }
