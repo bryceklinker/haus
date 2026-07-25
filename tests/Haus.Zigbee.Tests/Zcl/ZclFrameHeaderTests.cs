@@ -36,4 +36,21 @@ public class ZclFrameHeaderTests
 
         Assert.Equal(new byte[] { 0b0001_1001, 0x11, 0x0a }, bytes);
     }
+
+    [Fact]
+    public void WhenEncodingHeaderWithManufacturerCodeThenSetsFlagAndInsertsLittleEndianCode()
+    {
+        var header = new ZclFrameHeader(
+            ZclFrameType.Global,
+            ZclDirection.ClientToServer,
+            DisableDefaultResponse: false,
+            TransactionSequenceNumber: 0x42,
+            CommandId: 0x00,
+            ManufacturerCode: 0x1234
+        );
+
+        var bytes = ZclFrameHeaderCodec.Encode(header);
+
+        Assert.Equal(new byte[] { 0b0000_0100, 0x34, 0x12, 0x42, 0x00 }, bytes);
+    }
 }
