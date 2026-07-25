@@ -2,14 +2,6 @@ using System;
 
 namespace Haus.Zigbee.Serial.Frames;
 
-public enum NetworkState : byte
-{
-    Disconnected = 0,
-    Connecting = 1,
-    Connected = 2,
-    Disconnecting = 3,
-}
-
 public sealed record ChangeNetworkStateResponse(byte Status, NetworkState NetworkState);
 
 public static class ChangeNetworkStateFrameCodec
