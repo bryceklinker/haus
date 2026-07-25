@@ -11,16 +11,14 @@ public readonly record struct IeeeAddress(ulong Value)
     public static bool TryParse(string? text, out IeeeAddress address)
     {
         address = default;
-        var hasPrefix = text?.StartsWith(HexPrefix, StringComparison.Ordinal) == true;
-        if (!hasPrefix)
+        if (text is null || !text.StartsWith(HexPrefix, StringComparison.Ordinal))
             return false;
 
-        var hexDigits = text!.Substring(HexPrefix.Length);
+        var hexDigits = text.Substring(HexPrefix.Length);
         if (hexDigits.Length != HexDigitCount)
             return false;
 
-        var isParsed = ulong.TryParse(hexDigits, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var value);
-        if (!isParsed)
+        if (!ulong.TryParse(hexDigits, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var value))
             return false;
 
         address = new IeeeAddress(value);
@@ -29,6 +27,6 @@ public readonly record struct IeeeAddress(ulong Value)
 
     public override string ToString()
     {
-        return $"0x{Value:x16}";
+        return $"{HexPrefix}{Value:x16}";
     }
 }
