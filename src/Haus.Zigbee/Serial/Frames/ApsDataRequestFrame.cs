@@ -29,6 +29,11 @@ public sealed record ApsDestination
     {
         return new ApsDestination(ApsAddressMode.Group, groupAddress, default, default);
     }
+
+    public static ApsDestination Nwk(ushort networkAddress, byte endpoint)
+    {
+        return new ApsDestination(ApsAddressMode.Nwk, networkAddress, default, endpoint);
+    }
 }
 
 public sealed record ApsDataRequestFrame(
@@ -77,6 +82,8 @@ public static class ApsDataRequestFrameCodec
     {
         var bytes = new List<byte>();
         AddUInt16(bytes, destination.ShortAddress);
+        if (destination.Mode == ApsAddressMode.Nwk)
+            bytes.Add(destination.Endpoint);
         return bytes;
     }
 
