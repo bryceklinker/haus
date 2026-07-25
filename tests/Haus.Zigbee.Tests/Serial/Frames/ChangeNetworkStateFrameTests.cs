@@ -26,4 +26,14 @@ public class ChangeNetworkStateFrameTests
 
         Assert.Equal(new byte[] { 0x08, 0x11, 0x00, 0x06, 0x00, expectedStateByte }, bytes);
     }
+
+    [Fact]
+    public void WhenDecodingResponseThenReadsStatusFromByteTwoAndNetworkStateFromByteFive()
+    {
+        byte[] frame = [0x08, 0x42, 0x00, 0x08, 0x00, 0x02];
+
+        var response = ChangeNetworkStateFrameCodec.Decode(frame);
+
+        Assert.Equal(new ChangeNetworkStateResponse(Status: 0x00, NetworkState.Connected), response);
+    }
 }
