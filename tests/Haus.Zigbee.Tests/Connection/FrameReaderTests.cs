@@ -55,7 +55,7 @@ public class FrameReaderTests
 
     private static byte[] Framed(byte[] frame)
     {
-        var checksum = DeconzCrc.Compute(frame);
+        var checksum = DeconzChecksum.Compute(frame);
         var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
         return new SlipEncoder().Encode(withChecksum.ToArray());
     }

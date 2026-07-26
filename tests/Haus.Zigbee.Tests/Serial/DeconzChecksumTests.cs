@@ -3,14 +3,14 @@ using Xunit;
 
 namespace Haus.Zigbee.Tests.Serial;
 
-public class DeconzCrcTests
+public class DeconzChecksumTests
 {
     [Fact]
     public void GivenKnownFrameBytesWhenComputingChecksumThenReturnsTwosComplementOfByteSum()
     {
         byte[] frame = [0x01, 0x02, 0x03, 0x04];
 
-        var checksum = DeconzCrc.Compute(frame);
+        var checksum = DeconzChecksum.Compute(frame);
 
         Assert.Equal(0xFFF6, checksum);
     }
@@ -20,7 +20,7 @@ public class DeconzCrcTests
     {
         byte[] frameWithChecksum = [0x01, 0x02, 0x03, 0x04, 0xF6, 0xFF];
 
-        var isValid = DeconzCrc.IsValid(frameWithChecksum);
+        var isValid = DeconzChecksum.IsValid(frameWithChecksum);
 
         Assert.True(isValid);
     }
@@ -30,7 +30,7 @@ public class DeconzCrcTests
     {
         byte[] frameWithChecksum = [0x01, 0x02, 0x03, 0x04, 0x00, 0x00];
 
-        var isValid = DeconzCrc.IsValid(frameWithChecksum);
+        var isValid = DeconzChecksum.IsValid(frameWithChecksum);
 
         Assert.False(isValid);
     }

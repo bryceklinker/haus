@@ -2,7 +2,7 @@ using System;
 
 namespace Haus.Zigbee.Serial;
 
-public static class DeconzCrc
+public static class DeconzChecksum
 {
     public static ushort Compute(ReadOnlySpan<byte> frame)
     {

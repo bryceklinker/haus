@@ -32,7 +32,7 @@ public class FrameReader
     {
         var validated = new List<byte[]>();
         foreach (var frame in decodedFrames)
-            if (DeconzCrc.IsValid(frame))
+            if (DeconzChecksum.IsValid(frame))
                 validated.Add(frame[..^2]);
         return validated;
     }

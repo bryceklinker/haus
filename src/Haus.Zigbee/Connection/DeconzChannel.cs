@@ -32,7 +32,7 @@ public class DeconzChannel
 
     private byte[] Encode(byte[] frame)
     {
-        var checksum = DeconzCrc.Compute(frame);
+        var checksum = DeconzChecksum.Compute(frame);
         var withChecksum = new byte[frame.Length + 2];
         frame.CopyTo(withChecksum, 0);
         withChecksum[^2] = (byte)(checksum & 0xff);
