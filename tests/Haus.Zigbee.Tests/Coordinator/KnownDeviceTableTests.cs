@@ -12,4 +12,15 @@ public class KnownDeviceTableTests
 
         Assert.Empty(table.GetDevices());
     }
+
+    [Fact]
+    public void WhenADeviceIsAddedThenItAppearsInGetDevices()
+    {
+        var table = new KnownDeviceTable();
+        var device = new ZigbeeDevice(new IeeeAddress(0x00124b0001234567), 0x1234, new ZigbeeEndpoint[0]);
+
+        table.AddOrUpdate(device);
+
+        Assert.Equal(new[] { device }, table.GetDevices());
+    }
 }
