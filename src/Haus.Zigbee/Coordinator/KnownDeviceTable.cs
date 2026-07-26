@@ -1,0 +1,20 @@
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Haus.Zigbee.Coordinator;
+
+public sealed class KnownDeviceTable
+{
+    private readonly ConcurrentDictionary<IeeeAddress, ZigbeeDevice> _devices = new();
+
+    public void AddOrUpdate(ZigbeeDevice device)
+    {
+        _devices[device.IeeeAddress] = device;
+    }
+
+    public IReadOnlyList<ZigbeeDevice> GetDevices()
+    {
+        return _devices.Values.ToList();
+    }
+}
