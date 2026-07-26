@@ -58,8 +58,8 @@ public static class ServiceCollectionExtensions
     {
         return services
             .AddTransient<DevicesMapper>()
+            .AddTransient<DeviceJoinedMapper>()
             .AddTransient<IToHausMapper, DeviceEventMapper>()
-            .AddTransient<IToHausMapper, InterviewSuccessfulMapper>()
             .AddTransient<IUnknownMessageMapper, UnknownMessageMapper>()
             .AddTransient<IZigbeeToHausMapper, ZigbeeToHausMapper>()
             .AddTransient<IZigbee2MqttMessageFactory, Zigbee2MqttMessageFactory>();

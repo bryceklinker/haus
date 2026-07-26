@@ -34,8 +34,10 @@ public class MqttMessageTranslatorTests
     }
 
     [Fact]
-    public void WhenMessageIsFromZigbee2MqttTopicThenReturnsMessageWithHausEventsTopic()
+    public void WhenMessageIsFromZigbee2MqttTopicThenReturnsMessageWithHausUnknownTopic()
     {
+        // Device-joined handling moved off this aggregator onto DeviceJoinedMapper, wired
+        // directly into the coordinator-driven relay -- nothing here claims this message.
         var message = new Zigbee2MqttMessageBuilder(Zigbee2MqttBaseTopic)
             .WithLogTopic()
             .WithPairingType()
@@ -45,7 +47,7 @@ public class MqttMessageTranslatorTests
 
         var result = _mapper.Map(message).Single();
 
-        Assert.Equal(HausEventsTopic, result.Topic);
+        Assert.Equal(ConfigurationFactory.DefaultHausUnknownTopic, result.Topic);
     }
 
     [Fact]
