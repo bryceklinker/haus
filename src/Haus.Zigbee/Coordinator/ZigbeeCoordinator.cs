@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
@@ -20,6 +21,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
     private readonly DeconzChannel _channel;
     private readonly DeconzConnection _connection;
     private readonly ApsPollLoop _pollLoop;
+    private readonly KnownDeviceTable _knownDeviceTable;
 
     private CancellationTokenSource? _pollCancellation;
     private Task _pollTask = Task.CompletedTask;
@@ -30,6 +32,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
         _channel = new DeconzChannel(transport);
         _connection = new DeconzConnection(_channel);
         _pollLoop = new ApsPollLoop(_channel);
+        _knownDeviceTable = new KnownDeviceTable();
     }
 
     public bool IsConnected { get; private set; }
@@ -42,6 +45,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
         NetworkConfig = await _connection.ConnectAsync(token);
         IsConnected = true;
         StartPolling();
+    }
+
+    public Task<IReadOnlyList<ZigbeeDevice>> GetDevicesAsync(CancellationToken token)
+    {
+        return Task.FromResult(_knownDeviceTable.GetDevices());
     }
 
     public void Dispose()

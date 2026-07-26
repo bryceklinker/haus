@@ -31,4 +31,14 @@ public class ZigbeeCoordinatorTests
         Assert.Equal((ushort)0x1a62, config.PanId);
         Assert.Equal((byte)0x0f, config.Channel);
     }
+
+    [Fact]
+    public async Task WhenNoDeviceHasJoinedThenGetDevicesReturnsAnEmptyList()
+    {
+        using var coordinator = new ZigbeeCoordinator(_dongle);
+
+        var devices = await coordinator.GetDevicesAsync(CancellationToken.None);
+
+        Assert.Empty(devices);
+    }
 }

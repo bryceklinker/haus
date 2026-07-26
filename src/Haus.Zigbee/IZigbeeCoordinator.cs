@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Coordinator;
@@ -14,4 +15,6 @@ public interface IZigbeeCoordinator
     NetworkConfig? NetworkConfig { get; }
 
     Task ConnectAsync(CancellationToken token);
+
+    Task<IReadOnlyList<ZigbeeDevice>> GetDevicesAsync(CancellationToken token);
 }
