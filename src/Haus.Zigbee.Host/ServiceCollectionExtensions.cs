@@ -57,7 +57,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddZigbeeToHausMappers(this IServiceCollection services)
     {
         return services
-            .AddTransient<IToHausMapper, DevicesMapper>()
+            .AddTransient<DevicesMapper>()
             .AddTransient<IToHausMapper, DeviceEventMapper>()
             .AddTransient<IToHausMapper, InterviewSuccessfulMapper>()
             .AddTransient<IUnknownMessageMapper, UnknownMessageMapper>()

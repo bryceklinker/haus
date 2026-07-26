@@ -1,115 +1,60 @@
+using System.Collections.Generic;
 using System.Linq;
-using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
-using Haus.Core.Models.Devices.Events;
-using Haus.Core.Models.ExternalMessages;
-using Haus.Zigbee.Host.Tests.Support;
+using Haus.Zigbee;
+using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
-using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus;
 
-public class GetDevicesMapperTests
+public class DevicesMapperTests
 {
-    private readonly DevicesMapper _mapper;
+    private readonly DevicesMapper _mapper = new();
 
-    public GetDevicesMapperTests()
+    [Fact]
+    public void Map_UsesExternalIdMapForId()
     {
-        var zigbeeOptions = OptionsFactory.CreateZigbeeOptions();
-        var hausOptions = OptionsFactory.CreateHausOptions();
-        _mapper = new DevicesMapper(zigbeeOptions, hausOptions, new DeviceTypeResolver(hausOptions));
+        var address = new IeeeAddress(0x00124b0012345678);
+        var device = new ZigbeeDevice(address, 0x1234, []);
+
+        var result = _mapper.Map([device]).Single();
+
+        Assert.Equal(ExternalIdMap.ToExternalId(address), result.Id);
     }
 
     [Fact]
-    public void WhenTopicIsConfigDevicesThenIsSupported()
+    public void Map_DeviceTypeIsUnknown()
     {
-        var message = new Zigbee2MqttMessageBuilder().WithDevicesTopic().BuildZigbee2MqttMessage();
+        var device = new ZigbeeDevice(new IeeeAddress(1), 0x1234, []);
 
-        Assert.True(_mapper.IsSupported(message));
+        var result = _mapper.Map([device]).Single();
+
+        Assert.Equal(DeviceType.Unknown, result.DeviceType);
     }
 
     [Fact]
-    public void WhenTopicIsNotConfigDevicesThenUnsupported()
+    public void Map_MetadataIncludesNetworkAddress()
     {
-        var message = new Zigbee2MqttMessageBuilder().WithTopicPath("idk").BuildZigbee2MqttMessage();
+        var device = new ZigbeeDevice(new IeeeAddress(1), 0x9abc, []);
 
-        Assert.False(_mapper.IsSupported(message));
+        var result = _mapper.Map([device]).Single();
+
+        Assert.Contains(new MetadataModel("network_address", "39612"), result.Metadata);
     }
 
     [Fact]
-    public void WhenOneDeviceIsInGetDevicesMessageThenReturnsOneDeviceDiscoveredMessage()
+    public void Map_MultipleDevices_ReturnsOneEventPerDevice()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithDevicesTopic()
-            .WithDeviceInPayload(device =>
-            {
-                device.Add("friendly_name", "boom");
-            })
-            .BuildZigbee2MqttMessage();
+        var devices = new List<ZigbeeDevice>
+        {
+            new(new IeeeAddress(1), 1, []),
+            new(new IeeeAddress(2), 2, []),
+            new(new IeeeAddress(3), 3, []),
+        };
 
-        var result = _mapper.Map(message).ToArray();
-
-        Assert.Single(result);
-        Assert.Equal(Defaults.HausOptions.EventsTopic, result.Single().Topic);
-    }
-
-    [Fact]
-    public void WhenOneDeviceIsInGetDeviceMessagesThen()
-    {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithDevicesTopic()
-            .WithDeviceInPayload(device =>
-            {
-                device.Add("friendly_name", "hello");
-                device.Add("description", "my desc");
-                device.Add("model", "65");
-                device.Add("vendor", "76");
-                device.Add("powerSource", "Battery");
-            })
-            .BuildZigbee2MqttMessage();
-
-        var result = _mapper.Map(message).Single();
-
-        var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
-        Assert.Equal(DeviceDiscoveredEvent.Type, @event?.Type);
-        Assert.Equal("hello", @event?.Payload?.Id);
-        Assert.Contains(new MetadataModel("model", "65"), @event?.Payload?.Metadata!);
-        Assert.Contains(new MetadataModel("vendor", "76"), @event?.Payload?.Metadata!);
-        Assert.Contains(new MetadataModel("description", "my desc"), @event?.Payload?.Metadata!);
-        Assert.Contains(new MetadataModel("powerSource", "Battery"), @event?.Payload?.Metadata!);
-    }
-
-    [Fact]
-    public void WhenDeviceIsMappedThenDeviceTypeIsResolved()
-    {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithDevicesTopic()
-            .WithDeviceInPayload(device =>
-            {
-                device.Add("model", "929002335001");
-                device.Add("vendor", "Philips");
-            })
-            .BuildZigbee2MqttMessage();
-
-        var result = _mapper.Map(message).Single();
-
-        var @event = HausJsonSerializer.Deserialize<HausEvent<DeviceDiscoveredEvent>>(result.PayloadSegment);
-        Assert.Equal(DeviceType.Light, @event?.Payload?.DeviceType);
-    }
-
-    [Fact]
-    public void WhenMultipleDevicesAreInMessageThenReturnsMultipleDiscoveredEvents()
-    {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithDevicesTopic()
-            .WithDeviceInPayload()
-            .WithDeviceInPayload()
-            .WithDeviceInPayload()
-            .BuildZigbee2MqttMessage();
-
-        var result = _mapper.Map(message);
+        var result = _mapper.Map(devices);
 
         Assert.Equal(3, result.Count());
     }
