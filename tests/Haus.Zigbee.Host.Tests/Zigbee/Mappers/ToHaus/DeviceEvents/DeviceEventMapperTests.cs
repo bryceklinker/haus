@@ -1,141 +1,126 @@
-using System.Linq;
-using Haus.Core.Models;
-using Haus.Core.Models.Devices.Sensors;
 using Haus.Core.Models.Devices.Sensors.Battery;
 using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Devices.Sensors.Temperature;
-using Haus.Core.Models.ExternalMessages;
-using Haus.Core.Models.Unknown;
-using Haus.Zigbee.Host.Tests.Support;
+using Haus.Zigbee;
+using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
+using Haus.Zigbee.Zcl;
 using Microsoft.Extensions.Logging.Abstractions;
-using MQTTnet;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus.DeviceEvents;
 
 public class DeviceEventMapperTests
 {
-    private const string EventsTopicName = "idk";
+    private const ushort PowerConfigCluster = 0x0001;
+    private const ushort IlluminanceMeasurementCluster = 0x0400;
+    private const ushort TemperatureMeasurementCluster = 0x0402;
+    private const ushort OccupancySensingCluster = 0x0406;
+    private const ushort BatteryPercentageAttribute = 0x0021;
+    private const ushort MeasuredValueAttribute = 0x0000;
+    private const ushort OccupancyAttribute = 0x0000;
+    private const ushort OtherAttribute = 0x00ff;
+    private const ushort KnownNetworkAddress = 0x1234;
+    private const string KnownExternalId = "the-device-id";
+
     private readonly DeviceEventMapper _mapper;
 
     public DeviceEventMapperTests()
     {
-        var hausOptions = OptionsFactory.CreateHausOptionsMonitor(EventsTopicName);
-        var zigbeeOptions = OptionsFactory.CreateZigbeeOptions();
-        _mapper = new DeviceEventMapper(hausOptions, zigbeeOptions, new NullLogger<DeviceEventMapper>());
+        var registry = new DeviceAddressRegistry();
+        registry.Register(KnownNetworkAddress, KnownExternalId);
+        _mapper = new DeviceEventMapper(registry, NullLogger<DeviceEventMapper>.Instance);
+    }
+
+    private static ZigbeeAttributeReport CreateReport(ushort clusterId, ushort attributeId, ZclAttributeValue value)
+    {
+        return new ZigbeeAttributeReport(KnownNetworkAddress, 1, clusterId, attributeId, value);
     }
 
     [Fact]
-    public void WhenTopicStartsWithZigbeeBaseTopicAndOnlyHasTwoPartsThenIsSupported()
+    public void Map_BatteryReport_ReturnsBatteryChangedModel()
     {
-        var message = new Zigbee2MqttMessageBuilder().WithDeviceTopic("device-friendly-name").BuildZigbee2MqttMessage();
+        var report = CreateReport(
+            PowerConfigCluster,
+            BatteryPercentageAttribute,
+            new ZclAttributeValue(ZclDataType.Uint8, 86)
+        );
 
-        Assert.True(_mapper.IsSupported(message));
+        var result = _mapper.Map(report);
+
+        var model = Assert.IsType<BatteryChangedModel>(result);
+        Assert.Equal(KnownExternalId, model.DeviceId);
     }
 
     [Fact]
-    public void WhenTopicDoesNotStartWithZigbeeBaseTopicThenUnsupported()
+    public void Map_IlluminanceReport_ReturnsIlluminanceChangedModel()
     {
-        var message = new Zigbee2MqttMessageBuilder("notgood")
-            .WithDeviceTopic("device-friendly-name")
-            .BuildZigbee2MqttMessage();
+        var report = CreateReport(
+            IlluminanceMeasurementCluster,
+            MeasuredValueAttribute,
+            new ZclAttributeValue(ZclDataType.Uint16, 10001)
+        );
 
-        Assert.False(_mapper.IsSupported(message));
+        var result = _mapper.Map(report);
+
+        var model = Assert.IsType<IlluminanceChangedModel>(result);
+        Assert.Equal(KnownExternalId, model.DeviceId);
     }
 
     [Fact]
-    public void WhenTopicNameHasMoreThanTwoPartsThenUnsupported()
+    public void Map_TemperatureReport_ReturnsTemperatureChangedModel()
     {
-        var message = new Zigbee2MqttMessageBuilder().WithTopicPath("one/two/three").BuildZigbee2MqttMessage();
+        var report = CreateReport(
+            TemperatureMeasurementCluster,
+            MeasuredValueAttribute,
+            new ZclAttributeValue(ZclDataType.Int16, 6500)
+        );
 
-        Assert.False(_mapper.IsSupported(message));
+        var result = _mapper.Map(report);
+
+        var model = Assert.IsType<TemperatureChangedModel>(result);
+        Assert.Equal(KnownExternalId, model.DeviceId);
     }
 
     [Fact]
-    public void WhenFromMultiSensorThenEventIsMultiSensorChanged()
+    public void Map_OccupancyReport_ReturnsOccupancyChangedModel()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithIlluminance(34)
-            .WithOccupancy(true)
-            .WithTemperature(42)
-            .WithBatteryLevel(54)
-            .BuildZigbee2MqttMessage();
+        var report = CreateReport(
+            OccupancySensingCluster,
+            OccupancyAttribute,
+            new ZclAttributeValue(ZclDataType.Bitmap8, 1)
+        );
 
-        var result = _mapper.Map(message).Single();
+        var result = _mapper.Map(report);
 
-        AssertHausEventTypeIs(MultiSensorChanged.Type, result);
+        var model = Assert.IsType<OccupancyChangedModel>(result);
+        Assert.Equal(KnownExternalId, model.DeviceId);
     }
 
     [Fact]
-    public void WhenFromTemperatureSensorThenEventIsTemperatureChanged()
+    public void Map_UnrecognizedClusterOrAttribute_ReturnsNull()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithTemperature(54)
-            .WithDeviceTopic("my-device-id")
-            .BuildZigbee2MqttMessage();
+        var report = CreateReport(PowerConfigCluster, OtherAttribute, new ZclAttributeValue(ZclDataType.Uint8, 1));
 
-        var result = _mapper.Map(message).Single();
+        var result = _mapper.Map(report);
 
-        AssertHausEventTypeIs(TemperatureChangedModel.Type, result);
+        Assert.Null(result);
     }
 
     [Fact]
-    public void WhenFromLightSensorThenEventIsIlluminanceChanged()
+    public void Map_UnknownNetworkAddress_ReturnsNull()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithIlluminance(3)
-            .WithDeviceTopic("the-id")
-            .BuildZigbee2MqttMessage();
+        var report = new ZigbeeAttributeReport(
+            0x9999,
+            1,
+            PowerConfigCluster,
+            BatteryPercentageAttribute,
+            new ZclAttributeValue(ZclDataType.Uint8, 86)
+        );
 
-        var result = _mapper.Map(message).Single();
+        var result = _mapper.Map(report);
 
-        AssertHausEventTypeIs(IlluminanceChangedModel.Type, result);
-    }
-
-    [Fact]
-    public void WhenFromMotionSensorThenEventIsOccupancyChanged()
-    {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithOccupancy(true)
-            .WithDeviceTopic("idk")
-            .BuildZigbee2MqttMessage();
-
-        var result = _mapper.Map(message).Single();
-
-        AssertHausEventTypeIs(OccupancyChangedModel.Type, result);
-    }
-
-    [Fact]
-    public void WhenFromBatterySensorThenEventIsBatteryChangedEvent()
-    {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithBatteryLevel(54)
-            .WithDeviceTopic("one")
-            .BuildZigbee2MqttMessage();
-
-        var result = _mapper.Map(message).Single();
-
-        AssertHausEventTypeIs(BatteryChangedModel.Type, result);
-    }
-
-    [Fact]
-    public void WhenEventIsNotRecognizedThenEventTypeIsUnknownEvent()
-    {
-        var message = new Zigbee2MqttMessageBuilder().WithDeviceTopic("something").BuildZigbee2MqttMessage();
-
-        var result = _mapper.Map(message).Single();
-
-        AssertHausEventTypeIs(UnknownEvent.Type, result);
-    }
-
-    private static void AssertHausEventTypeIs(string expectedType, MqttApplicationMessage result)
-    {
-        var payload = HausJsonSerializer.Deserialize<HausEvent>(result.PayloadSegment);
-        if (payload != null)
-        {
-            Assert.Equal(expectedType, payload.Type);
-        }
+        Assert.Null(result);
     }
 }

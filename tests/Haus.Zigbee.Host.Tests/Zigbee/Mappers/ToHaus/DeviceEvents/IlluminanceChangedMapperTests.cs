@@ -1,5 +1,5 @@
-using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
+using Haus.Zigbee.Zcl;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus.DeviceEvents;
@@ -9,26 +9,34 @@ public class IlluminanceChangedMapperTests
     private readonly IlluminanceChangedMapper _mapper = new();
 
     [Fact]
-    public void WhenIlluminanceChangedThenReturnsPopulatedIlluminanceChanged()
+    public void Map_ComputesLuxFromTheZclMeasuredValueFormula()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithDeviceTopic("1231")
-            .WithIlluminance(65)
-            .WithIlluminanceLux(12)
-            .BuildZigbee2MqttMessage();
+        var value = new ZclAttributeValue(ZclDataType.Uint16, 10001);
 
-        var model = _mapper.Map(message);
+        var model = _mapper.Map("1231", value);
 
-        Assert.Equal(65, model?.Illuminance);
-        Assert.Equal(12, model?.Lux);
-        Assert.Equal("1231", model?.DeviceId);
+        Assert.Equal("1231", model.DeviceId);
+        Assert.Equal(10001, model.Illuminance);
+        Assert.Equal(10, model.Lux);
     }
 
     [Fact]
-    public void WhenIlluminanceNotReportedThenReturnsNull()
+    public void Map_TooLowToBeMeasuredValue_ReturnsNullLux()
     {
-        var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
+        var value = new ZclAttributeValue(ZclDataType.Uint16, 0);
 
-        Assert.Null(_mapper.Map(message));
+        var model = _mapper.Map("1231", value);
+
+        Assert.Null(model.Lux);
+    }
+
+    [Fact]
+    public void Map_InvalidValue_ReturnsNullLux()
+    {
+        var value = new ZclAttributeValue(ZclDataType.Uint16, 0xffff);
+
+        var model = _mapper.Map("1231", value);
+
+        Assert.Null(model.Lux);
     }
 }

@@ -1,16 +1,15 @@
-using Haus.Core.Models;
 using Haus.Core.Models.Devices.Sensors.Battery;
-using Haus.Zigbee.Host.Zigbee.Models;
+using Haus.Zigbee.Zcl;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
 
 public class BatteryChangedMapper
 {
-    public BatteryChangedModel? Map(Zigbee2MqttMessage message)
-    {
-        if (message.Battery.IsNull())
-            return null;
+    private const double HalfPercentUnitsPerPercent = 2.0;
 
-        return new BatteryChangedModel(message.GetFriendlyNameFromTopic(), message.Battery.GetValueOrDefault());
+    public BatteryChangedModel Map(string deviceId, ZclAttributeValue value)
+    {
+        var percentage = value.AsUnsigned() / HalfPercentUnitsPerPercent;
+        return new BatteryChangedModel(deviceId, (long)percentage);
     }
 }

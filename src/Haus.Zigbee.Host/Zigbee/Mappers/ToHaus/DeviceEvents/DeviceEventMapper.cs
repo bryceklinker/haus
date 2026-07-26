@@ -1,69 +1,44 @@
-using System;
-using System.Collections.Generic;
-using Haus.Core.Models;
-using Haus.Core.Models.Devices.Sensors;
-using Haus.Core.Models.Devices.Sensors.Battery;
-using Haus.Core.Models.Devices.Sensors.Light;
-using Haus.Core.Models.Devices.Sensors.Motion;
-using Haus.Core.Models.Devices.Sensors.Temperature;
-using Haus.Core.Models.ExternalMessages;
-using Haus.Core.Models.Unknown;
-using Haus.Zigbee.Host.Configuration;
-using Haus.Zigbee.Host.Zigbee.Configuration;
-using Haus.Zigbee.Host.Zigbee.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
 
-public class DeviceEventMapper(
-    IOptionsMonitor<HausOptions> options,
-    IOptions<ZigbeeOptions> zigbeeOptions,
-    ILogger<DeviceEventMapper> logger
-) : ToHausMapperBase(options)
+public class DeviceEventMapper(DeviceAddressRegistry addressRegistry, ILogger<DeviceEventMapper> logger)
 {
-    private readonly SensorChangedMapper _sensorChangedMapper = new();
+    private const ushort PowerConfigCluster = 0x0001;
+    private const ushort IlluminanceMeasurementCluster = 0x0400;
+    private const ushort TemperatureMeasurementCluster = 0x0402;
+    private const ushort OccupancySensingCluster = 0x0406;
 
-    public override bool IsSupported(Zigbee2MqttMessage message)
-    {
-        return message.Topic.StartsWith(zigbeeOptions.GetBaseTopic()) && message.Topic.Split('/').Length == 2;
-    }
+    private const ushort BatteryPercentageAttribute = 0x0021;
+    private const ushort MeasuredValueAttribute = 0x0000;
+    private const ushort OccupancyAttribute = 0x0000;
 
-    public override IEnumerable<MqttApplicationMessage> Map(Zigbee2MqttMessage message)
+    private readonly BatteryChangedMapper _batteryChangedMapper = new();
+    private readonly IlluminanceChangedMapper _illuminanceChangedMapper = new();
+    private readonly OccupancyChangedMapper _occupancyChangedMapper = new();
+    private readonly TemperatureChangedMapper _temperatureChangedMapper = new();
+
+    public object? Map(Haus.Zigbee.ZigbeeAttributeReport report)
     {
-        yield return new MqttApplicationMessage
+        if (!addressRegistry.TryGetExternalId(report.SourceNwkAddress, out var deviceId))
         {
-            Topic = EventTopicName,
-            PayloadSegment = MapMessageToPayload(message),
-        };
-    }
-
-    private ArraySegment<byte> MapMessageToPayload(Zigbee2MqttMessage message)
-    {
-        var payload = _sensorChangedMapper.Map(message);
-        if (payload == null)
-        {
-            return [];
+            logger.LogWarning("No known device for network address {@Address}", report.SourceNwkAddress);
+            return null;
         }
 
-        var type = GetHausEventType(payload);
-        if (type == UnknownEvent.Type)
-            logger.LogWarning("Unknown payload received: {@Payload}", payload);
-
-        return HausJsonSerializer.SerializeToBytes(new HausEvent<object>(type, payload));
-    }
-
-    private string GetHausEventType(object? payload)
-    {
-        return payload switch
+        return (report.ClusterId, report.AttributeId) switch
         {
-            MultiSensorChanged => MultiSensorChanged.Type,
-            IlluminanceChangedModel => IlluminanceChangedModel.Type,
-            BatteryChangedModel => BatteryChangedModel.Type,
-            OccupancyChangedModel => OccupancyChangedModel.Type,
-            TemperatureChangedModel => TemperatureChangedModel.Type,
-            _ => UnknownEvent.Type,
+            (PowerConfigCluster, BatteryPercentageAttribute) => _batteryChangedMapper.Map(deviceId, report.Value),
+            (IlluminanceMeasurementCluster, MeasuredValueAttribute) => _illuminanceChangedMapper.Map(
+                deviceId,
+                report.Value
+            ),
+            (TemperatureMeasurementCluster, MeasuredValueAttribute) => _temperatureChangedMapper.Map(
+                deviceId,
+                report.Value
+            ),
+            (OccupancySensingCluster, OccupancyAttribute) => _occupancyChangedMapper.Map(deviceId, report.Value),
+            _ => null,
         };
     }
 }

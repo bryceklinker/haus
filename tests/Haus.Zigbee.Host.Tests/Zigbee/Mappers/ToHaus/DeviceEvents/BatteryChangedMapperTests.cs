@@ -1,5 +1,5 @@
-using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
+using Haus.Zigbee.Zcl;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus.DeviceEvents;
@@ -9,24 +9,13 @@ public class BatteryChangedMapperTests
     private readonly BatteryChangedMapper _mapper = new();
 
     [Fact]
-    public void WhenBatteryChangedThenReturnsPopulatedBatteryChanged()
+    public void Map_HalvesThePercentageUnitsFromThePowerConfigCluster()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithBatteryLevel(43)
-            .WithDeviceTopic("my-device-id")
-            .BuildZigbee2MqttMessage();
+        var value = new ZclAttributeValue(ZclDataType.Uint8, 86);
 
-        var model = _mapper.Map(message);
+        var model = _mapper.Map("my-device-id", value);
 
-        Assert.Equal(43, model?.BatteryLevel);
-        Assert.Equal("my-device-id", model?.DeviceId);
-    }
-
-    [Fact]
-    public void WhenBatteryLevelNotReportedThenReturnsNull()
-    {
-        var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
-
-        Assert.Null(_mapper.Map(message));
+        Assert.Equal("my-device-id", model.DeviceId);
+        Assert.Equal(43, model.BatteryLevel);
     }
 }

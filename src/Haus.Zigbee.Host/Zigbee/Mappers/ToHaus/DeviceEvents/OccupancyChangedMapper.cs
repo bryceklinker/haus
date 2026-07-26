@@ -1,21 +1,14 @@
-using Haus.Core.Models;
 using Haus.Core.Models.Devices.Sensors.Motion;
-using Haus.Zigbee.Host.Zigbee.Models;
+using Haus.Zigbee.Zcl;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
 
 public class OccupancyChangedMapper
 {
-    public OccupancyChangedModel? Map(Zigbee2MqttMessage message)
-    {
-        if (message.Occupancy.IsNull())
-            return null;
+    private const ulong OccupiedBit = 0x01;
 
-        return new OccupancyChangedModel(
-            message.GetFriendlyNameFromTopic(),
-            message.Occupancy.GetValueOrDefault(),
-            message.OccupancyTimeout.GetValueOrDefault(),
-            message.MotionSensitivity
-        );
+    public OccupancyChangedModel Map(string deviceId, ZclAttributeValue value)
+    {
+        return new OccupancyChangedModel(deviceId, (value.AsUnsigned() & OccupiedBit) != 0);
     }
 }

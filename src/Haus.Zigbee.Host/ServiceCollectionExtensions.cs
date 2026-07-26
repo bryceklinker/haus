@@ -4,6 +4,7 @@ using Haus.Mqtt.Client.Settings;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Health;
+using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Configuration;
 using Haus.Zigbee.Host.Zigbee.Health;
 using Haus.Zigbee.Host.Zigbee.Mappers;
@@ -57,9 +58,10 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddZigbeeToHausMappers(this IServiceCollection services)
     {
         return services
+            .AddSingleton<DeviceAddressRegistry>()
             .AddTransient<DevicesMapper>()
             .AddTransient<DeviceJoinedMapper>()
-            .AddTransient<IToHausMapper, DeviceEventMapper>()
+            .AddTransient<DeviceEventMapper>()
             .AddTransient<IUnknownMessageMapper, UnknownMessageMapper>()
             .AddTransient<IZigbeeToHausMapper, ZigbeeToHausMapper>()
             .AddTransient<IZigbee2MqttMessageFactory, Zigbee2MqttMessageFactory>();

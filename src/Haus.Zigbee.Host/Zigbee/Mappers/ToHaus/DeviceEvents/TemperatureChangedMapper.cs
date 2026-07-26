@@ -1,16 +1,14 @@
-using Haus.Core.Models;
 using Haus.Core.Models.Devices.Sensors.Temperature;
-using Haus.Zigbee.Host.Zigbee.Models;
+using Haus.Zigbee.Zcl;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
 
 public class TemperatureChangedMapper
 {
-    public TemperatureChangedModel? Map(Zigbee2MqttMessage message)
-    {
-        if (message.Temperature.IsNull())
-            return null;
+    private const double CentidegreesPerDegree = 100.0;
 
-        return new TemperatureChangedModel(message.GetFriendlyNameFromTopic(), message.Temperature.GetValueOrDefault());
+    public TemperatureChangedModel Map(string deviceId, ZclAttributeValue value)
+    {
+        return new TemperatureChangedModel(deviceId, value.AsSigned() / CentidegreesPerDegree);
     }
 }

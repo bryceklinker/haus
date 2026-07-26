@@ -1,5 +1,5 @@
-using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
+using Haus.Zigbee.Zcl;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus.DeviceEvents;
@@ -9,28 +9,33 @@ public class OccupancyChangedMapperTests
     private readonly OccupancyChangedMapper _mapper = new();
 
     [Fact]
-    public void WhenOccupancyChangedThenReturnsPopulatedOccupancyChanged()
+    public void Map_OccupiedBitSet_ReturnsOccupancyTrue()
     {
-        var message = new Zigbee2MqttMessageBuilder()
-            .WithDeviceTopic("motions")
-            .WithOccupancy(true)
-            .WithOccupancyTimeout(123)
-            .WithMotionSensitivity("low")
-            .BuildZigbee2MqttMessage();
+        var value = new ZclAttributeValue(ZclDataType.Bitmap8, 0x01);
 
-        var model = _mapper.Map(message);
+        var model = _mapper.Map("motions", value);
 
-        Assert.Equal("motions", model?.DeviceId);
-        Assert.True(model?.Occupancy);
-        Assert.Equal(123, model?.Timeout);
-        Assert.Equal("low", model?.Sensitivity);
+        Assert.Equal("motions", model.DeviceId);
+        Assert.True(model.Occupancy);
     }
 
     [Fact]
-    public void WhenOccupancyNotReportedThenReturnsNull()
+    public void Map_OccupiedBitClear_ReturnsOccupancyFalse()
     {
-        var message = new Zigbee2MqttMessageBuilder().BuildZigbee2MqttMessage();
+        var value = new ZclAttributeValue(ZclDataType.Bitmap8, 0x00);
 
-        Assert.Null(_mapper.Map(message));
+        var model = _mapper.Map("motions", value);
+
+        Assert.False(model.Occupancy);
+    }
+
+    [Fact]
+    public void Map_OnlyOtherBitsSet_ReturnsOccupancyFalse()
+    {
+        var value = new ZclAttributeValue(ZclDataType.Bitmap8, 0x02);
+
+        var model = _mapper.Map("motions", value);
+
+        Assert.False(model.Occupancy);
     }
 }

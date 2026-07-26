@@ -1,20 +1,26 @@
-using Haus.Core.Models;
+using System;
 using Haus.Core.Models.Devices.Sensors.Light;
-using Haus.Zigbee.Host.Zigbee.Models;
+using Haus.Zigbee.Zcl;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
 
 public class IlluminanceChangedMapper
 {
-    public IlluminanceChangedModel? Map(Zigbee2MqttMessage message)
+    private const ulong TooLowToBeMeasured = 0x0000;
+    private const ulong Invalid = 0xffff;
+    private const double LuxFormulaDivisor = 10000.0;
+
+    public IlluminanceChangedModel Map(string deviceId, ZclAttributeValue value)
     {
-        if (message.Illuminance.IsNull())
+        var measuredValue = value.AsUnsigned();
+        return new IlluminanceChangedModel(deviceId, (long)measuredValue, ComputeLux(measuredValue));
+    }
+
+    private static long? ComputeLux(ulong measuredValue)
+    {
+        if (measuredValue is TooLowToBeMeasured or Invalid)
             return null;
 
-        return new IlluminanceChangedModel(
-            message.GetFriendlyNameFromTopic(),
-            message.Illuminance.GetValueOrDefault(),
-            message.IlluminanceLux.GetValueOrDefault()
-        );
+        return (long)Math.Round(Math.Pow(10, (measuredValue - 1) / LuxFormulaDivisor));
     }
 }

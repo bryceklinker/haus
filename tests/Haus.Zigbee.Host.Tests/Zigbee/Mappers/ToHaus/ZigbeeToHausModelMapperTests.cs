@@ -51,8 +51,10 @@ public class ZigbeeToHausModelMapperTests
     }
 
     [Fact]
-    public void WhenFromSensorThenReturnsHausEvent()
+    public void WhenFromSensorThenReturnsUnknownMessage()
     {
+        // Sensor-attribute handling moved off this MQTT-relay aggregator onto DeviceEventMapper,
+        // wired directly into the coordinator-driven relay -- nothing here claims this message.
         var message = new Zigbee2MqttMessageBuilder()
             .WithDeviceTopic("some-device-name")
             .WithIlluminance(4)
@@ -60,6 +62,6 @@ public class ZigbeeToHausModelMapperTests
 
         var result = _mapper.Map(message).Single();
 
-        Assert.Equal(HausEventTopic, result.Topic);
+        Assert.Equal(UnknownEventTopic, result.Topic);
     }
 }
