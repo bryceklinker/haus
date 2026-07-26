@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee;
@@ -98,6 +99,56 @@ public class ZigbeeCoordinatorTests
             TxOptions: 0x00,
             Radius: 0x00
         );
+    }
+
+    [Fact]
+    public async Task WhenAnAttributeReportArrivesWhileConnectedThenItIsRelayedThroughTheAttributeReportedEvent()
+    {
+        SetNetworkParameters();
+        using var coordinator = new ZigbeeCoordinator(_dongle);
+        var reported = new TaskCompletionSource<ZigbeeAttributeReport>();
+        coordinator.AttributeReported += (_, report) => reported.TrySetResult(report);
+        await coordinator.ConnectAsync(CancellationToken.None);
+
+        _dongle.InjectIndication(ReportAttributesIndication(sourceNwk: 0x1234, clusterId: 0x0400, attributeId: 0x0000));
+
+        var report = await WaitFor(reported.Task);
+        Assert.Equal(0x1234, report.SourceNwkAddress);
+        Assert.Equal(0x0400, report.ClusterId);
+        Assert.Equal(0x0000, report.AttributeId);
+    }
+
+    private void SetNetworkParameters()
+    {
+        _dongle.SetParameter(MacAddressParameterId, new byte[] { 0x22, 0x11, 0x00, 0xff, 0xff, 0x2e, 0x21, 0x00 });
+        _dongle.SetParameter(PanIdParameterId, new byte[] { 0x62, 0x1a });
+        _dongle.SetParameter(ChannelParameterId, new byte[] { 0x0f });
+    }
+
+    private static IndicationBody ReportAttributesIndication(ushort sourceNwk, ushort clusterId, ushort attributeId)
+    {
+        const byte globalFrameControl = 0x00;
+        const byte transactionSequenceNumber = 0x01;
+        const byte reportAttributesCommand = 0x0a;
+        var zclFrame = new byte[]
+        {
+            globalFrameControl,
+            transactionSequenceNumber,
+            reportAttributesCommand,
+            (byte)(attributeId & 0xff),
+            (byte)(attributeId >> 8),
+            (byte)ZclDataType.Uint16,
+            0x34,
+            0x12,
+        };
+        return new IndicationBody(sourceNwk, SourceEndpoint: 0x05, ProfileId: 0x0104, clusterId, zclFrame);
+    }
+
+    private static async Task<T> WaitFor<T>(Task<T> task)
+    {
+        var completed = await Task.WhenAny(task, Task.Delay(TimeSpan.FromSeconds(5)));
+        Assert.Same(task, completed);
+        return await task;
     }
 
     private static CancellationToken Cancelled()

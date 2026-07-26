@@ -25,6 +25,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
     private readonly PermitJoinController _permitJoinController;
     private readonly ApsSender _sender;
     private readonly CommandSender _commandSender;
+    private readonly AttributeReportListener _attributeReportListener;
     private readonly KnownDeviceTable _knownDeviceTable;
 
     private CancellationTokenSource? _pollCancellation;
@@ -39,12 +40,17 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
         _permitJoinController = new PermitJoinController(_channel);
         _sender = new ApsSender(_pollLoop, _channel);
         _commandSender = new CommandSender(_sender);
+        _attributeReportListener = new AttributeReportListener(_pollLoop);
         _knownDeviceTable = new KnownDeviceTable();
+
+        _attributeReportListener.AttributeReported += RelayAttributeReport;
     }
 
     public bool IsConnected { get; private set; }
 
     public NetworkConfig? NetworkConfig { get; private set; }
+
+    public event EventHandler<ZigbeeAttributeReport>? AttributeReported;
 
     public async Task ConnectAsync(CancellationToken token)
     {
@@ -74,6 +80,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
         StopPolling();
         (_transport as IDisposable)?.Dispose();
         GC.SuppressFinalize(this);
+    }
+
+    private void RelayAttributeReport(object? sender, ZigbeeAttributeReport report)
+    {
+        AttributeReported?.Invoke(this, report);
     }
 
     private void StartPolling()

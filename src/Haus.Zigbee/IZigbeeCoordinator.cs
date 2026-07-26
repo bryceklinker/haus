@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,4 +23,6 @@ public interface IZigbeeCoordinator
     Task SetPermitJoinAsync(bool enabled, CancellationToken token);
 
     Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token);
+
+    event EventHandler<ZigbeeAttributeReport>? AttributeReported;
 }
