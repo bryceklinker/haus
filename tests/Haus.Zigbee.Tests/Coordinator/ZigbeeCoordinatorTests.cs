@@ -120,6 +120,43 @@ public class ZigbeeCoordinatorTests
     }
 
     [Fact]
+    public async Task WhenDisposedThenTheBackgroundPollLoopStops()
+    {
+        SetNetworkParameters();
+        var coordinator = new ZigbeeCoordinator(_dongle);
+        await coordinator.ConnectAsync(CancellationToken.None);
+        await WaitUntilPolledAtLeastOnce();
+
+        coordinator.Dispose();
+        await Task.Delay(TimeSpan.FromMilliseconds(300));
+        var pollsAfterDispose = _dongle.DeviceStatePollCount;
+        await Task.Delay(TimeSpan.FromMilliseconds(300));
+
+        Assert.Equal(pollsAfterDispose, _dongle.DeviceStatePollCount);
+    }
+
+    [Fact]
+    public async Task WhenDisposedTwiceThenItDoesNotThrow()
+    {
+        SetNetworkParameters();
+        var coordinator = new ZigbeeCoordinator(_dongle);
+        await coordinator.ConnectAsync(CancellationToken.None);
+
+        coordinator.Dispose();
+        var secondDispose = Record.Exception(coordinator.Dispose);
+
+        Assert.Null(secondDispose);
+    }
+
+    private async Task WaitUntilPolledAtLeastOnce()
+    {
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        while (_dongle.DeviceStatePollCount == 0 && !timeout.IsCancellationRequested)
+            await Task.Delay(10);
+        Assert.True(_dongle.DeviceStatePollCount > 0, "the poll loop never polled");
+    }
+
+    [Fact]
     public async Task WhenADeviceAnnouncesWhileConnectedThenItIsRelayedThroughTheDeviceJoinedEvent()
     {
         SetNetworkParameters();

@@ -31,6 +31,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
 
     private CancellationTokenSource? _pollCancellation;
     private Task _pollTask = Task.CompletedTask;
+    private bool _disposed;
 
     public ZigbeeCoordinator(ISerialTransport transport)
     {
@@ -82,7 +83,16 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
 
     public void Dispose()
     {
+        if (_disposed)
+            return;
+        _disposed = true;
+
         StopPolling();
+        _deviceInterview.DeviceJoined -= RelayDeviceJoined;
+        _attributeReportListener.AttributeReported -= RelayAttributeReport;
+        _deviceInterview.Dispose();
+        _attributeReportListener.Dispose();
+        _sender.Dispose();
         (_transport as IDisposable)?.Dispose();
         GC.SuppressFinalize(this);
     }
