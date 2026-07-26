@@ -39,7 +39,7 @@ public class DeviceEventMapperTests
     }
 
     [Fact]
-    public void Map_BatteryReport_ReturnsBatteryChangedModel()
+    public void Map_BatteryReport_ReturnsBatteryChangedEvent()
     {
         var report = CreateReport(
             PowerConfigCluster,
@@ -49,12 +49,13 @@ public class DeviceEventMapperTests
 
         var result = _mapper.Map(report);
 
-        var model = Assert.IsType<BatteryChangedModel>(result);
+        Assert.Equal(BatteryChangedModel.Type, result?.Type);
+        var model = Assert.IsType<BatteryChangedModel>(result?.Payload);
         Assert.Equal(KnownExternalId, model.DeviceId);
     }
 
     [Fact]
-    public void Map_IlluminanceReport_ReturnsIlluminanceChangedModel()
+    public void Map_IlluminanceReport_ReturnsIlluminanceChangedEvent()
     {
         var report = CreateReport(
             IlluminanceMeasurementCluster,
@@ -64,12 +65,13 @@ public class DeviceEventMapperTests
 
         var result = _mapper.Map(report);
 
-        var model = Assert.IsType<IlluminanceChangedModel>(result);
+        Assert.Equal(IlluminanceChangedModel.Type, result?.Type);
+        var model = Assert.IsType<IlluminanceChangedModel>(result?.Payload);
         Assert.Equal(KnownExternalId, model.DeviceId);
     }
 
     [Fact]
-    public void Map_TemperatureReport_ReturnsTemperatureChangedModel()
+    public void Map_TemperatureReport_ReturnsTemperatureChangedEvent()
     {
         var report = CreateReport(
             TemperatureMeasurementCluster,
@@ -79,12 +81,13 @@ public class DeviceEventMapperTests
 
         var result = _mapper.Map(report);
 
-        var model = Assert.IsType<TemperatureChangedModel>(result);
+        Assert.Equal(TemperatureChangedModel.Type, result?.Type);
+        var model = Assert.IsType<TemperatureChangedModel>(result?.Payload);
         Assert.Equal(KnownExternalId, model.DeviceId);
     }
 
     [Fact]
-    public void Map_OccupancyReport_ReturnsOccupancyChangedModel()
+    public void Map_OccupancyReport_ReturnsOccupancyChangedEvent()
     {
         var report = CreateReport(
             OccupancySensingCluster,
@@ -94,7 +97,8 @@ public class DeviceEventMapperTests
 
         var result = _mapper.Map(report);
 
-        var model = Assert.IsType<OccupancyChangedModel>(result);
+        Assert.Equal(OccupancyChangedModel.Type, result?.Type);
+        var model = Assert.IsType<OccupancyChangedModel>(result?.Payload);
         Assert.Equal(KnownExternalId, model.DeviceId);
     }
 

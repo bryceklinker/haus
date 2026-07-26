@@ -1,3 +1,9 @@
+using System;
+using Haus.Core.Models.Devices.Sensors.Battery;
+using Haus.Core.Models.Devices.Sensors.Light;
+using Haus.Core.Models.Devices.Sensors.Motion;
+using Haus.Core.Models.Devices.Sensors.Temperature;
+using Haus.Core.Models.ExternalMessages;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
@@ -18,7 +24,7 @@ public class DeviceEventMapper(DeviceAddressRegistry addressRegistry, ILogger<De
     private readonly OccupancyChangedMapper _occupancyChangedMapper = new();
     private readonly TemperatureChangedMapper _temperatureChangedMapper = new();
 
-    public object? Map(Haus.Zigbee.ZigbeeAttributeReport report)
+    public HausEvent<object>? Map(Haus.Zigbee.ZigbeeAttributeReport report)
     {
         if (!addressRegistry.TryGetExternalId(report.SourceNwkAddress, out var deviceId))
         {
@@ -26,7 +32,7 @@ public class DeviceEventMapper(DeviceAddressRegistry addressRegistry, ILogger<De
             return null;
         }
 
-        return (report.ClusterId, report.AttributeId) switch
+        object? payload = (report.ClusterId, report.AttributeId) switch
         {
             (PowerConfigCluster, BatteryPercentageAttribute) => _batteryChangedMapper.Map(deviceId, report.Value),
             (IlluminanceMeasurementCluster, MeasuredValueAttribute) => _illuminanceChangedMapper.Map(
@@ -39,6 +45,20 @@ public class DeviceEventMapper(DeviceAddressRegistry addressRegistry, ILogger<De
             ),
             (OccupancySensingCluster, OccupancyAttribute) => _occupancyChangedMapper.Map(deviceId, report.Value),
             _ => null,
+        };
+
+        return payload == null ? null : new HausEvent<object>(GetHausEventType(payload), payload);
+    }
+
+    private static string GetHausEventType(object payload)
+    {
+        return payload switch
+        {
+            BatteryChangedModel => BatteryChangedModel.Type,
+            IlluminanceChangedModel => IlluminanceChangedModel.Type,
+            TemperatureChangedModel => TemperatureChangedModel.Type,
+            OccupancyChangedModel => OccupancyChangedModel.Type,
+            _ => throw new InvalidOperationException($"Unexpected sensor payload type {payload.GetType()}"),
         };
     }
 }
