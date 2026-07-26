@@ -40,10 +40,28 @@ public class ApsSenderTests
         Assert.Equal(0x42, confirm.RequestId);
     }
 
-    private static ApsDataRequestFrame Request(byte requestId)
+    [Fact]
+    public void WhenSendingThenTheCommandFrameUsesTheSendersOwnSequenceNumber()
+    {
+        var abandoned = Cancelled();
+
+        _ = _sender.SendAsync(Request(requestId: 0x42, sequenceNumber: 99), abandoned);
+
+        var expected = Framed(ApsDataRequestFrameCodec.Encode(Request(requestId: 0x42, sequenceNumber: 0)));
+        Assert.Equal(expected, _senderTransport.WrittenBytes);
+    }
+
+    private static CancellationToken Cancelled()
+    {
+        var source = new CancellationTokenSource();
+        source.Cancel();
+        return source.Token;
+    }
+
+    private static ApsDataRequestFrame Request(byte requestId, byte sequenceNumber = 0)
     {
         return new ApsDataRequestFrame(
-            SequenceNumber: 0,
+            SequenceNumber: sequenceNumber,
             RequestId: requestId,
             Destination: ApsDestination.Nwk(0x1234, 0x01),
             ProfileId: 0x0104,
