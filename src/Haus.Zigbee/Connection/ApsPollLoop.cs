@@ -7,6 +7,12 @@ namespace Haus.Zigbee.Connection;
 
 public class ApsPollLoop
 {
+    private const byte ReadIndicationCommandId = 0x17;
+    private const byte ReadConfirmCommandId = 0x04;
+    private const byte RequestStatus = 0x00;
+    private const byte ReadIndicationFrameLength = 0x08;
+    private const byte ReadConfirmFrameLength = 0x07;
+
     private readonly DeconzChannel _channel;
     private byte _sequenceNumber;
 
@@ -53,11 +59,23 @@ public class ApsPollLoop
 
     private static byte[] ReadIndicationRequest(byte sequenceNumber)
     {
-        return [0x17, sequenceNumber, 0x00, 0x08, 0x00, 0x01, 0x00, 0x01];
+        // The three bytes after the frame length are a fixed template for this request in
+        // the deCONZ protocol; the reference implementation doesn't decompose them further.
+        return
+        [
+            ReadIndicationCommandId,
+            sequenceNumber,
+            RequestStatus,
+            ReadIndicationFrameLength,
+            0x00,
+            0x01,
+            0x00,
+            0x01,
+        ];
     }
 
     private static byte[] ReadConfirmRequest(byte sequenceNumber)
     {
-        return [0x04, sequenceNumber, 0x00, 0x07, 0x00, 0x00, 0x00];
+        return [ReadConfirmCommandId, sequenceNumber, RequestStatus, ReadConfirmFrameLength, 0x00, 0x00, 0x00];
     }
 }

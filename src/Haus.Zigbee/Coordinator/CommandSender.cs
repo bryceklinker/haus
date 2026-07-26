@@ -11,6 +11,9 @@ namespace Haus.Zigbee.Coordinator;
 // owns its own counter here.
 public class CommandSender
 {
+    private const byte NoApsAckRequested = 0x00;
+    private const byte UnlimitedRadius = 0x00;
+
     private readonly ApsSender _sender;
     private byte _transactionSequenceNumber;
     private byte _requestId;
@@ -38,8 +41,8 @@ public class CommandSender
             ClusterId: request.ClusterId,
             SourceEndpoint: request.SourceEndpoint,
             AsduPayload: asdu,
-            TxOptions: 0x00,
-            Radius: 0x00
+            TxOptions: NoApsAckRequested,
+            Radius: UnlimitedRadius
         );
         return _sender.SendAsync(apsRequest, token);
     }
