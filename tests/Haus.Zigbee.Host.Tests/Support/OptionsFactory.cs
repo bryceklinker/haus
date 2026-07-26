@@ -1,5 +1,5 @@
 using Haus.Zigbee.Host.Configuration;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Configuration;
+using Haus.Zigbee.Host.Zigbee.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Zigbee.Host.Tests.Support;

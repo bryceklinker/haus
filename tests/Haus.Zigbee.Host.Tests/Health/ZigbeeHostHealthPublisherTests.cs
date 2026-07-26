@@ -8,7 +8,7 @@ using Haus.Testing.Support.Fakes;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Health;
 using Haus.Zigbee.Host.Tests.Support;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Mqtt;
+using Haus.Zigbee.Host.Zigbee.Mqtt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;

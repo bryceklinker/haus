@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
+using Haus.Zigbee.Host.Zigbee.Models;
 using MQTTnet;
 using Newtonsoft.Json.Linq;
 

@@ -1,4 +1,4 @@
-using Haus.Zigbee.Host.Zigbee2Mqtt.Models;
+using Haus.Zigbee.Host.Zigbee.Models;
 using Newtonsoft.Json.Linq;
 
 namespace Haus.Zigbee.Host.Tests.Support;

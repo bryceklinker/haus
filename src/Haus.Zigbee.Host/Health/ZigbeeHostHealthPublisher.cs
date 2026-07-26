@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models.Health;
 using Haus.Zigbee.Host.Configuration;
-using Haus.Zigbee.Host.Zigbee2Mqtt.Mqtt;
+using Haus.Zigbee.Host.Zigbee.Mqtt;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
