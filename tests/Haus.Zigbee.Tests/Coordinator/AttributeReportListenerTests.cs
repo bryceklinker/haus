@@ -134,6 +134,45 @@ public class AttributeReportListenerTests
         Assert.Empty(reports);
     }
 
+    [Fact]
+    public async Task WhenDisposedThenAnArrivingIndicationNoLongerRaisesAnAttributeReport()
+    {
+        var zclFrame = new byte[]
+        {
+            GlobalFrameControl,
+            0x01,
+            ReportAttributesCommand,
+            0x00,
+            0x00,
+            (byte)ZclDataType.Uint16,
+            0x34,
+            0x12,
+        };
+
+        var transport = new ScriptedSerialTransport();
+        var loop = new ApsPollLoop(new DeconzChannel(transport));
+        var listener = new AttributeReportListener(loop);
+        var reports = new List<ZigbeeAttributeReport>();
+        listener.AttributeReported += (_, report) => reports.Add(report);
+        transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable)));
+        transport.QueueResponse(
+            Framed(
+                IndicationResponse(
+                    sequenceNumber: 1,
+                    sourceNwk: 0x1234,
+                    sourceEndpoint: 0x05,
+                    clusterId: 0x0400,
+                    zclFrame
+                )
+            )
+        );
+
+        listener.Dispose();
+        await loop.PollOnceAsync(CancellationToken.None);
+
+        Assert.Empty(reports);
+    }
+
     private static async Task<IReadOnlyList<ZigbeeAttributeReport>> ListenToIndication(
         ushort sourceNwk,
         byte sourceEndpoint,

@@ -9,17 +9,26 @@ namespace Haus.Zigbee.Coordinator;
 // read-attributes-response frames and surfaces each decoded attribute as a protocol-generic
 // ZigbeeAttributeReport. Indications that are not one of those two global ZCL commands (ZDP
 // responses, cluster-specific commands, other ZCL commands) are ignored here on purpose.
-public class AttributeReportListener
+public class AttributeReportListener : IDisposable
 {
     private const byte ReportAttributesCommand = 0x0a;
     private const byte ReadAttributesResponseCommand = 0x01;
 
+    private readonly ApsPollLoop _pollLoop;
+
     public AttributeReportListener(ApsPollLoop pollLoop)
     {
-        pollLoop.IndicationReceived += OnIndicationReceived;
+        _pollLoop = pollLoop;
+        _pollLoop.IndicationReceived += OnIndicationReceived;
     }
 
     public event EventHandler<ZigbeeAttributeReport>? AttributeReported;
+
+    public void Dispose()
+    {
+        _pollLoop.IndicationReceived -= OnIndicationReceived;
+        GC.SuppressFinalize(this);
+    }
 
     private void OnIndicationReceived(object? sender, ApsIndicationReceived received)
     {
