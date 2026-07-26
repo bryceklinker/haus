@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,16 +10,24 @@ namespace Haus.Zigbee.Connection;
 // reports the matching delivery confirm. The deCONZ-level round trip only tells us the send was
 // queued; the real delivery outcome arrives asynchronously through the poll loop's confirm event,
 // so this correlates each outstanding request to its confirm by RequestId.
-public class ApsSender
+public class ApsSender : IDisposable
 {
+    private readonly ApsPollLoop _pollLoop;
     private readonly DeconzChannel _channel;
     private readonly ConcurrentDictionary<byte, TaskCompletionSource<ApsDataConfirm>> _pendingConfirms = new();
     private byte _sequenceNumber;
 
     public ApsSender(ApsPollLoop pollLoop, DeconzChannel channel)
     {
+        _pollLoop = pollLoop;
         _channel = channel;
-        pollLoop.ConfirmReceived += OnConfirmReceived;
+        _pollLoop.ConfirmReceived += OnConfirmReceived;
+    }
+
+    public void Dispose()
+    {
+        _pollLoop.ConfirmReceived -= OnConfirmReceived;
+        GC.SuppressFinalize(this);
     }
 
     public async Task<ApsDataConfirm> SendAsync(ApsDataRequestFrame request, CancellationToken token)

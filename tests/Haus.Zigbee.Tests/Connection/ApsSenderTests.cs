@@ -58,6 +58,21 @@ public class ApsSenderTests
     }
 
     [Fact]
+    public async Task WhenDisposedThenAConfirmNoLongerCompletesAPendingSend()
+    {
+        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
+        _pollTransport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
+        _pollTransport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
+
+        var sendTask = _sender.SendAsync(Request(requestId: 0x42), CancellationToken.None);
+        _sender.Dispose();
+        await _pollLoop.PollOnceAsync(CancellationToken.None);
+
+        var settled = await Task.WhenAny(sendTask, Task.Delay(200));
+        Assert.NotEqual(sendTask, settled);
+    }
+
+    [Fact]
     public void WhenSendingThenTheCommandFrameUsesTheSendersOwnSequenceNumber()
     {
         var abandoned = Cancelled();
