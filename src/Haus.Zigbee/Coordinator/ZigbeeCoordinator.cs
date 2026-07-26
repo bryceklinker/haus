@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
+using Haus.Zigbee.Serial.Frames;
 using Haus.Zigbee.Transport;
 
 namespace Haus.Zigbee.Coordinator;
@@ -22,6 +23,8 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
     private readonly DeconzConnection _connection;
     private readonly ApsPollLoop _pollLoop;
     private readonly PermitJoinController _permitJoinController;
+    private readonly ApsSender _sender;
+    private readonly CommandSender _commandSender;
     private readonly KnownDeviceTable _knownDeviceTable;
 
     private CancellationTokenSource? _pollCancellation;
@@ -34,6 +37,8 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
         _connection = new DeconzConnection(_channel);
         _pollLoop = new ApsPollLoop(_channel);
         _permitJoinController = new PermitJoinController(_channel);
+        _sender = new ApsSender(_pollLoop, _channel);
+        _commandSender = new CommandSender(_sender);
         _knownDeviceTable = new KnownDeviceTable();
     }
 
@@ -57,6 +62,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)
     {
         return _permitJoinController.SetPermitJoinAsync(enabled, token);
+    }
+
+    public Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token)
+    {
+        return _commandSender.SendCommandAsync(request, token);
     }
 
     public void Dispose()

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee;
 
@@ -19,4 +20,6 @@ public interface IZigbeeCoordinator
     Task<IReadOnlyList<ZigbeeDevice>> GetDevicesAsync(CancellationToken token);
 
     Task SetPermitJoinAsync(bool enabled, CancellationToken token);
+
+    Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token);
 }

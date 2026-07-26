@@ -2,6 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee;
 using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Serial.Frames;
+using Haus.Zigbee.Zcl;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Coordinator;
@@ -53,5 +55,55 @@ public class ZigbeeCoordinatorTests
         var written = Assert.Single(_dongle.WrittenParameters);
         Assert.Equal(PermitJoinParameterId, written.ParameterId);
         Assert.Equal(new byte[] { 0xFF }, written.Value);
+    }
+
+    [Fact]
+    public void WhenSendingACommandThenItWritesTheApsRequestForTheBuiltZclFrame()
+    {
+        using var coordinator = new ZigbeeCoordinator(_dongle);
+        var request = new ZigbeeCommandRequest(
+            Destination: ApsDestination.Nwk(0x1234, 0x01),
+            SourceEndpoint: 0x01,
+            ProfileId: 0x0104,
+            ClusterId: 0x0006,
+            CommandId: 0x01,
+            Payload: new byte[] { 0xaa, 0xbb },
+            DisableDefaultResponse: true
+        );
+
+        _ = coordinator.SendCommandAsync(request, Cancelled());
+
+        var written = Assert.Single(_dongle.ApsRequestFrames);
+        Assert.Equal(ApsDataRequestFrameCodec.Encode(ExpectedApsFrame(request)), written);
+    }
+
+    private static ApsDataRequestFrame ExpectedApsFrame(ZigbeeCommandRequest request)
+    {
+        var asdu = ZclCommandFactory.Encode(
+            new ZclCommand(
+                TransactionSequenceNumber: 0,
+                request.CommandId,
+                request.Payload,
+                request.DisableDefaultResponse
+            )
+        );
+        return new ApsDataRequestFrame(
+            SequenceNumber: 0,
+            RequestId: 0,
+            request.Destination,
+            request.ProfileId,
+            request.ClusterId,
+            request.SourceEndpoint,
+            AsduPayload: asdu,
+            TxOptions: 0x00,
+            Radius: 0x00
+        );
+    }
+
+    private static CancellationToken Cancelled()
+    {
+        var source = new CancellationTokenSource();
+        source.Cancel();
+        return source.Token;
     }
 }
