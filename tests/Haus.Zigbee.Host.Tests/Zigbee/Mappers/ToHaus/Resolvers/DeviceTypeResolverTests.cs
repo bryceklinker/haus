@@ -4,7 +4,7 @@ using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
 using Xunit;
 
-namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Resolvers;
+namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus.Resolvers;
 
 public class DeviceTypeResolverTests
 {

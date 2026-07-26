@@ -7,7 +7,7 @@ using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
 using Xunit;
 
-namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
+namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus.DeviceEvents;
 
 public class SensorChangedMapperTests
 {

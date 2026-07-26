@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToZigbee;
+namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToZigbee;
 
 public class HausToZigbeeMapperTests
 {

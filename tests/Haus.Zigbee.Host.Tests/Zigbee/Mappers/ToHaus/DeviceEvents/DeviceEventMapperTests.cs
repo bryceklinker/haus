@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using MQTTnet;
 using Xunit;
 
-namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.DeviceEvents;
+namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus.DeviceEvents;
 
 public class DeviceEventMapperTests
 {

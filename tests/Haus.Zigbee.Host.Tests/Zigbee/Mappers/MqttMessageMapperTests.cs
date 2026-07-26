@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 using MQTTnet;
 using Xunit;
 
-namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers;
+namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers;
 
 public class MqttMessageTranslatorTests
 {

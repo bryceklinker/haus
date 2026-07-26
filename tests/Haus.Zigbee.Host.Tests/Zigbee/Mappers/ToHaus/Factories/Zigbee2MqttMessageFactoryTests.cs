@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using MQTTnet;
 using Xunit;
 
-namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus.Factories;
+namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus.Factories;
 
 public class Zigbee2MqttMessageFactoryTests
 {

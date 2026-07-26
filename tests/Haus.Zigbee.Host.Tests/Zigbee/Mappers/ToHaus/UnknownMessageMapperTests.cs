@@ -9,7 +9,7 @@ using Haus.Zigbee.Host.Zigbee.Models;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Haus.Zigbee.Host.Tests.Zigbee2Mqtt.Mappers.ToHaus;
+namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus;
 
 public class UnknownMessageMapperTests
 {
