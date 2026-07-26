@@ -30,7 +30,6 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
     private readonly DeviceInterview _deviceInterview;
 
     private CancellationTokenSource? _pollCancellation;
-    private Task _pollTask = Task.CompletedTask;
     private bool _disposed;
 
     public ZigbeeCoordinator(ISerialTransport transport)
@@ -110,7 +109,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
     private void StartPolling()
     {
         _pollCancellation = new CancellationTokenSource();
-        _pollTask = PollContinuouslyAsync(_pollCancellation.Token);
+        _ = PollContinuouslyAsync(_pollCancellation.Token);
     }
 
     private void StopPolling()
