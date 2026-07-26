@@ -37,4 +37,18 @@ public class KnownDeviceTableTests
 
         Assert.Equal(new[] { first, second }, table.GetDevices().OrderBy(device => device.NetworkAddress));
     }
+
+    [Fact]
+    public void WhenADeviceIsAddedWithAnAlreadyKnownAddressThenItReplacesThePriorEntry()
+    {
+        var table = new KnownDeviceTable();
+        var address = new IeeeAddress(0x00124b0001234567);
+        var original = new ZigbeeDevice(address, 0x1234, new ZigbeeEndpoint[0]);
+        var updated = new ZigbeeDevice(address, 0x9999, new ZigbeeEndpoint[0]);
+
+        table.AddOrUpdate(original);
+        table.AddOrUpdate(updated);
+
+        Assert.Equal(new[] { updated }, table.GetDevices());
+    }
 }
