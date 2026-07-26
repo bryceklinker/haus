@@ -17,4 +17,6 @@ public interface IZigbeeCoordinator
     Task ConnectAsync(CancellationToken token);
 
     Task<IReadOnlyList<ZigbeeDevice>> GetDevicesAsync(CancellationToken token);
+
+    Task SetPermitJoinAsync(bool enabled, CancellationToken token);
 }

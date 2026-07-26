@@ -11,6 +11,7 @@ public class ZigbeeCoordinatorTests
     private const byte MacAddressParameterId = 0x01;
     private const byte PanIdParameterId = 0x05;
     private const byte ChannelParameterId = 0x1C;
+    private const byte PermitJoinParameterId = 0x21;
 
     private readonly FakeDeconzCoordinator _dongle = new();
 
@@ -40,5 +41,17 @@ public class ZigbeeCoordinatorTests
         var devices = await coordinator.GetDevicesAsync(CancellationToken.None);
 
         Assert.Empty(devices);
+    }
+
+    [Fact]
+    public async Task WhenEnablingPermitJoinThenItWritesToThePermitJoinParameter()
+    {
+        using var coordinator = new ZigbeeCoordinator(_dongle);
+
+        await coordinator.SetPermitJoinAsync(true, CancellationToken.None);
+
+        var written = Assert.Single(_dongle.WrittenParameters);
+        Assert.Equal(PermitJoinParameterId, written.ParameterId);
+        Assert.Equal(new byte[] { 0xFF }, written.Value);
     }
 }

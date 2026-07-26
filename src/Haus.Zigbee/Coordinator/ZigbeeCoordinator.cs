@@ -21,6 +21,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
     private readonly DeconzChannel _channel;
     private readonly DeconzConnection _connection;
     private readonly ApsPollLoop _pollLoop;
+    private readonly PermitJoinController _permitJoinController;
     private readonly KnownDeviceTable _knownDeviceTable;
 
     private CancellationTokenSource? _pollCancellation;
@@ -32,6 +33,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
         _channel = new DeconzChannel(transport);
         _connection = new DeconzConnection(_channel);
         _pollLoop = new ApsPollLoop(_channel);
+        _permitJoinController = new PermitJoinController(_channel);
         _knownDeviceTable = new KnownDeviceTable();
     }
 
@@ -50,6 +52,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
     public Task<IReadOnlyList<ZigbeeDevice>> GetDevicesAsync(CancellationToken token)
     {
         return Task.FromResult(_knownDeviceTable.GetDevices());
+    }
+
+    public Task SetPermitJoinAsync(bool enabled, CancellationToken token)
+    {
+        return _permitJoinController.SetPermitJoinAsync(enabled, token);
     }
 
     public void Dispose()
