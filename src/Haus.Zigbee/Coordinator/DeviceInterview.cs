@@ -145,7 +145,7 @@ public class DeviceInterview : IDisposable
         );
     }
 
-    private async Task<BasicInfo> ReadBasicInfoAsync(
+    public async Task<ZigbeeDeviceInfo> ReadBasicInfoAsync(
         ushort networkAddress,
         IReadOnlyList<ZigbeeEndpoint> endpoints,
         CancellationToken token
@@ -153,7 +153,7 @@ public class DeviceInterview : IDisposable
     {
         var endpoint = SelectBasicClusterEndpoint(endpoints);
         if (endpoint is null)
-            return BasicInfo.Empty;
+            return ZigbeeDeviceInfo.Empty;
 
         var request = ZclReadAttributesRequestCodec.Encode(
             new ZclReadAttributesRequest(
@@ -247,11 +247,11 @@ public class DeviceInterview : IDisposable
             pending.SetResult(indication);
     }
 
-    private static BasicInfo ReadBasicInfo(byte[] frame)
+    private static ZigbeeDeviceInfo ReadBasicInfo(byte[] frame)
     {
         var decoding = ZclFrameHeaderCodec.Decode(frame);
         if (decoding.Header.CommandId != ReadAttributesResponseCommandId)
-            return BasicInfo.Empty;
+            return ZigbeeDeviceInfo.Empty;
 
         var manufacturerName = string.Empty;
         var modelIdentifier = string.Empty;
@@ -264,7 +264,7 @@ public class DeviceInterview : IDisposable
                 modelIdentifier = value;
         }
 
-        return new BasicInfo(manufacturerName, modelIdentifier);
+        return new ZigbeeDeviceInfo(manufacturerName, modelIdentifier);
     }
 
     private static bool TryReadAttribute(byte[] frame, ref int offset, out ushort attributeId, out string value)
@@ -312,9 +312,4 @@ public class DeviceInterview : IDisposable
     }
 
     private readonly record struct ResponseKey(ushort NetworkAddress, ushort ClusterId);
-
-    private readonly record struct BasicInfo(string ManufacturerName, string ModelIdentifier)
-    {
-        public static BasicInfo Empty { get; } = new(string.Empty, string.Empty);
-    }
 }

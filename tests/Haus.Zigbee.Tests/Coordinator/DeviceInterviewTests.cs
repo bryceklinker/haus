@@ -142,18 +142,54 @@ public class DeviceInterviewTests
         Assert.Equal("lumi.sensor", joined.ModelIdentifier);
     }
 
+    [Fact]
+    public async Task ReadBasicInfoAsync_ReadsManufacturerAndModelForAnAlreadyKnownDevice()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        var endpoint = new ZigbeeEndpoint(
+            0x01,
+            HomeAutomationProfile,
+            0x0100,
+            new[] { BasicCluster },
+            Array.Empty<ushort>()
+        );
+        _dongle.ReleaseAfterSend(
+            sendIndex: 0,
+            BasicReadResponse(device, endpoint: 0x01, profileId: HomeAutomationProfile, "IKEA", "LED1836G9")
+        );
+
+        var info = await RunToCompletion(_interview.ReadBasicInfoAsync(device.Nwk, [endpoint], CancellationToken.None));
+
+        Assert.Equal("IKEA", info.ManufacturerName);
+        Assert.Equal("LED1836G9", info.ModelIdentifier);
+    }
+
+    [Fact]
+    public async Task ReadBasicInfoAsync_NoEndpoints_ReturnsEmptyInfoWithoutSendingAnything()
+    {
+        var info = await _interview.ReadBasicInfoAsync(0x1a2b, [], CancellationToken.None);
+
+        Assert.Equal(string.Empty, info.ManufacturerName);
+        Assert.Equal(string.Empty, info.ModelIdentifier);
+    }
+
     private async Task<ZigbeeDeviceJoined> RunInterview()
     {
+        return await RunToCompletion(_joined.Task);
+    }
+
+    private async Task<T> RunToCompletion<T>(Task<T> task)
+    {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        while (!_joined.Task.IsCompleted && !timeout.IsCancellationRequested)
+        while (!task.IsCompleted && !timeout.IsCancellationRequested)
         {
             await _pollLoop.PollOnceAsync(CancellationToken.None);
-            if (!_joined.Task.IsCompleted)
+            if (!task.IsCompleted)
                 await Task.Delay(1);
         }
 
-        Assert.True(_joined.Task.IsCompleted, "interview did not complete within the timeout");
-        return await _joined.Task;
+        Assert.True(task.IsCompleted, "did not complete within the timeout");
+        return await task;
     }
 
     private static IndicationBody Announce(DeviceScript device)
