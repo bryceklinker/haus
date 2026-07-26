@@ -6,7 +6,7 @@ namespace Haus.Zigbee;
 // read-attributes-response frame. It carries only addressing plus the raw ZCL attribute
 // value; giving those attributes sensor meaning (illuminance, battery, ...) is the job of
 // a higher layer, not this protocol type.
-public sealed record ZigbeeAttributeReport(
+public record ZigbeeAttributeReport(
     ushort SourceNwkAddress,
     byte Endpoint,
     ushort ClusterId,

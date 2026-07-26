@@ -2,7 +2,7 @@ using System;
 
 namespace Haus.Zigbee.Zdp;
 
-public sealed record DeviceAnnounce(
+public record DeviceAnnounce(
     byte TransactionSequenceNumber,
     ushort NetworkAddress,
     IeeeAddress IeeeAddress,

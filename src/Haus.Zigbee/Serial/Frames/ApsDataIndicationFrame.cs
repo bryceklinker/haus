@@ -11,7 +11,7 @@ public enum DeconzAddressMode : byte
     NwkAndIeee = 0x04,
 }
 
-public sealed record ApsDataIndicationFrame(
+public record ApsDataIndicationFrame(
     byte DeviceState,
     DeconzAddressMode DestinationAddressMode,
     ushort? DestinationNwkAddress,

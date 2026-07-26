@@ -15,7 +15,7 @@ namespace Haus.Zigbee.Tests.Coordinator;
 // correlation for a response before that response can be drained, so the interview's asynchronous
 // step continuations never race the poll loop. The poll loop and the sender each get their own
 // face because deCONZChannel correlates responses by sequence number and cannot share one stream.
-internal sealed class FakeDeconzDongle
+internal class FakeDeconzDongle
 {
     private const byte DeviceStateCommand = 0x07;
     private const byte ReadIndicationCommand = 0x17;
@@ -79,7 +79,7 @@ internal sealed class FakeDeconzDongle
         return frame[..^ChecksumLength];
     }
 
-    private sealed class PollFace(FakeDeconzDongle dongle) : StoredResponseTransport
+    private class PollFace(FakeDeconzDongle dongle) : StoredResponseTransport
     {
         protected override byte[] BuildResponse(byte[] request)
         {
@@ -105,7 +105,7 @@ internal sealed class FakeDeconzDongle
         }
     }
 
-    private sealed class SendFace(FakeDeconzDongle dongle) : StoredResponseTransport
+    private class SendFace(FakeDeconzDongle dongle) : StoredResponseTransport
     {
         protected override byte[] BuildResponse(byte[] request)
         {

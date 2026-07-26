@@ -7,7 +7,7 @@ namespace Haus.Zigbee.Coordinator;
 
 // Opens or closes the deCONZ coordinator's join window by writing the STK_PERMIT_JOIN parameter:
 // 0xFF permits joining indefinitely, 0x00 disables it. Nothing else about the network changes.
-public sealed class PermitJoinController
+public class PermitJoinController
 {
     private const byte PermitJoinParameterId = 0x21;
     private const byte PermitIndefinitely = 0xFF;

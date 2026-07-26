@@ -4,13 +4,7 @@ using Haus.Zigbee.Serial;
 
 namespace Haus.Zigbee.Tests.Coordinator;
 
-internal sealed record IndicationBody(
-    ushort SourceNwk,
-    byte SourceEndpoint,
-    ushort ProfileId,
-    ushort ClusterId,
-    byte[] Asdu
-);
+internal record IndicationBody(ushort SourceNwk, byte SourceEndpoint, ushort ProfileId, ushort ClusterId, byte[] Asdu);
 
 internal static class DeconzFrames
 {

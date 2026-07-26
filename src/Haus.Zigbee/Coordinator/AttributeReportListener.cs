@@ -9,7 +9,7 @@ namespace Haus.Zigbee.Coordinator;
 // read-attributes-response frames and surfaces each decoded attribute as a protocol-generic
 // ZigbeeAttributeReport. Indications that are not one of those two global ZCL commands (ZDP
 // responses, cluster-specific commands, other ZCL commands) are ignored here on purpose.
-public sealed class AttributeReportListener
+public class AttributeReportListener
 {
     private const byte ReportAttributesCommand = 0x0a;
     private const byte ReadAttributesResponseCommand = 0x01;

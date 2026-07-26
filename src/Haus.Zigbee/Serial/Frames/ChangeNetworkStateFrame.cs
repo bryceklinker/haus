@@ -2,7 +2,7 @@ using System;
 
 namespace Haus.Zigbee.Serial.Frames;
 
-public sealed record ChangeNetworkStateResponse(byte Status, NetworkState NetworkState);
+public record ChangeNetworkStateResponse(byte Status, NetworkState NetworkState);
 
 public static class ChangeNetworkStateFrameCodec
 {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Haus.Zigbee.Serial.Frames;
 
-public sealed record ReadParameterRequest(byte SequenceNumber, byte ParameterId, byte[] Arguments);
+public record ReadParameterRequest(byte SequenceNumber, byte ParameterId, byte[] Arguments);
 
-public sealed record ReadParameterResponse(byte Status, byte ParameterId, byte[] Value);
+public record ReadParameterResponse(byte Status, byte ParameterId, byte[] Value);
 
 public static class ReadParameterFrame
 {

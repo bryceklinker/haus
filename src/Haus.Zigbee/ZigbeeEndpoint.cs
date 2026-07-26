@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Haus.Zigbee;
 
-public sealed record ZigbeeEndpoint(
+public record ZigbeeEndpoint(
     byte EndpointId,
     ushort ProfileId,
     ushort DeviceId,

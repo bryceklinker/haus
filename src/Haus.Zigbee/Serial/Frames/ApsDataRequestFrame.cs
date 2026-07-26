@@ -3,7 +3,7 @@ using Haus.Zigbee;
 
 namespace Haus.Zigbee.Serial.Frames;
 
-public sealed record ApsDestination
+public record ApsDestination
 {
     private ApsDestination(DeconzAddressMode mode, ushort shortAddress, IeeeAddress ieeeAddress, byte endpoint)
     {
@@ -34,7 +34,7 @@ public sealed record ApsDestination
     }
 }
 
-public sealed record ApsDataRequestFrame(
+public record ApsDataRequestFrame(
     byte SequenceNumber,
     byte RequestId,
     ApsDestination Destination,

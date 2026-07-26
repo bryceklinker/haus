@@ -74,7 +74,7 @@ public class DeconzConnectionTests
     // A fake deCONZ coordinator over the serial seam: it answers each read-parameter request
     // with the value it was told to hold for that parameter, echoing the request's sequence
     // number back so DeconzChannel can correlate the response — exactly as real hardware would.
-    private sealed class FakeCoordinator : ISerialTransport
+    private class FakeCoordinator : ISerialTransport
     {
         private const int SequenceNumberIndex = 1;
         private const int ParameterIdIndex = 7;

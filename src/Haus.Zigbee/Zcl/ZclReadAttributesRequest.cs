@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Haus.Zigbee.Zcl;
 
-public sealed record ZclReadAttributesRequest(byte TransactionSequenceNumber, IReadOnlyList<ushort> AttributeIds);
+public record ZclReadAttributesRequest(byte TransactionSequenceNumber, IReadOnlyList<ushort> AttributeIds);
 
 public static class ZclReadAttributesRequestCodec
 {

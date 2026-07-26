@@ -2,7 +2,7 @@ using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee;
 
-public sealed record ZigbeeCommandRequest(
+public record ZigbeeCommandRequest(
     ApsDestination Destination,
     byte SourceEndpoint,
     ushort ProfileId,

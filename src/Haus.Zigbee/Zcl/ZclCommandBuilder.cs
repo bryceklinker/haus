@@ -1,6 +1,6 @@
 namespace Haus.Zigbee.Zcl;
 
-public sealed record ZclCommand(
+public record ZclCommand(
     byte TransactionSequenceNumber,
     byte CommandId,
     byte[] Payload,

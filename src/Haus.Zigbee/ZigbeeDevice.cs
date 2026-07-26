@@ -2,8 +2,4 @@ using System.Collections.Generic;
 
 namespace Haus.Zigbee;
 
-public sealed record ZigbeeDevice(
-    IeeeAddress IeeeAddress,
-    ushort NetworkAddress,
-    IReadOnlyList<ZigbeeEndpoint> Endpoints
-);
+public record ZigbeeDevice(IeeeAddress IeeeAddress, ushort NetworkAddress, IReadOnlyList<ZigbeeEndpoint> Endpoints);

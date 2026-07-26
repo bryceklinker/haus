@@ -5,7 +5,7 @@ using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee.Connection;
 
-public sealed class ApsPollLoop
+public class ApsPollLoop
 {
     private readonly DeconzChannel _channel;
     private byte _sequenceNumber;

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Haus.Zigbee.Zdp;
 
-public sealed record ActiveEndpointsRequest(byte TransactionSequenceNumber, ushort NetworkAddress);
+public record ActiveEndpointsRequest(byte TransactionSequenceNumber, ushort NetworkAddress);
 
-public sealed record ActiveEndpointsResponse(
+public record ActiveEndpointsResponse(
     byte TransactionSequenceNumber,
     ZdoStatus Status,
     ushort NetworkAddress,

@@ -9,7 +9,7 @@ namespace Haus.Zigbee.Connection;
 // reports the matching delivery confirm. The deCONZ-level round trip only tells us the send was
 // queued; the real delivery outcome arrives asynchronously through the poll loop's confirm event,
 // so this correlates each outstanding request to its confirm by RequestId.
-public sealed class ApsSender
+public class ApsSender
 {
     private readonly DeconzChannel _channel;
     private readonly ConcurrentDictionary<byte, TaskCompletionSource<ApsDataConfirm>> _pendingConfirms = new();

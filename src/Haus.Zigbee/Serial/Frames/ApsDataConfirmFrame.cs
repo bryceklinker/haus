@@ -2,7 +2,7 @@ using System;
 
 namespace Haus.Zigbee.Serial.Frames;
 
-public sealed record ApsDataConfirm(
+public record ApsDataConfirm(
     byte SequenceNumber,
     byte DeviceState,
     byte RequestId,
@@ -14,7 +14,7 @@ public sealed record ApsDataConfirm(
     byte ConfirmStatus
 );
 
-public sealed record ApsDataConfirmDecoding
+public record ApsDataConfirmDecoding
 {
     private ApsDataConfirmDecoding(bool isSuccessful, ApsDataConfirm? confirm)
     {

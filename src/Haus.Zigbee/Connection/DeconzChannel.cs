@@ -10,7 +10,7 @@ namespace Haus.Zigbee.Connection;
 // the checksum and SLIP-encodes an outbound command before writing it, then correlates the
 // eventual response by the sequence number that every deCONZ frame carries at byte offset 1.
 // It has no knowledge of what any individual command means.
-public sealed class DeconzChannel
+public class DeconzChannel
 {
     private const int SequenceNumberIndex = 1;
 

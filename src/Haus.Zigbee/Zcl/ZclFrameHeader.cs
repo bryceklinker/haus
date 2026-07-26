@@ -15,7 +15,7 @@ public enum ZclDirection : byte
     ServerToClient = 1,
 }
 
-public sealed record ZclFrameHeader(
+public record ZclFrameHeader(
     ZclFrameType FrameType,
     ZclDirection Direction,
     bool DisableDefaultResponse,
@@ -24,7 +24,7 @@ public sealed record ZclFrameHeader(
     ushort? ManufacturerCode = null
 );
 
-public sealed record ZclFrameHeaderDecoding(ZclFrameHeader Header, int ByteLength);
+public record ZclFrameHeaderDecoding(ZclFrameHeader Header, int ByteLength);
 
 public static class ZclFrameHeaderCodec
 {

@@ -10,7 +10,7 @@ namespace Haus.Zigbee.Connection;
 // Reads the network configuration the deCONZ coordinator already holds, one read-parameter
 // round-trip at a time, and assembles it into a NetworkConfig. It never writes a parameter or
 // re-forms the network — the coordinator was configured elsewhere and we only read it back.
-public sealed class DeconzConnection
+public class DeconzConnection
 {
     private const byte MacAddressParameterId = 0x01;
     private const byte PanIdParameterId = 0x05;

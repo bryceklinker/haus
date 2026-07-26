@@ -4,13 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Haus.Zigbee.Zcl;
 
-public sealed record ZclAttributeRecord(ushort AttributeId, ZclAttributeValue Value);
+public record ZclAttributeRecord(ushort AttributeId, ZclAttributeValue Value);
 
-public sealed record ZclReportAttributesResult(IReadOnlyList<ZclAttributeRecord> Attributes, bool IsComplete);
+public record ZclReportAttributesResult(IReadOnlyList<ZclAttributeRecord> Attributes, bool IsComplete);
 
-public sealed record ZclReadAttributeRecord(ushort AttributeId, byte Status, ZclAttributeValue? Value);
+public record ZclReadAttributeRecord(ushort AttributeId, byte Status, ZclAttributeValue? Value);
 
-public sealed record ZclReadAttributesResponseResult(IReadOnlyList<ZclReadAttributeRecord> Attributes, bool IsComplete);
+public record ZclReadAttributesResponseResult(IReadOnlyList<ZclReadAttributeRecord> Attributes, bool IsComplete);
 
 public static class ZclAttributeReportParser
 {

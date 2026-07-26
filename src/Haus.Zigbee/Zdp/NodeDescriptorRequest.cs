@@ -2,7 +2,7 @@ using System;
 
 namespace Haus.Zigbee.Zdp;
 
-public sealed record NodeDescriptorRequest(byte TransactionSequenceNumber, ushort NetworkAddress);
+public record NodeDescriptorRequest(byte TransactionSequenceNumber, ushort NetworkAddress);
 
 public static class NodeDescriptorRequestCodec
 {
@@ -24,7 +24,7 @@ public enum LogicalType : byte
     EndDevice = 2,
 }
 
-public sealed record NodeDescriptor(
+public record NodeDescriptor(
     LogicalType LogicalType,
     bool FragmentationSupported,
     byte ApsFlags,
@@ -38,7 +38,7 @@ public sealed record NodeDescriptor(
     byte Deprecated1
 );
 
-public sealed record NodeDescriptorResponse(
+public record NodeDescriptorResponse(
     byte TransactionSequenceNumber,
     ZdoStatus Status,
     ushort NetworkAddress,

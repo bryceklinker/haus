@@ -246,5 +246,5 @@ public class DeviceInterviewTests
             bytes.Add((byte)((value >> shift) & 0xff));
     }
 
-    private sealed record DeviceScript(ushort Nwk, ulong Ieee);
+    private record DeviceScript(ushort Nwk, ulong Ieee);
 }

@@ -45,7 +45,7 @@ public class PermitJoinControllerTests
     // A fake deCONZ coordinator over the serial seam: it records each write-parameter request it
     // is sent, then answers with a success response echoing the request's sequence number back so
     // DeconzChannel can correlate it — exactly as real hardware would.
-    private sealed class FakeCoordinator : ISerialTransport
+    private class FakeCoordinator : ISerialTransport
     {
         private const int SequenceNumberIndex = 1;
         private const int ParameterIdIndex = 7;
@@ -107,5 +107,5 @@ public class PermitJoinControllerTests
         }
     }
 
-    private sealed record WrittenRequest(byte ParameterId, byte[] Value);
+    private record WrittenRequest(byte ParameterId, byte[] Value);
 }

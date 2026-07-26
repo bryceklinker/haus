@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Haus.Zigbee.Coordinator;
 
-public sealed class KnownDeviceTable
+public class KnownDeviceTable
 {
     private readonly ConcurrentDictionary<IeeeAddress, ZigbeeDevice> _devices = new();
 

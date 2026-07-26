@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Haus.Zigbee.Zdp;
 
-public sealed record SimpleDescriptorRequest(byte TransactionSequenceNumber, ushort NetworkAddress, byte Endpoint);
+public record SimpleDescriptorRequest(byte TransactionSequenceNumber, ushort NetworkAddress, byte Endpoint);
 
-public sealed record SimpleDescriptor(
+public record SimpleDescriptor(
     ushort NetworkAddress,
     byte Endpoint,
     ushort ProfileId,
@@ -15,11 +15,7 @@ public sealed record SimpleDescriptor(
     IReadOnlyList<ushort> OutClusters
 );
 
-public sealed record SimpleDescriptorResponse(
-    byte TransactionSequenceNumber,
-    ZdoStatus Status,
-    SimpleDescriptor? Descriptor
-);
+public record SimpleDescriptorResponse(byte TransactionSequenceNumber, ZdoStatus Status, SimpleDescriptor? Descriptor);
 
 public static class SimpleDescriptorCodec
 {

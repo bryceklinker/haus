@@ -9,7 +9,7 @@ namespace Haus.Zigbee.Coordinator;
 // Builds a ZCL command frame, wraps it in an APS-DATA.request, and sends it. The ZCL
 // transaction sequence number and the APS request id are distinct concerns, so each layer
 // owns its own counter here.
-public sealed class CommandSender
+public class CommandSender
 {
     private readonly ApsSender _sender;
     private byte _transactionSequenceNumber;

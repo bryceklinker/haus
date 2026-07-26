@@ -10,7 +10,7 @@ namespace Haus.Zigbee.Tests.Connection;
 // read returns the bytes of exactly one queued response frame, so a caller that issues several
 // sequential command round-trips gets one response per round-trip instead of having every
 // queued response drained into the first read.
-internal sealed class ScriptedSerialTransport : ISerialTransport
+internal class ScriptedSerialTransport : ISerialTransport
 {
     private readonly List<byte> _writtenBytes = new();
     private readonly Queue<byte[]> _responses = new();

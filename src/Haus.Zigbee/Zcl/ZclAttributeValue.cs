@@ -21,7 +21,7 @@ public static class ZclDataTypeWidths
     public static bool TryGetWidth(byte dataType, out int width) => WidthsByType.TryGetValue(dataType, out width);
 }
 
-public sealed record ZclAttributeValue(ZclDataType DataType, ulong RawValue)
+public record ZclAttributeValue(ZclDataType DataType, ulong RawValue)
 {
     public bool AsBool() => RawValue != 0;
 
