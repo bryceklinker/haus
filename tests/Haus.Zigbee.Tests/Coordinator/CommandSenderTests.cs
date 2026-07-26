@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee;
@@ -14,6 +15,10 @@ namespace Haus.Zigbee.Tests.Coordinator;
 
 public class CommandSenderTests
 {
+    private const byte SuccessStatus = 0x00;
+    private const byte NwkAddressMode = 0x02;
+    private const byte ConfirmAvailable = 0x04;
+
     private readonly ScriptedSerialTransport _senderTransport = new();
     private readonly ScriptedSerialTransport _pollTransport = new();
     private readonly ApsPollLoop _pollLoop;
@@ -60,6 +65,52 @@ public class CommandSenderTests
             Radius: 0x00
         );
         Assert.Equal(Framed(ApsDataRequestFrameCodec.Encode(expectedFrame)), _senderTransport.WrittenBytes);
+    }
+
+    [Fact]
+    public async Task WhenTheCoordinatorConfirmsDeliveryThenThatConfirmIsReturnedToTheCaller()
+    {
+        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
+        _pollTransport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
+        _pollTransport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x00, confirmStatus: 0xd0)));
+
+        var sendTask = _commandSender.SendCommandAsync(AnyRequest(), CancellationToken.None);
+        await _pollLoop.PollOnceAsync(CancellationToken.None);
+        var confirm = await sendTask;
+
+        Assert.Equal(0x00, confirm.RequestId);
+        Assert.Equal(0xd0, confirm.ConfirmStatus);
+    }
+
+    private static ZigbeeCommandRequest AnyRequest()
+    {
+        return new ZigbeeCommandRequest(
+            Destination: ApsDestination.Nwk(0x1234, 0x01),
+            SourceEndpoint: 0x01,
+            ProfileId: 0x0104,
+            ClusterId: 0x0006,
+            CommandId: 0x01,
+            Payload: new byte[] { 0x00 },
+            DisableDefaultResponse: false
+        );
+    }
+
+    private static byte[] DeconzAck(byte sequenceNumber)
+    {
+        return new byte[] { 0x12, sequenceNumber, SuccessStatus, 0x00, 0x00 };
+    }
+
+    private static byte[] DeviceStateResponse(byte sequenceNumber, byte deviceState)
+    {
+        return new byte[] { 0x07, sequenceNumber, 0x00, 0x00, 0x00, deviceState };
+    }
+
+    private static byte[] ConfirmResponse(byte sequenceNumber, byte requestId, byte confirmStatus)
+    {
+        var header = new byte[] { 0x04, sequenceNumber, SuccessStatus, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        var requestAndAddress = new byte[] { requestId, NwkAddressMode, 0x34, 0x12 };
+        var endpointsAndStatus = new byte[] { 0x01, 0x01, confirmStatus };
+        return header.Concat(requestAndAddress).Concat(endpointsAndStatus).ToArray();
     }
 
     private static CancellationToken Cancelled()
