@@ -41,6 +41,23 @@ public class ApsSenderTests
     }
 
     [Fact]
+    public async Task WhenAConfirmForAnotherRequestArrivesThenTheSendKeepsWaitingForItsOwn()
+    {
+        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
+        _pollTransport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
+        _pollTransport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x99)));
+        _pollTransport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 2, deviceState: ConfirmAvailable)));
+        _pollTransport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 3, requestId: 0x42)));
+
+        var sendTask = _sender.SendAsync(Request(requestId: 0x42), CancellationToken.None);
+        await _pollLoop.PollOnceAsync(CancellationToken.None);
+        Assert.False(sendTask.IsCompleted);
+
+        await _pollLoop.PollOnceAsync(CancellationToken.None);
+        Assert.Equal(0x42, (await sendTask).RequestId);
+    }
+
+    [Fact]
     public void WhenSendingThenTheCommandFrameUsesTheSendersOwnSequenceNumber()
     {
         var abandoned = Cancelled();
