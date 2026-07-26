@@ -48,6 +48,92 @@ public class AttributeReportListenerTests
         Assert.Equal(0x1234ul, report.Value.AsUnsigned());
     }
 
+    [Fact]
+    public async Task WhenAReadAttributesResponseIndicationArrivesThenEachSucceededAttributeIsRaised()
+    {
+        var zclFrame = new byte[]
+        {
+            GlobalFrameControl,
+            0x01,
+            ReadAttributesResponseCommand,
+            0x00,
+            0x00,
+            SuccessStatus,
+            (byte)ZclDataType.Int16,
+            0x9c,
+            0xff,
+        };
+
+        var reports = await ListenToIndication(sourceNwk: 0x00aa, sourceEndpoint: 0x01, clusterId: 0x0402, zclFrame);
+
+        var report = Assert.Single(reports);
+        Assert.Equal(0x00aa, report.SourceNwkAddress);
+        Assert.Equal(0x01, report.Endpoint);
+        Assert.Equal(0x0402, report.ClusterId);
+        Assert.Equal(0x0000, report.AttributeId);
+        Assert.Equal(ZclDataType.Int16, report.Value.DataType);
+        Assert.Equal(-100, report.Value.AsSigned());
+    }
+
+    [Fact]
+    public async Task WhenAReportAttributesIndicationCarriesMultipleAttributesThenOneEventIsRaisedPerAttribute()
+    {
+        var zclFrame = new byte[]
+        {
+            GlobalFrameControl,
+            0x01,
+            ReportAttributesCommand,
+            0x00,
+            0x00,
+            (byte)ZclDataType.Uint16,
+            0x34,
+            0x12,
+            0x01,
+            0x00,
+            (byte)ZclDataType.Bool,
+            0x01,
+        };
+
+        var reports = await ListenToIndication(sourceNwk: 0x1234, sourceEndpoint: 0x05, clusterId: 0x0400, zclFrame);
+
+        Assert.Equal(2, reports.Count);
+        Assert.Equal(0x0000, reports[0].AttributeId);
+        Assert.Equal(0x1234ul, reports[0].Value.AsUnsigned());
+        Assert.Equal(0x0001, reports[1].AttributeId);
+        Assert.True(reports[1].Value.AsBool());
+    }
+
+    [Fact]
+    public async Task WhenAClusterSpecificCommandReusesTheReportCommandIdThenNothingIsRaised()
+    {
+        var zclFrame = new byte[]
+        {
+            (byte)ZclFrameType.ClusterSpecific,
+            0x01,
+            ReportAttributesCommand,
+            0x00,
+            0x00,
+            (byte)ZclDataType.Uint16,
+            0x34,
+            0x12,
+        };
+
+        var reports = await ListenToIndication(sourceNwk: 0x1234, sourceEndpoint: 0x05, clusterId: 0x0400, zclFrame);
+
+        Assert.Empty(reports);
+    }
+
+    [Fact]
+    public async Task WhenAGlobalCommandIsNotAnAttributeReportOrReadResponseThenNothingIsRaised()
+    {
+        const byte configureReportingResponseCommand = 0x07;
+        var zclFrame = new byte[] { GlobalFrameControl, 0x01, configureReportingResponseCommand, 0x00 };
+
+        var reports = await ListenToIndication(sourceNwk: 0x1234, sourceEndpoint: 0x05, clusterId: 0x0400, zclFrame);
+
+        Assert.Empty(reports);
+    }
+
     private static async Task<IReadOnlyList<ZigbeeAttributeReport>> ListenToIndication(
         ushort sourceNwk,
         byte sourceEndpoint,
