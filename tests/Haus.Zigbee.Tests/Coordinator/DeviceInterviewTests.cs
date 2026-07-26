@@ -52,6 +52,22 @@ public class DeviceInterviewTests
         Assert.Equal(string.Empty, joined.ModelIdentifier);
     }
 
+    [Fact]
+    public async Task WhenADeviceAnnouncesThenItIsRegisteredInTheKnownDeviceTable()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
+        QueueIndication(pollSequenceNumber: 0, Announce(device));
+        QueueIndication(pollSequenceNumber: 2, ActiveEndpointsResponse(device, endpointIds: new byte[0]));
+
+        await _pollLoop.PollOnceAsync(CancellationToken.None);
+        await _pollLoop.PollOnceAsync(CancellationToken.None);
+
+        var known = Assert.Single(_knownDeviceTable.GetDevices());
+        Assert.Equal(new IeeeAddress(device.Ieee), known.IeeeAddress);
+        Assert.Equal(device.Nwk, known.NetworkAddress);
+    }
+
     private void QueueIndication(byte pollSequenceNumber, IndicationBody body)
     {
         _pollTransport.QueueResponse(Framed(DeviceStateResponse(pollSequenceNumber, deviceState: IndicationAvailable)));
