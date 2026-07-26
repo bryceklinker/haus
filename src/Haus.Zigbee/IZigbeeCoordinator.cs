@@ -25,4 +25,6 @@ public interface IZigbeeCoordinator
     Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token);
 
     event EventHandler<ZigbeeAttributeReport>? AttributeReported;
+
+    event EventHandler<ZigbeeDeviceJoined>? DeviceJoined;
 }

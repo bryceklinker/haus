@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee;
@@ -116,6 +117,94 @@ public class ZigbeeCoordinatorTests
         Assert.Equal(0x1234, report.SourceNwkAddress);
         Assert.Equal(0x0400, report.ClusterId);
         Assert.Equal(0x0000, report.AttributeId);
+    }
+
+    [Fact]
+    public async Task WhenADeviceAnnouncesWhileConnectedThenItIsRelayedThroughTheDeviceJoinedEvent()
+    {
+        SetNetworkParameters();
+        using var coordinator = new ZigbeeCoordinator(_dongle);
+        var joined = new TaskCompletionSource<ZigbeeDeviceJoined>();
+        coordinator.DeviceJoined += (_, device) => joined.TrySetResult(device);
+        await coordinator.ConnectAsync(CancellationToken.None);
+
+        DriveJoinWithNoEndpoints(networkAddress: 0x1a2b, ieee: 0x00124b0001aabbcc);
+
+        var device = await WaitFor(joined.Task);
+        Assert.Equal(new IeeeAddress(0x00124b0001aabbcc), device.IeeeAddress);
+        Assert.Equal((ushort)0x1a2b, device.NetworkAddress);
+        Assert.Empty(device.Endpoints);
+    }
+
+    [Fact]
+    public async Task WhenADeviceHasJoinedThenGetDevicesReflectsTheKnownDeviceTable()
+    {
+        SetNetworkParameters();
+        using var coordinator = new ZigbeeCoordinator(_dongle);
+        var joined = new TaskCompletionSource<ZigbeeDeviceJoined>();
+        coordinator.DeviceJoined += (_, device) => joined.TrySetResult(device);
+        await coordinator.ConnectAsync(CancellationToken.None);
+
+        DriveJoinWithNoEndpoints(networkAddress: 0x1a2b, ieee: 0x00124b0001aabbcc);
+        await WaitFor(joined.Task);
+
+        var devices = await coordinator.GetDevicesAsync(CancellationToken.None);
+        var device = Assert.Single(devices);
+        Assert.Equal(new IeeeAddress(0x00124b0001aabbcc), device.IeeeAddress);
+    }
+
+    private void DriveJoinWithNoEndpoints(ushort networkAddress, ulong ieee)
+    {
+        _dongle.InjectIndication(AnnounceIndication(networkAddress, ieee));
+        _dongle.ReleaseAfterApsRequest(apsRequestIndex: 0, ActiveEndpointsIndication(networkAddress));
+    }
+
+    private static IndicationBody AnnounceIndication(ushort networkAddress, ulong ieee)
+    {
+        const ushort zdpProfile = 0x0000;
+        const ushort deviceAnnounceCluster = 0x0013;
+        const byte macCapability = 0x80;
+        var asdu = new List<byte> { 0x00 };
+        AddUInt16(asdu, networkAddress);
+        AddUInt64(asdu, ieee);
+        asdu.Add(macCapability);
+        return new IndicationBody(
+            networkAddress,
+            SourceEndpoint: 0x00,
+            zdpProfile,
+            deviceAnnounceCluster,
+            asdu.ToArray()
+        );
+    }
+
+    private static IndicationBody ActiveEndpointsIndication(ushort networkAddress)
+    {
+        const ushort zdpProfile = 0x0000;
+        const ushort activeEndpointsResponseCluster = 0x8005;
+        const byte successStatus = 0x00;
+        const byte endpointCount = 0x00;
+        var asdu = new List<byte> { 0x00, successStatus };
+        AddUInt16(asdu, networkAddress);
+        asdu.Add(endpointCount);
+        return new IndicationBody(
+            networkAddress,
+            SourceEndpoint: 0x00,
+            zdpProfile,
+            activeEndpointsResponseCluster,
+            asdu.ToArray()
+        );
+    }
+
+    private static void AddUInt16(List<byte> bytes, ushort value)
+    {
+        bytes.Add((byte)(value & 0xff));
+        bytes.Add((byte)(value >> 8));
+    }
+
+    private static void AddUInt64(List<byte> bytes, ulong value)
+    {
+        for (var shift = 0; shift < 64; shift += 8)
+            bytes.Add((byte)((value >> shift) & 0xff));
     }
 
     private void SetNetworkParameters()
