@@ -18,34 +18,19 @@ public class DeviceTypeResolverTests
     }
 
     [Fact]
-    public void WhenMetadataDoesNotMatchAnythingThenReturnsUnknownDeviceType()
+    public void WhenVendorAndModelDoNotMatchAnythingThenReturnsUnknownDeviceType()
     {
-        var meta = new Zigbee2MqttMetaBuilder().BuildMeta();
-
-        Assert.Equal(DeviceType.Unknown, _resolver.Resolve(meta));
+        Assert.Equal(DeviceType.Unknown, _resolver.Resolve("nope", "nope"));
     }
 
     [Fact]
-    public void WhenMetadataModelMatchesThenReturnsDeviceTypeFromDefaults()
+    public void WhenVendorAndModelMatchThenReturnsDeviceTypeFromDefaults()
     {
-        var meta = new Zigbee2MqttMetaBuilder().WithModel("929002335001").WithVendor("Philips").BuildMeta();
-
-        Assert.Equal(DeviceType.Light, _resolver.Resolve(meta));
+        Assert.Equal(DeviceType.Light, _resolver.Resolve("Philips", "929002335001"));
     }
 
     [Fact]
-    public void WhenMetadataIsMultiFunctionDeviceThenReturnsDeviceTypeWithEachValue()
-    {
-        var meta = new Zigbee2MqttMetaBuilder().WithModel("9290012607").WithVendor("Philips").BuildMeta();
-
-        var deviceType = _resolver.Resolve(meta);
-        Assert.True(deviceType.HasFlag(DeviceType.LightSensor));
-        Assert.True(deviceType.HasFlag(DeviceType.MotionSensor));
-        Assert.True(deviceType.HasFlag(DeviceType.TemperatureSensor));
-    }
-
-    [Fact]
-    public void WhenVendorAndModelAreProvidedThenReturnsDeviceTypeWithMatchingVendorAndModel()
+    public void WhenVendorAndModelAreMultiFunctionDeviceThenReturnsDeviceTypeWithEachValue()
     {
         var deviceType = _resolver.Resolve("Philips", "9290012607");
 
@@ -55,11 +40,9 @@ public class DeviceTypeResolverTests
     }
 
     [Fact]
-    public void WhenMetadataIsInOptionsThenReturnsDeviceTypeFromOptions()
+    public void WhenVendorAndModelAreInOptionsThenReturnsDeviceTypeFromOptions()
     {
-        var meta = new Zigbee2MqttMetaBuilder().WithModel("Klinker").WithVendor("Old").BuildMeta();
-
-        var deviceType = _resolver.Resolve(meta);
+        var deviceType = _resolver.Resolve("Old", "Klinker");
 
         Assert.Equal(DeviceType.Light, deviceType);
     }

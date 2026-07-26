@@ -5,7 +5,6 @@ using System.Linq;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices;
 using Haus.Zigbee.Host.Configuration;
-using Haus.Zigbee.Host.Zigbee.Models;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 
@@ -13,7 +12,6 @@ namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
 
 public interface IDeviceTypeResolver
 {
-    DeviceType Resolve(Zigbee2MqttMeta metadata);
     DeviceType Resolve(string vendor, string model);
 }
 
@@ -24,11 +22,6 @@ public class DeviceTypeResolver(IOptions<HausOptions> options) : IDeviceTypeReso
     private IEnumerable<DeviceTypeOptions> DeviceTypeOptions => options.Value.DeviceTypeOptions;
 
     private static IEnumerable<DeviceTypeOptions> DefaultOptions => DefaultDeviceTypeOptions.Value;
-
-    public DeviceType Resolve(Zigbee2MqttMeta metadata)
-    {
-        return Resolve(metadata.Vendor, metadata.Model);
-    }
 
     public DeviceType Resolve(string? vendor, string? model)
     {
