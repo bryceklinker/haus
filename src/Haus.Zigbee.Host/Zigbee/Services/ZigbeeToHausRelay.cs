@@ -2,31 +2,25 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Mqtt.Client;
-using Haus.Zigbee.Host.Zigbee.Mappers;
-using Haus.Zigbee.Host.Zigbee.Mqtt;
+using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Host.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee.Services;
 
 public class ZigbeeToHausRelay(
-    IMqttMessageMapper mqttMessageMapper,
-    IZigbeeMqttClientFactory zigbeeMqttFactory,
+    IZigbeeCoordinator coordinator,
+    ZigbeeInboundRelay inboundRelay,
+    ZigbeeOutboundRelay outboundRelay,
+    IHausMqttClientFactory hausMqttClientFactory,
+    IOptions<HausOptions> hausOptions,
     ILogger<ZigbeeToHausRelay> logger
 ) : BackgroundService
 {
-    private IHausMqttClient? _zigbeeMqttClient;
     private IHausMqttClient? _hausMqttClient;
-
-    private IHausMqttClient ZigbeeMqttClient
-    {
-        get
-        {
-            ArgumentNullException.ThrowIfNull(_zigbeeMqttClient);
-            return _zigbeeMqttClient;
-        }
-    }
 
     private IHausMqttClient HausMqttClient
     {
@@ -39,18 +33,20 @@ public class ZigbeeToHausRelay(
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
-        _zigbeeMqttClient = await zigbeeMqttFactory.CreateZigbeeClient();
-        await ZigbeeMqttClient.SubscribeAsync("#", ZigbeeMessageHandler);
+        await coordinator.ConnectAsync(cancellationToken);
+        coordinator.DeviceJoined += OnDeviceJoined;
+        coordinator.AttributeReported += OnAttributeReported;
 
-        _hausMqttClient = await zigbeeMqttFactory.CreateHausClient();
-        await HausMqttClient.SubscribeAsync("#", HausMessageHandler);
+        _hausMqttClient = await hausMqttClientFactory.CreateClient();
+        await HausMqttClient.SubscribeAsync(hausOptions.Value.CommandsTopic, HandleHausCommandAsync);
         await base.StartAsync(cancellationToken);
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
+        coordinator.DeviceJoined -= OnDeviceJoined;
+        coordinator.AttributeReported -= OnAttributeReported;
         await HausMqttClient.DisposeAsync();
-        await ZigbeeMqttClient.DisposeAsync();
         await base.StopAsync(cancellationToken);
     }
 
@@ -60,25 +56,32 @@ public class ZigbeeToHausRelay(
             await Task.Delay(1000, stoppingToken);
     }
 
-    private async Task HausMessageHandler(MqttApplicationMessage arg)
+    private Task HandleHausCommandAsync(MqttApplicationMessage message)
     {
-        await HandleMqttMessage(arg, ZigbeeMqttClient);
+        return outboundRelay.HandleCommandAsync(message, CancellationToken.None);
     }
 
-    private async Task ZigbeeMessageHandler(MqttApplicationMessage arg)
+    private async void OnDeviceJoined(object? sender, Haus.Zigbee.ZigbeeDeviceJoined joined)
     {
-        await HandleMqttMessage(arg, HausMqttClient);
-    }
-
-    private async Task HandleMqttMessage(MqttApplicationMessage mqttMessage, IHausMqttClient targetMqtt)
-    {
-        var messageToSend = mqttMessageMapper.Map(mqttMessage);
-
-        foreach (var message in messageToSend)
+        try
         {
-            logger.LogInformation("Sending message to {@Topic}...", message.Topic);
-            await targetMqtt.PublishAsync(message).ConfigureAwait(false);
-            logger.LogInformation("Sent message to {@Topic}", message.Topic);
+            await inboundRelay.HandleDeviceJoinedAsync(joined);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to relay device-joined for {@Address}", joined.IeeeAddress);
+        }
+    }
+
+    private async void OnAttributeReported(object? sender, Haus.Zigbee.ZigbeeAttributeReport report)
+    {
+        try
+        {
+            await inboundRelay.HandleAttributeReportedAsync(report);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to relay attribute report from {@Address}", report.SourceNwkAddress);
         }
     }
 }

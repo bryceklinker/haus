@@ -7,13 +7,11 @@ using Haus.Zigbee.Host.Health;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Configuration;
 using Haus.Zigbee.Host.Zigbee.Health;
-using Haus.Zigbee.Host.Zigbee.Mappers;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Factories;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
-using Haus.Zigbee.Host.Zigbee.Mqtt;
 using Haus.Zigbee.Host.Zigbee.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,11 +26,11 @@ public static class ServiceCollectionExtensions
         services.AddHealthChecks().AddHausMqttHealthChecks().AddCheck<Zigbee2MqttHealthCheck>("Zigbee2Mqtt");
 
         return services
-            .AddSingleton<IZigbeeMqttClientFactory, ZigbeeMqttClientFactory>()
-            .AddTransient<IMqttMessageMapper, MqttMessageMapper>()
             .AddTransient<IDeviceTypeResolver, DeviceTypeResolver>()
             .AddHausToZigbeeMappers()
             .AddZigbeeToHausMappers()
+            .AddTransient<ZigbeeInboundRelay>()
+            .AddTransient<ZigbeeOutboundRelay>()
             .Configure<ZigbeeOptions>(config.GetSection("ZigBee"))
             .Configure<ZigbeeConnectionOptions>(config.GetSection("ZigBee:Serial"))
             .AddHausZigbee()

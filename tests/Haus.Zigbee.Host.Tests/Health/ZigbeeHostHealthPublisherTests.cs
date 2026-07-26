@@ -8,7 +8,6 @@ using Haus.Testing.Support.Fakes;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Health;
 using Haus.Zigbee.Host.Tests.Support;
-using Haus.Zigbee.Host.Zigbee.Mqtt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
@@ -24,11 +23,11 @@ public class ZigbeeHostHealthPublisherTests : IAsyncLifetime
     public async Task InitializeAsync()
     {
         var provider = ServiceProviderFactory.Create(mqttFactory: new FakeMqttClientFactory());
-        var zigbeeMqttFactory = provider.GetRequiredService<IZigbeeMqttClientFactory>();
-        _mqttClient = await zigbeeMqttFactory.CreateHausClient();
+        var mqttClientFactory = provider.GetRequiredService<IHausMqttClientFactory>();
+        _mqttClient = await mqttClientFactory.CreateClient();
 
         var hausOptions = provider.GetRequiredService<IOptions<HausOptions>>();
-        _publisher = new ZigbeeHostHealthPublisher(zigbeeMqttFactory, hausOptions);
+        _publisher = new ZigbeeHostHealthPublisher(mqttClientFactory, hausOptions);
     }
 
     [Fact]
