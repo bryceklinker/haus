@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHausZigbee(this IServiceCollection services, IConfiguration config)
     {
-        services.AddHealthChecks().AddHausMqttHealthChecks().AddCheck<Zigbee2MqttHealthCheck>("Zigbee2Mqtt");
+        services.AddHealthChecks().AddHausMqttHealthChecks().AddCheck<ZigbeeCoordinatorHealthCheck>("Zigbee");
 
         return services
             .AddTransient<IDeviceTypeResolver, DeviceTypeResolver>()
