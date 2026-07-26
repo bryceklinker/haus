@@ -27,36 +27,35 @@ public class HausToZigbeeMapperTests
     }
 
     [Fact]
-    public void WhenStartDiscoveryCommandReceivedThenReturnsPermitJoinTrueMessage()
+    public void WhenStartDiscoveryCommandReceivedThenReturnsNoMessages()
     {
+        // Discovery handling moved off this MQTT-relay aggregator onto HausDiscoveryToZigbeeMapper,
+        // wired directly into the coordinator-driven relay -- nothing here claims this message.
         var original = new StartDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
-        var result = _mapper.Map(original).Single();
+        var result = _mapper.Map(original);
 
-        Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
-        HausAssert.IsEncodedString("true", result.PayloadSegment);
+        Assert.Empty(result);
     }
 
     [Fact]
-    public void WhenStopDiscoveryCommandReceivedThenReturnsPermitJoinFalseMessage()
+    public void WhenStopDiscoveryCommandReceivedThenReturnsNoMessages()
     {
         var original = new StopDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
-        var result = _mapper.Map(original).Single();
+        var result = _mapper.Map(original);
 
-        Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/permit_join", result.Topic);
-        HausAssert.IsEncodedString("false", result.PayloadSegment);
+        Assert.Empty(result);
     }
 
     [Fact]
-    public void WhenSyncDevicesCommandReceivedThenReturnsZigbeeGetDevices()
+    public void WhenSyncDevicesCommandReceivedThenReturnsNoMessages()
     {
         var original = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
-        var result = _mapper.Map(original).Single();
+        var result = _mapper.Map(original);
 
-        Assert.Equal($"{Zigbee2MqttBaseTopic}/bridge/config/devices/get", result.Topic);
-        Assert.Equal(0, result.PayloadSegment.Count);
+        Assert.Empty(result);
     }
 
     [Fact]

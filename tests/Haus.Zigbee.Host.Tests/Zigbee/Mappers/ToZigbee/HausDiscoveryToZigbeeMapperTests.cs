@@ -1,7 +1,4 @@
-using System.Linq;
-using System.Text;
 using Haus.Core.Models.Discovery;
-using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
 using Xunit;
 
@@ -9,14 +6,7 @@ namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToZigbee;
 
 public class HausDiscoveryToZigbeeMapperTests
 {
-    private const string ZigbeeBaseTopic = "woot";
-    private readonly HausDiscoveryToZigbeeMapper _mapper;
-
-    public HausDiscoveryToZigbeeMapperTests()
-    {
-        var options = OptionsFactory.CreateZigbeeOptions(ZigbeeBaseTopic);
-        _mapper = new HausDiscoveryToZigbeeMapper(options);
-    }
+    private readonly HausDiscoveryToZigbeeMapper _mapper = new();
 
     [Fact]
     public void WhenTypeIsStartDiscoveryThenIsSupported()
@@ -43,35 +33,28 @@ public class HausDiscoveryToZigbeeMapperTests
     }
 
     [Fact]
-    public void WhenStartDiscoveryIsMappedThenReturnsPermitJoinTrue()
+    public void Map_StartDiscovery_ReturnsSetPermitJoinIntentEnabled()
     {
-        var original = new StartDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
+        var intent = _mapper.Map(StartDiscoveryModel.Type);
 
-        var result = _mapper.Map(original).Single();
-
-        Assert.Equal($"{ZigbeeBaseTopic}/bridge/config/permit_join", result.Topic);
-        Assert.Equal("true", Encoding.UTF8.GetString(result.PayloadSegment));
+        Assert.Equal(ZigbeeDiscoveryIntentType.SetPermitJoin, intent.Type);
+        Assert.True(intent.PermitJoinEnabled);
     }
 
     [Fact]
-    public void WhenStopDiscoveryIsMappedThenReturnsPermitJoinFalse()
+    public void Map_StopDiscovery_ReturnsSetPermitJoinIntentDisabled()
     {
-        var original = new StopDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
+        var intent = _mapper.Map(StopDiscoveryModel.Type);
 
-        var result = _mapper.Map(original).Single();
-
-        Assert.Equal($"{ZigbeeBaseTopic}/bridge/config/permit_join", result.Topic);
-        Assert.Equal("false", Encoding.UTF8.GetString(result.PayloadSegment));
+        Assert.Equal(ZigbeeDiscoveryIntentType.SetPermitJoin, intent.Type);
+        Assert.False(intent.PermitJoinEnabled);
     }
 
     [Fact]
-    public void WhenSyncDiscoveryIsMappedThenReturnsGetDevices()
+    public void Map_SyncDiscovery_ReturnsSyncDevicesIntent()
     {
-        var original = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
+        var intent = _mapper.Map(SyncDiscoveryModel.Type);
 
-        var result = _mapper.Map(original).Single();
-
-        Assert.Equal($"{ZigbeeBaseTopic}/bridge/config/devices/get", result.Topic);
-        Assert.Equal(0, result.PayloadSegment.Count);
+        Assert.Equal(ZigbeeDiscoveryIntentType.SyncDevices, intent.Type);
     }
 }

@@ -1,17 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Haus.Core.Models;
 using Haus.Core.Models.Discovery;
-using Haus.Core.Models.ExternalMessages;
-using Haus.Zigbee.Host.Zigbee.Configuration;
-using Microsoft.Extensions.Options;
-using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
 
-public class HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZigbeeMapper
+public enum ZigbeeDiscoveryIntentType
+{
+    SetPermitJoin,
+    SyncDevices,
+}
+
+public record ZigbeeDiscoveryIntent(ZigbeeDiscoveryIntentType Type, bool PermitJoinEnabled = false);
+
+public class HausDiscoveryToZigbeeMapper
 {
     private static readonly string[] SupportedTypes =
     {
@@ -25,34 +26,14 @@ public class HausDiscoveryToZigbeeMapper(IOptions<ZigbeeOptions> options) : IToZ
         return SupportedTypes.Contains(type);
     }
 
-    public IEnumerable<MqttApplicationMessage> Map(MqttApplicationMessage message)
+    public ZigbeeDiscoveryIntent Map(string commandType)
     {
-        var command = HausJsonSerializer.Deserialize<HausCommand>(message.PayloadSegment);
-        ArgumentNullException.ThrowIfNull(command);
-        return command.Type switch
+        return commandType switch
         {
-            StartDiscoveryModel.Type => CreatePermitJoinMessage(true),
-            StopDiscoveryModel.Type => CreatePermitJoinMessage(false),
-            SyncDiscoveryModel.Type => CreateGetDevicesMessage(),
-            _ => throw new InvalidOperationException($"Command with {command.Type} is not supported"),
-        };
-    }
-
-    private IEnumerable<MqttApplicationMessage> CreateGetDevicesMessage()
-    {
-        yield return new MqttApplicationMessage
-        {
-            Topic = $"{options.GetBaseTopic()}/bridge/config/devices/get",
-            PayloadSegment = ArraySegment<byte>.Empty,
-        };
-    }
-
-    private IEnumerable<MqttApplicationMessage> CreatePermitJoinMessage(bool permitJoin)
-    {
-        yield return new MqttApplicationMessage
-        {
-            Topic = $"{options.GetBaseTopic()}/bridge/config/permit_join",
-            PayloadSegment = Encoding.UTF8.GetBytes(permitJoin.ToString().ToLowerInvariant()),
+            StartDiscoveryModel.Type => new ZigbeeDiscoveryIntent(ZigbeeDiscoveryIntentType.SetPermitJoin, true),
+            StopDiscoveryModel.Type => new ZigbeeDiscoveryIntent(ZigbeeDiscoveryIntentType.SetPermitJoin, false),
+            SyncDiscoveryModel.Type => new ZigbeeDiscoveryIntent(ZigbeeDiscoveryIntentType.SyncDevices),
+            _ => throw new InvalidOperationException($"Command with {commandType} is not supported"),
         };
     }
 }

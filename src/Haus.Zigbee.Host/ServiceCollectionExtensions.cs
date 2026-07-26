@@ -50,7 +50,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddHausToZigbeeMappers(this IServiceCollection services)
     {
         return services
-            .AddTransient<IToZigbeeMapper, HausDiscoveryToZigbeeMapper>()
+            .AddTransient<HausDiscoveryToZigbeeMapper>()
             .AddTransient<IToZigbeeMapper, HausLightingToZigbeeMapper>()
             .AddTransient<IHausToZigbeeMapper, HausToZigbeeMapper>();
     }

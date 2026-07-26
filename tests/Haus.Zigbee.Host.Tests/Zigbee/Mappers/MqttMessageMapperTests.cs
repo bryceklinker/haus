@@ -51,13 +51,15 @@ public class MqttMessageTranslatorTests
     }
 
     [Fact]
-    public void WhenMessageIsFromHausThenReturnsMessageWithZigbeeTopic()
+    public void WhenMessageIsFromHausThenReturnsNoMessages()
     {
+        // Discovery handling moved off this aggregator onto HausDiscoveryToZigbeeMapper, wired
+        // directly into the coordinator-driven relay -- nothing here claims this message.
         var message = new StartDiscoveryModel().AsHausCommand().ToMqttMessage(HausCommandsTopic);
 
-        var result = _mapper.Map(message).Single();
+        var result = _mapper.Map(message);
 
-        Assert.StartsWith(Zigbee2MqttBaseTopic, result.Topic);
+        Assert.Empty(result);
     }
 
     [Fact]
