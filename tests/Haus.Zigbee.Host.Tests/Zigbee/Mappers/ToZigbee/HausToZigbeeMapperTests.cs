@@ -59,16 +59,16 @@ public class HausToZigbeeMapperTests
     }
 
     [Fact]
-    public void WhenDeviceLightingCommandReceivedThenReturnsSetDeviceMessage()
+    public void WhenDeviceLightingCommandReceivedThenReturnsNoMessages()
     {
+        // Lighting handling moved off this MQTT-relay aggregator onto HausLightingToZigbeeMapper,
+        // wired directly into the coordinator-driven relay -- nothing here claims this message.
         var original = new DeviceLightingChangedEvent(new DeviceModel { ExternalId = "my-ext-id" }, new LightingModel())
             .AsHausCommand()
             .ToMqttMessage("haus/commands");
 
-        var result = _mapper.Map(original).Single();
+        var result = _mapper.Map(original);
 
-        var payload = JObject.Parse(Encoding.UTF8.GetString(result.PayloadSegment));
-        Assert.Equal($"{Zigbee2MqttBaseTopic}/my-ext-id/set", result.Topic);
-        Assert.Equal("OFF", payload.Value<string>("state"));
+        Assert.Empty(result);
     }
 }

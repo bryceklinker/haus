@@ -1,28 +1,26 @@
-using System;
 using System.Linq;
-using System.Text;
-using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
-using Haus.Zigbee.Host.Tests.Support;
+using Haus.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
-using MQTTnet;
-using Newtonsoft.Json.Linq;
+using Haus.Zigbee.Serial.Frames;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToZigbee;
 
 public class HausLightingToZigbeeMapperTests
 {
-    private readonly HausLightingToZigbeeMapper _mapper;
-    private readonly DeviceModel _device;
+    private const ushort OnOffCluster = 0x0006;
+    private const ushort LevelControlCluster = 0x0008;
+    private const ushort ColorControlCluster = 0x0300;
+    private const byte OffCommand = 0x00;
+    private const byte OnCommand = 0x01;
+    private const byte MoveToLevelWithOnOffCommand = 0x04;
+    private const byte MoveToColorCommand = 0x07;
+    private const byte MoveToColorTemperatureCommand = 0x0a;
 
-    public HausLightingToZigbeeMapperTests()
-    {
-        var zigbeeOptions = OptionsFactory.CreateZigbeeOptions("basy");
-        _device = new DeviceModel { ExternalId = $"{Guid.NewGuid()}" };
-        _mapper = new HausLightingToZigbeeMapper(zigbeeOptions);
-    }
+    private readonly HausLightingToZigbeeMapper _mapper = new();
+    private readonly ApsDestination _destination = ApsDestination.Ieee(new IeeeAddress(1), 1);
 
     [Fact]
     public void WhenTypeIsDeviceLightingChangedThenIsSupported()
@@ -37,91 +35,84 @@ public class HausLightingToZigbeeMapperTests
     }
 
     [Fact]
-    public void WhenMappedThenTopicIsSetDevice()
+    public void Map_OffState_ReturnsOnlyOffCommand()
     {
-        var original = CreateMqttMessage(new LightingModel());
-
-        var message = _mapper.Map(original).Single();
-
-        Assert.Equal($"basy/{_device.ExternalId}/set", message.Topic);
-    }
-
-    [Fact]
-    public void WhenLightingModelIsFullyPopulatedThenZigbeeLightingIsPopulated()
-    {
-        var lightingModel = new LightingModel(
-            LightingState.On,
-            new LevelLightingModel(54),
-            new TemperatureLightingModel(67),
-            new ColorLightingModel(98, 54, 234)
-        );
-
-        var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
-
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
-        Assert.Equal("ON", result.Value<string>("state"));
-        Assert.Equal(54, result.Value<int>("brightness"));
-        Assert.Equal(67, result.Value<int>("color_temp"));
-        Assert.Equal(234, result.Value<JObject>("color")?.Value<int>("b"));
-        Assert.Equal(54, result.Value<JObject>("color")?.Value<int>("g"));
-        Assert.Equal(98, result.Value<JObject>("color")?.Value<int>("r"));
-    }
-
-    [Fact]
-    public void WhenLightingIsMissingTemperatureThenColorTempIsMissingFromPayload()
-    {
-        var lighting = new LightingModel(LightingState.On, new LevelLightingModel(12, 0, 254));
-
-        var message = _mapper.Map(CreateMqttMessage(lighting)).Single();
-
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
-        Assert.False(result.TryGetValue("color_temp", out _));
-    }
-
-    [Fact]
-    public void WhenLightingIsMissingColorThenColorIsMissingFromPayload()
-    {
-        var lighting = new LightingModel(LightingState.On, new LevelLightingModel(12, 0, 254));
-
-        var message = _mapper.Map(CreateMqttMessage(lighting)).Single();
-
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
-        Assert.False(result.TryGetValue("color", out _));
-    }
-
-    [Fact]
-    public void WhenLightingModelMissingColorThenReturnsZigbeeLighting()
-    {
-        var model = new LightingModel(LightingState.On);
-
-        var original = CreateMqttMessage(model);
-        var message = _mapper.Map(original).Single();
-
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
-        Assert.Equal("ON", result.Value<string>("state"));
-    }
-
-    [Fact]
-    public void WhenLightingModelHasOffStateThenReturnsLightingWithStateOnly()
-    {
-        var lightingModel = new LightingModel(
+        var lighting = new LightingModel(
             LightingState.Off,
             new LevelLightingModel(54),
-            new TemperatureLightingModel(67),
+            new TemperatureLightingModel(4000),
             new ColorLightingModel(98, 54, 234)
         );
 
-        var message = _mapper.Map(CreateMqttMessage(lightingModel)).Single();
+        var result = _mapper.Map(_destination, lighting).ToArray();
 
-        var result = JObject.Parse(Encoding.UTF8.GetString(message.PayloadSegment));
-        Assert.Equal("OFF", result.Value<string>("state"));
-        Assert.False(result.TryGetValue("brightness", out _));
-        Assert.False(result.TryGetValue("color_temp", out _));
-        Assert.False(result.TryGetValue("color", out _));
+        var request = Assert.Single(result);
+        Assert.Equal(OnOffCluster, request.ClusterId);
+        Assert.Equal(OffCommand, request.CommandId);
+        Assert.Empty(request.Payload);
     }
 
-    private MqttApplicationMessage CreateMqttMessage(LightingModel lighting)
+    [Fact]
+    public void Map_OnStateNoTemperatureOrColor_ReturnsOnAndLevelCommands()
     {
-        return new DeviceLightingChangedEvent(_device, lighting).AsHausCommand().ToMqttMessage("haus/commands");
+        var lighting = new LightingModel(LightingState.On, new LevelLightingModel(54));
+
+        var result = _mapper.Map(_destination, lighting).ToArray();
+
+        Assert.Equal(2, result.Length);
+        Assert.Contains(result, r => r.ClusterId == OnOffCluster && r.CommandId == OnCommand && r.Payload.Length == 0);
+        var level = Assert.Single(result, r => r.ClusterId == LevelControlCluster);
+        Assert.Equal(MoveToLevelWithOnOffCommand, level.CommandId);
+        Assert.Equal(137, level.Payload[0]);
+    }
+
+    [Fact]
+    public void Map_WithTemperature_IncludesMoveToColorTemperatureCommand()
+    {
+        var lighting = new LightingModel(
+            LightingState.On,
+            new LevelLightingModel(54),
+            new TemperatureLightingModel(4000)
+        );
+
+        var result = _mapper.Map(_destination, lighting).ToArray();
+
+        var command = Assert.Single(
+            result,
+            r => r.ClusterId == ColorControlCluster && r.CommandId == MoveToColorTemperatureCommand
+        );
+        var mireds = (ushort)(command.Payload[0] | (command.Payload[1] << 8));
+        Assert.Equal(250, mireds);
+    }
+
+    [Fact]
+    public void Map_WithColor_IncludesMoveToColorCommandWithApproximateXy()
+    {
+        var lighting = new LightingModel(
+            LightingState.On,
+            new LevelLightingModel(54),
+            Color: new ColorLightingModel(255, 0, 0)
+        );
+
+        var result = _mapper.Map(_destination, lighting).ToArray();
+
+        var command = Assert.Single(
+            result,
+            r => r.ClusterId == ColorControlCluster && r.CommandId == MoveToColorCommand
+        );
+        var x = (ushort)(command.Payload[0] | (command.Payload[1] << 8));
+        var y = (ushort)(command.Payload[2] | (command.Payload[3] << 8));
+        Assert.InRange(x / 65536.0, 0.69, 0.71);
+        Assert.InRange(y / 65536.0, 0.29, 0.31);
+    }
+
+    [Fact]
+    public void Map_WithoutTemperatureOrColor_DoesNotIncludeColorControlCommands()
+    {
+        var lighting = new LightingModel(LightingState.On, new LevelLightingModel(54));
+
+        var result = _mapper.Map(_destination, lighting).ToArray();
+
+        Assert.DoesNotContain(result, r => r.ClusterId == ColorControlCluster);
     }
 }
