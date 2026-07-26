@@ -17,4 +17,9 @@ public class KnownDeviceTable
     {
         return _devices.Values.ToList();
     }
+
+    public bool TryGet(IeeeAddress address, out ZigbeeDevice device)
+    {
+        return _devices.TryGetValue(address, out device!);
+    }
 }

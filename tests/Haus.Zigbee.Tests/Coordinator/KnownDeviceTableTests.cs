@@ -52,6 +52,29 @@ public class KnownDeviceTableTests
         Assert.Equal(new[] { updated }, table.GetDevices());
     }
 
+    [Fact]
+    public void WhenAddressIsKnownThenTryGetReturnsTrueAndTheDevice()
+    {
+        var table = new KnownDeviceTable();
+        var device = DeviceWith(0x00124b0001234567, 0x1234);
+        table.AddOrUpdate(device);
+
+        var found = table.TryGet(device.IeeeAddress, out var result);
+
+        Assert.True(found);
+        Assert.Equal(device, result);
+    }
+
+    [Fact]
+    public void WhenAddressIsUnknownThenTryGetReturnsFalse()
+    {
+        var table = new KnownDeviceTable();
+
+        var found = table.TryGet(new IeeeAddress(0x1), out _);
+
+        Assert.False(found);
+    }
+
     private static ZigbeeDevice DeviceWith(ulong ieeeAddress, ushort networkAddress)
     {
         return new ZigbeeDevice(new IeeeAddress(ieeeAddress), networkAddress, Array.Empty<ZigbeeEndpoint>());
