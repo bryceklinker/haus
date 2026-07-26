@@ -71,6 +71,32 @@ public class ZclAttributeReportParserTests
     }
 
     [Fact]
+    public void WhenParsingReportAttributesWithUint8ValueThenDecodesTheSingleByteValue()
+    {
+        var payload = new byte[] { 0x00, 0x00, 0x20, 0x64 };
+
+        var result = ZclAttributeReportParser.ParseReportAttributes(payload);
+
+        Assert.True(result.IsComplete);
+        var attribute = Assert.Single(result.Attributes);
+        Assert.Equal(ZclDataType.Uint8, attribute.Value.DataType);
+        Assert.Equal(0x64ul, attribute.Value.AsUnsigned());
+    }
+
+    [Fact]
+    public void WhenParsingReportAttributesWithBitmap8ValueThenDecodesTheSingleByteValue()
+    {
+        var payload = new byte[] { 0x00, 0x00, 0x18, 0x01 };
+
+        var result = ZclAttributeReportParser.ParseReportAttributes(payload);
+
+        Assert.True(result.IsComplete);
+        var attribute = Assert.Single(result.Attributes);
+        Assert.Equal(ZclDataType.Bitmap8, attribute.Value.DataType);
+        Assert.Equal(0x01ul, attribute.Value.AsUnsigned());
+    }
+
+    [Fact]
     public void WhenParsingReportAttributesWithUnsupportedDataTypeThenReturnsRecordsDecodedBeforeItWithoutThrowing()
     {
         var payload = new byte[] { 0x00, 0x00, 0x21, 0x34, 0x12, 0x01, 0x00, 0x42, 0x03, 0x61, 0x62, 0x63 };

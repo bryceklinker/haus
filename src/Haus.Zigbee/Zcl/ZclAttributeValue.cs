@@ -4,7 +4,9 @@ namespace Haus.Zigbee.Zcl;
 
 public enum ZclDataType : byte
 {
+    Bitmap8 = 0x18,
     Bool = 0x10,
+    Uint8 = 0x20,
     Uint16 = 0x21,
     Int16 = 0x29,
 }
@@ -13,7 +15,9 @@ public static class ZclDataTypeWidths
 {
     private static readonly IReadOnlyDictionary<byte, int> WidthsByType = new Dictionary<byte, int>
     {
+        [(byte)ZclDataType.Bitmap8] = 1,
         [(byte)ZclDataType.Bool] = 1,
+        [(byte)ZclDataType.Uint8] = 1,
         [(byte)ZclDataType.Uint16] = 2,
         [(byte)ZclDataType.Int16] = 2,
     };
