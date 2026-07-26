@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Haus.Zigbee;
 
-public sealed record ZigbeeDeviceJoined(
+public record ZigbeeDeviceJoined(
     IeeeAddress IeeeAddress,
     ushort NetworkAddress,
     IReadOnlyList<ZigbeeEndpoint> Endpoints,

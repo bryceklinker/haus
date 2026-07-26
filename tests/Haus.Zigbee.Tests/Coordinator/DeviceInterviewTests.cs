@@ -1,50 +1,52 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Coordinator;
-using Haus.Zigbee.Serial;
-using Haus.Zigbee.Tests.Connection;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Coordinator;
 
 public class DeviceInterviewTests
 {
-    private const byte IndicationAvailable = 0x08;
     private const ushort ZdpProfile = 0x0000;
+    private const ushort HomeAutomationProfile = 0x0104;
     private const ushort DeviceAnnounceCluster = 0x0013;
     private const ushort ActiveEndpointsResponseCluster = 0x8005;
+    private const ushort SimpleDescriptorResponseCluster = 0x8004;
+    private const ushort BasicCluster = 0x0000;
+    private const byte CharacterStringType = 0x42;
+    private const byte ReadAttributesResponseCommand = 0x01;
+    private const byte GlobalServerToClientControl = 0x18;
+    private const ushort ManufacturerNameAttribute = 0x0004;
+    private const ushort ModelIdentifierAttribute = 0x0005;
 
-    private readonly ScriptedSerialTransport _senderTransport = new();
-    private readonly ScriptedSerialTransport _pollTransport = new();
+    private readonly FakeDeconzDongle _dongle = new();
     private readonly ApsPollLoop _pollLoop;
     private readonly KnownDeviceTable _knownDeviceTable = new();
     private readonly DeviceInterview _interview;
-    private readonly List<ZigbeeDeviceJoined> _joined = new();
+    private readonly TaskCompletionSource<ZigbeeDeviceJoined> _joined = new();
 
     public DeviceInterviewTests()
     {
-        _pollLoop = new ApsPollLoop(new DeconzChannel(_pollTransport));
-        var sender = new ApsSender(_pollLoop, new DeconzChannel(_senderTransport));
+        _pollLoop = new ApsPollLoop(new DeconzChannel(_dongle.PollTransport));
+        var sender = new ApsSender(_pollLoop, new DeconzChannel(_dongle.SendTransport));
         _interview = new DeviceInterview(_pollLoop, sender, _knownDeviceTable);
-        _interview.DeviceJoined += (_, joined) => _joined.Add(joined);
+        _interview.DeviceJoined += (_, joined) => _joined.TrySetResult(joined);
     }
 
     [Fact]
     public async Task WhenADeviceWithNoEndpointsAnnouncesThenItJoinsWithNoEndpointsAndEmptyBasicInfo()
     {
         var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
-        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
-        QueueIndication(pollSequenceNumber: 0, Announce(device));
-        QueueIndication(pollSequenceNumber: 2, ActiveEndpointsResponse(device, endpointIds: new byte[0]));
+        _dongle.InjectIndication(Announce(device));
+        _dongle.ReleaseAfterSend(sendIndex: 0, ActiveEndpointsResponse(device, endpointIds: new byte[0]));
 
-        await _pollLoop.PollOnceAsync(CancellationToken.None);
-        await _pollLoop.PollOnceAsync(CancellationToken.None);
+        var joined = await RunInterview();
 
-        var joined = Assert.Single(_joined);
         Assert.Equal(new IeeeAddress(device.Ieee), joined.IeeeAddress);
         Assert.Equal(device.Nwk, joined.NetworkAddress);
         Assert.Empty(joined.Endpoints);
@@ -56,22 +58,102 @@ public class DeviceInterviewTests
     public async Task WhenADeviceAnnouncesThenItIsRegisteredInTheKnownDeviceTable()
     {
         var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
-        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
-        QueueIndication(pollSequenceNumber: 0, Announce(device));
-        QueueIndication(pollSequenceNumber: 2, ActiveEndpointsResponse(device, endpointIds: new byte[0]));
+        _dongle.InjectIndication(Announce(device));
+        _dongle.ReleaseAfterSend(sendIndex: 0, ActiveEndpointsResponse(device, endpointIds: new byte[0]));
 
-        await _pollLoop.PollOnceAsync(CancellationToken.None);
-        await _pollLoop.PollOnceAsync(CancellationToken.None);
+        await RunInterview();
 
         var known = Assert.Single(_knownDeviceTable.GetDevices());
         Assert.Equal(new IeeeAddress(device.Ieee), known.IeeeAddress);
         Assert.Equal(device.Nwk, known.NetworkAddress);
     }
 
-    private void QueueIndication(byte pollSequenceNumber, IndicationBody body)
+    [Fact]
+    public async Task WhenADeviceIsFullyInterviewedThenTheJoinEventCarriesItsEndpointsAndBasicInfo()
     {
-        _pollTransport.QueueResponse(Framed(DeviceStateResponse(pollSequenceNumber, deviceState: IndicationAvailable)));
-        _pollTransport.QueueResponse(Framed(IndicationFrame((byte)(pollSequenceNumber + 1), body)));
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        _dongle.InjectIndication(Announce(device));
+        _dongle.ReleaseAfterSend(sendIndex: 0, ActiveEndpointsResponse(device, endpointIds: new byte[] { 0x01 }));
+        _dongle.ReleaseAfterSend(
+            sendIndex: 1,
+            SimpleDescriptorResponse(
+                device,
+                endpoint: 0x01,
+                profileId: HomeAutomationProfile,
+                deviceId: 0x0100,
+                inClusters: new ushort[] { 0x0000, 0x0006 },
+                outClusters: new ushort[] { 0x0019 }
+            )
+        );
+        _dongle.ReleaseAfterSend(
+            sendIndex: 2,
+            BasicReadResponse(device, endpoint: 0x01, profileId: HomeAutomationProfile, "IKEA", "LED1836G9")
+        );
+
+        var joined = await RunInterview();
+
+        var endpoint = Assert.Single(joined.Endpoints);
+        Assert.Equal(0x01, endpoint.EndpointId);
+        Assert.Equal(HomeAutomationProfile, endpoint.ProfileId);
+        Assert.Equal(0x0100, endpoint.DeviceId);
+        Assert.Equal(new ushort[] { 0x0000, 0x0006 }, endpoint.InClusters);
+        Assert.Equal(new ushort[] { 0x0019 }, endpoint.OutClusters);
+        Assert.Equal("IKEA", joined.ManufacturerName);
+        Assert.Equal("LED1836G9", joined.ModelIdentifier);
+    }
+
+    [Fact]
+    public async Task WhenNoEndpointExposesTheBasicClusterThenTheFirstEndpointIsReadForBasicInfo()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        _dongle.InjectIndication(Announce(device));
+        _dongle.ReleaseAfterSend(sendIndex: 0, ActiveEndpointsResponse(device, endpointIds: new byte[] { 0x0a, 0x0b }));
+        _dongle.ReleaseAfterSend(
+            sendIndex: 1,
+            SimpleDescriptorResponse(
+                device,
+                endpoint: 0x0a,
+                profileId: HomeAutomationProfile,
+                deviceId: 0x0100,
+                inClusters: new ushort[] { 0x0006 },
+                outClusters: new ushort[0]
+            )
+        );
+        _dongle.ReleaseAfterSend(
+            sendIndex: 2,
+            SimpleDescriptorResponse(
+                device,
+                endpoint: 0x0b,
+                profileId: HomeAutomationProfile,
+                deviceId: 0x0100,
+                inClusters: new ushort[] { 0x0008 },
+                outClusters: new ushort[0]
+            )
+        );
+        _dongle.ReleaseAfterSend(
+            sendIndex: 3,
+            BasicReadResponse(device, endpoint: 0x0a, profileId: HomeAutomationProfile, "Aqara", "lumi.sensor")
+        );
+
+        var joined = await RunInterview();
+
+        Assert.Equal(2, joined.Endpoints.Count);
+        Assert.Equal("Aqara", joined.ManufacturerName);
+        Assert.Equal("lumi.sensor", joined.ModelIdentifier);
+    }
+
+    private async Task<ZigbeeDeviceJoined> RunInterview()
+    {
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        while (!_joined.Task.IsCompleted && !timeout.IsCancellationRequested)
+        {
+            await _pollLoop.PollOnceAsync(CancellationToken.None);
+            if (!_joined.Task.IsCompleted)
+                await Task.Delay(1);
+        }
+
+        Assert.True(_joined.Task.IsCompleted, "interview did not complete within the timeout");
+        return await _joined.Task;
     }
 
     private static IndicationBody Announce(DeviceScript device)
@@ -98,37 +180,58 @@ public class DeviceInterviewTests
         );
     }
 
-    private static byte[] DeviceStateResponse(byte sequenceNumber, byte deviceState)
+    private static IndicationBody SimpleDescriptorResponse(
+        DeviceScript device,
+        byte endpoint,
+        ushort profileId,
+        ushort deviceId,
+        ushort[] inClusters,
+        ushort[] outClusters
+    )
     {
-        return new byte[] { 0x07, sequenceNumber, 0x00, 0x00, 0x00, deviceState };
+        var descriptor = new List<byte> { endpoint };
+        AddUInt16(descriptor, profileId);
+        AddUInt16(descriptor, deviceId);
+        descriptor.Add(0x00);
+        AddClusterList(descriptor, inClusters);
+        AddClusterList(descriptor, outClusters);
+
+        var asdu = new List<byte> { 0x00, 0x00 };
+        AddUInt16(asdu, device.Nwk);
+        asdu.Add((byte)descriptor.Count);
+        asdu.AddRange(descriptor);
+        return new IndicationBody(device.Nwk, endpoint, ZdpProfile, SimpleDescriptorResponseCluster, asdu.ToArray());
     }
 
-    private static byte[] IndicationFrame(byte sequenceNumber, IndicationBody body)
+    private static IndicationBody BasicReadResponse(
+        DeviceScript device,
+        byte endpoint,
+        ushort profileId,
+        string manufacturer,
+        string model
+    )
     {
-        var header = new byte[] { 0x17, sequenceNumber, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        var destination = new byte[] { 0x02, 0x00, 0x00, 0x01 };
-        var source = new byte[]
-        {
-            0x02,
-            (byte)(body.SourceNwk & 0xff),
-            (byte)(body.SourceNwk >> 8),
-            body.SourceEndpoint,
-        };
-        var profileAndCluster = new byte[]
-        {
-            (byte)(body.ProfileId & 0xff),
-            (byte)(body.ProfileId >> 8),
-            (byte)(body.ClusterId & 0xff),
-            (byte)(body.ClusterId >> 8),
-        };
-        var asdu = Concat(new byte[] { (byte)(body.Asdu.Length & 0xff), (byte)(body.Asdu.Length >> 8) }, body.Asdu);
-        var reservedAndLinkQuality = new byte[] { 0x00, 0x00, 0xff };
-        return Concat(header, destination, source, profileAndCluster, asdu, reservedAndLinkQuality);
+        var frame = new List<byte> { GlobalServerToClientControl, 0x00, ReadAttributesResponseCommand };
+        AddStringAttribute(frame, ManufacturerNameAttribute, manufacturer);
+        AddStringAttribute(frame, ModelIdentifierAttribute, model);
+        return new IndicationBody(device.Nwk, endpoint, profileId, BasicCluster, frame.ToArray());
     }
 
-    private static byte[] DeconzAck(byte sequenceNumber)
+    private static void AddStringAttribute(List<byte> frame, ushort attributeId, string value)
     {
-        return new byte[] { 0x12, sequenceNumber, 0x00, 0x00, 0x00 };
+        AddUInt16(frame, attributeId);
+        frame.Add(0x00);
+        frame.Add(CharacterStringType);
+        var bytes = Encoding.ASCII.GetBytes(value);
+        frame.Add((byte)bytes.Length);
+        frame.AddRange(bytes);
+    }
+
+    private static void AddClusterList(List<byte> bytes, ushort[] clusters)
+    {
+        bytes.Add((byte)clusters.Length);
+        foreach (var cluster in clusters)
+            AddUInt16(bytes, cluster);
     }
 
     private static void AddUInt16(List<byte> bytes, ushort value)
@@ -143,25 +246,5 @@ public class DeviceInterviewTests
             bytes.Add((byte)((value >> shift) & 0xff));
     }
 
-    private static byte[] Concat(params byte[][] segments)
-    {
-        return segments.SelectMany(segment => segment).ToArray();
-    }
-
-    private static byte[] Framed(byte[] frame)
-    {
-        var checksum = DeconzCrc.Compute(frame);
-        var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
-        return new SlipEncoder().Encode(withChecksum.ToArray());
-    }
-
     private sealed record DeviceScript(ushort Nwk, ulong Ieee);
-
-    private sealed record IndicationBody(
-        ushort SourceNwk,
-        byte SourceEndpoint,
-        ushort ProfileId,
-        ushort ClusterId,
-        byte[] Asdu
-    );
 }
