@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Haus.Zigbee.Coordinator;
 using Xunit;
@@ -18,7 +19,7 @@ public class KnownDeviceTableTests
     public void WhenADeviceIsAddedThenItAppearsInGetDevices()
     {
         var table = new KnownDeviceTable();
-        var device = new ZigbeeDevice(new IeeeAddress(0x00124b0001234567), 0x1234, new ZigbeeEndpoint[0]);
+        var device = DeviceWith(0x00124b0001234567, 0x1234);
 
         table.AddOrUpdate(device);
 
@@ -29,8 +30,8 @@ public class KnownDeviceTableTests
     public void WhenTwoDevicesWithDifferentAddressesAreAddedThenBothAppearInGetDevices()
     {
         var table = new KnownDeviceTable();
-        var first = new ZigbeeDevice(new IeeeAddress(0x00124b0001234567), 0x1234, new ZigbeeEndpoint[0]);
-        var second = new ZigbeeDevice(new IeeeAddress(0x00124b0007654321), 0x5678, new ZigbeeEndpoint[0]);
+        var first = DeviceWith(0x00124b0001234567, 0x1234);
+        var second = DeviceWith(0x00124b0007654321, 0x5678);
 
         table.AddOrUpdate(first);
         table.AddOrUpdate(second);
@@ -42,13 +43,17 @@ public class KnownDeviceTableTests
     public void WhenADeviceIsAddedWithAnAlreadyKnownAddressThenItReplacesThePriorEntry()
     {
         var table = new KnownDeviceTable();
-        var address = new IeeeAddress(0x00124b0001234567);
-        var original = new ZigbeeDevice(address, 0x1234, new ZigbeeEndpoint[0]);
-        var updated = new ZigbeeDevice(address, 0x9999, new ZigbeeEndpoint[0]);
+        var original = DeviceWith(0x00124b0001234567, 0x1234);
+        var updated = DeviceWith(0x00124b0001234567, 0x9999);
 
         table.AddOrUpdate(original);
         table.AddOrUpdate(updated);
 
         Assert.Equal(new[] { updated }, table.GetDevices());
+    }
+
+    private static ZigbeeDevice DeviceWith(ulong ieeeAddress, ushort networkAddress)
+    {
+        return new ZigbeeDevice(new IeeeAddress(ieeeAddress), networkAddress, Array.Empty<ZigbeeEndpoint>());
     }
 }
