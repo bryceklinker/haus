@@ -45,7 +45,7 @@ public class CommandSenderTests
 
         _ = _commandSender.SendCommandAsync(request, Cancelled());
 
-        var expectedAsdu = ZclCommandBuilder.Build(
+        var expectedAsdu = ZclCommandFactory.Encode(
             new ZclCommand(
                 TransactionSequenceNumber: 0,
                 CommandId: 0x01,

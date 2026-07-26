@@ -3,10 +3,10 @@ using Xunit;
 
 namespace Haus.Zigbee.Tests.Zcl;
 
-public class ZclCommandBuilderTests
+public class ZclCommandFactoryTests
 {
     [Fact]
-    public void WhenBuildingCommandWithEmptyPayloadThenProducesJustTheClusterSpecificHeaderBytes()
+    public void WhenEncodingCommandWithEmptyPayloadThenProducesJustTheClusterSpecificHeaderBytes()
     {
         var command = new ZclCommand(
             TransactionSequenceNumber: 0x42,
@@ -15,13 +15,13 @@ public class ZclCommandBuilderTests
             DisableDefaultResponse: false
         );
 
-        var bytes = ZclCommandBuilder.Build(command);
+        var bytes = ZclCommandFactory.Encode(command);
 
         Assert.Equal(new byte[] { 0b0000_0001, 0x42, 0x00 }, bytes);
     }
 
     [Fact]
-    public void WhenBuildingCommandWithPayloadThenAppendsPayloadAfterTheHeaderCarryingTheCommandId()
+    public void WhenEncodingCommandWithPayloadThenAppendsPayloadAfterTheHeaderCarryingTheCommandId()
     {
         var command = new ZclCommand(
             TransactionSequenceNumber: 0x11,
@@ -30,13 +30,13 @@ public class ZclCommandBuilderTests
             DisableDefaultResponse: true
         );
 
-        var bytes = ZclCommandBuilder.Build(command);
+        var bytes = ZclCommandFactory.Encode(command);
 
         Assert.Equal(new byte[] { 0b0001_0001, 0x11, 0x04, 0xfe, 0x0a }, bytes);
     }
 
     [Fact]
-    public void WhenBuildingManufacturerSpecificCommandThenHeaderCarriesCommandIdAndManufacturerCodeWithPayloadFollowing()
+    public void WhenEncodingManufacturerSpecificCommandThenHeaderCarriesCommandIdAndManufacturerCodeWithPayloadFollowing()
     {
         var command = new ZclCommand(
             TransactionSequenceNumber: 0x05,
@@ -46,7 +46,7 @@ public class ZclCommandBuilderTests
             ManufacturerCode: 0x100b
         );
 
-        var bytes = ZclCommandBuilder.Build(command);
+        var bytes = ZclCommandFactory.Encode(command);
 
         var decoding = ZclFrameHeaderCodec.Decode(bytes);
         Assert.Equal(

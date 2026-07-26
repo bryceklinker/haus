@@ -25,7 +25,7 @@ public class CommandSender
 
     public Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token)
     {
-        var asdu = ZclCommandBuilder.Build(
+        var asdu = ZclCommandFactory.Encode(
             new ZclCommand(
                 _transactionSequenceNumber++,
                 request.CommandId,
