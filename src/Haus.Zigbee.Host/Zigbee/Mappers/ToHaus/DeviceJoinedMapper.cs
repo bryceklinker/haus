@@ -6,7 +6,7 @@ namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 
 public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
 {
-    public DeviceDiscoveredEvent Map(Haus.Zigbee.ZigbeeDeviceJoined joined)
+    public DeviceDiscoveredEvent Map(ZigbeeDeviceJoined joined)
     {
         return new DeviceDiscoveredEvent(
             ExternalIdMap.ToExternalId(joined.IeeeAddress),
@@ -15,7 +15,7 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
         );
     }
 
-    private static MetadataModel[] CreateMetadata(Haus.Zigbee.ZigbeeDeviceJoined joined)
+    private static MetadataModel[] CreateMetadata(ZigbeeDeviceJoined joined)
     {
         return
         [

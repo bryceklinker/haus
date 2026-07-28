@@ -3,19 +3,14 @@ using System.Threading.Tasks;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Discovery;
-using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Lighting;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
-using Haus.Zigbee;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
-using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
-using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
 using Haus.Zigbee.Host.Zigbee.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Services;
@@ -29,21 +24,16 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        var provider = ServiceProviderFactory.Create(mqttFactory: new FakeMqttClientFactory());
+        _coordinator = new FakeZigbeeCoordinator();
+        var provider = ServiceProviderFactory.Create(
+            mqttFactory: new FakeMqttClientFactory(),
+            zigbeeCoordinator: _coordinator
+        );
         var mqttClientFactory = provider.GetRequiredService<IHausMqttClientFactory>();
         _hausMqttClient = await mqttClientFactory.CreateClient();
-        _coordinator = new FakeZigbeeCoordinator();
-        _addressRegistry = new DeviceAddressRegistry();
+        _addressRegistry = provider.GetRequiredService<DeviceAddressRegistry>();
 
-        _relay = new ZigbeeOutboundRelay(
-            _coordinator,
-            new HausDiscoveryToZigbeeMapper(),
-            new HausLightingToZigbeeMapper(),
-            new DevicesMapper(),
-            _addressRegistry,
-            _hausMqttClient,
-            NullLogger<ZigbeeOutboundRelay>.Instance
-        );
+        _relay = provider.GetRequiredService<ZigbeeOutboundRelay>();
     }
 
     public async Task DisposeAsync()

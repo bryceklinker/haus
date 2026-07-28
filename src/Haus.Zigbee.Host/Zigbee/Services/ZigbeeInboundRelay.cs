@@ -11,22 +11,25 @@ public class ZigbeeInboundRelay(
     DeviceAddressRegistry addressRegistry,
     DeviceJoinedMapper deviceJoinedMapper,
     DeviceEventMapper deviceEventMapper,
-    IHausMqttClient hausMqttClient,
+    IHausMqttClientFactory mqttClientFactory,
     IOptions<HausOptions> hausOptions
 )
 {
-    public Task HandleDeviceJoinedAsync(Haus.Zigbee.ZigbeeDeviceJoined joined)
+    public async Task HandleDeviceJoinedAsync(ZigbeeDeviceJoined joined)
     {
         addressRegistry.Register(joined.NetworkAddress, ExternalIdMap.ToExternalId(joined.IeeeAddress));
         var discovered = deviceJoinedMapper.Map(joined);
-        return hausMqttClient.PublishHausEventAsync(discovered);
+        var mqttClient = await mqttClientFactory.CreateClient();
+        await mqttClient.PublishHausEventAsync(discovered);
     }
 
-    public Task HandleAttributeReportedAsync(Haus.Zigbee.ZigbeeAttributeReport report)
+    public async Task HandleAttributeReportedAsync(ZigbeeAttributeReport report)
     {
         var hausEvent = deviceEventMapper.Map(report);
-        return hausEvent == null
-            ? Task.CompletedTask
-            : hausMqttClient.PublishAsync(hausOptions.GetEventsTopic(), hausEvent);
+        if (hausEvent == null)
+            return;
+        
+        var mqttClient = await mqttClientFactory.CreateClient();
+        await mqttClient.PublishAsync(hausOptions.GetEventsTopic(), hausEvent);
     }
 }

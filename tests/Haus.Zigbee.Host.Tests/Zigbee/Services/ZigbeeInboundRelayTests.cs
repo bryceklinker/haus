@@ -1,24 +1,14 @@
-using System;
 using System.Threading.Tasks;
-using Haus.Core.Models;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Devices.Sensors.Battery;
-using Haus.Core.Models.ExternalMessages;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
-using Haus.Zigbee;
-using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
-using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
-using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
-using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
 using Haus.Zigbee.Host.Zigbee.Services;
 using Haus.Zigbee.Zcl;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Services;
@@ -37,19 +27,9 @@ public class ZigbeeInboundRelayTests : IAsyncLifetime
         var provider = ServiceProviderFactory.Create(mqttFactory: new FakeMqttClientFactory());
         var mqttClientFactory = provider.GetRequiredService<IHausMqttClientFactory>();
         _hausMqttClient = await mqttClientFactory.CreateClient();
-        _addressRegistry = new DeviceAddressRegistry();
+        _addressRegistry = provider.GetRequiredService<DeviceAddressRegistry>();
 
-        var hausOptions = provider.GetRequiredService<IOptions<HausOptions>>();
-        var deviceJoinedMapper = new DeviceJoinedMapper(new DeviceTypeResolver(hausOptions));
-        var deviceEventMapper = new DeviceEventMapper(_addressRegistry, NullLogger<DeviceEventMapper>.Instance);
-
-        _relay = new ZigbeeInboundRelay(
-            _addressRegistry,
-            deviceJoinedMapper,
-            deviceEventMapper,
-            _hausMqttClient,
-            hausOptions
-        );
+        _relay = provider.GetRequiredService<ZigbeeInboundRelay>();
     }
 
     public async Task DisposeAsync()

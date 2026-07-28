@@ -4,7 +4,6 @@ using Haus.Core.Models;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Mqtt.Client;
-using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
 using Haus.Zigbee.Serial.Frames;
@@ -19,7 +18,7 @@ public class ZigbeeOutboundRelay(
     HausLightingToZigbeeMapper lightingMapper,
     DevicesMapper devicesMapper,
     DeviceAddressRegistry addressRegistry,
-    IHausMqttClient hausMqttClient,
+    IHausMqttClientFactory mqttClientFactory,
     ILogger<ZigbeeOutboundRelay> logger
 )
 {
@@ -57,6 +56,7 @@ public class ZigbeeOutboundRelay(
         foreach (var device in devices)
             addressRegistry.Register(device.NetworkAddress, ExternalIdMap.ToExternalId(device.IeeeAddress));
 
+        var hausMqttClient = await mqttClientFactory.CreateClient();
         foreach (var discovered in devicesMapper.Map(devices))
             await hausMqttClient.PublishHausEventAsync(discovered);
     }
