@@ -46,7 +46,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(1, page.FindAllByComponent<MudProgressCircular>().Count());
+            Assert.Single(page.FindAllByComponent<MudProgressCircular>());
         });
     }
 
@@ -162,7 +162,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         await Eventually.AssertAsync(async () =>
         {
             var content = postRequest?.Content != null ? await postRequest.Content.ReadFromJsonAsync<long[]>() : [];
-            Assert.Contains(76L, content);
+            Assert.Contains(76L, content ?? []);
         });
     }
 
@@ -178,7 +178,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(1, view.FindAllByComponent<MudPaper>(opts => opts.WithText(device.ExternalId)).Count());
+            Assert.Single(view.FindAllByComponent<MudPaper>(opts => opts.WithText(device.ExternalId)));
         });
     }
 }

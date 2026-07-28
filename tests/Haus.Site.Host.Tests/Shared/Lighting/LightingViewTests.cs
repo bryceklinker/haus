@@ -46,7 +46,7 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var state = view.FindByComponent<MudSwitch<bool>>();
-        Assert.Equal(true, state.Instance.GetState(x => x.Value));
+        Assert.True(state.Instance.GetState(x => x.Value));
     }
 
     [Fact]
@@ -94,9 +94,9 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var temp = FindSliderById<double>(view, "temperature");
-        Assert.Equal(2000, temp.Instance.Min);
-        Assert.Equal(4700, temp.Instance.Value);
-        Assert.Equal(6500, temp.Instance.Max);
+        Assert.Equal(2000, temp.Instance.GetState(x => x.Min));
+        Assert.Equal(4700, temp.Instance.GetState(x => x.Value));
+        Assert.Equal(6500, temp.Instance.GetState(x => x.Max));
     }
 
     [Fact]
@@ -106,9 +106,9 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var red = FindSliderById<byte>(view, "red");
-        Assert.Equal(0, red.Instance.Min);
-        Assert.Equal(100, red.Instance.Value);
-        Assert.Equal(255, red.Instance.Max);
+        Assert.Equal(0, red.Instance.GetState(x => x.Min));
+        Assert.Equal(100, red.Instance.GetState(x => x.Value));
+        Assert.Equal(255, red.Instance.GetState(x => x.Max));
     }
 
     [Fact]
@@ -118,9 +118,9 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var green = FindSliderById<byte>(view, "green");
-        Assert.Equal(0, green.Instance.Min);
-        Assert.Equal(50, green.Instance.Value);
-        Assert.Equal(255, green.Instance.Max);
+        Assert.Equal(0, green.Instance.GetState(x => x.Min));
+        Assert.Equal(50, green.Instance.GetState(x => x.Value));
+        Assert.Equal(255, green.Instance.GetState(x => x.Max));
     }
 
     [Fact]
@@ -130,9 +130,9 @@ public class LightingViewTests : HausSiteTestContext
         var view = RenderLighting(lighting);
 
         var blue = FindSliderById<byte>(view, "blue");
-        Assert.Equal(0, blue.Instance.Min);
-        Assert.Equal(150, blue.Instance.Value);
-        Assert.Equal(255, blue.Instance.Max);
+        Assert.Equal(0, blue.Instance.GetState(x => x.Min));
+        Assert.Equal(150, blue.Instance.GetState(x => x.Value));
+        Assert.Equal(255, blue.Instance.GetState(x => x.Max));
     }
 
     [Fact]

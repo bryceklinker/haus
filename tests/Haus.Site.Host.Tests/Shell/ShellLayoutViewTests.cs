@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Haus.Site.Host.Shell;
 using Haus.Site.Host.Tests.Support;
@@ -16,7 +15,7 @@ public class ShellLayoutViewTests : HausSiteTestContext
 
         await shell.FindByTag("button").ClickAsync(new MouseEventArgs());
 
-        Assert.Equal(1, shell.FindAllByClass("mud-drawer--closed").Count());
+        Assert.Single(shell.FindAllByClass("mud-drawer--closed"));
     }
 
     [Fact]
@@ -27,7 +26,7 @@ public class ShellLayoutViewTests : HausSiteTestContext
         await shell.FindByTag("button").ClickAsync(new MouseEventArgs());
         await shell.FindByTag("button").ClickAsync(new MouseEventArgs());
 
-        Assert.Equal(1, shell.FindAllByClass("mud-drawer--open").Count());
+        Assert.Single(shell.FindAllByClass("mud-drawer--open"));
     }
 
     [Fact]

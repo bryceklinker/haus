@@ -8,6 +8,7 @@ using Haus.Site.Host.Shared.Lighting;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
 using MudBlazor;
+using MudBlazor.Extensions;
 
 namespace Haus.Site.Host.Tests.DeviceSimulator;
 
@@ -21,12 +22,12 @@ public class SimulatedDeviceViewTests : HausSiteTestContext
         var view = RenderWithDevice(device);
 
         var idField = view.FindMudTextFieldById<string>("id").Instance;
-        Assert.True(idField.Disabled);
-        Assert.Equal(device.Id, idField.Value);
+        Assert.True(idField.GetState(x => x.Disabled));
+        Assert.Equal(device.Id, idField.GetState(x => x.Value));
 
         var deviceTypeField = view.FindMudTextFieldById<string>("deviceType").Instance;
-        Assert.True(deviceTypeField.Disabled);
-        Assert.Equal($"{DeviceType.LightSensor}", deviceTypeField.Value);
+        Assert.True(deviceTypeField.GetState(x => x.Disabled));
+        Assert.Equal($"{DeviceType.LightSensor}", deviceTypeField.GetState(x => x.Value));
     }
 
     [Fact]
@@ -37,12 +38,12 @@ public class SimulatedDeviceViewTests : HausSiteTestContext
         var view = RenderWithDevice(device);
 
         var keyField = view.FindMudTextFieldById<string>("key").Instance;
-        Assert.Equal("bill", keyField.Value);
-        Assert.True(keyField.Disabled);
+        Assert.Equal("bill", keyField.GetState(x => x.Value));
+        Assert.True(keyField.GetState(x => x.Disabled));
 
         var valueField = view.FindMudTextFieldById<string>("value").Instance;
-        Assert.True(valueField.Disabled);
-        Assert.Equal("bob", valueField.Value);
+        Assert.True(valueField.GetState(x => x.Disabled));
+        Assert.Equal("bob", valueField.GetState(x => x.Value));
     }
 
     [Fact]
@@ -73,8 +74,8 @@ public class SimulatedDeviceViewTests : HausSiteTestContext
         var view = RenderWithDevice(device);
 
         var toggle = view.FindByComponent<MudSwitch<bool>>();
-        Assert.True(toggle.Instance.Value);
-        Assert.True(toggle.Instance.Disabled);
+        Assert.True(toggle.Instance.GetState(x => x.Value));
+        Assert.True(toggle.Instance.GetState(x => x.Disabled));
     }
 
     [Fact]

@@ -54,7 +54,7 @@
     
     private async Task HandleLightingChanged(LightingModel? lighting)
     {
-        if (lighting == null || lighting == Room?.Lighting)
+        if (lighting == null || lighting == Room?.Lighting || Room == null)
         {
             return;
         }
