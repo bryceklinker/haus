@@ -20,6 +20,11 @@ public class ZigbeeToHausRelay(
     ILogger<ZigbeeToHausRelay> logger
 ) : BackgroundService
 {
+    // The coordinator (e.g. the physical deCONZ dongle, or a serial port not present on this
+    // machine at all) may not be reachable when the host starts, and a failed connect must not
+    // take the whole host down with it -- this is how often ExecuteAsync retries while disconnected.
+    private static readonly TimeSpan ReconnectInterval = TimeSpan.FromSeconds(30);
+
     private IHausMqttClient? _hausMqttClient;
 
     private IHausMqttClient HausMqttClient
@@ -33,12 +38,13 @@ public class ZigbeeToHausRelay(
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
-        await coordinator.ConnectAsync(cancellationToken);
         coordinator.DeviceJoined += OnDeviceJoined;
         coordinator.AttributeReported += OnAttributeReported;
 
         _hausMqttClient = await hausMqttClientFactory.CreateClient();
         await HausMqttClient.SubscribeAsync(hausOptions.Value.CommandsTopic, HandleHausCommandAsync);
+
+        await TryConnectAsync(cancellationToken);
         await base.StartAsync(cancellationToken);
     }
 
@@ -53,7 +59,37 @@ public class ZigbeeToHausRelay(
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
-            await Task.Delay(1000, stoppingToken);
+        {
+            if (!coordinator.IsConnected)
+                await TryConnectAsync(stoppingToken);
+
+            await DelayAsync(stoppingToken);
+        }
+    }
+
+    private async Task TryConnectAsync(CancellationToken token)
+    {
+        try
+        {
+            await coordinator.ConnectAsync(token);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(
+                e,
+                "Failed to connect to the Zigbee coordinator; will retry in {@Interval}",
+                ReconnectInterval
+            );
+        }
+    }
+
+    private static async Task DelayAsync(CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(ReconnectInterval, token);
+        }
+        catch (OperationCanceledException) { }
     }
 
     private Task HandleHausCommandAsync(MqttApplicationMessage message)

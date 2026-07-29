@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,12 +19,18 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
 
     public bool IsConnected { get; set; }
     public NetworkConfig? NetworkConfig { get; set; }
+    public Exception? ConnectShouldThrow { get; set; }
+    public int ConnectAttempts { get; private set; }
 
     public event System.EventHandler<ZigbeeAttributeReport>? AttributeReported;
     public event System.EventHandler<ZigbeeDeviceJoined>? DeviceJoined;
 
     public Task ConnectAsync(CancellationToken token)
     {
+        ConnectAttempts++;
+        if (ConnectShouldThrow != null)
+            throw ConnectShouldThrow;
+
         IsConnected = true;
         return Task.CompletedTask;
     }
