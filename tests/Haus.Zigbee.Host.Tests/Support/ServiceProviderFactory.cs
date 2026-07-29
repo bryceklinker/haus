@@ -11,15 +11,16 @@ namespace Haus.Zigbee.Host.Tests.Support;
 public static class ServiceProviderFactory
 {
     public static IServiceProvider Create(
-        IConfiguration? configuration = null, 
+        IConfiguration? configuration = null,
         IMqttFactory? mqttFactory = null,
         IZigbeeCoordinator? zigbeeCoordinator = null,
-        Action<IServiceCollection>? configureServices = null)
+        Action<IServiceCollection>? configureServices = null
+    )
     {
         var services = new ServiceCollection()
             .AddLogging(builder => builder.ClearProviders())
             .AddHausZigbee(configuration ?? ConfigurationFactory.CreateConfig());
-        
+
         if (mqttFactory != null)
         {
             services.RemoveAll<IMqttFactory>();
@@ -33,7 +34,7 @@ public static class ServiceProviderFactory
         }
 
         configureServices?.Invoke(services);
-        
+
         return services.BuildServiceProvider();
     }
 }

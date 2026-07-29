@@ -28,7 +28,7 @@ public class ZigbeeInboundRelay(
         var hausEvent = deviceEventMapper.Map(report);
         if (hausEvent == null)
             return;
-        
+
         var mqttClient = await mqttClientFactory.CreateClient();
         await mqttClient.PublishAsync(hausOptions.GetEventsTopic(), hausEvent);
     }
