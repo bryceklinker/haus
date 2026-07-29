@@ -70,6 +70,14 @@ public class ZigbeeCoordinator : IZigbeeCoordinator, IDisposable
         return Task.FromResult(_knownDeviceTable.GetDevices());
     }
 
+    public async Task<ZigbeeDeviceInfo?> ReadDeviceInfoAsync(IeeeAddress ieeeAddress, CancellationToken token)
+    {
+        if (!_knownDeviceTable.TryGet(ieeeAddress, out var device))
+            return null;
+
+        return await _deviceInterview.ReadBasicInfoAsync(device.NetworkAddress, device.Endpoints, token);
+    }
+
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)
     {
         return _permitJoinController.SetPermitJoinAsync(enabled, token);

@@ -14,6 +14,7 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public IReadOnlyList<ZigbeeDevice> DevicesToReturn { get; set; } = [];
     public ApsDataConfirm ConfirmToReturn { get; set; } =
         new(0, 0, 0, DeconzAddressMode.Nwk, 0, null, 0, 0, ConfirmStatus: 0);
+    public ZigbeeDeviceInfo? DeviceInfoToReturn { get; set; }
 
     public bool IsConnected { get; set; }
     public NetworkConfig? NetworkConfig { get; set; }
@@ -30,6 +31,11 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public Task<IReadOnlyList<ZigbeeDevice>> GetDevicesAsync(CancellationToken token)
     {
         return Task.FromResult(DevicesToReturn);
+    }
+
+    public Task<ZigbeeDeviceInfo?> ReadDeviceInfoAsync(IeeeAddress ieeeAddress, CancellationToken token)
+    {
+        return Task.FromResult(DeviceInfoToReturn);
     }
 
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)

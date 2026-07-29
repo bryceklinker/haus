@@ -20,6 +20,10 @@ public interface IZigbeeCoordinator
 
     Task<IReadOnlyList<ZigbeeDevice>> GetDevicesAsync(CancellationToken token);
 
+    // Returns null when the address is not (or no longer) in the known-device table; otherwise
+    // re-reads its Basic cluster, the same way a fresh device-interview would.
+    Task<ZigbeeDeviceInfo?> ReadDeviceInfoAsync(IeeeAddress ieeeAddress, CancellationToken token);
+
     Task SetPermitJoinAsync(bool enabled, CancellationToken token);
 
     Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token);

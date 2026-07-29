@@ -190,6 +190,34 @@ public class ZigbeeCoordinatorTests
         Assert.Equal(new IeeeAddress(0x00124b0001aabbcc), device.IeeeAddress);
     }
 
+    [Fact]
+    public async Task WhenAddressIsNotKnownThenReadDeviceInfoReturnsNull()
+    {
+        using var coordinator = new ZigbeeCoordinator(_dongle);
+
+        var info = await coordinator.ReadDeviceInfoAsync(new IeeeAddress(1), CancellationToken.None);
+
+        Assert.Null(info);
+    }
+
+    [Fact]
+    public async Task WhenDeviceIsKnownButHasNoEndpointsThenReadDeviceInfoReturnsEmptyInfo()
+    {
+        SetNetworkParameters();
+        using var coordinator = new ZigbeeCoordinator(_dongle);
+        var joined = new TaskCompletionSource<ZigbeeDeviceJoined>();
+        coordinator.DeviceJoined += (_, device) => joined.TrySetResult(device);
+        await coordinator.ConnectAsync(CancellationToken.None);
+        DriveJoinWithNoEndpoints(networkAddress: 0x1a2b, ieee: 0x00124b0001aabbcc);
+        await WaitFor(joined.Task);
+
+        var info = await coordinator.ReadDeviceInfoAsync(new IeeeAddress(0x00124b0001aabbcc), CancellationToken.None);
+
+        Assert.NotNull(info);
+        Assert.Equal(string.Empty, info!.ManufacturerName);
+        Assert.Equal(string.Empty, info.ModelIdentifier);
+    }
+
     private void DriveJoinWithNoEndpoints(ushort networkAddress, ulong ieee)
     {
         _dongle.InjectIndication(AnnounceIndication(networkAddress, ieee));
