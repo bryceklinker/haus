@@ -14,6 +14,7 @@ namespace Haus.Zigbee.Host.Zigbee.Services;
 // resolved, the same way a fresh join would.
 public class DeviceBackfillService(
     IZigbeeCoordinator coordinator,
+    DeviceAddressRegistry addressRegistry,
     DeviceJoinedMapper deviceJoinedMapper,
     IHausMqttClientFactory mqttClientFactory,
     ILogger<DeviceBackfillService> logger
@@ -33,6 +34,8 @@ public class DeviceBackfillService(
             var info = await coordinator.ReadDeviceInfoAsync(device.IeeeAddress, token);
             if (info == null)
                 return;
+
+            addressRegistry.Register(device.NetworkAddress, ExternalIdMap.ToExternalId(device.IeeeAddress));
 
             var joined = new Haus.Zigbee.ZigbeeDeviceJoined(
                 device.IeeeAddress,

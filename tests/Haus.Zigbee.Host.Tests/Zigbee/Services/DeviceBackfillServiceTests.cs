@@ -18,6 +18,7 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
     private IHausMqttClient? _mqttClient;
     private FakeZigbeeCoordinator? _coordinator;
     private DeviceBackfillService? _service;
+    private DeviceAddressRegistry? _addressRegistry;
 
     public async Task InitializeAsync()
     {
@@ -30,6 +31,7 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
         _mqttClient = await mqttClientFactory.CreateClient();
 
         _service = provider.GetRequiredService<DeviceBackfillService>();
+        _addressRegistry = provider.GetRequiredService<DeviceAddressRegistry>();
     }
 
     public async Task DisposeAsync()
@@ -56,6 +58,20 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
             Assert.Equal(ExternalIdMap.ToExternalId(address), published?.Id);
             Assert.NotEqual(Haus.Core.Models.Devices.DeviceType.Unknown, published?.DeviceType);
         });
+    }
+
+    [Fact]
+    public async Task BackfillAsync_DeviceResolvesToAKnownType_RegistersNetworkAddressForFutureAttributeReports()
+    {
+        var address = new IeeeAddress(1);
+        _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [])];
+        _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
+
+        await _service!.BackfillAsync(CancellationToken.None);
+
+        var found = _addressRegistry!.TryGetExternalId(0x1234, out var externalId);
+        Assert.True(found);
+        Assert.Equal(ExternalIdMap.ToExternalId(address), externalId);
     }
 
     [Fact]
