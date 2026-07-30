@@ -4,7 +4,7 @@ using Haus.Zigbee;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
-using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus;
@@ -15,8 +15,8 @@ public class DeviceJoinedMapperTests
 
     public DeviceJoinedMapperTests()
     {
-        var hausOptions = OptionsFactory.CreateHausOptions();
-        _mapper = new DeviceJoinedMapper(new DeviceTypeResolver(hausOptions));
+        var provider = ServiceProviderFactory.Create();
+        _mapper = provider.GetRequiredService<DeviceJoinedMapper>();
     }
 
     [Fact]

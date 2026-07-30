@@ -2,19 +2,24 @@ using Haus.Core.Models.Devices;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus.Resolvers;
 
 public class DeviceTypeResolverTests
 {
-    private readonly DeviceTypeResolver _resolver;
+    private readonly IDeviceTypeResolver _resolver;
 
     public DeviceTypeResolverTests()
     {
-        var options = OptionsFactory.CreateHausOptions();
-        options.Value.DeviceTypeOptions = [new DeviceTypeOptions("Old", "Klinker", DeviceType.Light)];
-        _resolver = new DeviceTypeResolver(options);
+        var provider = ServiceProviderFactory.Create(configureServices: services =>
+            services.PostConfigure<HausOptions>(options =>
+                options.DeviceTypeOptions = [new DeviceTypeOptions("Old", "Klinker", DeviceType.Light)]
+            )
+        );
+        _resolver = provider.GetRequiredService<IDeviceTypeResolver>();
     }
 
     [Fact]

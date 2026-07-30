@@ -3,10 +3,11 @@ using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Zigbee;
+using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
 using Haus.Zigbee.Zcl;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus.DeviceEvents;
@@ -28,9 +29,9 @@ public class DeviceEventMapperTests
 
     public DeviceEventMapperTests()
     {
-        var registry = new DeviceAddressRegistry();
-        registry.Register(KnownNetworkAddress, KnownExternalId);
-        _mapper = new DeviceEventMapper(registry, NullLogger<DeviceEventMapper>.Instance);
+        var provider = ServiceProviderFactory.Create();
+        provider.GetRequiredService<DeviceAddressRegistry>().Register(KnownNetworkAddress, KnownExternalId);
+        _mapper = provider.GetRequiredService<DeviceEventMapper>();
     }
 
     private static ZigbeeAttributeReport CreateReport(ushort clusterId, ushort attributeId, ZclAttributeValue value)
