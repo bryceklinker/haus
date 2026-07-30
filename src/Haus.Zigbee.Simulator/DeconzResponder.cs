@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee.Simulator;
@@ -33,6 +34,8 @@ public class DeconzResponder
     private readonly ConcurrentDictionary<byte, byte[]> _parameters = new();
     private readonly ConcurrentQueue<IndicationBody> _indications = new();
     private readonly ConcurrentQueue<byte[]> _sentApsRequests = new();
+    private readonly ConcurrentDictionary<int, IndicationBody> _releaseOnApsRequest = new();
+    private int _apsRequestCount;
 
     public DeconzResponder()
     {
@@ -49,6 +52,14 @@ public class DeconzResponder
     public void EnqueueIndication(IndicationBody body)
     {
         _indications.Enqueue(body);
+    }
+
+    // Lets a caller script a device-interview response sequence: the Nth APS data-request this
+    // responder sees (0-based) is exactly when a real device would have replied, so queuing the
+    // response there keeps request/response order faithful to a real interview.
+    public void ReleaseAfterApsRequest(int apsRequestIndex, IndicationBody body)
+    {
+        _releaseOnApsRequest[apsRequestIndex] = body;
     }
 
     public IReadOnlyList<byte[]> SentApsRequests => _sentApsRequests.ToList();
@@ -109,6 +120,10 @@ public class DeconzResponder
     private byte[] ApsDataRequestResponse(byte[] request)
     {
         _sentApsRequests.Enqueue(request);
+        var apsRequestIndex = Interlocked.Increment(ref _apsRequestCount) - 1;
+        if (_releaseOnApsRequest.TryRemove(apsRequestIndex, out var body))
+            _indications.Enqueue(body);
+
         return [ApsDataRequestCommand, request[SequenceNumberOffset], WriteParameterSuccess, 0x00, 0x00];
     }
 
