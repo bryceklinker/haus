@@ -15,6 +15,7 @@ public class ZigbeeToHausRelay(
     IZigbeeCoordinator coordinator,
     ZigbeeInboundRelay inboundRelay,
     ZigbeeOutboundRelay outboundRelay,
+    DeviceBackfillService backfillService,
     IHausMqttClientFactory hausMqttClientFactory,
     IOptions<HausOptions> hausOptions,
     ILogger<ZigbeeToHausRelay> logger
@@ -72,6 +73,7 @@ public class ZigbeeToHausRelay(
         try
         {
             await coordinator.ConnectAsync(token);
+            _ = BackfillSafelyAsync(token);
         }
         catch (Exception e)
         {
@@ -80,6 +82,20 @@ public class ZigbeeToHausRelay(
                 "Failed to connect to the Zigbee coordinator; will retry in {@Interval}",
                 ReconnectInterval
             );
+        }
+    }
+
+    // Runs detached from the connect path: backfill can take a while for many already-known
+    // devices, and a failure in it must not affect the connection it rode in on.
+    private async Task BackfillSafelyAsync(CancellationToken token)
+    {
+        try
+        {
+            await backfillService.BackfillAsync(token);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to backfill already-known device info");
         }
     }
 

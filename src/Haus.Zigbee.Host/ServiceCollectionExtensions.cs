@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
             .AddTransient<HausLightingToZigbeeMapper>()
             .AddTransient<ZigbeeInboundRelay>()
             .AddTransient<ZigbeeOutboundRelay>()
+            .AddTransient<DeviceBackfillService>()
             .Configure<ZigbeeConnectionOptions>(config.GetSection("Zigbee"))
             .AddHausZigbee()
             .Configure<HausOptions>(config.GetSection("Haus"))
