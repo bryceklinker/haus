@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftPackageVersion)"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Haus.Zigbee\Haus.Zigbee.csproj"/>
+        <ProjectReference Include="..\..\src\Haus.Zigbee.Simulator\Haus.Zigbee.Simulator.csproj"/>
+    </ItemGroup>
+
+</Project>

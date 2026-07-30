@@ -1,0 +1,144 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using Haus.Zigbee.Serial.Frames;
+
+namespace Haus.Zigbee.Simulator;
+
+public record IndicationBody(ushort SourceNwk, byte SourceEndpoint, ushort ProfileId, ushort ClusterId, byte[] Asdu);
+
+// Answers deCONZ serial commands the same way a real coordinator dongle would: reads/writes of
+// firmware parameters, device-state polls, read-indication drains, and APS data-request acks.
+// One instance serves one TCP connection (real hardware is a single serial line too, so this
+// mirrors that: no per-command-kind split).
+public class DeconzResponder
+{
+    private const byte ReadParameterCommand = 0x0a;
+    private const byte WriteParameterCommand = 0x0b;
+    private const byte DeviceStateCommand = 0x07;
+    private const byte ReadIndicationCommand = 0x17;
+    private const byte ApsDataRequestCommand = 0x12;
+    private const byte IndicationAvailable = 0x08;
+    private const byte NothingAvailable = 0x00;
+    private const byte WriteParameterSuccess = 0x00;
+    private const int SequenceNumberOffset = 1;
+    private const int ParameterIdOffset = 7;
+    private const int WriteParameterValueOffset = 8;
+
+    private const byte MacAddressParameterId = 0x01;
+    private const byte PanIdParameterId = 0x05;
+    private const byte ChannelParameterId = 0x1c;
+
+    private readonly ConcurrentDictionary<byte, byte[]> _parameters = new();
+    private readonly ConcurrentQueue<IndicationBody> _indications = new();
+    private readonly ConcurrentQueue<byte[]> _sentApsRequests = new();
+
+    public DeconzResponder()
+    {
+        SetParameter(MacAddressParameterId, [0x22, 0x11, 0x00, 0xff, 0xff, 0x2e, 0x21, 0x00]);
+        SetParameter(PanIdParameterId, [0x62, 0x1a]);
+        SetParameter(ChannelParameterId, [0x0f]);
+    }
+
+    public void SetParameter(byte parameterId, byte[] value)
+    {
+        _parameters[parameterId] = value;
+    }
+
+    public void EnqueueIndication(IndicationBody body)
+    {
+        _indications.Enqueue(body);
+    }
+
+    public IReadOnlyList<byte[]> SentApsRequests => _sentApsRequests.ToList();
+
+    // Unframed, unchecksummed request in -> unframed, unchecksummed response out (or empty for a
+    // command this responder doesn't recognize). The connection loop owns SLIP/checksum framing.
+    public byte[] HandleRequest(byte[] request)
+    {
+        if (request.Length <= SequenceNumberOffset)
+            return [];
+
+        var sequenceNumber = request[SequenceNumberOffset];
+        return request[0] switch
+        {
+            ReadParameterCommand => ReadParameterResponse(sequenceNumber, request[ParameterIdOffset]),
+            WriteParameterCommand => WriteParameterResponse(request),
+            DeviceStateCommand => DeviceStateResponse(sequenceNumber),
+            ReadIndicationCommand => IndicationResponse(sequenceNumber),
+            ApsDataRequestCommand => ApsDataRequestResponse(request),
+            _ => [],
+        };
+    }
+
+    private byte[] ReadParameterResponse(byte sequenceNumber, byte parameterId)
+    {
+        var value = _parameters.TryGetValue(parameterId, out var stored) ? stored : [];
+        return ReadParameterFrame.Encode(new ReadParameterRequest(sequenceNumber, parameterId, value));
+    }
+
+    private byte[] WriteParameterResponse(byte[] request)
+    {
+        var parameterId = request[ParameterIdOffset];
+        SetParameter(parameterId, request[WriteParameterValueOffset..]);
+        return
+        [
+            WriteParameterCommand,
+            request[SequenceNumberOffset],
+            WriteParameterSuccess,
+            0x08,
+            0x00,
+            0x01,
+            0x00,
+            parameterId,
+        ];
+    }
+
+    private byte[] DeviceStateResponse(byte sequenceNumber)
+    {
+        var deviceState = _indications.IsEmpty ? NothingAvailable : IndicationAvailable;
+        return [DeviceStateCommand, sequenceNumber, 0x00, 0x00, 0x00, deviceState];
+    }
+
+    private byte[] IndicationResponse(byte sequenceNumber)
+    {
+        return _indications.TryDequeue(out var body) ? EncodeIndication(sequenceNumber, body) : [];
+    }
+
+    private byte[] ApsDataRequestResponse(byte[] request)
+    {
+        _sentApsRequests.Enqueue(request);
+        return [ApsDataRequestCommand, request[SequenceNumberOffset], WriteParameterSuccess, 0x00, 0x00];
+    }
+
+    private static byte[] EncodeIndication(byte sequenceNumber, IndicationBody body)
+    {
+        const byte nwkAddressMode = 0x02;
+        const byte noRssiLinkQuality = 0xff;
+        var header = new byte[] { 0x17, sequenceNumber, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        var destination = new byte[] { nwkAddressMode, 0x00, 0x00, 0x01 };
+        var source = new byte[]
+        {
+            nwkAddressMode,
+            (byte)(body.SourceNwk & 0xff),
+            (byte)(body.SourceNwk >> 8),
+            body.SourceEndpoint,
+        };
+        var profileAndCluster = new byte[]
+        {
+            (byte)(body.ProfileId & 0xff),
+            (byte)(body.ProfileId >> 8),
+            (byte)(body.ClusterId & 0xff),
+            (byte)(body.ClusterId >> 8),
+        };
+        var asdu = Concat([(byte)(body.Asdu.Length & 0xff), (byte)(body.Asdu.Length >> 8)], body.Asdu);
+        var reservedAndLinkQuality = new byte[] { 0x00, 0x00, noRssiLinkQuality };
+        return Concat(header, destination, source, profileAndCluster, asdu, reservedAndLinkQuality);
+    }
+
+    private static byte[] Concat(params byte[][] segments)
+    {
+        return segments.SelectMany(segment => segment).ToArray();
+    }
+}
