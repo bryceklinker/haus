@@ -7,7 +7,9 @@ namespace Haus.Acceptance.Tests.Support;
 
 public class HausPageTest : PageTest
 {
-    private readonly HttpClient _simulatorHttpClient = new() { BaseAddress = new("http://localhost:15004") };
+    // Shared across every test fixture instance rather than one per instance: the base address is
+    // constant, and HttpClient is designed to be reused rather than created/disposed per use.
+    private static readonly HttpClient SimulatorHttpClient = new() { BaseAddress = new("http://localhost:15004") };
 
     public override BrowserNewContextOptions ContextOptions()
     {
@@ -21,6 +23,6 @@ public class HausPageTest : PageTest
 
     public DeconzSimulatorClient GetDeconzSimulatorClient()
     {
-        return new DeconzSimulatorClient(_simulatorHttpClient);
+        return new DeconzSimulatorClient(SimulatorHttpClient);
     }
 }
