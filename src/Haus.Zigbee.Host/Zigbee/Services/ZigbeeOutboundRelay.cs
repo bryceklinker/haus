@@ -30,12 +30,18 @@ public class ZigbeeOutboundRelay(
     {
         var command = HausJsonSerializer.Deserialize<HausCommand>(message.PayloadSegment);
         if (command?.Type == null)
+        {
+            logger.LogWarning("Received an unparseable Haus command on {@Topic}", message.Topic);
             return;
+        }
 
+        logger.LogInformation("Received Haus command {@Type}", command.Type);
         if (discoveryMapper.IsSupported(command.Type))
             await HandleDiscoveryAsync(command.Type, token);
         else if (lightingMapper.IsSupported(command.Type))
             await HandleLightingAsync(message, token);
+        else
+            logger.LogInformation("No handler for Haus command {@Type}, ignoring", command.Type);
     }
 
     private async Task HandleDiscoveryAsync(string commandType, CancellationToken token)
@@ -43,6 +49,7 @@ public class ZigbeeOutboundRelay(
         var intent = discoveryMapper.Map(commandType);
         if (intent.Type == ZigbeeDiscoveryIntentType.SetPermitJoin)
         {
+            logger.LogInformation("Setting permit-join to {@Enabled}", intent.PermitJoinEnabled);
             await coordinator.SetPermitJoinAsync(intent.PermitJoinEnabled, token);
             return;
         }
@@ -53,6 +60,7 @@ public class ZigbeeOutboundRelay(
     private async Task SyncDevicesAsync(CancellationToken token)
     {
         var devices = await coordinator.GetDevicesAsync(token);
+        logger.LogInformation("Syncing {@Count} known device(s) to Haus", devices.Count);
         foreach (var device in devices)
             addressRegistry.Register(device.NetworkAddress, ExternalIdMap.ToExternalId(device.IeeeAddress));
 
@@ -65,7 +73,10 @@ public class ZigbeeOutboundRelay(
     {
         var command = HausJsonSerializer.Deserialize<HausCommand<DeviceLightingChangedEvent>>(message.PayloadSegment);
         if (command?.Payload?.Lighting == null)
+        {
+            logger.LogWarning("Received an unparseable lighting command on {@Topic}", message.Topic);
             return;
+        }
 
         var externalId = command.Payload.Device.ExternalId;
         if (!ExternalIdMap.TryParseAddress(externalId, out var address))
@@ -75,7 +86,16 @@ public class ZigbeeOutboundRelay(
         }
 
         var destination = ApsDestination.Ieee(address, DefaultDestinationEndpoint);
-        foreach (var request in lightingMapper.Map(destination, command.Payload.Lighting))
+        var requests = lightingMapper.Map(destination, command.Payload.Lighting);
+        foreach (var request in requests)
+        {
+            logger.LogInformation(
+                "Sending ZCL command {@ClusterId}/{@CommandId} to {@ExternalId}",
+                request.ClusterId,
+                request.CommandId,
+                externalId
+            );
             await coordinator.SendCommandAsync(request, token);
+        }
     }
 }

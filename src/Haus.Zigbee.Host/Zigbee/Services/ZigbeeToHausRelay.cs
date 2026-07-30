@@ -73,6 +73,7 @@ public class ZigbeeToHausRelay(
         try
         {
             await coordinator.ConnectAsync(token);
+            logger.LogInformation("Connected to the Zigbee coordinator: {@NetworkConfig}", coordinator.NetworkConfig);
             _ = BackfillSafelyAsync(token);
         }
         catch (Exception e)
