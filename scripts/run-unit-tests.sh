@@ -27,6 +27,7 @@ function main() {
   run_dotnet_test "Haus.Web.Host.Tests"
   run_dotnet_test "Haus.Site.Host.Tests"
   run_dotnet_test "Haus.Zigbee.Tests"
+  run_dotnet_test "Haus.Zigbee.Simulator.Tests"
   run_dotnet_test "Haus.Zigbee.Host.Tests"
   
   dotnet reportgenerator \
