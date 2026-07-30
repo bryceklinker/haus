@@ -18,12 +18,14 @@ services:
     image: bryceklinker/personal:haus-zigbee-latest
     environment:
       - "Haus__Server=mqtt://haus_mqtt:1883"
-      - "Zigbee__Config__Mqtt__Server=mqtt://haus_mqtt:1883"
+      - "Zigbee__SerialPort=/dev/ttyACM0"
     links:
       - haus_mqtt
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
     volumes:
-      - ./haus_zigbee2mqtt:/app/data
-      - ./haus_zigbee2mqtt/logs:/app/haus-logs
+      - ./haus_zigbee:/app/data
+      - ./haus_zigbee/logs:/app/haus-logs
 
   haus_web:
     container_name: haus_web
@@ -59,18 +61,3 @@ services:
       - ./cert.key:/etc/nginx/certs/cert.key
     links:
       - haus_web
-
-  zigbee2mqtt:
-    container_name: haus_zigbee2mqtt
-    image: koenkk/zigbee2mqtt:latest
-    restart: always
-    environment:
-      - TZ=America/Chicago
-    links:
-      - haus_mqtt
-    devices:
-      - /dev/ttyACM0:/dev/ttyACM0
-    volumes:
-      - ./haus_zigbee2mqtt:/app/data
-      - ./configuration.yaml:/app/data/configuration.yaml
-      - /run/udev:/runudev:ro

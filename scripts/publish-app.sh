@@ -19,7 +19,6 @@ function package_service() {
   
   cp "${WORKING_DIRECTORY}/haus-app.service" "${PACKAGE_DIRECTORY}/"
   cp "${WORKING_DIRECTORY}/docker-compose.yml" "${PACKAGE_DIRECTORY}/"
-  cp "${WORKING_DIRECTORY}/configuration.yaml" "${PACKAGE_DIRECTORY}/"
   cp "${WORKING_DIRECTORY}/mosquitto.conf" "${PACKAGE_DIRECTORY}/"
   
   pushd "${PACKAGE_DIRECTORY}" || exit 1
