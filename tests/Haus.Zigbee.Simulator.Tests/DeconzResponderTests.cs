@@ -20,4 +20,19 @@ public class DeconzResponderTests
         var afterState = responder.HandleRequest([0x07, 0x01, 0x00, 0x00, 0x00, 0x00]);
         Assert.Equal((byte)0x08, afterState[5]);
     }
+
+    [Theory]
+    [InlineData(0x0a, "ReadParameter")]
+    [InlineData(0x0b, "WriteParameter")]
+    [InlineData(0x07, "DeviceState")]
+    [InlineData(0x17, "ReadIndication")]
+    [InlineData(0x12, "ApsDataRequest")]
+    [InlineData(0xff, "Unknown(0xFF)")]
+    public void DescribeCommand_ReturnsAReadableNameForKnownCommandsAndFallsBackForUnknownOnes(
+        byte commandId,
+        string expected
+    )
+    {
+        Assert.Equal(expected, DeconzResponder.DescribeCommand(commandId));
+    }
 }

@@ -46,13 +46,31 @@ public class DongleConnection(TcpClient client, DeconzResponder responder, ILogg
     private async Task RespondToFrameAsync(NetworkStream stream, byte[] frame, CancellationToken token)
     {
         if (!DeconzChecksum.IsValid(frame))
+        {
+            logger.LogWarning("Dropped a request with an invalid checksum ({@Length} bytes)", frame.Length);
             return;
+        }
 
         var request = frame[..^ChecksumLength];
+        if (request.Length == 0)
+        {
+            logger.LogWarning("Dropped an empty request");
+            return;
+        }
+
+        var commandName = DeconzResponder.DescribeCommand(request[0]);
         var response = responder.HandleRequest(request);
         if (response.Length == 0)
+        {
+            logger.LogInformation("Received {@Command} request, no response to send", commandName);
             return;
+        }
 
+        logger.LogInformation(
+            "Received {@Command} request, sending {@ResponseLength}-byte response",
+            commandName,
+            response.Length
+        );
         await stream.WriteAsync(Framed(response), token);
     }
 

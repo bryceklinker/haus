@@ -66,6 +66,20 @@ public class DeconzResponder
 
     public int ApsRequestCount => _apsRequestCount;
 
+    // For request logging at the connection layer, which only has the raw command byte to go on.
+    public static string DescribeCommand(byte commandId)
+    {
+        return commandId switch
+        {
+            ReadParameterCommand => "ReadParameter",
+            WriteParameterCommand => "WriteParameter",
+            DeviceStateCommand => "DeviceState",
+            ReadIndicationCommand => "ReadIndication",
+            ApsDataRequestCommand => "ApsDataRequest",
+            _ => $"Unknown(0x{commandId:X2})",
+        };
+    }
+
     // Unframed, unchecksummed request in -> unframed, unchecksummed response out (or empty for a
     // command this responder doesn't recognize). The connection loop owns SLIP/checksum framing.
     public byte[] HandleRequest(byte[] request)

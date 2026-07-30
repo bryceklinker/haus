@@ -23,6 +23,10 @@ public class TcpDongleListener(DeconzResponder responder, ILoggerFactory loggerF
             while (!stoppingToken.IsCancellationRequested)
             {
                 var client = await listener.AcceptTcpClientAsync(stoppingToken);
+                _logger.LogInformation(
+                    "Accepted dongle connection from {@RemoteEndPoint}",
+                    client.Client.RemoteEndPoint
+                );
                 _ = HandleClientAsync(client, stoppingToken);
             }
         }
