@@ -64,6 +64,8 @@ public class DeconzResponder
 
     public IReadOnlyList<byte[]> SentApsRequests => _sentApsRequests.ToList();
 
+    public int ApsRequestCount => _apsRequestCount;
+
     // Unframed, unchecksummed request in -> unframed, unchecksummed response out (or empty for a
     // command this responder doesn't recognize). The connection loop owns SLIP/checksum framing.
     public byte[] HandleRequest(byte[] request)
