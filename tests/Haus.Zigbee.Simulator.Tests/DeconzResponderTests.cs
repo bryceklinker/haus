@@ -21,6 +21,24 @@ public class DeconzResponderTests
         Assert.Equal((byte)0x08, afterState[5]);
     }
 
+    [Fact]
+    public void AllocateNetworkAddress_NeverReturnsTheSameAddressTwice()
+    {
+        var responder = new DeconzResponder();
+
+        var addresses = new System.Collections.Generic.HashSet<ushort>();
+        for (var i = 0; i < 1000; i++)
+            Assert.True(addresses.Add(responder.AllocateNetworkAddress()));
+    }
+
+    [Fact]
+    public void AllocateNetworkAddress_NeverReturnsTheCoordinatorsOwnAddress()
+    {
+        var responder = new DeconzResponder();
+
+        Assert.NotEqual((ushort)0x0000, responder.AllocateNetworkAddress());
+    }
+
     [Theory]
     [InlineData(0x0a, "ReadParameter")]
     [InlineData(0x0b, "WriteParameter")]

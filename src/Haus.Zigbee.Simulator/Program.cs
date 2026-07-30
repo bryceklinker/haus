@@ -75,7 +75,7 @@ app.MapPost(
         if (!IeeeAddress.TryParse(request.Ieee, out var ieeeAddress))
             return Results.BadRequest("ieee must be a 0x-prefixed 16-hex-digit address");
 
-        var networkAddress = (ushort)(ieeeAddress.Value & 0xffff);
+        var networkAddress = responder.AllocateNetworkAddress();
         var targetApsRequestCount = responder.ApsRequestCount + DeviceJoinScenario.ApsRequestsPerJoin;
         DeviceJoinScenario.SimulateJoin(responder, ieeeAddress, networkAddress, request.Vendor, request.Model);
 

@@ -54,6 +54,7 @@ public class DeconzResponder
     private readonly ConcurrentQueue<byte[]> _sentApsRequests = new();
     private readonly ConcurrentDictionary<int, IndicationBody> _releaseOnApsRequest = new();
     private int _apsRequestCount;
+    private int _networkAddressCounter;
 
     public DeconzResponder()
     {
@@ -83,6 +84,13 @@ public class DeconzResponder
     public IReadOnlyList<byte[]> SentApsRequests => _sentApsRequests.ToList();
 
     public int ApsRequestCount => _apsRequestCount;
+
+    // Sequential rather than derived from the device's IEEE address: two devices joining in the
+    // same test run must never collide on network address, and a random 16-bit derivation can.
+    public ushort AllocateNetworkAddress()
+    {
+        return (ushort)Interlocked.Increment(ref _networkAddressCounter);
+    }
 
     // For request logging at the connection layer, which only has the raw command byte to go on.
     public static string DescribeCommand(byte commandId)
