@@ -39,9 +39,12 @@ public class DeviceInterview : IDisposable
     private readonly KnownDeviceTable _knownDeviceTable;
     private readonly ConcurrentDictionary<ResponseKey, TaskCompletionSource<ApsDataIndicationFrame>> _pendingResponses =
         new();
-    private byte _zdpTransactionSequenceNumber;
-    private byte _zclTransactionSequenceNumber;
-    private byte _requestId;
+
+    // Interviews for different devices are dispatched as independent tasks (see Forget below) and
+    // can call these concurrently, so each needs an atomic counter rather than a plain field.
+    private readonly ByteSequenceCounter _zdpTransactionSequenceNumber = new();
+    private readonly ByteSequenceCounter _zclTransactionSequenceNumber = new();
+    private readonly ByteSequenceCounter _requestId = new();
 
     public DeviceInterview(ApsPollLoop pollLoop, ApsSender sender, KnownDeviceTable knownDeviceTable)
     {
@@ -105,7 +108,7 @@ public class DeviceInterview : IDisposable
     private async Task<IReadOnlyList<byte>> DiscoverEndpointIdsAsync(ushort networkAddress, CancellationToken token)
     {
         var request = ActiveEndpointsRequestCodec.Encode(
-            new ActiveEndpointsRequest(_zdpTransactionSequenceNumber++, networkAddress)
+            new ActiveEndpointsRequest(_zdpTransactionSequenceNumber.Next(), networkAddress)
         );
         var response = await SendZdpAsync(
                 networkAddress,
@@ -125,7 +128,7 @@ public class DeviceInterview : IDisposable
     )
     {
         var request = SimpleDescriptorCodec.EncodeRequest(
-            new SimpleDescriptorRequest(_zdpTransactionSequenceNumber++, networkAddress, endpointId)
+            new SimpleDescriptorRequest(_zdpTransactionSequenceNumber.Next(), networkAddress, endpointId)
         );
         var response = await SendZdpAsync(
                 networkAddress,
@@ -157,7 +160,7 @@ public class DeviceInterview : IDisposable
 
         var request = ZclReadAttributesRequestCodec.Encode(
             new ZclReadAttributesRequest(
-                _zclTransactionSequenceNumber++,
+                _zclTransactionSequenceNumber.Next(),
                 new[] { ManufacturerNameAttribute, ModelIdentifierAttribute }
             )
         );
@@ -220,7 +223,7 @@ public class DeviceInterview : IDisposable
         var pending = RegisterPending(networkAddress, responseCluster);
         var request = new ApsDataRequestFrame(
             SequenceNumber: 0,
-            RequestId: _requestId++,
+            RequestId: _requestId.Next(),
             Destination: ApsDestination.Nwk(networkAddress, destinationEndpoint),
             ProfileId: profileId,
             ClusterId: requestCluster,
