@@ -6,6 +6,7 @@ using Haus.Zigbee;
 using Haus.Zigbee.Simulator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 var tcpPort = builder.Configuration.GetValue<int?>("Simulator:TcpPort") ?? 4901;
 
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields =
+        HttpLoggingFields.RequestMethod | HttpLoggingFields.RequestPath | HttpLoggingFields.ResponseStatusCode;
+});
 builder.Services.AddSingleton<DeconzResponder>();
 builder.Services.AddHostedService(provider => new TcpDongleListener(
     provider.GetRequiredService<DeconzResponder>(),
@@ -22,6 +28,8 @@ builder.Services.AddHostedService(provider => new TcpDongleListener(
 ));
 
 var app = builder.Build();
+
+app.UseHttpLogging();
 
 app.MapGet("/", () => Results.Ok(new { status = "running", tcpPort }));
 
