@@ -11,13 +11,15 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddHausZigbee(this IServiceCollection services)
     {
         return services
-            .AddSingleton<ISerialTransport>(CreateSerialPortTransport)
+            .AddSingleton<ISerialTransport>(CreateTransport)
             .AddSingleton<IZigbeeCoordinator, ZigbeeCoordinator>();
     }
 
-    private static SerialPortTransport CreateSerialPortTransport(IServiceProvider provider)
+    private static ISerialTransport CreateTransport(IServiceProvider provider)
     {
         var options = provider.GetRequiredService<IOptions<ZigbeeConnectionOptions>>().Value;
-        return new SerialPortTransport(options.SerialPort, options.BaudRate);
+        return string.IsNullOrEmpty(options.TcpHost)
+            ? new SerialPortTransport(options.SerialPort, options.BaudRate)
+            : new TcpSerialTransport(options.TcpHost, options.TcpPort);
     }
 }
