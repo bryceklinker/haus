@@ -43,7 +43,11 @@ public static class DeviceJoinScenario
 
     public const int ApsRequestsPerJoin = 3;
 
-    public static void SimulateJoin(
+    // Returns the ApsRequestCount it read to schedule these releases, so a caller that needs to
+    // know when the join completes derives its target count from this same read rather than
+    // taking its own -- two independent reads of that shared counter can race against an APS
+    // request landing in between, misscheduling which join the release slots belong to.
+    public static int SimulateJoin(
         DeconzResponder responder,
         IeeeAddress ieeeAddress,
         ushort networkAddress,
@@ -56,6 +60,7 @@ public static class DeviceJoinScenario
         responder.ReleaseAfterApsRequest(baseIndex, ActiveEndpointsIndication(networkAddress));
         responder.ReleaseAfterApsRequest(baseIndex + 1, SimpleDescriptorIndication(networkAddress));
         responder.ReleaseAfterApsRequest(baseIndex + 2, BasicReadIndication(networkAddress, vendor, model));
+        return baseIndex;
     }
 
     private static IndicationBody AnnounceIndication(ushort networkAddress, IeeeAddress ieeeAddress)

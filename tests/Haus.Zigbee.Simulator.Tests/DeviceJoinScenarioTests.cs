@@ -71,6 +71,24 @@ public class DeviceJoinScenarioTests : IAsyncLifetime
         Assert.Equal(0x01, endpoint.EndpointId);
     }
 
+    [Fact]
+    public void SimulateJoin_ReturnsTheApsRequestCountItReadAsItsBaseIndex()
+    {
+        // Simulates an unrelated APS request having already happened (e.g. from a prior join)
+        // before this join is scheduled, so the base index is non-zero.
+        _responder!.HandleRequest([0x12, 0x00, 0x02, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00]);
+
+        var baseIndex = DeviceJoinScenario.SimulateJoin(
+            _responder!,
+            new IeeeAddress(1),
+            networkAddress: 0x1234,
+            "vendor",
+            "model"
+        );
+
+        Assert.Equal(1, baseIndex);
+    }
+
     private static async Task<T> WaitFor<T>(Task<T> task)
     {
         var completed = await Task.WhenAny(task, Task.Delay(TimeSpan.FromSeconds(5)));
