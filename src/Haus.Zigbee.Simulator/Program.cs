@@ -51,14 +51,18 @@ app.MapPost(
     "/indications",
     (IndicationRequest request, DeconzResponder responder) =>
     {
+        byte[] asdu;
+        try
+        {
+            asdu = Convert.FromHexString(request.AsduHex);
+        }
+        catch (FormatException)
+        {
+            return Results.BadRequest("asduHex must be a valid hex string");
+        }
+
         responder.EnqueueIndication(
-            new IndicationBody(
-                request.SourceNwk,
-                request.SourceEndpoint,
-                request.ProfileId,
-                request.ClusterId,
-                Convert.FromHexString(request.AsduHex)
-            )
+            new IndicationBody(request.SourceNwk, request.SourceEndpoint, request.ProfileId, request.ClusterId, asdu)
         );
         return Results.Accepted();
     }
@@ -106,3 +110,6 @@ internal record IndicationRequest(
 );
 
 internal record JoinDeviceRequest(string Ieee, string Vendor, string Model);
+
+// Exposes the top-level-statement entry point to WebApplicationFactory<Program> in tests.
+public partial class Program { }
