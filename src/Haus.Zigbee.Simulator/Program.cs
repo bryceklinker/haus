@@ -1,5 +1,8 @@
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Haus.Zigbee;
 using Haus.Zigbee.Simulator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -53,7 +56,38 @@ app.MapPost(
     }
 );
 
+app.MapPost(
+    "/devices/join",
+    async (JoinDeviceRequest request, DeconzResponder responder) =>
+    {
+        if (!IeeeAddress.TryParse(request.Ieee, out var ieeeAddress))
+            return Results.BadRequest("ieee must be a 0x-prefixed 16-hex-digit address");
+
+        var networkAddress = (ushort)(ieeeAddress.Value & 0xffff);
+        var targetApsRequestCount = responder.ApsRequestCount + DeviceJoinScenario.ApsRequestsPerJoin;
+        DeviceJoinScenario.SimulateJoin(responder, ieeeAddress, networkAddress, request.Vendor, request.Model);
+
+        var completed = await WaitUntilAsync(
+            () => responder.ApsRequestCount >= targetApsRequestCount,
+            TimeSpan.FromSeconds(10)
+        );
+
+        return completed
+            ? Results.Ok(new { networkAddress })
+            : Results.Problem("Simulated device interview did not complete in time", statusCode: 504);
+    }
+);
+
 app.Run();
+
+static async Task<bool> WaitUntilAsync(Func<bool> condition, TimeSpan timeout)
+{
+    using var cts = new CancellationTokenSource(timeout);
+    while (!condition() && !cts.IsCancellationRequested)
+        await Task.Delay(20, CancellationToken.None);
+
+    return condition();
+}
 
 internal record IndicationRequest(
     ushort SourceNwk,
@@ -62,3 +96,5 @@ internal record IndicationRequest(
     ushort ClusterId,
     string AsduHex
 );
+
+internal record JoinDeviceRequest(string Ieee, string Vendor, string Model);

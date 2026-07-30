@@ -17,6 +17,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj" />
+      <ProjectReference Include="..\..\src\Haus.Zigbee\Haus.Zigbee.csproj" />
     </ItemGroup>
     
     <Target Name="InstallBrowsers" AfterTargets="Build">

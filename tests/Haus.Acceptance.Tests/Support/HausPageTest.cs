@@ -1,9 +1,5 @@
 using System;
-using System.Threading.Tasks;
-using Haus.Acceptance.Tests.Support.Zigbee2Mqtt;
-using Haus.Mqtt.Client;
-using Haus.Mqtt.Client.Settings;
-using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 
@@ -11,20 +7,7 @@ namespace Haus.Acceptance.Tests.Support;
 
 public class HausPageTest : PageTest
 {
-    private readonly IServiceProvider _provider;
-
-    public HausPageTest()
-    {
-        _provider = new ServiceCollection()
-            .AddHausMqtt()
-            .AddLogging()
-            .AddOptions()
-            .Configure<HausMqttSettings>(opts =>
-            {
-                opts.Server = "mqtt://localhost:11883";
-            })
-            .BuildServiceProvider();
-    }
+    private readonly HttpClient _simulatorHttpClient = new() { BaseAddress = new("http://localhost:15004") };
 
     public override BrowserNewContextOptions ContextOptions()
     {
@@ -36,10 +19,8 @@ public class HausPageTest : PageTest
         };
     }
 
-    public async Task<Zigbee2MqttPublisher> GetZigbee2MqttPublisher()
+    public DeconzSimulatorClient GetDeconzSimulatorClient()
     {
-        var factory = _provider.GetRequiredService<IHausMqttClientFactory>();
-        var client = await factory.CreateClient();
-        return new Zigbee2MqttPublisher(client);
+        return new DeconzSimulatorClient(_simulatorHttpClient);
     }
 }
