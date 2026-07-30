@@ -20,6 +20,7 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public bool IsConnected { get; set; }
     public NetworkConfig? NetworkConfig { get; set; }
     public Exception? ConnectShouldThrow { get; set; }
+    public Exception? SetPermitJoinShouldThrow { get; set; }
     public int ConnectAttempts { get; private set; }
 
     public event System.EventHandler<ZigbeeAttributeReport>? AttributeReported;
@@ -47,6 +48,9 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
 
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)
     {
+        if (SetPermitJoinShouldThrow != null)
+            throw SetPermitJoinShouldThrow;
+
         PermitJoinCalls.Add(enabled);
         return Task.CompletedTask;
     }

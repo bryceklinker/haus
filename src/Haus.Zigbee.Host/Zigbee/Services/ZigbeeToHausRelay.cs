@@ -53,7 +53,8 @@ public class ZigbeeToHausRelay(
     {
         coordinator.DeviceJoined -= OnDeviceJoined;
         coordinator.AttributeReported -= OnAttributeReported;
-        await HausMqttClient.DisposeAsync();
+        if (_hausMqttClient != null)
+            await _hausMqttClient.DisposeAsync();
         await base.StopAsync(cancellationToken);
     }
 
@@ -109,9 +110,16 @@ public class ZigbeeToHausRelay(
         catch (OperationCanceledException) { }
     }
 
-    private Task HandleHausCommandAsync(MqttApplicationMessage message)
+    private async Task HandleHausCommandAsync(MqttApplicationMessage message)
     {
-        return outboundRelay.HandleCommandAsync(message, CancellationToken.None);
+        try
+        {
+            await outboundRelay.HandleCommandAsync(message, CancellationToken.None);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to handle Haus command on {@Topic}", message.Topic);
+        }
     }
 
     private async void OnDeviceJoined(object? sender, Haus.Zigbee.ZigbeeDeviceJoined joined)
