@@ -22,7 +22,7 @@ public class DeconzResponder
     private const byte ApsDataRequestCommand = 0x12;
     private const byte IndicationAvailable = 0x08;
     private const byte NothingAvailable = 0x00;
-    private const byte WriteParameterSuccess = 0x00;
+    private const byte SuccessStatus = 0x00;
     private const int SequenceNumberOffset = 1;
     private const int ParameterIdOffset = 7;
     private const int WriteParameterValueOffset = 8;
@@ -30,6 +30,24 @@ public class DeconzResponder
     private const byte MacAddressParameterId = 0x01;
     private const byte PanIdParameterId = 0x05;
     private const byte ChannelParameterId = 0x1c;
+
+    // WriteParameter response is a fixed 8-byte frame (command+seq+status+frameLength(2)+
+    // payloadLength(2)+parameterId) when the written value is just the parameter id -- no extra
+    // bytes echoed back.
+    private const ushort WriteParameterResponseFrameLength = 8;
+    private const ushort WriteParameterResponsePayloadLength = 1;
+
+    // DeviceState/ReadIndication/ApsDataRequest-ack responses all carry a frameLength (and, for
+    // ReadIndication, a payloadLength) field that the real client-side decoder never validates,
+    // so these are left zero rather than computed.
+    private const ushort UnvalidatedFrameLength = 0;
+    private const ushort UnvalidatedPayloadLength = 0;
+
+    // Indications are always addressed to the coordinator itself: network address 0x0000 on its
+    // own listening endpoint 1.
+    private const ushort CoordinatorNetworkAddress = 0x0000;
+    private const byte CoordinatorEndpoint = 0x01;
+    private const byte NoRssiLinkQuality = 0xff;
 
     private readonly ConcurrentDictionary<byte, byte[]> _parameters = new();
     private readonly ConcurrentQueue<IndicationBody> _indications = new();
@@ -113,11 +131,9 @@ public class DeconzResponder
         [
             WriteParameterCommand,
             request[SequenceNumberOffset],
-            WriteParameterSuccess,
-            0x08,
-            0x00,
-            0x01,
-            0x00,
+            SuccessStatus,
+            .. LittleEndian(WriteParameterResponseFrameLength),
+            .. LittleEndian(WriteParameterResponsePayloadLength),
             parameterId,
         ];
     }
@@ -125,7 +141,14 @@ public class DeconzResponder
     private byte[] DeviceStateResponse(byte sequenceNumber)
     {
         var deviceState = _indications.IsEmpty ? NothingAvailable : IndicationAvailable;
-        return [DeviceStateCommand, sequenceNumber, 0x00, 0x00, 0x00, deviceState];
+        return
+        [
+            DeviceStateCommand,
+            sequenceNumber,
+            SuccessStatus,
+            .. LittleEndian(UnvalidatedFrameLength),
+            deviceState,
+        ];
     }
 
     private byte[] IndicationResponse(byte sequenceNumber)
@@ -140,18 +163,34 @@ public class DeconzResponder
         if (_releaseOnApsRequest.TryRemove(apsRequestIndex, out var body))
             _indications.Enqueue(body);
 
-        return [ApsDataRequestCommand, request[SequenceNumberOffset], WriteParameterSuccess, 0x00, 0x00];
+        return
+        [
+            ApsDataRequestCommand,
+            request[SequenceNumberOffset],
+            SuccessStatus,
+            .. LittleEndian(UnvalidatedFrameLength),
+        ];
     }
 
     private static byte[] EncodeIndication(byte sequenceNumber, IndicationBody body)
     {
-        const byte nwkAddressMode = 0x02;
-        const byte noRssiLinkQuality = 0xff;
-        var header = new byte[] { 0x17, sequenceNumber, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        var destination = new byte[] { nwkAddressMode, 0x00, 0x00, 0x01 };
+        // ApsDataIndicationFrame captures this byte but nothing downstream reads it -- it's a
+        // distinct field from (and unrelated to) the DeviceState poll response's available-flags.
+        var unusedDeviceState = new byte[] { 0x00 };
+        var header = Concat(
+            [ReadIndicationCommand, sequenceNumber, SuccessStatus],
+            LittleEndian(UnvalidatedFrameLength),
+            LittleEndian(UnvalidatedPayloadLength),
+            unusedDeviceState
+        );
+        var destination = Concat(
+            [(byte)DeconzAddressMode.Nwk],
+            LittleEndian(CoordinatorNetworkAddress),
+            [CoordinatorEndpoint]
+        );
         var source = new byte[]
         {
-            nwkAddressMode,
+            (byte)DeconzAddressMode.Nwk,
             (byte)(body.SourceNwk & 0xff),
             (byte)(body.SourceNwk >> 8),
             body.SourceEndpoint,
@@ -164,8 +203,13 @@ public class DeconzResponder
             (byte)(body.ClusterId >> 8),
         };
         var asdu = Concat([(byte)(body.Asdu.Length & 0xff), (byte)(body.Asdu.Length >> 8)], body.Asdu);
-        var reservedAndLinkQuality = new byte[] { 0x00, 0x00, noRssiLinkQuality };
+        var reservedAndLinkQuality = new byte[] { 0x00, 0x00, NoRssiLinkQuality };
         return Concat(header, destination, source, profileAndCluster, asdu, reservedAndLinkQuality);
+    }
+
+    private static byte[] LittleEndian(ushort value)
+    {
+        return [(byte)value, (byte)(value >> 8)];
     }
 
     private static byte[] Concat(params byte[][] segments)

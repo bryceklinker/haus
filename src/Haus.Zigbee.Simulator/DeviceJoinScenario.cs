@@ -26,6 +26,21 @@ public static class DeviceJoinScenario
     private const ushort ManufacturerNameAttribute = 0x0004;
     private const ushort ModelIdentifierAttribute = 0x0005;
 
+    // ZDP and ZCL each have their own transaction-sequence-number namespace; the simulator never
+    // varies either, but they're named separately so a reader doesn't mistake them for one field.
+    private const byte ZdpTransactionSequenceNumber = 0x00;
+    private const byte ZclTransactionSequenceNumber = 0x00;
+
+    // ZDP requests/responses always address endpoint 0 (the ZDO), never a real application endpoint.
+    private const byte ZdpEndpoint = 0x00;
+
+    private const byte SimulatedEndpointCount = 1;
+
+    // Arbitrary ZCL device-id/version for the one simulated endpoint's simple descriptor -- nothing
+    // in the interview flow inspects these beyond passing them through.
+    private const ushort SimulatedDeviceId = 0x0100;
+    private const byte SimulatedDeviceVersion = 0x00;
+
     public const int ApsRequestsPerJoin = 3;
 
     public static void SimulateJoin(
@@ -45,32 +60,38 @@ public static class DeviceJoinScenario
 
     private static IndicationBody AnnounceIndication(ushort networkAddress, IeeeAddress ieeeAddress)
     {
-        var asdu = new List<byte> { 0x00 };
+        var asdu = new List<byte> { ZdpTransactionSequenceNumber };
         AddUInt16(asdu, networkAddress);
         AddUInt64(asdu, ieeeAddress.Value);
         asdu.Add(MacCapability);
-        return new IndicationBody(networkAddress, 0x00, ZdpProfile, DeviceAnnounceCluster, asdu.ToArray());
+        return new IndicationBody(networkAddress, ZdpEndpoint, ZdpProfile, DeviceAnnounceCluster, asdu.ToArray());
     }
 
     private static IndicationBody ActiveEndpointsIndication(ushort networkAddress)
     {
-        var asdu = new List<byte> { 0x00, SuccessStatus };
+        var asdu = new List<byte> { ZdpTransactionSequenceNumber, SuccessStatus };
         AddUInt16(asdu, networkAddress);
-        asdu.Add(0x01);
+        asdu.Add(SimulatedEndpointCount);
         asdu.Add(SimulatedEndpointId);
-        return new IndicationBody(networkAddress, 0x00, ZdpProfile, ActiveEndpointsResponseCluster, asdu.ToArray());
+        return new IndicationBody(
+            networkAddress,
+            ZdpEndpoint,
+            ZdpProfile,
+            ActiveEndpointsResponseCluster,
+            asdu.ToArray()
+        );
     }
 
     private static IndicationBody SimpleDescriptorIndication(ushort networkAddress)
     {
         var descriptor = new List<byte> { SimulatedEndpointId };
         AddUInt16(descriptor, HomeAutomationProfile);
-        AddUInt16(descriptor, 0x0100);
-        descriptor.Add(0x00);
+        AddUInt16(descriptor, SimulatedDeviceId);
+        descriptor.Add(SimulatedDeviceVersion);
         AddClusterList(descriptor, [BasicCluster, OnOffCluster]);
         AddClusterList(descriptor, []);
 
-        var asdu = new List<byte> { 0x00, SuccessStatus };
+        var asdu = new List<byte> { ZdpTransactionSequenceNumber, SuccessStatus };
         AddUInt16(asdu, networkAddress);
         asdu.Add((byte)descriptor.Count);
         asdu.AddRange(descriptor);
@@ -85,7 +106,7 @@ public static class DeviceJoinScenario
 
     private static IndicationBody BasicReadIndication(ushort networkAddress, string vendor, string model)
     {
-        var frame = new List<byte> { GlobalFrameControl, 0x00, ReadAttributesResponseCommand };
+        var frame = new List<byte> { GlobalFrameControl, ZclTransactionSequenceNumber, ReadAttributesResponseCommand };
         AddStringAttribute(frame, ManufacturerNameAttribute, vendor);
         AddStringAttribute(frame, ModelIdentifierAttribute, model);
         return new IndicationBody(
