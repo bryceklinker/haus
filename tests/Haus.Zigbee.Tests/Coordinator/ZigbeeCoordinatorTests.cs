@@ -73,7 +73,10 @@ public class ZigbeeCoordinatorTests
             DisableDefaultResponse: true
         );
 
-        _ = coordinator.SendCommandAsync(request, Cancelled());
+        // Never awaited/completed (no confirm is ever queued) -- this only checks the bytes
+        // written for the encoded request, not the eventual result. ConnectAsync/polling was
+        // never started for this coordinator, so nothing else contends for the channel.
+        _ = coordinator.SendCommandAsync(request, CancellationToken.None);
 
         var written = Assert.Single(_dongle.ApsRequestFrames);
         Assert.Equal(ApsDataRequestFrameCodec.Encode(ExpectedApsFrame(request)), written);
@@ -303,12 +306,5 @@ public class ZigbeeCoordinatorTests
         var completed = await Task.WhenAny(task, Task.Delay(TimeSpan.FromSeconds(5)));
         Assert.Same(task, completed);
         return await task;
-    }
-
-    private static CancellationToken Cancelled()
-    {
-        var source = new CancellationTokenSource();
-        source.Cancel();
-        return source.Token;
     }
 }

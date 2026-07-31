@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -43,7 +44,13 @@ public class CommandSenderTests
             DisableDefaultResponse: true
         );
 
-        _ = _commandSender.SendCommandAsync(request, Cancelled());
+        // Never awaited/completed and no response is ever queued, so its internal wait would
+        // otherwise spin forever -- bound it (deliberately not disposed: it must outlive this
+        // method to still fire) so the abandoned task actually terminates instead of pinning a
+        // thread pool thread for the rest of the process's life. The write itself still happens
+        // synchronously before this returns, which is all this test checks.
+        var timeout = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
+        _ = _commandSender.SendCommandAsync(request, timeout.Token);
 
         var expectedAsdu = ZclCommandFactory.Encode(
             new ZclCommand(
@@ -111,13 +118,6 @@ public class CommandSenderTests
         var requestAndAddress = new byte[] { requestId, NwkAddressMode, 0x34, 0x12 };
         var endpointsAndStatus = new byte[] { 0x01, 0x01, confirmStatus };
         return header.Concat(requestAndAddress).Concat(endpointsAndStatus).ToArray();
-    }
-
-    private static CancellationToken Cancelled()
-    {
-        var source = new CancellationTokenSource();
-        source.Cancel();
-        return source.Token;
     }
 
     private static byte[] Framed(byte[] frame)

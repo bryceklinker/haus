@@ -93,19 +93,17 @@ public class ApsSenderTests
     [Fact]
     public void WhenSendingThenTheCommandFrameUsesTheSendersOwnSequenceNumber()
     {
-        var abandoned = Cancelled();
+        // The send is never awaited/completed and no response is ever queued, so its internal
+        // wait would otherwise spin forever -- bound it (deliberately not disposed: it must
+        // outlive this method to still fire) so the abandoned task actually terminates instead of
+        // pinning a thread pool thread for the rest of the process's life. The write itself still
+        // happens synchronously before this returns, which is all this test checks.
+        var timeout = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
 
-        _ = _sender.SendAsync(Request(requestId: 0x42, sequenceNumber: 99), abandoned);
+        _ = _sender.SendAsync(Request(requestId: 0x42, sequenceNumber: 99), timeout.Token);
 
         var expected = Framed(ApsDataRequestFrameCodec.Encode(Request(requestId: 0x42, sequenceNumber: 0)));
         Assert.Equal(expected, _senderTransport.WrittenBytes);
-    }
-
-    private static CancellationToken Cancelled()
-    {
-        var source = new CancellationTokenSource();
-        source.Cancel();
-        return source.Token;
     }
 
     private static ApsDataRequestFrame Request(byte requestId, byte sequenceNumber = 0)

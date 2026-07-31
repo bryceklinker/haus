@@ -18,6 +18,15 @@ public class DeconzChannel
     private readonly FrameReader _reader;
     private readonly SlipEncoder _encoder = new();
 
+    // ZigbeeCoordinator shares one DeconzChannel between its background poll loop and every
+    // caller sending a command (APS data requests, permit-join, parameter writes). Without this,
+    // two overlapping calls could interleave their writes on the wire, and -- since AwaitResponseAsync
+    // discards any frame that doesn't match its own sequence number -- one call's read could
+    // silently steal and drop the frame another concurrent call was waiting for, hanging it
+    // forever. This serializes the whole request/response round trip, matching the real dongle's
+    // single physical serial line anyway.
+    private readonly SemaphoreSlim _mutex = new(1, 1);
+
     public DeconzChannel(ISerialTransport transport)
     {
         _transport = transport;
@@ -26,8 +35,16 @@ public class DeconzChannel
 
     public async Task<byte[]> SendAndReceiveAsync(byte[] frame, CancellationToken token)
     {
-        await _transport.WriteAsync(Encode(frame), token);
-        return await AwaitResponseAsync(frame[SequenceNumberIndex], token);
+        await _mutex.WaitAsync(token);
+        try
+        {
+            await _transport.WriteAsync(Encode(frame), token);
+            return await AwaitResponseAsync(frame[SequenceNumberIndex], token);
+        }
+        finally
+        {
+            _mutex.Release();
+        }
     }
 
     private byte[] Encode(byte[] frame)
