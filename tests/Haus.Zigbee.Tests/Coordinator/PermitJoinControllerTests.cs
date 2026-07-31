@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
@@ -42,6 +43,32 @@ public class PermitJoinControllerTests
         Assert.Equal(new byte[] { 0x00 }, request.Value);
     }
 
+    [Fact]
+    public void SetPermitJoinAsync_CalledConcurrentlyFromManyThreads_NeverReusesASequenceNumber()
+    {
+        // Same defect class already fixed in ApsSender/CommandSender: _nextSequenceNumber++ reads
+        // and writes the field before SendAndReceiveAsync's mutex is even acquired (it's evaluated
+        // building the request, one line above that call), so concurrent callers can race on it
+        // regardless of how well-serialized the channel itself is.
+        const int callCount = 200;
+        using var barrier = new Barrier(callCount);
+
+        var threads = Enumerable
+            .Range(0, callCount)
+            .Select(_ => new Thread(() =>
+            {
+                barrier.SignalAndWait();
+                _controller.SetPermitJoinAsync(true, CancellationToken.None).GetAwaiter().GetResult();
+            }))
+            .ToList();
+        foreach (var thread in threads)
+            thread.Start();
+        foreach (var thread in threads)
+            thread.Join();
+
+        Assert.Equal(callCount, _coordinator.SequenceNumbers.Distinct().Count());
+    }
+
     // A fake deCONZ coordinator over the serial seam: it records each write-parameter request it
     // is sent, then answers with a success response echoing the request's sequence number back so
     // DeconzChannel can correlate it — exactly as real hardware would.
@@ -54,8 +81,13 @@ public class PermitJoinControllerTests
         private const byte SuccessStatus = 0x00;
 
         private readonly Queue<byte> _incoming = new();
+        private readonly List<byte> _sequenceNumbers = new();
 
         public WrittenRequest LastWriteRequest { get; private set; } = null!;
+
+        // DeconzChannel's mutex fully serializes each SendAndReceiveAsync round trip, so only one
+        // call is ever inside WriteAsync/ReadAsync at a time -- no extra locking needed here.
+        public IReadOnlyList<byte> SequenceNumbers => _sequenceNumbers;
 
         public Task OpenAsync(CancellationToken token) => Task.CompletedTask;
 
@@ -65,6 +97,7 @@ public class PermitJoinControllerTests
         {
             var frame = new SlipDecoder().Decode(buffer.ToArray())[0][..^2];
             LastWriteRequest = new WrittenRequest(frame[ParameterIdIndex], frame[ValueIndex..]);
+            _sequenceNumbers.Add(frame[SequenceNumberIndex]);
             Respond(frame[SequenceNumberIndex], frame[ParameterIdIndex]);
             return Task.CompletedTask;
         }

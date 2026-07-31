@@ -16,8 +16,8 @@ public class CommandSender
     private const byte UnlimitedRadius = 0x00;
 
     private readonly ApsSender _sender;
-    private byte _transactionSequenceNumber;
-    private byte _requestId;
+    private readonly ByteSequenceCounter _transactionSequenceNumber = new();
+    private readonly ByteSequenceCounter _requestId = new();
 
     public CommandSender(ApsSender sender)
     {
@@ -28,7 +28,7 @@ public class CommandSender
     {
         var asdu = ZclCommandFactory.Encode(
             new ZclCommand(
-                _transactionSequenceNumber++,
+                _transactionSequenceNumber.Next(),
                 request.CommandId,
                 request.Payload,
                 request.DisableDefaultResponse
@@ -36,7 +36,7 @@ public class CommandSender
         );
         var apsRequest = new ApsDataRequestFrame(
             SequenceNumber: 0,
-            RequestId: _requestId++,
+            RequestId: _requestId.Next(),
             Destination: request.Destination,
             ProfileId: request.ProfileId,
             ClusterId: request.ClusterId,

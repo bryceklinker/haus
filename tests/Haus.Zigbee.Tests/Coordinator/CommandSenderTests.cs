@@ -9,6 +9,7 @@ using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Serial.Frames;
 using Haus.Zigbee.Tests.Connection;
+using Haus.Zigbee.Transport;
 using Haus.Zigbee.Zcl;
 using Xunit;
 
@@ -87,6 +88,102 @@ public class CommandSenderTests
 
         Assert.Equal(0x00, confirm.RequestId);
         Assert.Equal(0xd0, confirm.ConfirmStatus);
+    }
+
+    [Fact]
+    public void SendCommandAsync_CalledConcurrentlyFromManyThreads_NeverReusesARequestId()
+    {
+        // Same defect class as ApsSender's own sequence number: _requestId++/_transactionSequenceNumber++
+        // are plain field increments, and CommandSender is reached concurrently in production via
+        // MQTT command-topic callbacks (ZigbeeOutboundRelay), so real OS threads racing a Barrier
+        // is the faithful reproduction, not just an in-process await interleaving.
+        const int callCount = 64;
+        var transport = new AutoAckingTransport();
+        var timingOutSender = new ApsSender(
+            _pollLoop,
+            new DeconzChannel(transport),
+            confirmTimeout: TimeSpan.FromMilliseconds(50)
+        );
+        var commandSender = new CommandSender(timingOutSender);
+        using var barrier = new Barrier(callCount);
+
+        var threads = Enumerable
+            .Range(0, callCount)
+            .Select(_ => new Thread(() =>
+            {
+                barrier.SignalAndWait();
+                try
+                {
+                    commandSender.SendCommandAsync(AnyRequest(), CancellationToken.None).GetAwaiter().GetResult();
+                }
+                catch (OperationCanceledException) { }
+            }))
+            .ToList();
+        foreach (var thread in threads)
+            thread.Start();
+        foreach (var thread in threads)
+            thread.Join();
+
+        var requestIds = ExtractRequestIds(transport.WrittenBytes);
+        Assert.Equal(callCount, requestIds.Distinct().Count());
+    }
+
+    private static List<byte> ExtractRequestIds(IReadOnlyList<byte> writtenBytes)
+    {
+        const int requestIdOffset = 7;
+        var frames = new SlipDecoder().Decode(writtenBytes.ToArray());
+        return frames.Select(frame => frame[requestIdOffset]).ToList();
+    }
+
+    // Acks every write with the deconz-level sequence number it carried, so SendAndReceiveAsync's
+    // low-level round trip never hangs waiting for a response nothing would otherwise send.
+    private class AutoAckingTransport : ISerialTransport
+    {
+        private readonly List<byte> _writtenBytes = new();
+        private readonly Queue<byte> _incoming = new();
+        private readonly object _lock = new();
+
+        public IReadOnlyList<byte> WrittenBytes
+        {
+            get
+            {
+                lock (_lock)
+                    return _writtenBytes.ToList();
+            }
+        }
+
+        public Task OpenAsync(CancellationToken token) => Task.CompletedTask;
+
+        public Task CloseAsync(CancellationToken token) => Task.CompletedTask;
+
+        public Task WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken token)
+        {
+            var written = buffer.ToArray();
+            var frame = new SlipDecoder().Decode(written)[0];
+            var sequenceNumber = frame[1];
+            var ack = Framed(DeconzAck(sequenceNumber));
+
+            lock (_lock)
+            {
+                _writtenBytes.AddRange(written);
+                foreach (var b in ack)
+                    _incoming.Enqueue(b);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task<int> ReadAsync(Memory<byte> buffer, CancellationToken token)
+        {
+            lock (_lock)
+            {
+                var count = 0;
+                while (count < buffer.Length && _incoming.Count > 0)
+                    buffer.Span[count++] = _incoming.Dequeue();
+                return Task.FromResult(count);
+            }
+        }
+
+        public void Dispose() { }
     }
 
     private static ZigbeeCommandRequest AnyRequest()

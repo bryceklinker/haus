@@ -14,7 +14,7 @@ public class PermitJoinController
     private const byte PermitDisabled = 0x00;
 
     private readonly DeconzChannel _channel;
-    private byte _nextSequenceNumber;
+    private readonly ByteSequenceCounter _nextSequenceNumber = new();
 
     public PermitJoinController(DeconzChannel channel)
     {
@@ -24,7 +24,7 @@ public class PermitJoinController
     public async Task SetPermitJoinAsync(bool enabled, CancellationToken token)
     {
         var duration = enabled ? PermitIndefinitely : PermitDisabled;
-        var request = new WriteParameterRequest(_nextSequenceNumber++, PermitJoinParameterId, new[] { duration });
+        var request = new WriteParameterRequest(_nextSequenceNumber.Next(), PermitJoinParameterId, new[] { duration });
         await _channel.SendAndReceiveAsync(WriteParameterFrame.Encode(request), token);
     }
 }
