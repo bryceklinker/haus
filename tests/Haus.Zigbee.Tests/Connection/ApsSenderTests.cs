@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Serial.Frames;
+using Haus.Zigbee.Transport;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Connection;
@@ -88,6 +89,98 @@ public class ApsSenderTests
 
         Assert.Same(sendTask, completed);
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => sendTask);
+    }
+
+    [Fact]
+    public async Task SendAsync_CalledConcurrentlyFromManyThreads_NeverReusesASequenceNumberWithinOneWraparound()
+    {
+        // Real OS threads racing a Barrier, matching the pattern that already caught the same
+        // class of bug in ByteSequenceCounterTests: _sequenceNumber++ happens before
+        // SendAndReceiveAsync's mutex is even acquired, so concurrent callers can race on it
+        // regardless of how well-synchronized the channel itself is.
+        const int callCount = 64;
+        var transport = new AutoAckingTransport();
+        var sender = new ApsSender(
+            _pollLoop,
+            new DeconzChannel(transport),
+            confirmTimeout: TimeSpan.FromMilliseconds(50)
+        );
+        using var barrier = new Barrier(callCount);
+
+        var threads = Enumerable
+            .Range(0, callCount)
+            .Select(i => new Thread(() =>
+            {
+                barrier.SignalAndWait();
+                try
+                {
+                    sender.SendAsync(Request(requestId: (byte)i), CancellationToken.None).GetAwaiter().GetResult();
+                }
+                catch (OperationCanceledException) { }
+            }))
+            .ToList();
+        foreach (var thread in threads)
+            thread.Start();
+        foreach (var thread in threads)
+            thread.Join();
+
+        var sequenceNumbers = ExtractSequenceNumbers(transport.WrittenBytes);
+        Assert.Equal(callCount, sequenceNumbers.Distinct().Count());
+    }
+
+    private static List<byte> ExtractSequenceNumbers(IReadOnlyList<byte> writtenBytes)
+    {
+        var frames = new SlipDecoder().Decode(writtenBytes.ToArray());
+        return frames.Select(frame => frame[1]).ToList();
+    }
+
+    private class AutoAckingTransport : ISerialTransport
+    {
+        private readonly List<byte> _writtenBytes = new();
+        private readonly Queue<byte> _incoming = new();
+        private readonly object _lock = new();
+
+        public IReadOnlyList<byte> WrittenBytes
+        {
+            get
+            {
+                lock (_lock)
+                    return _writtenBytes.ToList();
+            }
+        }
+
+        public Task OpenAsync(CancellationToken token) => Task.CompletedTask;
+
+        public Task CloseAsync(CancellationToken token) => Task.CompletedTask;
+
+        public Task WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken token)
+        {
+            var written = buffer.ToArray();
+            var frame = new SlipDecoder().Decode(written)[0];
+            var sequenceNumber = frame[1];
+            var ack = Framed(new byte[] { 0x12, sequenceNumber, SuccessStatus, 0x00, 0x00 });
+
+            lock (_lock)
+            {
+                _writtenBytes.AddRange(written);
+                foreach (var b in ack)
+                    _incoming.Enqueue(b);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task<int> ReadAsync(Memory<byte> buffer, CancellationToken token)
+        {
+            lock (_lock)
+            {
+                var count = 0;
+                while (count < buffer.Length && _incoming.Count > 0)
+                    buffer.Span[count++] = _incoming.Dequeue();
+                return Task.FromResult(count);
+            }
+        }
+
+        public void Dispose() { }
     }
 
     [Fact]

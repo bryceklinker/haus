@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee.Connection;
@@ -18,7 +19,11 @@ public class ApsSender : IDisposable
     private readonly DeconzChannel _channel;
     private readonly TimeSpan _confirmTimeout;
     private readonly ConcurrentDictionary<byte, TaskCompletionSource<ApsDataConfirm>> _pendingConfirms = new();
-    private byte _sequenceNumber;
+
+    // Interviews for different devices call SendAsync concurrently (each is its own detached
+    // task), and this increment happens before SendAndReceiveAsync's mutex is even acquired, so it
+    // needs its own atomic counter rather than a plain field.
+    private readonly ByteSequenceCounter _sequenceNumber = new();
 
     public ApsSender(ApsPollLoop pollLoop, DeconzChannel channel, TimeSpan? confirmTimeout = null)
     {
@@ -44,7 +49,7 @@ public class ApsSender : IDisposable
         _pendingConfirms[request.RequestId] = pendingConfirm;
         try
         {
-            var command = ApsDataRequestFrameCodec.Encode(request with { SequenceNumber = _sequenceNumber++ });
+            var command = ApsDataRequestFrameCodec.Encode(request with { SequenceNumber = _sequenceNumber.Next() });
             await _channel.SendAndReceiveAsync(command, token);
 
             using var timeout = new CancellationTokenSource(_confirmTimeout);
