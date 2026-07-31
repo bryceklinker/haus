@@ -1,4 +1,4 @@
-using Haus.Zigbee;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Zdp;
 using Xunit;
 

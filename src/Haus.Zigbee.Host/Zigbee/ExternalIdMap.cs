@@ -1,4 +1,4 @@
-using Haus.Zigbee;
+using Haus.Zigbee.Models;
 
 namespace Haus.Zigbee.Host.Zigbee;
 

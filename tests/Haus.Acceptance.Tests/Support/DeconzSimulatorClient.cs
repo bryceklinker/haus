@@ -2,7 +2,7 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Haus.Zigbee;
+using Haus.Zigbee.Models;
 
 namespace Haus.Acceptance.Tests.Support;
 

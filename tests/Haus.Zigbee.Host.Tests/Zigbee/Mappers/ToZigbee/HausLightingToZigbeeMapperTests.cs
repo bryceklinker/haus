@@ -1,8 +1,8 @@
 using System.Linq;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
-using Haus.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 using Xunit;
 

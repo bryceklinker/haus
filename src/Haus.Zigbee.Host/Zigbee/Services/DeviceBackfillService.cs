@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Haus.Core.Models.Devices;
 using Haus.Mqtt.Client;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
+using Haus.Zigbee.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Zigbee.Host.Zigbee.Services;
@@ -27,7 +28,7 @@ public class DeviceBackfillService(
             await BackfillDeviceAsync(device, token);
     }
 
-    private async Task BackfillDeviceAsync(Haus.Zigbee.ZigbeeDevice device, CancellationToken token)
+    private async Task BackfillDeviceAsync(ZigbeeDevice device, CancellationToken token)
     {
         try
         {
@@ -37,7 +38,7 @@ public class DeviceBackfillService(
 
             addressRegistry.Register(device.NetworkAddress, ExternalIdMap.ToExternalId(device.IeeeAddress));
 
-            var joined = new Haus.Zigbee.ZigbeeDeviceJoined(
+            var joined = new ZigbeeDeviceJoined(
                 device.IeeeAddress,
                 device.NetworkAddress,
                 device.Endpoints,

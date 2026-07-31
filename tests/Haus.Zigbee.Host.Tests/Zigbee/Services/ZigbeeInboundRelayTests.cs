@@ -7,6 +7,7 @@ using Haus.Testing.Support.Fakes;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Services;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Zcl;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

@@ -1,6 +1,7 @@
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices.Events;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
+using Haus.Zigbee.Models;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 

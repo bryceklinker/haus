@@ -3,6 +3,7 @@ using System.Buffers.Binary;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee.Connection;

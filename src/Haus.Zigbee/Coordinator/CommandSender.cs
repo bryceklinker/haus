@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 using Haus.Zigbee.Zcl;
 

@@ -4,6 +4,7 @@ using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Core.Models.ExternalMessages;
+using Haus.Zigbee.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
@@ -24,7 +25,7 @@ public class DeviceEventMapper(DeviceAddressRegistry addressRegistry, ILogger<De
     private readonly OccupancyChangedMapper _occupancyChangedMapper = new();
     private readonly TemperatureChangedMapper _temperatureChangedMapper = new();
 
-    public HausEvent<object>? Map(Haus.Zigbee.ZigbeeAttributeReport report)
+    public HausEvent<object>? Map(ZigbeeAttributeReport report)
     {
         if (!addressRegistry.TryGetExternalId(report.SourceNwkAddress, out var deviceId))
         {

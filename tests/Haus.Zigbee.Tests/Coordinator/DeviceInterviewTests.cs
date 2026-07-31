@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Zigbee;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Coordinator;
 using Xunit;

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Zigbee;
 using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee.Host.Tests.Support;

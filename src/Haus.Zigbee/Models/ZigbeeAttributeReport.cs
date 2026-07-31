@@ -1,6 +1,6 @@
 using Haus.Zigbee.Zcl;
 
-namespace Haus.Zigbee;
+namespace Haus.Zigbee.Models;
 
 // Protocol-generic attribute report surfaced from an incoming ZCL attribute-report or
 // read-attributes-response frame. It carries only addressing plus the raw ZCL attribute

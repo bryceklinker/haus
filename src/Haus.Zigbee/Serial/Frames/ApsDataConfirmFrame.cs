@@ -1,4 +1,5 @@
 using System;
+using Haus.Zigbee.Models;
 
 namespace Haus.Zigbee.Serial.Frames;
 

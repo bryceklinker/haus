@@ -1,9 +1,9 @@
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
-using Haus.Zigbee;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
+using Haus.Zigbee.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

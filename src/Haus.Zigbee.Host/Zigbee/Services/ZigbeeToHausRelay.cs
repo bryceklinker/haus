@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Haus.Mqtt.Client;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -122,7 +123,7 @@ public class ZigbeeToHausRelay(
         }
     }
 
-    private async void OnDeviceJoined(object? sender, Haus.Zigbee.ZigbeeDeviceJoined joined)
+    private async void OnDeviceJoined(object? sender, ZigbeeDeviceJoined joined)
     {
         try
         {
@@ -134,7 +135,7 @@ public class ZigbeeToHausRelay(
         }
     }
 
-    private async void OnAttributeReported(object? sender, Haus.Zigbee.ZigbeeAttributeReport report)
+    private async void OnAttributeReported(object? sender, ZigbeeAttributeReport report)
     {
         try
         {

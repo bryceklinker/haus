@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
-using Haus.Zigbee;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
+using Haus.Zigbee.Models;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus;

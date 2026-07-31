@@ -1,5 +1,5 @@
-using Haus.Zigbee;
 using Haus.Zigbee.Host.Zigbee;
+using Haus.Zigbee.Models;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee;

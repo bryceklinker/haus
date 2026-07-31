@@ -1,4 +1,4 @@
-using Haus.Zigbee;
+using Haus.Zigbee.Models;
 using Xunit;
 
 namespace Haus.Zigbee.Tests;

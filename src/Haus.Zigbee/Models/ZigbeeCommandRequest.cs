@@ -1,6 +1,6 @@
 using Haus.Zigbee.Serial.Frames;
 
-namespace Haus.Zigbee;
+namespace Haus.Zigbee.Models;
 
 public record ZigbeeCommandRequest(
     ApsDestination Destination,

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Haus.Zigbee;
+namespace Haus.Zigbee.Models;
 
 public record ZigbeeEndpoint(
     byte EndpointId,

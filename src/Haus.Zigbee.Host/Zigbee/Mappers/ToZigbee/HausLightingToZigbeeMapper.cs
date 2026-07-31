@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;

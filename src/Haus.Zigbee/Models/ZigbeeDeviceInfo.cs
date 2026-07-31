@@ -1,4 +1,4 @@
-namespace Haus.Zigbee;
+namespace Haus.Zigbee.Models;
 
 public record ZigbeeDeviceInfo(string ManufacturerName, string ModelIdentifier)
 {

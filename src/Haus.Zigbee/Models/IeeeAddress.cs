@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace Haus.Zigbee;
+namespace Haus.Zigbee.Models;
 
 public readonly record struct IeeeAddress(ulong Value)
 {

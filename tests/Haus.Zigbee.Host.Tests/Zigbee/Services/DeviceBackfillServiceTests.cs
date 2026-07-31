@@ -4,10 +4,10 @@ using Haus.Core.Models.Devices.Events;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
-using Haus.Zigbee;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Services;
+using Haus.Zigbee.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

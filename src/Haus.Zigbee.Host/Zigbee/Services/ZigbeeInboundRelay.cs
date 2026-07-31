@@ -3,6 +3,7 @@ using Haus.Mqtt.Client;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
+using Haus.Zigbee.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

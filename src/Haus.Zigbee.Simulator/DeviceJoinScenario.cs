@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
-using Haus.Zigbee;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Zcl;
 
 namespace Haus.Zigbee.Simulator;

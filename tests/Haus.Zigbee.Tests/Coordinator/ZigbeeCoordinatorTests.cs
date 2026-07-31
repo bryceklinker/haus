@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Zigbee;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Serial.Frames;
 using Haus.Zigbee.Zcl;
