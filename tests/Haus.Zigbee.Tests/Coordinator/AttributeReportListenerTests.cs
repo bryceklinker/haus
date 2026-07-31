@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Haus.Zigbee.Models;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Tests.Connection;
 using Haus.Zigbee.Zcl;
@@ -135,6 +135,33 @@ public class AttributeReportListenerTests
     }
 
     [Fact]
+    public async Task WhenAZdpProfileIndicationArrivesThenItIsIgnoredWithoutThrowing()
+    {
+        const ushort zdpProfile = 0x0000;
+        const ushort activeEndpointsResponseCluster = 0x8005;
+
+        // A real ZDP response's first byte is just its transaction sequence number, not a ZCL
+        // frame-control byte -- but nothing stops that byte's value from having the
+        // manufacturer-specific bit set (bit 2), which would make ZclFrameHeaderCodec read three
+        // more bytes than this single-byte payload has, throwing IndexOutOfRangeException if this
+        // indication is ever handed to it. AttributeReportListener must recognize ZDP-profile
+        // indications and skip them before that ever happens -- both because a thrown exception
+        // here would silently stop every other IndicationReceived subscriber (like DeviceInterview)
+        // from running for this event, and because ZDP payloads are simply never ZCL frames.
+        var manufacturerSpecificBitSet = new byte[] { 0x04 };
+
+        var reports = await ListenToIndication(
+            sourceNwk: 0x1234,
+            sourceEndpoint: 0x00,
+            clusterId: activeEndpointsResponseCluster,
+            manufacturerSpecificBitSet,
+            profileId: zdpProfile
+        );
+
+        Assert.Empty(reports);
+    }
+
+    [Fact]
     public async Task WhenDisposedThenAnArrivingIndicationNoLongerRaisesAnAttributeReport()
     {
         var zclFrame = new byte[]
@@ -177,7 +204,8 @@ public class AttributeReportListenerTests
         ushort sourceNwk,
         byte sourceEndpoint,
         ushort clusterId,
-        byte[] zclFrame
+        byte[] zclFrame,
+        ushort profileId = 0x0104
     )
     {
         var transport = new ScriptedSerialTransport();
@@ -188,7 +216,7 @@ public class AttributeReportListenerTests
 
         transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable)));
         transport.QueueResponse(
-            Framed(IndicationResponse(sequenceNumber: 1, sourceNwk, sourceEndpoint, clusterId, zclFrame))
+            Framed(IndicationResponse(sequenceNumber: 1, sourceNwk, sourceEndpoint, clusterId, zclFrame, profileId))
         );
 
         await loop.PollOnceAsync(CancellationToken.None);
@@ -205,13 +233,20 @@ public class AttributeReportListenerTests
         ushort sourceNwk,
         byte sourceEndpoint,
         ushort clusterId,
-        byte[] zclFrame
+        byte[] zclFrame,
+        ushort profileId = 0x0104
     )
     {
         var header = new byte[] { 0x17, sequenceNumber, SuccessStatus, 0x00, 0x00, 0x00, 0x00, 0x00 };
         var destination = new byte[] { NwkAddressMode, 0x00, 0x00, 0x01 };
         var source = new byte[] { NwkAddressMode, (byte)(sourceNwk & 0xff), (byte)(sourceNwk >> 8), sourceEndpoint };
-        var profileAndCluster = new byte[] { 0x04, 0x01, (byte)(clusterId & 0xff), (byte)(clusterId >> 8) };
+        var profileAndCluster = new byte[]
+        {
+            (byte)(profileId & 0xff),
+            (byte)(profileId >> 8),
+            (byte)(clusterId & 0xff),
+            (byte)(clusterId >> 8),
+        };
         var asdu = Concat(new byte[] { (byte)(zclFrame.Length & 0xff), (byte)(zclFrame.Length >> 8) }, zclFrame);
         var reservedAndLinkQuality = new byte[] { 0x00, 0x00, 0xFF };
         return Concat(header, destination, source, profileAndCluster, asdu, reservedAndLinkQuality);

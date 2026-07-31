@@ -12,6 +12,7 @@ namespace Haus.Zigbee.Coordinator;
 // responses, cluster-specific commands, other ZCL commands) are ignored here on purpose.
 public class AttributeReportListener : IDisposable
 {
+    private const ushort ZdpProfileId = 0x0000;
     private const byte ReportAttributesCommand = 0x0a;
     private const byte ReadAttributesResponseCommand = 0x01;
 
@@ -34,6 +35,17 @@ public class AttributeReportListener : IDisposable
     private void OnIndicationReceived(object? sender, ApsIndicationReceived received)
     {
         var indication = received.Indication;
+
+        // ZDP responses (device interview's ActiveEndpoints/SimpleDescriptor replies, announces,
+        // ...) are never ZCL frames. Handing one to ZclFrameHeaderCodec risks misreading its first
+        // byte -- a ZDP transaction sequence number, not a ZCL frame-control byte -- as having the
+        // manufacturer-specific bit set, which sends the decoder reading past a short payload's
+        // end. Since IndicationReceived is a multicast event shared with DeviceInterview, letting
+        // that exception escape here would also silently stop DeviceInterview's own handler from
+        // ever running for this indication.
+        if (indication.ProfileId == ZdpProfileId)
+            return;
+
         var decoding = ZclFrameHeaderCodec.Decode(indication.AsduPayload);
         if (decoding.Header.FrameType != ZclFrameType.Global)
             return;

@@ -10,6 +10,8 @@ using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 using Haus.Zigbee.Zcl;
 using Haus.Zigbee.Zdp;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Haus.Zigbee.Coordinator;
 
@@ -41,6 +43,7 @@ public class DeviceInterview : IDisposable
     private readonly ApsSender _sender;
     private readonly KnownDeviceTable _knownDeviceTable;
     private readonly TimeSpan _responseTimeout;
+    private readonly ILogger<DeviceInterview> _logger;
     private readonly ConcurrentDictionary<ResponseKey, TaskCompletionSource<ApsDataIndicationFrame>> _pendingResponses =
         new();
 
@@ -54,13 +57,15 @@ public class DeviceInterview : IDisposable
         ApsPollLoop pollLoop,
         ApsSender sender,
         KnownDeviceTable knownDeviceTable,
-        TimeSpan? responseTimeout = null
+        TimeSpan? responseTimeout = null,
+        ILogger<DeviceInterview>? logger = null
     )
     {
         _pollLoop = pollLoop;
         _sender = sender;
         _knownDeviceTable = knownDeviceTable;
         _responseTimeout = responseTimeout ?? DefaultResponseTimeout;
+        _logger = logger ?? NullLogger<DeviceInterview>.Instance;
         _pollLoop.IndicationReceived += OnIndicationReceived;
     }
 
@@ -280,6 +285,8 @@ public class DeviceInterview : IDisposable
         var key = new ResponseKey(indication.SourceNwkAddress, indication.ClusterId, sequenceNumber);
         if (_pendingResponses.TryRemove(key, out var pending))
             pending.SetResult(indication);
+        else
+            _logger.LogWarning("Received a response with no matching pending request: {@Key}", key);
     }
 
     // ZDP responses carry their transaction sequence number as the first ASDU byte; ZCL responses
@@ -344,14 +351,22 @@ public class DeviceInterview : IDisposable
         return indication.ProfileId == ZdpProfileId && indication.ClusterId == DeviceAnnounceCluster;
     }
 
-    // Interviews run as detached tasks off the indication event; observing the exception keeps a
-    // faulted interview from surfacing later as an unobserved-task exception.
-    private static void Forget(Task task)
+    // Interviews run as detached tasks off the indication event; logging the outcome here (and
+    // touching faulted.Exception at all) keeps a faulted interview from also surfacing later as an
+    // unobserved-task exception. A timed-out SendAsync ends the task Canceled, not Faulted, so both
+    // need handling -- OnlyOnFaulted alone silently drops every timeout.
+    private void Forget(Task task)
     {
         task.ContinueWith(
-            faulted => _ = faulted.Exception,
+            completed =>
+            {
+                if (completed.IsFaulted)
+                    _logger.LogError(completed.Exception, "Detached device-interview task faulted");
+                else if (completed.IsCanceled)
+                    _logger.LogWarning("Detached device-interview task timed out or was canceled");
+            },
             CancellationToken.None,
-            TaskContinuationOptions.OnlyOnFaulted,
+            TaskContinuationOptions.NotOnRanToCompletion,
             TaskScheduler.Default
         );
     }

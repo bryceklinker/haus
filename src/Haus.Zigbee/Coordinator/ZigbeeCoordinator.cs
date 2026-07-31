@@ -6,6 +6,8 @@ using Haus.Zigbee.Connection;
 using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 using Haus.Zigbee.Transport;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Haus.Zigbee.Coordinator;
 
@@ -33,7 +35,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     private CancellationTokenSource? _pollCancellation;
     private bool _disposed;
 
-    public ZigbeeCoordinator(ISerialTransport transport)
+    public ZigbeeCoordinator(ISerialTransport transport, ILoggerFactory? loggerFactory = null)
     {
         _transport = transport;
         _channel = new DeconzChannel(transport);
@@ -44,7 +46,12 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         _commandSender = new CommandSender(_sender);
         _attributeReportListener = new AttributeReportListener(_pollLoop);
         _knownDeviceTable = new KnownDeviceTable();
-        _deviceInterview = new DeviceInterview(_pollLoop, _sender, _knownDeviceTable);
+        _deviceInterview = new DeviceInterview(
+            _pollLoop,
+            _sender,
+            _knownDeviceTable,
+            logger: (loggerFactory ?? NullLoggerFactory.Instance).CreateLogger<DeviceInterview>()
+        );
 
         _attributeReportListener.AttributeReported += RelayAttributeReport;
         _deviceInterview.DeviceJoined += RelayDeviceJoined;

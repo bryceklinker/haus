@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
-using Haus.Zigbee.Models;
 using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Models;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Coordinator;
