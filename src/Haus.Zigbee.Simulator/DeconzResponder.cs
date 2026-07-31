@@ -53,6 +53,7 @@ public class DeconzResponder
     // the only mode ApsDataRequestFrameCodec's callers in this codebase ever send. Mirrors the
     // layout ApsDataRequestFrameCodec.Encode produces.
     private const int DestinationAddressModeOffset = 9;
+    private const int DestinationNetworkAddressOffset = DestinationAddressModeOffset + 1;
     private const int NwkDestinationAddressLength = 3; // short address (2 bytes) + endpoint (1 byte)
     private const int ProfileAndClusterLength = 4; // profile id (2 bytes) + cluster id (2 bytes)
     private const int SourceEndpointLength = 1;
@@ -61,8 +62,17 @@ public class DeconzResponder
     private readonly ConcurrentDictionary<byte, byte[]> _parameters = new();
     private readonly ConcurrentQueue<IndicationBody> _indications = new();
     private readonly ConcurrentQueue<byte[]> _sentApsRequests = new();
-    private readonly ConcurrentDictionary<int, Func<byte[], IndicationBody>> _releaseOnApsRequest = new();
-    private int _apsRequestCount;
+
+    // Keyed by (destination device, that device's own request step) rather than a single shared
+    // request counter: two devices' interviews can have their individual ZDP/ZCL steps interleave
+    // on the wire (each is its own detached task on the coordinator side), so a flat global index
+    // cannot tell two devices' 1st/2nd/3rd requests apart. Per-device counting sidesteps that
+    // entirely -- it needs no reservation or locking beyond what ConcurrentDictionary already gives.
+    private readonly ConcurrentDictionary<
+        (ushort NetworkAddress, int Step),
+        Func<byte[], IndicationBody>
+    > _releaseOnApsRequest = new();
+    private readonly ConcurrentDictionary<ushort, int> _apsRequestCountByDevice = new();
     private int _networkAddressCounter;
 
     public DeconzResponder()
@@ -83,14 +93,14 @@ public class DeconzResponder
     }
 
     // Lets a caller script a device-interview response sequence: the Nth APS data-request this
-    // responder sees (0-based) is exactly when a real device would have replied, so queuing the
-    // response there keeps request/response order faithful to a real interview. The factory
-    // receives that Nth request's raw bytes so it can echo back the request's own transaction
-    // sequence number -- DeviceInterview correlates responses on that number, and a real device
-    // discovers it from the request rather than knowing it in advance.
-    public void ReleaseAfterApsRequest(int apsRequestIndex, Func<byte[], IndicationBody> bodyFactory)
+    // responder sees FOR THAT SPECIFIC DEVICE (0-based) is exactly when a real device would have
+    // replied, so queuing the response there keeps request/response order faithful to a real
+    // interview. The factory receives that request's raw bytes so it can echo back the request's
+    // own transaction sequence number -- DeviceInterview correlates responses on that number, and
+    // a real device discovers it from the request rather than knowing it in advance.
+    public void ReleaseAfterApsRequest(ushort networkAddress, int step, Func<byte[], IndicationBody> bodyFactory)
     {
-        _releaseOnApsRequest[apsRequestIndex] = bodyFactory;
+        _releaseOnApsRequest[(networkAddress, step)] = bodyFactory;
     }
 
     // Extracts the ASDU payload from an ApsDataRequest command's raw (unframed) bytes, assuming
@@ -108,9 +118,21 @@ public class DeconzResponder
         return apsDataRequest[asduOffset..(asduOffset + asduLength)];
     }
 
+    // Extracts the destination short address from an ApsDataRequest command's raw (unframed)
+    // bytes, assuming Nwk-mode addressing.
+    public static ushort ExtractDestinationNetworkAddress(byte[] apsDataRequest)
+    {
+        return (ushort)(
+            apsDataRequest[DestinationNetworkAddressOffset] | (apsDataRequest[DestinationNetworkAddressOffset + 1] << 8)
+        );
+    }
+
     public IReadOnlyList<byte[]> SentApsRequests => _sentApsRequests.ToList();
 
-    public int ApsRequestCount => _apsRequestCount;
+    public int GetApsRequestCountForDevice(ushort networkAddress)
+    {
+        return _apsRequestCountByDevice.GetValueOrDefault(networkAddress);
+    }
 
     // Sequential rather than derived from the device's IEEE address: two devices joining in the
     // same test run must never collide on network address, and a random 16-bit derivation can.
@@ -194,8 +216,10 @@ public class DeconzResponder
     private byte[] ApsDataRequestResponse(byte[] request)
     {
         _sentApsRequests.Enqueue(request);
-        var apsRequestIndex = Interlocked.Increment(ref _apsRequestCount) - 1;
-        if (_releaseOnApsRequest.TryRemove(apsRequestIndex, out var bodyFactory))
+        var networkAddress = ExtractDestinationNetworkAddress(request);
+        var countForDevice = _apsRequestCountByDevice.AddOrUpdate(networkAddress, 1, (_, count) => count + 1);
+        var step = countForDevice - 1;
+        if (_releaseOnApsRequest.TryRemove((networkAddress, step), out var bodyFactory))
             _indications.Enqueue(bodyFactory(request));
 
         return

@@ -57,17 +57,10 @@ public class SimulatorController(DeconzResponder responder, IOptions<SimulatorOp
             return BadRequest("ieee must be a 0x-prefixed 16-hex-digit address");
 
         var networkAddress = responder.AllocateNetworkAddress();
-        var baseIndex = DeviceJoinScenario.SimulateJoin(
-            responder,
-            ieeeAddress,
-            networkAddress,
-            request.Vendor,
-            request.Model
-        );
-        var targetApsRequestCount = baseIndex + DeviceJoinScenario.ApsRequestsPerJoin;
+        DeviceJoinScenario.SimulateJoin(responder, ieeeAddress, networkAddress, request.Vendor, request.Model);
 
         var completed = await WaitUntilAsync(
-            () => responder.ApsRequestCount >= targetApsRequestCount,
+            () => responder.GetApsRequestCountForDevice(networkAddress) >= DeviceJoinScenario.ApsRequestsPerJoin,
             TimeSpan.FromSeconds(10)
         );
 

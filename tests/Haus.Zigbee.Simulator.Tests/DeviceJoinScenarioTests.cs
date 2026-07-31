@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -72,21 +74,89 @@ public class DeviceJoinScenarioTests : IAsyncLifetime
     }
 
     [Fact]
-    public void SimulateJoin_ReturnsTheApsRequestCountItReadAsItsBaseIndex()
+    public async Task SimulateJoin_CalledForTwoDevicesBeforeEitherAnnounceIsProcessed_BothDevicesJoinSuccessfully()
     {
-        // Simulates an unrelated APS request having already happened (e.g. from a prior join)
-        // before this join is scheduled, so the base index is non-zero.
-        _responder!.HandleRequest([0x12, 0x00, 0x02, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00]);
+        using var transport = new TcpSerialTransport("127.0.0.1", _port);
+        using var coordinator = new ZigbeeCoordinator(transport);
+        var joinedDevices = new List<ZigbeeDeviceJoined>();
+        var bothJoined = new TaskCompletionSource();
+        coordinator.DeviceJoined += (_, device) =>
+        {
+            lock (joinedDevices)
+            {
+                joinedDevices.Add(device);
+                if (joinedDevices.Count == 2)
+                    bothJoined.TrySetResult();
+            }
+        };
+        await coordinator.ConnectAsync(CancellationToken.None);
 
-        var baseIndex = DeviceJoinScenario.SimulateJoin(
-            _responder!,
-            new IeeeAddress(1),
-            networkAddress: 0x1234,
-            "vendor",
-            "model"
+        var addressA = new IeeeAddress(0x00124b0001aabbcc);
+        var addressB = new IeeeAddress(0x00124b0001aabbdd);
+
+        // Scheduled back-to-back, before either device's own real interview has sent a single APS
+        // request -- this is what two overlapping /devices/join HTTP requests do in practice.
+        DeviceJoinScenario.SimulateJoin(_responder!, addressA, networkAddress: 0x1001, "Philips", "929002335001");
+        DeviceJoinScenario.SimulateJoin(_responder!, addressB, networkAddress: 0x1002, "Philips", "9290012607");
+
+        await WaitFor(bothJoined.Task);
+
+        Assert.Contains(
+            joinedDevices,
+            d => d.IeeeAddress == addressA && d.ManufacturerName == "Philips" && d.ModelIdentifier == "929002335001"
         );
+        Assert.Contains(
+            joinedDevices,
+            d => d.IeeeAddress == addressB && d.ManufacturerName == "Philips" && d.ModelIdentifier == "9290012607"
+        );
+    }
 
-        Assert.Equal(1, baseIndex);
+    [Fact]
+    public async Task SimulateJoin_CalledForEightDevicesConcurrently_EveryDeviceJoinsSuccessfully()
+    {
+        // Regression test for a production incident: at low concurrency (2-3 overlapping joins)
+        // this always passed, but real acceptance-test-level load (multiple devices announcing at
+        // once) reliably hit a bug where AttributeReportListener threw trying to parse a ZDP
+        // response as a ZCL frame, which -- since it shares the poll loop's IndicationReceived
+        // multicast event with DeviceInterview -- silently stopped DeviceInterview's own handler
+        // from ever running for that indication, permanently stalling that one device's interview.
+        // Eight concurrent devices reproduced it within a handful of runs; two rarely did.
+        const int deviceCount = 8;
+        using var transport = new TcpSerialTransport("127.0.0.1", _port);
+        using var coordinator = new ZigbeeCoordinator(transport);
+        var joinedDevices = new List<ZigbeeDeviceJoined>();
+        var allJoined = new TaskCompletionSource();
+        coordinator.DeviceJoined += (_, device) =>
+        {
+            lock (joinedDevices)
+            {
+                joinedDevices.Add(device);
+                if (joinedDevices.Count == deviceCount)
+                    allJoined.TrySetResult();
+            }
+        };
+        await coordinator.ConnectAsync(CancellationToken.None);
+
+        var addresses = Enumerable
+            .Range(1, deviceCount)
+            .Select(i => new IeeeAddress(0x00124b0001aabb00ul + (ulong)i))
+            .ToList();
+        for (var i = 0; i < deviceCount; i++)
+        {
+            DeviceJoinScenario.SimulateJoin(
+                _responder!,
+                addresses[i],
+                networkAddress: (ushort)(0x2000 + i),
+                "Philips",
+                "929002335001"
+            );
+        }
+
+        await WaitFor(allJoined.Task, TimeSpan.FromSeconds(15));
+
+        Assert.Equal(deviceCount, joinedDevices.Count);
+        foreach (var address in addresses)
+            Assert.Contains(joinedDevices, d => d.IeeeAddress == address);
     }
 
     private static async Task<T> WaitFor<T>(Task<T> task)
@@ -94,5 +164,12 @@ public class DeviceJoinScenarioTests : IAsyncLifetime
         var completed = await Task.WhenAny(task, Task.Delay(TimeSpan.FromSeconds(5)));
         Assert.Same(task, completed);
         return await task;
+    }
+
+    private static async Task WaitFor(Task task, TimeSpan? timeout = null)
+    {
+        var completed = await Task.WhenAny(task, Task.Delay(timeout ?? TimeSpan.FromSeconds(5)));
+        Assert.Same(task, completed);
+        await task;
     }
 }

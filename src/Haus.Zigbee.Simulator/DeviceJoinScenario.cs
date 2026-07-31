@@ -6,9 +6,9 @@ using Haus.Zigbee.Zcl;
 namespace Haus.Zigbee.Simulator;
 
 // Composes the exact response sequence a real device-interview expects (active-endpoints ->
-// simple-descriptor -> Basic-cluster read) and schedules it on the responder, keyed to whatever
-// APS-request count is already in progress so back-to-back simulated joins keep their responses
-// in the right order relative to each other.
+// simple-descriptor -> Basic-cluster read) and schedules it on the responder, keyed per-device
+// (network address + that device's own request step) so concurrent simulated joins for different
+// devices never collide, however their individual interview steps happen to interleave.
 public static class DeviceJoinScenario
 {
     private const ushort ZdpProfile = 0x0000;
@@ -44,11 +44,7 @@ public static class DeviceJoinScenario
 
     public const int ApsRequestsPerJoin = 3;
 
-    // Returns the ApsRequestCount it read to schedule these releases, so a caller that needs to
-    // know when the join completes derives its target count from this same read rather than
-    // taking its own -- two independent reads of that shared counter can race against an APS
-    // request landing in between, misscheduling which join the release slots belong to.
-    public static int SimulateJoin(
+    public static void SimulateJoin(
         DeconzResponder responder,
         IeeeAddress ieeeAddress,
         ushort networkAddress,
@@ -56,21 +52,22 @@ public static class DeviceJoinScenario
         string model
     )
     {
-        var baseIndex = responder.ApsRequestCount;
         responder.EnqueueIndication(AnnounceIndication(networkAddress, ieeeAddress));
         responder.ReleaseAfterApsRequest(
-            baseIndex,
+            networkAddress,
+            step: 0,
             request => ActiveEndpointsIndication(networkAddress, ExtractZdpSequenceNumber(request))
         );
         responder.ReleaseAfterApsRequest(
-            baseIndex + 1,
+            networkAddress,
+            step: 1,
             request => SimpleDescriptorIndication(networkAddress, ExtractZdpSequenceNumber(request))
         );
         responder.ReleaseAfterApsRequest(
-            baseIndex + 2,
+            networkAddress,
+            step: 2,
             request => BasicReadIndication(networkAddress, vendor, model, ExtractZclSequenceNumber(request))
         );
-        return baseIndex;
     }
 
     // A real device echoes the request's own transaction sequence number back in its response;
