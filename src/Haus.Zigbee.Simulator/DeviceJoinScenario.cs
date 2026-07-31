@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Haus.Zigbee;
+using Haus.Zigbee.Zcl;
 
 namespace Haus.Zigbee.Simulator;
 
@@ -26,10 +27,10 @@ public static class DeviceJoinScenario
     private const ushort ManufacturerNameAttribute = 0x0004;
     private const ushort ModelIdentifierAttribute = 0x0005;
 
-    // ZDP and ZCL each have their own transaction-sequence-number namespace; the simulator never
-    // varies either, but they're named separately so a reader doesn't mistake them for one field.
-    private const byte ZdpTransactionSequenceNumber = 0x00;
-    private const byte ZclTransactionSequenceNumber = 0x00;
+    // The announce indication isn't a response to any request, so it has no sequence number to
+    // echo -- unlike the other three indications below, which must echo back whatever sequence
+    // number the coordinator's actual request used (DeviceInterview correlates responses on it).
+    private const byte AnnounceTransactionSequenceNumber = 0x00;
 
     // ZDP requests/responses always address endpoint 0 (the ZDO), never a real application endpoint.
     private const byte ZdpEndpoint = 0x00;
@@ -57,24 +58,48 @@ public static class DeviceJoinScenario
     {
         var baseIndex = responder.ApsRequestCount;
         responder.EnqueueIndication(AnnounceIndication(networkAddress, ieeeAddress));
-        responder.ReleaseAfterApsRequest(baseIndex, ActiveEndpointsIndication(networkAddress));
-        responder.ReleaseAfterApsRequest(baseIndex + 1, SimpleDescriptorIndication(networkAddress));
-        responder.ReleaseAfterApsRequest(baseIndex + 2, BasicReadIndication(networkAddress, vendor, model));
+        responder.ReleaseAfterApsRequest(
+            baseIndex,
+            request => ActiveEndpointsIndication(networkAddress, ExtractZdpSequenceNumber(request))
+        );
+        responder.ReleaseAfterApsRequest(
+            baseIndex + 1,
+            request => SimpleDescriptorIndication(networkAddress, ExtractZdpSequenceNumber(request))
+        );
+        responder.ReleaseAfterApsRequest(
+            baseIndex + 2,
+            request => BasicReadIndication(networkAddress, vendor, model, ExtractZclSequenceNumber(request))
+        );
         return baseIndex;
+    }
+
+    // A real device echoes the request's own transaction sequence number back in its response;
+    // DeviceInterview correlates on that number, so these read it out of the actual request rather
+    // than guessing what the coordinator's counter is at (which depends on how many other devices
+    // it has already interviewed this session).
+    private static byte ExtractZdpSequenceNumber(byte[] apsDataRequest)
+    {
+        return DeconzResponder.ExtractAsduPayload(apsDataRequest)[0];
+    }
+
+    private static byte ExtractZclSequenceNumber(byte[] apsDataRequest)
+    {
+        var asdu = DeconzResponder.ExtractAsduPayload(apsDataRequest);
+        return ZclFrameHeaderCodec.Decode(asdu).Header.TransactionSequenceNumber;
     }
 
     private static IndicationBody AnnounceIndication(ushort networkAddress, IeeeAddress ieeeAddress)
     {
-        var asdu = new List<byte> { ZdpTransactionSequenceNumber };
+        var asdu = new List<byte> { AnnounceTransactionSequenceNumber };
         AddUInt16(asdu, networkAddress);
         AddUInt64(asdu, ieeeAddress.Value);
         asdu.Add(MacCapability);
         return new IndicationBody(networkAddress, ZdpEndpoint, ZdpProfile, DeviceAnnounceCluster, asdu.ToArray());
     }
 
-    private static IndicationBody ActiveEndpointsIndication(ushort networkAddress)
+    private static IndicationBody ActiveEndpointsIndication(ushort networkAddress, byte sequenceNumber)
     {
-        var asdu = new List<byte> { ZdpTransactionSequenceNumber, SuccessStatus };
+        var asdu = new List<byte> { sequenceNumber, SuccessStatus };
         AddUInt16(asdu, networkAddress);
         asdu.Add(SimulatedEndpointCount);
         asdu.Add(SimulatedEndpointId);
@@ -87,7 +112,7 @@ public static class DeviceJoinScenario
         );
     }
 
-    private static IndicationBody SimpleDescriptorIndication(ushort networkAddress)
+    private static IndicationBody SimpleDescriptorIndication(ushort networkAddress, byte sequenceNumber)
     {
         var descriptor = new List<byte> { SimulatedEndpointId };
         AddUInt16(descriptor, HomeAutomationProfile);
@@ -96,7 +121,7 @@ public static class DeviceJoinScenario
         AddClusterList(descriptor, [BasicCluster, OnOffCluster]);
         AddClusterList(descriptor, []);
 
-        var asdu = new List<byte> { ZdpTransactionSequenceNumber, SuccessStatus };
+        var asdu = new List<byte> { sequenceNumber, SuccessStatus };
         AddUInt16(asdu, networkAddress);
         asdu.Add((byte)descriptor.Count);
         asdu.AddRange(descriptor);
@@ -109,9 +134,14 @@ public static class DeviceJoinScenario
         );
     }
 
-    private static IndicationBody BasicReadIndication(ushort networkAddress, string vendor, string model)
+    private static IndicationBody BasicReadIndication(
+        ushort networkAddress,
+        string vendor,
+        string model,
+        byte sequenceNumber
+    )
     {
-        var frame = new List<byte> { GlobalFrameControl, ZclTransactionSequenceNumber, ReadAttributesResponseCommand };
+        var frame = new List<byte> { GlobalFrameControl, sequenceNumber, ReadAttributesResponseCommand };
         AddStringAttribute(frame, ManufacturerNameAttribute, vendor);
         AddStringAttribute(frame, ModelIdentifierAttribute, model);
         return new IndicationBody(

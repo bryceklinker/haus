@@ -107,11 +107,11 @@ public class DeviceInterview : IDisposable
 
     private async Task<IReadOnlyList<byte>> DiscoverEndpointIdsAsync(ushort networkAddress, CancellationToken token)
     {
-        var request = ActiveEndpointsRequestCodec.Encode(
-            new ActiveEndpointsRequest(_zdpTransactionSequenceNumber.Next(), networkAddress)
-        );
+        var sequenceNumber = _zdpTransactionSequenceNumber.Next();
+        var request = ActiveEndpointsRequestCodec.Encode(new ActiveEndpointsRequest(sequenceNumber, networkAddress));
         var response = await SendZdpAsync(
                 networkAddress,
+                sequenceNumber,
                 ActiveEndpointsRequestCluster,
                 ActiveEndpointsResponseCluster,
                 request,
@@ -127,11 +127,13 @@ public class DeviceInterview : IDisposable
         CancellationToken token
     )
     {
+        var sequenceNumber = _zdpTransactionSequenceNumber.Next();
         var request = SimpleDescriptorCodec.EncodeRequest(
-            new SimpleDescriptorRequest(_zdpTransactionSequenceNumber.Next(), networkAddress, endpointId)
+            new SimpleDescriptorRequest(sequenceNumber, networkAddress, endpointId)
         );
         var response = await SendZdpAsync(
                 networkAddress,
+                sequenceNumber,
                 SimpleDescriptorRequestCluster,
                 SimpleDescriptorResponseCluster,
                 request,
@@ -158,11 +160,9 @@ public class DeviceInterview : IDisposable
         if (endpoint is null)
             return ZigbeeDeviceInfo.Empty;
 
+        var sequenceNumber = _zclTransactionSequenceNumber.Next();
         var request = ZclReadAttributesRequestCodec.Encode(
-            new ZclReadAttributesRequest(
-                _zclTransactionSequenceNumber.Next(),
-                new[] { ManufacturerNameAttribute, ModelIdentifierAttribute }
-            )
+            new ZclReadAttributesRequest(sequenceNumber, new[] { ManufacturerNameAttribute, ModelIdentifierAttribute })
         );
         var response = await SendAsync(
                 networkAddress,
@@ -171,6 +171,7 @@ public class DeviceInterview : IDisposable
                 endpoint.ProfileId,
                 BasicCluster,
                 BasicCluster,
+                sequenceNumber,
                 request,
                 token
             )
@@ -188,6 +189,7 @@ public class DeviceInterview : IDisposable
 
     private Task<ApsDataIndicationFrame> SendZdpAsync(
         ushort networkAddress,
+        byte sequenceNumber,
         ushort requestCluster,
         ushort responseCluster,
         byte[] asdu,
@@ -201,6 +203,7 @@ public class DeviceInterview : IDisposable
             ZdpProfileId,
             requestCluster,
             responseCluster,
+            sequenceNumber,
             asdu,
             token
         );
@@ -209,6 +212,10 @@ public class DeviceInterview : IDisposable
     // Registers the outstanding response before writing the request so a fast reply cannot arrive
     // before this interview is waiting for it. The delivery confirm is not awaited: this protocol
     // layer treats the ZDP/ZCL response indication itself as the interview step's completion.
+    // Correlation includes the request's own transaction sequence number (not just address+cluster):
+    // a device can be interviewed twice concurrently (e.g. a re-announce racing a backfill read), and
+    // without the sequence number the second registration would silently orphan the first's pending
+    // response.
     private Task<ApsDataIndicationFrame> SendAsync(
         ushort networkAddress,
         byte destinationEndpoint,
@@ -216,11 +223,12 @@ public class DeviceInterview : IDisposable
         ushort profileId,
         ushort requestCluster,
         ushort responseCluster,
+        byte sequenceNumber,
         byte[] asdu,
         CancellationToken token
     )
     {
-        var pending = RegisterPending(networkAddress, responseCluster);
+        var pending = RegisterPending(networkAddress, responseCluster, sequenceNumber);
         var request = new ApsDataRequestFrame(
             SequenceNumber: 0,
             RequestId: _requestId.Next(),
@@ -236,18 +244,33 @@ public class DeviceInterview : IDisposable
         return pending.Task;
     }
 
-    private TaskCompletionSource<ApsDataIndicationFrame> RegisterPending(ushort networkAddress, ushort responseCluster)
+    private TaskCompletionSource<ApsDataIndicationFrame> RegisterPending(
+        ushort networkAddress,
+        ushort responseCluster,
+        byte sequenceNumber
+    )
     {
         var pending = new TaskCompletionSource<ApsDataIndicationFrame>();
-        _pendingResponses[new ResponseKey(networkAddress, responseCluster)] = pending;
+        _pendingResponses[new ResponseKey(networkAddress, responseCluster, sequenceNumber)] = pending;
         return pending;
     }
 
     private void CompletePendingResponse(ApsDataIndicationFrame indication)
     {
-        var key = new ResponseKey(indication.SourceNwkAddress, indication.ClusterId);
+        var sequenceNumber = ExtractTransactionSequenceNumber(indication);
+        var key = new ResponseKey(indication.SourceNwkAddress, indication.ClusterId, sequenceNumber);
         if (_pendingResponses.TryRemove(key, out var pending))
             pending.SetResult(indication);
+    }
+
+    // ZDP responses carry their transaction sequence number as the first ASDU byte; ZCL responses
+    // carry theirs inside the ZCL frame header (after the optional manufacturer code), which is why
+    // this dispatches on profile rather than reading a fixed offset.
+    private static byte ExtractTransactionSequenceNumber(ApsDataIndicationFrame indication)
+    {
+        return indication.ProfileId == ZdpProfileId
+            ? indication.AsduPayload[0]
+            : ZclFrameHeaderCodec.Decode(indication.AsduPayload).Header.TransactionSequenceNumber;
     }
 
     private static ZigbeeDeviceInfo ReadBasicInfo(byte[] frame)
@@ -314,5 +337,5 @@ public class DeviceInterview : IDisposable
         );
     }
 
-    private readonly record struct ResponseKey(ushort NetworkAddress, ushort ClusterId);
+    private readonly record struct ResponseKey(ushort NetworkAddress, ushort ClusterId, byte SequenceNumber);
 }

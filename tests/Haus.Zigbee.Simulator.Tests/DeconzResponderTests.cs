@@ -10,7 +10,7 @@ public class DeconzResponderTests
     {
         var responder = new DeconzResponder();
         var body = new IndicationBody(0x1234, 0x01, 0x0104, 0x0000, [0x01]);
-        responder.ReleaseAfterApsRequest(0, body);
+        responder.ReleaseAfterApsRequest(0, _ => body);
 
         var beforeState = responder.HandleRequest([0x07, 0x00, 0x00, 0x00, 0x00, 0x00]);
         Assert.Equal((byte)0x00, beforeState[5]);

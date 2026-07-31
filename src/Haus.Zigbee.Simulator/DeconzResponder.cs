@@ -49,10 +49,19 @@ public class DeconzResponder
     private const byte CoordinatorEndpoint = 0x01;
     private const byte NoRssiLinkQuality = 0xff;
 
+    // Offsets into an ApsDataRequest command's payload, assuming Nwk-mode addressing (0x02) --
+    // the only mode ApsDataRequestFrameCodec's callers in this codebase ever send. Mirrors the
+    // layout ApsDataRequestFrameCodec.Encode produces.
+    private const int DestinationAddressModeOffset = 9;
+    private const int NwkDestinationAddressLength = 3; // short address (2 bytes) + endpoint (1 byte)
+    private const int ProfileAndClusterLength = 4; // profile id (2 bytes) + cluster id (2 bytes)
+    private const int SourceEndpointLength = 1;
+    private const int AsduLengthFieldLength = 2;
+
     private readonly ConcurrentDictionary<byte, byte[]> _parameters = new();
     private readonly ConcurrentQueue<IndicationBody> _indications = new();
     private readonly ConcurrentQueue<byte[]> _sentApsRequests = new();
-    private readonly ConcurrentDictionary<int, IndicationBody> _releaseOnApsRequest = new();
+    private readonly ConcurrentDictionary<int, Func<byte[], IndicationBody>> _releaseOnApsRequest = new();
     private int _apsRequestCount;
     private int _networkAddressCounter;
 
@@ -75,10 +84,28 @@ public class DeconzResponder
 
     // Lets a caller script a device-interview response sequence: the Nth APS data-request this
     // responder sees (0-based) is exactly when a real device would have replied, so queuing the
-    // response there keeps request/response order faithful to a real interview.
-    public void ReleaseAfterApsRequest(int apsRequestIndex, IndicationBody body)
+    // response there keeps request/response order faithful to a real interview. The factory
+    // receives that Nth request's raw bytes so it can echo back the request's own transaction
+    // sequence number -- DeviceInterview correlates responses on that number, and a real device
+    // discovers it from the request rather than knowing it in advance.
+    public void ReleaseAfterApsRequest(int apsRequestIndex, Func<byte[], IndicationBody> bodyFactory)
     {
-        _releaseOnApsRequest[apsRequestIndex] = body;
+        _releaseOnApsRequest[apsRequestIndex] = bodyFactory;
+    }
+
+    // Extracts the ASDU payload from an ApsDataRequest command's raw (unframed) bytes, assuming
+    // Nwk-mode addressing.
+    public static byte[] ExtractAsduPayload(byte[] apsDataRequest)
+    {
+        var asduLengthOffset =
+            DestinationAddressModeOffset
+            + 1
+            + NwkDestinationAddressLength
+            + ProfileAndClusterLength
+            + SourceEndpointLength;
+        var asduOffset = asduLengthOffset + AsduLengthFieldLength;
+        var asduLength = apsDataRequest[asduLengthOffset] | (apsDataRequest[asduLengthOffset + 1] << 8);
+        return apsDataRequest[asduOffset..(asduOffset + asduLength)];
     }
 
     public IReadOnlyList<byte[]> SentApsRequests => _sentApsRequests.ToList();
@@ -168,8 +195,8 @@ public class DeconzResponder
     {
         _sentApsRequests.Enqueue(request);
         var apsRequestIndex = Interlocked.Increment(ref _apsRequestCount) - 1;
-        if (_releaseOnApsRequest.TryRemove(apsRequestIndex, out var body))
-            _indications.Enqueue(body);
+        if (_releaseOnApsRequest.TryRemove(apsRequestIndex, out var bodyFactory))
+            _indications.Enqueue(bodyFactory(request));
 
         return
         [

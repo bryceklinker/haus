@@ -82,7 +82,8 @@ public class DeviceInterviewTests
                 profileId: HomeAutomationProfile,
                 deviceId: 0x0100,
                 inClusters: new ushort[] { 0x0000, 0x0006 },
-                outClusters: new ushort[] { 0x0019 }
+                outClusters: new ushort[] { 0x0019 },
+                sequenceNumber: 0x01
             )
         );
         _dongle.ReleaseAfterSend(
@@ -116,7 +117,8 @@ public class DeviceInterviewTests
                 profileId: HomeAutomationProfile,
                 deviceId: 0x0100,
                 inClusters: new ushort[] { 0x0006 },
-                outClusters: new ushort[0]
+                outClusters: new ushort[0],
+                sequenceNumber: 0x01
             )
         );
         _dongle.ReleaseAfterSend(
@@ -127,7 +129,8 @@ public class DeviceInterviewTests
                 profileId: HomeAutomationProfile,
                 deviceId: 0x0100,
                 inClusters: new ushort[] { 0x0008 },
-                outClusters: new ushort[0]
+                outClusters: new ushort[0],
+                sequenceNumber: 0x02
             )
         );
         _dongle.ReleaseAfterSend(
@@ -162,6 +165,46 @@ public class DeviceInterviewTests
 
         Assert.Equal("IKEA", info.ManufacturerName);
         Assert.Equal("LED1836G9", info.ModelIdentifier);
+    }
+
+    [Fact]
+    public async Task ReadBasicInfoAsync_CalledTwiceForTheSameDeviceBeforeTheFirstResponseArrives_EachCallGetsItsOwnResponse()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        var endpoint = new ZigbeeEndpoint(
+            0x01,
+            HomeAutomationProfile,
+            0x0100,
+            new[] { BasicCluster },
+            Array.Empty<ushort>()
+        );
+        _dongle.ReleaseAfterSend(
+            sendIndex: 0,
+            BasicReadResponse(device, endpoint: 0x01, profileId: HomeAutomationProfile, "VendorA", "ModelA")
+        );
+        _dongle.ReleaseAfterSend(
+            sendIndex: 1,
+            BasicReadResponse(
+                device,
+                endpoint: 0x01,
+                profileId: HomeAutomationProfile,
+                "VendorB",
+                "ModelB",
+                sequenceNumber: 0x01
+            )
+        );
+
+        // Both calls register their pending response before either response has arrived -- this
+        // reproduces a device re-announcing (or a backfill read) racing a live interview for the
+        // same device without needing real thread concurrency.
+        var first = _interview.ReadBasicInfoAsync(device.Nwk, [endpoint], CancellationToken.None);
+        var second = _interview.ReadBasicInfoAsync(device.Nwk, [endpoint], CancellationToken.None);
+
+        var infoA = await RunToCompletion(first);
+        var infoB = await RunToCompletion(second);
+
+        Assert.Equal("VendorA", infoA.ManufacturerName);
+        Assert.Equal("VendorB", infoB.ManufacturerName);
     }
 
     [Fact]
@@ -201,9 +244,16 @@ public class DeviceInterviewTests
         return new IndicationBody(device.Nwk, SourceEndpoint: 0x00, ZdpProfile, DeviceAnnounceCluster, asdu.ToArray());
     }
 
-    private static IndicationBody ActiveEndpointsResponse(DeviceScript device, byte[] endpointIds)
+    // A real device echoes the request's own transaction sequence number back in its response, and
+    // DeviceInterview now correlates on that number, so these fixtures take it explicitly rather
+    // than hardcoding 0x00.
+    private static IndicationBody ActiveEndpointsResponse(
+        DeviceScript device,
+        byte[] endpointIds,
+        byte sequenceNumber = 0x00
+    )
     {
-        var asdu = new List<byte> { 0x00, 0x00 };
+        var asdu = new List<byte> { sequenceNumber, 0x00 };
         AddUInt16(asdu, device.Nwk);
         asdu.Add((byte)endpointIds.Length);
         asdu.AddRange(endpointIds);
@@ -222,7 +272,8 @@ public class DeviceInterviewTests
         ushort profileId,
         ushort deviceId,
         ushort[] inClusters,
-        ushort[] outClusters
+        ushort[] outClusters,
+        byte sequenceNumber
     )
     {
         var descriptor = new List<byte> { endpoint };
@@ -232,7 +283,7 @@ public class DeviceInterviewTests
         AddClusterList(descriptor, inClusters);
         AddClusterList(descriptor, outClusters);
 
-        var asdu = new List<byte> { 0x00, 0x00 };
+        var asdu = new List<byte> { sequenceNumber, 0x00 };
         AddUInt16(asdu, device.Nwk);
         asdu.Add((byte)descriptor.Count);
         asdu.AddRange(descriptor);
@@ -244,10 +295,11 @@ public class DeviceInterviewTests
         byte endpoint,
         ushort profileId,
         string manufacturer,
-        string model
+        string model,
+        byte sequenceNumber = 0x00
     )
     {
-        var frame = new List<byte> { GlobalServerToClientControl, 0x00, ReadAttributesResponseCommand };
+        var frame = new List<byte> { GlobalServerToClientControl, sequenceNumber, ReadAttributesResponseCommand };
         AddStringAttribute(frame, ManufacturerNameAttribute, manufacturer);
         AddStringAttribute(frame, ModelIdentifierAttribute, model);
         return new IndicationBody(device.Nwk, endpoint, profileId, BasicCluster, frame.ToArray());
