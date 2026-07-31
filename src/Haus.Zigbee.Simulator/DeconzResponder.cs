@@ -120,8 +120,7 @@ public class DeconzResponder
         _releaseOnApsRequest[(networkAddress, step)] = bodyFactory;
     }
 
-    // Extracts the ASDU payload from an ApsDataRequest command's raw (unframed) bytes, assuming
-    // Nwk-mode addressing.
+    // Assumes Nwk-mode addressing.
     public static byte[] ExtractAsduPayload(byte[] apsDataRequest)
     {
         var asduLengthOffset = SourceEndpointOffset + SourceEndpointLength;
@@ -130,8 +129,7 @@ public class DeconzResponder
         return apsDataRequest[asduOffset..(asduOffset + asduLength)];
     }
 
-    // Extracts the destination short address from an ApsDataRequest command's raw (unframed)
-    // bytes, assuming Nwk-mode addressing.
+    // Assumes Nwk-mode addressing.
     public static ushort ExtractDestinationNetworkAddress(byte[] apsDataRequest)
     {
         return (ushort)(
@@ -264,15 +262,7 @@ public class DeconzResponder
 
     private static byte[] EncodeIndication(byte sequenceNumber, IndicationBody body)
     {
-        // ApsDataIndicationFrame captures this byte but nothing downstream reads it -- it's a
-        // distinct field from (and unrelated to) the DeviceState poll response's available-flags.
-        var unusedDeviceState = new byte[] { 0x00 };
-        var header = Concat(
-            [ReadIndicationCommand, sequenceNumber, SuccessStatus],
-            LittleEndian(UnvalidatedFrameLength),
-            LittleEndian(UnvalidatedPayloadLength),
-            unusedDeviceState
-        );
+        var header = BuildUnvalidatedHeader(ReadIndicationCommand, sequenceNumber);
         var destination = Concat(
             [(byte)DeconzAddressMode.Nwk],
             LittleEndian(CoordinatorNetworkAddress),
@@ -299,16 +289,7 @@ public class DeconzResponder
 
     private static byte[] EncodeConfirm(byte sequenceNumber, ConfirmBody body)
     {
-        // ApsDataConfirmCodec captures this byte but nothing downstream reads it -- it's a distinct
-        // field from (and unrelated to) the DeviceState poll response's available-flags.
-        var unusedDeviceState = new byte[] { 0x00 };
-        var header = Concat(
-            [ReadConfirmCommand, sequenceNumber, SuccessStatus],
-            LittleEndian(UnvalidatedFrameLength),
-            LittleEndian(UnvalidatedPayloadLength),
-            unusedDeviceState,
-            [body.RequestId]
-        );
+        var header = Concat(BuildUnvalidatedHeader(ReadConfirmCommand, sequenceNumber), [body.RequestId]);
         var destination = Concat(
             [(byte)DeconzAddressMode.Nwk],
             LittleEndian(body.DestinationNetworkAddress),
@@ -316,6 +297,20 @@ public class DeconzResponder
         );
         var sourceEndpointAndStatus = new byte[] { body.SourceEndpoint, SuccessStatus };
         return Concat(header, destination, sourceEndpointAndStatus);
+    }
+
+    // The frameLength/payloadLength fields are never validated by the real client-side decoder, and
+    // the trailing device-state byte is captured but nothing downstream reads it -- it's a distinct
+    // field from (and unrelated to) the DeviceState poll response's own available-flags.
+    private static byte[] BuildUnvalidatedHeader(byte command, byte sequenceNumber)
+    {
+        const byte unusedDeviceState = 0x00;
+        return Concat(
+            [command, sequenceNumber, SuccessStatus],
+            LittleEndian(UnvalidatedFrameLength),
+            LittleEndian(UnvalidatedPayloadLength),
+            [unusedDeviceState]
+        );
     }
 
     private static byte[] LittleEndian(ushort value)

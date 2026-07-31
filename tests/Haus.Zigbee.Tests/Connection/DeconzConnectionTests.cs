@@ -9,6 +9,7 @@ using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Serial.Frames;
+using Haus.Zigbee.Tests.Coordinator;
 using Haus.Zigbee.Transport;
 using Xunit;
 
@@ -123,20 +124,13 @@ public class DeconzConnectionTests
                 request[ParameterIdIndex],
                 _valuesByParameterId[request[ParameterIdIndex]]
             );
-            Enqueue(Framed(ReadParameterFrame.Encode(response)));
+            Enqueue(DeconzFrames.Framed(ReadParameterFrame.Encode(response)));
         }
 
         private void Enqueue(byte[] bytes)
         {
             foreach (var value in bytes)
                 _incoming.Enqueue(value);
-        }
-
-        private static byte[] Framed(byte[] frame)
-        {
-            var checksum = DeconzChecksum.Compute(frame);
-            var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
-            return new SlipEncoder().Encode(withChecksum.ToArray());
         }
 
         public void Dispose() { }

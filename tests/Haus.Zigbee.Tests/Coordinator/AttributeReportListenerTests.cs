@@ -193,9 +193,11 @@ public class AttributeReportListenerTests
         var listener = new AttributeReportListener(loop);
         var reports = new List<ZigbeeAttributeReport>();
         listener.AttributeReported += (_, report) => reports.Add(report);
-        transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable)));
         transport.QueueResponse(
-            Framed(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable))
+        );
+        transport.QueueResponse(
+            DeconzFrames.Framed(
                 IndicationResponse(
                     sequenceNumber: 1,
                     sourceNwk: 0x1234,
@@ -226,9 +228,13 @@ public class AttributeReportListenerTests
         var reports = new List<ZigbeeAttributeReport>();
         listener.AttributeReported += (_, report) => reports.Add(report);
 
-        transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable)));
         transport.QueueResponse(
-            Framed(IndicationResponse(sequenceNumber: 1, sourceNwk, sourceEndpoint, clusterId, zclFrame, profileId))
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable))
+        );
+        transport.QueueResponse(
+            DeconzFrames.Framed(
+                IndicationResponse(sequenceNumber: 1, sourceNwk, sourceEndpoint, clusterId, zclFrame, profileId)
+            )
         );
 
         await loop.PollOnceAsync(CancellationToken.None);
@@ -267,12 +273,5 @@ public class AttributeReportListenerTests
     private static byte[] Concat(params byte[][] segments)
     {
         return segments.SelectMany(segment => segment).ToArray();
-    }
-
-    private static byte[] Framed(byte[] frame)
-    {
-        var checksum = DeconzChecksum.Compute(frame);
-        var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
-        return new SlipEncoder().Encode(withChecksum.ToArray());
     }
 }

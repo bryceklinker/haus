@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Serial;
+using Haus.Zigbee.Tests.Coordinator;
 using Haus.Zigbee.Tests.Transport;
 using Haus.Zigbee.Transport;
 using Xunit;
@@ -24,19 +25,19 @@ public class DeconzChannelTests
     public async Task WhenSendingAFrameThenItIsChecksumAppendedAndSlipEncodedOntoTheTransport()
     {
         var command = new byte[] { 0x0A, 0x05, 0x01 };
-        _transport.FeedIncoming(Framed(new byte[] { 0x0A, 0x05, 0x00 }));
+        _transport.FeedIncoming(DeconzFrames.Framed(new byte[] { 0x0A, 0x05, 0x00 }));
 
         await _channel.SendAndReceiveAsync(command, CancellationToken.None);
 
-        Assert.Equal(Framed(command), _transport.WrittenBytes);
+        Assert.Equal(DeconzFrames.Framed(command), _transport.WrittenBytes);
     }
 
     [Fact]
     public async Task WhenResponsesArriveThenTheOneMatchingTheSentSequenceNumberIsReturned()
     {
         var command = new byte[] { 0x0A, 0x05, 0x01 };
-        _transport.FeedIncoming(Framed(new byte[] { 0x0A, 0x09, 0xFF }));
-        _transport.FeedIncoming(Framed(new byte[] { 0x0A, 0x05, 0x42 }));
+        _transport.FeedIncoming(DeconzFrames.Framed(new byte[] { 0x0A, 0x09, 0xFF }));
+        _transport.FeedIncoming(DeconzFrames.Framed(new byte[] { 0x0A, 0x05, 0x42 }));
 
         var response = await _channel.SendAndReceiveAsync(command, CancellationToken.None);
 
@@ -61,13 +62,6 @@ public class DeconzChannelTests
         Assert.Equal(new byte[] { 0x0a, 0x06, 0xaa }, responseB);
     }
 
-    private static byte[] Framed(byte[] frame)
-    {
-        var checksum = DeconzChecksum.Compute(frame);
-        var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
-        return new SlipEncoder().Encode(withChecksum.ToArray());
-    }
-
     // Echoes a response for whatever command+sequence-number was just written, after yielding once
     // -- the yield opens a genuine interleaving window for a second concurrent SendAndReceiveAsync
     // call on the same channel/transport, the way two real callers racing on one serial line would.
@@ -88,7 +82,7 @@ public class DeconzChannelTests
 
             var decoded = new SlipDecoder().Decode(written)[0];
             var command = decoded[..^2];
-            var response = Framed(new byte[] { command[0], command[1], 0xaa });
+            var response = DeconzFrames.Framed(new byte[] { command[0], command[1], 0xaa });
             foreach (var b in response)
                 _incomingBytes.Enqueue(b);
         }

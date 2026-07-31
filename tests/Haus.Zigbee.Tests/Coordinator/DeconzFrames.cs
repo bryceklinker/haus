@@ -53,7 +53,7 @@ internal static class DeconzFrames
         return segments.SelectMany(segment => segment).ToArray();
     }
 
-    private static byte[] Framed(byte[] frame)
+    public static byte[] Framed(byte[] frame)
     {
         var checksum = DeconzChecksum.Compute(frame);
         var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Serial.Frames;
+using Haus.Zigbee.Tests.Coordinator;
 using Haus.Zigbee.Transport;
 using Xunit;
 
@@ -31,9 +32,11 @@ public class ApsSenderTests
     [Fact]
     public async Task WhenSendingThenItReturnsTheConfirmThatMatchesTheRequestId()
     {
-        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
-        _pollTransport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
-        _pollTransport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
+        _senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(sequenceNumber: 0)));
+        _pollTransport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable))
+        );
+        _pollTransport.QueueResponse(DeconzFrames.Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
 
         var sendTask = _sender.SendAsync(Request(requestId: 0x42), CancellationToken.None);
         await _pollLoop.PollOnceAsync(CancellationToken.None);
@@ -45,11 +48,15 @@ public class ApsSenderTests
     [Fact]
     public async Task WhenAConfirmForAnotherRequestArrivesThenTheSendKeepsWaitingForItsOwn()
     {
-        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
-        _pollTransport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
-        _pollTransport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x99)));
-        _pollTransport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 2, deviceState: ConfirmAvailable)));
-        _pollTransport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 3, requestId: 0x42)));
+        _senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(sequenceNumber: 0)));
+        _pollTransport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable))
+        );
+        _pollTransport.QueueResponse(DeconzFrames.Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x99)));
+        _pollTransport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 2, deviceState: ConfirmAvailable))
+        );
+        _pollTransport.QueueResponse(DeconzFrames.Framed(ConfirmResponse(sequenceNumber: 3, requestId: 0x42)));
 
         var sendTask = _sender.SendAsync(Request(requestId: 0x42), CancellationToken.None);
         await _pollLoop.PollOnceAsync(CancellationToken.None);
@@ -62,9 +69,11 @@ public class ApsSenderTests
     [Fact]
     public async Task WhenDisposedThenAConfirmNoLongerCompletesAPendingSend()
     {
-        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
-        _pollTransport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
-        _pollTransport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
+        _senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(sequenceNumber: 0)));
+        _pollTransport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable))
+        );
+        _pollTransport.QueueResponse(DeconzFrames.Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
 
         var sendTask = _sender.SendAsync(Request(requestId: 0x42), CancellationToken.None);
         _sender.Dispose();
@@ -82,7 +91,7 @@ public class ApsSenderTests
             new DeconzChannel(_senderTransport),
             confirmTimeout: TimeSpan.FromMilliseconds(50)
         );
-        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
+        _senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(sequenceNumber: 0)));
 
         var sendTask = timingOutSender.SendAsync(Request(requestId: 0x42), CancellationToken.None);
         var completed = await Task.WhenAny(sendTask, Task.Delay(TimeSpan.FromSeconds(5)));
@@ -158,7 +167,7 @@ public class ApsSenderTests
             var written = buffer.ToArray();
             var frame = new SlipDecoder().Decode(written)[0];
             var sequenceNumber = frame[1];
-            var ack = Framed(new byte[] { 0x12, sequenceNumber, SuccessStatus, 0x00, 0x00 });
+            var ack = DeconzFrames.Framed(new byte[] { 0x12, sequenceNumber, SuccessStatus, 0x00, 0x00 });
 
             lock (_lock)
             {
@@ -195,7 +204,9 @@ public class ApsSenderTests
 
         _ = _sender.SendAsync(Request(requestId: 0x42, sequenceNumber: 99), timeout.Token);
 
-        var expected = Framed(ApsDataRequestFrameCodec.Encode(Request(requestId: 0x42, sequenceNumber: 0)));
+        var expected = DeconzFrames.Framed(
+            ApsDataRequestFrameCodec.Encode(Request(requestId: 0x42, sequenceNumber: 0))
+        );
         Assert.Equal(expected, _senderTransport.WrittenBytes);
     }
 
@@ -230,12 +241,5 @@ public class ApsSenderTests
         var requestAndAddress = new byte[] { requestId, NwkAddressMode, 0x34, 0x12 };
         var endpointsAndStatus = new byte[] { 0x01, 0x01, 0x00 };
         return header.Concat(requestAndAddress).Concat(endpointsAndStatus).ToArray();
-    }
-
-    private static byte[] Framed(byte[] frame)
-    {
-        var checksum = DeconzChecksum.Compute(frame);
-        var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
-        return new SlipEncoder().Encode(withChecksum.ToArray());
     }
 }

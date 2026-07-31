@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Serial.Frames;
+using Haus.Zigbee.Tests.Coordinator;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Connection;
@@ -29,23 +30,28 @@ public class ApsPollLoopTests
     [Fact]
     public async Task WhenPollingThenTheDeviceStatePollRequestIsSent()
     {
-        _transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: NoApsDataAvailable)));
+        _transport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: NoApsDataAvailable))
+        );
 
         await _loop.PollOnceAsync(CancellationToken.None);
 
-        Assert.Equal(Framed(DeviceStateCodec.EncodePollRequest(0)), _transport.WrittenBytes);
+        Assert.Equal(DeconzFrames.Framed(DeviceStateCodec.EncodePollRequest(0)), _transport.WrittenBytes);
     }
 
     [Fact]
     public async Task WhenAnIndicationIsAvailableThenTheReadIndicationRequestIsSent()
     {
-        _transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable)));
-        _transport.QueueResponse(Framed(IndicationResponse(sequenceNumber: 1)));
+        _transport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable))
+        );
+        _transport.QueueResponse(DeconzFrames.Framed(IndicationResponse(sequenceNumber: 1)));
 
         await _loop.PollOnceAsync(CancellationToken.None);
 
-        var expected = Framed(DeviceStateCodec.EncodePollRequest(0))
-            .Concat(Framed(ReadIndicationRequest(sequenceNumber: 1)))
+        var expected = DeconzFrames
+            .Framed(DeviceStateCodec.EncodePollRequest(0))
+            .Concat(DeconzFrames.Framed(ReadIndicationRequest(sequenceNumber: 1)))
             .ToArray();
         Assert.Equal(expected, _transport.WrittenBytes);
     }
@@ -53,8 +59,10 @@ public class ApsPollLoopTests
     [Fact]
     public async Task WhenAnIndicationIsReadThenItIsRaisedAsAnIndicationReceivedEvent()
     {
-        _transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable)));
-        _transport.QueueResponse(Framed(IndicationResponse(sequenceNumber: 1)));
+        _transport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable))
+        );
+        _transport.QueueResponse(DeconzFrames.Framed(IndicationResponse(sequenceNumber: 1)));
         var received = new List<ApsIndicationReceived>();
         _loop.IndicationReceived += (_, indication) => received.Add(indication);
 
@@ -69,13 +77,16 @@ public class ApsPollLoopTests
     [Fact]
     public async Task WhenAConfirmIsAvailableThenTheReadConfirmRequestIsSent()
     {
-        _transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
-        _transport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
+        _transport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable))
+        );
+        _transport.QueueResponse(DeconzFrames.Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
 
         await _loop.PollOnceAsync(CancellationToken.None);
 
-        var expected = Framed(DeviceStateCodec.EncodePollRequest(0))
-            .Concat(Framed(ReadConfirmRequest(sequenceNumber: 1)))
+        var expected = DeconzFrames
+            .Framed(DeviceStateCodec.EncodePollRequest(0))
+            .Concat(DeconzFrames.Framed(ReadConfirmRequest(sequenceNumber: 1)))
             .ToArray();
         Assert.Equal(expected, _transport.WrittenBytes);
     }
@@ -83,8 +94,10 @@ public class ApsPollLoopTests
     [Fact]
     public async Task WhenAConfirmIsReadThenItIsRaisedAsAConfirmReceivedEvent()
     {
-        _transport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
-        _transport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
+        _transport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable))
+        );
+        _transport.QueueResponse(DeconzFrames.Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x42)));
         var received = new List<ApsDataConfirm>();
         _loop.ConfirmReceived += (_, confirm) => received.Add(confirm);
 
@@ -130,12 +143,5 @@ public class ApsPollLoopTests
     private static byte[] Concat(params byte[][] segments)
     {
         return segments.SelectMany(segment => segment).ToArray();
-    }
-
-    private static byte[] Framed(byte[] frame)
-    {
-        var checksum = DeconzChecksum.Compute(frame);
-        var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
-        return new SlipEncoder().Encode(withChecksum.ToArray());
     }
 }

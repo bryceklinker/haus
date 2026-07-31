@@ -125,7 +125,9 @@ internal class FakeDeconzCoordinator : ISerialTransport
     private byte[] ReadParameterResponse(byte sequenceNumber, byte parameterId)
     {
         var value = _parameters.TryGetValue(parameterId, out var stored) ? stored : Array.Empty<byte>();
-        return Framed(ReadParameterFrame.Encode(new ReadParameterRequest(sequenceNumber, parameterId, value)));
+        return DeconzFrames.Framed(
+            ReadParameterFrame.Encode(new ReadParameterRequest(sequenceNumber, parameterId, value))
+        );
     }
 
     private byte[] WriteParameterResponse(byte[] request)
@@ -143,7 +145,7 @@ internal class FakeDeconzCoordinator : ISerialTransport
             0x00,
             parameterId,
         };
-        return Framed(response);
+        return DeconzFrames.Framed(response);
     }
 
     private byte[] DeviceStateResponse(byte sequenceNumber)
@@ -172,13 +174,6 @@ internal class FakeDeconzCoordinator : ISerialTransport
     {
         var frame = new SlipDecoder().Decode(framed.ToArray())[0];
         return frame[..^ChecksumLength];
-    }
-
-    private static byte[] Framed(byte[] frame)
-    {
-        var checksum = DeconzChecksum.Compute(frame);
-        var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
-        return new SlipEncoder().Encode(withChecksum.ToArray());
     }
 
     public void Dispose() { }

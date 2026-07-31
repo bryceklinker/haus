@@ -123,20 +123,13 @@ public class PermitJoinControllerTests
                 0x00,
                 parameterId,
             };
-            Enqueue(Framed(response));
+            Enqueue(DeconzFrames.Framed(response));
         }
 
         private void Enqueue(byte[] bytes)
         {
             foreach (var value in bytes)
                 _incoming.Enqueue(value);
-        }
-
-        private static byte[] Framed(byte[] frame)
-        {
-            var checksum = DeconzChecksum.Compute(frame);
-            var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
-            return new SlipEncoder().Encode(withChecksum.ToArray());
         }
 
         public void Dispose() { }

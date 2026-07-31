@@ -72,15 +72,22 @@ public class CommandSenderTests
             TxOptions: 0x00,
             Radius: 0x00
         );
-        Assert.Equal(Framed(ApsDataRequestFrameCodec.Encode(expectedFrame)), _senderTransport.WrittenBytes);
+        Assert.Equal(
+            DeconzFrames.Framed(ApsDataRequestFrameCodec.Encode(expectedFrame)),
+            _senderTransport.WrittenBytes
+        );
     }
 
     [Fact]
     public async Task WhenTheCoordinatorConfirmsDeliveryThenThatConfirmIsReturnedToTheCaller()
     {
-        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
-        _pollTransport.QueueResponse(Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable)));
-        _pollTransport.QueueResponse(Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x00, confirmStatus: 0xd0)));
+        _senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(sequenceNumber: 0)));
+        _pollTransport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: ConfirmAvailable))
+        );
+        _pollTransport.QueueResponse(
+            DeconzFrames.Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x00, confirmStatus: 0xd0))
+        );
 
         var sendTask = _commandSender.SendCommandAsync(AnyRequest(), CancellationToken.None);
         await _pollLoop.PollOnceAsync(CancellationToken.None);
@@ -161,7 +168,7 @@ public class CommandSenderTests
             var written = buffer.ToArray();
             var frame = new SlipDecoder().Decode(written)[0];
             var sequenceNumber = frame[1];
-            var ack = Framed(DeconzAck(sequenceNumber));
+            var ack = DeconzFrames.Framed(DeconzAck(sequenceNumber));
 
             lock (_lock)
             {
@@ -215,12 +222,5 @@ public class CommandSenderTests
         var requestAndAddress = new byte[] { requestId, NwkAddressMode, 0x34, 0x12 };
         var endpointsAndStatus = new byte[] { 0x01, 0x01, confirmStatus };
         return header.Concat(requestAndAddress).Concat(endpointsAndStatus).ToArray();
-    }
-
-    private static byte[] Framed(byte[] frame)
-    {
-        var checksum = DeconzChecksum.Compute(frame);
-        var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
-        return new SlipEncoder().Encode(withChecksum.ToArray());
     }
 }
