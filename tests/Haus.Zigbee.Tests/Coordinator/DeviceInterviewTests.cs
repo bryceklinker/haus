@@ -208,6 +208,31 @@ public class DeviceInterviewTests
     }
 
     [Fact]
+    public async Task ReadBasicInfoAsync_NoResponseEverArrivesFromTheDevice_TimesOutInsteadOfHangingForever()
+    {
+        var sender = new ApsSender(_pollLoop, new DeconzChannel(_dongle.SendTransport));
+        var timingOutInterview = new DeviceInterview(
+            _pollLoop,
+            sender,
+            _knownDeviceTable,
+            responseTimeout: TimeSpan.FromMilliseconds(50)
+        );
+        var endpoint = new ZigbeeEndpoint(
+            0x01,
+            HomeAutomationProfile,
+            0x0100,
+            new[] { BasicCluster },
+            Array.Empty<ushort>()
+        );
+
+        var readTask = timingOutInterview.ReadBasicInfoAsync(0x1a2b, [endpoint], CancellationToken.None);
+        var completed = await Task.WhenAny(readTask, Task.Delay(TimeSpan.FromSeconds(5)));
+
+        Assert.Same(readTask, completed);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => readTask);
+    }
+
+    [Fact]
     public async Task ReadBasicInfoAsync_NoEndpoints_ReturnsEmptyInfoWithoutSendingAnything()
     {
         var info = await _interview.ReadBasicInfoAsync(0x1a2b, [], CancellationToken.None);

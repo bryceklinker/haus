@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -70,6 +71,23 @@ public class ApsSenderTests
 
         var settled = await Task.WhenAny(sendTask, Task.Delay(200));
         Assert.NotEqual(sendTask, settled);
+    }
+
+    [Fact]
+    public async Task WhenNoConfirmEverArrivesThenSendAsyncTimesOutInsteadOfHangingForever()
+    {
+        var timingOutSender = new ApsSender(
+            _pollLoop,
+            new DeconzChannel(_senderTransport),
+            confirmTimeout: TimeSpan.FromMilliseconds(50)
+        );
+        _senderTransport.QueueResponse(Framed(DeconzAck(sequenceNumber: 0)));
+
+        var sendTask = timingOutSender.SendAsync(Request(requestId: 0x42), CancellationToken.None);
+        var completed = await Task.WhenAny(sendTask, Task.Delay(TimeSpan.FromSeconds(5)));
+
+        Assert.Same(sendTask, completed);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => sendTask);
     }
 
     [Fact]

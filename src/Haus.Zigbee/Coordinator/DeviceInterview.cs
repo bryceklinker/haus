@@ -34,9 +34,12 @@ public class DeviceInterview : IDisposable
     private const byte CharacterStringType = 0x42;
     private const byte InvalidStringLength = 0xff;
 
+    private static readonly TimeSpan DefaultResponseTimeout = TimeSpan.FromSeconds(30);
+
     private readonly ApsPollLoop _pollLoop;
     private readonly ApsSender _sender;
     private readonly KnownDeviceTable _knownDeviceTable;
+    private readonly TimeSpan _responseTimeout;
     private readonly ConcurrentDictionary<ResponseKey, TaskCompletionSource<ApsDataIndicationFrame>> _pendingResponses =
         new();
 
@@ -46,11 +49,17 @@ public class DeviceInterview : IDisposable
     private readonly ByteSequenceCounter _zclTransactionSequenceNumber = new();
     private readonly ByteSequenceCounter _requestId = new();
 
-    public DeviceInterview(ApsPollLoop pollLoop, ApsSender sender, KnownDeviceTable knownDeviceTable)
+    public DeviceInterview(
+        ApsPollLoop pollLoop,
+        ApsSender sender,
+        KnownDeviceTable knownDeviceTable,
+        TimeSpan? responseTimeout = null
+    )
     {
         _pollLoop = pollLoop;
         _sender = sender;
         _knownDeviceTable = knownDeviceTable;
+        _responseTimeout = responseTimeout ?? DefaultResponseTimeout;
         _pollLoop.IndicationReceived += OnIndicationReceived;
     }
 
@@ -216,7 +225,9 @@ public class DeviceInterview : IDisposable
     // a device can be interviewed twice concurrently (e.g. a re-announce racing a backfill read), and
     // without the sequence number the second registration would silently orphan the first's pending
     // response.
-    private Task<ApsDataIndicationFrame> SendAsync(
+    // A device that never sends a response would otherwise hang this forever and leak its entry in
+    // _pendingResponses permanently, since nothing else ever removes it.
+    private async Task<ApsDataIndicationFrame> SendAsync(
         ushort networkAddress,
         byte destinationEndpoint,
         byte sourceEndpoint,
@@ -228,30 +239,37 @@ public class DeviceInterview : IDisposable
         CancellationToken token
     )
     {
-        var pending = RegisterPending(networkAddress, responseCluster, sequenceNumber);
-        var request = new ApsDataRequestFrame(
-            SequenceNumber: 0,
-            RequestId: _requestId.Next(),
-            Destination: ApsDestination.Nwk(networkAddress, destinationEndpoint),
-            ProfileId: profileId,
-            ClusterId: requestCluster,
-            SourceEndpoint: sourceEndpoint,
-            AsduPayload: asdu,
-            TxOptions: DefaultTxOptions,
-            Radius: DefaultRadius
-        );
-        Forget(_sender.SendAsync(request, token));
-        return pending.Task;
+        var key = new ResponseKey(networkAddress, responseCluster, sequenceNumber);
+        var pending = RegisterPending(key);
+        try
+        {
+            var request = new ApsDataRequestFrame(
+                SequenceNumber: 0,
+                RequestId: _requestId.Next(),
+                Destination: ApsDestination.Nwk(networkAddress, destinationEndpoint),
+                ProfileId: profileId,
+                ClusterId: requestCluster,
+                SourceEndpoint: sourceEndpoint,
+                AsduPayload: asdu,
+                TxOptions: DefaultTxOptions,
+                Radius: DefaultRadius
+            );
+            Forget(_sender.SendAsync(request, token));
+
+            using var timeout = new CancellationTokenSource(_responseTimeout);
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, timeout.Token);
+            return await pending.Task.WaitAsync(linked.Token);
+        }
+        finally
+        {
+            _pendingResponses.TryRemove(key, out _);
+        }
     }
 
-    private TaskCompletionSource<ApsDataIndicationFrame> RegisterPending(
-        ushort networkAddress,
-        ushort responseCluster,
-        byte sequenceNumber
-    )
+    private TaskCompletionSource<ApsDataIndicationFrame> RegisterPending(ResponseKey key)
     {
         var pending = new TaskCompletionSource<ApsDataIndicationFrame>();
-        _pendingResponses[new ResponseKey(networkAddress, responseCluster, sequenceNumber)] = pending;
+        _pendingResponses[key] = pending;
         return pending;
     }
 
