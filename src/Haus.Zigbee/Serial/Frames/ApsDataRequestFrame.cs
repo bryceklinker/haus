@@ -59,7 +59,7 @@ public static class ApsDataRequestFrameCodec
         var payloadLength = FixedPayloadBytes + destinationAddress.Count + frame.AsduPayload.Length;
         var frameLength = FrameLengthOverhead + payloadLength;
 
-        var bytes = new List<byte> { CommandId, frame.SequenceNumber, Reserved };
+        List<byte> bytes = [CommandId, frame.SequenceNumber, Reserved];
         AddUInt16(bytes, (ushort)frameLength);
         AddUInt16(bytes, (ushort)payloadLength);
         bytes.Add(frame.RequestId);
@@ -88,14 +88,14 @@ public static class ApsDataRequestFrameCodec
 
     private static List<byte> EncodeGroup(ApsDestination destination)
     {
-        var bytes = new List<byte>();
+        List<byte> bytes = [];
         AddUInt16(bytes, destination.ShortAddress);
         return bytes;
     }
 
     private static List<byte> EncodeNwk(ApsDestination destination)
     {
-        var bytes = new List<byte>();
+        List<byte> bytes = [];
         AddUInt16(bytes, destination.ShortAddress);
         bytes.Add(destination.Endpoint);
         return bytes;
@@ -103,7 +103,7 @@ public static class ApsDataRequestFrameCodec
 
     private static List<byte> EncodeIeee(ApsDestination destination)
     {
-        var bytes = new List<byte>();
+        List<byte> bytes = [];
         AddUInt64(bytes, destination.IeeeAddress.Value);
         bytes.Add(destination.Endpoint);
         return bytes;

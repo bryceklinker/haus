@@ -35,7 +35,7 @@ public static class ZclFrameHeaderCodec
 
     public static byte[] Encode(ZclFrameHeader header)
     {
-        var bytes = new List<byte> { BuildFrameControl(header) };
+        List<byte> bytes = [BuildFrameControl(header)];
         if (header.ManufacturerCode is ushort manufacturerCode)
         {
             bytes.Add((byte)(manufacturerCode & 0xff));

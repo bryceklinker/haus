@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -22,7 +23,7 @@ public static class ZclAttributeReportParser
         var offset = 0;
         while (offset < payload.Length)
         {
-            var attributeId = ReadUInt16(payload, offset);
+            var attributeId = BinaryPrimitives.ReadUInt16LittleEndian(payload[offset..]);
             if (!TryDecodeValue(payload, offset + 2, out var value, out var valueLength))
             {
                 return new ZclReportAttributesResult(attributes, IsComplete: false);
@@ -41,7 +42,7 @@ public static class ZclAttributeReportParser
         var offset = 0;
         while (offset < payload.Length)
         {
-            var attributeId = ReadUInt16(payload, offset);
+            var attributeId = BinaryPrimitives.ReadUInt16LittleEndian(payload[offset..]);
             var status = payload[offset + 2];
             offset += 3;
             if (status != SuccessStatus)
@@ -81,9 +82,6 @@ public static class ZclAttributeReportParser
         length = 1 + width;
         return true;
     }
-
-    private static ushort ReadUInt16(ReadOnlySpan<byte> payload, int offset) =>
-        (ushort)(payload[offset] | (payload[offset + 1] << 8));
 
     private static ulong ReadRawValue(ReadOnlySpan<byte> payload, int offset, int width)
     {

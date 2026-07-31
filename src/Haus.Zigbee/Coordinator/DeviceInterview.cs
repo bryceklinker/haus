@@ -160,8 +160,8 @@ public class DeviceInterview : IDisposable
             endpointId,
             descriptor?.ProfileId ?? 0,
             descriptor?.DeviceId ?? 0,
-            descriptor?.InClusters ?? Array.Empty<ushort>(),
-            descriptor?.OutClusters ?? Array.Empty<ushort>()
+            descriptor?.InClusters ?? [],
+            descriptor?.OutClusters ?? []
         );
     }
 

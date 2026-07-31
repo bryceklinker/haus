@@ -10,12 +10,12 @@ namespace Haus.Zigbee.Connection;
 // the checksum and SLIP-encodes an outbound command before writing it, then correlates the
 // eventual response by the sequence number that every deCONZ frame carries at byte offset 1.
 // It has no knowledge of what any individual command means.
-public class DeconzChannel
+public class DeconzChannel(ISerialTransport transport)
 {
     private const int SequenceNumberIndex = 1;
 
-    private readonly ISerialTransport _transport;
-    private readonly FrameReader _reader;
+    private readonly ISerialTransport _transport = transport;
+    private readonly FrameReader _reader = new(transport);
     private readonly SlipEncoder _encoder = new();
 
     // ZigbeeCoordinator shares one DeconzChannel between its background poll loop and every
@@ -26,12 +26,6 @@ public class DeconzChannel
     // forever. This serializes the whole request/response round trip, matching the real dongle's
     // single physical serial line anyway.
     private readonly SemaphoreSlim _mutex = new(1, 1);
-
-    public DeconzChannel(ISerialTransport transport)
-    {
-        _transport = transport;
-        _reader = new FrameReader(transport);
-    }
 
     public async Task<byte[]> SendAndReceiveAsync(byte[] frame, CancellationToken token)
     {
@@ -66,6 +60,6 @@ public class DeconzChannel
                 if (frame[SequenceNumberIndex] == sequenceNumber)
                     return frame;
         }
-        return Array.Empty<byte>();
+        return [];
     }
 }

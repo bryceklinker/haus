@@ -13,7 +13,7 @@ public class SlipEncoder
 
     public byte[] Encode(byte[] frame)
     {
-        var encoded = new List<byte> { End };
+        List<byte> encoded = [End];
         foreach (var value in frame)
             encoded.AddRange(Stuff(value));
         encoded.Add(End);
@@ -24,9 +24,9 @@ public class SlipEncoder
     {
         return value switch
         {
-            End => new byte[] { Esc, EscEnd },
-            Esc => new byte[] { Esc, EscEsc },
-            _ => new[] { value },
+            End => [Esc, EscEnd],
+            Esc => [Esc, EscEsc],
+            _ => [value],
         };
     }
 }

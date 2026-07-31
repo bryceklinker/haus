@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using Haus.Zigbee.Models;
 
 namespace Haus.Zigbee.Serial.Frames;
@@ -74,12 +75,12 @@ public static class ApsDataConfirmCodec
     {
         if (mode == DeconzAddressMode.Ieee)
         {
-            var ieeeAddress = new IeeeAddress(ReadUInt64(frame, AddressOffset));
+            var ieeeAddress = new IeeeAddress(BinaryPrimitives.ReadUInt64LittleEndian(frame[AddressOffset..]));
             var afterIeee = AddressOffset + IeeeAddressByteLength;
             return new DestinationAddressing(null, ieeeAddress, frame[afterIeee], afterIeee + 1);
         }
 
-        var shortAddress = ReadUInt16(frame, AddressOffset);
+        var shortAddress = BinaryPrimitives.ReadUInt16LittleEndian(frame[AddressOffset..]);
         var afterShort = AddressOffset + ShortAddressByteLength;
         if (mode == DeconzAddressMode.Group)
             return new DestinationAddressing(shortAddress, null, null, afterShort);
@@ -93,17 +94,4 @@ public static class ApsDataConfirmCodec
         byte? Endpoint,
         int SourceEndpointOffset
     );
-
-    private static ushort ReadUInt16(ReadOnlySpan<byte> frame, int offset)
-    {
-        return (ushort)(frame[offset] | (frame[offset + 1] << 8));
-    }
-
-    private static ulong ReadUInt64(ReadOnlySpan<byte> frame, int offset)
-    {
-        ulong value = 0;
-        for (var index = 0; index < IeeeAddressByteLength; index++)
-            value |= (ulong)frame[offset + index] << (8 * index);
-        return value;
-    }
 }

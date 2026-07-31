@@ -268,22 +268,22 @@ public class DeconzResponder
             LittleEndian(CoordinatorNetworkAddress),
             [CoordinatorEndpoint]
         );
-        var source = new byte[]
-        {
+        byte[] source =
+        [
             (byte)DeconzAddressMode.Nwk,
             (byte)(body.SourceNwk & 0xff),
             (byte)(body.SourceNwk >> 8),
             body.SourceEndpoint,
-        };
-        var profileAndCluster = new byte[]
-        {
+        ];
+        byte[] profileAndCluster =
+        [
             (byte)(body.ProfileId & 0xff),
             (byte)(body.ProfileId >> 8),
             (byte)(body.ClusterId & 0xff),
             (byte)(body.ClusterId >> 8),
-        };
+        ];
         var asdu = Concat([(byte)(body.Asdu.Length & 0xff), (byte)(body.Asdu.Length >> 8)], body.Asdu);
-        var reservedAndLinkQuality = new byte[] { 0x00, 0x00, NoRssiLinkQuality };
+        byte[] reservedAndLinkQuality = [0x00, 0x00, NoRssiLinkQuality];
         return Concat(header, destination, source, profileAndCluster, asdu, reservedAndLinkQuality);
     }
 
@@ -295,7 +295,7 @@ public class DeconzResponder
             LittleEndian(body.DestinationNetworkAddress),
             [body.DestinationEndpoint]
         );
-        var sourceEndpointAndStatus = new byte[] { body.SourceEndpoint, SuccessStatus };
+        byte[] sourceEndpointAndStatus = [body.SourceEndpoint, SuccessStatus];
         return Concat(header, destination, sourceEndpointAndStatus);
     }
 

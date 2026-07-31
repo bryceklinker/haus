@@ -93,7 +93,7 @@ public static class DeviceJoinScenario
 
     private static IndicationBody AnnounceIndication(ushort networkAddress, IeeeAddress ieeeAddress)
     {
-        var asdu = new List<byte> { AnnounceTransactionSequenceNumber };
+        List<byte> asdu = [AnnounceTransactionSequenceNumber];
         AddUInt16(asdu, networkAddress);
         AddUInt64(asdu, ieeeAddress.Value);
         asdu.Add(MacCapability);
@@ -102,7 +102,7 @@ public static class DeviceJoinScenario
 
     private static IndicationBody ActiveEndpointsIndication(ushort networkAddress, byte sequenceNumber)
     {
-        var asdu = new List<byte> { sequenceNumber, SuccessStatus };
+        List<byte> asdu = [sequenceNumber, SuccessStatus];
         AddUInt16(asdu, networkAddress);
         asdu.Add(SimulatedEndpointCount);
         asdu.Add(SimulatedEndpointId);
@@ -117,14 +117,14 @@ public static class DeviceJoinScenario
 
     private static IndicationBody SimpleDescriptorIndication(ushort networkAddress, byte sequenceNumber)
     {
-        var descriptor = new List<byte> { SimulatedEndpointId };
+        List<byte> descriptor = [SimulatedEndpointId];
         AddUInt16(descriptor, HomeAutomationProfile);
         AddUInt16(descriptor, SimulatedDeviceId);
         descriptor.Add(SimulatedDeviceVersion);
         AddClusterList(descriptor, [BasicCluster, OnOffCluster]);
         AddClusterList(descriptor, []);
 
-        var asdu = new List<byte> { sequenceNumber, SuccessStatus };
+        List<byte> asdu = [sequenceNumber, SuccessStatus];
         AddUInt16(asdu, networkAddress);
         asdu.Add((byte)descriptor.Count);
         asdu.AddRange(descriptor);
@@ -144,7 +144,7 @@ public static class DeviceJoinScenario
         byte sequenceNumber
     )
     {
-        var frame = new List<byte> { GlobalFrameControl, sequenceNumber, ReadAttributesResponseCommand };
+        List<byte> frame = [GlobalFrameControl, sequenceNumber, ReadAttributesResponseCommand];
         AddStringAttribute(frame, ManufacturerNameAttribute, vendor);
         AddStringAttribute(frame, ModelIdentifierAttribute, model);
         return new IndicationBody(

@@ -5,7 +5,7 @@ using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee.Connection;
 
-public class ApsPollLoop
+public class ApsPollLoop(DeconzChannel channel)
 {
     private const byte ReadIndicationCommandId = 0x17;
     private const byte ReadConfirmCommandId = 0x04;
@@ -13,13 +13,8 @@ public class ApsPollLoop
     private const byte ReadIndicationFrameLength = 0x08;
     private const byte ReadConfirmFrameLength = 0x07;
 
-    private readonly DeconzChannel _channel;
+    private readonly DeconzChannel _channel = channel;
     private byte _sequenceNumber;
-
-    public ApsPollLoop(DeconzChannel channel)
-    {
-        _channel = channel;
-    }
 
     public event EventHandler<ApsIndicationReceived>? IndicationReceived;
     public event EventHandler<ApsDataConfirm>? ConfirmReceived;

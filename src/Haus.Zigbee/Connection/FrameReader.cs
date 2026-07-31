@@ -9,17 +9,12 @@ namespace Haus.Zigbee.Connection;
 // Lifecycle/IO plumbing: pulls raw bytes off the transport, reassembles SLIP frames across
 // reads, and surfaces only checksum-valid frames with their trailing checksum stripped.
 // It knows nothing about deCONZ command semantics.
-public class FrameReader
+public class FrameReader(ISerialTransport transport)
 {
     private const int ReadBufferSize = 256;
 
-    private readonly ISerialTransport _transport;
+    private readonly ISerialTransport _transport = transport;
     private readonly SlipDecoder _decoder = new();
-
-    public FrameReader(ISerialTransport transport)
-    {
-        _transport = transport;
-    }
 
     public async Task<IReadOnlyList<byte[]>> ReadFramesAsync(CancellationToken token)
     {
