@@ -138,5 +138,7 @@ public class DeconzConnectionTests
             var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
             return new SlipEncoder().Encode(withChecksum.ToArray());
         }
+
+        public void Dispose() { }
     }
 }

@@ -70,4 +70,6 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     {
         AttributeReported?.Invoke(this, report);
     }
+
+    public void Dispose() { }
 }

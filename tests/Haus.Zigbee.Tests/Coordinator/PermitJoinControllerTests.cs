@@ -105,6 +105,8 @@ public class PermitJoinControllerTests
             var withChecksum = new List<byte>(frame) { (byte)(checksum & 0xff), (byte)(checksum >> 8) };
             return new SlipEncoder().Encode(withChecksum.ToArray());
         }
+
+        public void Dispose() { }
     }
 
     private record WrittenRequest(byte ParameterId, byte[] Value);

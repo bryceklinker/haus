@@ -8,7 +8,7 @@ namespace Haus.Zigbee.Transport;
 // The real seam adapter over System.IO.Ports.SerialPort. It has no way to be unit-tested
 // without physical hardware, so it deliberately carries no logic beyond delegating to the
 // underlying port; every layer above it is exercised through ISerialTransport doubles instead.
-public class SerialPortTransport : ISerialTransport, IDisposable
+public class SerialPortTransport : ISerialTransport
 {
     private readonly SerialPort _serialPort;
 

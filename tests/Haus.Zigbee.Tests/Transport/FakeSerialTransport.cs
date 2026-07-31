@@ -39,4 +39,6 @@ public class FakeSerialTransport : ISerialTransport
             buffer.Span[count++] = _incomingBytes.Dequeue();
         return Task.FromResult(count);
     }
+
+    public void Dispose() { }
 }

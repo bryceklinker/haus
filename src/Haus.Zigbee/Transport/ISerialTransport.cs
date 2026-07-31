@@ -6,7 +6,7 @@ namespace Haus.Zigbee.Transport;
 
 // The single injectable seam for the whole library: every layer above the serial line is
 // driven through this port so tests never touch real hardware.
-public interface ISerialTransport
+public interface ISerialTransport : IDisposable
 {
     Task OpenAsync(CancellationToken token);
 

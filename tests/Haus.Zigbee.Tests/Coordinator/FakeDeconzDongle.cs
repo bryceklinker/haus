@@ -140,5 +140,7 @@ internal class FakeDeconzDongle
             response.CopyTo(buffer);
             return Task.FromResult(response.Length);
         }
+
+        public void Dispose() { }
     }
 }

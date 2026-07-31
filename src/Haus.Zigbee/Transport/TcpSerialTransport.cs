@@ -8,7 +8,7 @@ namespace Haus.Zigbee.Transport;
 // A second ISerialTransport implementation for environments with no physical deCONZ dongle
 // attached (CI, containers, most dev machines): connects to a TCP endpoint that speaks the exact
 // same SLIP+deCONZ byte protocol a real serial line would carry, typically a simulator.
-public class TcpSerialTransport(string host, int port) : ISerialTransport, IDisposable
+public class TcpSerialTransport(string host, int port) : ISerialTransport
 {
     private TcpClient? _client;
 

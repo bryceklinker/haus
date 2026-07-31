@@ -103,5 +103,7 @@ public class DeconzChannelTests
                 buffer.Span[count++] = _incomingBytes.Dequeue();
             return count;
         }
+
+        public void Dispose() { }
     }
 }

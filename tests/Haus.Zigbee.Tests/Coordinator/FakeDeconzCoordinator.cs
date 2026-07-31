@@ -181,5 +181,7 @@ internal class FakeDeconzCoordinator : ISerialTransport
         return new SlipEncoder().Encode(withChecksum.ToArray());
     }
 
+    public void Dispose() { }
+
     public record WrittenParameter(byte ParameterId, byte[] Value);
 }

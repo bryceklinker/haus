@@ -10,7 +10,7 @@ namespace Haus.Zigbee;
 // The single entry point the Haus.Zigbee library exposes to the outside world. Everything else in
 // the assembly is an internal collaborator this façade composes; a consumer only programs against
 // this contract.
-public interface IZigbeeCoordinator
+public interface IZigbeeCoordinator : IDisposable
 {
     bool IsConnected { get; }
 

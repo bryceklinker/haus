@@ -41,4 +41,6 @@ internal class ScriptedSerialTransport : ISerialTransport
         response.CopyTo(buffer);
         return Task.FromResult(response.Length);
     }
+
+    public void Dispose() { }
 }
