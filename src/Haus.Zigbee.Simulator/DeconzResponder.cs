@@ -9,6 +9,16 @@ namespace Haus.Zigbee.Simulator;
 
 public record IndicationBody(ushort SourceNwk, byte SourceEndpoint, ushort ProfileId, ushort ClusterId, byte[] Asdu);
 
+// Mirrors what a real coordinator reports once it has delivered an APS data-request it was asked
+// to send: which request (by RequestId), to which device/endpoint, from which of the coordinator's
+// own endpoints.
+public record ConfirmBody(
+    byte RequestId,
+    ushort DestinationNetworkAddress,
+    byte DestinationEndpoint,
+    byte SourceEndpoint
+);
+
 // Answers deCONZ serial commands the same way a real coordinator dongle would: reads/writes of
 // firmware parameters, device-state polls, read-indication drains, and APS data-request acks.
 // One instance serves one TCP connection (real hardware is a single serial line too, so this
@@ -19,13 +29,16 @@ public class DeconzResponder
     private const byte WriteParameterCommand = 0x0b;
     private const byte DeviceStateCommand = 0x07;
     private const byte ReadIndicationCommand = 0x17;
+    private const byte ReadConfirmCommand = 0x04;
     private const byte ApsDataRequestCommand = 0x12;
+    private const byte ConfirmAvailable = 0x04;
     private const byte IndicationAvailable = 0x08;
     private const byte NothingAvailable = 0x00;
     private const byte SuccessStatus = 0x00;
     private const int SequenceNumberOffset = 1;
     private const int ParameterIdOffset = 7;
     private const int WriteParameterValueOffset = 8;
+    private const int RequestIdOffset = 7;
 
     private const byte MacAddressParameterId = 0x01;
     private const byte PanIdParameterId = 0x05;
@@ -54,13 +67,17 @@ public class DeconzResponder
     // layout ApsDataRequestFrameCodec.Encode produces.
     private const int DestinationAddressModeOffset = 9;
     private const int DestinationNetworkAddressOffset = DestinationAddressModeOffset + 1;
+    private const int DestinationEndpointOffset = DestinationNetworkAddressOffset + 2;
     private const int NwkDestinationAddressLength = 3; // short address (2 bytes) + endpoint (1 byte)
     private const int ProfileAndClusterLength = 4; // profile id (2 bytes) + cluster id (2 bytes)
     private const int SourceEndpointLength = 1;
+    private const int SourceEndpointOffset =
+        DestinationAddressModeOffset + 1 + NwkDestinationAddressLength + ProfileAndClusterLength;
     private const int AsduLengthFieldLength = 2;
 
     private readonly ConcurrentDictionary<byte, byte[]> _parameters = new();
     private readonly ConcurrentQueue<IndicationBody> _indications = new();
+    private readonly ConcurrentQueue<ConfirmBody> _confirms = new();
     private readonly ConcurrentQueue<byte[]> _sentApsRequests = new();
 
     // Keyed by (destination device, that device's own request step) rather than a single shared
@@ -107,12 +124,7 @@ public class DeconzResponder
     // Nwk-mode addressing.
     public static byte[] ExtractAsduPayload(byte[] apsDataRequest)
     {
-        var asduLengthOffset =
-            DestinationAddressModeOffset
-            + 1
-            + NwkDestinationAddressLength
-            + ProfileAndClusterLength
-            + SourceEndpointLength;
+        var asduLengthOffset = SourceEndpointOffset + SourceEndpointLength;
         var asduOffset = asduLengthOffset + AsduLengthFieldLength;
         var asduLength = apsDataRequest[asduLengthOffset] | (apsDataRequest[asduLengthOffset + 1] << 8);
         return apsDataRequest[asduOffset..(asduOffset + asduLength)];
@@ -169,6 +181,7 @@ public class DeconzResponder
             WriteParameterCommand => WriteParameterResponse(request),
             DeviceStateCommand => DeviceStateResponse(sequenceNumber),
             ReadIndicationCommand => IndicationResponse(sequenceNumber),
+            ReadConfirmCommand => ConfirmResponse(sequenceNumber),
             ApsDataRequestCommand => ApsDataRequestResponse(request),
             _ => [],
         };
@@ -197,7 +210,12 @@ public class DeconzResponder
 
     private byte[] DeviceStateResponse(byte sequenceNumber)
     {
-        var deviceState = _indications.IsEmpty ? NothingAvailable : IndicationAvailable;
+        byte deviceState = NothingAvailable;
+        if (!_indications.IsEmpty)
+            deviceState |= IndicationAvailable;
+        if (!_confirms.IsEmpty)
+            deviceState |= ConfirmAvailable;
+
         return
         [
             DeviceStateCommand,
@@ -213,10 +231,23 @@ public class DeconzResponder
         return _indications.TryDequeue(out var body) ? EncodeIndication(sequenceNumber, body) : [];
     }
 
+    private byte[] ConfirmResponse(byte sequenceNumber)
+    {
+        return _confirms.TryDequeue(out var body) ? EncodeConfirm(sequenceNumber, body) : [];
+    }
+
     private byte[] ApsDataRequestResponse(byte[] request)
     {
         _sentApsRequests.Enqueue(request);
         var networkAddress = ExtractDestinationNetworkAddress(request);
+        _confirms.Enqueue(
+            new ConfirmBody(
+                request[RequestIdOffset],
+                networkAddress,
+                request[DestinationEndpointOffset],
+                request[SourceEndpointOffset]
+            )
+        );
         var countForDevice = _apsRequestCountByDevice.AddOrUpdate(networkAddress, 1, (_, count) => count + 1);
         var step = countForDevice - 1;
         if (_releaseOnApsRequest.TryRemove((networkAddress, step), out var bodyFactory))
@@ -264,6 +295,27 @@ public class DeconzResponder
         var asdu = Concat([(byte)(body.Asdu.Length & 0xff), (byte)(body.Asdu.Length >> 8)], body.Asdu);
         var reservedAndLinkQuality = new byte[] { 0x00, 0x00, NoRssiLinkQuality };
         return Concat(header, destination, source, profileAndCluster, asdu, reservedAndLinkQuality);
+    }
+
+    private static byte[] EncodeConfirm(byte sequenceNumber, ConfirmBody body)
+    {
+        // ApsDataConfirmCodec captures this byte but nothing downstream reads it -- it's a distinct
+        // field from (and unrelated to) the DeviceState poll response's available-flags.
+        var unusedDeviceState = new byte[] { 0x00 };
+        var header = Concat(
+            [ReadConfirmCommand, sequenceNumber, SuccessStatus],
+            LittleEndian(UnvalidatedFrameLength),
+            LittleEndian(UnvalidatedPayloadLength),
+            unusedDeviceState,
+            [body.RequestId]
+        );
+        var destination = Concat(
+            [(byte)DeconzAddressMode.Nwk],
+            LittleEndian(body.DestinationNetworkAddress),
+            [body.DestinationEndpoint]
+        );
+        var sourceEndpointAndStatus = new byte[] { body.SourceEndpoint, SuccessStatus };
+        return Concat(header, destination, sourceEndpointAndStatus);
     }
 
     private static byte[] LittleEndian(ushort value)
