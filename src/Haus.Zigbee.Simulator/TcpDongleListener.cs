@@ -3,20 +3,27 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Zigbee.Simulator.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Haus.Zigbee.Simulator;
 
-public class TcpDongleListener(DeconzResponder responder, ILoggerFactory loggerFactory, int port) : BackgroundService
+public class TcpDongleListener(
+    DeconzResponder responder,
+    ILoggerFactory loggerFactory,
+    IOptions<SimulatorOptions> options
+) : BackgroundService
 {
     private readonly ILogger<TcpDongleListener> _logger = loggerFactory.CreateLogger<TcpDongleListener>();
+    private readonly int _port = options.Value.TcpPort;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var listener = new TcpListener(IPAddress.Any, port);
+        var listener = new TcpListener(IPAddress.Any, _port);
         listener.Start();
-        _logger.LogInformation("Fake deCONZ dongle listening on port {@Port}", port);
+        _logger.LogInformation("Fake deCONZ dongle listening on port {@Port}", _port);
 
         try
         {
