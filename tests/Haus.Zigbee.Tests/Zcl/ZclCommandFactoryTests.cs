@@ -49,6 +49,7 @@ public class ZclCommandFactoryTests
         var bytes = ZclCommandFactory.Encode(command);
 
         var decoding = ZclFrameHeaderCodec.Decode(bytes);
+        Assert.NotNull(decoding);
         Assert.Equal(
             new ZclFrameHeader(
                 ZclFrameType.ClusterSpecific,

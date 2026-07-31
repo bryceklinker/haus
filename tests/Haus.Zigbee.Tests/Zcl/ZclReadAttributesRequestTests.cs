@@ -41,7 +41,9 @@ public class ZclReadAttributesRequestTests
 
         var bytes = ZclReadAttributesRequestCodec.Encode(request);
 
-        var header = ZclFrameHeaderCodec.Decode(bytes).Header;
+        var decoding = ZclFrameHeaderCodec.Decode(bytes);
+        Assert.NotNull(decoding);
+        var header = decoding.Header;
         Assert.Equal(ZclFrameType.Global, header.FrameType);
         Assert.Equal(ZclDirection.ClientToServer, header.Direction);
         Assert.Equal(0x00, header.CommandId);

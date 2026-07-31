@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Haus.Zigbee.Models;
@@ -82,7 +83,12 @@ public static class DeviceJoinScenario
     private static byte ExtractZclSequenceNumber(byte[] apsDataRequest)
     {
         var asdu = DeconzResponder.ExtractAsduPayload(apsDataRequest);
-        return ZclFrameHeaderCodec.Decode(asdu).Header.TransactionSequenceNumber;
+        var decoding =
+            ZclFrameHeaderCodec.Decode(asdu)
+            ?? throw new InvalidOperationException(
+                "Expected a well-formed ZCL request from the coordinator under test."
+            );
+        return decoding.Header.TransactionSequenceNumber;
     }
 
     private static IndicationBody AnnounceIndication(ushort networkAddress, IeeeAddress ieeeAddress)

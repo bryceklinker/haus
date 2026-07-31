@@ -47,11 +47,21 @@ public static class ZclFrameHeaderCodec
         return bytes.ToArray();
     }
 
-    public static ZclFrameHeaderDecoding Decode(ReadOnlySpan<byte> frame)
+    // The ASDU payload this decodes comes straight off the wire from a real device, not just from
+    // our own encoder -- a short or truncated frame must produce a null result here rather than an
+    // IndexOutOfRangeException, since a thrown exception on a shared IndicationReceived subscriber
+    // silently stops every other subscriber (DeviceInterview included) from seeing the event too.
+    public static ZclFrameHeaderDecoding? Decode(ReadOnlySpan<byte> frame)
     {
+        if (frame.Length < 1)
+            return null;
+
         var frameControl = frame[0];
         var isManufacturerSpecific = (frameControl & ManufacturerSpecificBit) != 0;
         var afterManufacturer = isManufacturerSpecific ? 3 : 1;
+        if (frame.Length < afterManufacturer + 2)
+            return null;
+
         var manufacturerCode = isManufacturerSpecific ? (ushort?)(frame[1] | (frame[2] << 8)) : null;
 
         var header = new ZclFrameHeader(

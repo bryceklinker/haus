@@ -162,6 +162,18 @@ public class AttributeReportListenerTests
     }
 
     [Fact]
+    public async Task WhenANonZdpIndicationsAsduIsTooShortToBeAZclFrameThenItIsIgnoredWithoutThrowing()
+    {
+        // A genuinely malformed/truncated report from a flaky real device, not a ZDP profile --
+        // that guard doesn't cover this. ZclFrameHeaderCodec.Decode must return null for a payload
+        // too short to hold a frame-control byte plus sequence number and command id, and this
+        // listener must treat that the same way as any other indication it doesn't understand.
+        var reports = await ListenToIndication(sourceNwk: 0x1234, sourceEndpoint: 0x05, clusterId: 0x0400, [0x00]);
+
+        Assert.Empty(reports);
+    }
+
+    [Fact]
     public async Task WhenDisposedThenAnArrivingIndicationNoLongerRaisesAnAttributeReport()
     {
         var zclFrame = new byte[]

@@ -282,7 +282,13 @@ public class DeviceInterview : IDisposable
     private void CompletePendingResponse(ApsDataIndicationFrame indication)
     {
         var sequenceNumber = ExtractTransactionSequenceNumber(indication);
-        var key = new ResponseKey(indication.SourceNwkAddress, indication.ClusterId, sequenceNumber);
+        if (sequenceNumber is null)
+        {
+            _logger.LogWarning("Received a response too short to carry a transaction sequence number");
+            return;
+        }
+
+        var key = new ResponseKey(indication.SourceNwkAddress, indication.ClusterId, sequenceNumber.Value);
         if (_pendingResponses.TryRemove(key, out var pending))
             pending.SetResult(indication);
         else
@@ -291,18 +297,20 @@ public class DeviceInterview : IDisposable
 
     // ZDP responses carry their transaction sequence number as the first ASDU byte; ZCL responses
     // carry theirs inside the ZCL frame header (after the optional manufacturer code), which is why
-    // this dispatches on profile rather than reading a fixed offset.
-    private static byte ExtractTransactionSequenceNumber(ApsDataIndicationFrame indication)
+    // this dispatches on profile rather than reading a fixed offset. Both branches can be handed a
+    // malformed/truncated payload from a real device, so both return null instead of throwing.
+    private static byte? ExtractTransactionSequenceNumber(ApsDataIndicationFrame indication)
     {
-        return indication.ProfileId == ZdpProfileId
-            ? indication.AsduPayload[0]
-            : ZclFrameHeaderCodec.Decode(indication.AsduPayload).Header.TransactionSequenceNumber;
+        if (indication.ProfileId == ZdpProfileId)
+            return indication.AsduPayload.Length > 0 ? indication.AsduPayload[0] : null;
+
+        return ZclFrameHeaderCodec.Decode(indication.AsduPayload)?.Header.TransactionSequenceNumber;
     }
 
     private static ZigbeeDeviceInfo ReadBasicInfo(byte[] frame)
     {
         var decoding = ZclFrameHeaderCodec.Decode(frame);
-        if (decoding.Header.CommandId != ReadAttributesResponseCommandId)
+        if (decoding is null || decoding.Header.CommandId != ReadAttributesResponseCommandId)
             return ZigbeeDeviceInfo.Empty;
 
         var manufacturerName = string.Empty;

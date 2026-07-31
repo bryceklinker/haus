@@ -61,6 +61,7 @@ public class ZclFrameHeaderTests
 
         var decoding = ZclFrameHeaderCodec.Decode(frame);
 
+        Assert.NotNull(decoding);
         Assert.Equal(3, decoding.ByteLength);
         Assert.Equal(
             new ZclFrameHeader(
@@ -81,6 +82,7 @@ public class ZclFrameHeaderTests
 
         var decoding = ZclFrameHeaderCodec.Decode(frame);
 
+        Assert.NotNull(decoding);
         Assert.Equal(5, decoding.ByteLength);
         Assert.Equal(
             new ZclFrameHeader(
@@ -108,6 +110,7 @@ public class ZclFrameHeaderTests
 
         var decoding = ZclFrameHeaderCodec.Decode(ZclFrameHeaderCodec.Encode(header));
 
+        Assert.NotNull(decoding);
         Assert.Equal(header, decoding.Header);
         Assert.Equal(3, decoding.ByteLength);
     }
@@ -126,7 +129,26 @@ public class ZclFrameHeaderTests
 
         var decoding = ZclFrameHeaderCodec.Decode(ZclFrameHeaderCodec.Encode(header));
 
+        Assert.NotNull(decoding);
         Assert.Equal(header, decoding.Header);
         Assert.Equal(5, decoding.ByteLength);
+    }
+
+    [Theory]
+    [InlineData(new byte[] { })]
+    [InlineData(new byte[] { 0b0001_1001 })]
+    [InlineData(new byte[] { 0b0001_1001, 0x11 })]
+    public void WhenDecodingAFrameTooShortForANonManufacturerHeaderThenReturnsNullInsteadOfThrowing(byte[] frame)
+    {
+        Assert.Null(ZclFrameHeaderCodec.Decode(frame));
+    }
+
+    [Theory]
+    [InlineData(new byte[] { 0b0000_0100 })]
+    [InlineData(new byte[] { 0b0000_0100, 0x34, 0x12 })]
+    [InlineData(new byte[] { 0b0000_0100, 0x34, 0x12, 0x42 })]
+    public void WhenDecodingAFrameTooShortForAManufacturerHeaderThenReturnsNullInsteadOfThrowing(byte[] frame)
+    {
+        Assert.Null(ZclFrameHeaderCodec.Decode(frame));
     }
 }

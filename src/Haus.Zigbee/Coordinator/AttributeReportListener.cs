@@ -47,7 +47,7 @@ public class AttributeReportListener : IDisposable
             return;
 
         var decoding = ZclFrameHeaderCodec.Decode(indication.AsduPayload);
-        if (decoding.Header.FrameType != ZclFrameType.Global)
+        if (decoding is null || decoding.Header.FrameType != ZclFrameType.Global)
             return;
 
         var payload = indication.AsduPayload.AsSpan(decoding.ByteLength);
