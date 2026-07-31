@@ -5,7 +5,6 @@ using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Host.Configuration;
 using Haus.Zigbee.Host.Health;
 using Haus.Zigbee.Host.Zigbee;
-using Haus.Zigbee.Host.Zigbee.Health;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
@@ -24,7 +23,6 @@ public static class ServiceCollectionExtensions
         services.AddHealthChecks().AddHausMqttHealthChecks();
 
         return services
-            .AddTransient<ZigbeeCoordinatorHealthCheck>()
             .AddTransient<IDeviceTypeResolver, DeviceTypeResolver>()
             .AddSingleton<DeviceAddressRegistry>()
             .AddTransient<DevicesMapper>()

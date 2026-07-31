@@ -2,19 +2,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models.Health;
 using Haus.Mqtt.Client;
+using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Host.Configuration;
-using Haus.Zigbee.Host.Zigbee.Health;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Zigbee.Host.Health;
 
 // AddCheck<T>-based health check discovery doesn't reach this Worker Service's HealthReport, so
-// every check we care about is invoked here directly rather than trusted to already be in `report`.
+// the Zigbee coordinator's health is checked here directly rather than trusted to already be in
+// `report`.
 public class ZigbeeHostHealthPublisher(
     IHausMqttClientFactory mqttClientFactory,
     IOptions<HausOptions> hausOptions,
-    ZigbeeCoordinatorHealthCheck zigbeeCoordinatorHealthCheck
+    IZigbeeCoordinator coordinator
 ) : IHealthCheckPublisher
 {
     private const string ZigbeeCheckName = "Zigbee";
@@ -24,22 +25,15 @@ public class ZigbeeHostHealthPublisher(
     public async Task PublishAsync(HealthReport report, CancellationToken cancellationToken = default)
     {
         var mqttClient = await mqttClientFactory.CreateClient().ConfigureAwait(false);
-        var zigbeeResult = await zigbeeCoordinatorHealthCheck
-            .CheckHealthAsync(new HealthCheckContext(), cancellationToken)
-            .ConfigureAwait(false);
+        var zigbeeCheck = CreateCheckModel(coordinator.IsConnected);
 
-        var hausReport = HausHealthReportModel.FromHealthReport(report).AppendChecks([CreateCheckModel(zigbeeResult)]);
+        var hausReport = HausHealthReportModel.FromHealthReport(report).AppendChecks([zigbeeCheck]);
         await mqttClient.PublishAsync(HealthTopic, hausReport).ConfigureAwait(false);
     }
 
-    private static HausHealthCheckModel CreateCheckModel(HealthCheckResult result)
+    private static HausHealthCheckModel CreateCheckModel(bool isConnected)
     {
-        return new HausHealthCheckModel(
-            ZigbeeCheckName,
-            result.Status,
-            0,
-            result.Description,
-            result.Exception?.Message
-        );
+        var status = isConnected ? HealthStatus.Healthy : HealthStatus.Unhealthy;
+        return new HausHealthCheckModel(ZigbeeCheckName, status, 0);
     }
 }
