@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Haus.Zigbee.Host.Zigbee;
 
@@ -11,8 +12,8 @@ public class DeviceAddressRegistry
         _externalIdsByNetworkAddress[networkAddress] = externalId;
     }
 
-    public bool TryGetExternalId(ushort networkAddress, out string externalId)
+    public bool TryGetExternalId(ushort networkAddress, [MaybeNullWhen(false)] out string externalId)
     {
-        return _externalIdsByNetworkAddress.TryGetValue(networkAddress, out externalId!);
+        return _externalIdsByNetworkAddress.TryGetValue(networkAddress, out externalId);
     }
 }

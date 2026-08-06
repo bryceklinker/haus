@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Haus.Zigbee.Models;
 
@@ -19,8 +20,8 @@ public class KnownDeviceTable
         return _devices.Values.ToList();
     }
 
-    public bool TryGet(IeeeAddress address, out ZigbeeDevice device)
+    public bool TryGet(IeeeAddress address, [MaybeNullWhen(false)] out ZigbeeDevice device)
     {
-        return _devices.TryGetValue(address, out device!);
+        return _devices.TryGetValue(address, out device);
     }
 }
