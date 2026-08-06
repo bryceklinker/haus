@@ -34,4 +34,16 @@ public class DeconzChecksumTests
 
         Assert.False(isValid);
     }
+
+    [Theory]
+    [InlineData(new byte[] { })]
+    [InlineData(new byte[] { 0x01 })]
+    public void GivenAFrameTooShortToCarryAChecksumWhenValidatingThenReportsInvalidInsteadOfThrowing(
+        byte[] frameWithChecksum
+    )
+    {
+        var isValid = DeconzChecksum.IsValid(frameWithChecksum);
+
+        Assert.False(isValid);
+    }
 }

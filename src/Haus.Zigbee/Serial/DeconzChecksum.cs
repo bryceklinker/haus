@@ -13,8 +13,13 @@ public static class DeconzChecksum
         return (ushort)((~sum + 1) & 0xFFFF);
     }
 
+    private const int ChecksumByteLength = 2;
+
     public static bool IsValid(ReadOnlySpan<byte> frameWithChecksum)
     {
+        if (frameWithChecksum.Length < ChecksumByteLength)
+            return false;
+
         var frame = frameWithChecksum[..^2];
         var trailingChecksum = (ushort)(frameWithChecksum[^2] | (frameWithChecksum[^1] << 8));
 
