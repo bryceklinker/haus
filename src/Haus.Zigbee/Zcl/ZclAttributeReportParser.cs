@@ -16,6 +16,8 @@ public record ZclReadAttributesResponseResult(IReadOnlyList<ZclReadAttributeReco
 public static class ZclAttributeReportParser
 {
     private const byte SuccessStatus = 0x00;
+    private const int AttributeIdLength = 2;
+    private const int StatusLength = 1;
 
     public static ZclReportAttributesResult ParseReportAttributes(ReadOnlySpan<byte> payload)
     {
@@ -23,14 +25,19 @@ public static class ZclAttributeReportParser
         var offset = 0;
         while (offset < payload.Length)
         {
+            if (offset + AttributeIdLength > payload.Length)
+            {
+                return new ZclReportAttributesResult(attributes, IsComplete: false);
+            }
+
             var attributeId = BinaryPrimitives.ReadUInt16LittleEndian(payload[offset..]);
-            if (!TryDecodeValue(payload, offset + 2, out var value, out var valueLength))
+            if (!TryDecodeValue(payload, offset + AttributeIdLength, out var value, out var valueLength))
             {
                 return new ZclReportAttributesResult(attributes, IsComplete: false);
             }
 
             attributes.Add(new ZclAttributeRecord(attributeId, value));
-            offset += 2 + valueLength;
+            offset += AttributeIdLength + valueLength;
         }
 
         return new ZclReportAttributesResult(attributes, IsComplete: true);
@@ -42,9 +49,14 @@ public static class ZclAttributeReportParser
         var offset = 0;
         while (offset < payload.Length)
         {
+            if (offset + AttributeIdLength + StatusLength > payload.Length)
+            {
+                return new ZclReadAttributesResponseResult(attributes, IsComplete: false);
+            }
+
             var attributeId = BinaryPrimitives.ReadUInt16LittleEndian(payload[offset..]);
-            var status = payload[offset + 2];
-            offset += 3;
+            var status = payload[offset + AttributeIdLength];
+            offset += AttributeIdLength + StatusLength;
             if (status != SuccessStatus)
             {
                 attributes.Add(new ZclReadAttributeRecord(attributeId, status, Value: null));
@@ -70,8 +82,15 @@ public static class ZclAttributeReportParser
         out int length
     )
     {
+        if (offset >= payload.Length)
+        {
+            value = null;
+            length = 0;
+            return false;
+        }
+
         var dataType = payload[offset];
-        if (!ZclDataTypeWidths.TryGetWidth(dataType, out var width))
+        if (!ZclDataTypeWidths.TryGetWidth(dataType, out var width) || offset + 1 + width > payload.Length)
         {
             value = null;
             length = 0;

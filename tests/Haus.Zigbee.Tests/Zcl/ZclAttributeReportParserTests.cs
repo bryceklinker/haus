@@ -108,4 +108,33 @@ public class ZclAttributeReportParserTests
         Assert.Equal(0x0000, attribute.AttributeId);
         Assert.Equal(ZclDataType.Uint16, attribute.Value.DataType);
     }
+
+    [Theory]
+    [InlineData(new byte[] { 0x00 })]
+    [InlineData(new byte[] { 0x00, 0x00 })]
+    [InlineData(new byte[] { 0x00, 0x00, 0x21 })]
+    [InlineData(new byte[] { 0x00, 0x00, 0x21, 0x34 })]
+    public void WhenParsingReportAttributesWithATruncatedTrailingRecordThenReturnsRecordsDecodedBeforeItWithoutThrowing(
+        byte[] payload
+    )
+    {
+        var result = ZclAttributeReportParser.ParseReportAttributes(payload);
+
+        Assert.False(result.IsComplete);
+    }
+
+    [Theory]
+    [InlineData(new byte[] { 0x00 })]
+    [InlineData(new byte[] { 0x00, 0x00 })]
+    [InlineData(new byte[] { 0x00, 0x00, 0x00 })]
+    [InlineData(new byte[] { 0x00, 0x00, 0x00, 0x29 })]
+    [InlineData(new byte[] { 0x00, 0x00, 0x00, 0x29, 0x9c })]
+    public void WhenParsingReadAttributesResponseWithATruncatedTrailingRecordThenReturnsRecordsDecodedBeforeItWithoutThrowing(
+        byte[] payload
+    )
+    {
+        var result = ZclAttributeReportParser.ParseReadAttributesResponse(payload);
+
+        Assert.False(result.IsComplete);
+    }
 }
