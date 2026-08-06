@@ -25,10 +25,13 @@ public class TcpSerialTransport(string host, int port) : ISerialTransport
     }
 
     public Task WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken token) =>
-        _client!.GetStream().WriteAsync(buffer, token).AsTask();
+        RequireOpenClient().GetStream().WriteAsync(buffer, token).AsTask();
 
     public Task<int> ReadAsync(Memory<byte> buffer, CancellationToken token) =>
-        _client!.GetStream().ReadAsync(buffer, token).AsTask();
+        RequireOpenClient().GetStream().ReadAsync(buffer, token).AsTask();
 
     public void Dispose() => _client?.Dispose();
+
+    private TcpClient RequireOpenClient() =>
+        _client ?? throw new InvalidOperationException("OpenAsync must be called before reading or writing.");
 }

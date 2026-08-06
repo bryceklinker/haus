@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -68,6 +69,24 @@ public class TcpSerialTransportTests : IAsyncLifetime
 
         Assert.Equal(2, read);
         Assert.Equal(new byte[] { 0xaa, 0xbb }, buffer);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WhenCalledBeforeOpenAsyncThenThrowsInvalidOperationInsteadOfNullReference()
+    {
+        using var transport = new TcpSerialTransport("127.0.0.1", _port);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => transport.WriteAsync(new byte[] { 0x01 }, CancellationToken.None)
+        );
+    }
+
+    [Fact]
+    public async Task ReadAsync_WhenCalledBeforeOpenAsyncThenThrowsInvalidOperationInsteadOfNullReference()
+    {
+        using var transport = new TcpSerialTransport("127.0.0.1", _port);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => transport.ReadAsync(new byte[1], CancellationToken.None));
     }
 
     [Fact]
