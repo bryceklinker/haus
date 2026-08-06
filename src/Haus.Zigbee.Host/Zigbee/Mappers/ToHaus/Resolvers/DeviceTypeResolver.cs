@@ -12,7 +12,7 @@ namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
 
 public interface IDeviceTypeResolver
 {
-    DeviceType Resolve(string vendor, string model);
+    DeviceType Resolve(string? vendor, string? model);
 }
 
 public class DeviceTypeResolver(IOptions<HausOptions> options) : IDeviceTypeResolver
