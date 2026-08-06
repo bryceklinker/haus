@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
+using Haus.Zigbee.Transport;
 using Haus.Zigbee.Zcl;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Coordinator;
@@ -158,6 +162,106 @@ public class ZigbeeCoordinatorTests
             await Task.Delay(10);
         Assert.True(_dongle.DeviceStatePollCount > 0, "the poll loop never polled");
     }
+
+    [Fact]
+    public async Task WhenAPollIterationThrowsThenTheFailureIsLoggedAndPollingContinues()
+    {
+        SetNetworkParameters();
+        var transport = new FailOnceOnReadTransport(_dongle, failOnReadCall: 4);
+        var loggerFactory = new CapturingLoggerFactory();
+        using var coordinator = new ZigbeeCoordinator(transport, loggerFactory);
+
+        await coordinator.ConnectAsync(CancellationToken.None);
+        await WaitUntilPolledAtLeast(2);
+
+        Assert.Contains(
+            loggerFactory.Entries,
+            entry => entry.Category == typeof(ZigbeeCoordinator).FullName && entry.Exception is not null
+        );
+    }
+
+    private async Task WaitUntilPolledAtLeast(int count)
+    {
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        while (_dongle.DeviceStatePollCount < count && !timeout.IsCancellationRequested)
+            await Task.Delay(10);
+        Assert.True(_dongle.DeviceStatePollCount >= count, "the poll loop did not poll enough times");
+    }
+
+    // Throws once, on a chosen ReadAsync call, to simulate a transient serial failure during a
+    // poll iteration -- proving PollSafelyAsync's catch both logs it and lets the loop continue.
+    private class FailOnceOnReadTransport(ISerialTransport inner, int failOnReadCall) : ISerialTransport
+    {
+        private int _readCallCount;
+
+        public Task OpenAsync(CancellationToken token) => inner.OpenAsync(token);
+
+        public Task CloseAsync(CancellationToken token) => inner.CloseAsync(token);
+
+        public Task WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken token) => inner.WriteAsync(buffer, token);
+
+        public Task<int> ReadAsync(Memory<byte> buffer, CancellationToken token)
+        {
+            _readCallCount++;
+            if (_readCallCount == failOnReadCall)
+                throw new IOException("Simulated serial read failure");
+            return inner.ReadAsync(buffer, token);
+        }
+
+        public void Dispose() => inner.Dispose();
+    }
+
+    // Each CreateLogger call gets its own logger instance tagged with its own category, all
+    // writing into one shared, lock-protected list -- so entries stay attributed to whichever
+    // type actually logged them, even though several types share this one factory.
+    private class CapturingLoggerFactory : ILoggerFactory
+    {
+        private readonly List<LogEntry> _entries = new();
+
+        public IReadOnlyList<LogEntry> Entries
+        {
+            get
+            {
+                lock (_entries)
+                    return _entries.ToList();
+            }
+        }
+
+        public ILogger CreateLogger(string categoryName) => new CategoryLogger(categoryName, _entries);
+
+        public void AddProvider(ILoggerProvider provider) { }
+
+        public void Dispose() { }
+
+        private class CategoryLogger(string category, List<LogEntry> entries) : ILogger
+        {
+            public IDisposable BeginScope<TState>(TState state)
+                where TState : notnull => NullScope.Instance;
+
+            public bool IsEnabled(LogLevel logLevel) => true;
+
+            public void Log<TState>(
+                LogLevel logLevel,
+                EventId eventId,
+                TState state,
+                Exception? exception,
+                Func<TState, Exception?, string> formatter
+            )
+            {
+                lock (entries)
+                    entries.Add(new LogEntry(category, logLevel, exception));
+            }
+        }
+
+        private class NullScope : IDisposable
+        {
+            public static readonly NullScope Instance = new();
+
+            public void Dispose() { }
+        }
+    }
+
+    private record LogEntry(string Category, LogLevel Level, Exception? Exception);
 
     [Fact]
     public async Task WhenADeviceAnnouncesWhileConnectedThenItIsRelayedThroughTheDeviceJoinedEvent()

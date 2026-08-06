@@ -31,12 +31,14 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     private readonly AttributeReportListener _attributeReportListener;
     private readonly KnownDeviceTable _knownDeviceTable;
     private readonly DeviceInterview _deviceInterview;
+    private readonly ILogger<ZigbeeCoordinator> _logger;
 
     private CancellationTokenSource? _pollCancellation;
     private bool _disposed;
 
     public ZigbeeCoordinator(ISerialTransport transport, ILoggerFactory? loggerFactory = null)
     {
+        loggerFactory ??= NullLoggerFactory.Instance;
         _transport = transport;
         _channel = new DeconzChannel(transport);
         _connection = new DeconzConnection(_channel);
@@ -50,8 +52,9 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
             _pollLoop,
             _sender,
             _knownDeviceTable,
-            logger: (loggerFactory ?? NullLoggerFactory.Instance).CreateLogger<DeviceInterview>()
+            logger: loggerFactory.CreateLogger<DeviceInterview>()
         );
+        _logger = loggerFactory.CreateLogger<ZigbeeCoordinator>();
 
         _attributeReportListener.AttributeReported += RelayAttributeReport;
         _deviceInterview.DeviceJoined += RelayDeviceJoined;
@@ -151,7 +154,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         {
             await _pollLoop.PollOnceAsync(token);
         }
-        catch (Exception) { }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Poll iteration failed, will retry on the next interval");
+        }
     }
 
     private static async Task DelayBetweenPollsAsync(CancellationToken token)
