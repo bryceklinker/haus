@@ -1,4 +1,3 @@
-using System;
 using Haus.Core.Models.Devices.Sensors.Battery;
 using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
@@ -33,33 +32,27 @@ public class DeviceEventMapper(DeviceAddressRegistry addressRegistry, ILogger<De
             return null;
         }
 
-        object? payload = (report.ClusterId, report.AttributeId) switch
+        return (report.ClusterId, report.AttributeId) switch
         {
-            (PowerConfigCluster, BatteryPercentageAttribute) => _batteryChangedMapper.Map(deviceId, report.Value),
-            (IlluminanceMeasurementCluster, MeasuredValueAttribute) => _illuminanceChangedMapper.Map(
-                deviceId,
-                report.Value
+            (PowerConfigCluster, BatteryPercentageAttribute) => ToEvent(
+                BatteryChangedModel.Type,
+                _batteryChangedMapper.Map(deviceId, report.Value)
             ),
-            (TemperatureMeasurementCluster, MeasuredValueAttribute) => _temperatureChangedMapper.Map(
-                deviceId,
-                report.Value
+            (IlluminanceMeasurementCluster, MeasuredValueAttribute) => ToEvent(
+                IlluminanceChangedModel.Type,
+                _illuminanceChangedMapper.Map(deviceId, report.Value)
             ),
-            (OccupancySensingCluster, OccupancyAttribute) => _occupancyChangedMapper.Map(deviceId, report.Value),
+            (TemperatureMeasurementCluster, MeasuredValueAttribute) => ToEvent(
+                TemperatureChangedModel.Type,
+                _temperatureChangedMapper.Map(deviceId, report.Value)
+            ),
+            (OccupancySensingCluster, OccupancyAttribute) => ToEvent(
+                OccupancyChangedModel.Type,
+                _occupancyChangedMapper.Map(deviceId, report.Value)
+            ),
             _ => null,
         };
-
-        return payload == null ? null : new HausEvent<object>(GetHausEventType(payload), payload);
     }
 
-    private static string GetHausEventType(object payload)
-    {
-        return payload switch
-        {
-            BatteryChangedModel => BatteryChangedModel.Type,
-            IlluminanceChangedModel => IlluminanceChangedModel.Type,
-            TemperatureChangedModel => TemperatureChangedModel.Type,
-            OccupancyChangedModel => OccupancyChangedModel.Type,
-            _ => throw new InvalidOperationException($"Unexpected sensor payload type {payload.GetType()}"),
-        };
-    }
+    private static HausEvent<object> ToEvent(string type, object payload) => new(type, payload);
 }
