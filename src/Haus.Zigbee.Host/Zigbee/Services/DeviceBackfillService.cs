@@ -36,8 +36,6 @@ public class DeviceBackfillService(
             if (info == null)
                 return;
 
-            addressRegistry.Register(device.NetworkAddress, ExternalIdMap.ToExternalId(device.IeeeAddress));
-
             var joined = new ZigbeeDeviceJoined(
                 device.IeeeAddress,
                 device.NetworkAddress,
@@ -45,7 +43,7 @@ public class DeviceBackfillService(
                 info.ManufacturerName,
                 info.ModelIdentifier
             );
-            var discovered = deviceJoinedMapper.Map(joined);
+            var discovered = deviceJoinedMapper.RegisterAndMap(addressRegistry, joined);
             if (discovered.DeviceType == DeviceType.Unknown)
                 return;
 

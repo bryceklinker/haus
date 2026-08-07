@@ -16,6 +16,15 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
         );
     }
 
+    // Registering the device's network address before mapping it is a step every caller needs --
+    // a freshly-joined device and an already-known device being backfilled both go through this
+    // same register-then-map sequence before deciding what (if anything) to publish.
+    public DeviceDiscoveredEvent RegisterAndMap(DeviceAddressRegistry addressRegistry, ZigbeeDeviceJoined joined)
+    {
+        addressRegistry.Register(joined.NetworkAddress, ExternalIdMap.ToExternalId(joined.IeeeAddress));
+        return Map(joined);
+    }
+
     private static MetadataModel[] CreateMetadata(ZigbeeDeviceJoined joined)
     {
         return

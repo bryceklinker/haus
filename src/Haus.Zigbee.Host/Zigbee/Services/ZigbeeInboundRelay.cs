@@ -26,8 +26,7 @@ public class ZigbeeInboundRelay(
             joined.ManufacturerName,
             joined.ModelIdentifier
         );
-        addressRegistry.Register(joined.NetworkAddress, ExternalIdMap.ToExternalId(joined.IeeeAddress));
-        var discovered = deviceJoinedMapper.Map(joined);
+        var discovered = deviceJoinedMapper.RegisterAndMap(addressRegistry, joined);
         var mqttClient = await mqttClientFactory.CreateClient();
         await mqttClient.PublishHausEventAsync(discovered);
     }
