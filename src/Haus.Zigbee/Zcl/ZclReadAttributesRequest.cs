@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Haus.Zigbee.Serial;
 
 namespace Haus.Zigbee.Zcl;
 
@@ -21,10 +22,7 @@ public static class ZclReadAttributesRequestCodec
 
         var bytes = new List<byte>(ZclFrameHeaderCodec.Encode(header));
         foreach (var attributeId in request.AttributeIds)
-        {
-            bytes.Add((byte)(attributeId & 0xff));
-            bytes.Add((byte)(attributeId >> 8));
-        }
+            LittleEndian.Write(bytes, attributeId);
 
         return bytes.ToArray();
     }

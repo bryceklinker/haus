@@ -19,17 +19,10 @@ public static class WriteParameterFrame
         var payloadLength = (ushort)(1 + request.Value.Length);
         var frameLength = (ushort)(8 + request.Value.Length);
 
-        var bytes = new List<byte>
-        {
-            CommandId,
-            request.SequenceNumber,
-            RequestStatus,
-            (byte)(frameLength & 0xff),
-            (byte)(frameLength >> 8),
-            (byte)(payloadLength & 0xff),
-            (byte)(payloadLength >> 8),
-            request.ParameterId,
-        };
+        List<byte> bytes = [CommandId, request.SequenceNumber, RequestStatus];
+        LittleEndian.Write(bytes, frameLength);
+        LittleEndian.Write(bytes, payloadLength);
+        bytes.Add(request.ParameterId);
         bytes.AddRange(request.Value);
         return bytes.ToArray();
     }

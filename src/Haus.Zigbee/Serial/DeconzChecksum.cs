@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 
 namespace Haus.Zigbee.Serial;
 
@@ -21,7 +22,7 @@ public static class DeconzChecksum
             return false;
 
         var frame = frameWithChecksum[..^2];
-        var trailingChecksum = (ushort)(frameWithChecksum[^2] | (frameWithChecksum[^1] << 8));
+        var trailingChecksum = BinaryPrimitives.ReadUInt16LittleEndian(frameWithChecksum[^2..]);
 
         return Compute(frame) == trailingChecksum;
     }

@@ -1,8 +1,10 @@
 using System;
+using System.Buffers.Binary;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Haus.Zigbee.Serial;
 using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee.Simulator;
@@ -125,16 +127,14 @@ public class DeconzResponder
     {
         var asduLengthOffset = SourceEndpointOffset + SourceEndpointLength;
         var asduOffset = asduLengthOffset + AsduLengthFieldLength;
-        var asduLength = apsDataRequest[asduLengthOffset] | (apsDataRequest[asduLengthOffset + 1] << 8);
+        var asduLength = BinaryPrimitives.ReadUInt16LittleEndian(apsDataRequest.AsSpan(asduLengthOffset));
         return apsDataRequest[asduOffset..(asduOffset + asduLength)];
     }
 
     // Assumes Nwk-mode addressing.
     public static ushort ExtractDestinationNetworkAddress(byte[] apsDataRequest)
     {
-        return (ushort)(
-            apsDataRequest[DestinationNetworkAddressOffset] | (apsDataRequest[DestinationNetworkAddressOffset + 1] << 8)
-        );
+        return BinaryPrimitives.ReadUInt16LittleEndian(apsDataRequest.AsSpan(DestinationNetworkAddressOffset));
     }
 
     public IReadOnlyList<byte[]> SentApsRequests => _sentApsRequests.ToList();
@@ -200,8 +200,8 @@ public class DeconzResponder
             WriteParameterCommand,
             request[SequenceNumberOffset],
             SuccessStatus,
-            .. LittleEndian(WriteParameterResponseFrameLength),
-            .. LittleEndian(WriteParameterResponsePayloadLength),
+            .. LittleEndian.Bytes(WriteParameterResponseFrameLength),
+            .. LittleEndian.Bytes(WriteParameterResponsePayloadLength),
             parameterId,
         ];
     }
@@ -219,7 +219,7 @@ public class DeconzResponder
             DeviceStateCommand,
             sequenceNumber,
             SuccessStatus,
-            .. LittleEndian(UnvalidatedFrameLength),
+            .. LittleEndian.Bytes(UnvalidatedFrameLength),
             deviceState,
         ];
     }
@@ -256,7 +256,7 @@ public class DeconzResponder
             ApsDataRequestCommand,
             request[SequenceNumberOffset],
             SuccessStatus,
-            .. LittleEndian(UnvalidatedFrameLength),
+            .. LittleEndian.Bytes(UnvalidatedFrameLength),
         ];
     }
 
@@ -265,24 +265,12 @@ public class DeconzResponder
         var header = BuildUnvalidatedHeader(ReadIndicationCommand, sequenceNumber);
         var destination = Concat(
             [(byte)DeconzAddressMode.Nwk],
-            LittleEndian(CoordinatorNetworkAddress),
+            LittleEndian.Bytes(CoordinatorNetworkAddress),
             [CoordinatorEndpoint]
         );
-        byte[] source =
-        [
-            (byte)DeconzAddressMode.Nwk,
-            (byte)(body.SourceNwk & 0xff),
-            (byte)(body.SourceNwk >> 8),
-            body.SourceEndpoint,
-        ];
-        byte[] profileAndCluster =
-        [
-            (byte)(body.ProfileId & 0xff),
-            (byte)(body.ProfileId >> 8),
-            (byte)(body.ClusterId & 0xff),
-            (byte)(body.ClusterId >> 8),
-        ];
-        var asdu = Concat([(byte)(body.Asdu.Length & 0xff), (byte)(body.Asdu.Length >> 8)], body.Asdu);
+        byte[] source = [(byte)DeconzAddressMode.Nwk, .. LittleEndian.Bytes(body.SourceNwk), body.SourceEndpoint];
+        byte[] profileAndCluster = [.. LittleEndian.Bytes(body.ProfileId), .. LittleEndian.Bytes(body.ClusterId)];
+        var asdu = Concat(LittleEndian.Bytes((ushort)body.Asdu.Length), body.Asdu);
         byte[] reservedAndLinkQuality = [0x00, 0x00, NoRssiLinkQuality];
         return Concat(header, destination, source, profileAndCluster, asdu, reservedAndLinkQuality);
     }
@@ -292,7 +280,7 @@ public class DeconzResponder
         var header = Concat(BuildUnvalidatedHeader(ReadConfirmCommand, sequenceNumber), [body.RequestId]);
         var destination = Concat(
             [(byte)DeconzAddressMode.Nwk],
-            LittleEndian(body.DestinationNetworkAddress),
+            LittleEndian.Bytes(body.DestinationNetworkAddress),
             [body.DestinationEndpoint]
         );
         byte[] sourceEndpointAndStatus = [body.SourceEndpoint, SuccessStatus];
@@ -307,15 +295,10 @@ public class DeconzResponder
         const byte unusedDeviceState = 0x00;
         return Concat(
             [command, sequenceNumber, SuccessStatus],
-            LittleEndian(UnvalidatedFrameLength),
-            LittleEndian(UnvalidatedPayloadLength),
+            LittleEndian.Bytes(UnvalidatedFrameLength),
+            LittleEndian.Bytes(UnvalidatedPayloadLength),
             [unusedDeviceState]
         );
-    }
-
-    private static byte[] LittleEndian(ushort value)
-    {
-        return [(byte)value, (byte)(value >> 8)];
     }
 
     private static byte[] Concat(params byte[][] segments)

@@ -1,5 +1,7 @@
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
+using Haus.Zigbee.Serial;
 
 namespace Haus.Zigbee.Zcl;
 
@@ -38,8 +40,7 @@ public static class ZclFrameHeaderCodec
         List<byte> bytes = [BuildFrameControl(header)];
         if (header.ManufacturerCode is ushort manufacturerCode)
         {
-            bytes.Add((byte)(manufacturerCode & 0xff));
-            bytes.Add((byte)(manufacturerCode >> 8));
+            LittleEndian.Write(bytes, manufacturerCode);
         }
 
         bytes.Add(header.TransactionSequenceNumber);
@@ -62,7 +63,9 @@ public static class ZclFrameHeaderCodec
         if (frame.Length < afterManufacturer + 2)
             return null;
 
-        var manufacturerCode = isManufacturerSpecific ? (ushort?)(frame[1] | (frame[2] << 8)) : null;
+        var manufacturerCode = isManufacturerSpecific
+            ? (ushort?)BinaryPrimitives.ReadUInt16LittleEndian(frame[1..])
+            : null;
 
         var header = new ZclFrameHeader(
             (ZclFrameType)(frameControl & FrameTypeMask),

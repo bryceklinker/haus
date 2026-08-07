@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 
 namespace Haus.Zigbee.Zdp;
@@ -21,7 +22,7 @@ public static class ActiveEndpointsResponseCodec
         if (status != ZdoStatus.Success)
             return new ActiveEndpointsResponse(transactionSequenceNumber, status, NetworkAddress: 0, []);
 
-        var networkAddress = (ushort)(payload[2] | (payload[3] << 8));
+        var networkAddress = BinaryPrimitives.ReadUInt16LittleEndian(payload[2..]);
         var endpointCount = payload[4];
         var endpointIds = payload.Slice(5, endpointCount).ToArray();
 
@@ -33,11 +34,9 @@ public static class ActiveEndpointsRequestCodec
 {
     public static byte[] Encode(ActiveEndpointsRequest request)
     {
-        return
-        [
-            request.TransactionSequenceNumber,
-            (byte)(request.NetworkAddress & 0xff),
-            (byte)(request.NetworkAddress >> 8),
-        ];
+        var bytes = new byte[3];
+        bytes[0] = request.TransactionSequenceNumber;
+        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(1), request.NetworkAddress);
+        return bytes;
     }
 }

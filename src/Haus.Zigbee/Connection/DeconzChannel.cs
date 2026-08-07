@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Serial;
@@ -46,8 +47,7 @@ public class DeconzChannel(ISerialTransport transport)
         var checksum = DeconzChecksum.Compute(frame);
         var withChecksum = new byte[frame.Length + 2];
         frame.CopyTo(withChecksum, 0);
-        withChecksum[^2] = (byte)(checksum & 0xff);
-        withChecksum[^1] = (byte)(checksum >> 8);
+        BinaryPrimitives.WriteUInt16LittleEndian(withChecksum.AsSpan(frame.Length), checksum);
         return _encoder.Encode(withChecksum);
     }
 

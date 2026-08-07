@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using Haus.Zigbee.Models;
 
 namespace Haus.Zigbee.Serial.Frames;
@@ -107,16 +108,14 @@ public static class ApsDataIndicationFrameCodec
 
         public ushort ReadUInt16()
         {
-            var value = (ushort)(_frame[_offset] | (_frame[_offset + 1] << 8));
+            var value = BinaryPrimitives.ReadUInt16LittleEndian(_frame[_offset..]);
             _offset += 2;
             return value;
         }
 
         public IeeeAddress ReadIeeeAddress()
         {
-            var value = 0UL;
-            for (var index = 0; index < IeeeAddressByteCount; index++)
-                value |= (ulong)_frame[_offset + index] << (8 * index);
+            var value = BinaryPrimitives.ReadUInt64LittleEndian(_frame[_offset..]);
             _offset += IeeeAddressByteCount;
             return new IeeeAddress(value);
         }

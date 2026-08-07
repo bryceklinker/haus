@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Haus.Zigbee.Models;
+using Haus.Zigbee.Serial;
 using Haus.Zigbee.Zcl;
 
 namespace Haus.Zigbee.Simulator;
@@ -94,8 +95,8 @@ public static class DeviceJoinScenario
     private static IndicationBody AnnounceIndication(ushort networkAddress, IeeeAddress ieeeAddress)
     {
         List<byte> asdu = [AnnounceTransactionSequenceNumber];
-        AddUInt16(asdu, networkAddress);
-        AddUInt64(asdu, ieeeAddress.Value);
+        LittleEndian.Write(asdu, networkAddress);
+        LittleEndian.Write(asdu, ieeeAddress.Value);
         asdu.Add(MacCapability);
         return new IndicationBody(networkAddress, ZdpEndpoint, ZdpProfile, DeviceAnnounceCluster, asdu.ToArray());
     }
@@ -103,7 +104,7 @@ public static class DeviceJoinScenario
     private static IndicationBody ActiveEndpointsIndication(ushort networkAddress, byte sequenceNumber)
     {
         List<byte> asdu = [sequenceNumber, SuccessStatus];
-        AddUInt16(asdu, networkAddress);
+        LittleEndian.Write(asdu, networkAddress);
         asdu.Add(SimulatedEndpointCount);
         asdu.Add(SimulatedEndpointId);
         return new IndicationBody(
@@ -118,14 +119,14 @@ public static class DeviceJoinScenario
     private static IndicationBody SimpleDescriptorIndication(ushort networkAddress, byte sequenceNumber)
     {
         List<byte> descriptor = [SimulatedEndpointId];
-        AddUInt16(descriptor, HomeAutomationProfile);
-        AddUInt16(descriptor, SimulatedDeviceId);
+        LittleEndian.Write(descriptor, HomeAutomationProfile);
+        LittleEndian.Write(descriptor, SimulatedDeviceId);
         descriptor.Add(SimulatedDeviceVersion);
         AddClusterList(descriptor, [BasicCluster, OnOffCluster]);
         AddClusterList(descriptor, []);
 
         List<byte> asdu = [sequenceNumber, SuccessStatus];
-        AddUInt16(asdu, networkAddress);
+        LittleEndian.Write(asdu, networkAddress);
         asdu.Add((byte)descriptor.Count);
         asdu.AddRange(descriptor);
         return new IndicationBody(
@@ -158,7 +159,7 @@ public static class DeviceJoinScenario
 
     private static void AddStringAttribute(List<byte> frame, ushort attributeId, string value)
     {
-        AddUInt16(frame, attributeId);
+        LittleEndian.Write(frame, attributeId);
         frame.Add(SuccessStatus);
         frame.Add(CharacterStringType);
         var bytes = Encoding.ASCII.GetBytes(value);
@@ -170,18 +171,6 @@ public static class DeviceJoinScenario
     {
         bytes.Add((byte)clusters.Length);
         foreach (var cluster in clusters)
-            AddUInt16(bytes, cluster);
-    }
-
-    private static void AddUInt16(List<byte> bytes, ushort value)
-    {
-        bytes.Add((byte)(value & 0xff));
-        bytes.Add((byte)(value >> 8));
-    }
-
-    private static void AddUInt64(List<byte> bytes, ulong value)
-    {
-        for (var shift = 0; shift < 64; shift += 8)
-            bytes.Add((byte)((value >> shift) & 0xff));
+            LittleEndian.Write(bytes, cluster);
     }
 }

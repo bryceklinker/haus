@@ -60,16 +60,16 @@ public static class ApsDataRequestFrameCodec
         var frameLength = FrameLengthOverhead + payloadLength;
 
         List<byte> bytes = [CommandId, frame.SequenceNumber, Reserved];
-        AddUInt16(bytes, (ushort)frameLength);
-        AddUInt16(bytes, (ushort)payloadLength);
+        LittleEndian.Write(bytes, (ushort)frameLength);
+        LittleEndian.Write(bytes, (ushort)payloadLength);
         bytes.Add(frame.RequestId);
         bytes.Add(Reserved);
         bytes.Add((byte)frame.Destination.Mode);
         bytes.AddRange(destinationAddress);
-        AddUInt16(bytes, frame.ProfileId);
-        AddUInt16(bytes, frame.ClusterId);
+        LittleEndian.Write(bytes, frame.ProfileId);
+        LittleEndian.Write(bytes, frame.ClusterId);
         bytes.Add(frame.SourceEndpoint);
-        AddUInt16(bytes, (ushort)frame.AsduPayload.Length);
+        LittleEndian.Write(bytes, (ushort)frame.AsduPayload.Length);
         bytes.AddRange(frame.AsduPayload);
         bytes.Add(frame.TxOptions);
         bytes.Add(frame.Radius);
@@ -89,14 +89,14 @@ public static class ApsDataRequestFrameCodec
     private static List<byte> EncodeGroup(ApsDestination destination)
     {
         List<byte> bytes = [];
-        AddUInt16(bytes, destination.ShortAddress);
+        LittleEndian.Write(bytes, destination.ShortAddress);
         return bytes;
     }
 
     private static List<byte> EncodeNwk(ApsDestination destination)
     {
         List<byte> bytes = [];
-        AddUInt16(bytes, destination.ShortAddress);
+        LittleEndian.Write(bytes, destination.ShortAddress);
         bytes.Add(destination.Endpoint);
         return bytes;
     }
@@ -104,20 +104,8 @@ public static class ApsDataRequestFrameCodec
     private static List<byte> EncodeIeee(ApsDestination destination)
     {
         List<byte> bytes = [];
-        AddUInt64(bytes, destination.IeeeAddress.Value);
+        LittleEndian.Write(bytes, destination.IeeeAddress.Value);
         bytes.Add(destination.Endpoint);
         return bytes;
-    }
-
-    private static void AddUInt16(List<byte> bytes, ushort value)
-    {
-        bytes.Add((byte)(value & 0xff));
-        bytes.Add((byte)(value >> 8));
-    }
-
-    private static void AddUInt64(List<byte> bytes, ulong value)
-    {
-        for (var shift = 0; shift < 64; shift += 8)
-            bytes.Add((byte)((value >> shift) & 0xff));
     }
 }

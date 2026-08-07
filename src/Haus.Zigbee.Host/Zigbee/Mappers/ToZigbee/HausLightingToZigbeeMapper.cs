@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Haus.Zigbee.Models;
+using Haus.Zigbee.Serial;
 using Haus.Zigbee.Serial.Frames;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
@@ -81,13 +82,13 @@ public class HausLightingToZigbeeMapper
     private static byte[] LevelPayload(LevelLightingModel level)
     {
         var zclLevel = (byte)Math.Round(level.Value / 100.0 * MaxZclLevel);
-        return [zclLevel, .. LittleEndian(NoTransitionTime)];
+        return [zclLevel, .. LittleEndian.Bytes(NoTransitionTime)];
     }
 
     private static byte[] ColorTemperaturePayload(TemperatureLightingModel temperature)
     {
         var mireds = (ushort)Math.Round(MicroKelvinsPerMired / temperature.Value);
-        return [.. LittleEndian(mireds), .. LittleEndian(NoTransitionTime)];
+        return [.. LittleEndian.Bytes(mireds), .. LittleEndian.Bytes(NoTransitionTime)];
     }
 
     private static byte[] ColorPayload(ColorLightingModel color)
@@ -95,7 +96,7 @@ public class HausLightingToZigbeeMapper
         var (x, y) = ToXyChromaticity(color);
         var zclX = (ushort)Math.Round(x * ZclColorComponentScale);
         var zclY = (ushort)Math.Round(y * ZclColorComponentScale);
-        return [.. LittleEndian(zclX), .. LittleEndian(zclY), .. LittleEndian(NoTransitionTime)];
+        return [.. LittleEndian.Bytes(zclX), .. LittleEndian.Bytes(zclY), .. LittleEndian.Bytes(NoTransitionTime)];
     }
 
     // Wide RGB D65 conversion matrix, the same one zigbee2mqtt/zigbee-herdsman-converters use to
@@ -112,10 +113,5 @@ public class HausLightingToZigbeeMapper
 
         var sum = x + y + z;
         return sum == 0 ? (0, 0) : (x / sum, y / sum);
-    }
-
-    private static byte[] LittleEndian(ushort value)
-    {
-        return [(byte)value, (byte)(value >> 8)];
     }
 }

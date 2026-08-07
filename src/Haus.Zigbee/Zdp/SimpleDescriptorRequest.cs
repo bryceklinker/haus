@@ -22,13 +22,11 @@ public static class SimpleDescriptorCodec
 {
     public static byte[] EncodeRequest(SimpleDescriptorRequest request)
     {
-        return
-        [
-            request.TransactionSequenceNumber,
-            (byte)(request.NetworkAddress & 0xff),
-            (byte)(request.NetworkAddress >> 8),
-            request.Endpoint,
-        ];
+        var bytes = new byte[4];
+        bytes[0] = request.TransactionSequenceNumber;
+        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(1), request.NetworkAddress);
+        bytes[3] = request.Endpoint;
+        return bytes;
     }
 
     public static SimpleDescriptorResponse DecodeResponse(ReadOnlySpan<byte> payload)

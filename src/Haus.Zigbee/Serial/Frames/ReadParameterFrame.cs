@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 
 namespace Haus.Zigbee.Serial.Frames;
@@ -21,24 +22,17 @@ public static class ReadParameterFrame
         var payloadLength = (ushort)(1 + request.Arguments.Length);
         var frameLength = (ushort)(8 + request.Arguments.Length);
 
-        var bytes = new List<byte>
-        {
-            CommandId,
-            request.SequenceNumber,
-            RequestStatus,
-            (byte)(frameLength & 0xff),
-            (byte)(frameLength >> 8),
-            (byte)(payloadLength & 0xff),
-            (byte)(payloadLength >> 8),
-            request.ParameterId,
-        };
+        List<byte> bytes = [CommandId, request.SequenceNumber, RequestStatus];
+        LittleEndian.Write(bytes, frameLength);
+        LittleEndian.Write(bytes, payloadLength);
+        bytes.Add(request.ParameterId);
         bytes.AddRange(request.Arguments);
         return bytes.ToArray();
     }
 
     public static ReadParameterResponse Decode(ReadOnlySpan<byte> frame)
     {
-        var payloadLength = (ushort)(frame[PayloadLengthIndex] | (frame[PayloadLengthIndex + 1] << 8));
+        var payloadLength = BinaryPrimitives.ReadUInt16LittleEndian(frame[PayloadLengthIndex..]);
         var valueLength = payloadLength - 1;
         var value = frame.Slice(ValueIndex, valueLength).ToArray();
 
