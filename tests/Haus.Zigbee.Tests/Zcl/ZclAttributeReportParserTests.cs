@@ -99,7 +99,7 @@ public class ZclAttributeReportParserTests
     [Fact]
     public void WhenParsingReportAttributesWithUnsupportedDataTypeThenReturnsRecordsDecodedBeforeItWithoutThrowing()
     {
-        var payload = new byte[] { 0x00, 0x00, 0x21, 0x34, 0x12, 0x01, 0x00, 0x42, 0x03, 0x61, 0x62, 0x63 };
+        var payload = new byte[] { 0x00, 0x00, 0x21, 0x34, 0x12, 0x01, 0x00, 0xee, 0x03, 0x61, 0x62, 0x63 };
 
         var result = ZclAttributeReportParser.ParseReportAttributes(payload);
 
@@ -107,6 +107,33 @@ public class ZclAttributeReportParserTests
         var attribute = Assert.Single(result.Attributes);
         Assert.Equal(0x0000, attribute.AttributeId);
         Assert.Equal(ZclDataType.Uint16, attribute.Value.DataType);
+    }
+
+    [Fact]
+    public void WhenParsingReadAttributesResponseWithCharacterStringValueThenDecodesTheAsciiString()
+    {
+        var payload = new byte[] { 0x00, 0x00, 0x00, 0x42, 0x04, 0x49, 0x4b, 0x45, 0x41 };
+
+        var result = ZclAttributeReportParser.ParseReadAttributesResponse(payload);
+
+        Assert.True(result.IsComplete);
+        var attribute = Assert.Single(result.Attributes);
+        Assert.NotNull(attribute.Value);
+        Assert.Equal(ZclDataType.CharacterString, attribute.Value.DataType);
+        Assert.Equal("IKEA", attribute.Value.AsString());
+    }
+
+    [Fact]
+    public void WhenParsingReadAttributesResponseWithInvalidStringLengthMarkerThenDecodesAsEmptyString()
+    {
+        var payload = new byte[] { 0x00, 0x00, 0x00, 0x42, 0xff };
+
+        var result = ZclAttributeReportParser.ParseReadAttributesResponse(payload);
+
+        Assert.True(result.IsComplete);
+        var attribute = Assert.Single(result.Attributes);
+        Assert.NotNull(attribute.Value);
+        Assert.Equal(string.Empty, attribute.Value.AsString());
     }
 
     [Theory]

@@ -2,6 +2,7 @@ using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace Haus.Zigbee.Zcl;
 
@@ -18,6 +19,10 @@ public static class ZclAttributeReportParser
     private const byte SuccessStatus = 0x00;
     private const int AttributeIdLength = 2;
     private const int StatusLength = 1;
+
+    // 0xff in the length byte is the ZCL convention for an invalid/absent CharacterString value --
+    // it carries no following string bytes at all, unlike every other length value.
+    private const byte InvalidStringLength = 0xff;
 
     public static ZclReportAttributesResult ParseReportAttributes(ReadOnlySpan<byte> payload)
     {
@@ -90,6 +95,9 @@ public static class ZclAttributeReportParser
         }
 
         var dataType = payload[offset];
+        if (dataType == (byte)ZclDataType.CharacterString)
+            return TryDecodeCharacterString(payload, offset, out value, out length);
+
         if (!ZclDataTypeWidths.TryGetWidth(dataType, out var width) || offset + 1 + width > payload.Length)
         {
             value = null;
@@ -99,6 +107,43 @@ public static class ZclAttributeReportParser
 
         value = new ZclAttributeValue((ZclDataType)dataType, ReadRawValue(payload, offset + 1, width));
         length = 1 + width;
+        return true;
+    }
+
+    private static bool TryDecodeCharacterString(
+        ReadOnlySpan<byte> payload,
+        int offset,
+        [NotNullWhen(true)] out ZclAttributeValue? value,
+        out int length
+    )
+    {
+        var stringLengthOffset = offset + 1;
+        if (stringLengthOffset >= payload.Length)
+        {
+            value = null;
+            length = 0;
+            return false;
+        }
+
+        var stringLength = payload[stringLengthOffset];
+        if (stringLength == InvalidStringLength)
+        {
+            value = new ZclAttributeValue(ZclDataType.CharacterString, RawValue: 0, StringValue: string.Empty);
+            length = 2;
+            return true;
+        }
+
+        var stringOffset = stringLengthOffset + 1;
+        if (stringOffset + stringLength > payload.Length)
+        {
+            value = null;
+            length = 0;
+            return false;
+        }
+
+        var stringValue = Encoding.ASCII.GetString(payload.Slice(stringOffset, stringLength));
+        value = new ZclAttributeValue(ZclDataType.CharacterString, RawValue: 0, stringValue);
+        length = 2 + stringLength;
         return true;
     }
 

@@ -9,6 +9,7 @@ public enum ZclDataType : byte
     Uint8 = 0x20,
     Uint16 = 0x21,
     Int16 = 0x29,
+    CharacterString = 0x42,
 }
 
 public static class ZclDataTypeWidths
@@ -25,11 +26,13 @@ public static class ZclDataTypeWidths
     public static bool TryGetWidth(byte dataType, out int width) => WidthsByType.TryGetValue(dataType, out width);
 }
 
-public record ZclAttributeValue(ZclDataType DataType, ulong RawValue)
+public record ZclAttributeValue(ZclDataType DataType, ulong RawValue, string? StringValue = null)
 {
     public bool AsBool() => RawValue != 0;
 
     public ulong AsUnsigned() => RawValue;
+
+    public string AsString() => StringValue ?? string.Empty;
 
     public long AsSigned()
     {
