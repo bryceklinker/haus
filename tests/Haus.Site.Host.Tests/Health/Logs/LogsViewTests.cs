@@ -25,7 +25,7 @@ public class LogsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(1, view.FindAllByComponent<MudProgressCircular>().Count());
+            Assert.Single(view.FindAllByComponent<MudProgressCircular>());
         });
     }
 

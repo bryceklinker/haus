@@ -39,7 +39,7 @@ public class HealthStatusViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(1, view.FindAllByComponent<MudProgressCircular>().Count());
+            Assert.Single(view.FindAllByComponent<MudProgressCircular>());
         });
     }
 

@@ -11,6 +11,8 @@ MQTT_TEST_PORT := 21883
 .PHONY: build certs publish start stop watch web-host site-host zigbee-host \
         test-unit test-acceptance docker-publish add-project migration
 
+verify: build test-unit test-acceptance
+
 build:
 	. ./scripts/variables.sh && dotnet build /p:Version="$$VERSION"
 

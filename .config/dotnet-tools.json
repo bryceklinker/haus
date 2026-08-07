@@ -38,9 +38,16 @@
       "rollForward": false
     },
     "dotnet-outdated-tool": {
-      "version": "4.6.7",
+      "version": "4.8.1",
       "commands": [
         "dotnet-outdated"
+      ],
+      "rollForward": false
+    },
+    "powershell": {
+      "version": "7.6.4",
+      "commands": [
+        "pwsh"
       ],
       "rollForward": false
     }

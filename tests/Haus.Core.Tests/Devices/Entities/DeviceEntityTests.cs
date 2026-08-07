@@ -264,8 +264,8 @@ public class DeviceEntityTest
         light.UpdateFromModel(model, new FakeDomainEventBus());
 
         Assert.Equal(LightingState.On, light.Lighting?.State);
-        Assert.Equal(room.Lighting?.Level, light.Lighting?.Level);
-        Assert.Equal(room.Lighting?.Temperature, light.Lighting?.Temperature);
+        Assert.Equal(room.Lighting.Level, light.Lighting?.Level);
+        Assert.Equal(room.Lighting.Temperature, light.Lighting?.Temperature);
     }
 
     [Fact]
@@ -324,10 +324,10 @@ public class DeviceEntityTest
         var events = domainEventBus.GetEvents.OfType<DeviceLightingChangedDomainEvent>().ToList();
         Assert.Single(events);
         Assert.Equal(light, events[0].Device);
-        Assert.Equal(LightingState.On, events[0].Lighting?.State);
-        Assert.Equal(new LevelLightingEntity(50), events[0].Lighting?.Level);
-        Assert.Null(events[0].Lighting?.Color);
-        Assert.Null(events[0].Lighting?.Temperature);
+        Assert.Equal(LightingState.On, events[0].Lighting.State);
+        Assert.Equal(new LevelLightingEntity(50), events[0].Lighting.Level);
+        Assert.Null(events[0].Lighting.Color);
+        Assert.Null(events[0].Lighting.Temperature);
     }
 
     [Fact]
@@ -372,7 +372,13 @@ public class DeviceEntityTest
             new TemperatureLightingEntity(12, 0, 2000),
             new ColorLightingEntity(23, 12, 89)
         );
-        var metadata = new[] { new DeviceMetadataEntity("one", "two") };
+        var metadata = new[]
+        {
+            new DeviceMetadataEntity("one", "two")
+            {
+                Device = new DeviceEntity()
+            }
+        };
         var device = new DeviceEntity(
             12,
             $"{Guid.NewGuid()}",
@@ -404,8 +410,8 @@ public class DeviceEntityTest
 
         device.UpdateFromLightingConstraints(model, new FakeDomainEventBus());
 
-        Assert.Equal(1, device.Lighting?.Level?.Min);
-        Assert.Equal(254, device.Lighting?.Level?.Max);
+        Assert.Equal(1, device.Lighting?.Level.Min);
+        Assert.Equal(254, device.Lighting?.Level.Max);
     }
 
     [Fact]

@@ -23,7 +23,7 @@ public class RoomsListViewTest : HausSiteTestContext
 
         var page = RenderView<RoomsListView>();
 
-        Assert.Equal(1, page.FindAllByComponent<MudProgressCircular>().Count());
+        Assert.Single(page.FindAllByComponent<MudProgressCircular>());
     }
 
     [Fact]
@@ -95,7 +95,7 @@ public class RoomsListViewTest : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(1, dialogProvider.FindAllByComponent<AddRoomDialogView>().Count());
+            Assert.Single(dialogProvider.FindAllByComponent<AddRoomDialogView>());
         });
     }
 }

@@ -8,7 +8,6 @@ using Haus.Site.Host.Health.Events;
 using Haus.Site.Host.Health.Logs;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MudBlazor;
 
 namespace Haus.Site.Host.Tests.Health;
@@ -37,7 +36,7 @@ public class HealthViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(1, view.FindAllByComponent<LogsView>().Count());
+            Assert.Single(view.FindAllByComponent<LogsView>());
         });
     }
 
@@ -49,7 +48,7 @@ public class HealthViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(1, view.FindAllByComponent<EventsView>().Count());
+            Assert.Single(view.FindAllByComponent<EventsView>());
         });
     }
 

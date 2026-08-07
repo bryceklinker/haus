@@ -27,7 +27,9 @@ public class DiagnosticsMessageViewTests : HausSiteTestContext
             opts.Add(c => c.Message, message);
         });
 
+        Assert.NotNull(message.Id);
         Assert.Contains(message.Id, view.Markup);
+        Assert.NotNull(message.Topic);
         Assert.Contains(message.Topic, view.Markup);
         Assert.Contains("2023-03-26", view.Markup);
         Assert.Contains("three", view.Markup);

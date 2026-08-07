@@ -27,3 +27,7 @@ WEB_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Web.Host/Haus.Web.Host.csproj"
 ZIGBEE_HOST_PUBLISH_DIRECTORY="${PUBLISH_DIRECTORY}/haus-zigbee"
 ZIGBEE_HOST_BASE_ASSET_PATH="Haus.Zigbee.Host"
 ZIGBEE_HOST_PROJECT="${WORKING_DIRECTORY}/src/Haus.Zigbee.Host/Haus.Zigbee.Host.csproj"
+
+ZIGBEE_SIMULATOR_PUBLISH_DIRECTORY="${PUBLISH_DIRECTORY}/haus-zigbee-simulator"
+ZIGBEE_SIMULATOR_BASE_ASSET_PATH="Haus.Zigbee.Simulator"
+ZIGBEE_SIMULATOR_PROJECT="${WORKING_DIRECTORY}/src/Haus.Zigbee.Simulator/Haus.Zigbee.Simulator.csproj"

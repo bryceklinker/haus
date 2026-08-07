@@ -19,7 +19,7 @@ public class AddRoomDialogViewTests : HausSiteTestContext
     {
         var view = await RenderDialogAsync<AddRoomDialogView>();
 
-        Assert.Equal(1, view.FindAllByComponent<MudTextField<string>>().Count());
+        Assert.Single(view.FindAllByComponent<MudTextField<string>>());
     }
 
     [Fact]
