@@ -260,7 +260,7 @@ public class DeconzResponder
         ];
     }
 
-    private static byte[] EncodeIndication(byte sequenceNumber, IndicationBody body)
+    public static byte[] EncodeIndication(byte sequenceNumber, IndicationBody body)
     {
         var header = BuildUnvalidatedHeader(ReadIndicationCommand, sequenceNumber);
         var destination = Concat(

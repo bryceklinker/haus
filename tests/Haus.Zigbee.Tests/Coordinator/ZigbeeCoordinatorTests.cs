@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
+using Haus.Zigbee.Simulator;
 using Haus.Zigbee.Transport;
 using Haus.Zigbee.Zcl;
 using Microsoft.Extensions.Logging;

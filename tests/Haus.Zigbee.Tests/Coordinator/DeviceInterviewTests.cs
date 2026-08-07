@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Models;
+using Haus.Zigbee.Simulator;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Coordinator;

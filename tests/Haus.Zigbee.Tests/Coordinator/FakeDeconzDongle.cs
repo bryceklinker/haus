@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Serial;
+using Haus.Zigbee.Simulator;
 using Haus.Zigbee.Transport;
 
 namespace Haus.Zigbee.Tests.Coordinator;
