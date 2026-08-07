@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
@@ -33,9 +32,6 @@ public class DeviceInterview : IDisposable
     private const byte DefaultRadius = 0x00;
 
     private const byte ReadAttributesResponseCommandId = 0x01;
-    private const byte ZclSuccessStatus = 0x00;
-    private const byte CharacterStringType = 0x42;
-    private const byte InvalidStringLength = 0xff;
 
     private static readonly TimeSpan DefaultResponseTimeout = TimeSpan.FromSeconds(30);
 
@@ -313,45 +309,17 @@ public class DeviceInterview : IDisposable
         if (decoding is null || decoding.Header.CommandId != ReadAttributesResponseCommandId)
             return ZigbeeDeviceInfo.Empty;
 
-        var manufacturerName = string.Empty;
-        var modelIdentifier = string.Empty;
-        var offset = decoding.ByteLength;
-        while (TryReadAttribute(frame, ref offset, out var attributeId, out var value))
-        {
-            if (attributeId == ManufacturerNameAttribute)
-                manufacturerName = value;
-            else if (attributeId == ModelIdentifierAttribute)
-                modelIdentifier = value;
-        }
-
-        return new ZigbeeDeviceInfo(manufacturerName, modelIdentifier);
+        var result = ZclAttributeReportParser.ParseReadAttributesResponse(frame.AsSpan(decoding.ByteLength));
+        return new ZigbeeDeviceInfo(
+            FindStringAttribute(result.Attributes, ManufacturerNameAttribute),
+            FindStringAttribute(result.Attributes, ModelIdentifierAttribute)
+        );
     }
 
-    private static bool TryReadAttribute(byte[] frame, ref int offset, out ushort attributeId, out string value)
+    private static string FindStringAttribute(IReadOnlyList<ZclReadAttributeRecord> attributes, ushort attributeId)
     {
-        attributeId = 0;
-        value = string.Empty;
-        const int recordHeaderLength = 3;
-        if (offset + recordHeaderLength > frame.Length)
-            return false;
-
-        attributeId = (ushort)(frame[offset] | (frame[offset + 1] << 8));
-        var status = frame[offset + 2];
-        offset += recordHeaderLength;
-        if (status != ZclSuccessStatus)
-            return true;
-
-        var dataType = frame[offset++];
-        if (dataType != CharacterStringType)
-            return false;
-
-        var length = frame[offset++];
-        if (length == InvalidStringLength)
-            return true;
-
-        value = Encoding.ASCII.GetString(frame, offset, length);
-        offset += length;
-        return true;
+        return attributes.FirstOrDefault(attribute => attribute.AttributeId == attributeId)?.Value?.AsString()
+            ?? string.Empty;
     }
 
     private static bool IsDeviceAnnounce(ApsDataIndicationFrame indication)
