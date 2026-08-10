@@ -325,6 +325,36 @@ public class DeviceInterviewTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => readTask);
     }
 
+    // Uses its own dongle/poll loop rather than the fixture's, so the announce indication is only
+    // ever dispatched to this short-timeout interview and not also to the fixture's _interview.
+    [Fact]
+    public async Task WhenTheActiveEndpointsRequestNeverReceivesAResponseThenTheInterviewAbortsWithoutJoiningTheDevice()
+    {
+        var dongle = new FakeDeconzDongle();
+        var pollLoop = new ApsPollLoop(new DeconzChannel(dongle.PollTransport));
+        var sender = new ApsSender(pollLoop, new DeconzChannel(dongle.SendTransport));
+        var knownDeviceTable = new KnownDeviceTable();
+        using var interview = new DeviceInterview(
+            pollLoop,
+            sender,
+            knownDeviceTable,
+            responseTimeout: TimeSpan.FromMilliseconds(50)
+        );
+        var joined = new TaskCompletionSource<ZigbeeDeviceJoined>();
+        interview.DeviceJoined += (_, e) => joined.TrySetResult(e);
+
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        dongle.InjectIndication(Announce(device));
+        // No ReleaseAfterSend registered for the active-endpoints request -- it never gets a
+        // response, simulating a NAK or lost delivery from the coordinator mid-interview.
+        await pollLoop.PollOnceAsync(CancellationToken.None);
+
+        await Task.Delay(TimeSpan.FromMilliseconds(500));
+
+        Assert.False(joined.Task.IsCompleted);
+        Assert.Empty(knownDeviceTable.GetDevices());
+    }
+
     [Fact]
     public async Task ReadBasicInfoAsync_NoEndpoints_ReturnsEmptyInfoWithoutSendingAnything()
     {
