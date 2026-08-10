@@ -17,11 +17,13 @@ public static class ReadParameterFrame
     private const int ParameterIdIndex = 7;
     private const int ValueIndex = 8;
     private const int StatusByteCountInPayload = 1;
+    private const int ParameterIdByteCountInPayload = 1;
+    private const int FrameLengthOverhead = 7;
 
     public static byte[] Encode(ReadParameterRequest request)
     {
-        var payloadLength = (ushort)(1 + request.Arguments.Length);
-        var frameLength = (ushort)(8 + request.Arguments.Length);
+        var payloadLength = (ushort)(ParameterIdByteCountInPayload + request.Arguments.Length);
+        var frameLength = (ushort)(FrameLengthOverhead + payloadLength);
 
         List<byte> bytes = [CommandId, request.SequenceNumber, RequestStatus];
         LittleEndian.Write(bytes, frameLength);

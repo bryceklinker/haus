@@ -49,11 +49,15 @@ public static class ActiveEndpointsResponseCodec
 
 public static class ActiveEndpointsRequestCodec
 {
+    private const int RequestLength = 3;
+    private const int TransactionSequenceNumberOffset = 0;
+    private const int NetworkAddressOffset = 1;
+
     public static byte[] Encode(ActiveEndpointsRequest request)
     {
-        var bytes = new byte[3];
-        bytes[0] = request.TransactionSequenceNumber;
-        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(1), request.NetworkAddress);
+        var bytes = new byte[RequestLength];
+        bytes[TransactionSequenceNumberOffset] = request.TransactionSequenceNumber;
+        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(NetworkAddressOffset), request.NetworkAddress);
         return bytes;
     }
 }

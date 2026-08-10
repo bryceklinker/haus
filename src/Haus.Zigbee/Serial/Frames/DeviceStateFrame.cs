@@ -31,9 +31,22 @@ public static class DeviceStateCodec
     private const byte ConfigurationChangedMask = 0x10;
     private const byte ApsFreeSlotsMask = 0x20;
 
+    private const byte RequestStatus = 0x00;
+    private const ushort PollRequestFrameLength = 8;
+    private const byte Reserved = 0x00;
+
     public static byte[] EncodePollRequest(byte sequenceNumber)
     {
-        return [StatusCommandId, sequenceNumber, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00];
+        return
+        [
+            StatusCommandId,
+            sequenceNumber,
+            RequestStatus,
+            ..LittleEndian.Bytes(PollRequestFrameLength),
+            Reserved,
+            Reserved,
+            Reserved,
+        ];
     }
 
     // This response comes straight off the wire, so a truncated frame must produce a null result

@@ -20,12 +20,17 @@ public record SimpleDescriptorResponse(byte TransactionSequenceNumber, ZdoStatus
 
 public static class SimpleDescriptorCodec
 {
+    private const int RequestLength = 4;
+    private const int RequestTransactionSequenceNumberOffset = 0;
+    private const int RequestNetworkAddressOffset = 1;
+    private const int RequestEndpointOffset = 3;
+
     public static byte[] EncodeRequest(SimpleDescriptorRequest request)
     {
-        var bytes = new byte[4];
-        bytes[0] = request.TransactionSequenceNumber;
-        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(1), request.NetworkAddress);
-        bytes[3] = request.Endpoint;
+        var bytes = new byte[RequestLength];
+        bytes[RequestTransactionSequenceNumberOffset] = request.TransactionSequenceNumber;
+        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(RequestNetworkAddressOffset), request.NetworkAddress);
+        bytes[RequestEndpointOffset] = request.Endpoint;
         return bytes;
     }
 
@@ -38,6 +43,7 @@ public static class SimpleDescriptorCodec
     private const int DeviceVersionOffset = 10;
     private const int InClusterCountOffset = 11;
     private const int FixedDescriptorFieldsLength = 11;
+    private const int ClusterCountByteLength = 1;
     private const int ClusterIdByteLength = 2;
 
     // This response comes straight off the wire, so a truncated payload -- including one whose
@@ -89,7 +95,7 @@ public static class SimpleDescriptorCodec
             return null;
 
         var count = payload[offset];
-        var afterCount = offset + 1;
+        var afterCount = offset + ClusterCountByteLength;
         var clusterBytesLength = count * ClusterIdByteLength;
         if (payload.Length < afterCount + clusterBytesLength)
             return null;
