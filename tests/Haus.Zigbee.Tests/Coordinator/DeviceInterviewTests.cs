@@ -7,6 +7,7 @@ using Haus.Zigbee.Connection;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Models;
 using Haus.Zigbee.Simulator;
+using Haus.Zigbee.Zdp;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Coordinator;
@@ -53,6 +54,18 @@ public class DeviceInterviewTests
         Assert.Empty(joined.Endpoints);
         Assert.Equal(string.Empty, joined.ManufacturerName);
         Assert.Equal(string.Empty, joined.ModelIdentifier);
+    }
+
+    [Fact]
+    public async Task WhenTheActiveEndpointsRequestIsNakedThenTheDeviceStillJoinsWithNoEndpoints()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        _dongle.InjectIndication(Announce(device));
+        _dongle.ReleaseAfterSend(sendIndex: 0, ActiveEndpointsNak(device, ZdoStatus.DeviceNotFound));
+
+        var joined = await RunInterview();
+
+        Assert.Empty(joined.Endpoints);
     }
 
     [Fact]
@@ -336,6 +349,18 @@ public class DeviceInterviewTests
         AddUInt16(asdu, device.Nwk);
         asdu.Add((byte)endpointIds.Length);
         asdu.AddRange(endpointIds);
+        return new IndicationBody(
+            device.Nwk,
+            SourceEndpoint: 0x00,
+            ZdpProfile,
+            ActiveEndpointsResponseCluster,
+            asdu.ToArray()
+        );
+    }
+
+    private static IndicationBody ActiveEndpointsNak(DeviceScript device, ZdoStatus status, byte sequenceNumber = 0x00)
+    {
+        var asdu = new List<byte> { sequenceNumber, (byte)status };
         return new IndicationBody(
             device.Nwk,
             SourceEndpoint: 0x00,
