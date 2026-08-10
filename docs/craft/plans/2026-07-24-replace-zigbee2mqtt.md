@@ -223,12 +223,12 @@ The mapper reshapes (32,33,34,36) are file-disjoint and parallel once #31 lands.
     criteria: already-joined devices resolve a DeviceType, not Unknown.
     files: `Zigbee/Services/DeviceBackfillService.cs`
 38. **Relay rewrite** `[depends: 32, 33, 34, 35, 36]`
-    `ZigbeeToHausRelay`: subscribe coordinator `DeviceJoined`/`AttributeReported` → inbound
+    `ZigbeeHausBridge`: subscribe coordinator `DeviceJoined`/`AttributeReported` → inbound
     mappers → publish to Haus MQTT; subscribe Haus MQTT commands → outbound mappers →
     coordinator calls. Drop the second (zigbee) MQTT client and topic-routing `MqttMessageMapper`.
     Keep connection-lifecycle, decoding, and mapping as separate collaborators (style).
     criteria: MQTT contract to Haus.Web.Host unchanged; source/sink is now the façade.
-    files: `Zigbee/Services/ZigbeeToHausRelay.cs`, `Zigbee/Mappers/MqttMessageMapper.cs`,
+    files: `Zigbee/Services/ZigbeeHausBridge.cs`, `Zigbee/Mappers/MqttMessageMapper.cs`,
     `Zigbee/Mqtt/MqttClientFactory.cs`
 39. **Health check reflects coordinator connection** `[depends: 30]`
     Replace `Zigbee2MqttHealthCheck` (always-Healthy) with one reading `IZigbeeCoordinator`

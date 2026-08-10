@@ -90,7 +90,7 @@ abstraction beyond `ISerialTransport`. YAGNI.
         └───────────────────────────────────────────────────────┘
 ```
 
-The relay (`ZigbeeToHausRelay`, a `BackgroundService`) is the driving adapter. Today it wires
+The relay (`ZigbeeHausBridge`, a `BackgroundService`) is the driving adapter. Today it wires
 two MQTT clients. It becomes: subscribe to Haus commands over MQTT (unchanged) → ToZigbee →
 `IZigbeeCoordinator` calls; and subscribe to `IZigbeeCoordinator` events → ToHaus → publish
 Haus events/unknown over MQTT (unchanged topics/payloads).

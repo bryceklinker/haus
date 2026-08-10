@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
             .Configure<HausMqttSettings>(config.GetSection("Haus"))
             .AddHausMqtt()
             .AddSingleton<IHealthCheckPublisher, ZigbeeHostHealthPublisher>()
-            .AddHostedService<ZigbeeToHausRelay>()
+            .AddHostedService<ZigbeeHausBridge>()
             .Configure<HealthCheckPublisherOptions>(opts =>
             {
                 opts.Period = TimeSpan.FromSeconds(10);

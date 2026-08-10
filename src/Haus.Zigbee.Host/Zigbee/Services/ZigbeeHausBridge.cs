@@ -12,14 +12,14 @@ using MQTTnet;
 
 namespace Haus.Zigbee.Host.Zigbee.Services;
 
-public class ZigbeeToHausRelay(
+public class ZigbeeHausBridge(
     IZigbeeCoordinator coordinator,
     ZigbeeInboundRelay inboundRelay,
     ZigbeeOutboundRelay outboundRelay,
     DeviceBackfillService backfillService,
     IHausMqttClientFactory hausMqttClientFactory,
     IOptions<HausOptions> hausOptions,
-    ILogger<ZigbeeToHausRelay> logger
+    ILogger<ZigbeeHausBridge> logger
 ) : BackgroundService
 {
     // The coordinator (e.g. the physical deCONZ dongle, or a serial port not present on this

@@ -14,7 +14,7 @@ using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Services;
 
-public class ZigbeeToHausRelayTests
+public class ZigbeeHausBridgeTests
 {
     [Fact]
     public async Task HandleHausCommand_OutboundRelayThrows_SubsequentCommandsStillGetHandled()
@@ -27,8 +27,8 @@ public class ZigbeeToHausRelayTests
             mqttFactory: new FakeMqttClientFactory(),
             zigbeeCoordinator: coordinator
         );
-        var relay = ResolveRelay(provider);
-        await relay.StartAsync(CancellationToken.None);
+        var bridge = ResolveBridge(provider);
+        await bridge.StartAsync(CancellationToken.None);
 
         var mqttClientFactory = provider.GetRequiredService<IHausMqttClientFactory>();
         var hausMqttClient = await mqttClientFactory.CreateClient();
@@ -43,7 +43,7 @@ public class ZigbeeToHausRelayTests
         Eventually.Assert(() => Assert.Contains(false, coordinator.PermitJoinCalls));
         Assert.DoesNotContain(true, coordinator.PermitJoinCalls);
 
-        await relay.StopAsync(CancellationToken.None);
+        await bridge.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -54,15 +54,15 @@ public class ZigbeeToHausRelayTests
             mqttFactory: new FakeMqttClientFactory(),
             zigbeeCoordinator: coordinator
         );
-        var relay = ResolveRelay(provider);
+        var bridge = ResolveBridge(provider);
 
-        var exception = await Record.ExceptionAsync(() => relay.StartAsync(CancellationToken.None));
+        var exception = await Record.ExceptionAsync(() => bridge.StartAsync(CancellationToken.None));
 
         Assert.Null(exception);
         Assert.False(coordinator.IsConnected);
         Assert.True(coordinator.ConnectAttempts >= 1);
 
-        await relay.StopAsync(CancellationToken.None);
+        await bridge.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -73,13 +73,13 @@ public class ZigbeeToHausRelayTests
             mqttFactory: new FakeMqttClientFactory(),
             zigbeeCoordinator: coordinator
         );
-        var relay = ResolveRelay(provider);
+        var bridge = ResolveBridge(provider);
 
-        await relay.StartAsync(CancellationToken.None);
+        await bridge.StartAsync(CancellationToken.None);
 
         Assert.True(coordinator.IsConnected);
 
-        await relay.StopAsync(CancellationToken.None);
+        await bridge.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -90,15 +90,15 @@ public class ZigbeeToHausRelayTests
             mqttFactory: new FakeMqttClientFactory(),
             zigbeeCoordinator: coordinator
         );
-        var relay = ResolveRelay(provider);
+        var bridge = ResolveBridge(provider);
 
-        var exception = await Record.ExceptionAsync(() => relay.StopAsync(CancellationToken.None));
+        var exception = await Record.ExceptionAsync(() => bridge.StopAsync(CancellationToken.None));
 
         Assert.Null(exception);
     }
 
-    private static IHostedService ResolveRelay(IServiceProvider provider)
+    private static IHostedService ResolveBridge(IServiceProvider provider)
     {
-        return provider.GetServices<IHostedService>().OfType<ZigbeeToHausRelay>().Single();
+        return provider.GetServices<IHostedService>().OfType<ZigbeeHausBridge>().Single();
     }
 }
