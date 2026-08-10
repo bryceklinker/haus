@@ -50,6 +50,12 @@ public class DeconzConnection(DeconzChannel channel)
     {
         var request = new ReadParameterRequest(_nextSequenceNumber++, parameterId, []);
         var responseFrame = await _channel.SendAndReceiveAsync(ReadParameterFrame.Encode(request), token);
-        return ReadParameterFrame.Decode(responseFrame).Value;
+        var response = ReadParameterFrame.Decode(responseFrame);
+        if (response is null)
+            throw new InvalidOperationException(
+                $"Received a truncated read-parameter response for parameter 0x{parameterId:X2}"
+            );
+
+        return response.Value;
     }
 }

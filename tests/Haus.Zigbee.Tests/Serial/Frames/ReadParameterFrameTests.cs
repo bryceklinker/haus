@@ -32,6 +32,7 @@ public class ReadParameterFrameTests
 
         var response = ReadParameterFrame.Decode(frame);
 
+        Assert.NotNull(response);
         Assert.Equal(0x00, response.Status);
         Assert.Equal(0x07, response.ParameterId);
         Assert.Equal(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }, response.Value);
@@ -44,8 +45,21 @@ public class ReadParameterFrameTests
 
         var response = ReadParameterFrame.Decode(frame);
 
+        Assert.NotNull(response);
         Assert.Equal(0x01, response.Status);
         Assert.Equal(0x07, response.ParameterId);
         Assert.Empty(response.Value);
+    }
+
+    [Theory]
+    [InlineData(new byte[] { })]
+    [InlineData(new byte[] { 0x0A })]
+    [InlineData(new byte[] { 0x0A, 0x33, 0x00, 0x0B, 0x00, 0x05, 0x00 })]
+    [InlineData(new byte[] { 0x0A, 0x33, 0x00, 0x0B, 0x00, 0x05, 0x00, 0x07 })]
+    [InlineData(new byte[] { 0x0A, 0x33, 0x00, 0x0B, 0x00, 0x05, 0x00, 0x07, 0xDE })]
+    [InlineData(new byte[] { 0x0A, 0x33, 0x00, 0x08, 0x00, 0x00, 0x00, 0x07 })]
+    public void WhenDecodingAFrameTooShortForItsClaimedPayloadLengthThenReturnsNullInsteadOfThrowing(byte[] frame)
+    {
+        Assert.Null(ReadParameterFrame.Decode(frame));
     }
 }

@@ -16,6 +16,7 @@ public static class ReadParameterFrame
     private const int PayloadLengthIndex = 5;
     private const int ParameterIdIndex = 7;
     private const int ValueIndex = 8;
+    private const int StatusByteCountInPayload = 1;
 
     public static byte[] Encode(ReadParameterRequest request)
     {
@@ -30,12 +31,24 @@ public static class ReadParameterFrame
         return bytes.ToArray();
     }
 
-    public static ReadParameterResponse Decode(ReadOnlySpan<byte> frame)
+    // This response comes straight off the wire, so a truncated frame or a corrupted payload
+    // length must produce a null result here rather than throw -- see ZclFrameHeaderCodec.Decode
+    // for why an exception here would silently stop delivery to every other IndicationReceived
+    // subscriber.
+    public static ReadParameterResponse? Decode(ReadOnlySpan<byte> frame)
     {
-        var payloadLength = BinaryPrimitives.ReadUInt16LittleEndian(frame[PayloadLengthIndex..]);
-        var valueLength = payloadLength - 1;
-        var value = frame.Slice(ValueIndex, valueLength).ToArray();
+        if (frame.Length <= ParameterIdIndex)
+            return null;
 
+        var payloadLength = BinaryPrimitives.ReadUInt16LittleEndian(frame[PayloadLengthIndex..]);
+        if (payloadLength < StatusByteCountInPayload)
+            return null;
+
+        var valueLength = payloadLength - StatusByteCountInPayload;
+        if (frame.Length < ValueIndex + valueLength)
+            return null;
+
+        var value = frame.Slice(ValueIndex, valueLength).ToArray();
         return new ReadParameterResponse(frame[StatusIndex], frame[ParameterIdIndex], value);
     }
 }

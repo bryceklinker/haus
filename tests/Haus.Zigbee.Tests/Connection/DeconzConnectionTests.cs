@@ -56,6 +56,14 @@ public class DeconzConnectionTests
         Assert.Equal(sequenceNumbers.Length, sequenceNumbers.Distinct().Count());
     }
 
+    [Fact]
+    public async Task WhenAParameterResponseFrameIsTruncatedThenConnectingThrowsInsteadOfCrashingWithANullReference()
+    {
+        _coordinator.OnReadRespondWithRawFrame(MacAddressParameterId, new byte[] { 0x0A, 0x00, 0x00 });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _connection.ConnectAsync(CancellationToken.None));
+    }
+
     private static byte SequenceNumberOf(byte[] request) => request[1];
 
     private static byte[] LittleEndianUInt64(ulong value)
@@ -81,6 +89,7 @@ public class DeconzConnectionTests
         private const int ParameterIdIndex = 7;
 
         private readonly Dictionary<byte, byte[]> _valuesByParameterId = new();
+        private readonly Dictionary<byte, byte[]> _rawResponsesByParameterId = new();
         private readonly Queue<byte> _incoming = new();
         private readonly List<byte[]> _requests = new();
 
@@ -89,6 +98,15 @@ public class DeconzConnectionTests
         public void OnRead(byte parameterId, byte[] value)
         {
             _valuesByParameterId[parameterId] = value;
+        }
+
+        // Lets a test simulate wire corruption/truncation by responding with an arbitrary raw
+        // frame instead of one built through ReadParameterFrame.Encode, which can only ever
+        // produce well-formed frames. rawFrame's sequence-number byte is a placeholder that gets
+        // overwritten with the request's actual sequence number so DeconzChannel still correlates it.
+        public void OnReadRespondWithRawFrame(byte parameterId, byte[] rawFrame)
+        {
+            _rawResponsesByParameterId[parameterId] = rawFrame;
         }
 
         public Task OpenAsync(CancellationToken token) => Task.CompletedTask;
@@ -119,10 +137,19 @@ public class DeconzConnectionTests
 
         private void Respond(byte[] request)
         {
+            var parameterId = request[ParameterIdIndex];
+            if (_rawResponsesByParameterId.TryGetValue(parameterId, out var rawFrame))
+            {
+                var withSequenceNumber = (byte[])rawFrame.Clone();
+                withSequenceNumber[SequenceNumberIndex] = request[SequenceNumberIndex];
+                Enqueue(DeconzFrames.Framed(withSequenceNumber));
+                return;
+            }
+
             var response = new ReadParameterRequest(
                 request[SequenceNumberIndex],
-                request[ParameterIdIndex],
-                _valuesByParameterId[request[ParameterIdIndex]]
+                parameterId,
+                _valuesByParameterId[parameterId]
             );
             Enqueue(DeconzFrames.Framed(ReadParameterFrame.Encode(response)));
         }
