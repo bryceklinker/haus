@@ -129,7 +129,7 @@ public class DeviceInterview : IDisposable
                 token
             )
             .ConfigureAwait(false);
-        return ActiveEndpointsResponseCodec.Decode(response.AsduPayload).EndpointIds;
+        return ActiveEndpointsResponseCodec.Decode(response.AsduPayload)?.EndpointIds ?? [];
     }
 
     private async Task<ZigbeeEndpoint> DescribeEndpointAsync(
@@ -151,7 +151,7 @@ public class DeviceInterview : IDisposable
                 token
             )
             .ConfigureAwait(false);
-        var descriptor = SimpleDescriptorCodec.DecodeResponse(response.AsduPayload).Descriptor;
+        var descriptor = SimpleDescriptorCodec.DecodeResponse(response.AsduPayload)?.Descriptor;
         return new ZigbeeEndpoint(
             endpointId,
             descriptor?.ProfileId ?? 0,

@@ -15,17 +15,34 @@ public record ActiveEndpointsResponse(
 
 public static class ActiveEndpointsResponseCodec
 {
-    public static ActiveEndpointsResponse Decode(ReadOnlySpan<byte> payload)
+    private const int TransactionSequenceNumberOffset = 0;
+    private const int StatusOffset = 1;
+    private const int NetworkAddressOffset = 2;
+    private const int EndpointCountOffset = 4;
+    private const int EndpointIdsOffset = 5;
+
+    // This response comes straight off the wire, so a truncated payload must produce a null
+    // result here rather than throw -- see ZclFrameHeaderCodec.Decode for why an exception here
+    // would silently stop delivery to every other IndicationReceived subscriber.
+    public static ActiveEndpointsResponse? Decode(ReadOnlySpan<byte> payload)
     {
-        var transactionSequenceNumber = payload[0];
-        var status = (ZdoStatus)payload[1];
+        if (payload.Length <= StatusOffset)
+            return null;
+
+        var transactionSequenceNumber = payload[TransactionSequenceNumberOffset];
+        var status = (ZdoStatus)payload[StatusOffset];
         if (status != ZdoStatus.Success)
             return new ActiveEndpointsResponse(transactionSequenceNumber, status, NetworkAddress: 0, []);
 
-        var networkAddress = BinaryPrimitives.ReadUInt16LittleEndian(payload[2..]);
-        var endpointCount = payload[4];
-        var endpointIds = payload.Slice(5, endpointCount).ToArray();
+        if (payload.Length <= EndpointCountOffset)
+            return null;
 
+        var networkAddress = BinaryPrimitives.ReadUInt16LittleEndian(payload[NetworkAddressOffset..]);
+        var endpointCount = payload[EndpointCountOffset];
+        if (payload.Length < EndpointIdsOffset + endpointCount)
+            return null;
+
+        var endpointIds = payload.Slice(EndpointIdsOffset, endpointCount).ToArray();
         return new ActiveEndpointsResponse(transactionSequenceNumber, status, networkAddress, endpointIds);
     }
 }

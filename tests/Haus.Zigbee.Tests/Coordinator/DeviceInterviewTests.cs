@@ -56,6 +56,59 @@ public class DeviceInterviewTests
     }
 
     [Fact]
+    public async Task WhenTheActiveEndpointsResponseAsduIsTruncatedThenTheDeviceStillJoinsWithNoEndpoints()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        _dongle.InjectIndication(Announce(device));
+        _dongle.ReleaseAfterSend(
+            sendIndex: 0,
+            new IndicationBody(
+                device.Nwk,
+                SourceEndpoint: 0x00,
+                ZdpProfile,
+                ActiveEndpointsResponseCluster,
+                Asdu: new byte[] { 0x00, 0x00 }
+            )
+        );
+
+        var joined = await RunInterview();
+
+        Assert.Empty(joined.Endpoints);
+    }
+
+    [Fact]
+    public async Task WhenTheSimpleDescriptorResponseAsduIsTruncatedThenTheEndpointJoinsWithDefaultDescriptorFields()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        _dongle.InjectIndication(Announce(device));
+        _dongle.ReleaseAfterSend(sendIndex: 0, ActiveEndpointsResponse(device, endpointIds: new byte[] { 0x01 }));
+        _dongle.ReleaseAfterSend(
+            sendIndex: 1,
+            new IndicationBody(
+                device.Nwk,
+                SourceEndpoint: 0x01,
+                ZdpProfile,
+                SimpleDescriptorResponseCluster,
+                Asdu: new byte[] { 0x01, 0x00 }
+            )
+        );
+        _dongle.ReleaseAfterSend(
+            sendIndex: 2,
+            // ProfileId here just needs to be non-zero, since 0x0000 collides with ZdpProfileId and
+            // would make DeviceInterview misinterpret this ZCL response's transaction sequence number.
+            BasicReadResponse(device, endpoint: 0x01, profileId: HomeAutomationProfile, manufacturer: "", model: "")
+        );
+
+        var joined = await RunInterview();
+
+        var endpoint = Assert.Single(joined.Endpoints);
+        Assert.Equal(0x01, endpoint.EndpointId);
+        Assert.Equal(0, endpoint.ProfileId);
+        Assert.Empty(endpoint.InClusters);
+        Assert.Empty(endpoint.OutClusters);
+    }
+
+    [Fact]
     public async Task WhenADeviceAnnouncesThenItIsRegisteredInTheKnownDeviceTable()
     {
         var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);

@@ -47,6 +47,7 @@ public class SimpleDescriptorRequestTests
 
         var response = SimpleDescriptorCodec.DecodeResponse(payload);
 
+        Assert.NotNull(response);
         Assert.Equal(0x05, response.TransactionSequenceNumber);
         Assert.Equal(ZdoStatus.Success, response.Status);
         var descriptor = Assert.IsType<SimpleDescriptor>(response.Descriptor);
@@ -81,6 +82,7 @@ public class SimpleDescriptorRequestTests
 
         var response = SimpleDescriptorCodec.DecodeResponse(payload);
 
+        Assert.NotNull(response);
         Assert.Equal(ZdoStatus.Success, response.Status);
         var descriptor = Assert.IsType<SimpleDescriptor>(response.Descriptor);
         Assert.Empty(descriptor.InClusters);
@@ -98,8 +100,55 @@ public class SimpleDescriptorRequestTests
 
         var response = SimpleDescriptorCodec.DecodeResponse(payload);
 
+        Assert.NotNull(response);
         Assert.Equal(0x09, response.TransactionSequenceNumber);
         Assert.Equal(ZdoStatus.InvalidEndpoint, response.Status);
         Assert.Null(response.Descriptor);
+    }
+
+    // Progressively cuts off the valid payload from WhenDecodingSuccessfulResponseThenRecoversAllDescriptorFieldsAndClusterListsInOrder
+    // before each field, including the in/out cluster count bytes and their variable-length cluster id lists.
+    private static readonly byte[] ValidPayload =
+    [
+        0x05, // transaction sequence number
+        0x00, // status: success
+        0x34,
+        0x12, // network address 0x1234
+        0x0e, // descriptor length
+        0x0b, // endpoint
+        0x04,
+        0x01, // profile id 0x0104
+        0x00,
+        0x01, // device id 0x0100
+        0x01, // device version
+        0x02, // in cluster count
+        0x06,
+        0x00, // in cluster 0x0006
+        0x08,
+        0x00, // in cluster 0x0008
+        0x01, // out cluster count
+        0x19,
+        0x00, // out cluster 0x0019
+    ];
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(10)]
+    [InlineData(11)]
+    [InlineData(12)]
+    [InlineData(14)]
+    [InlineData(16)]
+    [InlineData(17)]
+    [InlineData(18)]
+    public void WhenDecodingASuccessResponseTruncatedBeforeItsFieldsAreCompleteThenReturnsNullInsteadOfThrowing(
+        int length
+    )
+    {
+        var payload = ValidPayload[..length];
+
+        var response = SimpleDescriptorCodec.DecodeResponse(payload);
+
+        Assert.Null(response);
     }
 }

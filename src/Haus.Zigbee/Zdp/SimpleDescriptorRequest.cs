@@ -29,39 +29,80 @@ public static class SimpleDescriptorCodec
         return bytes;
     }
 
-    public static SimpleDescriptorResponse DecodeResponse(ReadOnlySpan<byte> payload)
+    private const int TransactionSequenceNumberOffset = 0;
+    private const int StatusOffset = 1;
+    private const int NetworkAddressOffset = 2;
+    private const int EndpointOffset = 5;
+    private const int ProfileIdOffset = 6;
+    private const int DeviceIdOffset = 8;
+    private const int DeviceVersionOffset = 10;
+    private const int InClusterCountOffset = 11;
+    private const int FixedDescriptorFieldsLength = 11;
+    private const int ClusterIdByteLength = 2;
+
+    // This response comes straight off the wire, so a truncated payload -- including one whose
+    // in/out cluster count claims more cluster ids than are actually present -- must produce a
+    // null result here rather than throw. See ZclFrameHeaderCodec.Decode for why an exception
+    // here would silently stop delivery to every other IndicationReceived subscriber.
+    public static SimpleDescriptorResponse? DecodeResponse(ReadOnlySpan<byte> payload)
     {
-        var transactionSequenceNumber = payload[0];
-        var status = (ZdoStatus)payload[1];
-        var descriptor = status == ZdoStatus.Success ? DecodeDescriptor(payload) : null;
-        return new SimpleDescriptorResponse(transactionSequenceNumber, status, descriptor);
+        if (payload.Length <= StatusOffset)
+            return null;
+
+        var transactionSequenceNumber = payload[TransactionSequenceNumberOffset];
+        var status = (ZdoStatus)payload[StatusOffset];
+        if (status != ZdoStatus.Success)
+            return new SimpleDescriptorResponse(transactionSequenceNumber, status, null);
+
+        var descriptor = TryDecodeDescriptor(payload);
+        return descriptor is null ? null : new SimpleDescriptorResponse(transactionSequenceNumber, status, descriptor);
     }
 
-    private static SimpleDescriptor DecodeDescriptor(ReadOnlySpan<byte> payload)
+    private static SimpleDescriptor? TryDecodeDescriptor(ReadOnlySpan<byte> payload)
     {
-        var inClusters = ReadClusterList(payload, 11, out var afterInClusters);
-        var outClusters = ReadClusterList(payload, afterInClusters, out _);
+        if (payload.Length <= FixedDescriptorFieldsLength)
+            return null;
+
+        var inClusters = TryReadClusterList(payload, InClusterCountOffset, out var afterInClusters);
+        if (inClusters is null)
+            return null;
+
+        var outClusters = TryReadClusterList(payload, afterInClusters, out _);
+        if (outClusters is null)
+            return null;
+
         return new SimpleDescriptor(
-            NetworkAddress: BinaryPrimitives.ReadUInt16LittleEndian(payload[2..]),
-            Endpoint: payload[5],
-            ProfileId: BinaryPrimitives.ReadUInt16LittleEndian(payload[6..]),
-            DeviceId: BinaryPrimitives.ReadUInt16LittleEndian(payload[8..]),
-            DeviceVersion: payload[10],
+            NetworkAddress: BinaryPrimitives.ReadUInt16LittleEndian(payload[NetworkAddressOffset..]),
+            Endpoint: payload[EndpointOffset],
+            ProfileId: BinaryPrimitives.ReadUInt16LittleEndian(payload[ProfileIdOffset..]),
+            DeviceId: BinaryPrimitives.ReadUInt16LittleEndian(payload[DeviceIdOffset..]),
+            DeviceVersion: payload[DeviceVersionOffset],
             inClusters,
             outClusters
         );
     }
 
-    private static IReadOnlyList<ushort> ReadClusterList(ReadOnlySpan<byte> payload, int offset, out int nextOffset)
+    private static IReadOnlyList<ushort>? TryReadClusterList(ReadOnlySpan<byte> payload, int offset, out int nextOffset)
     {
+        nextOffset = offset;
+        if (payload.Length <= offset)
+            return null;
+
         var count = payload[offset];
+        var afterCount = offset + 1;
+        var clusterBytesLength = count * ClusterIdByteLength;
+        if (payload.Length < afterCount + clusterBytesLength)
+            return null;
+
         var clusters = new ushort[count];
         for (var index = 0; index < count; index++)
         {
-            clusters[index] = BinaryPrimitives.ReadUInt16LittleEndian(payload[(offset + 1 + (index * 2))..]);
+            clusters[index] = BinaryPrimitives.ReadUInt16LittleEndian(
+                payload[(afterCount + (index * ClusterIdByteLength))..]
+            );
         }
 
-        nextOffset = offset + 1 + (count * 2);
+        nextOffset = afterCount + clusterBytesLength;
         return clusters;
     }
 }
