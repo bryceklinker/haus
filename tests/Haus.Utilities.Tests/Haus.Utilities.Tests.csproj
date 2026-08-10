@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\Haus.Utilities\Haus.Utilities.csproj" />
-    </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Haus.Utilities\Haus.Utilities.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\Haus.Core\Haus.Core.csproj"/>
-        <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj"/>
-    </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Haus.Core\Haus.Core.csproj" />
+    <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj" />
+  </ItemGroup>
 </Project>

@@ -31,9 +31,11 @@ public class RoomsListViewTest : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(
             RoomsUrl,
-            new ListResult<RoomModel>(
-                [HausModelFactory.RoomModel(), HausModelFactory.RoomModel(), HausModelFactory.RoomModel()]
-            )
+            new ListResult<RoomModel>([
+                HausModelFactory.RoomModel(),
+                HausModelFactory.RoomModel(),
+                HausModelFactory.RoomModel(),
+            ])
         );
 
         var page = RenderView<RoomsListView>();

@@ -3,14 +3,14 @@
   "isRoot": true,
   "tools": {
     "dotnet-reportgenerator-globaltool": {
-      "version": "5.4.3",
+      "version": "5.5.11",
       "commands": [
         "reportgenerator"
       ],
       "rollForward": false
     },
     "coverlet.console": {
-      "version": "6.0.2",
+      "version": "10.0.1",
       "commands": [
         "coverlet"
       ],
@@ -24,21 +24,21 @@
       "rollForward": false
     },
     "csharpier": {
-      "version": "0.30.6",
+      "version": "1.3.0",
       "commands": [
-        "dotnet-csharpier"
+        "csharpier"
       ],
       "rollForward": false
     },
     "husky": {
-      "version": "0.7.2",
+      "version": "0.9.1",
       "commands": [
         "husky"
       ],
       "rollForward": false
     },
     "dotnet-outdated-tool": {
-      "version": "4.6.7",
+      "version": "4.8.1",
       "commands": [
         "dotnet-outdated"
       ],

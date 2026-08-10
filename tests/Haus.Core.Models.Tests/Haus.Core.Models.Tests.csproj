@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\Haus.Core.Models\Haus.Core.Models.csproj"/>
-    </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Haus.Core.Models\Haus.Core.Models.csproj" />
+  </ItemGroup>
 </Project>

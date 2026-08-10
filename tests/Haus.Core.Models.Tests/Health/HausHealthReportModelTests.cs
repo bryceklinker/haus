@@ -25,9 +25,9 @@ public class HausHealthReportModelTests
     [Fact]
     public void WhenChecksAreAppendedWithUnhealthyStatusThenReportStatusIsUnhealthy()
     {
-        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, []).AppendChecks(
-            [new HausHealthCheckModel("one", HealthStatus.Unhealthy, 1)]
-        );
+        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, []).AppendChecks([
+            new HausHealthCheckModel("one", HealthStatus.Unhealthy, 1),
+        ]);
 
         Assert.Equal(HealthStatus.Unhealthy, report.Status);
     }
@@ -35,9 +35,9 @@ public class HausHealthReportModelTests
     [Fact]
     public void WhenChecksAreAppendedWithDegradedStatusThenReportIsDegraded()
     {
-        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, []).AppendChecks(
-            [new HausHealthCheckModel("one", HealthStatus.Degraded, 1)]
-        );
+        var report = new HausHealthReportModel(HealthStatus.Healthy, 0, []).AppendChecks([
+            new HausHealthCheckModel("one", HealthStatus.Degraded, 1),
+        ]);
 
         Assert.Equal(HealthStatus.Degraded, report.Status);
     }

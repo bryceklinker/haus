@@ -24,7 +24,7 @@ public class RoomCommandRepository(HausDbContext context) : IRoomCommandReposito
             .GetAll<DeviceEntity>()
             .Where(d => d.ExternalId == externalId)
             .Include(d => d.Room)
-            .ThenInclude(r => r!.Devices)
+                .ThenInclude(r => r!.Devices)
             .Select(d => d.Room)
             .SingleOrDefaultAsync(cancellationToken);
     }
