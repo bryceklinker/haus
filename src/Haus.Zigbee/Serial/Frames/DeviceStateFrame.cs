@@ -36,8 +36,14 @@ public static class DeviceStateCodec
         return [StatusCommandId, sequenceNumber, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00];
     }
 
-    public static DeviceStateFrame Decode(ReadOnlySpan<byte> frame)
+    // This response comes straight off the wire, so a truncated frame must produce a null result
+    // here rather than throw -- see ZclFrameHeaderCodec.Decode for why an exception here would
+    // silently stop delivery to every other IndicationReceived subscriber.
+    public static DeviceStateFrame? Decode(ReadOnlySpan<byte> frame)
     {
+        if (frame.Length <= DeviceStateOffset)
+            return null;
+
         var commandId = frame[0];
         var deviceState = frame[DeviceStateOffset];
 

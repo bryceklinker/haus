@@ -106,6 +106,16 @@ public class ApsPollLoopTests
         Assert.Equal(0x42, Assert.Single(received).RequestId);
     }
 
+    [Fact]
+    public async Task WhenTheDeviceStateResponseIsTruncatedThenPollingCompletesWithoutThrowingOrDrainingAnything()
+    {
+        _transport.QueueResponse(DeconzFrames.Framed(new byte[] { 0x07, 0x00, 0x00 }));
+
+        await _loop.PollOnceAsync(CancellationToken.None);
+
+        Assert.Equal(DeconzFrames.Framed(DeviceStateCodec.EncodePollRequest(0)), _transport.WrittenBytes);
+    }
+
     private static byte[] DeviceStateResponse(byte sequenceNumber, byte deviceState)
     {
         return new byte[] { 0x07, sequenceNumber, 0x00, 0x00, 0x00, deviceState };

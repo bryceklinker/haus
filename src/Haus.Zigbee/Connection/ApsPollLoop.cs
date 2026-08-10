@@ -24,6 +24,8 @@ public class ApsPollLoop(DeconzChannel channel)
         var pollRequest = DeviceStateCodec.EncodePollRequest(_sequenceNumber++);
         var pollResponse = await _channel.SendAndReceiveAsync(pollRequest, token);
         var deviceState = DeviceStateCodec.Decode(pollResponse);
+        if (deviceState is null)
+            return;
 
         if (deviceState.ApsDataIndicationAvailable)
             await DrainIndicationAsync(token);

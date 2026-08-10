@@ -67,7 +67,16 @@ public class DeviceStateFrameTests
         );
     }
 
-    private static DeviceStateFrame Decode(byte commandId, byte deviceState)
+    [Theory]
+    [InlineData(new byte[] { })]
+    [InlineData(new byte[] { 0x07 })]
+    [InlineData(new byte[] { 0x07, 0x2A, 0x00, 0x08, 0x00 })]
+    public void WhenDecodingAFrameTooShortForItsDeviceStateByteThenReturnsNullInsteadOfThrowing(byte[] frame)
+    {
+        Assert.Null(DeviceStateCodec.Decode(frame));
+    }
+
+    private static DeviceStateFrame? Decode(byte commandId, byte deviceState)
     {
         byte[] frame = [commandId, 0x2A, 0x00, 0x08, 0x00, deviceState, 0x00, 0x00];
         return DeviceStateCodec.Decode(frame);
