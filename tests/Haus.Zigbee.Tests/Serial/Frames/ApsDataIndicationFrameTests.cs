@@ -294,4 +294,57 @@ public class ApsDataIndicationFrameTests
 
         Assert.Null(decoded);
     }
+
+    // Progressively cuts off the valid Nwk/Nwk frame from WhenDecodingNwkDestinationAndNwkSourceFrameThenReadsEveryField
+    // before each field is fully present, plus one case (23) where asduLength claims more payload than remains.
+    private static readonly byte[] ValidNwkFrame =
+    [
+        0x17, // command id
+        0x05, // sequence number
+        0x00, // status: success
+        0x00,
+        0x00, // frameLength
+        0x00,
+        0x00, // payloadLength
+        0x2a, // deviceState
+        0x02, // destAddrMode: Nwk
+        0xcd,
+        0xab, // destAddr16 = 0xabcd
+        0x01, // destEndpoint
+        0x02, // srcAddrMode: Nwk
+        0x34,
+        0x12, // srcAddr16 = 0x1234
+        0x03, // srcEndpoint
+        0x04,
+        0x01, // profileId = 0x0104
+        0x06,
+        0x00, // clusterId = 0x0006
+        0x03,
+        0x00, // asduLength = 3
+        0x11,
+        0x22,
+        0x33, // asduPayload
+        0x00,
+        0x00, // reserved
+        0xff, // lqi = 255
+        0x9c, // rssi = -100
+    ];
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(3)]
+    [InlineData(7)]
+    [InlineData(8)]
+    [InlineData(10)]
+    [InlineData(20)]
+    [InlineData(21)]
+    [InlineData(23)]
+    public void WhenDecodingAFrameTruncatedBeforeItsFieldsAreCompleteThenReturnsNullInsteadOfThrowing(int length)
+    {
+        var frame = ValidNwkFrame[..length];
+
+        var decoded = ApsDataIndicationFrameCodec.Decode(frame);
+
+        Assert.Null(decoded);
+    }
 }

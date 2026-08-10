@@ -39,6 +39,8 @@ public static class ApsDataIndicationFrameCodec
 
     public static ApsDataIndicationFrame? Decode(ReadOnlySpan<byte> frame)
     {
+        if (frame.Length <= DeviceStateOffset)
+            return null;
         if (frame[StatusOffset] != SuccessStatus)
             return null;
 
@@ -69,6 +71,12 @@ public static class ApsDataIndicationFrameCodec
         var linkQualityIndicator = reader.ReadByte();
         var rssi = reader.HasRemaining ? (sbyte?)(sbyte)reader.ReadByte() : null;
 
+        // Every read above is bounds-checked by FrameReader instead of throwing, since this frame
+        // comes straight off the wire -- see ZclFrameHeaderCodec.Decode for why an exception here
+        // would silently stop delivery to every other IndicationReceived subscriber.
+        if (reader.Failed)
+            return null;
+
         return new ApsDataIndicationFrame(
             deviceState,
             destinationAddressMode,
@@ -95,41 +103,57 @@ public static class ApsDataIndicationFrameCodec
     private ref struct FrameReader(ReadOnlySpan<byte> frame, int offset)
     {
         private const int IeeeAddressByteCount = 8;
+        private const int UInt16ByteCount = 2;
 
         private readonly ReadOnlySpan<byte> _frame = frame;
         private int _offset = offset;
+
+        public bool Failed { get; private set; }
 
         public readonly bool HasRemaining => _offset < _frame.Length;
 
         public byte ReadByte()
         {
-            return _frame[_offset++];
+            return TryAdvance(1, out var start) ? _frame[start] : (byte)0;
         }
 
         public ushort ReadUInt16()
         {
-            var value = BinaryPrimitives.ReadUInt16LittleEndian(_frame[_offset..]);
-            _offset += 2;
-            return value;
+            return TryAdvance(UInt16ByteCount, out var start)
+                ? BinaryPrimitives.ReadUInt16LittleEndian(_frame[start..])
+                : (ushort)0;
         }
 
         public IeeeAddress ReadIeeeAddress()
         {
-            var value = BinaryPrimitives.ReadUInt64LittleEndian(_frame[_offset..]);
-            _offset += IeeeAddressByteCount;
-            return new IeeeAddress(value);
+            return TryAdvance(IeeeAddressByteCount, out var start)
+                ? new IeeeAddress(BinaryPrimitives.ReadUInt64LittleEndian(_frame[start..]))
+                : default;
         }
 
         public byte[] ReadBytes(int count)
         {
-            var bytes = _frame.Slice(_offset, count).ToArray();
-            _offset += count;
-            return bytes;
+            return count >= 0 && TryAdvance(count, out var start) ? _frame.Slice(start, count).ToArray() : [];
         }
 
         public void Skip(int count)
         {
+            TryAdvance(count, out _);
+        }
+
+        // Once a read fails there aren't enough bytes to trust the offset for any later read either,
+        // so every subsequent call short-circuits to failure without touching the span again.
+        private bool TryAdvance(int count, out int start)
+        {
+            start = _offset;
+            if (Failed || start + count > _frame.Length)
+            {
+                Failed = true;
+                return false;
+            }
+
             _offset += count;
+            return true;
         }
     }
 }
