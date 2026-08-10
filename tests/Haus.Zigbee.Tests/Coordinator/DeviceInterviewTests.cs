@@ -122,6 +122,32 @@ public class DeviceInterviewTests
     }
 
     [Fact]
+    public async Task WhenTheSimpleDescriptorRequestIsNakedThenTheEndpointJoinsWithDefaultDescriptorFields()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        _dongle.InjectIndication(Announce(device));
+        _dongle.ReleaseAfterSend(sendIndex: 0, ActiveEndpointsResponse(device, endpointIds: new byte[] { 0x01 }));
+        _dongle.ReleaseAfterSend(
+            sendIndex: 1,
+            SimpleDescriptorNak(device, endpoint: 0x01, ZdoStatus.InvalidEndpoint, sequenceNumber: 0x01)
+        );
+        _dongle.ReleaseAfterSend(
+            sendIndex: 2,
+            // ProfileId here just needs to be non-zero, since 0x0000 collides with ZdpProfileId and
+            // would make DeviceInterview misinterpret this ZCL response's transaction sequence number.
+            BasicReadResponse(device, endpoint: 0x01, profileId: HomeAutomationProfile, manufacturer: "", model: "")
+        );
+
+        var joined = await RunInterview();
+
+        var endpoint = Assert.Single(joined.Endpoints);
+        Assert.Equal(0x01, endpoint.EndpointId);
+        Assert.Equal(0, endpoint.ProfileId);
+        Assert.Empty(endpoint.InClusters);
+        Assert.Empty(endpoint.OutClusters);
+    }
+
+    [Fact]
     public async Task WhenADeviceAnnouncesThenItIsRegisteredInTheKnownDeviceTable()
     {
         var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
@@ -391,6 +417,17 @@ public class DeviceInterviewTests
         AddUInt16(asdu, device.Nwk);
         asdu.Add((byte)descriptor.Count);
         asdu.AddRange(descriptor);
+        return new IndicationBody(device.Nwk, endpoint, ZdpProfile, SimpleDescriptorResponseCluster, asdu.ToArray());
+    }
+
+    private static IndicationBody SimpleDescriptorNak(
+        DeviceScript device,
+        byte endpoint,
+        ZdoStatus status,
+        byte sequenceNumber = 0x00
+    )
+    {
+        var asdu = new List<byte> { sequenceNumber, (byte)status };
         return new IndicationBody(device.Nwk, endpoint, ZdpProfile, SimpleDescriptorResponseCluster, asdu.ToArray());
     }
 
