@@ -22,6 +22,7 @@ public class WriteParameterFrameTests
 
         var response = WriteParameterFrame.Decode(frame);
 
+        Assert.NotNull(response);
         Assert.Equal(0x00, response.Status);
         Assert.Equal(0x26, response.ParameterId);
     }
@@ -33,7 +34,17 @@ public class WriteParameterFrameTests
 
         var response = WriteParameterFrame.Decode(frame);
 
+        Assert.NotNull(response);
         Assert.Equal(0x03, response.Status);
         Assert.Equal(0x26, response.ParameterId);
+    }
+
+    [Theory]
+    [InlineData(new byte[] { })]
+    [InlineData(new byte[] { 0x0B })]
+    [InlineData(new byte[] { 0x0B, 0x12, 0x00, 0x08, 0x00, 0x01, 0x00 })]
+    public void WhenDecodingAFrameTooShortForItsParameterIdThenReturnsNullInsteadOfThrowing(byte[] frame)
+    {
+        Assert.Null(WriteParameterFrame.Decode(frame));
     }
 }

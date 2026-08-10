@@ -27,8 +27,14 @@ public static class WriteParameterFrame
         return bytes.ToArray();
     }
 
-    public static WriteParameterResponse Decode(ReadOnlySpan<byte> frame)
+    // This response comes straight off the wire, so a truncated frame must produce a null result
+    // here rather than throw -- see ZclFrameHeaderCodec.Decode for why an exception here would
+    // silently stop delivery to every other IndicationReceived subscriber.
+    public static WriteParameterResponse? Decode(ReadOnlySpan<byte> frame)
     {
+        if (frame.Length <= ParameterIdIndex)
+            return null;
+
         return new WriteParameterResponse(frame[StatusIndex], frame[ParameterIdIndex]);
     }
 }
