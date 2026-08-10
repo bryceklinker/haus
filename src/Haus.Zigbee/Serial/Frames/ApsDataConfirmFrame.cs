@@ -48,13 +48,25 @@ public static class ApsDataConfirmCodec
     private const int ShortAddressByteLength = 2;
     private const int IeeeAddressByteLength = 8;
 
+    // This frame comes straight off the wire from a real device, so a short or malformed frame must
+    // report failure here rather than throwing an IndexOutOfRangeException -- see ZclFrameHeaderCodec.Decode
+    // for why an exception here would silently stop delivery to every other IndicationReceived subscriber.
     public static ApsDataConfirmDecoding Decode(ReadOnlySpan<byte> frame)
     {
+        if (frame.Length <= StatusOffset)
+            return ApsDataConfirmDecoding.Failed;
         if (frame[StatusOffset] != SuccessStatus)
+            return ApsDataConfirmDecoding.Failed;
+        if (frame.Length <= AddressModeOffset)
             return ApsDataConfirmDecoding.Failed;
 
         var addressMode = (DeconzAddressMode)frame[AddressModeOffset];
-        var destination = DecodeDestination(frame, addressMode);
+        var destination = TryDecodeDestination(frame, addressMode);
+        if (destination is null)
+            return ApsDataConfirmDecoding.Failed;
+
+        if (frame.Length <= destination.Value.SourceEndpointOffset + 1)
+            return ApsDataConfirmDecoding.Failed;
 
         return ApsDataConfirmDecoding.Successful(
             new ApsDataConfirm(
@@ -62,28 +74,37 @@ public static class ApsDataConfirmCodec
                 DeviceState: frame[DeviceStateOffset],
                 RequestId: frame[RequestIdOffset],
                 DestinationAddressMode: addressMode,
-                DestinationShortAddress: destination.ShortAddress,
-                DestinationIeeeAddress: destination.IeeeAddress,
-                DestinationEndpoint: destination.Endpoint,
-                SourceEndpoint: frame[destination.SourceEndpointOffset],
-                ConfirmStatus: frame[destination.SourceEndpointOffset + 1]
+                DestinationShortAddress: destination.Value.ShortAddress,
+                DestinationIeeeAddress: destination.Value.IeeeAddress,
+                DestinationEndpoint: destination.Value.Endpoint,
+                SourceEndpoint: frame[destination.Value.SourceEndpointOffset],
+                ConfirmStatus: frame[destination.Value.SourceEndpointOffset + 1]
             )
         );
     }
 
-    private static DestinationAddressing DecodeDestination(ReadOnlySpan<byte> frame, DeconzAddressMode mode)
+    private static DestinationAddressing? TryDecodeDestination(ReadOnlySpan<byte> frame, DeconzAddressMode mode)
     {
         if (mode == DeconzAddressMode.Ieee)
         {
-            var ieeeAddress = new IeeeAddress(BinaryPrimitives.ReadUInt64LittleEndian(frame[AddressOffset..]));
             var afterIeee = AddressOffset + IeeeAddressByteLength;
+            if (frame.Length <= afterIeee)
+                return null;
+
+            var ieeeAddress = new IeeeAddress(BinaryPrimitives.ReadUInt64LittleEndian(frame[AddressOffset..]));
             return new DestinationAddressing(null, ieeeAddress, frame[afterIeee], afterIeee + 1);
         }
 
-        var shortAddress = BinaryPrimitives.ReadUInt16LittleEndian(frame[AddressOffset..]);
         var afterShort = AddressOffset + ShortAddressByteLength;
+        if (frame.Length < afterShort)
+            return null;
+
+        var shortAddress = BinaryPrimitives.ReadUInt16LittleEndian(frame[AddressOffset..]);
         if (mode == DeconzAddressMode.Group)
             return new DestinationAddressing(shortAddress, null, null, afterShort);
+
+        if (frame.Length <= afterShort)
+            return null;
 
         return new DestinationAddressing(shortAddress, null, frame[afterShort], afterShort + 1);
     }

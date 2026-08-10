@@ -149,4 +149,19 @@ public class ApsDataConfirmFrameTests
         Assert.False(decoding.IsSuccessful);
         Assert.Null(decoding.Confirm);
     }
+
+    [Theory]
+    [InlineData(new byte[] { })]
+    [InlineData(new byte[] { 0x04, 0x11 })]
+    [InlineData(new byte[] { 0x04, 0x11, 0x00, 0x0e, 0x00, 0x07, 0x00, 0x2b, 0x09, 0x02 })]
+    [InlineData(new byte[] { 0x04, 0x11, 0x00, 0x0e, 0x00, 0x07, 0x00, 0x2b, 0x09, 0x02, 0x34, 0x12 })]
+    public void WhenDecodingASuccessStatusFrameTooShortForItsAddressingModeThenReportsFailureWithoutThrowing(
+        byte[] frame
+    )
+    {
+        var decoding = ApsDataConfirmCodec.Decode(frame);
+
+        Assert.False(decoding.IsSuccessful);
+        Assert.Null(decoding.Confirm);
+    }
 }
