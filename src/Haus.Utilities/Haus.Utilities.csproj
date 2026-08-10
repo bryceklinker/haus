@@ -1,19 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-    </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
+    <PackageReference Include="Humanizer.Core" Version="3.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftPackageVersion)" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
-        <PackageReference Include="Humanizer.Core" Version="3.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftPackageVersion)" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Haus.Cqrs\Haus.Cqrs.csproj" />
-        <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
-        <ProjectReference Include="..\Haus.Zigbee.Host\Haus.Zigbee.Host.csproj" />
-    </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\Haus.Cqrs\Haus.Cqrs.csproj" />
+    <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
+    <ProjectReference Include="..\Haus.Zigbee.Host\Haus.Zigbee.Host.csproj" />
+  </ItemGroup>
 </Project>

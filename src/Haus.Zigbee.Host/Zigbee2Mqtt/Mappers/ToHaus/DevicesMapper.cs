@@ -33,7 +33,8 @@ public class DevicesMapper(
                 {
                     Topic = hausOptions.GetEventsTopic(),
                     PayloadSegment = HausJsonSerializer.SerializeToBytes(CreateDeviceDiscoveredEvent(item)),
-                }) ?? [];
+                })
+            ?? [];
     }
 
     private HausEvent<DeviceDiscoveredEvent> CreateDeviceDiscoveredEvent(JObject jToken)

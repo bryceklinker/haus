@@ -1,29 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(MicrosoftPackageVersion)">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Octokit" Version="14.0.0"/>
-        <!-- Override transitive SQLitePCLRaw pulled in by Microsoft.EntityFrameworkCore.Sqlite: 2.1.11 bundles a SQLite
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(MicrosoftPackageVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference
+      Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore"
+      Version="$(MicrosoftPackageVersion)"
+    />
+    <PackageReference Include="Octokit" Version="14.0.0" />
+    <!-- Override transitive SQLitePCLRaw pulled in by Microsoft.EntityFrameworkCore.Sqlite: 2.1.11 bundles a SQLite
              build vulnerable to CVE-2025-6965 (GHSA-2m69-gcr7-jv3q). No patched 2.1.x SQLitePCLRaw exists except 2.1.12. -->
-        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.12"/>
-    </ItemGroup>
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.12" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Haus.Core\Haus.Core.csproj"/>
-        <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj"/>
-        <ProjectReference Include="..\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj"/>
-    </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\Haus.Core\Haus.Core.csproj" />
+    <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
+    <ProjectReference Include="..\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj" />
+  </ItemGroup>
 </Project>

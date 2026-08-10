@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-        <PackageReference Include="Humanizer" Version="3.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="$(MicrosoftPackageVersion)"/>
-    </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Humanizer" Version="3.0.10" />
+    <PackageReference
+      Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions"
+      Version="$(MicrosoftPackageVersion)"
+    />
+  </ItemGroup>
 </Project>
