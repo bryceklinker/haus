@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -353,6 +354,73 @@ public class DeviceInterviewTests
 
         Assert.False(joined.Task.IsCompleted);
         Assert.Empty(knownDeviceTable.GetDevices());
+    }
+
+    // Reproduces a device sending a second announce/join while its first full interview (endpoint
+    // discovery through basic-info read) is still in progress -- not just a second ReadBasicInfoAsync
+    // call, but a second announce dispatched through OnIndicationReceived's Forget(InterviewAsync(...))
+    // path while the first interview is mid-flight. Per DeviceInterview's correlation comment, each
+    // interview's requests carry their own transaction sequence number, so the two should complete
+    // independently rather than the second orphaning or corrupting the first.
+    [Fact]
+    public async Task WhenADeviceReannouncesWhileItsFirstInterviewIsStillInProgressThenBothInterviewsCompleteIndependently()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        var joinedEvents = new List<ZigbeeDeviceJoined>();
+        _interview.DeviceJoined += (_, joined) => joinedEvents.Add(joined);
+
+        _dongle.InjectIndication(Announce(device));
+        _dongle.InjectIndication(Announce(device));
+
+        // First interview's ActiveEndpointsRequest is sendIndex 0; it reports one endpoint, so this
+        // interview needs two more requests (SimpleDescriptor, then Basic read) before it completes --
+        // giving the second interview room to start and finish first.
+        _dongle.ReleaseAfterSend(
+            sendIndex: 0,
+            ActiveEndpointsResponse(device, endpointIds: new byte[] { 0x01 }, sequenceNumber: 0x00)
+        );
+        // Second interview's ActiveEndpointsRequest is sendIndex 1; scripted with no endpoints so it
+        // completes immediately after this single response.
+        _dongle.ReleaseAfterSend(
+            sendIndex: 1,
+            ActiveEndpointsResponse(device, endpointIds: new byte[0], sequenceNumber: 0x01)
+        );
+        _dongle.ReleaseAfterSend(
+            sendIndex: 2,
+            SimpleDescriptorResponse(
+                device,
+                endpoint: 0x01,
+                profileId: HomeAutomationProfile,
+                deviceId: 0x0100,
+                inClusters: new ushort[] { BasicCluster },
+                outClusters: new ushort[0],
+                sequenceNumber: 0x02
+            )
+        );
+        _dongle.ReleaseAfterSend(
+            sendIndex: 3,
+            BasicReadResponse(device, endpoint: 0x01, profileId: HomeAutomationProfile, "VendorA", "ModelA")
+        );
+
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        while (joinedEvents.Count < 2 && !timeout.IsCancellationRequested)
+        {
+            await _pollLoop.PollOnceAsync(CancellationToken.None);
+            if (joinedEvents.Count < 2)
+                await Task.Delay(1);
+        }
+
+        Assert.Equal(2, joinedEvents.Count);
+        var withoutEndpoints = joinedEvents.Single(joined => joined.Endpoints.Count == 0);
+        var withEndpoint = joinedEvents.Single(joined => joined.Endpoints.Count == 1);
+        Assert.Equal(new IeeeAddress(device.Ieee), withoutEndpoints.IeeeAddress);
+        Assert.Equal(string.Empty, withoutEndpoints.ManufacturerName);
+        Assert.Equal(new IeeeAddress(device.Ieee), withEndpoint.IeeeAddress);
+        Assert.Equal("VendorA", withEndpoint.ManufacturerName);
+        Assert.Equal("ModelA", withEndpoint.ModelIdentifier);
+
+        var known = Assert.Single(_knownDeviceTable.GetDevices());
+        Assert.Equal(new IeeeAddress(device.Ieee), known.IeeeAddress);
     }
 
     [Fact]
