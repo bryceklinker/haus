@@ -23,8 +23,12 @@ public record ConfirmBody(
 
 // Answers deCONZ serial commands the same way a real coordinator dongle would: reads/writes of
 // firmware parameters, device-state polls, read-indication drains, and APS data-request acks.
-// One instance serves one TCP connection (real hardware is a single serial line too, so this
-// mirrors that: no per-command-kind split).
+// Registered as a DI singleton and shared for the app's lifetime: it backs both the HTTP control
+// API (SimulatorController, which injects parameters/indications and drives device joins) and
+// whichever TCP connection(s) are currently open, and it's precisely because both sides read and
+// write the same instance that an HTTP-triggered indication can reach a connected coordinator.
+// That's also why its state -- parameters, indication/confirm queues, interview scripts -- must
+// be shared rather than scoped to a single connection.
 public class DeconzResponder
 {
     private const byte ReadParameterCommand = 0x0a;
