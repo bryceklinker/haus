@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -87,6 +88,40 @@ public class TcpSerialTransportTests : IAsyncLifetime
         using var transport = new TcpSerialTransport("127.0.0.1", _port);
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => transport.ReadAsync(new byte[1], CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task ReadAsync_WhenTheConnectionResetsWhileAReadIsPendingThenThrowsInsteadOfHangingForever()
+    {
+        using var transport = new TcpSerialTransport("127.0.0.1", _port);
+        var acceptTask = _listener!.AcceptTcpClientAsync();
+        await transport.OpenAsync(CancellationToken.None);
+        using var accepted = await acceptTask;
+
+        var readTask = transport.ReadAsync(new byte[4], CancellationToken.None);
+        accepted.Client.LingerState = new LingerOption(true, 0);
+        accepted.Client.Close();
+
+        var completed = await Task.WhenAny(readTask, Task.Delay(TimeSpan.FromSeconds(5)));
+        Assert.Same(readTask, completed);
+        await Assert.ThrowsAsync<IOException>(() => readTask);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WhenTheConnectionHasBeenResetThenThrowsInsteadOfSilentlyDroppingData()
+    {
+        using var transport = new TcpSerialTransport("127.0.0.1", _port);
+        var acceptTask = _listener!.AcceptTcpClientAsync();
+        await transport.OpenAsync(CancellationToken.None);
+        using var accepted = await acceptTask;
+
+        accepted.Client.LingerState = new LingerOption(true, 0);
+        accepted.Client.Close();
+        await Task.Delay(TimeSpan.FromMilliseconds(100));
+
+        await Assert.ThrowsAsync<IOException>(
+            () => transport.WriteAsync(new byte[] { 0x01, 0x02, 0x03 }, CancellationToken.None)
+        );
     }
 
     [Fact]
