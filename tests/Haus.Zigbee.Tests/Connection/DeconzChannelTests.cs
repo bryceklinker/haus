@@ -45,6 +45,19 @@ public class DeconzChannelTests
     }
 
     [Fact]
+    public async Task WhenCancellationArrivesAfterANonMatchingReadThenTheWaitThrowsInsteadOfReturningEmptyBytes()
+    {
+        using var cancellation = new CancellationTokenSource();
+        var transport = new CancellingTransport(cancellation);
+        var channel = new DeconzChannel(transport);
+        var command = new byte[] { 0x0A, 0x05, 0x01 };
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => channel.SendAndReceiveAsync(command, cancellation.Token)
+        );
+    }
+
+    [Fact]
     public async Task WhenTwoSendsOverlapOnTheSameChannelThenEachCallerGetsItsOwnMatchingResponse()
     {
         var transport = new AutoRespondingTransport();
@@ -60,6 +73,27 @@ public class DeconzChannelTests
 
         Assert.Equal(new byte[] { 0x0a, 0x05, 0xaa }, responseA);
         Assert.Equal(new byte[] { 0x0a, 0x06, 0xaa }, responseB);
+    }
+
+    // Reproduces the race where cancellation arrives after a read returns with no matching frame:
+    // it cancels the shared token from inside ReadAsync itself (simulating cancellation landing
+    // between that non-matching read and the loop's next iteration check) and reports zero bytes
+    // read, the same as a real transport with nothing new on the wire yet.
+    private class CancellingTransport(CancellationTokenSource cancellation) : ISerialTransport
+    {
+        public Task OpenAsync(CancellationToken token) => Task.CompletedTask;
+
+        public Task CloseAsync(CancellationToken token) => Task.CompletedTask;
+
+        public Task WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken token) => Task.CompletedTask;
+
+        public Task<int> ReadAsync(Memory<byte> buffer, CancellationToken token)
+        {
+            cancellation.Cancel();
+            return Task.FromResult(0);
+        }
+
+        public void Dispose() { }
     }
 
     // Echoes a response for whatever command+sequence-number was just written, after yielding once

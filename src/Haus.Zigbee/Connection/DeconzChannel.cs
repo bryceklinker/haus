@@ -53,13 +53,13 @@ public class DeconzChannel(ISerialTransport transport)
 
     private async Task<byte[]> AwaitResponseAsync(byte sequenceNumber, CancellationToken token)
     {
-        while (!token.IsCancellationRequested)
+        while (true)
         {
             var frames = await _reader.ReadFramesAsync(token);
             foreach (var frame in frames)
                 if (frame[SequenceNumberIndex] == sequenceNumber)
                     return frame;
+            token.ThrowIfCancellationRequested();
         }
-        return [];
     }
 }
