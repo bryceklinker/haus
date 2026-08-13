@@ -11,10 +11,11 @@ public static class DeconzChecksum
         foreach (var value in frame)
             sum += value;
 
-        return (ushort)((~sum + 1) & 0xFFFF);
+        return (ushort)((~sum + 1) & UInt16Mask);
     }
 
     private const int ChecksumByteLength = 2;
+    private const int UInt16Mask = 0xFFFF;
 
     public static bool IsValid(ReadOnlySpan<byte> frameWithChecksum)
     {
