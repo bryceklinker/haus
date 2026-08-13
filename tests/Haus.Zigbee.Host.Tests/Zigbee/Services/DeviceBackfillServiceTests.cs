@@ -55,7 +55,7 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(ExternalIdMap.ToExternalId(address), published?.Id);
+            Assert.Equal(ExternalIdConverter.ToExternalId(address), published?.Id);
             Assert.NotEqual(Haus.Core.Models.Devices.DeviceType.Unknown, published?.DeviceType);
         });
     }
@@ -71,7 +71,7 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
 
         var found = _addressRegistry!.TryGetExternalId(0x1234, out var externalId);
         Assert.True(found);
-        Assert.Equal(ExternalIdMap.ToExternalId(address), externalId);
+        Assert.Equal(ExternalIdConverter.ToExternalId(address), externalId);
     }
 
     [Fact]

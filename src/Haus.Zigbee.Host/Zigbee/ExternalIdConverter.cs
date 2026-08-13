@@ -2,7 +2,7 @@ using Haus.Zigbee.Models;
 
 namespace Haus.Zigbee.Host.Zigbee;
 
-public static class ExternalIdMap
+public static class ExternalIdConverter
 {
     public static string ToExternalId(IeeeAddress address)
     {

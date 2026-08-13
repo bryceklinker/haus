@@ -48,7 +48,7 @@ public class ZigbeeInboundRelayTests : IAsyncLifetime
 
         var found = _addressRegistry!.TryGetExternalId(0x1234, out var externalId);
         Assert.True(found);
-        Assert.Equal(ExternalIdMap.ToExternalId(address), externalId);
+        Assert.Equal(ExternalIdConverter.ToExternalId(address), externalId);
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class ZigbeeInboundRelayTests : IAsyncLifetime
 
         await _relay!.HandleDeviceJoinedAsync(joined);
 
-        Eventually.Assert(() => Assert.Equal(ExternalIdMap.ToExternalId(address), published?.Id));
+        Eventually.Assert(() => Assert.Equal(ExternalIdConverter.ToExternalId(address), published?.Id));
     }
 
     [Fact]

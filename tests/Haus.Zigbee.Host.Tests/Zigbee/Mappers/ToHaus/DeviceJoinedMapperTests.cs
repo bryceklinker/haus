@@ -20,14 +20,14 @@ public class DeviceJoinedMapperTests
     }
 
     [Fact]
-    public void Map_UsesExternalIdMapForId()
+    public void Map_UsesExternalIdConverterForId()
     {
         var address = new IeeeAddress(0x00124b0012345678);
         var joined = new ZigbeeDeviceJoined(address, 0x1234, [], "vendor", "model");
 
         var result = _mapper.Map(joined);
 
-        Assert.Equal(ExternalIdMap.ToExternalId(address), result.Id);
+        Assert.Equal(ExternalIdConverter.ToExternalId(address), result.Id);
     }
 
     [Fact]

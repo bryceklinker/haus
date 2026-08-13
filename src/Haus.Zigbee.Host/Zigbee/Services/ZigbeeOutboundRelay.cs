@@ -62,7 +62,7 @@ public class ZigbeeOutboundRelay(
         var devices = await coordinator.GetDevicesAsync(token);
         logger.LogInformation("Syncing {@Count} known device(s) to Haus", devices.Count);
         foreach (var device in devices)
-            addressRegistry.Register(device.NetworkAddress, ExternalIdMap.ToExternalId(device.IeeeAddress));
+            addressRegistry.Register(device.NetworkAddress, ExternalIdConverter.ToExternalId(device.IeeeAddress));
 
         var hausMqttClient = await mqttClientFactory.CreateClient();
         foreach (var discovered in devicesMapper.Map(devices))
@@ -79,7 +79,7 @@ public class ZigbeeOutboundRelay(
         }
 
         var externalId = command.Payload.Device.ExternalId;
-        if (!ExternalIdMap.TryParseAddress(externalId, out var address))
+        if (!ExternalIdConverter.TryParseAddress(externalId, out var address))
         {
             logger.LogWarning("Cannot resolve a Zigbee address for ExternalId {@ExternalId}", externalId);
             return;

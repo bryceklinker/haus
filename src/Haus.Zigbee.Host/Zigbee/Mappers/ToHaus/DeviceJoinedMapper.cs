@@ -10,7 +10,7 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
     public DeviceDiscoveredEvent Map(ZigbeeDeviceJoined joined)
     {
         return new DeviceDiscoveredEvent(
-            ExternalIdMap.ToExternalId(joined.IeeeAddress),
+            ExternalIdConverter.ToExternalId(joined.IeeeAddress),
             deviceTypeResolver.Resolve(joined.ManufacturerName, joined.ModelIdentifier),
             CreateMetadata(joined)
         );
@@ -21,7 +21,7 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
     // same register-then-map sequence before deciding what (if anything) to publish.
     public DeviceDiscoveredEvent RegisterAndMap(DeviceAddressRegistry addressRegistry, ZigbeeDeviceJoined joined)
     {
-        addressRegistry.Register(joined.NetworkAddress, ExternalIdMap.ToExternalId(joined.IeeeAddress));
+        addressRegistry.Register(joined.NetworkAddress, ExternalIdConverter.ToExternalId(joined.IeeeAddress));
         return Map(joined);
     }
 

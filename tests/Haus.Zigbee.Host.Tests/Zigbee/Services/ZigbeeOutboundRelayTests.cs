@@ -77,15 +77,15 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
         Assert.True(_addressRegistry!.TryGetExternalId(0x1234, out var externalId));
-        Assert.Equal(ExternalIdMap.ToExternalId(address), externalId);
-        Eventually.Assert(() => Assert.Equal(ExternalIdMap.ToExternalId(address), published?.Id));
+        Assert.Equal(ExternalIdConverter.ToExternalId(address), externalId);
+        Eventually.Assert(() => Assert.Equal(ExternalIdConverter.ToExternalId(address), published?.Id));
     }
 
     [Fact]
     public async Task HandleCommandAsync_LightingCommand_ResolvesAddressAndSendsCommands()
     {
         var address = new IeeeAddress(1);
-        var device = new DeviceModel { ExternalId = ExternalIdMap.ToExternalId(address) };
+        var device = new DeviceModel { ExternalId = ExternalIdConverter.ToExternalId(address) };
         var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
             .AsHausCommand()
             .ToMqttMessage("haus/commands");

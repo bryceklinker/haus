@@ -17,7 +17,7 @@ public class DevicesMapper
     private static DeviceDiscoveredEvent CreateDeviceDiscoveredEvent(ZigbeeDevice device)
     {
         return new DeviceDiscoveredEvent(
-            ExternalIdMap.ToExternalId(device.IeeeAddress),
+            ExternalIdConverter.ToExternalId(device.IeeeAddress),
             DeviceType.Unknown,
             CreateMetadata(device)
         );

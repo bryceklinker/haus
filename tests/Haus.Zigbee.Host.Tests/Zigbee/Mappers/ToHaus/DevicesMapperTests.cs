@@ -14,14 +14,14 @@ public class DevicesMapperTests
     private readonly DevicesMapper _mapper = new();
 
     [Fact]
-    public void Map_UsesExternalIdMapForId()
+    public void Map_UsesExternalIdConverterForId()
     {
         var address = new IeeeAddress(0x00124b0012345678);
         var device = new ZigbeeDevice(address, 0x1234, []);
 
         var result = _mapper.Map([device]).Single();
 
-        Assert.Equal(ExternalIdMap.ToExternalId(address), result.Id);
+        Assert.Equal(ExternalIdConverter.ToExternalId(address), result.Id);
     }
 
     [Fact]
