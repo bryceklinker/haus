@@ -52,6 +52,31 @@ public class FrameReaderTests
     }
 
     [Fact]
+    public async Task WhenACorruptedFrameIsImmediatelyFollowedByAValidFrameInTheSameReadThenTheValidFrameStillSurfaces()
+    {
+        var corrupted = FramedWithCorruptedChecksum(new byte[] { 0x07, 0x03, 0xAA });
+        var valid = DeconzFrames.Framed(new byte[] { 0x12, 0x04, 0xBB });
+        _transport.FeedIncoming(Concat(corrupted, valid));
+
+        var frames = await _reader.ReadFramesAsync(CancellationToken.None);
+
+        Assert.Equal(new[] { new byte[] { 0x12, 0x04, 0xBB } }, frames);
+    }
+
+    [Fact]
+    public async Task WhenACorruptedFrameArrivesInOneReadAndAValidFrameArrivesInTheNextReadThenTheValidFrameStillSurfaces()
+    {
+        _transport.FeedIncoming(FramedWithCorruptedChecksum(new byte[] { 0x07, 0x03, 0xAA }));
+        var firstFrames = await _reader.ReadFramesAsync(CancellationToken.None);
+
+        _transport.FeedIncoming(DeconzFrames.Framed(new byte[] { 0x12, 0x04, 0xBB }));
+        var secondFrames = await _reader.ReadFramesAsync(CancellationToken.None);
+
+        Assert.Empty(firstFrames);
+        Assert.Equal(new[] { new byte[] { 0x12, 0x04, 0xBB } }, secondFrames);
+    }
+
+    [Fact]
     public async Task WhenAFrameArrivesSplitAcrossTwoReadsThenItSurfacesOnceCompleted()
     {
         var framed = DeconzFrames.Framed(new byte[] { 0x07, 0x03, 0xAA });
