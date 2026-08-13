@@ -11,10 +11,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Haus.Zigbee.Coordinator;
 
-// Composes the library's protocol capabilities into the single IZigbeeCoordinator façade: it owns
-// one deCONZ channel over the serial transport, connects and reads the existing network config,
-// then runs a continuous background poll loop so inbound APS traffic keeps flowing for as long as
-// it stays connected.
 public class ZigbeeCoordinator : IZigbeeCoordinator
 {
     // The dongle only surfaces inbound APS traffic when polled, so this interval trades a little

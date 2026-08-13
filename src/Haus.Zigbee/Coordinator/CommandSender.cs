@@ -7,9 +7,8 @@ using Haus.Zigbee.Zcl;
 
 namespace Haus.Zigbee.Coordinator;
 
-// Builds a ZCL command frame, wraps it in an APS-DATA.request, and sends it. The ZCL
-// transaction sequence number and the APS request id are distinct concerns, so each layer
-// owns its own counter here.
+// The ZCL transaction sequence number and the APS request id are distinct concerns, so each
+// layer owns its own counter here.
 public class CommandSender(ApsSender sender)
 {
     private const byte NoApsAckRequested = 0x00;
