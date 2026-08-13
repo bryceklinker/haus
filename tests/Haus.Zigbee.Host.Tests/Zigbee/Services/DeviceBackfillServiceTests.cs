@@ -81,14 +81,20 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
         _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [])];
         _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("nope", "nope");
         var published = false;
+        var canaryReceived = false;
         await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
             DeviceDiscoveredEvent.Type,
             _ => published = true
         );
+        await _mqttClient!.SubscribeToHausEventsAsync<DiscoveryStoppedEvent>(
+            DiscoveryStoppedEvent.Type,
+            _ => canaryReceived = true
+        );
 
         await _service!.BackfillAsync(CancellationToken.None);
-        await Task.Delay(200);
+        await _mqttClient!.PublishHausEventAsync(new DiscoveryStoppedEvent());
 
+        Eventually.Assert(() => Assert.True(canaryReceived));
         Assert.False(published);
     }
 
@@ -98,14 +104,20 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
         _coordinator!.DevicesToReturn = [new ZigbeeDevice(new IeeeAddress(1), 0x1234, [])];
         _coordinator.DeviceInfoToReturn = null;
         var published = false;
+        var canaryReceived = false;
         await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
             DeviceDiscoveredEvent.Type,
             _ => published = true
         );
+        await _mqttClient!.SubscribeToHausEventsAsync<DiscoveryStoppedEvent>(
+            DiscoveryStoppedEvent.Type,
+            _ => canaryReceived = true
+        );
 
         await _service!.BackfillAsync(CancellationToken.None);
-        await Task.Delay(200);
+        await _mqttClient!.PublishHausEventAsync(new DiscoveryStoppedEvent());
 
+        Eventually.Assert(() => Assert.True(canaryReceived));
         Assert.False(published);
     }
 }
