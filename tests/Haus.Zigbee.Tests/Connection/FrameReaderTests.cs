@@ -30,6 +30,18 @@ public class FrameReaderTests
     }
 
     [Fact]
+    public async Task WhenTwoValidFramesArriveInOneReadThenBothAreSurfacedInOrder()
+    {
+        var first = DeconzFrames.Framed(new byte[] { 0x07, 0x03, 0xAA });
+        var second = DeconzFrames.Framed(new byte[] { 0x12, 0x04, 0xBB });
+        _transport.FeedIncoming(Concat(first, second));
+
+        var frames = await _reader.ReadFramesAsync(CancellationToken.None);
+
+        Assert.Equal(new[] { new byte[] { 0x07, 0x03, 0xAA }, new byte[] { 0x12, 0x04, 0xBB } }, frames);
+    }
+
+    [Fact]
     public async Task WhenAFrameFailsChecksumValidationThenItIsDropped()
     {
         _transport.FeedIncoming(FramedWithCorruptedChecksum(new byte[] { 0x07, 0x03, 0xAA }));
@@ -58,5 +70,13 @@ public class FrameReaderTests
     {
         var withChecksum = new List<byte>(frame) { 0x00, 0x00 };
         return new SlipEncoder().Encode(withChecksum.ToArray());
+    }
+
+    private static byte[] Concat(byte[] first, byte[] second)
+    {
+        var combined = new byte[first.Length + second.Length];
+        first.CopyTo(combined, 0);
+        second.CopyTo(combined, first.Length);
+        return combined;
     }
 }
