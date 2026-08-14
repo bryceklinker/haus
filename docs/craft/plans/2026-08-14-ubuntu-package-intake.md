@@ -90,12 +90,22 @@ key distribution to users) beyond what one packaging issue should carry.
     target machine can't depend on the SDK being there just for cert
     generation; openssl alone reproduces an equivalent self-signed cert
     without that dependency.
-  - `systemctl daemon-reload`, `enable`, `start` the service. `docker compose
-    pull` runs as an `ExecStartPre` in the unit (not in postinst) so a
-    package upgrade/reinstall always pulls the version-pinned images before
-    (re)start, and a plain `systemctl restart` after manual intervention
-    behaves the same way — this also keeps postinst from doing a long,
-    network-dependent operation that dpkg policy discourages.
+  - `systemctl daemon-reload`, `enable`, `restart` the service (best-effort:
+    `|| true` on the restart — see below). `docker compose up -d` pulls
+    whatever image isn't already present locally; there's deliberately no
+    separate `docker compose pull` step, since each release pins an
+    immutable, version-tagged image (never `:latest`) that, once cached, is
+    guaranteed correct — forcing a re-pull on every start would make
+    startup fail on a flaky network or registry hiccup even when a
+    perfectly good image is already local. This also keeps postinst from
+    doing a long, network-dependent operation that dpkg policy discourages.
+  - The restart is `|| true`, not fatal: `haus_zigbee` needs a physical
+    Zigbee dongle at `/dev/ttyACM0`, so `docker compose up` can legitimately
+    fail on a host where it isn't plugged in yet (verified locally — Docker
+    Compose aborts with a non-zero exit when one service's device is
+    missing, even though the other containers start fine). That must not
+    fail `apt install` itself; the unit stays enabled for the next
+    successful boot or manual restart once the dongle is attached.
 - **prerm:** stop and disable the service before files are removed.
 - **postrm:** on purge, remove `/etc/haus`; `/var/lib/haus/data` (user data)
   is left in place — same "don't delete user data" posture as removing any

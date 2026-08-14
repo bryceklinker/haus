@@ -9,7 +9,6 @@ case "$1" in
   configure)
     mkdir -p "$DATA_DIR/haus_web/logs" \
              "$DATA_DIR/haus_zigbee/logs" \
-             "$DATA_DIR/haus_mqtt/config" \
              "$DATA_DIR/haus_mqtt/data" \
              "$DATA_DIR/haus_mqtt/log"
 
@@ -32,8 +31,14 @@ case "$1" in
     systemctl daemon-reload
     systemctl enable haus-app.service
     # restart (not start) so an upgrade also picks up this version's
-    # pinned image tags, not just a fresh install.
-    systemctl restart haus-app.service
+    # pinned image tags, not just a fresh install. Best-effort: haus_zigbee
+    # needs a physical Zigbee dongle at /dev/ttyACM0, so `docker compose up`
+    # (and therefore this oneshot unit) can legitimately fail on a host
+    # where it isn't plugged in yet -- that must not abort package
+    # configuration, or `apt install` would fail for anyone who hasn't
+    # attached their dongle before installing. The unit is still enabled
+    # for the next successful boot/manual restart.
+    systemctl restart haus-app.service || true
     ;;
 esac
 

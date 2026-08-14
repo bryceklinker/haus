@@ -7,8 +7,12 @@ services:
       - "1883:1883"
       - "8883:8883"
     volumes:
+      # A separate directory-mount at /mosquitto/config (as the root
+      # docker-compose.yml has) shadows this single-file mount and breaks
+      # mosquitto's config loading entirely -- confirmed via a real install
+      # (mosquitto crash-loops on "Unable to open config file"). Only the
+      # file mount is needed; mosquitto never writes back to its config dir.
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - /var/lib/haus/data/haus_mqtt/config:/mosquitto/config
       - /var/lib/haus/data/haus_mqtt/data:/mosquitto/data
       - /var/lib/haus/data/haus_mqtt/log:/mosquitto/log
 
