@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Superseded by the haus-app .deb package (see readme.md "Installation
+# (Ubuntu)" and packaging/deb/) -- kept as-is for anyone still using it,
+# but it gets no further changes.
 set -ex
 
 HAUS_LOCATION="/home/$(whoami)/haus"
