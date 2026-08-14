@@ -1,0 +1,63 @@
+services:
+  haus_mqtt:
+    container_name: haus_mqtt
+    image: eclipse-mosquitto:latest
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "8883:8883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - /var/lib/haus/data/haus_mqtt/config:/mosquitto/config
+      - /var/lib/haus/data/haus_mqtt/data:/mosquitto/data
+      - /var/lib/haus/data/haus_mqtt/log:/mosquitto/log
+
+  haus_zigbee:
+    container_name: haus_zigbee
+    restart: always
+    image: bryceklinker/personal:haus-zigbee-latest
+    environment:
+      - "Haus__Server=mqtt://haus_mqtt:1883"
+      - "Zigbee__SerialPort=/dev/ttyACM0"
+    links:
+      - haus_mqtt
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    volumes:
+      - /var/lib/haus/data/haus_zigbee:/app/data
+      - /var/lib/haus/data/haus_zigbee/logs:/app/haus-logs
+
+  haus_web:
+    container_name: haus_web
+    restart: always
+    image: bryceklinker/personal:haus-web-latest
+    ports:
+      - "5000:80"
+      - "5001:443"
+    volumes:
+      - /var/lib/haus/data/haus_web:/app/data
+      - /var/lib/haus/data/haus_web/logs:/app/haus-logs
+      - ./cert.pfx:/https/cert.pfx
+    environment:
+      - "Mqtt__Server=mqtt://haus_mqtt:1883"
+      - "Database__ConnectionString=Data Source=./data/haus.db;"
+      - "ASPNETCORE_URLS=https://+;http://+"
+      - "ASPNETCORE_HTTPS_PORT=443"
+      - "ASPNETCORE_ENVIRONMENT=Production"
+      - "ASPNETCORE_Kestrel__Certificates__Default__Password=password"
+      - "ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx"
+    links:
+      - haus_mqtt
+
+  haus_sit:
+    container_name: haus_site
+    restart: always
+    image: bryceklinker/personal:haus-site-latest
+    ports:
+      - "5002:80"
+      - "5003:443"
+    volumes:
+      - ./cert.crt:/etc/nginx/certs/cert.crt
+      - ./cert.key:/etc/nginx/certs/cert.key
+    links:
+      - haus_web
