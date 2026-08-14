@@ -1,0 +1,69 @@
+stack: [docker, github-actions, systemd]
+
+git:
+  main_branch: main
+
+environments:
+  order: [production]
+  # HAUS runs self-hosted on the user's home network. There is no separate
+  # dev/staging tier in the cloud sense -- "production" is whatever host the
+  # operator installs the package on. `make start` / docker-compose.local.yml
+  # serve the equivalent of a local dev environment but are not a promoted
+  # environment stage.
+
+cloud:
+  provider: none
+  # No cloud provider and no IaC tool. HAUS is self-hosted software the
+  # operator installs on their own Ubuntu machine; there is nothing here for
+  # infrastructure-design/infrastructure-authoring to act on.
+  iac_tool: none
+  iac_commands: {}
+
+cicd:
+  system: github-actions
+  artifact_registry: docker.io/${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}
+  # See scripts/publish-to-docker-hub.sh: images are tagged
+  # "<service>-<version>" and "<service>-latest" for each of haus-web,
+  # haus-zigbee, haus-site, all pushed to one Docker Hub repo
+  # (docker.io/<DOCKER_HUB_USERNAME>/personal). DOCKER_HUB_REPO is currently
+  # hardcoded to "personal" in .github/workflows/release.yaml.
+  artifact_identity: image-tag
+  workflows:
+    ci: .github/workflows/main.yaml
+    release: .github/workflows/release.yaml
+
+deployment:
+  tool: systemd+docker-compose
+  # Deploy is a manual pull-based install, not a push-based rollout: the
+  # operator runs an install script/package on the target Ubuntu host, which
+  # unpacks a systemd unit (haus-app.service) + docker-compose.yml +
+  # mosquitto.conf, then `docker-compose pull` + `systemctl enable/restart`.
+  # Today this is scripts/linux-install.sh, run by hand against the
+  # service_package.zip GitHub Release asset. Issue #19 replaces that manual
+  # script with a real Ubuntu package (.deb and/or snap) that performs the
+  # same steps via postinst/service scripting.
+  rollout_command: "sudo systemctl restart haus-app"
+  rollback_command: "sudo systemctl stop haus-app"
+  # No automated rollback beyond stopping the service and reinstalling a
+  # prior package/tag; there is no blue-green or canary mechanism.
+
+observability:
+  metrics: none
+  dashboards: none
+  alerts: none
+  # No observability stack exists yet for HAUS.
+
+secrets:
+  manager: github-actions-secrets
+  # Auth0 credentials, GITHUB_TOKEN, and DOCKER_HUB_USERNAME/DOCKER_HUB_ACCESS_TOKEN
+  # are stored as GitHub Actions repository secrets (see release.yaml env block).
+  # No separate secret manager (Vault, cloud KMS, etc.) is in use.
+
+paths:
+  pipelines: docs/craft/design
+  infrastructure: docs/craft/design
+  deployments: docs/craft/design
+  observability: docs/craft/design
+  # Mirrors the existing docs/craft/{plans,design} convention already used by
+  # craft-code planning/design skills in this repo -- craft-ops design notes
+  # land alongside them in docs/craft/design rather than a separate tree.
