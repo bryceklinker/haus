@@ -29,6 +29,19 @@ function build_deb() {
   dpkg-deb --build --root-owner-group "${DEB_STAGE_DIRECTORY}" "${DEB_OUTPUT_PATH}"
 }
 
+# The packaged docker-compose.yml pins each service to its "-${VERSION}" tag
+# (see DebComposeVersionPinner), so untagging just that reference -- not the
+# co-built "-latest" one -- is what forces install_and_smoke_test's
+# `docker compose up` to pull from the registry instead of reusing this same
+# job's local build. Assumes `make docker-publish` already built these tags
+# earlier in the same job; run standalone, this fails loud rather than
+# silently no-op-ing.
+function remove_locally_built_images() {
+  for service in haus-web haus-zigbee haus-site; do
+    docker rmi "${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}:${service}-${VERSION}"
+  done
+}
+
 # This is the pipeline's gate: there's no separate staging environment to
 # promote through (HAUS is self-hosted, installed by an operator, not
 # deployed by this pipeline), so installing for real on the runner itself
@@ -64,7 +77,10 @@ function main() {
   render_pinned_compose_file
   set_control_version
   build_deb
+  remove_locally_built_images
   install_and_smoke_test
 }
 
-main
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main
+fi
