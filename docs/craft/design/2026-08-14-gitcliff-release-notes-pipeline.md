@@ -51,7 +51,10 @@ matches both real conventional prefixes (`feat`, `fix`, `docs`, ...) *and*
 this repo's existing capitalized-imperative style (`Add`, `Fix`, `Rename`,
 `Bump`, ...), so notes are useful now and get more precise for free once the
 commit-message convention work lands — conventional-format commits already
-match the same parsers.
+match the same parsers. The prefix set matches the 11 types locked by the
+sibling `polly/conventional-commits-convention` PR (`feat, fix, docs, style,
+refactor, perf, test, build, ci, chore, revert`), so nothing here needs to
+change once that PR merges.
 
 `scripts/generate-release-notes.sh` wraps the `git-cliff` invocation
 (`--config cliff.toml --unreleased`, or `--tag <tag> --unreleased` when a

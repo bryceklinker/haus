@@ -4,11 +4,18 @@
 # in the release pipeline (.github/workflows/release.yaml).
 
 [changelog]
+# This repo's commits aren't conventional (no "type: subject" header), so
+# commit.message is the entire raw commit message, not just a summary
+# line. `body` truncates each message to its first line in the template
+# itself (not a [git] commit_preprocessor below) so the full raw message
+# -- including any "BREAKING CHANGE:" footer -- is still what
+# conventional_commits parses; a preprocessor would strip that footer
+# before protect_breaking_commits / commit.breaking ever saw it.
 body = """
 {% for group, commits in commits | group_by(attribute="group") %}
 ### {{ group | striptags | trim | upper_first }}
 {% for commit in commits %}
-- {% if commit.breaking %}[**breaking**] {% endif %}{{ commit.message | upper_first }}
+- {% if commit.breaking %}[**breaking**] {% endif %}{{ commit.message | split(pat="\n") | first | upper_first }}
 {% endfor %}
 {% endfor %}
 """
@@ -26,23 +33,17 @@ render_always = true
 conventional_commits = true
 filter_unconventional = false
 protect_breaking_commits = true
-# This repo's commits aren't conventional (no "type: subject" header), so
-# git-cliff has no header/body split to key off of and `commit.message`
-# would otherwise be the entire raw commit message. Release notes should
-# read as a scannable list, not reproduce every commit's full body, so
-# trim each message down to its first line.
-commit_preprocessors = [{ pattern = '(?s)\n.*', replace = "" }]
 commit_parsers = [
     { message = "^(?i)fix", group = "Bug Fixes" },
     { message = "^(?i)feat", group = "Features" },
-    { message = "^(?i)add", group = "Features" },
+    { message = "^(?i)add\\b", group = "Features" },
     { message = "^(?i)(docs?|document)", group = "Documentation" },
     { message = "^(?i)perf", group = "Performance" },
     { message = "^(?i)(refactor|rename|extract|replace|restructure)", group = "Refactor" },
     { message = "^(?i)style", group = "Styling" },
     { message = "^(?i)test", group = "Testing" },
     { message = "^(?i)revert", group = "Reverts" },
-    { message = "^(?i)(chore|ci|bump|update|merge|register|address)", group = "Miscellaneous Tasks" },
+    { message = "^(?i)(chore|build|ci|bump|update|merge|register|address)", group = "Miscellaneous Tasks" },
     { message = ".*", group = "Other" },
 ]
 filter_commits = false

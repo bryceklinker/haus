@@ -13,21 +13,13 @@ public partial class SemVerBumper : ISemVerBumper
     public string Bump(string currentVersion, string bumpKind)
     {
         var (major, minor, patch) = Parse(currentVersion);
-        return BumpKindOf(bumpKind) switch
+        return bumpKind.Trim().ToLowerInvariant() switch
         {
             "major" => $"v{major + 1}.0.0",
             "minor" => $"v{major}.{minor + 1}.0",
             "patch" => $"v{major}.{minor}.{patch + 1}",
             _ => throw new ArgumentException($"Unknown bump kind '{bumpKind}'", nameof(bumpKind)),
         };
-    }
-
-    private static string BumpKindOf(string bumpKind)
-    {
-        var normalized = bumpKind.Trim().ToLowerInvariant();
-        return normalized is "major" or "minor" or "patch"
-            ? normalized
-            : throw new ArgumentException($"Unknown bump kind '{bumpKind}'", nameof(bumpKind));
     }
 
     private static (int Major, int Minor, int Patch) Parse(string currentVersion)
