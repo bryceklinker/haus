@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+  purge)
+    # /var/lib/haus/data is never touched here -- it holds the SQLite db,
+    # zigbee state, and mqtt broker state, and removing a package must
+    # never destroy an operator's data.
+    rm -rf /etc/haus
+    ;;
+esac
+
+exit 0

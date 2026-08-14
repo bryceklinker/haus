@@ -16,6 +16,30 @@ targeting support for many Zigbee devices.
 
 Currently, this is only intended to be run from the command line with all code available locally.
 
+# Installation (Ubuntu)
+
+Each [release](https://github.com/bryceklinker/haus/releases) publishes a `haus-app_<version>_amd64.deb` package.
+Download it, then:
+
+```bash
+sudo apt install ./haus-app_<version>_amd64.deb
+```
+
+This installs and enables a `haus-app` systemd service that runs HAUS via Docker Compose, using the
+already-published `haus-web`/`haus-zigbee`/`haus-site` images pinned to that release's version (never `:latest`).
+Docker and the Docker Compose plugin must already be installed on the host -- the package declares them as a
+dependency but does not install them itself. A self-signed HTTPS cert is generated automatically on first install
+if one doesn't already exist.
+
+```bash
+sudo systemctl status haus-app   # check status
+sudo apt remove haus-app         # stop and remove, keeping your data
+sudo apt purge haus-app          # also remove generated config/certs (data is still kept)
+```
+
+`scripts/linux-install.sh` (the previous manual install method) still works but is superseded by this package --
+it gets no further changes.
+
 # Commands
 
 ```bash

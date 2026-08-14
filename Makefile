@@ -9,7 +9,7 @@ MQTT_TEST_CONTAINER := haus_mqtt_unit_tests
 MQTT_TEST_PORT := 21883
 
 .PHONY: build certs publish start stop watch web-host site-host zigbee-host \
-        test-unit test-acceptance docker-publish add-project migration
+        test-unit test-acceptance docker-publish deb-package add-project migration
 
 verify: build test-unit test-acceptance
 
@@ -68,6 +68,9 @@ test-acceptance: certs publish
 
 docker-publish:
 	./scripts/publish-to-docker-hub.sh
+
+deb-package:
+	./scripts/build-deb-package.sh
 
 add-project:
 	./scripts/add-project.sh $(TYPE) $(NAME)

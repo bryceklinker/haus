@@ -1,0 +1,12 @@
+Package: haus-app
+Version: 0.0.0
+Section: net
+Priority: optional
+Architecture: amd64
+Depends: docker.io | docker-ce, docker-compose-plugin | docker-compose-v2
+Maintainer: Bryce Klinker <bryceklinker@users.noreply.github.com>
+Description: HAUS home automation orchestration service
+ Installs and manages the systemd unit and Docker Compose stack that runs
+ HAUS (haus-web, haus-zigbee, haus-site) on top of the already-published
+ haus-app Docker images. Docker and the Docker Compose plugin must already
+ be installed on the host; this package does not install them.

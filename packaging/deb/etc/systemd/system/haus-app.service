@@ -1,0 +1,19 @@
+[Unit]
+Description=Haus app docker compose service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+WorkingDirectory=/etc/haus
+# No explicit `docker compose pull` -- each release pins an immutable,
+# version-tagged image (never :latest), so a tag already present locally is
+# guaranteed to be the right one. `up -d` already pulls whatever's missing;
+# forcing a pull on every start would make startup fail on a flaky network
+# or registry outage even when a perfectly good image is already cached.
+ExecStart=/usr/bin/docker compose up -d --remove-orphans
+ExecStop=/usr/bin/docker compose down
+
+[Install]
+WantedBy=multi-user.target
