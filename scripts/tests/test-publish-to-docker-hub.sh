@@ -1,31 +1,13 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-FAILURES=0
+source "$(dirname "${BASH_SOURCE[0]}")/lib/test_harness.sh"
 
-# Runs scripts/publish-to-docker-hub.sh with a stub `docker` on PATH that
-# records every invocation (one line per call, args space-joined) instead of
-# touching a real daemon or registry. Sets SANDBOX_DIR for the caller to
-# inspect "${SANDBOX_DIR}/docker-calls.log" and clean up. Sets SCRIPT_EXIT_CODE
-# to the script's own exit code. If FAIL_SUBCOMMAND is set (e.g. "login"),
-# the stub exits 1 for calls whose first argument matches it.
+# Runs scripts/publish-to-docker-hub.sh inside the stub docker sandbox
+# prepared by prepare_stub_docker_sandbox. Sets SCRIPT_EXIT_CODE to the
+# script's own exit code.
 run_publish_script_with_stub_docker() {
-  local fail_subcommand="${FAIL_SUBCOMMAND:-}"
-  SANDBOX_DIR="$(mktemp -d)"
-  local log="${SANDBOX_DIR}/docker-calls.log"
-  : >"${log}"
-
-  cat >"${SANDBOX_DIR}/docker" <<STUB
-#!/usr/bin/env bash
-echo "\$*" >>"${log}"
-if [[ "\$1" == "${fail_subcommand}" && -n "${fail_subcommand}" ]]; then
-  exit 1
-fi
-exit 0
-STUB
-  chmod +x "${SANDBOX_DIR}/docker"
-
+  prepare_stub_docker_sandbox
   (
     cd "${REPO_ROOT}" &&
       PATH="${SANDBOX_DIR}:${PATH}" \
@@ -75,23 +57,9 @@ test_script_exits_nonzero_when_push_fails() {
   [[ "${exit_code}" -ne 0 ]]
 }
 
-run_test() {
-  local name="$1"
-  if "${name}"; then
-    echo "PASS: ${name}"
-  else
-    echo "FAIL: ${name}"
-    FAILURES=$((FAILURES + 1))
-  fi
-}
-
 run_test test_login_runs_before_any_build
 run_test test_push_runs_after_all_three_builds
 run_test test_script_exits_nonzero_when_login_fails
 run_test test_script_exits_nonzero_when_push_fails
 
-if [[ "${FAILURES}" -gt 0 ]]; then
-  echo "${FAILURES} test(s) failed"
-  exit 1
-fi
-echo "All tests passed"
+report_results_and_exit

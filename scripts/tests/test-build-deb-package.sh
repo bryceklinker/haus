@@ -1,29 +1,12 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-FAILURES=0
-
-# Creates a sandbox dir with a stub `docker` on PATH that records every
-# invocation (one line per call, args space-joined) to
-# "${SANDBOX_DIR}/docker-calls.log" instead of touching a real daemon or
-# registry. Sets the global SANDBOX_DIR for the caller to inspect and clean up.
-prepare_stub_docker_sandbox() {
-  SANDBOX_DIR="$(mktemp -d)"
-  local log="${SANDBOX_DIR}/docker-calls.log"
-  : >"${log}"
-
-  cat >"${SANDBOX_DIR}/docker" <<STUB
-#!/usr/bin/env bash
-echo "\$*" >>"${log}"
-exit 0
-STUB
-  chmod +x "${SANDBOX_DIR}/docker"
-}
+source "$(dirname "${BASH_SOURCE[0]}")/lib/test_harness.sh"
 
 # Runs a snippet of bash in a fresh subprocess that has sourced
 # scripts/build-deb-package.sh's function definitions (guarded so `main`
-# itself never runs) with the stub docker sandbox on PATH.
+# itself never runs) with the stub docker sandbox prepared by
+# prepare_stub_docker_sandbox on PATH.
 run_with_sourced_build_deb_package() {
   local snippet="$1"
   (
@@ -59,21 +42,7 @@ test_remove_locally_built_images_runs_before_install_and_smoke_test() {
   [[ -n "${remove_line}" && -n "${install_line}" && "${remove_line}" -lt "${install_line}" ]]
 }
 
-run_test() {
-  local name="$1"
-  if "${name}"; then
-    echo "PASS: ${name}"
-  else
-    echo "FAIL: ${name}"
-    FAILURES=$((FAILURES + 1))
-  fi
-}
-
 run_test test_remove_locally_built_images_removes_all_three_tags
 run_test test_remove_locally_built_images_runs_before_install_and_smoke_test
 
-if [[ "${FAILURES}" -gt 0 ]]; then
-  echo "${FAILURES} test(s) failed"
-  exit 1
-fi
-echo "All tests passed"
+report_results_and_exit
