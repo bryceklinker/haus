@@ -4,8 +4,10 @@ services:
     image: eclipse-mosquitto:latest
     restart: unless-stopped
     ports:
+      # 8883 (the conventional MQTT-over-TLS port) is deliberately not
+      # published: mosquitto.conf only configures a plain 1883 listener, so
+      # nothing would answer on 8883 -- publishing it would be dead config.
       - "1883:1883"
-      - "8883:8883"
     volumes:
       # A separate directory-mount at /mosquitto/config (as the root
       # docker-compose.yml has) shadows this single-file mount and breaks

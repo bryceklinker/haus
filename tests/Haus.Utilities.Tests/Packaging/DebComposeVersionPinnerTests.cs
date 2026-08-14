@@ -13,7 +13,7 @@ public class DebComposeVersionPinnerTests
     {
         var pinned = _pinner.Pin("image: bryceklinker/personal:haus-web-latest", "1.2.3");
 
-        Assert.Equal("image: bryceklinker/personal:haus-web-latest".Replace("latest", "1.2.3"), pinned);
+        Assert.Equal("image: bryceklinker/personal:haus-web-1.2.3", pinned);
     }
 
     [Fact]

@@ -63,13 +63,17 @@ for a staging deploy:
   nested container/VM needs to be spun up to get a realistic install target;
   the runner IS one.
 - `make deb-package` therefore doesn't just run `dpkg-deb --build` — it
-  also: `sudo apt install -y ./haus-app_<version>_amd64.deb`, waits for
-  `systemctl is-active haus-app` and for `docker compose ps` (in the
-  package's install directory) to show all three containers running, then
-  hits haus-web's health endpoint. It then `sudo apt purge -y haus-app` to
-  leave the runner clean (matters less since the runner is discarded, but
-  keeps the script honest/idempotent for local use too) before the packaged
-  file is uploaded.
+  also: `sudo apt install -y ./haus-app_<version>_amd64.deb`, then polls
+  `docker compose ps` per-container (in the package's install directory)
+  for `haus_mqtt`/`haus_web`/`haus_sit` specifically, rather than waiting
+  on the systemd unit's own active/failed verdict — verified during
+  implementation that `haus-app.service` can legitimately end up "failed"
+  (haus_zigbee needs a physical dongle a build runner won't have) while
+  the other three containers are still up fine, so the per-container check
+  is the real signal. It then hits haus-web's HTTPS port, and
+  `sudo apt purge -y haus-app` to leave the runner clean (matters less
+  since the runner is discarded, but keeps the script honest/idempotent for
+  local use too) before the packaged file is uploaded.
 - Any failure in that sequence — dpkg dependency resolution, postinst,
   service not reaching active, containers not coming up, health check not
   responding — fails the job hard, before `create_release` runs. This *is*
