@@ -3,7 +3,7 @@
 @using Haus.Core.Models.Lighting
 @implements IDisposable
 
-@if (Lighting == null)
+@if (CurrentLighting == null)
 {
     <MudText Typo="Typo.h3">no lighting available</MudText>
 }
@@ -16,83 +16,83 @@ else
         <MudItem xs="12">
             <MudSwitch T="bool"
                        Disabled="Disabled"
-                       Value="Lighting.State == LightingState.On"
+                       Value="CurrentLighting.State == LightingState.On"
                        ValueChanged="HandleStateChanged">
-                State (@Lighting.State)
+                State (@CurrentLighting.State)
             </MudSwitch>
         </MudItem>
         <MudItem xs="12">
             <MudSlider T="double"
                        Disabled="Disabled"
-                       Min="Lighting.Level.Min"
-                       Value="Lighting.Level.Value"
-                       Max="Lighting.Level.Max"
+                       Min="CurrentLighting.Level.Min"
+                       Value="CurrentLighting.Level.Value"
+                       Max="CurrentLighting.Level.Max"
                        UserAttributes="@CreateSliderAttributes("level")"
                        ValueChanged="HandleLevelChanged">
-                Level (@Lighting.Level.Value %)
+                Level (@CurrentLighting.Level.Value %)
             </MudSlider>
         </MudItem>
         <MudItem xs="12">
-            @if (Lighting.Temperature != null)
+            @if (CurrentLighting.Temperature != null)
             {
                 <MudSlider T="double"
                            Disabled="Disabled"
-                           Min="Lighting.Temperature.Min"
-                           Value="Lighting.Temperature.Value"
-                           Max="Lighting.Temperature.Max"
+                           Min="CurrentLighting.Temperature.Min"
+                           Value="CurrentLighting.Temperature.Value"
+                           Max="CurrentLighting.Temperature.Max"
                            UserAttributes="@CreateSliderAttributes("temperature")"
                            ValueChanged="HandleTemperatureChanged">
-                    Temperature (@Lighting.Temperature.Value K)
+                    Temperature (@CurrentLighting.Temperature.Value K)
                 </MudSlider>
             }
         </MudItem>
         <MudItem xs="12">
-            @if (Lighting.Color != null)
+            @if (CurrentLighting.Color != null)
             {
                 <MudGrid Class="mt-8 mb-16">
                     <MudItem xs="2">
                         <MudSlider T="byte"
                                    Disabled="Disabled"
                                    Min="0"
-                                   Value="Lighting.Color.Red"
+                                   Value="CurrentLighting.Color.Red"
                                    Max="255"
                                    UserAttributes="@CreateSliderAttributes("red")"
                                    Immediate="true"
                                    Vertical="@true"
                                    ValueChanged="HandleRedChanged">
-                            Red (@Lighting.Color.Red.ToHex())
+                            Red (@CurrentLighting.Color.Red.ToHex())
                         </MudSlider>
                     </MudItem>
                     <MudItem xs="2">
                         <MudSlider T="byte"
                                    Disabled="Disabled"
                                    Min="0"
-                                   Value="Lighting.Color.Green"
+                                   Value="CurrentLighting.Color.Green"
                                    Max="255"
                                    Immediate="true"
                                    UserAttributes="@CreateSliderAttributes("green")"
                                    Vertical="@true"
                                    ValueChanged="HandleGreenChanged">
-                            Green (@Lighting.Color.Green.ToHex())
+                            Green (@CurrentLighting.Color.Green.ToHex())
                         </MudSlider>
                     </MudItem>
                     <MudItem xs="2">
                         <MudSlider T="byte"
                                    Disabled="Disabled"
                                    Min="0"
-                                   Value="Lighting.Color.Blue"
+                                   Value="CurrentLighting.Color.Blue"
                                    Max="255"
                                    Immediate="true"
                                    UserAttributes="@CreateSliderAttributes("blue")"
                                    Vertical="true"
                                    ValueChanged="HandleBlueChanged">
-                            Blue (@Lighting.Color.Blue.ToHex())
+                            Blue (@CurrentLighting.Color.Blue.ToHex())
                         </MudSlider>
                     </MudItem>
                     <MudItem xs="2">
-                        <MudPaper Class="pa-16" Style="@($"background-color: {Lighting.Color.ToHex()}")" />
+                        <MudPaper Class="pa-16" Style="@($"background-color: {CurrentLighting.Color.ToHex()}")" />
                         <MudText>
-                            @Lighting.Color.ToHex()
+                            @CurrentLighting.Color.ToHex()
                         </MudText>
                     </MudItem>
                 </MudGrid>
@@ -103,29 +103,29 @@ else
 
 @code {
     private BehaviorSubject<LightingModel?> _lightingSubject = new(null);
-    private IDisposable? _subscription; 
-    
+    private IDisposable? _subscription;
+
     [Parameter] public bool Disabled { get; set; }
 
-    [Parameter]
-    public LightingModel? Lighting
-    {
-        get => _lightingSubject.Value ?? null;
-        set => ResetLightingSubject(value);
-    }
+    [Parameter] public LightingModel? Lighting { get; set; }
 
     [Parameter] public EventCallback<LightingModel> OnLightingChanged { get; set; }
 
-    protected override void OnInitialized()
+    // The subject -- not the Lighting parameter itself -- is the live render source: slider drags
+    // push through it via OnNext without waiting for the parent to round-trip a new parameter value,
+    // so mid-drag state (and each successive drag building on the last) renders immediately.
+    private LightingModel? CurrentLighting => _lightingSubject.Value;
+
+    protected override void OnParametersSet()
     {
         ResetLightingSubject(Lighting);
     }
 
     private void HandleStateChanged(bool state)
     {
-        ArgumentNullException.ThrowIfNull(Lighting);
+        ArgumentNullException.ThrowIfNull(CurrentLighting);
 
-        _lightingSubject.OnNext(Lighting with
+        _lightingSubject.OnNext(CurrentLighting with
         {
             State = state ? LightingState.On : LightingState.Off
         });
@@ -133,11 +133,11 @@ else
 
     private void HandleLevelChanged(double level)
     {
-        ArgumentNullException.ThrowIfNull(Lighting);
+        ArgumentNullException.ThrowIfNull(CurrentLighting);
 
-        _lightingSubject.OnNext(Lighting with
+        _lightingSubject.OnNext(CurrentLighting with
         {
-            Level = Lighting.Level with
+            Level = CurrentLighting.Level with
             {
                 Value = level
             }
@@ -146,11 +146,11 @@ else
 
     private void HandleTemperatureChanged(double temp)
     {
-        ArgumentNullException.ThrowIfNull(Lighting?.Temperature);
+        ArgumentNullException.ThrowIfNull(CurrentLighting?.Temperature);
 
-        _lightingSubject.OnNext(Lighting with
+        _lightingSubject.OnNext(CurrentLighting with
         {
-            Temperature = Lighting.Temperature with
+            Temperature = CurrentLighting.Temperature with
             {
                 Value = temp
             }
@@ -159,11 +159,11 @@ else
 
     private void HandleRedChanged(byte red)
     {
-        ArgumentNullException.ThrowIfNull(Lighting?.Color);
+        ArgumentNullException.ThrowIfNull(CurrentLighting?.Color);
 
-        _lightingSubject.OnNext(Lighting with
+        _lightingSubject.OnNext(CurrentLighting with
         {
-            Color = Lighting.Color with
+            Color = CurrentLighting.Color with
             {
                 Red = red
             }
@@ -172,11 +172,11 @@ else
 
     private void HandleGreenChanged(byte green)
     {
-        ArgumentNullException.ThrowIfNull(Lighting?.Color);
+        ArgumentNullException.ThrowIfNull(CurrentLighting?.Color);
 
-        _lightingSubject.OnNext(Lighting with
+        _lightingSubject.OnNext(CurrentLighting with
         {
-            Color = Lighting.Color with
+            Color = CurrentLighting.Color with
             {
                 Green = green
             }
@@ -185,11 +185,11 @@ else
 
     private void HandleBlueChanged(byte blue)
     {
-        ArgumentNullException.ThrowIfNull(Lighting?.Color);
+        ArgumentNullException.ThrowIfNull(CurrentLighting?.Color);
 
-        _lightingSubject.OnNext(Lighting with
+        _lightingSubject.OnNext(CurrentLighting with
         {
-            Color = Lighting.Color with
+            Color = CurrentLighting.Color with
             {
                 Blue = blue
             }

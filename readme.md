@@ -11,10 +11,26 @@ targeting support for many Zigbee devices.
 
 # System Requirements
 
-- .NET 5
+- .NET 10
 - Docker (used by `make start` to run the full stack, including the MQTT broker - no separate MQTT install needed)
 
 Currently, this is only intended to be run from the command line with all code available locally.
+
+# Commands
+
+```bash
+# Build Solution
+make build
+
+# Run Unit Tests
+make test-unit
+
+# Run Acceptance Tests
+make test-acceptance
+
+# Run build, unit tests, and acceptance tests
+make verify
+```
 
 # Environment Variables
 

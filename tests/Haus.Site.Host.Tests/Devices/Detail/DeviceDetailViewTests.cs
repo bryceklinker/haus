@@ -26,9 +26,15 @@ public class DeviceDetailViewTests : HausSiteTestContext
             device.DeviceType,
             page.FindMudTextFieldById<DeviceType?>("deviceType").Instance.GetState(x => x.Value)
         );
-        Assert.Equal(device.ExternalId, page.FindMudTextFieldById<string>("externalId").Instance.Value);
-        Assert.Equal(device.LightType, page.FindMudTextFieldById<LightType>("lightType").Instance.Value);
-        Assert.Equal(device.RoomId, page.FindMudTextFieldById<long?>("roomId").Instance.Value);
+        Assert.Equal(
+            device.ExternalId,
+            page.FindMudTextFieldById<string>("externalId").Instance.GetState(x => x.Value)
+        );
+        Assert.Equal(
+            device.LightType,
+            page.FindMudTextFieldById<LightType>("lightType").Instance.GetState(x => x.Value)
+        );
+        Assert.Equal(device.RoomId, page.FindMudTextFieldById<long?>("roomId").Instance.GetState(x => x.Value));
     }
 
     [Fact]
@@ -44,8 +50,8 @@ public class DeviceDetailViewTests : HausSiteTestContext
             opts.Add(p => p.Device, device);
         });
 
-        Assert.Equal("Watts", page.FindMudTextFieldById<string>("key").Instance.Value);
-        Assert.Equal("Lots", page.FindMudTextFieldById<string>("value").Instance.Value);
+        Assert.Equal("Watts", page.FindMudTextFieldById<string>("key").Instance.GetState(x => x.Value));
+        Assert.Equal("Lots", page.FindMudTextFieldById<string>("value").Instance.GetState(x => x.Value));
     }
 
     [Fact]

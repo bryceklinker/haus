@@ -7,7 +7,9 @@ public class DeviceModelValidator : AbstractValidator<DeviceModel>
 {
     public DeviceModelValidator()
     {
-        RuleFor(d => d.Name).Required();
+        // DeviceModel.Name is nullable (unlike RoomModel.Name/MetadataModel.Key/Value), so the
+        // shared Required() extension -- typed for non-nullable string -- doesn't fit here.
+        RuleFor(d => d.Name).NotNull().NotEmpty();
         RuleForEach(d => d.Metadata).SetValidator(new DeviceMetadataModelValidator());
     }
 }

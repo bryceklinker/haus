@@ -39,7 +39,7 @@ public class EventsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(1, view.FindAllByComponent<MudProgressCircular>().Count());
+            Assert.Single(view.FindAllByComponent<MudProgressCircular>());
         });
     }
 
@@ -51,8 +51,8 @@ public class EventsViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(1, view.FindAllByComponent<MudExpansionPanels>().Count());
-            Assert.Equal(1, view.FindAllByComponent<MudExpansionPanel>().Count());
+            Assert.Single(view.FindAllByComponent<MudExpansionPanels>());
+            Assert.Single(view.FindAllByComponent<MudExpansionPanel>());
         });
     }
 }

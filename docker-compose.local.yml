@@ -33,6 +33,22 @@ services:
       timeout: 3s
       retries: 10
 
+  haus_zigbee_simulator:
+    container_name: haus_zigbee_simulator_local
+    build:
+      context: .
+      dockerfile: haus-dockerfile
+      args:
+        PUBLISH_DIR: publish/haus-zigbee-simulator
+        ENTRY_FILE: Haus.Zigbee.Simulator.dll
+        RUNTIME_ENVIRONMENT: ${RUNTIME_ENVIRONMENT:-Acceptance}
+    ports:
+      - "15004:8080"
+      - "4901:4901"
+    environment:
+      - "ASPNETCORE_URLS=http://+:8080"
+      - "Simulator__TcpPort=4901"
+
   haus_zigbee:
     container_name: haus_zigbee_local
     build:
@@ -44,9 +60,11 @@ services:
         RUNTIME_ENVIRONMENT: ${RUNTIME_ENVIRONMENT:-Acceptance}
     environment:
       - "Haus__Server=mqtt://haus_mqtt:1883"
-      - "Zigbee__Config__Mqtt__Server=mqtt://haus_mqtt:1883"
+      - "Zigbee__TcpHost=haus_zigbee_simulator"
+      - "Zigbee__TcpPort=4901"
     depends_on:
       - haus_mqtt
+      - haus_zigbee_simulator
 
   haus_site:
     container_name: haus_site_local

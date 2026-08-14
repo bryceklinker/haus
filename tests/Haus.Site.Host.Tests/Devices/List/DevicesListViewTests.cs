@@ -24,7 +24,7 @@ public class DevicesListViewTests : HausSiteTestContext
 
         var page = RenderView<DevicesListView>();
 
-        Assert.Equal(1, page.FindAllByComponent<MudProgressCircular>().Count());
+        Assert.Single(page.FindAllByComponent<MudProgressCircular>());
     }
 
     [Fact]

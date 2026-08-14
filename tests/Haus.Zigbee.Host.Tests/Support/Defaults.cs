@@ -11,9 +11,4 @@ public static class Defaults
         public const string UnknownTopic = DefaultHausMqttTopics.UnknownTopic;
         public const string HealthTopic = DefaultHausMqttTopics.HealthTopic;
     }
-
-    public static class ZigbeeOptions
-    {
-        public const string BaseTopic = "zigbee2mqtt";
-    }
 }

@@ -16,9 +16,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj" />
+    <ProjectReference Include="..\..\src\Haus.Zigbee\Haus.Zigbee.csproj" />
   </ItemGroup>
 
   <Target Name="InstallBrowsers" AfterTargets="Build">
-    <Exec Command="pwsh bin/$(Configuration)/$(TargetFramework)/playwright.ps1 install --with-deps" />
+    <Exec Command="dotnet tool restore" WorkingDirectory="$(MSBuildProjectDirectory)" />
+    <Exec
+      Command="dotnet pwsh bin/$(Configuration)/$(TargetFramework)/playwright.ps1 install --with-deps"
+      WorkingDirectory="$(MSBuildProjectDirectory)"
+    />
   </Target>
 </Project>

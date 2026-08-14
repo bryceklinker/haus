@@ -13,10 +13,10 @@
         <MudItem xs="12">
             <MudGrid>
                 <MudItem xs="12">
-                    <MudTextField T="string?" InputId="name" Label="Name" @bind-Value="Name"/>
-                </MudItem>    
+                    <MudTextField T="string" InputId="name" Label="Name" Value="Name" ValueChanged="(string? value) => Name = value"/>
+                </MudItem>
                 <MudItem xs="12">
-                    <MudTextField T="int?" InputId="occupancyTimeout" Label="Occupancy Timeout" @bind-Value="OccupancyTimeout"/>
+                    <MudTextField T="int?" InputId="occupancyTimeout" Label="Occupancy Timeout" Value="OccupancyTimeout" ValueChanged="(int? value) => OccupancyTimeout = value"/>
                 </MudItem>
                 <MudItem xs="12">
                     <MudButton OnClick="SaveRoom">Save</MudButton>
@@ -54,7 +54,7 @@
     
     private async Task HandleLightingChanged(LightingModel? lighting)
     {
-        if (lighting == null || lighting == Room?.Lighting)
+        if (lighting == null || lighting == Room?.Lighting || Room == null)
         {
             return;
         }

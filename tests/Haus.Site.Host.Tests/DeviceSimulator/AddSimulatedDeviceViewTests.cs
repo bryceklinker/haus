@@ -34,7 +34,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(1, page.FindComponents<MudProgressCircular>().Count);
+            Assert.Single(page.FindComponents<MudProgressCircular>());
         });
     }
 
@@ -63,7 +63,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         await SelectDeviceType(page, DeviceType.Switch);
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
-        Assert.Equal(1, _savedDevices.Count);
+        Assert.Single(_savedDevices);
         Assert.Equivalent(new SimulatedDeviceModel { DeviceType = DeviceType.Switch }, _savedDevices.Single());
     }
 
@@ -89,7 +89,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         var page = RenderView<AddSimulatedDeviceView>();
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
-        Assert.Equal(0, _savedDevices.Count);
+        Assert.Empty(_savedDevices);
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
         await SelectDeviceType(page, DeviceType.Light);
         await FindSaveButton(page).ClickAsync(new MouseEventArgs());
 
-        Assert.Equal(1, _savedDevices.Count);
+        Assert.Single(_savedDevices);
         Assert.Equivalent(
             new SimulatedDeviceModel
             {
