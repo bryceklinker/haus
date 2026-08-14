@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+  remove|deconfigure)
+    systemctl stop haus-app.service || true
+    systemctl disable haus-app.service || true
+    ;;
+  upgrade)
+    # Left running -- postinst's `systemctl restart` on the new version
+    # brings it back up against the upgraded package's files, so stopping
+    # it here would just be a redundant stop/start cycle.
+    ;;
+esac
+
+exit 0

@@ -1,0 +1,40 @@
+#!/bin/sh
+set -e
+
+CONFIG_DIR="/etc/haus"
+DATA_DIR="/var/lib/haus/data"
+CERT_PASSWORD="password"
+
+case "$1" in
+  configure)
+    mkdir -p "$DATA_DIR/haus_web/logs" \
+             "$DATA_DIR/haus_zigbee/logs" \
+             "$DATA_DIR/haus_mqtt/config" \
+             "$DATA_DIR/haus_mqtt/data" \
+             "$DATA_DIR/haus_mqtt/log"
+
+    # openssl only, deliberately -- unlike scripts/linux-install.sh's
+    # `dotnet dev-certs` step, this package must not require the .NET SDK
+    # on the host to generate its self-signed cert.
+    if [ ! -f "$CONFIG_DIR/cert.pfx" ]; then
+      openssl req -x509 -newkey rsa:2048 -nodes \
+        -keyout "$CONFIG_DIR/cert.key" \
+        -out "$CONFIG_DIR/cert.crt" \
+        -days 825 \
+        -subj "/CN=haus.local"
+      openssl pkcs12 -export \
+        -out "$CONFIG_DIR/cert.pfx" \
+        -inkey "$CONFIG_DIR/cert.key" \
+        -in "$CONFIG_DIR/cert.crt" \
+        -password "pass:${CERT_PASSWORD}"
+    fi
+
+    systemctl daemon-reload
+    systemctl enable haus-app.service
+    # restart (not start) so an upgrade also picks up this version's
+    # pinned image tags, not just a fresh install.
+    systemctl restart haus-app.service
+    ;;
+esac
+
+exit 0
