@@ -126,4 +126,36 @@ public class ConventionalCommitMessageValidatorTests
 
         Assert.True(result.IsValid);
     }
+
+    [Fact]
+    public void WhenValidThenErrorIsEmpty()
+    {
+        var result = _validator.Validate("feat: add device discovery");
+
+        Assert.Equal(string.Empty, result.Error);
+    }
+
+    [Fact]
+    public void WhenMessageHasLeadingBlankLinesThenFirstNonBlankLineIsTheHeader()
+    {
+        var result = _validator.Validate("\n\nfeat: add device discovery");
+
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void WhenHeaderHasBreakingChangeMarkerWithNoScopeThenIsValid()
+    {
+        var result = _validator.Validate("feat!: change device response shape");
+
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void WhenScopeHasUppercaseCharactersThenIsInvalid()
+    {
+        var result = _validator.Validate("feat(API): change device response shape");
+
+        Assert.False(result.IsValid);
+    }
 }

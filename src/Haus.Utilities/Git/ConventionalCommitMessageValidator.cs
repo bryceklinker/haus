@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace Haus.Utilities.Git;
 
-public record CommitMessageValidationResult(bool IsValid, string? Error)
+public record CommitMessageValidationResult(bool IsValid, string Error)
 {
-    public static CommitMessageValidationResult Valid() => new(true, null);
+    public static CommitMessageValidationResult Valid() => new(true, string.Empty);
 
     public static CommitMessageValidationResult Invalid(string error) => new(false, error);
 }
@@ -51,9 +51,14 @@ public class ConventionalCommitMessageValidator : IConventionalCommitMessageVali
 
     private static string FirstLine(string commitMessage)
     {
-        var newlineIndex = commitMessage.IndexOf('\n');
-        var header = newlineIndex >= 0 ? commitMessage[..newlineIndex] : commitMessage;
-        return header.Trim();
+        foreach (var line in commitMessage.Split('\n'))
+        {
+            var trimmed = line.Trim();
+            if (trimmed.Length > 0)
+                return trimmed;
+        }
+
+        return string.Empty;
     }
 
     private static bool IsGitGeneratedHeader(string header) =>

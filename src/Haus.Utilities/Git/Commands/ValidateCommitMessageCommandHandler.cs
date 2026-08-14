@@ -27,7 +27,7 @@ public class ValidateCommitMessageCommandHandler(
         var commitMessage = await File.ReadAllTextAsync(commitMessageFilePath, cancellationToken);
         var result = validator.Validate(commitMessage);
         if (!result.IsValid)
-            throw new InvalidCommitMessageException(result.Error!);
+            throw new InvalidCommitMessageException(result.Error);
 
         logger.LogInformation("Commit message is valid.");
     }
