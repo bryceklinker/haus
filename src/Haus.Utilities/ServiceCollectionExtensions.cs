@@ -1,5 +1,6 @@
 using Haus.Hosting;
 using Haus.Utilities.Common.Cli;
+using Haus.Utilities.Git;
 using Haus.Utilities.Packaging;
 using Haus.Utilities.TypeScript.GenerateModels;
 using Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
@@ -18,6 +19,7 @@ public static class ServiceCollectionExtensions
             .AddTransient<IDeviceTypeOptionsParser, DeviceTypeOptionsParser>()
             .AddTransient<IDeviceTypeOptionsMerger, DeviceTypeOptionsMerger>()
             .AddTransient<IDebComposeVersionPinner, DebComposeVersionPinner>()
+            .AddTransient<IConventionalCommitMessageValidator, ConventionalCommitMessageValidator>()
             .AddSingleton<ICommandFactory, CommandFactory>();
     }
 }

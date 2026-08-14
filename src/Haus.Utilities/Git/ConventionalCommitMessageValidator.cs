@@ -10,7 +10,12 @@ public record CommitMessageValidationResult(bool IsValid, string? Error)
     public static CommitMessageValidationResult Invalid(string error) => new(false, error);
 }
 
-public class ConventionalCommitMessageValidator
+public interface IConventionalCommitMessageValidator
+{
+    CommitMessageValidationResult Validate(string commitMessage);
+}
+
+public class ConventionalCommitMessageValidator : IConventionalCommitMessageValidator
 {
     private static readonly string[] AllowedTypes =
     [

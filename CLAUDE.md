@@ -38,7 +38,11 @@ Coverage/build variables (VERSION, CONFIGURATION, publish/coverage paths) live i
 
 ### Formatting / linting
 
-CSharpier + `dotnet format` run automatically on staged `*.cs` files via Husky.Net (`.husky/pre-commit` → `dotnet husky run`, tasks defined in `.husky/task-runner.json`). CSharpier config is in `.csharpierrc.json` (4-space indent, 120 col width). Don't bypass this hook.
+CSharpier + `dotnet format` run automatically on staged `*.cs` files via Husky.Net (`.husky/pre-commit` → `dotnet husky run --group pre-commit`, tasks defined in `.husky/task-runner.json`). CSharpier config is in `.csharpierrc.json` (4-space indent, 120 col width). Don't bypass this hook.
+
+### Commit messages
+
+Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/) (`type(scope): description`) — see `CONTRIBUTING.md` for the allowed types and why (it drives git-cliff release notes). Enforced by a Husky.Net `commit-msg` hook (`.husky/commit-msg` → `dotnet husky run --group commit-msg`), backed by `Haus.Utilities`' `git validate-commit-message` CLI command (`src/Haus.Utilities/Git`).
 
 ### EF Core migrations
 
