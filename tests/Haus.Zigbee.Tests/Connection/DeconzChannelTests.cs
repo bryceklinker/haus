@@ -52,8 +52,8 @@ public class DeconzChannelTests
         var channel = new DeconzChannel(transport);
         var command = new byte[] { 0x0A, 0x05, 0x01 };
 
-        await Assert.ThrowsAnyAsync<OperationCanceledException>(
-            () => channel.SendAndReceiveAsync(command, cancellation.Token)
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            channel.SendAndReceiveAsync(command, cancellation.Token)
         );
     }
 

@@ -372,13 +372,7 @@ public class DeviceEntityTest
             new TemperatureLightingEntity(12, 0, 2000),
             new ColorLightingEntity(23, 12, 89)
         );
-        var metadata = new[]
-        {
-            new DeviceMetadataEntity("one", "two")
-            {
-                Device = new DeviceEntity()
-            }
-        };
+        var metadata = new[] { new DeviceMetadataEntity("one", "two") { Device = new DeviceEntity() } };
         var device = new DeviceEntity(
             12,
             $"{Guid.NewGuid()}",

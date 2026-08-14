@@ -26,8 +26,14 @@ public class DeviceDetailViewTests : HausSiteTestContext
             device.DeviceType,
             page.FindMudTextFieldById<DeviceType?>("deviceType").Instance.GetState(x => x.Value)
         );
-        Assert.Equal(device.ExternalId, page.FindMudTextFieldById<string>("externalId").Instance.GetState(x => x.Value));
-        Assert.Equal(device.LightType, page.FindMudTextFieldById<LightType>("lightType").Instance.GetState(x => x.Value));
+        Assert.Equal(
+            device.ExternalId,
+            page.FindMudTextFieldById<string>("externalId").Instance.GetState(x => x.Value)
+        );
+        Assert.Equal(
+            device.LightType,
+            page.FindMudTextFieldById<LightType>("lightType").Instance.GetState(x => x.Value)
+        );
         Assert.Equal(device.RoomId, page.FindMudTextFieldById<long?>("roomId").Instance.GetState(x => x.Value));
     }
 

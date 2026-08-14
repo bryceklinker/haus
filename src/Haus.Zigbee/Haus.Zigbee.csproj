@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="System.IO.Ports" Version="$(MicrosoftPackageVersion)"/>
-    </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference
+      Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="$(MicrosoftPackageVersion)"
+    />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="System.IO.Ports" Version="$(MicrosoftPackageVersion)" />
+  </ItemGroup>
 </Project>

@@ -56,8 +56,8 @@ public class ZigbeeHostHealthPublisherTests : IAsyncLifetime
 
         await _publisher!.PublishAsync(EmptyReport(), CancellationToken.None);
 
-        Eventually.Assert(
-            () => Assert.Contains(actual!.Checks, c => c.Name == "Zigbee" && c.Status == HealthStatus.Healthy)
+        Eventually.Assert(() =>
+            Assert.Contains(actual!.Checks, c => c.Name == "Zigbee" && c.Status == HealthStatus.Healthy)
         );
     }
 
@@ -70,8 +70,8 @@ public class ZigbeeHostHealthPublisherTests : IAsyncLifetime
 
         await _publisher!.PublishAsync(EmptyReport(), CancellationToken.None);
 
-        Eventually.Assert(
-            () => Assert.Contains(actual!.Checks, c => c.Name == "Zigbee" && c.Status == HealthStatus.Unhealthy)
+        Eventually.Assert(() =>
+            Assert.Contains(actual!.Checks, c => c.Name == "Zigbee" && c.Status == HealthStatus.Unhealthy)
         );
     }
 }

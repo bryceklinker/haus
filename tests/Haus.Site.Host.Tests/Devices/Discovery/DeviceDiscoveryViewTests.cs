@@ -67,20 +67,18 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>());
         await HausApiHandler.SetupGetAsJson(
             RoomsUrl,
-            new ListResult<RoomModel>(
-                [
-                    HausModelFactory.RoomModel() with
-                    {
-                        Name = "Basement",
-                        Id = 4,
-                    },
-                    HausModelFactory.RoomModel() with
-                    {
-                        Name = "Master Bedroom",
-                        Id = 3,
-                    },
-                ]
-            )
+            new ListResult<RoomModel>([
+                HausModelFactory.RoomModel() with
+                {
+                    Name = "Basement",
+                    Id = 4,
+                },
+                HausModelFactory.RoomModel() with
+                {
+                    Name = "Master Bedroom",
+                    Id = 3,
+                },
+            ])
         );
 
         var page = Context.Render<DeviceDiscoveryView>();
@@ -100,26 +98,24 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         );
         await HausApiHandler.SetupGetAsJson(
             DevicesUrl,
-            new ListResult<DeviceModel>(
-                [
-                    HausModelFactory.DeviceModel() with
-                    {
-                        RoomId = 6,
-                    },
-                    HausModelFactory.DeviceModel() with
-                    {
-                        RoomId = null,
-                    },
-                    HausModelFactory.DeviceModel() with
-                    {
-                        RoomId = null,
-                    },
-                    HausModelFactory.DeviceModel() with
-                    {
-                        RoomId = 6,
-                    },
-                ]
-            )
+            new ListResult<DeviceModel>([
+                HausModelFactory.DeviceModel() with
+                {
+                    RoomId = 6,
+                },
+                HausModelFactory.DeviceModel() with
+                {
+                    RoomId = null,
+                },
+                HausModelFactory.DeviceModel() with
+                {
+                    RoomId = null,
+                },
+                HausModelFactory.DeviceModel() with
+                {
+                    RoomId = 6,
+                },
+            ])
         );
 
         var page = Context.Render<DeviceDiscoveryView>();

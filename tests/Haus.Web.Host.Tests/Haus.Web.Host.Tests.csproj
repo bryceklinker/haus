@@ -1,16 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="$(MicrosoftPackageVersion)"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
-        <PackageReference Include="Polly.Extensions.Http" Version="3.0.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\Haus.Api.Client\Haus.Api.Client.csproj"/>
-        <ProjectReference Include="..\..\src\Haus.Web.Host\Haus.Web.Host.csproj"/>
-        <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj"/>
-    </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Haus.Api.Client\Haus.Api.Client.csproj" />
+    <ProjectReference Include="..\..\src\Haus.Web.Host\Haus.Web.Host.csproj" />
+    <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj" />
+  </ItemGroup>
 </Project>

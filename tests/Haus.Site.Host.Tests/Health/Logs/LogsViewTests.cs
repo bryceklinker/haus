@@ -34,9 +34,11 @@ public class LogsViewTests : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(
             "/api/logs",
-            new ListResult<LogEntryModel>(
-                [HausModelFactory.LogEntryModel(), HausModelFactory.LogEntryModel(), HausModelFactory.LogEntryModel()]
-            )
+            new ListResult<LogEntryModel>([
+                HausModelFactory.LogEntryModel(),
+                HausModelFactory.LogEntryModel(),
+                HausModelFactory.LogEntryModel(),
+            ])
         );
 
         var view = RenderView<LogsView>();

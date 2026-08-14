@@ -32,9 +32,11 @@ public class DevicesListViewTests : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(
             DevicesUrl,
-            new ListResult<DeviceModel>(
-                [HausModelFactory.DeviceModel(), HausModelFactory.DeviceModel(), HausModelFactory.DeviceModel()]
-            )
+            new ListResult<DeviceModel>([
+                HausModelFactory.DeviceModel(),
+                HausModelFactory.DeviceModel(),
+                HausModelFactory.DeviceModel(),
+            ])
         );
 
         var page = RenderView<DevicesListView>();
@@ -50,9 +52,13 @@ public class DevicesListViewTests : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(
             DevicesUrl,
-            new ListResult<DeviceModel>(
-                [HausModelFactory.DeviceModel() with { DeviceType = DeviceType.MotionSensor, Name = "Motions" }]
-            )
+            new ListResult<DeviceModel>([
+                HausModelFactory.DeviceModel() with
+                {
+                    DeviceType = DeviceType.MotionSensor,
+                    Name = "Motions",
+                },
+            ])
         );
 
         var page = RenderView<DevicesListView>();
@@ -70,9 +76,14 @@ public class DevicesListViewTests : HausSiteTestContext
     {
         await HausApiHandler.SetupGetAsJson(
             DevicesUrl,
-            new ListResult<DeviceModel>(
-                [HausModelFactory.DeviceModel() with { Id = 5, DeviceType = DeviceType.MotionSensor, Name = "Motions" }]
-            )
+            new ListResult<DeviceModel>([
+                HausModelFactory.DeviceModel() with
+                {
+                    Id = 5,
+                    DeviceType = DeviceType.MotionSensor,
+                    Name = "Motions",
+                },
+            ])
         );
 
         var page = RenderView<DevicesListView>();

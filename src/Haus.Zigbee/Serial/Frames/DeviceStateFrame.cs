@@ -42,7 +42,7 @@ public static class DeviceStateCodec
             StatusCommandId,
             sequenceNumber,
             RequestStatus,
-            ..LittleEndian.Bytes(PollRequestFrameLength),
+            .. LittleEndian.Bytes(PollRequestFrameLength),
             Reserved,
             Reserved,
             Reserved,

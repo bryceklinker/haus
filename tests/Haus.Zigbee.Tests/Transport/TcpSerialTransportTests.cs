@@ -77,8 +77,8 @@ public class TcpSerialTransportTests : IAsyncLifetime
     {
         using var transport = new TcpSerialTransport("127.0.0.1", _port);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => transport.WriteAsync(new byte[] { 0x01 }, CancellationToken.None)
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            transport.WriteAsync(new byte[] { 0x01 }, CancellationToken.None)
         );
     }
 
@@ -87,7 +87,9 @@ public class TcpSerialTransportTests : IAsyncLifetime
     {
         using var transport = new TcpSerialTransport("127.0.0.1", _port);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(() => transport.ReadAsync(new byte[1], CancellationToken.None));
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            transport.ReadAsync(new byte[1], CancellationToken.None)
+        );
     }
 
     [Fact]
@@ -119,8 +121,8 @@ public class TcpSerialTransportTests : IAsyncLifetime
         accepted.Client.Close();
         await Task.Delay(TimeSpan.FromMilliseconds(100));
 
-        await Assert.ThrowsAsync<IOException>(
-            () => transport.WriteAsync(new byte[] { 0x01, 0x02, 0x03 }, CancellationToken.None)
+        await Assert.ThrowsAsync<IOException>(() =>
+            transport.WriteAsync(new byte[] { 0x01, 0x02, 0x03 }, CancellationToken.None)
         );
     }
 
