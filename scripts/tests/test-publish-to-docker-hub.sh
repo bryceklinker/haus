@@ -41,6 +41,17 @@ test_login_runs_before_any_build() {
   [[ -n "${login_line}" && -n "${build_line}" && "${login_line}" -lt "${build_line}" ]]
 }
 
+test_push_runs_after_all_three_builds() {
+  run_publish_script_with_stub_docker >/dev/null 2>&1
+  local log="${SANDBOX_DIR}/docker-calls.log"
+  local push_line last_build_line build_count
+  push_line=$(grep -n "^push --all-tags test-user/test-repo$" "${log}" | head -1 | cut -d: -f1)
+  last_build_line=$(grep -n "^build " "${log}" | tail -1 | cut -d: -f1)
+  build_count=$(grep -c "^build " "${log}")
+  rm -rf "${SANDBOX_DIR}"
+  [[ -n "${push_line}" && "${build_count}" -eq 3 && "${push_line}" -gt "${last_build_line}" ]]
+}
+
 run_test() {
   local name="$1"
   if "${name}"; then
@@ -52,6 +63,7 @@ run_test() {
 }
 
 run_test test_login_runs_before_any_build
+run_test test_push_runs_after_all_three_builds
 
 if [[ "${FAILURES}" -gt 0 ]]; then
   echo "${FAILURES} test(s) failed"
