@@ -33,13 +33,31 @@ test_remove_locally_built_images_removes_all_three_tags() {
   return "${result}"
 }
 
+# Runs main() with every step except remove_locally_built_images stubbed to
+# just log its own name to the (shared) docker-calls.log -- so the real
+# remove_locally_built_images's actual `docker rmi` calls land in the same
+# log, in the same order they really ran in, alongside its siblings.
+run_main_with_sibling_steps_stubbed() {
+  local log="${SANDBOX_DIR}/docker-calls.log"
+  run_with_sourced_build_deb_package "
+    stage_package_tree() { echo stage_package_tree >>'${log}'; }
+    render_pinned_compose_file() { echo render_pinned_compose_file >>'${log}'; }
+    set_control_version() { echo set_control_version >>'${log}'; }
+    build_deb() { echo build_deb >>'${log}'; }
+    install_and_smoke_test() { echo install_and_smoke_test >>'${log}'; }
+    main
+  "
+}
+
 test_remove_locally_built_images_runs_before_install_and_smoke_test() {
-  local main_body
-  main_body=$(sed -n '/^function main()/,/^}/p' "${REPO_ROOT}/scripts/build-deb-package.sh")
-  local remove_line install_line
-  remove_line=$(echo "${main_body}" | grep -n "remove_locally_built_images" | head -1 | cut -d: -f1)
-  install_line=$(echo "${main_body}" | grep -n "install_and_smoke_test" | head -1 | cut -d: -f1)
-  [[ -n "${remove_line}" && -n "${install_line}" && "${remove_line}" -lt "${install_line}" ]]
+  prepare_stub_docker_sandbox
+  run_main_with_sibling_steps_stubbed >/dev/null 2>&1
+  local log="${SANDBOX_DIR}/docker-calls.log"
+  local last_rmi_line install_line
+  last_rmi_line=$(grep -n "^rmi " "${log}" | tail -1 | cut -d: -f1)
+  install_line=$(grep -n "^install_and_smoke_test$" "${log}" | head -1 | cut -d: -f1)
+  rm -rf "${SANDBOX_DIR}"
+  [[ -n "${last_rmi_line}" && -n "${install_line}" && "${last_rmi_line}" -lt "${install_line}" ]]
 }
 
 run_test test_remove_locally_built_images_removes_all_three_tags
