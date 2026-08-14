@@ -50,6 +50,15 @@ test_remove_locally_built_images_removes_all_three_tags() {
   return "${result}"
 }
 
+test_remove_locally_built_images_runs_before_install_and_smoke_test() {
+  local main_body
+  main_body=$(sed -n '/^function main()/,/^}/p' "${REPO_ROOT}/scripts/build-deb-package.sh")
+  local remove_line install_line
+  remove_line=$(echo "${main_body}" | grep -n "remove_locally_built_images" | head -1 | cut -d: -f1)
+  install_line=$(echo "${main_body}" | grep -n "install_and_smoke_test" | head -1 | cut -d: -f1)
+  [[ -n "${remove_line}" && -n "${install_line}" && "${remove_line}" -lt "${install_line}" ]]
+}
+
 run_test() {
   local name="$1"
   if "${name}"; then
@@ -61,6 +70,7 @@ run_test() {
 }
 
 run_test test_remove_locally_built_images_removes_all_three_tags
+run_test test_remove_locally_built_images_runs_before_install_and_smoke_test
 
 if [[ "${FAILURES}" -gt 0 ]]; then
   echo "${FAILURES} test(s) failed"

@@ -70,6 +70,7 @@ function main() {
   render_pinned_compose_file
   set_control_version
   build_deb
+  remove_locally_built_images
   install_and_smoke_test
 }
 
