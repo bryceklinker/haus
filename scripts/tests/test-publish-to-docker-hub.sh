@@ -7,8 +7,11 @@ FAILURES=0
 # Runs scripts/publish-to-docker-hub.sh with a stub `docker` on PATH that
 # records every invocation (one line per call, args space-joined) instead of
 # touching a real daemon or registry. Sets SANDBOX_DIR for the caller to
-# inspect "${SANDBOX_DIR}/docker-calls.log" and clean up.
+# inspect "${SANDBOX_DIR}/docker-calls.log" and clean up. Sets SCRIPT_EXIT_CODE
+# to the script's own exit code. If FAIL_SUBCOMMAND is set (e.g. "login"),
+# the stub exits 1 for calls whose first argument matches it.
 run_publish_script_with_stub_docker() {
+  local fail_subcommand="${FAIL_SUBCOMMAND:-}"
   SANDBOX_DIR="$(mktemp -d)"
   local log="${SANDBOX_DIR}/docker-calls.log"
   : >"${log}"
@@ -16,6 +19,9 @@ run_publish_script_with_stub_docker() {
   cat >"${SANDBOX_DIR}/docker" <<STUB
 #!/usr/bin/env bash
 echo "\$*" >>"${log}"
+if [[ "\$1" == "${fail_subcommand}" && -n "${fail_subcommand}" ]]; then
+  exit 1
+fi
 exit 0
 STUB
   chmod +x "${SANDBOX_DIR}/docker"
@@ -29,6 +35,7 @@ STUB
         VERSION="v1.2.3" \
         bash scripts/publish-to-docker-hub.sh
   )
+  SCRIPT_EXIT_CODE="$?"
 }
 
 test_login_runs_before_any_build() {
@@ -52,6 +59,22 @@ test_push_runs_after_all_three_builds() {
   [[ -n "${push_line}" && "${build_count}" -eq 3 && "${push_line}" -gt "${last_build_line}" ]]
 }
 
+test_script_exits_nonzero_when_login_fails() {
+  FAIL_SUBCOMMAND="login" run_publish_script_with_stub_docker >/dev/null 2>&1
+  local exit_code="${SCRIPT_EXIT_CODE}"
+  local build_count
+  build_count=$(grep -c "^build " "${SANDBOX_DIR}/docker-calls.log")
+  rm -rf "${SANDBOX_DIR}"
+  [[ "${exit_code}" -ne 0 && "${build_count}" -eq 0 ]]
+}
+
+test_script_exits_nonzero_when_push_fails() {
+  FAIL_SUBCOMMAND="push" run_publish_script_with_stub_docker >/dev/null 2>&1
+  local exit_code="${SCRIPT_EXIT_CODE}"
+  rm -rf "${SANDBOX_DIR}"
+  [[ "${exit_code}" -ne 0 ]]
+}
+
 run_test() {
   local name="$1"
   if "${name}"; then
@@ -64,6 +87,8 @@ run_test() {
 
 run_test test_login_runs_before_any_build
 run_test test_push_runs_after_all_three_builds
+run_test test_script_exits_nonzero_when_login_fails
+run_test test_script_exits_nonzero_when_push_fails
 
 if [[ "${FAILURES}" -gt 0 ]]; then
   echo "${FAILURES} test(s) failed"
