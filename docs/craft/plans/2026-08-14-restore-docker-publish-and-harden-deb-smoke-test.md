@@ -38,8 +38,10 @@ or touching the host.
    - depends on 1: same file, same test suite — sequenced to avoid a collision.
 
 3. `[independent]` Harden `install_and_smoke_test` to prove a real registry pull.
-   - criteria: local `haus-*` tags are removed (or `docker compose pull` forced) before install; test suite
-     covers both "fails when the push was skipped/broken" and "passes when the push succeeded".
+   - criteria: local `haus-*` tags are removed before install, in the right order relative to the smoke test.
+     The unit tests only cover that `remove_locally_built_images` untags the right images and runs before
+     `install_and_smoke_test` — they use a stub `docker` and so cannot themselves prove the gate discriminates
+     a broken push from a working one. That is a separate, still-open verification step (see below).
    - files: `scripts/build-deb-package.sh`, `scripts/tests/test-build-deb-package.sh` (new)
    - independent of 1/2: disjoint files.
 
