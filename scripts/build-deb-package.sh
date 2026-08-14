@@ -29,6 +29,12 @@ function build_deb() {
   dpkg-deb --build --root-owner-group "${DEB_STAGE_DIRECTORY}" "${DEB_OUTPUT_PATH}"
 }
 
+function remove_locally_built_images() {
+  for service in haus-web haus-zigbee haus-site; do
+    docker rmi "${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}:${service}-${VERSION}"
+  done
+}
+
 # This is the pipeline's gate: there's no separate staging environment to
 # promote through (HAUS is self-hosted, installed by an operator, not
 # deployed by this pipeline), so installing for real on the runner itself
@@ -67,4 +73,6 @@ function main() {
   install_and_smoke_test
 }
 
-main
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main
+fi
