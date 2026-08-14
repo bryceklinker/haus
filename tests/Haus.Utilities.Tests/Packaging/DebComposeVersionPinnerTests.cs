@@ -24,7 +24,7 @@ public class DebComposeVersionPinnerTests
               image: bryceklinker/personal:haus-zigbee-latest
             haus_web:
               image: bryceklinker/personal:haus-web-latest
-            haus_sit:
+            haus_site:
               image: bryceklinker/personal:haus-site-latest
             """;
 

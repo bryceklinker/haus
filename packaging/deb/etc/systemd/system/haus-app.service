@@ -12,7 +12,22 @@ WorkingDirectory=/etc/haus
 # guaranteed to be the right one. `up -d` already pulls whatever's missing;
 # forcing a pull on every start would make startup fail on a flaky network
 # or registry outage even when a perfectly good image is already cached.
-ExecStart=/usr/bin/docker compose up -d --remove-orphans
+#
+# haus_zigbee is brought up in its own ExecStart, separate from the other
+# three services, and never in the same `docker compose up` invocation as
+# them. haus_zigbee needs a physical Zigbee dongle at /dev/ttyACM0 that
+# most hosts (including every CI runner) won't have; when it's absent,
+# `docker compose up`'s device attach fails and the *whole command* returns
+# non-zero -- and confirmed via a real install, that failure can race with
+# and cancel the not-yet-issued `start` for a later, unrelated service in
+# the same invocation (haus_site, which starts last because it links to
+# haus_web), permanently stranding it at "Created" and never "running".
+# Excluding haus_zigbee from the required services' invocation removes the
+# shared failure domain entirely: a missing dongle can no longer prevent
+# haus_mqtt/haus_web/haus_site from starting. The leading "-" makes systemd
+# ignore this step's exit code, so a missing dongle doesn't fail the unit.
+ExecStart=/usr/bin/docker compose up -d --remove-orphans haus_mqtt haus_web haus_site
+ExecStart=-/usr/bin/docker compose up -d --remove-orphans haus_zigbee
 ExecStop=/usr/bin/docker compose down
 
 [Install]
