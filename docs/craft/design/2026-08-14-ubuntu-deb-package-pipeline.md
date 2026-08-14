@@ -65,7 +65,7 @@ for a staging deploy:
 - `make deb-package` therefore doesn't just run `dpkg-deb --build` — it
   also: `sudo apt install -y ./haus-app_<version>_amd64.deb`, then polls
   `docker compose ps` per-container (in the package's install directory)
-  for `haus_mqtt`/`haus_web`/`haus_sit` specifically, rather than waiting
+  for `haus_mqtt`/`haus_web`/`haus_site` specifically, rather than waiting
   on the systemd unit's own active/failed verdict — verified during
   implementation that `haus-app.service` can legitimately end up "failed"
   (haus_zigbee needs a physical dongle a build runner won't have) while

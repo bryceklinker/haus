@@ -49,7 +49,7 @@ services:
     links:
       - haus_mqtt
 
-  haus_sit:
+  haus_site:
     container_name: haus_site
     restart: always
     image: bryceklinker/personal:haus-site-latest
