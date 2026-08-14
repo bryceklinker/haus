@@ -40,15 +40,15 @@ function build_deb() {
 function install_and_smoke_test() {
   sudo apt-get install -y "${DEB_OUTPUT_PATH}"
 
-  # No wait on the unit's own active/failed state here: haus-app.service can
-  # legitimately end up "failed" (see postinst's best-effort restart) while
-  # haus_mqtt/haus_web/haus_sit are still up fine, so the real gate is the
-  # per-container polling below, not systemctl's unit-level verdict.
-  # haus_mqtt/haus_web/haus_sit have no external hardware dependency and
-  # must come up; haus_zigbee needs a physical Zigbee dongle at
-  # /dev/ttyACM0 that a build runner won't have, so it's checked but not
-  # required -- see haus-app.service's postinst comment for why that
-  # can't block installation.
+  # No wait on the unit's own active/failed state here: haus-app.service's
+  # best-effort restart (see postinst) can still surface an unexpected
+  # failure, so the real gate is the per-container polling below, not
+  # systemctl's unit-level verdict. haus_mqtt/haus_web/haus_sit have no
+  # external hardware dependency and must come up; haus_zigbee needs a
+  # physical Zigbee dongle at /dev/ttyACM0 that a build runner won't have,
+  # so it's checked but not required -- its ExecStart is isolated from the
+  # other three in haus-app.service specifically so a missing dongle can't
+  # race with and block their startup.
   # "haus_sit" (not "haus_site") is the compose service key, matching the
   # same typo in the template and the root docker-compose.yml -- keep this
   # in sync with docker-compose.yml.template if that's ever renamed.

@@ -31,13 +31,13 @@ case "$1" in
     systemctl daemon-reload
     systemctl enable haus-app.service
     # restart (not start) so an upgrade also picks up this version's
-    # pinned image tags, not just a fresh install. Best-effort: haus_zigbee
-    # needs a physical Zigbee dongle at /dev/ttyACM0, so `docker compose up`
-    # (and therefore this oneshot unit) can legitimately fail on a host
-    # where it isn't plugged in yet -- that must not abort package
-    # configuration, or `apt install` would fail for anyone who hasn't
-    # attached their dongle before installing. The unit is still enabled
-    # for the next successful boot/manual restart.
+    # pinned image tags, not just a fresh install. Best-effort: the unit's
+    # haus_zigbee ExecStart is already `-`-prefixed so a missing dongle
+    # doesn't fail the unit itself (see haus-app.service), but this is kept
+    # as a second line of defense against any other unexpected failure --
+    # a bad restart here must not abort package configuration, or
+    # `apt install` would fail outright. The unit is still enabled for the
+    # next successful boot/manual restart.
     systemctl restart haus-app.service || true
     ;;
 esac
