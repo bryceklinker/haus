@@ -54,14 +54,18 @@ commit-message convention work lands — conventional-format commits already
 match the same parsers.
 
 `scripts/generate-release-notes.sh` wraps the `git-cliff` invocation
-(`--config cliff.toml --unreleased --strip header`, or `--tag <tag>
---unreleased` when a tag argument is given) so the exact same command runs
-from a developer's machine (`make release-notes`) and from CI — no
-CI-only templating logic to drift out of sync with what a human sees
-locally. `--unreleased` is used even in CI: the tag doesn't exist yet at
-notes-generation time (see stage ordering below), so `--tag <computed-tag>
---unreleased` asks git-cliff to label the pending commits with that name
-without requiring the tag object to already exist.
+(`--config cliff.toml --unreleased`, or `--tag <tag> --unreleased` when a
+tag argument is given) so the exact same command runs from a developer's
+machine (`make release-notes`) and from CI — no CI-only templating logic
+to drift out of sync with what a human sees locally. `--unreleased` is
+used even in CI: the tag doesn't exist yet at notes-generation time (see
+stage ordering below), so `--tag <computed-tag> --unreleased` asks
+git-cliff to label the pending commits with that name without requiring
+the tag object to already exist. `cliff.toml`'s `body` template
+deliberately omits the `## [version] - date` heading git-cliff's default
+template renders — GitHub's release page already shows the tag/name as
+its own title, so that heading would just be a duplicate directly above
+the categorized list.
 
 git-cliff itself isn't vendored or installed as a prerequisite for `make
 release-notes` — like `dotnet`/`docker`, it's assumed present locally
@@ -118,8 +122,8 @@ through.
 
 ## Evidence-of-done
 
-- `git-cliff --config cliff.toml --unreleased --strip header` run against
-  this repo's real history, output inspected for sane grouping.
+- `git-cliff --config cliff.toml --unreleased` run against this repo's
+  real history, output inspected for sane grouping.
 - `dotnet test tests/Haus.Utilities.Tests --filter FullyQualifiedName~SemVerBumper`
   green.
 - `actionlint .github/workflows/release.yaml` (or reasoning through each

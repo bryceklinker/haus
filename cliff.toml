@@ -1,0 +1,51 @@
+# git-cliff configuration for HAUS release notes.
+# Docs: https://git-cliff.org/docs/configuration
+# Generated via `make release-notes` locally, or `scripts/generate-release-notes.sh`
+# in the release pipeline (.github/workflows/release.yaml).
+
+[changelog]
+body = """
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | striptags | trim | upper_first }}
+{% for commit in commits %}
+- {% if commit.breaking %}[**breaking**] {% endif %}{{ commit.message | upper_first }}
+{% endfor %}
+{% endfor %}
+"""
+trim = true
+render_always = true
+
+[git]
+# Commits are parsed for a conventional-commit type prefix (feat/fix/...),
+# but NOT filtered to only conventional commits: this repo's history
+# predates that convention (still being adopted separately -- see
+# docs/craft/design/2026-08-14-gitcliff-release-notes-pipeline.md), so
+# `filter_unconventional = false` lets `commit_parsers` below fall back to
+# matching this repo's existing capitalized-imperative commit style
+# ("Add X", "Fix Y", "Rename Z") instead of dropping those commits entirely.
+conventional_commits = true
+filter_unconventional = false
+protect_breaking_commits = true
+# This repo's commits aren't conventional (no "type: subject" header), so
+# git-cliff has no header/body split to key off of and `commit.message`
+# would otherwise be the entire raw commit message. Release notes should
+# read as a scannable list, not reproduce every commit's full body, so
+# trim each message down to its first line.
+commit_preprocessors = [{ pattern = '(?s)\n.*', replace = "" }]
+commit_parsers = [
+    { message = "^(?i)fix", group = "Bug Fixes" },
+    { message = "^(?i)feat", group = "Features" },
+    { message = "^(?i)add", group = "Features" },
+    { message = "^(?i)(docs?|document)", group = "Documentation" },
+    { message = "^(?i)perf", group = "Performance" },
+    { message = "^(?i)(refactor|rename|extract|replace|restructure)", group = "Refactor" },
+    { message = "^(?i)style", group = "Styling" },
+    { message = "^(?i)test", group = "Testing" },
+    { message = "^(?i)revert", group = "Reverts" },
+    { message = "^(?i)(chore|ci|bump|update|merge|register|address)", group = "Miscellaneous Tasks" },
+    { message = ".*", group = "Other" },
+]
+filter_commits = false
+tag_pattern = "v[0-9]*"
+topo_order = false
+sort_commits = "oldest"
