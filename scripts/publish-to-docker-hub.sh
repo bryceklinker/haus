@@ -4,8 +4,7 @@ set -ex
 source ./scripts/variables.sh
 
 function login() {
-  echo "skipped..."
-#  docker login -u "${DOCKER_HUB_USERNAME}" -p "${DOCKER_HUB_ACCESS_TOKEN}"
+  docker login -u "${DOCKER_HUB_USERNAME}" -p "${DOCKER_HUB_ACCESS_TOKEN}"
 }
 
 function build_service_docker_image() {
@@ -45,7 +44,7 @@ function main() {
   build_service_docker_image "publish/haus-web" "haus-web" "Haus.Web.Host.dll"
   build_service_docker_image "publish/haus-zigbee" "haus-zigbee" "Haus.Zigbee.Host.dll"
   build_site_docker_image "publish/haus-site" "haus-site" "Haus.Zigbee.Host.dll"
-  
+
 #  publish_docker_images
 }
 
