@@ -1,0 +1,4 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+COMMIT_MSG_FILE="$1" dotnet husky run --group commit-msg
