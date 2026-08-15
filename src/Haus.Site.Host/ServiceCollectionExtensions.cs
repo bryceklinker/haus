@@ -1,5 +1,6 @@
 using System;
 using Haus.Api.Client;
+using Haus.Site.Host.Configuration;
 using Haus.Site.Host.Shared.Realtime;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -11,17 +12,23 @@ namespace Haus.Site.Host;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddHausSiteServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddHausSiteServices(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        string hostEnvironmentBaseAddress
+    )
     {
-        var apiUrl = configuration.GetValue<string>("Api:BaseUrl");
+        var configuredApiUrl = configuration.GetValue<string>("Api:BaseUrl");
         var authDomain = configuration.GetValue<string>("Auth:Domain");
         var authClientId = configuration.GetValue<string>("Auth:ClientId");
         var authAudience = configuration.GetValue<string>("Auth:Audience");
 
-        ArgumentException.ThrowIfNullOrEmpty(apiUrl, nameof(apiUrl));
+        ArgumentException.ThrowIfNullOrEmpty(configuredApiUrl, nameof(configuredApiUrl));
         ArgumentException.ThrowIfNullOrEmpty(authDomain, nameof(authDomain));
         ArgumentException.ThrowIfNullOrEmpty(authClientId, nameof(authClientId));
         ArgumentException.ThrowIfNullOrEmpty(authAudience, nameof(authAudience));
+
+        var apiUrl = ApiBaseUrlResolver.Resolve(configuredApiUrl, hostEnvironmentBaseAddress);
 
         services.AddMudServices();
         services.AddScoped<AuthorizationMessageHandler>(sp =>
