@@ -3,15 +3,23 @@
    "tasks": [
       {
          "name": "format",
+         "group": "pre-commit",
          "command": "dotnet",
          "args": ["format", "--include", "${staged}"],
          "include": ["**/*.cs"]
       },
       {
          "name": "CSharpier",
+         "group": "pre-commit",
          "command": "dotnet",
          "args": [ "csharpier", "format", "${staged}" ],
          "include": ["**/*.cs"]
+      },
+      {
+         "name": "conventional-commit-message",
+         "group": "commit-msg",
+         "command": "dotnet",
+         "args": ["run", "--project", "src/Haus.Utilities", "--", "git", "validate-commit-message"]
       }
    ]
 }

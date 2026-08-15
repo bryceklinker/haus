@@ -1,5 +1,6 @@
 using Haus.Hosting;
 using Haus.Utilities.Common.Cli;
+using Haus.Utilities.Git;
 using Haus.Utilities.Packaging;
 using Haus.Utilities.Release;
 using Haus.Utilities.TypeScript.GenerateModels;
@@ -20,6 +21,7 @@ public static class ServiceCollectionExtensions
             .AddTransient<IDeviceTypeOptionsMerger, DeviceTypeOptionsMerger>()
             .AddTransient<IDebComposeVersionPinner, DebComposeVersionPinner>()
             .AddTransient<ISemVerBumper, SemVerBumper>()
+            .AddTransient<IConventionalCommitMessageValidator, ConventionalCommitMessageValidator>()
             .AddSingleton<ICommandFactory, CommandFactory>();
     }
 }
