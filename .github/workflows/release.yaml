@@ -6,6 +6,8 @@ on:
         description: 'What kind of release is this?'
         required: true
         default: 'patch'
+permissions:
+  contents: write
 jobs:
   generate_release:
     name: Generate Release
@@ -26,26 +28,37 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v7
+        with:
+          # Full history + all tags: scripts/compute-next-version.sh needs every
+          # existing tag to find the latest one, and git-cliff needs the full
+          # commit history to diff against the previous tag.
+          fetch-depth: 0
 
       - name: Setup Machine
         uses: ./.github/actions/setup-machine
 
-      - name: Bump version and Push Tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.2
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_bump: ${{ github.event.inputs.version_bump || 'patch' }}
+          tool: git-cliff
+
+      - name: Compute Next Version
+        id: compute_version
+        run: |
+          ./scripts/compute-next-version.sh
+          echo "new_tag=$(cat next-version.txt)" >> "$GITHUB_OUTPUT"
+        env:
+          VERSION_BUMP: ${{ github.event.inputs.version_bump || 'patch' }}
 
       - name: Publish App
         run: make publish
         env:
-          VERSION: ${{ steps.tag_version.outputs.new_tag }}
+          VERSION: ${{ steps.compute_version.outputs.new_tag }}
 
       - name: Publish to Docker Hub
         run: make docker-publish
         env:
-          VERSION: ${{ steps.tag_version.outputs.new_tag }}
+          VERSION: ${{ steps.compute_version.outputs.new_tag }}
 
       # Runs after Docker Hub publish, since the packaged docker-compose.yml
       # pins this release's image tags and the install smoke test (inside
@@ -62,34 +75,17 @@ jobs:
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "asset_path=publish/installer/haus-app_${VERSION}_amd64.deb" >> "$GITHUB_OUTPUT"
         env:
-          VERSION: ${{ steps.tag_version.outputs.new_tag }}
+          VERSION: ${{ steps.compute_version.outputs.new_tag }}
+
+      - name: Generate Release Notes
+        run: ./scripts/generate-release-notes.sh "${{ steps.compute_version.outputs.new_tag }}" > release-notes.md
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag }}
-          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
-
-      - name: Service Package
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./publish/service_package.zip
-          asset_name: service_package.zip
-          asset_content_type: application/zip
-
-      - name: Ubuntu Package
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.deb_package.outputs.asset_path }}
-          asset_name: haus-app_${{ steps.deb_package.outputs.version }}_amd64.deb
-          asset_content_type: application/vnd.debian.binary-package
+          tag_name: ${{ steps.compute_version.outputs.new_tag }}
+          name: Release ${{ steps.compute_version.outputs.new_tag }}
+          body_path: release-notes.md
+          files: |
+            ./publish/service_package.zip
+            ${{ steps.deb_package.outputs.asset_path }}

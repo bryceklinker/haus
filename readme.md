@@ -54,6 +54,10 @@ make test-acceptance
 
 # Run build, unit tests, and acceptance tests
 make verify
+
+# Preview release notes for the commits made since the last tag
+# (requires git-cliff: https://git-cliff.org/docs/installation)
+make release-notes
 ```
 
 # Environment Variables

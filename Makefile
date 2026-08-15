@@ -9,7 +9,8 @@ MQTT_TEST_CONTAINER := haus_mqtt_unit_tests
 MQTT_TEST_PORT := 21883
 
 .PHONY: build certs publish start stop watch web-host site-host zigbee-host \
-        test-unit test-acceptance docker-publish deb-package add-project migration
+        test-unit test-acceptance docker-publish deb-package add-project migration \
+        release-notes
 
 verify: build test-unit test-acceptance
 
@@ -77,3 +78,6 @@ add-project:
 
 migration:
 	./scripts/create-ef-migration.sh $(NAME)
+
+release-notes:
+	./scripts/generate-release-notes.sh $(TAG)
