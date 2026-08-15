@@ -21,6 +21,8 @@ public static class ServiceCollectionExtensions
             .AddTransient<IDeviceTypeOptionsMerger, DeviceTypeOptionsMerger>()
             .AddTransient<IDebComposeVersionPinner, DebComposeVersionPinner>()
             .AddTransient<ISemVerBumper, SemVerBumper>()
+            .AddTransient<ICommitBumpKindClassifier, CommitBumpKindClassifier>()
+            .AddTransient<IGitCommitLogReader, GitCommitLogReader>()
             .AddTransient<IConventionalCommitMessageValidator, ConventionalCommitMessageValidator>()
             .AddSingleton<ICommandFactory, CommandFactory>();
     }
