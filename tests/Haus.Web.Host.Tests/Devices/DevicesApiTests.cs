@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Haus.Api.Client;
 using Haus.Core.Models.Devices;
@@ -38,6 +39,34 @@ public class DevicesApiTests
             {
                 Assert.Equal("some-name", updated.Name);
             }
+        });
+    }
+
+    [Fact]
+    public async Task WhenADeviceIsDeletedThenItIsNoLongerAvailableFromTheApi()
+    {
+        var device = await _factory.WaitForDeviceToBeDiscovered();
+
+        await _hausClient.DeleteDeviceAsync(device.Id);
+
+        await Eventually.AssertAsync(async () =>
+        {
+            var result = await _hausClient.GetDevicesAsync(device.ExternalId);
+            Assert.Empty(result.Items);
+        });
+    }
+
+    [Fact]
+    public async Task WhenADeviceInARoomIsDeletedThenItIsNoLongerInTheRoom()
+    {
+        var (room, device) = await _factory.AddRoomWithDevice($"room-{Guid.NewGuid()}", DeviceType.Light);
+
+        await _hausClient.DeleteDeviceAsync(device.Id);
+
+        await Eventually.AssertAsync(async () =>
+        {
+            var devicesInRoom = await _hausClient.GetDevicesInRoomAsync(room.Id);
+            Assert.DoesNotContain(devicesInRoom.Items, d => d.Id == device.Id);
         });
     }
 

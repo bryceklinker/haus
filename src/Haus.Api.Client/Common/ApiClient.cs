@@ -54,6 +54,12 @@ public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSet
         return HttpClient.PutAsJsonAsync(fullUrl, data, HausJsonSerializer.DefaultOptions);
     }
 
+    protected Task<HttpResponseMessage> DeleteAsync(string path, QueryParameters? parameters = null)
+    {
+        var fullUrl = GetFullUrl(path, parameters);
+        return HttpClient.DeleteAsync(fullUrl);
+    }
+
     protected string GetFullUrl(string path, QueryParameters? parameters = null)
     {
         return UrlUtility.Join(parameters, ApiBaseUrl, path);

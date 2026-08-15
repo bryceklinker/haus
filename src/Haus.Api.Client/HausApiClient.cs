@@ -114,6 +114,11 @@ public class HausApiClient(
         return DeviceApiClient.UpdateDeviceAsync(deviceId, model);
     }
 
+    public Task DeleteDeviceAsync(long deviceId)
+    {
+        return DeviceApiClient.DeleteDeviceAsync(deviceId);
+    }
+
     public Task<HttpResponseMessage> ReplayDiagnosticsMessageAsync(MqttDiagnosticsMessageModel model)
     {
         return DiagnosticsApiClient.ReplayDiagnosticsMessageAsync(model);
