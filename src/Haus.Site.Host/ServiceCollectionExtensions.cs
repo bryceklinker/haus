@@ -57,7 +57,10 @@ public static class ServiceCollectionExtensions
                 opts.ProviderOptions.AdditionalProviderParameters.Add("audience", authAudience);
             });
 
-        services.AddScoped<IRealtimeDataFactory, SignalRRealtimeDataFactory>();
+        services.AddScoped<IRealtimeDataFactory>(sp => new SignalRRealtimeDataFactory(
+            apiUrl,
+            sp.GetRequiredService<IAccessTokenProvider>()
+        ));
         return services;
     }
 }

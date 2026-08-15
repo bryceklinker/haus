@@ -1,22 +1,17 @@
-using System;
 using System.Threading.Tasks;
 using Haus.Core.Models;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Haus.Site.Host.Shared.Realtime;
 
-public class SignalRRealtimeDataFactory(IConfiguration config, IAccessTokenProvider tokenProvider)
-    : IRealtimeDataFactory
+public class SignalRRealtimeDataFactory(string apiUrl, IAccessTokenProvider tokenProvider) : IRealtimeDataFactory
 {
-    private string? ApiUrl => config.GetValue<string>("Api:BaseUrl");
+    public string ApiUrl { get; } = apiUrl;
 
     public Task<IRealtimeDataSubscriber> CreateSubscriber(string source)
     {
-        ArgumentException.ThrowIfNullOrEmpty(ApiUrl);
-
         var connection = new HubConnectionBuilder()
             .WithAutomaticReconnect()
             .AddJsonProtocol(opts =>

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Api.Client.Options;
+using Haus.Site.Host.Shared.Realtime;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,19 @@ public class ServiceCollectionExtensionsTests
 
         var settings = services.BuildServiceProvider().GetRequiredService<IOptions<HausApiClientSettings>>().Value;
         Assert.Equal("https://192.168.1.50:5001", settings.BaseUrl);
+    }
+
+    [Fact]
+    public void WhenBrowserHostDiffersFromConfiguredApiHostThenRegisteredRealtimeFactoryUsesBrowserHost()
+    {
+        var services = new ServiceCollection();
+
+        services.AddHausSiteServices(BuildConfiguration(), "https://192.168.1.50:5003/");
+        services.AddSingleton<IAccessTokenProvider, StubAccessTokenProvider>();
+
+        var factory = (SignalRRealtimeDataFactory)
+            services.BuildServiceProvider().GetRequiredService<IRealtimeDataFactory>();
+        Assert.Equal("https://192.168.1.50:5001", factory.ApiUrl);
     }
 
     [Fact]
