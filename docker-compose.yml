@@ -18,11 +18,11 @@ services:
     image: bryceklinker/personal:haus-zigbee-latest
     environment:
       - "Haus__Server=mqtt://haus_mqtt:1883"
-      - "Zigbee__SerialPort=/dev/ttyACM0"
+      - "Zigbee__SerialPort=${ZIGBEE_SERIAL_PORT:-/dev/ttyACM0}"
     links:
       - haus_mqtt
     devices:
-      - /dev/ttyACM0:/dev/ttyACM0
+      - "${ZIGBEE_SERIAL_PORT:-/dev/ttyACM0}:${ZIGBEE_SERIAL_PORT:-/dev/ttyACM0}"
     volumes:
       - ./haus_zigbee:/app/data
       - ./haus_zigbee/logs:/app/haus-logs
