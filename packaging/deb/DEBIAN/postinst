@@ -4,6 +4,47 @@ set -e
 CONFIG_DIR="/etc/haus"
 DATA_DIR="/var/lib/haus/data"
 CERT_PASSWORD="password"
+ENV_FILE="$CONFIG_DIR/.env"
+
+# Prefers the ConBee II's stable /dev/serial/by-id symlink (survives reboots
+# and replugs) over a bare ttyACM/ttyUSB scan, since ttyACM/ttyUSB enumeration
+# order is not stable across reboots/replugs. Falls back to the first
+# ttyACM*/ttyUSB* node only when no by-id symlink is present at all.
+detect_zigbee_serial_port() {
+  for by_id_path in /dev/serial/by-id/*; do
+    [ -e "$by_id_path" ] || continue
+    lower_name=$(printf '%s' "$by_id_path" | tr 'A-Z' 'a-z')
+    case "$lower_name" in
+      *conbee*|*dresden*)
+        echo "$by_id_path"
+        return 0
+        ;;
+    esac
+  done
+
+  for tty_path in /dev/ttyACM* /dev/ttyUSB*; do
+    [ -e "$tty_path" ] || continue
+    echo "$tty_path"
+    return 0
+  done
+
+  return 1
+}
+
+# Best-effort, mirroring the haus_zigbee restart below: a missing/undetectable
+# dongle at install time must not fail postinst. Never overwrites an existing
+# ZIGBEE_SERIAL_PORT so an operator's manual override in the .env file (or a
+# previous run's detection) always wins over rescanning.
+set_detected_zigbee_serial_port() {
+  if [ -f "$ENV_FILE" ] && grep -q '^ZIGBEE_SERIAL_PORT=' "$ENV_FILE"; then
+    return 0
+  fi
+
+  detected_port=$(detect_zigbee_serial_port) || return 0
+
+  touch "$ENV_FILE"
+  echo "ZIGBEE_SERIAL_PORT=${detected_port}" >> "$ENV_FILE"
+}
 
 case "$1" in
   configure)
@@ -11,6 +52,8 @@ case "$1" in
              "$DATA_DIR/haus_zigbee/logs" \
              "$DATA_DIR/haus_mqtt/data" \
              "$DATA_DIR/haus_mqtt/log"
+
+    set_detected_zigbee_serial_port || true
 
     # openssl only, deliberately -- unlike scripts/linux-install.sh's
     # `dotnet dev-certs` step, this package must not require the .NET SDK

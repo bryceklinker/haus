@@ -9,6 +9,16 @@ may change in the future.
 Zigbee is an open protocol that various manufacturers are using in their "smart" devices. The current version is
 targeting support for many Zigbee devices.
 
+The Zigbee coordinator (e.g. a ConBee II dongle) is exposed to the `haus_zigbee` container via the
+`ZIGBEE_SERIAL_PORT` environment variable, read by both `docker-compose.yml` and
+`packaging/deb/etc/haus/docker-compose.yml.template` (default: `/dev/ttyACM0`). ttyACM/ttyUSB enumeration is not
+stable across reboots/replugs, so if the dongle isn't at the default path, set `ZIGBEE_SERIAL_PORT` in a `.env` file
+next to the compose file (`/etc/haus/.env` for the `.deb` install) -- docker compose loads it automatically. Prefer
+the dongle's stable `/dev/serial/by-id/...` symlink over a raw `/dev/ttyACMx` node, since that path doesn't change
+across replugs. On `.deb` installs, `postinst` auto-detects the dongle and writes `ZIGBEE_SERIAL_PORT` into
+`/etc/haus/.env` at install/upgrade time when it isn't already set there -- it never overwrites a value you've set
+manually.
+
 # System Requirements
 
 - .NET 10
