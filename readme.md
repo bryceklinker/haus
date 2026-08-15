@@ -50,6 +50,13 @@ sudo apt purge haus-app          # also remove generated config/certs (data is s
 `scripts/linux-install.sh` (the previous manual install method) still works but is superseded by this package --
 it gets no further changes.
 
+If a host previously ran `scripts/linux-install.sh`, `postinst` migrates that install's data (SQLite db, Zigbee
+state, MQTT broker state) from its `~/haus` layout into `/var/lib/haus/data` automatically on first `.deb` install
+-- the original `~/haus` directory is only ever read, never modified or deleted, so it's safe to check afterward
+and remove by hand once you've confirmed the migrated data looks right. This only happens once: a marker file at
+`/var/lib/haus/.legacy-data-migrated` prevents re-running the migration (and clobbering newer data) on later
+package upgrades.
+
 # Commands
 
 ```bash
