@@ -1,4 +1,3 @@
-using System.Dynamic;
 using System.Linq;
 using Haus.Core.Logs;
 using Haus.Core.Models.Logs;
@@ -15,9 +14,9 @@ public class LogEntryFiltererTests
     {
         var entries = new[]
         {
-            new LogEntryModel("", "", "", new ExpandoObject()),
-            new LogEntryModel("", "", "", new ExpandoObject()),
-            new LogEntryModel("", "", "", new ExpandoObject()),
+            new LogEntryModel("", "", "", default),
+            new LogEntryModel("", "", "", default),
+            new LogEntryModel("", "", "", default),
         };
 
         var filtered = _filterer.Filter(entries, null);
@@ -30,9 +29,9 @@ public class LogEntryFiltererTests
     {
         var entries = new[]
         {
-            new LogEntryModel("", "", "hi sue", new ExpandoObject()),
-            new LogEntryModel("", "", "nope", new ExpandoObject()),
-            new LogEntryModel("", "", "hi bob", new ExpandoObject()),
+            new LogEntryModel("", "", "hi sue", default),
+            new LogEntryModel("", "", "nope", default),
+            new LogEntryModel("", "", "hi bob", default),
         };
 
         var filtered = _filterer.Filter(entries, new GetLogsParameters(SearchTerm: "hi"));
@@ -45,9 +44,9 @@ public class LogEntryFiltererTests
     {
         var entries = new[]
         {
-            new LogEntryModel("", "", "HI sue", new ExpandoObject()),
-            new LogEntryModel("", "", "nope", new ExpandoObject()),
-            new LogEntryModel("", "", "hi bob", new ExpandoObject()),
+            new LogEntryModel("", "", "HI sue", default),
+            new LogEntryModel("", "", "nope", default),
+            new LogEntryModel("", "", "hi bob", default),
         };
 
         var filtered = _filterer.Filter(entries, new GetLogsParameters(SearchTerm: "Hi"));
@@ -60,9 +59,9 @@ public class LogEntryFiltererTests
     {
         var entries = new[]
         {
-            new LogEntryModel("", "Error", "", new ExpandoObject()),
-            new LogEntryModel("", "Information", "", new ExpandoObject()),
-            new LogEntryModel("", "Warning", "", new ExpandoObject()),
+            new LogEntryModel("", "Error", "", default),
+            new LogEntryModel("", "Information", "", default),
+            new LogEntryModel("", "Warning", "", default),
         };
 
         var filtered = _filterer.Filter(entries, new GetLogsParameters(Level: "Warning"));
@@ -75,9 +74,9 @@ public class LogEntryFiltererTests
     {
         var entries = new[]
         {
-            new LogEntryModel("", "information", "", new ExpandoObject()),
-            new LogEntryModel("", "INFORMATION", "", new ExpandoObject()),
-            new LogEntryModel("", "error", "", new ExpandoObject()),
+            new LogEntryModel("", "information", "", default),
+            new LogEntryModel("", "INFORMATION", "", default),
+            new LogEntryModel("", "error", "", default),
         };
 
         var filtered = _filterer.Filter(entries, new GetLogsParameters(Level: "information"));
