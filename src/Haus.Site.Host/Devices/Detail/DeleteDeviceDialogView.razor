@@ -1,0 +1,43 @@
+@using Haus.Api.Client.Devices
+@using Haus.Core.Models.Devices
+
+@attribute [Authorize]
+
+@inject IDeviceApiClient DevicesClient
+
+<MudDialog>
+    <TitleContent>
+        Delete Device
+    </TitleContent>
+
+    <DialogContent>
+        <MudText>Are you sure you want to delete @Device.Name? This action cannot be undone.</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Disabled="IsDeleting" OnClick="HandleCancel">Cancel</MudButton>
+        <MudButton Disabled="IsDeleting" Color="Color.Error" OnClick="HandleDelete">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public IMudDialogInstance? Dialog { get; set; }
+
+    [Parameter, EditorRequired]
+    public required DeviceModel Device { get; set; }
+
+    public bool IsDeleting { get; set; }
+
+    private async Task HandleDelete()
+    {
+        IsDeleting = true;
+        await DevicesClient.DeleteDeviceAsync(Device.Id);
+        IsDeleting = false;
+        Dialog?.Close(DialogResult.Ok(true));
+    }
+
+    private void HandleCancel()
+    {
+        Dialog?.Cancel();
+    }
+}

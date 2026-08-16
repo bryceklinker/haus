@@ -13,6 +13,7 @@ public interface IDeviceCommandRepository
     Task<DeviceEntity?> GetByExternalId(string externalId, CancellationToken token = default);
     Task<DeviceEntity> AddAsync(DeviceEntity device, CancellationToken token = default);
     Task SaveAsync(DeviceEntity device, CancellationToken token = default);
+    Task DeleteAsync(DeviceEntity device, CancellationToken token = default);
 }
 
 public class DeviceCommandRepository(HausDbContext context) : IDeviceCommandRepository
@@ -37,6 +38,12 @@ public class DeviceCommandRepository(HausDbContext context) : IDeviceCommandRepo
     public Task SaveAsync(DeviceEntity device, CancellationToken token = default)
     {
         context.Update(device);
+        return context.SaveChangesAsync(token);
+    }
+
+    public Task DeleteAsync(DeviceEntity device, CancellationToken token = default)
+    {
+        context.Remove(device);
         return context.SaveChangesAsync(token);
     }
 

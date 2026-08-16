@@ -10,9 +10,8 @@ public class DiscoverNewDevicesFlow : HausPageTest
     private DeconzSimulatorClient _deconzSimulator;
 
     [SetUp]
-    public async Task BeforeEach()
+    public void BeforeEach()
     {
-        await Context.StartTracingAsync();
         _deconzSimulator = GetDeconzSimulatorClient();
     }
 
@@ -28,11 +27,5 @@ public class DiscoverNewDevicesFlow : HausPageTest
 
         await Expect(discovery.GetUnassignedDevicesDropZone())
             .ToContainTextAsync(deviceId, new LocatorAssertionsToContainTextOptions { Timeout = 10_000 });
-    }
-
-    [TearDown]
-    public async Task AfterEach()
-    {
-        await Context.StopTracingAsync();
     }
 }

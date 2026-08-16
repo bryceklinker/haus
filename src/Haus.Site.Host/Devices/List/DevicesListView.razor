@@ -1,14 +1,21 @@
 @page "/devices/{deviceId:long?}"
 
 @using Haus.Api.Client.Devices
+@using Haus.Core.Models
 @using Haus.Core.Models.Common
 @using Haus.Core.Models.Devices
+@using Haus.Core.Models.Devices.Events
+@using Haus.Core.Models.ExternalMessages
 @using Haus.Site.Host.Devices.Detail
+@using Haus.Site.Host.Shared.Realtime
 
 @attribute [Authorize]
 
+@implements IAsyncDisposable
+
 @inject NavigationManager Navigation
 @inject IDeviceApiClient DevicesClient
+@inject IRealtimeDataFactory RealtimeDataFactory
 
 <LoadingContentView IsLoading="IsLoading">
     <MudGrid>
@@ -42,12 +49,17 @@
     private bool IsLoading { get; set; }
     [Parameter] public long? DeviceId { get; set; }
 
+    private IRealtimeDataSubscriber? _eventsSubscriber;
     private ListResult<DeviceModel> Devices { get; set; } = new();
     private DeviceModel? SelectedDevice { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
+        _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
+        _eventsSubscriber.Subscribe<HausEvent<DeviceDeletedEvent>>(HausEventsEventNames.OnEvent, HandleDeviceDeleted);
+        await _eventsSubscriber.StartAsync();
+
         Devices = await DevicesClient.GetDevicesAsync();
         IsLoading = false;
     }
@@ -59,9 +71,36 @@
             : Devices.Items.FirstOrDefault(i => i.Id == DeviceId);
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        if (_eventsSubscriber != null)
+        {
+            await _eventsSubscriber.DisposeAsync();
+        }
+    }
+
     protected void HandleDeviceSelected(DeviceModel device)
     {
         Navigation.NavigateTo($"/devices/{device.Id}");
+    }
+
+    private async Task HandleDeviceDeleted(HausEvent<DeviceDeletedEvent> @event)
+    {
+        if (@event.Type != DeviceDeletedEvent.Type)
+        {
+            return;
+        }
+
+        var deletedDeviceId = @event.Payload.Device.Id;
+        Devices = new ListResult<DeviceModel>(Devices.Items.Where(d => d.Id != deletedDeviceId).ToArray());
+
+        if (DeviceId == deletedDeviceId)
+        {
+            Navigation.NavigateTo("/devices");
+            return;
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
 
 }

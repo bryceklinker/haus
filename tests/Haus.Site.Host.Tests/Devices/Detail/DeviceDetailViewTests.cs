@@ -1,9 +1,11 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Site.Host.Devices.Detail;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using MudBlazor.Extensions;
 
@@ -73,5 +75,28 @@ public class DeviceDetailViewTests : HausSiteTestContext
         });
 
         Assert.Equal(3, page.FindAllByComponent<MudListItem<MetadataModel>>().Count());
+    }
+
+    [Fact]
+    public async Task WhenDeleteButtonClickedThenShowsDeleteConfirmationDialogForTheDevice()
+    {
+        var device = HausModelFactory.DeviceModel();
+
+        var dialogProvider = Context.Render<MudDialogProvider>();
+        var page = Context.Render<DeviceDetailView>(opts =>
+        {
+            opts.Add(p => p.Device, device);
+        });
+
+        await page.InvokeAsync(async () =>
+        {
+            await page.FindByComponent<MudIconButton>().Instance.OnClick.InvokeAsync(new MouseEventArgs());
+        });
+
+        Eventually.Assert(() =>
+        {
+            var dialog = dialogProvider.FindComponent<DeleteDeviceDialogView>();
+            Assert.Equal(device, dialog.Instance.Device);
+        });
     }
 }

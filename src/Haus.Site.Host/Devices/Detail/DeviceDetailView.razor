@@ -3,9 +3,15 @@
 
 @attribute [Authorize]
 
+@inject IDialogService DialogService
+
 <MudPaper Class="pa-4 device-detail">
-    <MudText Typo="Typo.h5">Device Details</MudText>
-    
+    <MudToolBar Class="pa-0">
+        <MudText Typo="Typo.h5">Device Details</MudText>
+        <MudSpacer/>
+        <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="HandleDeleteClicked"/>
+    </MudToolBar>
+
     <MudTextField T="string"
                   FullWidth="true"
                   Label="Name"
@@ -48,4 +54,10 @@
 
 @code {
     [Parameter] public required DeviceModel Device { get; set; }
+
+    private async Task HandleDeleteClicked()
+    {
+        var parameters = new DialogParameters<DeleteDeviceDialogView> { { x => x.Device, Device } };
+        await DialogService.ShowAsync<DeleteDeviceDialogView>(null, parameters);
+    }
 }

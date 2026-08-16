@@ -16,6 +16,7 @@ public interface IDeviceApiClient : IApiClient
     Task<ListResult<LightType>> GetLightTypesAsync();
     Task<ListResult<DeviceModel>> GetDevicesAsync(string? externalId = null);
     Task UpdateDeviceAsync(long deviceId, DeviceModel model);
+    Task DeleteDeviceAsync(long deviceId);
     Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model);
     Task<HttpResponseMessage> ChangeDeviceLightingConstraintsAsync(long deviceId, LightingConstraintsModel model);
     Task<HttpResponseMessage> TurnLightOffAsync(long deviceId);
@@ -55,6 +56,11 @@ public class DevicesApiClient(HttpClient httpClient, IOptions<HausApiClientSetti
     public Task UpdateDeviceAsync(long deviceId, DeviceModel model)
     {
         return PutAsJsonAsync($"devices/{deviceId}", model);
+    }
+
+    public Task DeleteDeviceAsync(long deviceId)
+    {
+        return DeleteAsync($"devices/{deviceId}");
     }
 
     public Task<HttpResponseMessage> ChangeDeviceLightingAsync(long deviceId, LightingModel model)

@@ -17,4 +17,22 @@ public class DevicesPage(IPage page)
         await discovery.NavigateAsync();
         return discovery;
     }
+
+    public async Task<DeviceDetailPage> NavigateToDeviceAsync(string externalId)
+    {
+        // A freshly-joined, never-renamed device's Name defaults to its ExternalId, so the device
+        // list -- which only renders Name, not ExternalId -- can still be searched by it.
+        await GetDeviceListItem(externalId).ClickAsync();
+        return new DeviceDetailPage(page);
+    }
+
+    public Task ReloadAsync()
+    {
+        return page.GotoAsync("/devices");
+    }
+
+    public ILocator GetDeviceListItem(string externalId)
+    {
+        return page.GetByText(externalId);
+    }
 }

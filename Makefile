@@ -64,6 +64,11 @@ test-acceptance: certs publish
 	$(COMPOSE) up --build -d --wait
 	dotnet test $(ACCEPTANCE_TESTS_DIR) --no-restore; \
 	status=$$?; \
+	if [ $$status -ne 0 ]; then \
+		echo "::group::docker compose logs (test-acceptance failed)"; \
+		$(COMPOSE) logs --no-color --timestamps; \
+		echo "::endgroup::"; \
+	fi; \
 	$(COMPOSE) down; \
 	exit $$status
 

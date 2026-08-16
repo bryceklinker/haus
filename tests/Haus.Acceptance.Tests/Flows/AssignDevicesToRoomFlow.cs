@@ -11,9 +11,8 @@ public class AssignDevicesToRoomFlow : HausPageTest
     private DeconzSimulatorClient _deconzSimulator;
 
     [SetUp]
-    public async Task BeforeEach()
+    public void BeforeEach()
     {
-        await Context.StartTracingAsync();
         _deconzSimulator = GetDeconzSimulatorClient();
     }
 
@@ -37,11 +36,5 @@ public class AssignDevicesToRoomFlow : HausPageTest
             .ToContainTextAsync(lightId, new LocatorAssertionsToContainTextOptions { Timeout = 10_000 });
         await Expect(discovery.GetRoomDropZone(roomName))
             .ToContainTextAsync(sensorId, new LocatorAssertionsToContainTextOptions { Timeout = 10_000 });
-    }
-
-    [TearDown]
-    public async Task AfterEach()
-    {
-        await Context.StopTracingAsync();
     }
 }

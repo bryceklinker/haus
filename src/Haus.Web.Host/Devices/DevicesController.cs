@@ -53,4 +53,10 @@ public class DevicesController(IHausBus hausBus) : HausBusController(hausBus)
     {
         return CommandAsync(new UpdateDeviceCommand(model with { Id = id }));
     }
+
+    [HttpDelete("{id}")]
+    public Task<IActionResult> Delete([FromRoute] long id)
+    {
+        return CommandAsync(new DeleteDeviceCommand(id));
+    }
 }
