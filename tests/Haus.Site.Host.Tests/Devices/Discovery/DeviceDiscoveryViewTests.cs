@@ -177,4 +177,30 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
             Assert.Single(view.FindAllByComponent<MudPaper>(opts => opts.WithText(device.ExternalId)));
         });
     }
+
+    [Fact]
+    public async Task WhenDeviceIsDiscoveredWhileFetchingDevicesThenDiscoveredDeviceIsNotDropped()
+    {
+        var fetchedDevice = HausModelFactory.DeviceModel();
+        var discoveredDevice = HausModelFactory.DeviceModel();
+        await HausApiHandler.SetupGetAsJson(
+            DevicesUrl,
+            new ListResult<DeviceModel>([fetchedDevice]),
+            opts => opts.WithDelayMs(500)
+        );
+
+        var view = Context.Render<DeviceDiscoveryView>();
+        Eventually.Assert(() => Assert.True(_devicesSubscriber.IsStarted));
+
+        await _devicesSubscriber.SimulateAsync(
+            HausEventsEventNames.OnEvent,
+            new DeviceCreatedEvent(discoveredDevice).AsHausEvent()
+        );
+
+        Eventually.Assert(() =>
+        {
+            Assert.Single(view.FindAllByComponent<MudPaper>(opts => opts.WithText(fetchedDevice.ExternalId)));
+            Assert.Single(view.FindAllByComponent<MudPaper>(opts => opts.WithText(discoveredDevice.ExternalId)));
+        });
+    }
 }
