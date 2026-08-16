@@ -2,10 +2,12 @@
 @using Haus.Api.Client.Logs
 @using Haus.Core.Models.Common
 @using Haus.Core.Models.Logs
+@using Microsoft.Extensions.Logging
 
 @implements IDisposable;
 
 @inject ILogsApiClient LogsClient;
+@inject ILogger<LogsView> Logger;
 
 <MudPaper>
     <MudStack Row="true">
@@ -32,6 +34,7 @@
     private bool IsLoading { get; set; }
     private ListResult<LogEntryModel> Logs { get; set; } = new([]);
     private PeriodicTimer? Timer { get; set; }
+    private Task? RefreshLoopTask { get; set; }
     private bool IsDisposed { get; set; }
 
     [Parameter] public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(3);
@@ -62,14 +65,24 @@
 
         Timer?.Dispose();
         Timer = new PeriodicTimer(timeSpan);
-        _ = RefreshOnEachTickAsync(Timer);
+        RefreshLoopTask = RefreshOnEachTickAsync(Timer);
     }
 
+    // Each tick catches its own failure so one bad refresh can't end this task, which keeps
+    // RefreshLoopTask from ever faulting -- nothing here is fire-and-forget in the unobserved
+    // sense, it's just not synchronously awaited.
     private async Task RefreshOnEachTickAsync(PeriodicTimer timer)
     {
         while (await timer.WaitForNextTickAsync())
         {
-            await RefreshLogsAsync();
+            try
+            {
+                await RefreshLogsAsync();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Failed to refresh logs");
+            }
         }
     }
 
@@ -85,13 +98,24 @@
             IsLoading = true;
             StateHasChanged();
         });
-        var logs = await LogsClient.GetLogsAsync();
-        await InvokeAsync(() =>
+
+        try
         {
-            Logs = logs;
-            IsLoading = false;
-            StateHasChanged();
-        });
+            var logs = await LogsClient.GetLogsAsync();
+            await InvokeAsync(() =>
+            {
+                Logs = logs;
+                StateHasChanged();
+            });
+        }
+        finally
+        {
+            await InvokeAsync(() =>
+            {
+                IsLoading = false;
+                StateHasChanged();
+            });
+        }
     }
 
 }

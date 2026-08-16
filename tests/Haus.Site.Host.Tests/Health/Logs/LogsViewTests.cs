@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Logs;
@@ -122,5 +123,34 @@ public class LogsViewTests : HausSiteTestContext
         await Task.Delay(TimeSpan.FromMilliseconds(600));
 
         Assert.Equal(requestCountAtDisposal, requestCount);
+    }
+
+    [Fact]
+    public async Task WhenARefreshFailsThenContinuesPollingOnNextTick()
+    {
+        var requestCount = 0;
+        await HausApiHandler.SetupGetAsJson(
+            "/api/logs",
+            new ListResult<LogEntryModel>([]),
+            opts =>
+                opts.WithCapture(r =>
+                {
+                    requestCount++;
+                    if (requestCount == 2)
+                    {
+                        throw new HttpRequestException("Simulated failure fetching logs");
+                    }
+                })
+        );
+
+        RenderView<LogsView>(opts =>
+        {
+            opts.Add(c => c.RefreshInterval, TimeSpan.FromMilliseconds(200));
+        });
+
+        Eventually.Assert(() =>
+        {
+            Assert.True(requestCount > 2);
+        });
     }
 }
