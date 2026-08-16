@@ -20,6 +20,7 @@ zigbee_data/
 publish/
 coverage.*
 coveragereport/
+test-results/
 .DS_Store
 **/*.db*
 **/haus-logs/

@@ -177,4 +177,65 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
             Assert.Single(view.FindAllByComponent<MudPaper>(opts => opts.WithText(device.ExternalId)));
         });
     }
+
+    [Fact]
+    public async Task WhenDeviceIsDiscoveredWhileFetchingDevicesThenDiscoveredDeviceIsNotDropped()
+    {
+        var fetchedDevice = HausModelFactory.DeviceModel();
+        var discoveredDevice = HausModelFactory.DeviceModel();
+        await HausApiHandler.SetupGetAsJson(
+            DevicesUrl,
+            new ListResult<DeviceModel>([fetchedDevice]),
+            opts => opts.WithDelayMs(500)
+        );
+
+        var view = Context.Render<DeviceDiscoveryView>();
+        Eventually.Assert(() => Assert.True(_devicesSubscriber.IsStarted));
+
+        await _devicesSubscriber.SimulateAsync(
+            HausEventsEventNames.OnEvent,
+            new DeviceCreatedEvent(discoveredDevice).AsHausEvent()
+        );
+
+        Eventually.Assert(() =>
+        {
+            Assert.Single(view.FindAllByComponent<MudPaper>(opts => opts.WithText(fetchedDevice.ExternalId)));
+            Assert.Single(view.FindAllByComponent<MudPaper>(opts => opts.WithText(discoveredDevice.ExternalId)));
+        });
+    }
+
+    [Fact]
+    public async Task WhenTwoDevicesAreDroppedInQuickSuccessionThenBothRetainRoomAssignment()
+    {
+        var light = HausModelFactory.DeviceModel() with { Id = 201, RoomId = null };
+        var sensor = HausModelFactory.DeviceModel() with { Id = 202, RoomId = null };
+        var room = HausModelFactory.RoomModel() with { Id = 6, Name = "bedroom" };
+
+        await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>([room]));
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>([light, sensor]));
+        await HausApiHandler.SetupPostAsJson($"{RoomsUrl}/{room.Id}/add-devices", new { });
+
+        var view = Context.Render<DeviceDiscoveryView>();
+        Eventually.Assert(() => Assert.Equal(2, view.FindAllByComponent<MudPaper>().Count()));
+
+        var container = view.FindComponent<MudDropContainer<DeviceModel>>();
+        var lightDropTask = container.InvokeAsync(() =>
+            container.Instance.ItemDropped.InvokeAsync(new MudItemDropInfo<DeviceModel>(light, room.Id.ToString(), 0))
+        );
+        var sensorDropTask = container.InvokeAsync(() =>
+            container.Instance.ItemDropped.InvokeAsync(new MudItemDropInfo<DeviceModel>(sensor, room.Id.ToString(), 0))
+        );
+        await Task.WhenAll(lightDropTask, sensorDropTask);
+
+        Eventually.Assert(() =>
+        {
+            var roomZone = view.FindByComponent<MudDropZone<DeviceModel>>(opts => opts.WithText(room.Name));
+            Assert.Single(
+                roomZone.FindAllByTag("div", opts => opts.WithClassName("device").WithText(light.ExternalId))
+            );
+            Assert.Single(
+                roomZone.FindAllByTag("div", opts => opts.WithClassName("device").WithText(sensor.ExternalId))
+            );
+        });
+    }
 }

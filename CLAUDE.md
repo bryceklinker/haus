@@ -82,7 +82,7 @@ Organized by feature/bounded-context folder, not by technical layer: `Devices`, 
 - **Haus.Core.Models** — feature-mirrored shared DTOs/models (`Devices`, `Rooms`, `Lighting`, `Discovery`, `Health`, `Logs`, `ExternalMessages`, etc.) shared between the API host, the API client, and the site.
 - **Haus.Api.Client** — typed client for the Web Host API, mirrors `Haus.Core.Models`' feature folders.
 - **Haus.Mqtt.Client** — MQTT wrapper/abstraction used by both `Haus.Web.Host` and `Haus.Zigbee.Host`.
-- **Haus.Udp.Client**, **Haus.Hosting**, **Haus.Utilities** — supporting infra. `Haus.Utilities` also hosts CLI tooling (`Common/Cli`) for TypeScript model generation (`TypeScript/GenerateModels`) and Zigbee2Mqtt default device-type option generation (`Zigbee2Mqtt/GenerateDefaultDeviceTypeOptions`).
+- **Haus.Hosting**, **Haus.Utilities** — supporting infra. `Haus.Utilities` also hosts CLI tooling (`Common/Cli`) for TypeScript model generation (`TypeScript/GenerateModels`) and Zigbee2Mqtt default device-type option generation (`Zigbee2Mqtt/GenerateDefaultDeviceTypeOptions`).
 
 ### Tests
 
