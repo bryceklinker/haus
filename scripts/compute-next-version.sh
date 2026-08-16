@@ -6,6 +6,9 @@ set -ex
 # of truth for "what was the last release" is the tag history itself.
 CURRENT_VERSION=$(git tag --list 'v*' --sort=-v:refname | head -n1)
 export CURRENT_VERSION
-export VERSION_BUMP="${VERSION_BUMP:-patch}"
+
+# VERSION_BUMP is intentionally left unset when the caller didn't provide one --
+# the .NET command treats an empty VERSION_BUMP as "compute it from the commit
+# log since CURRENT_VERSION" rather than defaulting to patch here.
 
 dotnet run --project src/Haus.Utilities -- release bump-version

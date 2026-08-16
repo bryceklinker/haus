@@ -162,3 +162,38 @@ the `.deb`; `linux-install.sh` gets no further investment.
 
 Snap packaging is explicitly not pursued for this issue, for the confinement
 reasons above.
+
+## Follow-up (2026-08-15): legacy data migration
+
+The original acceptance criteria above cover a clean install and a `.deb`-to-`.deb`
+upgrade preserving `/var/lib/haus/data`, but not the transition *from*
+`scripts/linux-install.sh`'s manual install into the `.deb`. That install put
+the SQLite db, Zigbee state, and MQTT broker state under
+`/home/$(whoami)/haus/{haus_web,haus_zigbee,haus_mqtt}` (see
+`scripts/linux-install.sh`'s `HAUS_LOCATION`); a host upgrading straight to
+the `.deb` would silently start against the fresh, empty
+`/var/lib/haus/data` tree `postinst` creates, losing every device/room/log
+the operator had.
+
+`postinst` now migrates that legacy data forward the first time it runs on a
+host where it's found:
+
+- `find_legacy_data_dir` locates the legacy `~/haus` directory: it prefers
+  `$SUDO_USER`'s home (set by `sudo apt install`), then falls back to
+  scanning every `/home/*/haus` and `/root/haus` for one containing
+  `haus_web`, `haus_zigbee`, or `haus_mqtt`.
+- `migrate_legacy_data` copies (`cp -an`, never moves) each of those
+  subdirectories into the matching `/var/lib/haus/data/<subdir>`, then
+  writes a marker file at `/var/lib/haus/.legacy-data-migrated`.
+- Every later `postinst` run (package upgrades) checks that marker first and
+  skips the migration entirely once it exists, so a legacy directory that's
+  still sitting around can never overwrite newer `.deb`-produced data.
+- The legacy directory itself is never modified or deleted -- the migration
+  is purely additive, so a failed or unexpected copy can always be redone by
+  hand from the untouched original.
+
+Validated by sourcing `postinst`'s functions in a sandboxed fake filesystem
+(see the PR for `polly/fix-deb-data-migration`) covering: resolving the
+legacy dir via `$SUDO_USER`, a full first-time migration, a second run after
+the marker exists not clobbering newer data, and a fresh install with no
+legacy dir being a clean no-op.

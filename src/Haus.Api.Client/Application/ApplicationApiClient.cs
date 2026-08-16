@@ -10,6 +10,7 @@ namespace Haus.Api.Client.Application;
 
 public interface IApplicationApiClient
 {
+    Task<ApplicationSettingsModel?> GetSettingsAsync();
     Task<ApplicationVersionModel?> GetLatestVersionAsync();
     Task<ListResult<ApplicationPackageModel>> GetLatestPackagesAsync();
     Task<HttpResponseMessage> DownloadLatestPackageAsync(int packageId);
@@ -20,6 +21,12 @@ public class ApplicationApiClient(HttpClient httpClient, IOptions<HausApiClientS
         IApplicationApiClient
 {
     private const string LatestVersionRoute = "application/latest-version";
+    private const string SettingsRoute = "application/settings";
+
+    public Task<ApplicationSettingsModel?> GetSettingsAsync()
+    {
+        return GetAsJsonAsync<ApplicationSettingsModel>(SettingsRoute);
+    }
 
     public Task<ApplicationVersionModel?> GetLatestVersionAsync()
     {

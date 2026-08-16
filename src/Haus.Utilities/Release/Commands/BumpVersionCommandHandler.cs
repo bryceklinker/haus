@@ -11,8 +11,10 @@ namespace Haus.Utilities.Release.Commands;
 [Command("release", "bump-version")]
 public record BumpVersionCommand : ICommand;
 
-public class BumpVersionCommandHandler(ISemVerBumper bumper, ILogger<BumpVersionCommandHandler> logger)
-    : ICommandHandler<BumpVersionCommand>
+public class BumpVersionCommandHandler(
+    INextVersionResolver nextVersionResolver,
+    ILogger<BumpVersionCommandHandler> logger
+) : ICommandHandler<BumpVersionCommand>
 {
     // Logging goes to the console (see HausLogger.ConfigureConsoleOnly), so the
     // computed version is written to a file rather than stdout -- scripts that
@@ -24,15 +26,10 @@ public class BumpVersionCommandHandler(ISemVerBumper bumper, ILogger<BumpVersion
     public async Task Handle(BumpVersionCommand request, CancellationToken cancellationToken)
     {
         var currentVersion = Environment.GetEnvironmentVariable("CURRENT_VERSION") ?? string.Empty;
-        var versionBump = Environment.GetEnvironmentVariable("VERSION_BUMP") ?? "patch";
+        var versionBumpOverride = Environment.GetEnvironmentVariable("VERSION_BUMP");
 
-        var nextVersion = bumper.Bump(currentVersion, versionBump);
-        logger.LogInformation(
-            "Bumping {CurrentVersion} ({BumpKind}) -> {NextVersion}",
-            currentVersion,
-            versionBump,
-            nextVersion
-        );
+        var nextVersion = nextVersionResolver.Resolve(currentVersion, versionBumpOverride);
+        logger.LogInformation("Bumping {CurrentVersion} -> {NextVersion}", currentVersion, nextVersion);
 
         await File.WriteAllTextAsync(OutputPath, nextVersion, cancellationToken);
     }

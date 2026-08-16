@@ -10,6 +10,7 @@ using Haus.Web.Host.Application;
 using Haus.Web.Host.Auth;
 using Haus.Web.Host.Common.GitHub;
 using Haus.Web.Host.Common.Mqtt;
+using Haus.Web.Host.Common.Mvc;
 using Haus.Web.Host.Common.SignalR;
 using Haus.Web.Host.DeviceSimulator;
 using Haus.Web.Host.Diagnostics;
@@ -21,14 +22,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Hosting;
 
 namespace Haus.Web.Host;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddHausWebHost(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddHausWebHost(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IHostEnvironment environment
+    )
     {
-        return services
+        var isDeviceSimulatorEnabled = DeviceSimulatorFeature.IsEnabled(configuration, environment);
+
+        services
             .AddHausCore(opts =>
             {
                 opts.UseSqlite(
@@ -48,15 +56,20 @@ public static class ServiceCollectionExtensions
                 configuration.Bind("GitHub", opts);
                 opts.PersonalAccessToken = configuration["GITHUB_TOKEN"] ?? "";
             })
+            .Configure<DeviceSimulatorOptions>(opts => opts.Enabled = isDeviceSimulatorEnabled)
             .AddHausMqtt()
             .AddHausCqrs(typeof(ServiceCollectionExtensions).Assembly)
             .AddTransient<ILatestReleaseProvider, GithubLatestReleaseProvider>()
             .AddHostedService<MqttMessageRouter>()
             .AddHostedService<DiagnosticsMqttListener>()
-            .AddHostedService<DeviceSimulatorStatePublisher>()
             .AddHostedService<HealthListener>()
             .AddHostedService<RoomVacancyBackgroundService>()
             .AddSingleton<IHealthCheckPublisher, HealthPublisher>();
+
+        if (isDeviceSimulatorEnabled)
+            services.AddHostedService<DeviceSimulatorStatePublisher>();
+
+        return services;
     }
 
     public static IServiceCollection AddHausAuthentication(
@@ -85,9 +98,17 @@ public static class ServiceCollectionExtensions
         });
     }
 
-    public static IServiceCollection AddHausRestApi(this IServiceCollection services)
+    public static IServiceCollection AddHausRestApi(this IServiceCollection services, bool isDeviceSimulatorEnabled)
     {
-        services.AddControllers().AddControllersAsServices();
+        var mvcBuilder = services.AddControllers().AddControllersAsServices();
+        if (!isDeviceSimulatorEnabled)
+        {
+            mvcBuilder.ConfigureApplicationPartManager(manager =>
+            {
+                ExcludeControllerFeatureProvider.ReplaceDefaultProvider(manager, typeof(DeviceSimulatorController));
+            });
+        }
+
         return services.AddCors(opts =>
         {
             opts.AddDefaultPolicy(policy =>

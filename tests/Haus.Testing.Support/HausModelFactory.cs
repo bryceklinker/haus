@@ -1,4 +1,4 @@
-using System.Dynamic;
+using System.Text.Json;
 using Bogus;
 using Haus.Core.Common.Events;
 using Haus.Core.Models.Common;
@@ -98,7 +98,7 @@ public static class HausModelFactory
             Timestamp: Faker.Date.Recent().ToUniversalTime().ToString("O"),
             Level: Faker.PickRandom<LogLevel>().ToString(),
             Message: Faker.Lorem.Sentence(),
-            Value: new ExpandoObject()
+            Value: JsonDocument.Parse("{}").RootElement
         );
     }
 

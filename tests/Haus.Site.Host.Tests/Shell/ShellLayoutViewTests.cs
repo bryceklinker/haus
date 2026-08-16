@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Haus.Core.Models.Application;
 using Haus.Site.Host.Shell;
 using Haus.Site.Host.Tests.Support;
 using Microsoft.AspNetCore.Components.Web;
@@ -8,6 +9,15 @@ namespace Haus.Site.Host.Tests.Shell;
 
 public class ShellLayoutViewTests : HausSiteTestContext
 {
+    public override async Task InitializeAsync()
+    {
+        await HausApiHandler.SetupGetAsJson(
+            "/api/application/settings",
+            new ApplicationSettingsModel(IsDeviceSimulatorEnabled: true)
+        );
+        await base.InitializeAsync();
+    }
+
     [Fact]
     public async Task WhenMenuIsToggledThenMenuIsClosed()
     {

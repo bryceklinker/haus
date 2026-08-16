@@ -194,6 +194,11 @@ public class HausApiClient(
         return ClientSettingsApiClient.GetClientSettingsAsync();
     }
 
+    public Task<ApplicationSettingsModel?> GetSettingsAsync()
+    {
+        return ApplicationApiClient.GetSettingsAsync();
+    }
+
     public Task<ApplicationVersionModel?> GetLatestVersionAsync()
     {
         return ApplicationApiClient.GetLatestVersionAsync();
