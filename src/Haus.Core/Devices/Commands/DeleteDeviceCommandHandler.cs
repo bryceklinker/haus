@@ -1,7 +1,10 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Core.Common.Events;
 using Haus.Core.Devices.Repositories;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Rooms.Repositories;
+using Haus.Cqrs;
 using Haus.Cqrs.Commands;
 
 namespace Haus.Core.Devices.Commands;
@@ -10,7 +13,8 @@ public record DeleteDeviceCommand(long Id) : ICommand;
 
 internal class DeleteDeviceCommandHandler(
     IDeviceCommandRepository deviceRepository,
-    IRoomCommandRepository roomRepository
+    IRoomCommandRepository roomRepository,
+    IHausBus hausBus
 ) : ICommandHandler<DeleteDeviceCommand>
 {
     public async Task Handle(DeleteDeviceCommand request, CancellationToken cancellationToken)
@@ -23,6 +27,11 @@ internal class DeleteDeviceCommandHandler(
             room.RemoveDevice(device);
         }
 
+        var model = device.ToModel();
         await deviceRepository.DeleteAsync(device, cancellationToken).ConfigureAwait(false);
+
+        await hausBus
+            .PublishAsync(RoutableEvent.FromEvent(new DeviceDeletedEvent(model)), cancellationToken)
+            .ConfigureAwait(false);
     }
 }

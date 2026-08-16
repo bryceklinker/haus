@@ -4,6 +4,7 @@ using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Devices.Commands;
 using Haus.Core.Devices.Entities;
+using Haus.Core.Models.Devices.Events;
 using Haus.Core.Rooms.Entities;
 using Haus.Testing.Support;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +66,17 @@ public class DeleteDeviceCommandTests
 
         var deleted = await _context.FindAsync<DeviceEntity>(device.Id);
         Assert.Null(deleted);
+    }
+
+    [Fact]
+    public async Task WhenDeleteDeviceCommandExecutedThenPublishesDeviceDeletedEvent()
+    {
+        var device = _context.AddDevice();
+
+        await _hausBus.ExecuteCommandAsync(new DeleteDeviceCommand(device.Id));
+
+        var published = Assert.Single(_hausBus.GetPublishedRoutableEvents<DeviceDeletedEvent>());
+        Assert.Equal(device.Id, published.Payload.Device.Id);
     }
 
     [Fact]
