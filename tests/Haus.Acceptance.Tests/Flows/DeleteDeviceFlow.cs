@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Haus.Acceptance.Tests.Support;
 using Microsoft.Playwright;
@@ -27,8 +28,12 @@ public class DeleteDeviceFlow : HausPageTest
 
         await detail.DeleteAsync();
 
-        await devices.ReloadAsync();
-        await Expect(devices.GetDeviceListItem(externalId)).Not.ToBeVisibleAsync();
+        // No manual reload here: the site pushes the deletion over SignalR, so the detail page
+        // should navigate itself back to /devices and the list should drop the device live.
+        await Expect(Page)
+            .ToHaveURLAsync(new Regex("/devices$"), new PageAssertionsToHaveURLOptions { Timeout = 10_000 });
+        await Expect(devices.GetDeviceListItem(externalId))
+            .Not.ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
 
         await detail.ReloadAsync();
         await Expect(Page.CssLocator(".device-detail")).Not.ToBeVisibleAsync();
