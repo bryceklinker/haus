@@ -11,9 +11,8 @@ public class DeleteDeviceFlow : HausPageTest
     private DeconzSimulatorClient _deconzSimulator;
 
     [SetUp]
-    public async Task BeforeEach()
+    public void BeforeEach()
     {
-        await Context.StartTracingAsync();
         _deconzSimulator = GetDeconzSimulatorClient();
     }
 
@@ -61,11 +60,5 @@ public class DeleteDeviceFlow : HausPageTest
 
         await Expect(discoveryAfterDelete.GetRoomDropZone(roomName))
             .Not.ToContainTextAsync(externalId, new LocatorAssertionsToContainTextOptions { Timeout = 10_000 });
-    }
-
-    [TearDown]
-    public async Task AfterEach()
-    {
-        await Context.StopTracingAsync();
     }
 }
