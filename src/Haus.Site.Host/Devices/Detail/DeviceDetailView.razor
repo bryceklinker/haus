@@ -54,21 +54,10 @@
 
 @code {
     [Parameter] public required DeviceModel Device { get; set; }
-    [Parameter] public EventCallback OnDeleted { get; set; }
 
     private async Task HandleDeleteClicked()
     {
         var parameters = new DialogParameters<DeleteDeviceDialogView> { { x => x.Device, Device } };
-        var dialog = await DialogService.ShowAsync<DeleteDeviceDialogView>(null, parameters);
-        _ = HandleDeleteDialogClosed(dialog);
-    }
-
-    private async Task HandleDeleteDialogClosed(IDialogReference dialog)
-    {
-        var result = await dialog.Result;
-        if (result is { Canceled: false })
-        {
-            await OnDeleted.InvokeAsync();
-        }
+        await DialogService.ShowAsync<DeleteDeviceDialogView>(null, parameters);
     }
 }

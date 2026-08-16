@@ -78,7 +78,7 @@ public class DeviceDetailViewTests : HausSiteTestContext
     }
 
     [Fact]
-    public async Task WhenDeleteButtonClickedThenShowsDeleteConfirmationDialog()
+    public async Task WhenDeleteButtonClickedThenShowsDeleteConfirmationDialogForTheDevice()
     {
         var device = HausModelFactory.DeviceModel();
 
@@ -95,42 +95,8 @@ public class DeviceDetailViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Single(dialogProvider.FindAllByComponent<DeleteDeviceDialogView>());
-        });
-    }
-
-    [Fact]
-    public async Task WhenDeviceDeletionIsConfirmedThenOnDeletedIsInvoked()
-    {
-        var device = HausModelFactory.DeviceModel();
-        await HausApiHandler.SetupDeleteAsJson<object?>($"/api/devices/{device.Id}");
-        var deleted = false;
-
-        var dialogProvider = Context.Render<MudDialogProvider>();
-        var page = Context.Render<DeviceDetailView>(opts =>
-        {
-            opts.Add(p => p.Device, device);
-            opts.Add(p => p.OnDeleted, () => deleted = true);
-        });
-
-        await page.InvokeAsync(async () =>
-        {
-            await page.FindByComponent<MudIconButton>().Instance.OnClick.InvokeAsync(new MouseEventArgs());
-        });
-
-        Eventually.Assert(() =>
-        {
-            Assert.Single(dialogProvider.FindAllByComponent<DeleteDeviceDialogView>());
-        });
-
-        await dialogProvider.InvokeAsync(async () =>
-        {
-            await dialogProvider.FindMudButtonByText("delete").ClickAsync();
-        });
-
-        Eventually.Assert(() =>
-        {
-            Assert.True(deleted);
+            var dialog = dialogProvider.FindComponent<DeleteDeviceDialogView>();
+            Assert.Equal(device, dialog.Instance.Device);
         });
     }
 }
