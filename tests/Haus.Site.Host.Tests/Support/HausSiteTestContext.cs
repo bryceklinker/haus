@@ -102,4 +102,16 @@ public class HausSiteTestContext : IAsyncLifetime
         });
         return provider;
     }
+
+    protected async Task<IRenderedComponent<MudDialogProvider>> RenderDialogAsync<T>(DialogParameters parameters)
+        where T : IComponent
+    {
+        var provider = Context.Render<MudDialogProvider>();
+        var dialogService = Context.Services.GetRequiredService<IDialogService>();
+        await provider.InvokeAsync(async () =>
+        {
+            await dialogService.ShowAsync<T>(null, parameters);
+        });
+        return provider;
+    }
 }

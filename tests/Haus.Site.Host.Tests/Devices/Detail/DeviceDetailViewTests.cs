@@ -1,9 +1,11 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Site.Host.Devices.Detail;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using MudBlazor.Extensions;
 
@@ -73,5 +75,62 @@ public class DeviceDetailViewTests : HausSiteTestContext
         });
 
         Assert.Equal(3, page.FindAllByComponent<MudListItem<MetadataModel>>().Count());
+    }
+
+    [Fact]
+    public async Task WhenDeleteButtonClickedThenShowsDeleteConfirmationDialog()
+    {
+        var device = HausModelFactory.DeviceModel();
+
+        var dialogProvider = Context.Render<MudDialogProvider>();
+        var page = Context.Render<DeviceDetailView>(opts =>
+        {
+            opts.Add(p => p.Device, device);
+        });
+
+        await page.InvokeAsync(async () =>
+        {
+            await page.FindByComponent<MudIconButton>().Instance.OnClick.InvokeAsync(new MouseEventArgs());
+        });
+
+        Eventually.Assert(() =>
+        {
+            Assert.Single(dialogProvider.FindAllByComponent<DeleteDeviceDialogView>());
+        });
+    }
+
+    [Fact]
+    public async Task WhenDeviceDeletionIsConfirmedThenOnDeletedIsInvoked()
+    {
+        var device = HausModelFactory.DeviceModel();
+        await HausApiHandler.SetupDeleteAsJson<object?>($"/api/devices/{device.Id}");
+        var deleted = false;
+
+        var dialogProvider = Context.Render<MudDialogProvider>();
+        var page = Context.Render<DeviceDetailView>(opts =>
+        {
+            opts.Add(p => p.Device, device);
+            opts.Add(p => p.OnDeleted, () => deleted = true);
+        });
+
+        await page.InvokeAsync(async () =>
+        {
+            await page.FindByComponent<MudIconButton>().Instance.OnClick.InvokeAsync(new MouseEventArgs());
+        });
+
+        Eventually.Assert(() =>
+        {
+            Assert.Single(dialogProvider.FindAllByComponent<DeleteDeviceDialogView>());
+        });
+
+        await dialogProvider.InvokeAsync(async () =>
+        {
+            await dialogProvider.FindMudButtonByText("delete").ClickAsync();
+        });
+
+        Eventually.Assert(() =>
+        {
+            Assert.True(deleted);
+        });
     }
 }
