@@ -3,9 +3,8 @@ on:
   workflow_dispatch:
     inputs:
       version_bump:
-        description: 'What kind of release is this?'
-        required: true
-        default: 'patch'
+        description: 'What kind of release is this? Leave blank to auto-detect from commit messages.'
+        required: false
 permissions:
   contents: write
 jobs:
@@ -45,10 +44,16 @@ jobs:
       - name: Compute Next Version
         id: compute_version
         run: |
+          # Only export VERSION_BUMP when the human explicitly picked one via
+          # workflow_dispatch -- an empty input must reach compute-next-version.sh
+          # as "unset" so it falls through to commit-log auto-detection, not 'patch'.
+          if [ -n "$VERSION_BUMP_INPUT" ]; then
+            export VERSION_BUMP="$VERSION_BUMP_INPUT"
+          fi
           ./scripts/compute-next-version.sh
           echo "new_tag=$(cat next-version.txt)" >> "$GITHUB_OUTPUT"
         env:
-          VERSION_BUMP: ${{ github.event.inputs.version_bump || 'patch' }}
+          VERSION_BUMP_INPUT: ${{ github.event.inputs.version_bump }}
 
       - name: Publish App
         run: make publish
