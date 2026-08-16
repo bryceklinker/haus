@@ -19,6 +19,8 @@ public abstract class HausPageTest : PageTest
             BaseURL = "https://localhost:15003",
             IgnoreHTTPSErrors = true,
             ScreenSize = new ScreenSize { Width = 1920, Height = 1080 },
+            RecordVideoDir = "playwright/videos",
+            RecordVideoSize = new RecordVideoSize { Width = 1920, Height = 1080 },
         };
     }
 
