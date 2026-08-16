@@ -5,6 +5,7 @@ CONFIG_DIR="/etc/haus"
 DATA_DIR="/var/lib/haus/data"
 CERT_PASSWORD="password"
 ENV_FILE="$CONFIG_DIR/.env"
+LEGACY_MIGRATION_MARKER="/var/lib/haus/.legacy-data-migrated"
 
 # Prefers the ConBee II's stable /dev/serial/by-id symlink (survives reboots
 # and replugs) over a bare ttyACM/ttyUSB scan, since ttyACM/ttyUSB enumeration
@@ -46,12 +47,63 @@ set_detected_zigbee_serial_port() {
   echo "ZIGBEE_SERIAL_PORT=${detected_port}" >> "$ENV_FILE"
 }
 
+# The pre-.deb manual install (scripts/linux-install.sh) put everything
+# under "/home/$(whoami)/haus" for whichever user ran it -- haus_web,
+# haus_zigbee, and haus_mqtt hold the same SQLite db / zigbee state / mqtt
+# broker state that now live under $DATA_DIR. postinst runs as root, so
+# $SUDO_USER (set by `sudo apt install`) is checked first as the most
+# likely owner, then every /home/*/haus and /root/haus is scanned as a
+# fallback for installs done outside of sudo.
+find_legacy_data_dir() {
+  candidates=""
+  if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
+    candidates="/home/$SUDO_USER/haus"
+  fi
+
+  for home_haus in /home/*/haus /root/haus; do
+    case " $candidates " in
+      *" $home_haus "*) continue ;;
+    esac
+    candidates="$candidates $home_haus"
+  done
+
+  for candidate in $candidates; do
+    if [ -d "$candidate/haus_web" ] || [ -d "$candidate/haus_zigbee" ] || [ -d "$candidate/haus_mqtt" ]; then
+      echo "$candidate"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+# One-time copy-forward from the legacy manual-install layout into $DATA_DIR
+# so upgrading to the .deb package doesn't silently start with an empty
+# database. Gated on $LEGACY_MIGRATION_MARKER so re-running postinst (e.g. a
+# later package upgrade) never re-copies stale legacy data over newer data
+# the .deb install has since produced. The legacy directory is only ever
+# read, never modified, in case the copy needs to be redone by hand.
+migrate_legacy_data() {
+  [ -f "$LEGACY_MIGRATION_MARKER" ] && return 0
+
+  legacy_dir=$(find_legacy_data_dir) || return 0
+
+  for subdir in haus_web haus_zigbee haus_mqtt; do
+    [ -d "$legacy_dir/$subdir" ] || continue
+    cp -an "$legacy_dir/$subdir/." "$DATA_DIR/$subdir/"
+  done
+
+  touch "$LEGACY_MIGRATION_MARKER"
+}
+
 case "$1" in
   configure)
     mkdir -p "$DATA_DIR/haus_web/logs" \
              "$DATA_DIR/haus_zigbee/logs" \
              "$DATA_DIR/haus_mqtt/data" \
              "$DATA_DIR/haus_mqtt/log"
+
+    migrate_legacy_data
 
     set_detected_zigbee_serial_port || true
 
