@@ -2,7 +2,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Haus.Api.Client.Devices;
 using Haus.Core.Models;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
@@ -11,7 +10,6 @@ using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Rooms;
 using Haus.Site.Host.Devices.Discovery;
 using Haus.Site.Host.Tests.Support;
-using Haus.Site.Host.Tests.Support.Devices;
 using Haus.Site.Host.Tests.Support.Realtime;
 using Haus.Testing.Support;
 using Microsoft.AspNetCore.Components.Web;
@@ -205,17 +203,6 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
             Assert.Single(view.FindAllByComponent<MudPaper>(opts => opts.WithText(discoveredDevice.ExternalId)));
         });
     }
-}
-
-public class DeviceDiscoveryViewConcurrentDropsTests : HausSiteTestContext
-{
-    private const string RoomsUrl = "/api/rooms";
-    private readonly SequencedDeviceApiClient _deviceClient = new();
-
-    public DeviceDiscoveryViewConcurrentDropsTests()
-    {
-        Context.Services.Replace<IDeviceApiClient>(_deviceClient);
-    }
 
     [Fact]
     public async Task WhenTwoDevicesAreDroppedInQuickSuccessionThenBothRetainRoomAssignment()
@@ -225,14 +212,11 @@ public class DeviceDiscoveryViewConcurrentDropsTests : HausSiteTestContext
         var room = HausModelFactory.RoomModel() with { Id = 6, Name = "bedroom" };
 
         await HausApiHandler.SetupGetAsJson(RoomsUrl, new ListResult<RoomModel>([room]));
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>([light, sensor]));
         await HausApiHandler.SetupPostAsJson($"{RoomsUrl}/{room.Id}/add-devices", new { });
-        _deviceClient.EnqueueGetDevicesResponse().SetResult(new ListResult<DeviceModel>([light, sensor]));
 
         var view = Context.Render<DeviceDiscoveryView>();
         Eventually.Assert(() => Assert.Equal(2, view.FindAllByComponent<MudPaper>().Count()));
-
-        var staleFetchResponse = _deviceClient.EnqueueGetDevicesResponse();
-        var freshFetchResponse = _deviceClient.EnqueueGetDevicesResponse();
 
         var container = view.FindComponent<MudDropContainer<DeviceModel>>();
         var lightDropTask = container.InvokeAsync(() =>
@@ -241,11 +225,6 @@ public class DeviceDiscoveryViewConcurrentDropsTests : HausSiteTestContext
         var sensorDropTask = container.InvokeAsync(() =>
             container.Instance.ItemDropped.InvokeAsync(new MudItemDropInfo<DeviceModel>(sensor, room.Id.ToString(), 0))
         );
-
-        freshFetchResponse.SetResult(
-            new ListResult<DeviceModel>([light with { RoomId = room.Id }, sensor with { RoomId = room.Id }])
-        );
-        staleFetchResponse.SetResult(new ListResult<DeviceModel>([light, sensor]));
         await Task.WhenAll(lightDropTask, sensorDropTask);
 
         Eventually.Assert(() =>
