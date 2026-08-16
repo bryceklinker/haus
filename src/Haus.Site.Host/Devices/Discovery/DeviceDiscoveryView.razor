@@ -127,8 +127,9 @@
         
         long.TryParse(droppedItem.DropzoneIdentifier, out var roomId);
         await RoomsClient.AddDevicesToRoomAsync(roomId, droppedItem.Item.Id);
-        var devices = await DevicesClient.GetDevicesAsync();
-        Devices = devices.Items;
+        Devices = Devices
+            .Select(device => device.Id == droppedItem.Item.Id ? device with { RoomId = roomId } : device)
+            .ToArray();
     }
 
     private Dictionary<string, object?> GetDeviceItemAttributes(DeviceModel model)
