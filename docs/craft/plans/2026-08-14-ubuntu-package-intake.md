@@ -184,16 +184,50 @@ host where it's found:
   `haus_web`, `haus_zigbee`, or `haus_mqtt`.
 - `migrate_legacy_data` copies (`cp -a --update=none`, never moves) each of those
   subdirectories into the matching `/var/lib/haus/data/<subdir>`, then
-  writes a marker file at `/var/lib/haus/.legacy-data-migrated`.
-- Every later `postinst` run (package upgrades) checks that marker first and
-  skips the migration entirely once it exists, so a legacy directory that's
+  writes a per-subdir marker at `/var/lib/haus/.legacy-data-migrated-<subdir>`.
+- Every later `postinst` run (package upgrades) checks that subdir's marker
+  first and skips it once the marker exists, so a legacy directory that's
   still sitting around can never overwrite newer `.deb`-produced data.
 - The legacy directory itself is never modified or deleted -- the migration
   is purely additive, so a failed or unexpected copy can always be redone by
   hand from the untouched original.
 
-Validated by sourcing `postinst`'s functions in a sandboxed fake filesystem
-(see the PR for `polly/fix-deb-data-migration`) covering: resolving the
-legacy dir via `$SUDO_USER`, a full first-time migration, a second run after
-the marker exists not clobbering newer data, and a fresh install with no
-legacy dir being a clean no-op.
+## Follow-up (2026-08-16): fix a permanent migration lockout
+
+The marker was originally a single file (`/var/lib/haus/.legacy-data-migrated`)
+touched unconditionally after the copy loop, regardless of whether any given
+subdir's copy actually ran. On a host where an earlier `.deb` install had
+already booted `Haus.Web.Host` once (auto-creating `haus_web/haus.db` via EF
+Core's `Database.MigrateAsync`) before migration logic existed, `cp
+--update=none` silently no-clobbered around that pre-existing file, the real
+legacy db was never copied, and the unconditional `touch` still marked
+migration "done" -- permanently, since `migrate_legacy_data` returns
+immediately once the marker exists. No later install or reinstall could ever
+recover the legacy data.
+
+Fixed by tracking migration state per destination subdir instead of one
+global marker, and only writing a subdir's marker when its copy actually
+ran. If a destination subdir already has real files in it, the copy is
+skipped (still never overwriting -- that guarantee is unchanged) but the
+marker for that subdir is deliberately left unset, since `postinst` can't
+tell "already-migrated real data" apart from "incidental data occupying the
+same path" -- so the next `postinst` run retries instead of silently and
+permanently treating a skip as done. Every skip is now also reported to
+stderr, so it surfaces in `apt install`/`dpkg` logs instead of failing
+silently. Recovering from a skip still requires an operator to look at what's
+sitting at the destination and decide whether it's safe to move aside before
+the next run can complete the migration.
+
+Also added `haus_zigbee2mqtt` as a recognized legacy subdir name (migrating
+into `haus_zigbee`), covering hosts running a manual install from before
+"Remove zigbee2mqtt from production deployment" (95fab53), which renamed the
+on-disk directory from `haus_zigbee2mqtt` to `haus_zigbee`.
+
+Validated by `scripts/tests/test-postinst-migrate-legacy-data.sh`, which
+sources `postinst`'s functions against a sandboxed fake filesystem (following
+the existing `scripts/tests/test-build-deb-package.sh` pattern) covering: a
+full first-time migration across all subdirs, `haus_zigbee2mqtt` migrating
+into `haus_zigbee`, pre-existing destination data blocking a copy without
+being overwritten and without setting the marker, a later run recovering
+once that pre-existing data is cleared, an already-migrated subdir not being
+re-copied, and a fresh install with no legacy dir being a clean no-op.

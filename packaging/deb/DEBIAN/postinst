@@ -68,7 +68,7 @@ find_legacy_data_dir() {
   done
 
   for candidate in $candidates; do
-    if [ -d "$candidate/haus_web" ] || [ -d "$candidate/haus_zigbee" ] || [ -d "$candidate/haus_mqtt" ]; then
+    if [ -d "$candidate/haus_web" ] || [ -d "$candidate/haus_zigbee" ] || [ -d "$candidate/haus_zigbee2mqtt" ] || [ -d "$candidate/haus_mqtt" ]; then
       echo "$candidate"
       return 0
     fi
@@ -79,62 +79,87 @@ find_legacy_data_dir() {
 
 # One-time copy-forward from the legacy manual-install layout into $DATA_DIR
 # so upgrading to the .deb package doesn't silently start with an empty
-# database. Gated on $LEGACY_MIGRATION_MARKER so re-running postinst (e.g. a
-# later package upgrade) never re-copies stale legacy data over newer data
-# the .deb install has since produced. The legacy directory is only ever
-# read, never modified, in case the copy needs to be redone by hand.
+# database. haus_zigbee2mqtt is the pre-"Remove zigbee2mqtt from production
+# deployment" (95fab53) directory name; its content belongs under the
+# current haus_zigbee.
+#
+# Migration state is tracked per destination subdir (not one global marker),
+# and only set once a subdir's copy actually ran. A destination that already
+# has real files in it (e.g. Haus.Web.Host auto-creating haus.db via EF
+# Core's Database.MigrateAsync on an earlier boot, before this migration
+# ever ran) is left untouched -- cp --update=none already guarantees that --
+# but its marker is deliberately NOT set, since we can't tell "genuine
+# already-migrated .deb data" apart from "incidental data that happens to
+# occupy the same path" from here. Leaving the marker unset means the next
+# postinst run retries (and re-reports) instead of silently and permanently
+# treating a skip as done. The legacy directory is only ever read, never
+# modified, in case the copy needs to be redone by hand.
 migrate_legacy_data() {
-  [ -f "$LEGACY_MIGRATION_MARKER" ] && return 0
-
   legacy_dir=$(find_legacy_data_dir) || return 0
 
-  for subdir in haus_web haus_zigbee haus_mqtt; do
-    [ -d "$legacy_dir/$subdir" ] || continue
-    cp -a --update=none "$legacy_dir/$subdir/." "$DATA_DIR/$subdir/"
-  done
+  for pair in haus_web:haus_web haus_zigbee:haus_zigbee haus_zigbee2mqtt:haus_zigbee haus_mqtt:haus_mqtt; do
+    legacy_subdir=${pair%%:*}
+    dest_subdir=${pair##*:}
+    marker="${LEGACY_MIGRATION_MARKER}-${dest_subdir}"
 
-  touch "$LEGACY_MIGRATION_MARKER"
-}
+    [ -f "$marker" ] && continue
+    [ -d "$legacy_dir/$legacy_subdir" ] || continue
 
-case "$1" in
-  configure)
-    mkdir -p "$DATA_DIR/haus_web/logs" \
-             "$DATA_DIR/haus_zigbee/logs" \
-             "$DATA_DIR/haus_mqtt/data" \
-             "$DATA_DIR/haus_mqtt/log"
-
-    migrate_legacy_data
-
-    set_detected_zigbee_serial_port || true
-
-    # openssl only, deliberately -- unlike scripts/linux-install.sh's
-    # `dotnet dev-certs` step, this package must not require the .NET SDK
-    # on the host to generate its self-signed cert.
-    if [ ! -f "$CONFIG_DIR/cert.pfx" ]; then
-      openssl req -x509 -newkey rsa:2048 -nodes \
-        -keyout "$CONFIG_DIR/cert.key" \
-        -out "$CONFIG_DIR/cert.crt" \
-        -days 825 \
-        -subj "/CN=haus.local"
-      openssl pkcs12 -export \
-        -out "$CONFIG_DIR/cert.pfx" \
-        -inkey "$CONFIG_DIR/cert.key" \
-        -in "$CONFIG_DIR/cert.crt" \
-        -password "pass:${CERT_PASSWORD}"
+    if [ -n "$(find "$DATA_DIR/$dest_subdir" -mindepth 1 -type f -print -quit 2>/dev/null)" ]; then
+      echo "haus: $DATA_DIR/$dest_subdir already has data, skipping legacy migration from $legacy_dir/$legacy_subdir (will retry on next install)" >&2
+      continue
     fi
 
-    systemctl daemon-reload
-    systemctl enable haus-app.service
-    # restart (not start) so an upgrade also picks up this version's
-    # pinned image tags, not just a fresh install. Best-effort: the unit's
-    # haus_zigbee ExecStart is already `-`-prefixed so a missing dongle
-    # doesn't fail the unit itself (see haus-app.service), but this is kept
-    # as a second line of defense against any other unexpected failure --
-    # a bad restart here must not abort package configuration, or
-    # `apt install` would fail outright. The unit is still enabled for the
-    # next successful boot/manual restart.
-    systemctl restart haus-app.service || true
-    ;;
-esac
+    cp -a --update=none "$legacy_dir/$legacy_subdir/." "$DATA_DIR/$dest_subdir/"
+    touch "$marker"
+  done
+}
 
-exit 0
+# Guarded on $# (dpkg always calls maintainer scripts with at least one verb
+# argument) rather than being unconditional, so scripts/tests/ can `source`
+# this file to unit test its functions -- e.g. migrate_legacy_data -- without
+# also running the real configure steps below.
+if [ "$#" -gt 0 ]; then
+  case "$1" in
+    configure)
+      mkdir -p "$DATA_DIR/haus_web/logs" \
+               "$DATA_DIR/haus_zigbee/logs" \
+               "$DATA_DIR/haus_mqtt/data" \
+               "$DATA_DIR/haus_mqtt/log"
+
+      migrate_legacy_data
+
+      set_detected_zigbee_serial_port || true
+
+      # openssl only, deliberately -- unlike scripts/linux-install.sh's
+      # `dotnet dev-certs` step, this package must not require the .NET SDK
+      # on the host to generate its self-signed cert.
+      if [ ! -f "$CONFIG_DIR/cert.pfx" ]; then
+        openssl req -x509 -newkey rsa:2048 -nodes \
+          -keyout "$CONFIG_DIR/cert.key" \
+          -out "$CONFIG_DIR/cert.crt" \
+          -days 825 \
+          -subj "/CN=haus.local"
+        openssl pkcs12 -export \
+          -out "$CONFIG_DIR/cert.pfx" \
+          -inkey "$CONFIG_DIR/cert.key" \
+          -in "$CONFIG_DIR/cert.crt" \
+          -password "pass:${CERT_PASSWORD}"
+      fi
+
+      systemctl daemon-reload
+      systemctl enable haus-app.service
+      # restart (not start) so an upgrade also picks up this version's
+      # pinned image tags, not just a fresh install. Best-effort: the unit's
+      # haus_zigbee ExecStart is already `-`-prefixed so a missing dongle
+      # doesn't fail the unit itself (see haus-app.service), but this is kept
+      # as a second line of defense against any other unexpected failure --
+      # a bad restart here must not abort package configuration, or
+      # `apt install` would fail outright. The unit is still enabled for the
+      # next successful boot/manual restart.
+      systemctl restart haus-app.service || true
+      ;;
+  esac
+
+  exit 0
+fi
