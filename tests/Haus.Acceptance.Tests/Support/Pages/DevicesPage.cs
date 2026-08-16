@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -45,9 +46,11 @@ public class DevicesPage(IPage page)
 
     private async Task<JsonElement> GetDeviceListItemsAsync()
     {
+        // DevicesApiClient always passes a (possibly empty) QueryParameters instance, so the real
+        // request URL is ".../api/devices?" even with no filters -- match on the path, not the raw URL.
         var response = await page.RunAndWaitForResponseAsync(
             NavigateAsync,
-            r => r.Request.Method == "GET" && r.Url.EndsWith("/api/devices")
+            r => r.Request.Method == "GET" && new Uri(r.Url).AbsolutePath.EndsWith("/api/devices")
         );
         var json = await response.JsonAsync();
         return json!.Value.GetProperty("items");
