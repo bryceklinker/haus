@@ -6,7 +6,6 @@
   </Configurations>
   <Folder Name="/.build/">
     <File Path=".csharpierrc.json" />
-    <File Path=".runsettings" />
     <File Path="docker-compose.yml" />
     <File Path="global.json" />
     <File Path="haus-app.service" />

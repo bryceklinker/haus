@@ -11,9 +11,9 @@ function main() {
   dotnet test Haus.slnx \
     --no-build \
     --filter "TestCategory!=Acceptance" \
-    --settings .runsettings \
     --collect:"XPlat Code Coverage" \
-    --results-directory "${TEST_RESULTS_DIRECTORY}"
+    --results-directory "${TEST_RESULTS_DIRECTORY}" \
+    -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Exclude="${COVERAGE_EXCLUDE_FILTERS}"
 
   dotnet reportgenerator \
     "-reports:${COVERAGE_REPORT_GLOB}" \
