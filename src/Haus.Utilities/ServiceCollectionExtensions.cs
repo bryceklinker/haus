@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
             .AddTransient<ISemVerBumper, SemVerBumper>()
             .AddTransient<ICommitBumpKindClassifier, CommitBumpKindClassifier>()
             .AddTransient<IGitCommitLogReader, GitCommitLogReader>()
+            .AddTransient<INextVersionResolver, NextVersionResolver>()
             .AddTransient<IConventionalCommitMessageValidator, ConventionalCommitMessageValidator>()
             .AddSingleton<ICommandFactory, CommandFactory>();
     }

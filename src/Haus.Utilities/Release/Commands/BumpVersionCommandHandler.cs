@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Cqrs.Commands;
 using Haus.Utilities.Common.Cli;
-using Haus.Utilities.Git;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Utilities.Release.Commands;
@@ -13,9 +12,7 @@ namespace Haus.Utilities.Release.Commands;
 public record BumpVersionCommand : ICommand;
 
 public class BumpVersionCommandHandler(
-    ISemVerBumper bumper,
-    ICommitBumpKindClassifier bumpKindClassifier,
-    IGitCommitLogReader commitLogReader,
+    INextVersionResolver nextVersionResolver,
     ILogger<BumpVersionCommandHandler> logger
 ) : ICommandHandler<BumpVersionCommand>
 {
@@ -31,17 +28,8 @@ public class BumpVersionCommandHandler(
         var currentVersion = Environment.GetEnvironmentVariable("CURRENT_VERSION") ?? string.Empty;
         var versionBumpOverride = Environment.GetEnvironmentVariable("VERSION_BUMP");
 
-        var versionBump = string.IsNullOrWhiteSpace(versionBumpOverride)
-            ? bumpKindClassifier.Classify(commitLogReader.GetCommitMessagesSince(currentVersion))
-            : versionBumpOverride;
-
-        var nextVersion = bumper.Bump(currentVersion, versionBump);
-        logger.LogInformation(
-            "Bumping {CurrentVersion} ({BumpKind}) -> {NextVersion}",
-            currentVersion,
-            versionBump,
-            nextVersion
-        );
+        var nextVersion = nextVersionResolver.Resolve(currentVersion, versionBumpOverride);
+        logger.LogInformation("Bumping {CurrentVersion} -> {NextVersion}", currentVersion, nextVersion);
 
         await File.WriteAllTextAsync(OutputPath, nextVersion, cancellationToken);
     }
