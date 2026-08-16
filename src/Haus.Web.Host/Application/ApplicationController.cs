@@ -3,15 +3,25 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using Haus.Core;
 using Haus.Core.Application.Queries;
+using Haus.Core.Models.Application;
 using Haus.Cqrs;
 using Haus.Web.Host.Common.Mvc;
+using Haus.Web.Host.DeviceSimulator;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Haus.Web.Host.Application;
 
 [Route("api/application")]
-public class ApplicationController(IHausBus hausBus) : HausBusController(hausBus)
+public class ApplicationController(IHausBus hausBus, IOptions<DeviceSimulatorOptions> deviceSimulatorOptions)
+    : HausBusController(hausBus)
 {
+    [HttpGet("settings")]
+    public IActionResult GetSettings()
+    {
+        return Ok(new ApplicationSettingsModel(deviceSimulatorOptions.Value.Enabled));
+    }
+
     [HttpGet("latest-version")]
     public Task<IActionResult> GetLatestVersion()
     {

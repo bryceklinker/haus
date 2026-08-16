@@ -17,19 +17,23 @@ namespace Haus.Web.Host;
 public class Startup
 {
     private readonly IConfiguration _configuration;
+    private readonly IHostEnvironment _environment;
 
-    public Startup(IConfiguration configuration)
+    public Startup(IConfiguration configuration, IHostEnvironment environment)
     {
         _configuration = configuration;
+        _environment = environment;
     }
 
     public void ConfigureServices(IServiceCollection services)
     {
+        var isDeviceSimulatorEnabled = DeviceSimulatorFeature.IsEnabled(_configuration, _environment);
+
         services
             .AddHausLogging()
-            .AddHausWebHost(_configuration)
+            .AddHausWebHost(_configuration, _environment)
             .AddHausAuthentication(_configuration)
-            .AddHausRestApi()
+            .AddHausRestApi(isDeviceSimulatorEnabled)
             .AddHausRealtimeApi()
             .AddHausHealthChecks();
     }
@@ -43,13 +47,16 @@ public class Startup
         if (!env.IsAcceptance())
             app.UseHttpsRedirection();
 
+        var isDeviceSimulatorEnabled = DeviceSimulatorFeature.IsEnabled(_configuration, env);
+
         app.UseRouting()
             .UseAuthentication()
             .UseAuthorization()
             .UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<DiagnosticsHub>(HausRealtimeSources.Diagnostics);
-                endpoints.MapHub<DeviceSimulatorHub>(HausRealtimeSources.DeviceSimulator);
+                if (isDeviceSimulatorEnabled)
+                    endpoints.MapHub<DeviceSimulatorHub>(HausRealtimeSources.DeviceSimulator);
                 endpoints.MapHub<EventsHub>(HausRealtimeSources.Events);
                 endpoints.MapHub<HealthHub>(HausRealtimeSources.Health);
                 endpoints.MapControllers();

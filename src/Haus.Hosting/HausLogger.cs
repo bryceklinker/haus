@@ -37,6 +37,7 @@ public class HausLogger : ILogsDirectoryProvider
 
     public static void ConfigureDefaultLogging(string appName)
     {
+        var previousLogger = Log.Logger;
         AppName = appName;
         Log.Logger = CreateDefaultLoggerConfiguration(appName)
             .WriteTo.File(
@@ -46,6 +47,9 @@ public class HausLogger : ILogsDirectoryProvider
                 retainedFileCountLimit: 20
             )
             .CreateLogger();
+
+        if (previousLogger is IDisposable disposableLogger)
+            disposableLogger.Dispose();
     }
 
     public static void ConfigureConsoleOnly(string appName)
