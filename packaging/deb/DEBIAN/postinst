@@ -90,7 +90,7 @@ migrate_legacy_data() {
 
   for subdir in haus_web haus_zigbee haus_mqtt; do
     [ -d "$legacy_dir/$subdir" ] || continue
-    cp -an "$legacy_dir/$subdir/." "$DATA_DIR/$subdir/"
+    cp -a --update=none "$legacy_dir/$subdir/." "$DATA_DIR/$subdir/"
   done
 
   touch "$LEGACY_MIGRATION_MARKER"

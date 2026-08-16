@@ -182,7 +182,7 @@ host where it's found:
   `$SUDO_USER`'s home (set by `sudo apt install`), then falls back to
   scanning every `/home/*/haus` and `/root/haus` for one containing
   `haus_web`, `haus_zigbee`, or `haus_mqtt`.
-- `migrate_legacy_data` copies (`cp -an`, never moves) each of those
+- `migrate_legacy_data` copies (`cp -a --update=none`, never moves) each of those
   subdirectories into the matching `/var/lib/haus/data/<subdir>`, then
   writes a marker file at `/var/lib/haus/.legacy-data-migrated`.
 - Every later `postinst` run (package upgrades) checks that marker first and
