@@ -91,4 +91,36 @@ public class LogsViewTests : HausSiteTestContext
             Assert.Equal(2, requestCount);
         });
     }
+
+    [Fact]
+    public async Task WhenDisposedThenStopsRefreshingLogs()
+    {
+        var requestCount = 0;
+        await HausApiHandler.SetupGetAsJson(
+            "/api/logs",
+            new ListResult<LogEntryModel>([]),
+            opts => opts.WithCapture(r => requestCount++)
+        );
+
+        var view = RenderView<LogsView>(opts =>
+        {
+            opts.Add(c => c.RefreshInterval, TimeSpan.FromMilliseconds(200));
+        });
+
+        Eventually.Assert(() =>
+        {
+            Assert.True(requestCount > 1);
+        });
+
+        await Eventually.AssertAsync(async () =>
+        {
+            await Context.DisposeComponentsAsync();
+            Assert.True(view.IsDisposed);
+        });
+        var requestCountAtDisposal = requestCount;
+
+        await Task.Delay(TimeSpan.FromMilliseconds(600));
+
+        Assert.Equal(requestCountAtDisposal, requestCount);
+    }
 }

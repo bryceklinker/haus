@@ -75,6 +75,7 @@ public class HausSiteTestContext : IAsyncLifetime
             await service.StartAsync(CancellationToken.None);
         }
 
+        await Context.DisposeComponentsAsync();
         await Context.Services.DisposeAsync();
     }
 
