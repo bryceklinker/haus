@@ -46,10 +46,14 @@ public class DevicesPage(IPage page)
 
     private async Task<JsonElement> GetDeviceListItemsAsync()
     {
-        // DevicesApiClient always passes a (possibly empty) QueryParameters instance, so the real
-        // request URL is ".../api/devices?" even with no filters -- match on the path, not the raw URL.
+        // Goes through the browser (not GetDevicesAsync directly) so the returned ids line up with
+        // what's on screen. A GotoAsync forces a fresh navigation even when already on /devices --
+        // clicking the "Devices" nav link again would be a same-route no-op for Blazor's router and
+        // never re-fetch. DevicesApiClient also always passes a (possibly empty) QueryParameters
+        // instance, so the real request URL is ".../api/devices?" even with no filters -- match on
+        // the path, not the raw URL.
         var response = await page.RunAndWaitForResponseAsync(
-            NavigateAsync,
+            () => page.GotoAsync("/devices"),
             r => r.Request.Method == "GET" && new Uri(r.Url).AbsolutePath.EndsWith("/api/devices")
         );
         var json = await response.JsonAsync();
