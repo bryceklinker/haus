@@ -28,7 +28,8 @@ public class DeleteDeviceFlow : HausPageTest
 
         await detail.DeleteAsync();
 
-        Assert.That(await devices.ContainsDeviceAsync(externalId), Is.False);
+        await devices.ReloadAsync();
+        await Expect(devices.GetDeviceListItem(externalId)).Not.ToBeVisibleAsync();
 
         await detail.ReloadAsync();
         await Expect(Page.CssLocator(".device-detail")).Not.ToBeVisibleAsync();
