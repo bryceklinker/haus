@@ -33,6 +33,6 @@ public class DevicesPage(IPage page)
 
     public ILocator GetDeviceListItem(string externalId)
     {
-        return page.GetByText(externalId, new PageGetByTextOptions { Exact = true });
+        return page.GetByText(externalId);
     }
 }
