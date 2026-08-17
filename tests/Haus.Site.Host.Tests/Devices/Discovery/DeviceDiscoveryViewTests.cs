@@ -205,6 +205,29 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
     }
 
     [Fact]
+    public async Task WhenDeviceDragStartsThenOtherDevicesCannotBeDraggedBeforeItIsDropped()
+    {
+        var deviceA = HausModelFactory.DeviceModel() with { Id = 78, RoomId = null };
+        var deviceB = HausModelFactory.DeviceModel() with { Id = 79, RoomId = null };
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>([deviceA, deviceB]));
+
+        var page = Context.Render<DeviceDiscoveryView>();
+        Eventually.Assert(() => Assert.Equal(2, page.FindAllByComponent<MudPaper>().Count()));
+
+        var deviceAElement = page.FindByTag("div", opts => opts.WithClassName("device").WithText(deviceA.ExternalId));
+        await deviceAElement.DragStartAsync(new DragEventArgs());
+
+        Eventually.Assert(() =>
+        {
+            var deviceBElement = page.FindByTag(
+                "div",
+                opts => opts.WithClassName("mud-drop-item").WithText(deviceB.ExternalId)
+            );
+            Assert.Equal("false", deviceBElement.GetAttribute("draggable"));
+        });
+    }
+
+    [Fact]
     public async Task WhenDeviceDropIsInFlightThenOtherDevicesCannotBeDragged()
     {
         var deviceA = HausModelFactory.DeviceModel() with { Id = 76, RoomId = null };

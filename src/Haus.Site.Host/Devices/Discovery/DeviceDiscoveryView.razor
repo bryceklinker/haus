@@ -24,6 +24,7 @@
                       Items="Devices"
                       ItemsSelector="IsDeviceInRoom"
                       ItemDropped="HandleDeviceDropped"
+                      ItemPicked="HandleItemPicked"
                       ItemDisabled="@(_ => _isAssigningDeviceToRoom)">
         <ChildContent>
             <MudGrid>
@@ -120,6 +121,11 @@
         return roomId == device.RoomId.ToString();
     }
 
+    private void HandleItemPicked(MudDragAndDropItemTransaction<DeviceModel> transaction)
+    {
+        _isAssigningDeviceToRoom = true;
+    }
+
     private async Task HandleDeviceDropped(MudItemDropInfo<DeviceModel> droppedItem)
     {
         if (droppedItem.Item == null)
@@ -127,9 +133,6 @@
             return;
         }
 
-        // Disables dragging for every item while this runs, closing the window in which MudDropContainer's
-        // internal transaction field can be clobbered by a second drag starting before this one's commit
-        // finishes (https://github.com/MudBlazor/MudBlazor/issues/6551).
         _isAssigningDeviceToRoom = true;
         try
         {
