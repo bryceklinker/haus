@@ -20,10 +20,11 @@
 @inject IRealtimeDataFactory RealtimeDataFactory;
 
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading rooms and devices...">
-    <MudDropContainer T="DeviceModel" 
+    <MudDropContainer T="DeviceModel"
                       Items="Devices"
-                      ItemsSelector="IsDeviceInRoom" 
-                      ItemDropped="HandleDeviceDropped">
+                      ItemsSelector="IsDeviceInRoom"
+                      ItemDropped="HandleDeviceDropped"
+                      ItemPicked="HandleItemPicked">
         <ChildContent>
             <MudGrid>
                 <MudItem xs="6">
@@ -47,7 +48,8 @@
         <ItemRenderer>
             <MudPaper UserAttributes="GetDeviceItemAttributes(context)"
                       Outlined="true"
-                      Class="device ma-4 pa-2">
+                      Class="device ma-4 pa-2"
+                      Style="@GetDeviceItemStyle(context)">
                 <MudStack>
                     <MudText Typo="Typo.body1">Device Type: (@context.DeviceType.Humanize(LetterCasing.Title))</MudText>
                     <MudText Typo="Typo.body2">External Id: @context.ExternalId</MudText>
@@ -65,6 +67,8 @@
     private DeviceModel[] Devices { get; set; } = [];
 
     private bool IsLoading { get; set; }
+    private bool _isAssigningDeviceToRoom;
+    private long? _draggedDeviceId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -118,18 +122,33 @@
         return roomId == device.RoomId.ToString();
     }
 
+    private void HandleItemPicked(MudDragAndDropItemTransaction<DeviceModel> transaction)
+    {
+        _isAssigningDeviceToRoom = true;
+        _draggedDeviceId = transaction.Item?.Id;
+    }
+
     private async Task HandleDeviceDropped(MudItemDropInfo<DeviceModel> droppedItem)
     {
         if (droppedItem.Item == null)
         {
             return;
         }
-        
-        long.TryParse(droppedItem.DropzoneIdentifier, out var roomId);
-        await RoomsClient.AddDevicesToRoomAsync(roomId, droppedItem.Item.Id);
-        Devices = Devices
-            .Select(device => device.Id == droppedItem.Item.Id ? device with { RoomId = roomId } : device)
-            .ToArray();
+
+        _isAssigningDeviceToRoom = true;
+        try
+        {
+            long.TryParse(droppedItem.DropzoneIdentifier, out var roomId);
+            await RoomsClient.AddDevicesToRoomAsync(roomId, droppedItem.Item.Id);
+            Devices = Devices
+                .Select(device => device.Id == droppedItem.Item.Id ? device with { RoomId = roomId } : device)
+                .ToArray();
+        }
+        finally
+        {
+            _isAssigningDeviceToRoom = false;
+            _draggedDeviceId = null;
+        }
     }
 
     private Dictionary<string, object?> GetDeviceItemAttributes(DeviceModel model)
@@ -138,6 +157,12 @@
         {
             { "external-id", model.ExternalId }
         };
+    }
+
+    private string GetDeviceItemStyle(DeviceModel model)
+    {
+        var isBlocked = _isAssigningDeviceToRoom && model.Id != _draggedDeviceId;
+        return isBlocked ? "pointer-events: none;" : "";
     }
 
     private Dictionary<string, object?> GetRoomAttributes(RoomModel model)
