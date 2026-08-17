@@ -20,43 +20,48 @@
 @inject IRealtimeDataFactory RealtimeDataFactory;
 
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading rooms and devices...">
-    <MudDropContainer T="DeviceModel"
-                      Items="Devices"
-                      ItemsSelector="IsDeviceInRoom"
-                      ItemDropped="HandleDeviceDropped"
-                      ItemPicked="HandleItemPicked"
-                      ItemDisabled="@(_ => _isAssigningDeviceToRoom)">
-        <ChildContent>
-            <MudGrid>
-                <MudItem xs="6">
-                    @foreach (var room in Rooms)
-                    {
-                        <MudDropZone T="DeviceModel" 
-                                     UserAttributes="GetRoomAttributes(room)" 
-                                     Identifier="@room.Id.ToString()">
-                            <MudText Typo="Typo.h3">@room.Name</MudText>
+    <div style="position: relative;">
+        <MudDropContainer T="DeviceModel"
+                          Items="Devices"
+                          ItemsSelector="IsDeviceInRoom"
+                          ItemDropped="HandleDeviceDropped"
+                          ItemPicked="HandleItemPicked">
+            <ChildContent>
+                <MudGrid>
+                    <MudItem xs="6">
+                        @foreach (var room in Rooms)
+                        {
+                            <MudDropZone T="DeviceModel"
+                                         UserAttributes="GetRoomAttributes(room)"
+                                         Identifier="@room.Id.ToString()">
+                                <MudText Typo="Typo.h3">@room.Name</MudText>
+                            </MudDropZone>
+                        }
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudDropZone T="DeviceModel"
+                                     Identifier="@UnassignedDeviceRoomId">
+                            <MudText Typo="Typo.h3">Unassigned Devices</MudText>
                         </MudDropZone>
-                    }        
-                </MudItem>
-                <MudItem xs="6">
-                    <MudDropZone T="DeviceModel"
-                                 Identifier="@UnassignedDeviceRoomId">
-                        <MudText Typo="Typo.h3">Unassigned Devices</MudText>
-                    </MudDropZone>    
-                </MudItem>
-            </MudGrid>
-        </ChildContent>
-        <ItemRenderer>
-            <MudPaper UserAttributes="GetDeviceItemAttributes(context)"
-                      Outlined="true"
-                      Class="device ma-4 pa-2">
-                <MudStack>
-                    <MudText Typo="Typo.body1">Device Type: (@context.DeviceType.Humanize(LetterCasing.Title))</MudText>
-                    <MudText Typo="Typo.body2">External Id: @context.ExternalId</MudText>
-                </MudStack>
-            </MudPaper>
-        </ItemRenderer>
-    </MudDropContainer>
+                    </MudItem>
+                </MudGrid>
+            </ChildContent>
+            <ItemRenderer>
+                <MudPaper UserAttributes="GetDeviceItemAttributes(context)"
+                          Outlined="true"
+                          Class="device ma-4 pa-2">
+                    <MudStack>
+                        <MudText Typo="Typo.body1">Device Type: (@context.DeviceType.Humanize(LetterCasing.Title))</MudText>
+                        <MudText Typo="Typo.body2">External Id: @context.ExternalId</MudText>
+                    </MudStack>
+                </MudPaper>
+            </ItemRenderer>
+        </MudDropContainer>
+        @if (_isAssigningDeviceToRoom)
+        {
+            <div class="device-discovery-drag-overlay" style="position: absolute; inset: 0; z-index: 10; pointer-events: auto;"></div>
+        }
+    </div>
 </LoadingContentView>
 
 @code {

@@ -205,7 +205,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
     }
 
     [Fact]
-    public async Task WhenDeviceDragStartsThenOtherDevicesCannotBeDraggedBeforeItIsDropped()
+    public async Task WhenDeviceDragStartsThenABlockingOverlayCoversTheDropContainer()
     {
         var deviceA = HausModelFactory.DeviceModel() with { Id = 78, RoomId = null };
         var deviceB = HausModelFactory.DeviceModel() with { Id = 79, RoomId = null };
@@ -214,21 +214,16 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         var page = Context.Render<DeviceDiscoveryView>();
         Eventually.Assert(() => Assert.Equal(2, page.FindAllByComponent<MudPaper>().Count()));
 
+        Assert.Empty(page.FindAllByClass("device-discovery-drag-overlay"));
+
         var deviceAElement = page.FindByTag("div", opts => opts.WithClassName("device").WithText(deviceA.ExternalId));
         await deviceAElement.DragStartAsync(new DragEventArgs());
 
-        Eventually.Assert(() =>
-        {
-            var deviceBElement = page.FindByTag(
-                "div",
-                opts => opts.WithClassName("mud-drop-item").WithText(deviceB.ExternalId)
-            );
-            Assert.Equal("false", deviceBElement.GetAttribute("draggable"));
-        });
+        Eventually.Assert(() => Assert.Single(page.FindAllByClass("device-discovery-drag-overlay")));
     }
 
     [Fact]
-    public async Task WhenDeviceDropIsInFlightThenOtherDevicesCannotBeDragged()
+    public async Task WhenDeviceDropIsInFlightThenTheBlockingOverlayRemainsUntilItCompletes()
     {
         var deviceA = HausModelFactory.DeviceModel() with { Id = 76, RoomId = null };
         var deviceB = HausModelFactory.DeviceModel() with { Id = 77, RoomId = null };
@@ -254,25 +249,11 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         var bathroomZone = page.FindByComponent<MudDropZone<DeviceModel>>(opts => opts.WithText("bathroom"));
         var dropTask = bathroomZone.FindByTag("div").DropAsync(new DragEventArgs());
 
-        Eventually.Assert(() =>
-        {
-            var deviceBElement = page.FindByTag(
-                "div",
-                opts => opts.WithClassName("mud-drop-item").WithText(deviceB.ExternalId)
-            );
-            Assert.Equal("false", deviceBElement.GetAttribute("draggable"));
-        });
+        Eventually.Assert(() => Assert.Single(page.FindAllByClass("device-discovery-drag-overlay")));
 
         await dropTask;
 
-        Eventually.Assert(() =>
-        {
-            var deviceBElement = page.FindByTag(
-                "div",
-                opts => opts.WithClassName("mud-drop-item").WithText(deviceB.ExternalId)
-            );
-            Assert.Equal("true", deviceBElement.GetAttribute("draggable"));
-        });
+        Eventually.Assert(() => Assert.Empty(page.FindAllByClass("device-discovery-drag-overlay")));
     }
 
     [Fact]
