@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Logs;
@@ -89,6 +90,67 @@ public class LogsViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             Assert.Equal(2, requestCount);
+        });
+    }
+
+    [Fact]
+    public async Task WhenDisposedThenStopsRefreshingLogs()
+    {
+        var requestCount = 0;
+        await HausApiHandler.SetupGetAsJson(
+            "/api/logs",
+            new ListResult<LogEntryModel>([]),
+            opts => opts.WithCapture(r => requestCount++)
+        );
+
+        var view = RenderView<LogsView>(opts =>
+        {
+            opts.Add(c => c.RefreshInterval, TimeSpan.FromMilliseconds(200));
+        });
+
+        Eventually.Assert(() =>
+        {
+            Assert.True(requestCount > 1);
+        });
+
+        await Eventually.AssertAsync(async () =>
+        {
+            await Context.DisposeComponentsAsync();
+            Assert.True(view.IsDisposed);
+        });
+        var requestCountAtDisposal = requestCount;
+
+        await Task.Delay(TimeSpan.FromMilliseconds(600));
+
+        Assert.Equal(requestCountAtDisposal, requestCount);
+    }
+
+    [Fact]
+    public async Task WhenARefreshFailsThenContinuesPollingOnNextTick()
+    {
+        var requestCount = 0;
+        await HausApiHandler.SetupGetAsJson(
+            "/api/logs",
+            new ListResult<LogEntryModel>([]),
+            opts =>
+                opts.WithCapture(r =>
+                {
+                    requestCount++;
+                    if (requestCount == 2)
+                    {
+                        throw new HttpRequestException("Simulated failure fetching logs");
+                    }
+                })
+        );
+
+        RenderView<LogsView>(opts =>
+        {
+            opts.Add(c => c.RefreshInterval, TimeSpan.FromMilliseconds(200));
+        });
+
+        Eventually.Assert(() =>
+        {
+            Assert.True(requestCount > 2);
         });
     }
 }
