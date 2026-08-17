@@ -20,10 +20,11 @@
 @inject IRealtimeDataFactory RealtimeDataFactory;
 
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading rooms and devices...">
-    <MudDropContainer T="DeviceModel" 
+    <MudDropContainer T="DeviceModel"
                       Items="Devices"
-                      ItemsSelector="IsDeviceInRoom" 
-                      ItemDropped="HandleDeviceDropped">
+                      ItemsSelector="IsDeviceInRoom"
+                      ItemDropped="HandleDeviceDropped"
+                      ItemDisabled="@(_ => _isAssigningDeviceToRoom)">
         <ChildContent>
             <MudGrid>
                 <MudItem xs="6">
@@ -65,6 +66,7 @@
     private DeviceModel[] Devices { get; set; } = [];
 
     private bool IsLoading { get; set; }
+    private bool _isAssigningDeviceToRoom;
 
     protected override async Task OnInitializedAsync()
     {
@@ -124,12 +126,23 @@
         {
             return;
         }
-        
-        long.TryParse(droppedItem.DropzoneIdentifier, out var roomId);
-        await RoomsClient.AddDevicesToRoomAsync(roomId, droppedItem.Item.Id);
-        Devices = Devices
-            .Select(device => device.Id == droppedItem.Item.Id ? device with { RoomId = roomId } : device)
-            .ToArray();
+
+        // Disables dragging for every item while this runs, closing the window in which MudDropContainer's
+        // internal transaction field can be clobbered by a second drag starting before this one's commit
+        // finishes (https://github.com/MudBlazor/MudBlazor/issues/6551).
+        _isAssigningDeviceToRoom = true;
+        try
+        {
+            long.TryParse(droppedItem.DropzoneIdentifier, out var roomId);
+            await RoomsClient.AddDevicesToRoomAsync(roomId, droppedItem.Item.Id);
+            Devices = Devices
+                .Select(device => device.Id == droppedItem.Item.Id ? device with { RoomId = roomId } : device)
+                .ToArray();
+        }
+        finally
+        {
+            _isAssigningDeviceToRoom = false;
+        }
     }
 
     private Dictionary<string, object?> GetDeviceItemAttributes(DeviceModel model)
