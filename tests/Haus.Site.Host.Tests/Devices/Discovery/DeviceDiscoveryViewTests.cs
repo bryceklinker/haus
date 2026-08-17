@@ -205,7 +205,7 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
     }
 
     [Fact]
-    public async Task WhenDeviceDragStartsThenOtherDevicesCannotBeDraggedBeforeItIsDropped()
+    public async Task WhenDeviceDragStartsThenOtherDevicesHavePointerEventsDisabledButDraggedDeviceDoesNot()
     {
         var deviceA = HausModelFactory.DeviceModel() with { Id = 78, RoomId = null };
         var deviceB = HausModelFactory.DeviceModel() with { Id = 79, RoomId = null };
@@ -221,14 +221,20 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         {
             var deviceBElement = page.FindByTag(
                 "div",
-                opts => opts.WithClassName("mud-drop-item").WithText(deviceB.ExternalId)
+                opts => opts.WithClassName("device").WithText(deviceB.ExternalId)
             );
-            Assert.Equal("false", deviceBElement.GetAttribute("draggable"));
+            Assert.Contains("pointer-events: none", deviceBElement.GetAttribute("style"));
+
+            var refreshedDeviceAElement = page.FindByTag(
+                "div",
+                opts => opts.WithClassName("device").WithText(deviceA.ExternalId)
+            );
+            Assert.DoesNotContain("pointer-events: none", refreshedDeviceAElement.GetAttribute("style") ?? "");
         });
     }
 
     [Fact]
-    public async Task WhenDeviceDropIsInFlightThenOtherDevicesCannotBeDragged()
+    public async Task WhenDeviceDropIsInFlightThenOtherDevicesHavePointerEventsDisabledUntilItCompletes()
     {
         var deviceA = HausModelFactory.DeviceModel() with { Id = 76, RoomId = null };
         var deviceB = HausModelFactory.DeviceModel() with { Id = 77, RoomId = null };
@@ -258,9 +264,9 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         {
             var deviceBElement = page.FindByTag(
                 "div",
-                opts => opts.WithClassName("mud-drop-item").WithText(deviceB.ExternalId)
+                opts => opts.WithClassName("device").WithText(deviceB.ExternalId)
             );
-            Assert.Equal("false", deviceBElement.GetAttribute("draggable"));
+            Assert.Contains("pointer-events: none", deviceBElement.GetAttribute("style"));
         });
 
         await dropTask;
@@ -269,9 +275,9 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         {
             var deviceBElement = page.FindByTag(
                 "div",
-                opts => opts.WithClassName("mud-drop-item").WithText(deviceB.ExternalId)
+                opts => opts.WithClassName("device").WithText(deviceB.ExternalId)
             );
-            Assert.Equal("true", deviceBElement.GetAttribute("draggable"));
+            Assert.DoesNotContain("pointer-events: none", deviceBElement.GetAttribute("style") ?? "");
         });
     }
 
