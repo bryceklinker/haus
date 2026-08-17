@@ -8,6 +8,10 @@ runs:
       with:
         global-json-file: 'global.json'
 
+    - name: Install wasm-tools Workload
+      shell: bash
+      run: dotnet workload install wasm-tools --skip-manifest-update
+
     - name: Install Dev Certs
       shell: bash
       run: |
