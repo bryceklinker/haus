@@ -205,6 +205,83 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
     }
 
     [Fact]
+    public async Task WhenDeviceDragStartsThenOtherDevicesHavePointerEventsDisabledButDraggedDeviceDoesNot()
+    {
+        var deviceA = HausModelFactory.DeviceModel() with { Id = 78, RoomId = null };
+        var deviceB = HausModelFactory.DeviceModel() with { Id = 79, RoomId = null };
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>([deviceA, deviceB]));
+
+        var page = Context.Render<DeviceDiscoveryView>();
+        Eventually.Assert(() => Assert.Equal(2, page.FindAllByComponent<MudPaper>().Count()));
+
+        var deviceAElement = page.FindByTag("div", opts => opts.WithClassName("device").WithText(deviceA.ExternalId));
+        await deviceAElement.DragStartAsync(new DragEventArgs());
+
+        Eventually.Assert(() =>
+        {
+            var deviceBElement = page.FindByTag(
+                "div",
+                opts => opts.WithClassName("device").WithText(deviceB.ExternalId)
+            );
+            Assert.Contains("pointer-events: none", deviceBElement.GetAttribute("style"));
+
+            var refreshedDeviceAElement = page.FindByTag(
+                "div",
+                opts => opts.WithClassName("device").WithText(deviceA.ExternalId)
+            );
+            Assert.DoesNotContain("pointer-events: none", refreshedDeviceAElement.GetAttribute("style") ?? "");
+        });
+    }
+
+    [Fact]
+    public async Task WhenDeviceDropIsInFlightThenOtherDevicesHavePointerEventsDisabledUntilItCompletes()
+    {
+        var deviceA = HausModelFactory.DeviceModel() with { Id = 76, RoomId = null };
+        var deviceB = HausModelFactory.DeviceModel() with { Id = 77, RoomId = null };
+        await HausApiHandler.SetupGetAsJson(
+            RoomsUrl,
+            new ListResult<RoomModel>([HausModelFactory.RoomModel() with { Id = 6, Name = "bathroom" }])
+        );
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>([deviceA, deviceB]));
+        await HausApiHandler.SetupPostAsJson($"{RoomsUrl}/{6}/add-devices", new { }, opts => opts.WithDelayMs(300));
+
+        var page = Context.Render<DeviceDiscoveryView>();
+        Eventually.Assert(() => Assert.Equal(2, page.FindAllByComponent<MudPaper>().Count()));
+
+        var unassignedZone = page.FindByComponent<MudDropZone<DeviceModel>>(opts =>
+            opts.WithText("unassigned devices")
+        );
+        var deviceAElement = unassignedZone.FindByTag(
+            "div",
+            opts => opts.WithClassName("device").WithText(deviceA.ExternalId)
+        );
+        await deviceAElement.DragStartAsync(new DragEventArgs());
+
+        var bathroomZone = page.FindByComponent<MudDropZone<DeviceModel>>(opts => opts.WithText("bathroom"));
+        var dropTask = bathroomZone.FindByTag("div").DropAsync(new DragEventArgs());
+
+        Eventually.Assert(() =>
+        {
+            var deviceBElement = page.FindByTag(
+                "div",
+                opts => opts.WithClassName("device").WithText(deviceB.ExternalId)
+            );
+            Assert.Contains("pointer-events: none", deviceBElement.GetAttribute("style"));
+        });
+
+        await dropTask;
+
+        Eventually.Assert(() =>
+        {
+            var deviceBElement = page.FindByTag(
+                "div",
+                opts => opts.WithClassName("device").WithText(deviceB.ExternalId)
+            );
+            Assert.DoesNotContain("pointer-events: none", deviceBElement.GetAttribute("style") ?? "");
+        });
+    }
+
+    [Fact]
     public async Task WhenTwoDevicesAreDroppedInQuickSuccessionThenBothRetainRoomAssignment()
     {
         var light = HausModelFactory.DeviceModel() with { Id = 201, RoomId = null };
