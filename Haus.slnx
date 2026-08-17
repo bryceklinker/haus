@@ -60,7 +60,6 @@
     <Project Path="src/Haus.Hosting/Haus.Hosting.csproj" />
     <Project Path="src/Haus.Mqtt.Client/Haus.Mqtt.Client.csproj" />
     <Project Path="src/Haus.Site.Host/Haus.Site.Host.csproj" />
-    <Project Path="src/Haus.Udp.Client/Haus.Udp.Client.csproj" />
     <Project Path="src/Haus.Utilities/Haus.Utilities.csproj" />
     <Project Path="src/Haus.Web.Host/Haus.Web.Host.csproj" />
     <Project Path="src/Haus.Zigbee.Host/Haus.Zigbee.Host.csproj" />
@@ -75,7 +74,6 @@
     <Project Path="tests/Haus.Mqtt.Client.Tests/Haus.Mqtt.Client.Tests.csproj" />
     <Project Path="tests/Haus.Site.Host.Tests/Haus.Site.Host.Tests.csproj" />
     <Project Path="tests/Haus.Testing.Support/Haus.Testing.Support.csproj" />
-    <Project Path="tests/Haus.Udp.Client.Tests/Haus.Udp.Client.Tests.csproj" />
     <Project Path="tests/Haus.Utilities.Tests/Haus.Utilities.Tests.csproj" />
     <Project Path="tests/Haus.Web.Host.Tests/Haus.Web.Host.Tests.csproj" />
     <Project Path="tests/Haus.Zigbee.Host.Tests/Haus.Zigbee.Host.Tests.csproj" />
