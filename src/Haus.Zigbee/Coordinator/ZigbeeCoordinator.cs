@@ -17,44 +17,42 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     // added latency on received reports against wasted serial bandwidth from polling too eagerly.
     private static readonly TimeSpan PollInterval = TimeSpan.FromMilliseconds(100);
 
-    private readonly ISerialTransport _transport;
-    private readonly DeconzChannel _channel;
-    private readonly DeconzConnection _connection;
-    private readonly ApsPollLoop _pollLoop;
-    private readonly PermitJoinController _permitJoinController;
-    private readonly ApsSender _sender;
-    private readonly CommandSender _commandSender;
-    private readonly AttributeReportListener _attributeReportListener;
-    private readonly KnownDeviceTable _knownDeviceTable;
-    private readonly DeviceInterview _deviceInterview;
+    private readonly Func<ISerialTransport> _transportFactory;
+    private readonly TimeSpan? _channelRoundTripTimeout;
+    private readonly ILoggerFactory _loggerFactory;
     private readonly ILogger<ZigbeeCoordinator> _logger;
+    private readonly KnownDeviceTable _knownDeviceTable = new();
+
+    private ISerialTransport _transport = null!;
+    private DeconzChannel _channel = null!;
+    private DeconzConnection _connection = null!;
+    private ApsPollLoop _pollLoop = null!;
+    private PermitJoinController _permitJoinController = null!;
+    private ApsSender _sender = null!;
+    private CommandSender _commandSender = null!;
+    private AttributeReportListener _attributeReportListener = null!;
+    private DeviceInterview _deviceInterview = null!;
 
     private CancellationTokenSource? _pollCancellation;
+    private bool _transportNeedsRebuild;
     private bool _disposed;
 
-    public ZigbeeCoordinator(ISerialTransport transport, ILoggerFactory? loggerFactory = null)
+    public ZigbeeCoordinator(
+        Func<ISerialTransport> transportFactory,
+        ILoggerFactory? loggerFactory = null,
+        TimeSpan? channelRoundTripTimeout = null
+    )
     {
-        loggerFactory ??= NullLoggerFactory.Instance;
-        _transport = transport;
-        _channel = new DeconzChannel(transport);
-        _connection = new DeconzConnection(_channel);
-        _pollLoop = new ApsPollLoop(_channel);
-        _permitJoinController = new PermitJoinController(_channel);
-        _sender = new ApsSender(_pollLoop, _channel);
-        _commandSender = new CommandSender(_sender);
-        _attributeReportListener = new AttributeReportListener(_pollLoop);
-        _knownDeviceTable = new KnownDeviceTable();
-        _deviceInterview = new DeviceInterview(
-            _pollLoop,
-            _sender,
-            _knownDeviceTable,
-            logger: loggerFactory.CreateLogger<DeviceInterview>()
-        );
-        _logger = loggerFactory.CreateLogger<ZigbeeCoordinator>();
+        _transportFactory = transportFactory;
+        _channelRoundTripTimeout = channelRoundTripTimeout;
+        _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
+        _logger = _loggerFactory.CreateLogger<ZigbeeCoordinator>();
 
-        _attributeReportListener.AttributeReported += RelayAttributeReport;
-        _deviceInterview.DeviceJoined += RelayDeviceJoined;
+        BuildTransportComponents();
     }
+
+    public ZigbeeCoordinator(ISerialTransport transport, ILoggerFactory? loggerFactory = null)
+        : this(() => transport, loggerFactory) { }
 
     public bool IsConnected { get; private set; }
 
@@ -66,6 +64,12 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
 
     public async Task ConnectAsync(CancellationToken token)
     {
+        if (_transportNeedsRebuild)
+        {
+            BuildTransportComponents();
+            _transportNeedsRebuild = false;
+        }
+
         await _transport.OpenAsync(token);
         NetworkConfig = await _connection.ConnectAsync(token);
         IsConnected = true;
@@ -102,13 +106,42 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         _disposed = true;
 
         StopPolling();
+        DisposeTransportComponents();
+        GC.SuppressFinalize(this);
+    }
+
+    // (Re)wires every component that depends on the current transport instance. Called once from
+    // the constructor and again whenever a fatal transport failure marks the existing set as dead,
+    // so the next connect attempt talks to a freshly built transport instead of the broken one.
+    private void BuildTransportComponents()
+    {
+        _transport = _transportFactory();
+        _channel = new DeconzChannel(_transport, _channelRoundTripTimeout);
+        _connection = new DeconzConnection(_channel);
+        _pollLoop = new ApsPollLoop(_channel);
+        _permitJoinController = new PermitJoinController(_channel);
+        _sender = new ApsSender(_pollLoop, _channel);
+        _commandSender = new CommandSender(_sender);
+        _attributeReportListener = new AttributeReportListener(_pollLoop);
+        _deviceInterview = new DeviceInterview(
+            _pollLoop,
+            _sender,
+            _knownDeviceTable,
+            logger: _loggerFactory.CreateLogger<DeviceInterview>()
+        );
+
+        _attributeReportListener.AttributeReported += RelayAttributeReport;
+        _deviceInterview.DeviceJoined += RelayDeviceJoined;
+    }
+
+    private void DisposeTransportComponents()
+    {
         _deviceInterview.DeviceJoined -= RelayDeviceJoined;
         _attributeReportListener.AttributeReported -= RelayAttributeReport;
         _deviceInterview.Dispose();
         _attributeReportListener.Dispose();
         _sender.Dispose();
         _transport.Dispose();
-        GC.SuppressFinalize(this);
     }
 
     private void RelayAttributeReport(object? sender, ZigbeeAttributeReport report)
@@ -137,24 +170,51 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     {
         while (!token.IsCancellationRequested)
         {
-            await PollSafelyAsync(token);
+            if (!await PollSafelyAsync(token))
+            {
+                HandleTransportFailure();
+                return;
+            }
+
             await DelayBetweenPollsAsync(token);
         }
     }
 
-    // A single failed poll must not tear down the long-running loop, so every iteration's failure
-    // is swallowed and the next poll simply retries.
-    private async Task PollSafelyAsync(CancellationToken token)
+    // A single transient failure must not tear down the long-running loop -- the next poll simply
+    // retries. But a failure that means the transport itself is now dead (our own bounded-timeout
+    // dispose, or the ObjectDisposedException a real torn-down SerialPort raises on the next call
+    // against it) can never self-heal by retrying in place, so that case is reported back as fatal
+    // instead of being swallowed like every other poll error.
+    private async Task<bool> PollSafelyAsync(CancellationToken token)
     {
         try
         {
             await _pollLoop.PollOnceAsync(token);
+            return true;
         }
-        catch (OperationCanceledException) { }
+        catch (OperationCanceledException)
+        {
+            return true;
+        }
+        catch (Exception ex) when (ex is SerialTransportTimeoutException or ObjectDisposedException)
+        {
+            _logger.LogWarning(ex, "Zigbee transport failed; marking the connection down so it can reconnect");
+            return false;
+        }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Poll iteration failed, will retry on the next interval");
+            return true;
         }
+    }
+
+    private void HandleTransportFailure()
+    {
+        IsConnected = false;
+        _transportNeedsRebuild = true;
+        DisposeTransportComponents();
+        _pollCancellation?.Dispose();
+        _pollCancellation = null;
     }
 
     private static async Task DelayBetweenPollsAsync(CancellationToken token)
