@@ -9,6 +9,7 @@ using Haus.Core.Diagnostics.Factories;
 using Haus.Core.Logs;
 using Haus.Core.Logs.Factories;
 using Haus.Core.Rooms.Repositories;
+using Haus.Core.Zigbee.State;
 using Haus.Cqrs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,8 @@ public static class ServiceCollectionExtensions
             .AddHausCqrs(coreAssembly)
             .AddTransient(p => p.GetRequiredService<IDeviceSimulatorStore>().Current)
             .AddSingleton<IDeviceSimulatorStore, DeviceSimulatorStore>()
+            .AddTransient(p => p.GetRequiredService<IZigbeeStore>().Current)
+            .AddSingleton<IZigbeeStore, ZigbeeStore>()
             .AddTransient<IRoutableEventFactory, RoutableEventFactory>()
             .AddTransient<ILogEntryModelFactory, LogEntryModelFactory>()
             .AddTransient<IMqttDiagnosticsMessageFactory, MqttDiagnosticsMessageFactory>();
