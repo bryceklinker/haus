@@ -38,9 +38,9 @@ public class ServiceCollectionExtensionsTests
     {
         using var provider = BuildProvider(options => options.SerialPort = "/dev/ttyACM0");
 
-        var transport = provider.GetRequiredService<ISerialTransport>();
+        var transportFactory = provider.GetRequiredService<Func<ISerialTransport>>();
 
-        Assert.IsType<SerialPortTransport>(transport);
+        Assert.IsType<SerialPortTransport>(transportFactory());
     }
 
     [Fact]
@@ -52,9 +52,21 @@ public class ServiceCollectionExtensionsTests
             options.TcpPort = 4901;
         });
 
-        var transport = provider.GetRequiredService<ISerialTransport>();
+        var transportFactory = provider.GetRequiredService<Func<ISerialTransport>>();
 
-        Assert.IsType<TcpSerialTransport>(transport);
+        Assert.IsType<TcpSerialTransport>(transportFactory());
+    }
+
+    [Fact]
+    public void WhenTheTransportFactoryIsInvokedTwiceThenEachCallBuildsAFreshInstance()
+    {
+        using var provider = BuildProvider(options => options.SerialPort = "/dev/ttyACM0");
+        var transportFactory = provider.GetRequiredService<Func<ISerialTransport>>();
+
+        var first = transportFactory();
+        var second = transportFactory();
+
+        Assert.NotSame(first, second);
     }
 
     private static ServiceProvider BuildProvider(Action<ZigbeeConnectionOptions> configure)
