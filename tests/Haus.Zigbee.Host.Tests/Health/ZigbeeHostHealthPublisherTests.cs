@@ -74,4 +74,30 @@ public class ZigbeeHostHealthPublisherTests : IAsyncLifetime
             Assert.Contains(actual!.Checks, c => c.Name == "Zigbee" && c.Status == HealthStatus.Unhealthy)
         );
     }
+
+    // Reproduces the production incident this coordinator fix targets: the Zigbee transport was
+    // Healthy, then died silently (a hung serial round trip that used to wedge the coordinator
+    // forever with IsConnected stuck true). This proves the publisher's existing IsConnected-only
+    // logic already reports the transition correctly once IsConnected actually flips -- the gap
+    // was ZigbeeCoordinator never flipping it, not this publisher.
+    [Fact]
+    public async Task PublishAsync_CoordinatorTransitionsFromConnectedToDisconnected_PublishesUnhealthyZigbeeCheck()
+    {
+        _coordinator!.IsConnected = true;
+        HausHealthReportModel? actual = null;
+        await _mqttClient!.SubscribeToHausHealthAsync(r => actual = r);
+
+        await _publisher!.PublishAsync(EmptyReport(), CancellationToken.None);
+        Eventually.Assert(() =>
+            Assert.Contains(actual!.Checks, c => c.Name == "Zigbee" && c.Status == HealthStatus.Healthy)
+        );
+
+        _coordinator.IsConnected = false;
+        actual = null;
+        await _publisher!.PublishAsync(EmptyReport(), CancellationToken.None);
+
+        Eventually.Assert(() =>
+            Assert.Contains(actual!.Checks, c => c.Name == "Zigbee" && c.Status == HealthStatus.Unhealthy)
+        );
+    }
 }
