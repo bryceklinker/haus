@@ -33,6 +33,10 @@ public static class ConfigurationFactory
                     new("Haus:ZigbeeTopic", hausZigbeeTopic),
                 }.AsReadOnly()
             )
+            // Lets CI's disposable-broker port (exported as Haus__Server, see Makefile's test-unit
+            // target) override the in-memory default below, the same way Haus.Web.Host.Tests picks
+            // up Mqtt__Server through its WebApplicationFactory's standard configuration layering.
+            .AddEnvironmentVariables()
             .Build();
     }
 }
