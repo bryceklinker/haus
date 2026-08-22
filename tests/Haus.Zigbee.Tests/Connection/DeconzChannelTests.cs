@@ -58,6 +58,39 @@ public class DeconzChannelTests
     }
 
     [Fact]
+    public async Task WhenTheTransportReadNeverCompletesThenSendAndReceiveAsyncTimesOutInsteadOfHangingForever()
+    {
+        var transport = new HangUntilDisposedTransport();
+        var channel = new DeconzChannel(transport, roundTripTimeout: TimeSpan.FromMilliseconds(50));
+        var command = new byte[] { 0x0A, 0x05, 0x01 };
+
+        using var testTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+        await Assert.ThrowsAsync<SerialTransportTimeoutException>(() =>
+            channel.SendAndReceiveAsync(command, testTimeout.Token)
+        );
+
+        Assert.Equal(1, transport.DisposeCallCount);
+    }
+
+    // If the mutex were never released, the second call's WaitAsync would block until the
+    // 2-second CancellationTokenSource below cancels it, surfacing as an OperationCanceledException
+    // instead of the ObjectDisposedException a fast-failing second round trip against the
+    // already-disposed transport actually produces.
+    [Fact]
+    public async Task WhenARoundTripTimesOutThenTheMutexIsReleasedForTheNextCall()
+    {
+        var transport = new HangUntilDisposedTransport();
+        var channel = new DeconzChannel(transport, roundTripTimeout: TimeSpan.FromMilliseconds(50));
+        var command = new byte[] { 0x0A, 0x05, 0x01 };
+        await Assert.ThrowsAsync<SerialTransportTimeoutException>(() =>
+            channel.SendAndReceiveAsync(command, CancellationToken.None)
+        );
+
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => channel.SendAndReceiveAsync(command, timeout.Token));
+    }
+
+    [Fact]
     public async Task WhenTwoSendsOverlapOnTheSameChannelThenEachCallerGetsItsOwnMatchingResponse()
     {
         var transport = new AutoRespondingTransport();
@@ -94,6 +127,32 @@ public class DeconzChannelTests
         }
 
         public void Dispose() { }
+    }
+
+    // Models a real deCONZ dongle that has dropped mid round-trip: the read never completes on its
+    // own, the same way a torn-down Linux SerialPort's pending read hangs instead of throwing.
+    // Only Dispose ever unsticks it, which is exactly the recovery DeconzChannel must perform.
+    private class HangUntilDisposedTransport : ISerialTransport
+    {
+        private readonly TaskCompletionSource<int> _readHang = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public int DisposeCallCount { get; private set; }
+
+        public Task OpenAsync(CancellationToken token) => Task.CompletedTask;
+
+        public Task CloseAsync(CancellationToken token) => Task.CompletedTask;
+
+        public Task WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken token) => Task.CompletedTask;
+
+        public Task<int> ReadAsync(Memory<byte> buffer, CancellationToken token) => _readHang.Task;
+
+        public void Dispose()
+        {
+            DisposeCallCount++;
+            _readHang.TrySetException(
+                new ObjectDisposedException(nameof(HangUntilDisposedTransport), "The port is closed.")
+            );
+        }
     }
 
     // Echoes a response for whatever command+sequence-number was just written, after yielding once

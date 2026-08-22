@@ -11,13 +11,19 @@ namespace Haus.Zigbee.Connection;
 // the checksum and SLIP-encodes an outbound command before writing it, then correlates the
 // eventual response by the sequence number that every deCONZ frame carries at byte offset 1.
 // It has no knowledge of what any individual command means.
-public class DeconzChannel(ISerialTransport transport)
+public class DeconzChannel(ISerialTransport transport, TimeSpan? roundTripTimeout = null)
 {
     private const int SequenceNumberIndex = 1;
+
+    // Linux's System.IO.Ports.SerialPort can leave a write or read against a dropped/torn-down
+    // port hanging forever instead of throwing, so a timeout alone can't rely on the awaited
+    // Task ever completing on its own -- only disposing the transport can force it to fault.
+    private static readonly TimeSpan DefaultRoundTripTimeout = TimeSpan.FromSeconds(5);
 
     private readonly ISerialTransport _transport = transport;
     private readonly FrameReader _reader = new(transport);
     private readonly SlipEncoder _encoder = new();
+    private readonly TimeSpan _roundTripTimeout = roundTripTimeout ?? DefaultRoundTripTimeout;
 
     // ZigbeeCoordinator shares one DeconzChannel between its background poll loop and every
     // caller sending a command (APS data requests, permit-join, parameter writes). Without this,
@@ -33,14 +39,48 @@ public class DeconzChannel(ISerialTransport transport)
         await _mutex.WaitAsync(token);
         try
         {
-            await _transport.WriteAsync(Encode(frame), token);
-            return await AwaitResponseAsync(frame[SequenceNumberIndex], token);
+            return await SendAndReceiveWithTimeoutAsync(frame, token);
         }
         finally
         {
             _mutex.Release();
         }
     }
+
+    private async Task<byte[]> SendAndReceiveWithTimeoutAsync(byte[] frame, CancellationToken token)
+    {
+        var roundTrip = RoundTripAsync(frame, token);
+        var timeout = Task.Delay(_roundTripTimeout, token);
+        var finished = await Task.WhenAny(roundTrip, timeout);
+        if (finished == roundTrip)
+            return await roundTrip;
+
+        // Task.Delay observes the caller's token too, so it can also be the one that "won" the
+        // race because the caller cancelled -- that's not a timeout, and must not dispose the
+        // still-healthy transport out from under any other in-flight caller.
+        token.ThrowIfCancellationRequested();
+
+        _transport.Dispose();
+        ObserveFault(roundTrip);
+        throw new SerialTransportTimeoutException(_roundTripTimeout);
+    }
+
+    private async Task<byte[]> RoundTripAsync(byte[] frame, CancellationToken token)
+    {
+        await _transport.WriteAsync(Encode(frame), token);
+        return await AwaitResponseAsync(frame[SequenceNumberIndex], token);
+    }
+
+    // The disposed transport eventually faults this task's pending write/read; nothing else
+    // observes that fault, so leaving it unawaited would otherwise surface as an unobserved
+    // task exception later.
+    private static void ObserveFault(Task task) =>
+        task.ContinueWith(
+            completed => _ = completed.Exception,
+            CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default
+        );
 
     private byte[] Encode(byte[] frame)
     {
