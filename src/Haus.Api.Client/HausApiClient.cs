@@ -10,6 +10,7 @@ using Haus.Api.Client.Discovery;
 using Haus.Api.Client.Logs;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
+using Haus.Api.Client.Zigbee;
 using Haus.Core.Models.Application;
 using Haus.Core.Models.ClientSettings;
 using Haus.Core.Models.Common;
@@ -20,6 +21,7 @@ using Haus.Core.Models.Discovery;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Logs;
 using Haus.Core.Models.Rooms;
+using Haus.Core.Models.Zigbee;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client;
@@ -32,7 +34,8 @@ public interface IHausApiClient
         IDiscoveryApiClient,
         ILogsApiClient,
         IClientSettingsApiClient,
-        IApplicationApiClient { }
+        IApplicationApiClient,
+        IZigbeeApiClient { }
 
 public class HausApiClient(
     IHausApiClientFactory factory,
@@ -48,6 +51,7 @@ public class HausApiClient(
     private ILogsApiClient LogsApiClient => factory.CreateLogsClient();
     private IClientSettingsApiClient ClientSettingsApiClient => factory.CreateClientSettingsClient();
     private IApplicationApiClient ApplicationApiClient => factory.CreateApplicationClient();
+    private IZigbeeApiClient ZigbeeApiClient => factory.CreateZigbeeClient();
 
     public Task<DiscoveryModel?> GetDiscoveryStateAsync()
     {
@@ -212,5 +216,20 @@ public class HausApiClient(
     public Task<HttpResponseMessage> DownloadLatestPackageAsync(int packageId)
     {
         return ApplicationApiClient.DownloadLatestPackageAsync(packageId);
+    }
+
+    public Task<ZigbeeConnectionStatusModel?> GetZigbeeStatusAsync()
+    {
+        return ZigbeeApiClient.GetZigbeeStatusAsync();
+    }
+
+    public Task<ListResult<ZigbeeActivityEntryModel>> GetZigbeeActivityAsync()
+    {
+        return ZigbeeApiClient.GetZigbeeActivityAsync();
+    }
+
+    public Task<ListResult<ZigbeeKnownDeviceModel>> GetZigbeeDevicesAsync()
+    {
+        return ZigbeeApiClient.GetZigbeeDevicesAsync();
     }
 }

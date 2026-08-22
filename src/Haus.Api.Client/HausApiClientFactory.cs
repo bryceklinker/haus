@@ -8,6 +8,7 @@ using Haus.Api.Client.Discovery;
 using Haus.Api.Client.Logs;
 using Haus.Api.Client.Options;
 using Haus.Api.Client.Rooms;
+using Haus.Api.Client.Zigbee;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Api.Client;
@@ -23,6 +24,7 @@ public interface IHausApiClientFactory
     ILogsApiClient CreateLogsClient();
     IClientSettingsApiClient CreateClientSettingsClient();
     IApplicationApiClient CreateApplicationClient();
+    IZigbeeApiClient CreateZigbeeClient();
 }
 
 public class HausApiClientFactory(IHttpClientFactory httpClientFactory, IOptions<HausApiClientSettings> options)
@@ -71,6 +73,11 @@ public class HausApiClientFactory(IHttpClientFactory httpClientFactory, IOptions
     public IApplicationApiClient CreateApplicationClient()
     {
         return new ApplicationApiClient(CreateClient(), options);
+    }
+
+    public IZigbeeApiClient CreateZigbeeClient()
+    {
+        return new ZigbeeApiClient(CreateClient(), options);
     }
 
     private HttpClient CreateClient()

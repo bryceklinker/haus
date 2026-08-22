@@ -164,6 +164,12 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
         await client.PublishHausEventAsync(creator);
     }
 
+    public async Task PublishZigbeeEventAsync<T>(IHausEventCreator<T> creator)
+    {
+        var client = await GetMqttClient();
+        await client.PublishHausEventAsync(creator, DefaultHausMqttTopics.ZigbeeTopic);
+    }
+
     public async Task<DeviceModel> WaitForDeviceToBeDiscovered(
         DeviceType deviceType = DeviceType.Unknown,
         string? externalId = null
