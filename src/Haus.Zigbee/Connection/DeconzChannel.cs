@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Transport;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Haus.Zigbee.Connection;
 
@@ -11,7 +13,7 @@ namespace Haus.Zigbee.Connection;
 // the checksum and SLIP-encodes an outbound command before writing it, then correlates the
 // eventual response by the sequence number that every deCONZ frame carries at byte offset 1.
 // It has no knowledge of what any individual command means.
-public class DeconzChannel(ISerialTransport transport, TimeSpan? roundTripTimeout = null)
+public class DeconzChannel(ISerialTransport transport, TimeSpan? roundTripTimeout = null, ILoggerFactory? loggerFactory = null)
 {
     private const int SequenceNumberIndex = 1;
 
@@ -21,9 +23,11 @@ public class DeconzChannel(ISerialTransport transport, TimeSpan? roundTripTimeou
     private static readonly TimeSpan DefaultRoundTripTimeout = TimeSpan.FromSeconds(5);
 
     private readonly ISerialTransport _transport = transport;
-    private readonly FrameReader _reader = new(transport);
+    private readonly FrameReader _reader = new(transport, loggerFactory?.CreateLogger<FrameReader>());
     private readonly SlipEncoder _encoder = new();
     private readonly TimeSpan _roundTripTimeout = roundTripTimeout ?? DefaultRoundTripTimeout;
+    private readonly ILogger<DeconzChannel> _logger =
+        loggerFactory?.CreateLogger<DeconzChannel>() ?? NullLogger<DeconzChannel>.Instance;
 
     // ZigbeeCoordinator shares one DeconzChannel between its background poll loop and every
     // caller sending a command (APS data requests, permit-join, parameter writes). Without this,
@@ -88,8 +92,16 @@ public class DeconzChannel(ISerialTransport transport, TimeSpan? roundTripTimeou
 
     private async Task<byte[]> RoundTripAsync(byte[] frame, CancellationToken token)
     {
+        var sequenceNumber = frame[SequenceNumberIndex];
+        _logger.LogDebug("Sending frame with sequence number {@SequenceNumber}: {@Frame}", sequenceNumber, frame);
         await _transport.WriteAsync(Encode(frame), token);
-        return await AwaitResponseAsync(frame[SequenceNumberIndex], token);
+        var response = await AwaitResponseAsync(sequenceNumber, token);
+        _logger.LogDebug(
+            "Received response for sequence number {@SequenceNumber}: {@Frame}",
+            sequenceNumber,
+            response
+        );
+        return response;
     }
 
     // The disposed transport eventually faults this task's pending write/read; nothing else

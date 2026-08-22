@@ -169,11 +169,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     private TransportComponents BuildTransportComponents()
     {
         var transport = _transportFactory();
-        var channel = new DeconzChannel(transport, _channelRoundTripTimeout);
+        var channel = new DeconzChannel(transport, _channelRoundTripTimeout, _loggerFactory);
         var connection = new DeconzConnection(channel);
-        var pollLoop = new ApsPollLoop(channel);
+        var pollLoop = new ApsPollLoop(channel, _loggerFactory.CreateLogger<ApsPollLoop>());
         var permitJoinController = new PermitJoinController(channel);
-        var sender = new ApsSender(pollLoop, channel);
+        var sender = new ApsSender(pollLoop, channel, logger: _loggerFactory.CreateLogger<ApsSender>());
         var commandSender = new CommandSender(sender);
         var attributeReportListener = new AttributeReportListener(pollLoop);
         var deviceInterview = new DeviceInterview(

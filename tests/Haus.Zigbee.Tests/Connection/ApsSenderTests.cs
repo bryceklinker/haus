@@ -7,7 +7,9 @@ using Haus.Zigbee.Connection;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Serial.Frames;
 using Haus.Zigbee.Tests.Coordinator;
+using Haus.Zigbee.Tests.Support;
 using Haus.Zigbee.Transport;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Connection;
@@ -98,6 +100,27 @@ public class ApsSenderTests
 
         Assert.Same(sendTask, completed);
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => sendTask);
+    }
+
+    [Fact]
+    public async Task WhenNoConfirmEverArrivesThenAWarningIsLoggedWithTheRequestId()
+    {
+        var loggerFactory = new CapturingLoggerFactory();
+        var timingOutSender = new ApsSender(
+            _pollLoop,
+            new DeconzChannel(_senderTransport),
+            confirmTimeout: TimeSpan.FromMilliseconds(50),
+            logger: loggerFactory.CreateLogger<ApsSender>()
+        );
+        _senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(sequenceNumber: 0)));
+
+        var sendTask = timingOutSender.SendAsync(Request(requestId: 0x42), CancellationToken.None);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => sendTask);
+
+        Assert.Contains(
+            loggerFactory.Entries,
+            entry => entry.Level == LogLevel.Warning && entry.Message.Contains("0x42")
+        );
     }
 
     [Fact]

@@ -7,9 +7,9 @@ using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 using Haus.Zigbee.Simulator;
+using Haus.Zigbee.Tests.Support;
 using Haus.Zigbee.Transport;
 using Haus.Zigbee.Zcl;
-using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Coordinator;
@@ -315,58 +315,6 @@ public class ZigbeeCoordinatorTests
 
         public void Dispose() => inner.Dispose();
     }
-
-    // Each CreateLogger call gets its own logger instance tagged with its own category, all
-    // writing into one shared, lock-protected list -- so entries stay attributed to whichever
-    // type actually logged them, even though several types share this one factory.
-    private class CapturingLoggerFactory : ILoggerFactory
-    {
-        private readonly List<LogEntry> _entries = new();
-
-        public IReadOnlyList<LogEntry> Entries
-        {
-            get
-            {
-                lock (_entries)
-                    return _entries.ToList();
-            }
-        }
-
-        public ILogger CreateLogger(string categoryName) => new CategoryLogger(categoryName, _entries);
-
-        public void AddProvider(ILoggerProvider provider) { }
-
-        public void Dispose() { }
-
-        private class CategoryLogger(string category, List<LogEntry> entries) : ILogger
-        {
-            public IDisposable BeginScope<TState>(TState state)
-                where TState : notnull => NullScope.Instance;
-
-            public bool IsEnabled(LogLevel logLevel) => true;
-
-            public void Log<TState>(
-                LogLevel logLevel,
-                EventId eventId,
-                TState state,
-                Exception? exception,
-                Func<TState, Exception?, string> formatter
-            )
-            {
-                lock (entries)
-                    entries.Add(new LogEntry(category, logLevel, exception));
-            }
-        }
-
-        private class NullScope : IDisposable
-        {
-            public static readonly NullScope Instance = new();
-
-            public void Dispose() { }
-        }
-    }
-
-    private record LogEntry(string Category, LogLevel Level, Exception? Exception);
 
     [Fact]
     public async Task WhenADeviceAnnouncesWhileConnectedThenItIsRelayedThroughTheDeviceJoinedEvent()
