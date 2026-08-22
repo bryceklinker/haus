@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
@@ -229,10 +230,14 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     }
 
     // A single transient failure must not tear down the long-running loop -- the next poll simply
-    // retries. But a failure that means the transport itself is now dead (our own bounded-timeout
-    // dispose, or the ObjectDisposedException a real torn-down SerialPort raises on the next call
-    // against it) can never self-heal by retrying in place, so that case is reported back as fatal
-    // instead of being swallowed like every other poll error.
+    // retries. But a failure that means the transport itself is now dead can never self-heal by
+    // retrying in place, so that case is reported back as fatal instead of being swallowed like
+    // every other poll error. Besides our own bounded-timeout dispose (SerialTransportTimeoutException)
+    // and the ObjectDisposedException a real torn-down SerialPort raises on the next call against
+    // it, a physically-unplugged dongle on Linux is also documented to surface as a plain
+    // IOException from SerialPort -- treating it as transient-and-retry-forever would reproduce
+    // this exact PR's root-cause outage class through a different exception type, so it's
+    // classified as fatal too.
     private async Task<bool> PollSafelyAsync(ApsPollLoop pollLoop, CancellationToken token)
     {
         try
@@ -244,7 +249,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         {
             return true;
         }
-        catch (Exception ex) when (ex is SerialTransportTimeoutException or ObjectDisposedException)
+        catch (Exception ex) when (ex is SerialTransportTimeoutException or ObjectDisposedException or IOException)
         {
             _logger.LogWarning(ex, "Zigbee transport failed; marking the connection down so it can reconnect");
             return false;

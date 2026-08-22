@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
@@ -67,6 +68,33 @@ public class ZigbeeCoordinatorReconnectTests
         Assert.True(coordinator.IsConnected);
         Assert.Equal(2, builtTransportCount);
         await WaitUntilAsync(() => secondDongle.DeviceStatePollCount > 0);
+    }
+
+    // A physically-unplugged ConBee II dongle is documented to surface as a plain IOException from
+    // .NET's SerialPort on Linux, not just ObjectDisposedException/SerialTransportTimeoutException.
+    // Reproduces that failure mode directly (no hang involved) and proves it's classified as fatal
+    // -- otherwise it would be swallowed as transient-and-retried-forever, reproducing this PR's
+    // exact root-cause outage class through a different exception type.
+    //
+    // Unlike the hang-based tests above, a thrown (not hung) fatal failure can be detected
+    // synchronously on the very first poll iteration -- there's no ShortRoundTripTimeout delay to
+    // guarantee IsConnected still reads true immediately after ConnectAsync returns, so this only
+    // asserts the eventual false transition, not a true-then-false sequence.
+    [Fact]
+    public async Task WhenTheTransportThrowsIOExceptionDuringPollingThenIsConnectedBecomesFalse()
+    {
+        var dongle = NewConfiguredDongle();
+        var unpluggedTransport = new ThrowOnceOnReadTransport(dongle, throwOnReadCall: 4);
+        using var coordinator = new ZigbeeCoordinator(
+            () => unpluggedTransport,
+            channelRoundTripTimeout: ShortRoundTripTimeout
+        );
+
+        await coordinator.ConnectAsync(CancellationToken.None);
+
+        await WaitUntilAsync(() => !coordinator.IsConnected);
+
+        Assert.False(coordinator.IsConnected);
     }
 
     // Before TransportComponents, ZigbeeCoordinator held eight separately-mutable fields
@@ -198,5 +226,29 @@ public class ZigbeeCoordinatorReconnectTests
             );
             inner.Dispose();
         }
+    }
+
+    // Wraps a working transport and makes exactly one chosen ReadAsync call throw IOException,
+    // the way .NET's SerialPort is documented to on Linux when the underlying device disappears
+    // (as opposed to HangOnceOnReadTransport's silent-hang failure mode above).
+    private class ThrowOnceOnReadTransport(ISerialTransport inner, int throwOnReadCall) : ISerialTransport
+    {
+        private int _readCallCount;
+
+        public Task OpenAsync(CancellationToken token) => inner.OpenAsync(token);
+
+        public Task CloseAsync(CancellationToken token) => inner.CloseAsync(token);
+
+        public Task WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken token) => inner.WriteAsync(buffer, token);
+
+        public Task<int> ReadAsync(Memory<byte> buffer, CancellationToken token)
+        {
+            _readCallCount++;
+            if (_readCallCount == throwOnReadCall)
+                throw new IOException("Input/output error");
+            return inner.ReadAsync(buffer, token);
+        }
+
+        public void Dispose() => inner.Dispose();
     }
 }

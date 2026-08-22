@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -189,8 +188,12 @@ public class ZigbeeCoordinatorTests
         Assert.True(_dongle.DeviceStatePollCount >= count, "the poll loop did not poll enough times");
     }
 
-    // Throws once, on a chosen ReadAsync call, to simulate a transient serial failure during a
-    // poll iteration -- proving PollSafelyAsync's catch both logs it and lets the loop continue.
+    // Throws once, on a chosen ReadAsync call, to simulate a transient protocol-level hiccup (e.g.
+    // a garbled/truncated frame) during a poll iteration -- proving PollSafelyAsync's catch both
+    // logs it and lets the loop continue. Deliberately not IOException/ObjectDisposedException/
+    // SerialTransportTimeoutException: those are classified as fatal (the transport itself is
+    // dead), whereas this represents a one-off parse failure that has nothing wrong with the
+    // transport and should simply be retried on the next poll.
     private class FailOnceOnReadTransport(ISerialTransport inner, int failOnReadCall) : ISerialTransport
     {
         private int _readCallCount;
@@ -205,7 +208,7 @@ public class ZigbeeCoordinatorTests
         {
             _readCallCount++;
             if (_readCallCount == failOnReadCall)
-                throw new IOException("Simulated serial read failure");
+                throw new FormatException("Simulated garbled frame");
             return inner.ReadAsync(buffer, token);
         }
 
