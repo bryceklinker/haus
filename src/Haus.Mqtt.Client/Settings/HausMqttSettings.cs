@@ -9,4 +9,5 @@ public class HausMqttSettings
     public string CommandsTopic { get; init; } = DefaultHausMqttTopics.CommandsTopic;
     public string UnknownTopic { get; init; } = DefaultHausMqttTopics.UnknownTopic;
     public string HealthTopic { get; init; } = DefaultHausMqttTopics.HealthTopic;
+    public string ZigbeeTopic { get; init; } = DefaultHausMqttTopics.ZigbeeTopic;
 }

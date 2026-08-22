@@ -7,9 +7,9 @@ using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 using Haus.Zigbee.Simulator;
+using Haus.Zigbee.Tests.Support;
 using Haus.Zigbee.Transport;
 using Haus.Zigbee.Zcl;
-using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Coordinator;
@@ -20,6 +20,7 @@ public class ZigbeeCoordinatorTests
     private const byte PanIdParameterId = 0x05;
     private const byte ChannelParameterId = 0x1C;
     private const byte PermitJoinParameterId = 0x21;
+    private const byte ApsDataRequestCommandId = 0x12;
 
     private readonly FakeDeconzCoordinator _dongle = new();
 
@@ -39,6 +40,89 @@ public class ZigbeeCoordinatorTests
         Assert.Equal(new IeeeAddress(0x00212effff001122), config.MacAddress);
         Assert.Equal((ushort)0x1a62, config.PanId);
         Assert.Equal((byte)0x0f, config.Channel);
+    }
+
+    [Fact]
+    public async Task WhenConnectedThenTheConnectionStatusChangedEventReportsConnected()
+    {
+        SetNetworkParameters();
+        using var coordinator = new ZigbeeCoordinator(_dongle);
+        var reported = new TaskCompletionSource<ZigbeeConnectionStatus>();
+        coordinator.ConnectionStatusChanged += (_, status) => reported.TrySetResult(status);
+
+        await coordinator.ConnectAsync(CancellationToken.None);
+
+        var status = await WaitFor(reported.Task);
+        Assert.True(status.IsConnected);
+        Assert.Equal(coordinator.NetworkConfig, status.NetworkConfig);
+        Assert.Null(status.Reason);
+    }
+
+    [Fact]
+    public async Task WhenSendingACommandSucceedsThenTheCommandSentEventReportsTheDestinationAndCommand()
+    {
+        var responder = new DeconzResponder();
+        responder.SetParameter(MacAddressParameterId, new byte[] { 0x22, 0x11, 0x00, 0xff, 0xff, 0x2e, 0x21, 0x00 });
+        responder.SetParameter(PanIdParameterId, new byte[] { 0x62, 0x1a });
+        responder.SetParameter(ChannelParameterId, new byte[] { 0x0f });
+        using var coordinator = new ZigbeeCoordinator(new ResponderBackedTransport(responder));
+        await coordinator.ConnectAsync(CancellationToken.None);
+        var reported = new TaskCompletionSource<ZigbeeCommandSent>();
+        coordinator.CommandSent += (_, sent) => reported.TrySetResult(sent);
+        var request = new ZigbeeCommandRequest(
+            Destination: ApsDestination.Nwk(0x1234, 0x01),
+            SourceEndpoint: 0x01,
+            ProfileId: 0x0104,
+            ClusterId: 0x0006,
+            CommandId: 0x01,
+            Payload: new byte[] { 0xaa, 0xbb },
+            DisableDefaultResponse: true
+        );
+
+        await coordinator.SendCommandAsync(request, CancellationToken.None);
+
+        var sent = await WaitFor(reported.Task);
+        Assert.Equal(request.Destination, sent.Destination);
+        Assert.Equal(request.ClusterId, sent.ClusterId);
+        Assert.Equal(request.CommandId, sent.CommandId);
+    }
+
+    [Fact]
+    public async Task WhenSendingACommandFailsThenTheTransportErrorEventReportsTheFailure()
+    {
+        var responder = new DeconzResponder();
+        responder.SetParameter(MacAddressParameterId, new byte[] { 0x22, 0x11, 0x00, 0xff, 0xff, 0x2e, 0x21, 0x00 });
+        responder.SetParameter(PanIdParameterId, new byte[] { 0x62, 0x1a });
+        responder.SetParameter(ChannelParameterId, new byte[] { 0x0f });
+        var failure = new InvalidOperationException("write failed");
+        var transport = new FailingCommandTransport(
+            new ResponderBackedTransport(responder),
+            ApsDataRequestCommandId,
+            failure
+        );
+        using var coordinator = new ZigbeeCoordinator(transport);
+        await coordinator.ConnectAsync(CancellationToken.None);
+        var reported = new TaskCompletionSource<ZigbeeTransportError>();
+        coordinator.TransportError += (_, error) => reported.TrySetResult(error);
+        var request = new ZigbeeCommandRequest(
+            Destination: ApsDestination.Nwk(0x1234, 0x01),
+            SourceEndpoint: 0x01,
+            ProfileId: 0x0104,
+            ClusterId: 0x0006,
+            CommandId: 0x01,
+            Payload: new byte[] { 0xaa, 0xbb },
+            DisableDefaultResponse: true
+        );
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            coordinator.SendCommandAsync(request, CancellationToken.None)
+        );
+
+        var error = await WaitFor(reported.Task);
+        Assert.Equal(nameof(InvalidOperationException), error.ErrorType);
+        Assert.Equal("write failed", error.Message);
+        Assert.Equal((ushort)0x1234, error.NetworkAddress);
+        Assert.Null(error.IeeeAddress);
     }
 
     [Fact]
@@ -214,58 +298,6 @@ public class ZigbeeCoordinatorTests
 
         public void Dispose() => inner.Dispose();
     }
-
-    // Each CreateLogger call gets its own logger instance tagged with its own category, all
-    // writing into one shared, lock-protected list -- so entries stay attributed to whichever
-    // type actually logged them, even though several types share this one factory.
-    private class CapturingLoggerFactory : ILoggerFactory
-    {
-        private readonly List<LogEntry> _entries = new();
-
-        public IReadOnlyList<LogEntry> Entries
-        {
-            get
-            {
-                lock (_entries)
-                    return _entries.ToList();
-            }
-        }
-
-        public ILogger CreateLogger(string categoryName) => new CategoryLogger(categoryName, _entries);
-
-        public void AddProvider(ILoggerProvider provider) { }
-
-        public void Dispose() { }
-
-        private class CategoryLogger(string category, List<LogEntry> entries) : ILogger
-        {
-            public IDisposable BeginScope<TState>(TState state)
-                where TState : notnull => NullScope.Instance;
-
-            public bool IsEnabled(LogLevel logLevel) => true;
-
-            public void Log<TState>(
-                LogLevel logLevel,
-                EventId eventId,
-                TState state,
-                Exception? exception,
-                Func<TState, Exception?, string> formatter
-            )
-            {
-                lock (entries)
-                    entries.Add(new LogEntry(category, logLevel, exception));
-            }
-        }
-
-        private class NullScope : IDisposable
-        {
-            public static readonly NullScope Instance = new();
-
-            public void Dispose() { }
-        }
-    }
-
-    private record LogEntry(string Category, LogLevel Level, Exception? Exception);
 
     [Fact]
     public async Task WhenADeviceAnnouncesWhileConnectedThenItIsRelayedThroughTheDeviceJoinedEvent()

@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Tests.Coordinator;
+using Haus.Zigbee.Tests.Support;
 using Haus.Zigbee.Tests.Transport;
 using Haus.Zigbee.Transport;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Connection;
@@ -14,11 +17,26 @@ namespace Haus.Zigbee.Tests.Connection;
 public class DeconzChannelTests
 {
     private readonly FakeSerialTransport _transport = new();
+    private readonly CapturingLoggerFactory _loggerFactory = new();
     private readonly DeconzChannel _channel;
 
     public DeconzChannelTests()
     {
-        _channel = new DeconzChannel(_transport);
+        _channel = new DeconzChannel(_transport, loggerFactory: _loggerFactory);
+    }
+
+    [Fact]
+    public async Task WhenSendingAFrameThenTheSendAndReceiveAreLoggedAtDebugLevel()
+    {
+        var command = new byte[] { 0x0A, 0x05, 0x01 };
+        _transport.FeedIncoming(DeconzFrames.Framed(new byte[] { 0x0A, 0x05, 0x00 }));
+
+        await _channel.SendAndReceiveAsync(command, CancellationToken.None);
+
+        var debugEntries = _loggerFactory
+            .Entries.Where(entry => entry.Category == typeof(DeconzChannel).FullName && entry.Level == LogLevel.Debug)
+            .ToList();
+        Assert.True(debugEntries.Count >= 2);
     }
 
     [Fact]

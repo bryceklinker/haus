@@ -6,6 +6,8 @@ using Haus.Zigbee.Connection;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Serial.Frames;
 using Haus.Zigbee.Tests.Coordinator;
+using Haus.Zigbee.Tests.Support;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Connection;
@@ -20,11 +22,28 @@ public class ApsPollLoopTests
     private const byte NwkAddressMode = 0x02;
 
     private readonly ScriptedSerialTransport _transport = new();
+    private readonly CapturingLoggerFactory _loggerFactory = new();
     private readonly ApsPollLoop _loop;
 
     public ApsPollLoopTests()
     {
-        _loop = new ApsPollLoop(new DeconzChannel(_transport));
+        _loop = new ApsPollLoop(new DeconzChannel(_transport), _loggerFactory.CreateLogger<ApsPollLoop>());
+    }
+
+    [Fact]
+    public async Task WhenAnIndicationIsReadThenItIsLoggedAtDebugLevelWithTheSourceAddress()
+    {
+        _transport.QueueResponse(
+            DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: IndicationAvailable))
+        );
+        _transport.QueueResponse(DeconzFrames.Framed(IndicationResponse(sequenceNumber: 1)));
+
+        await _loop.PollOnceAsync(CancellationToken.None);
+
+        Assert.Contains(
+            _loggerFactory.Entries,
+            entry => entry.Level == LogLevel.Debug && entry.Message.Contains("0x1234")
+        );
     }
 
     [Fact]
