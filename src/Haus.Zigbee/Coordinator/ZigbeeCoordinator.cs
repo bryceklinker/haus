@@ -23,18 +23,26 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     private readonly ILogger<ZigbeeCoordinator> _logger;
     private readonly KnownDeviceTable _knownDeviceTable = new();
 
-    private ISerialTransport _transport = null!;
-    private DeconzChannel _channel = null!;
-    private DeconzConnection _connection = null!;
-    private ApsPollLoop _pollLoop = null!;
-    private PermitJoinController _permitJoinController = null!;
-    private ApsSender _sender = null!;
-    private CommandSender _commandSender = null!;
-    private AttributeReportListener _attributeReportListener = null!;
-    private DeviceInterview _deviceInterview = null!;
+    // Guards every read AND write of _components and _transportNeedsRebuild. A plain field
+    // (even one reference-swapped atomically) gives no cross-thread visibility guarantee on its
+    // own -- without this lock, ConnectAsync running on one thread could observe a stale
+    // "no rebuild needed" flag written by HandleTransportFailure on another thread just
+    // beforehand, and go on to reconnect through the transport that call had just disposed. The
+    // lock body only ever does cheap, synchronous field access/object construction, never I/O,
+    // so it's never held across an await.
+    private readonly object _rebuildGate = new();
+
+    // Only ever read/written inside a `lock (_rebuildGate)` block -- see above.
+    private TransportComponents _components = null!;
+    private bool _transportNeedsRebuild;
+
+    // IsConnected is polled from another thread (ZigbeeHausBridge's reconnect supervisor,
+    // ZigbeeHostHealthPublisher) and needs the same cross-thread visibility guarantee; volatile
+    // is enough on its own since it's a single independent flag, not part of the
+    // components/rebuild compound state above.
+    private volatile bool _isConnected;
 
     private CancellationTokenSource? _pollCancellation;
-    private bool _transportNeedsRebuild;
     private bool _disposed;
 
     public ZigbeeCoordinator(
@@ -48,13 +56,15 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
         _logger = _loggerFactory.CreateLogger<ZigbeeCoordinator>();
 
-        BuildTransportComponents();
+        // No lock needed here: the constructor runs before this instance is published to any
+        // other thread, so nothing else can be reading _components concurrently yet.
+        _components = BuildTransportComponents();
     }
 
     public ZigbeeCoordinator(ISerialTransport transport, ILoggerFactory? loggerFactory = null)
         : this(() => transport, loggerFactory) { }
 
-    public bool IsConnected { get; private set; }
+    public bool IsConnected => _isConnected;
 
     public NetworkConfig? NetworkConfig { get; private set; }
 
@@ -64,16 +74,24 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
 
     public async Task ConnectAsync(CancellationToken token)
     {
-        if (_transportNeedsRebuild)
+        var components = AcquireComponentsForConnect();
+        try
         {
-            BuildTransportComponents();
-            _transportNeedsRebuild = false;
+            await components.Transport.OpenAsync(token);
+            NetworkConfig = await components.Connection.ConnectAsync(token);
+        }
+        catch
+        {
+            // A failed open/handshake can't be trusted to retry cleanly in place (e.g. our own
+            // round-trip timeout already disposed this attempt's transport), so the next
+            // ConnectAsync call -- not just the next poll -- must also get a fresh one instead of
+            // repeatedly retrying the same broken bundle forever.
+            MarkFailedForRebuild(components);
+            throw;
         }
 
-        await _transport.OpenAsync(token);
-        NetworkConfig = await _connection.ConnectAsync(token);
-        IsConnected = true;
-        StartPolling();
+        _isConnected = true;
+        StartPolling(components);
     }
 
     public Task<IReadOnlyList<ZigbeeDevice>> GetDevicesAsync(CancellationToken token)
@@ -86,17 +104,18 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         if (!_knownDeviceTable.TryGet(ieeeAddress, out var device))
             return null;
 
-        return await _deviceInterview.ReadBasicInfoAsync(device.NetworkAddress, device.Endpoints, token);
+        var components = CurrentComponents();
+        return await components.DeviceInterview.ReadBasicInfoAsync(device.NetworkAddress, device.Endpoints, token);
     }
 
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)
     {
-        return _permitJoinController.SetPermitJoinAsync(enabled, token);
+        return CurrentComponents().PermitJoinController.SetPermitJoinAsync(enabled, token);
     }
 
     public Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token)
     {
-        return _commandSender.SendCommandAsync(request, token);
+        return CurrentComponents().CommandSender.SendCommandAsync(request, token);
     }
 
     public void Dispose()
@@ -106,42 +125,71 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         _disposed = true;
 
         StopPolling();
-        DisposeTransportComponents();
+        DisposeComponents(CurrentComponents());
         GC.SuppressFinalize(this);
     }
 
-    // (Re)wires every component that depends on the current transport instance. Called once from
-    // the constructor and again whenever a fatal transport failure marks the existing set as dead,
-    // so the next connect attempt talks to a freshly built transport instead of the broken one.
-    private void BuildTransportComponents()
+    private TransportComponents AcquireComponentsForConnect()
     {
-        _transport = _transportFactory();
-        _channel = new DeconzChannel(_transport, _channelRoundTripTimeout);
-        _connection = new DeconzConnection(_channel);
-        _pollLoop = new ApsPollLoop(_channel);
-        _permitJoinController = new PermitJoinController(_channel);
-        _sender = new ApsSender(_pollLoop, _channel);
-        _commandSender = new CommandSender(_sender);
-        _attributeReportListener = new AttributeReportListener(_pollLoop);
-        _deviceInterview = new DeviceInterview(
-            _pollLoop,
-            _sender,
+        lock (_rebuildGate)
+        {
+            if (_transportNeedsRebuild)
+            {
+                _components = BuildTransportComponents();
+                _transportNeedsRebuild = false;
+            }
+            return _components;
+        }
+    }
+
+    private TransportComponents CurrentComponents()
+    {
+        lock (_rebuildGate)
+            return _components;
+    }
+
+    // Builds a fresh, fully-wired set of every component that depends on the current transport
+    // instance. Called once from the constructor and again whenever a fatal transport failure
+    // marks the existing set as dead, so the next connect attempt talks to a freshly built
+    // transport instead of the broken one.
+    private TransportComponents BuildTransportComponents()
+    {
+        var transport = _transportFactory();
+        var channel = new DeconzChannel(transport, _channelRoundTripTimeout);
+        var connection = new DeconzConnection(channel);
+        var pollLoop = new ApsPollLoop(channel);
+        var permitJoinController = new PermitJoinController(channel);
+        var sender = new ApsSender(pollLoop, channel);
+        var commandSender = new CommandSender(sender);
+        var attributeReportListener = new AttributeReportListener(pollLoop);
+        var deviceInterview = new DeviceInterview(
+            pollLoop,
+            sender,
             _knownDeviceTable,
             logger: _loggerFactory.CreateLogger<DeviceInterview>()
         );
 
-        _attributeReportListener.AttributeReported += RelayAttributeReport;
-        _deviceInterview.DeviceJoined += RelayDeviceJoined;
+        attributeReportListener.AttributeReported += RelayAttributeReport;
+        deviceInterview.DeviceJoined += RelayDeviceJoined;
+
+        return new TransportComponents(
+            transport,
+            channel,
+            connection,
+            pollLoop,
+            permitJoinController,
+            sender,
+            commandSender,
+            attributeReportListener,
+            deviceInterview
+        );
     }
 
-    private void DisposeTransportComponents()
+    private void DisposeComponents(TransportComponents components)
     {
-        _deviceInterview.DeviceJoined -= RelayDeviceJoined;
-        _attributeReportListener.AttributeReported -= RelayAttributeReport;
-        _deviceInterview.Dispose();
-        _attributeReportListener.Dispose();
-        _sender.Dispose();
-        _transport.Dispose();
+        components.DeviceInterview.DeviceJoined -= RelayDeviceJoined;
+        components.AttributeReportListener.AttributeReported -= RelayAttributeReport;
+        components.Dispose();
     }
 
     private void RelayAttributeReport(object? sender, ZigbeeAttributeReport report)
@@ -154,10 +202,10 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         DeviceJoined?.Invoke(this, device);
     }
 
-    private void StartPolling()
+    private void StartPolling(TransportComponents components)
     {
         _pollCancellation = new CancellationTokenSource();
-        _ = PollContinuouslyAsync(_pollCancellation.Token);
+        _ = PollContinuouslyAsync(components, _pollCancellation.Token);
     }
 
     private void StopPolling()
@@ -166,13 +214,13 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         _pollCancellation?.Dispose();
     }
 
-    private async Task PollContinuouslyAsync(CancellationToken token)
+    private async Task PollContinuouslyAsync(TransportComponents components, CancellationToken token)
     {
         while (!token.IsCancellationRequested)
         {
-            if (!await PollSafelyAsync(token))
+            if (!await PollSafelyAsync(components.PollLoop, token))
             {
-                HandleTransportFailure();
+                HandleTransportFailure(components);
                 return;
             }
 
@@ -185,11 +233,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     // dispose, or the ObjectDisposedException a real torn-down SerialPort raises on the next call
     // against it) can never self-heal by retrying in place, so that case is reported back as fatal
     // instead of being swallowed like every other poll error.
-    private async Task<bool> PollSafelyAsync(CancellationToken token)
+    private async Task<bool> PollSafelyAsync(ApsPollLoop pollLoop, CancellationToken token)
     {
         try
         {
-            await _pollLoop.PollOnceAsync(token);
+            await pollLoop.PollOnceAsync(token);
             return true;
         }
         catch (OperationCanceledException)
@@ -208,13 +256,32 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         }
     }
 
-    private void HandleTransportFailure()
+    // Takes the exact bundle the failing poll loop was using -- rather than re-reading the
+    // _components field -- because by the time this runs, a concurrent ConnectAsync could
+    // already have rebuilt (e.g. this failure was detected slightly late), and disposing
+    // whatever _components happens to hold *then* would tear down a perfectly healthy, currently
+    // in-use bundle instead of the one that actually failed.
+    //
+    // IsConnected is flipped false only once this bundle is fully torn down and
+    // _transportNeedsRebuild is set, not before -- ZigbeeHausBridge's reconnect supervisor reacts
+    // to IsConnected becoming false, so if it observed that flip any earlier it could call
+    // ConnectAsync while cleanup was still in flight on another thread.
+    private void HandleTransportFailure(TransportComponents failedComponents)
     {
-        IsConnected = false;
-        _transportNeedsRebuild = true;
-        DisposeTransportComponents();
+        MarkFailedForRebuild(failedComponents);
         _pollCancellation?.Dispose();
         _pollCancellation = null;
+        _isConnected = false;
+    }
+
+    private void MarkFailedForRebuild(TransportComponents failedComponents)
+    {
+        lock (_rebuildGate)
+        {
+            _transportNeedsRebuild = true;
+        }
+
+        DisposeComponents(failedComponents);
     }
 
     private static async Task DelayBetweenPollsAsync(CancellationToken token)

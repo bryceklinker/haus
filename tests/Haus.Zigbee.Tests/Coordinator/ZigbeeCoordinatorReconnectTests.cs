@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Zigbee.Connection;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Transport;
 using Xunit;
@@ -66,6 +68,80 @@ public class ZigbeeCoordinatorReconnectTests
         Assert.Equal(2, builtTransportCount);
         await WaitUntilAsync(() => secondDongle.DeviceStatePollCount > 0);
     }
+
+    // Before TransportComponents, ZigbeeCoordinator held eight separately-mutable fields
+    // (_transport, _channel, _sender, ...) that a rebuild reassigned one at a time with no
+    // synchronization: a concurrent caller could read a mismatched mix of old and new
+    // collaborators, or a still-in-flight operation could be pulled out from under it mid-call.
+    // This hammers SetPermitJoinAsync from one task while another task drives many rapid
+    // rebuild cycles (every poll immediately hangs, forcing the coordinator to disconnect and
+    // reconnect over and over), and asserts that only well-understood "the transport really is
+    // dead" exceptions ever surface -- never a NullReferenceException or anything else that
+    // would indicate torn/inconsistent component state.
+    [Fact]
+    public async Task WhenPublicCallsRaceRepeatedTransportRebuildsThenOnlyExpectedExceptionsSurface()
+    {
+        const int RebuildCycles = 15;
+        var buildCount = 0;
+        using var coordinator = new ZigbeeCoordinator(
+            () =>
+            {
+                Interlocked.Increment(ref buildCount);
+                return new HangOnceOnReadTransport(NewConfiguredDongle(), hangOnReadCall: 4);
+            },
+            channelRoundTripTimeout: ShortRoundTripTimeout
+        );
+        await coordinator.ConnectAsync(CancellationToken.None);
+
+        using var stop = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+        var unexpectedExceptions = new ConcurrentBag<Exception>();
+
+        // Mirrors ZigbeeHausBridge.TryConnectAsync's real behavior: a connect attempt that itself
+        // hits the round-trip timeout under this much concurrent load is an expected, retryable
+        // failure, not a bug -- the production supervisor already just logs it and tries again on
+        // its next tick, so this loop does the same instead of treating it as unexpected.
+        var reconnectLoop = Task.Run(async () =>
+        {
+            var completedCycles = 0;
+            while (completedCycles < RebuildCycles && !stop.IsCancellationRequested)
+            {
+                await WaitUntilAsync(() => !coordinator.IsConnected);
+                try
+                {
+                    await coordinator.ConnectAsync(CancellationToken.None);
+                    completedCycles++;
+                }
+                catch (Exception ex) when (IsExpectedTransportFailure(ex)) { }
+            }
+        });
+
+        var caller = Task.Run(async () =>
+        {
+            while (!reconnectLoop.IsCompleted && !stop.IsCancellationRequested)
+            {
+                try
+                {
+                    await coordinator.SetPermitJoinAsync(true, CancellationToken.None);
+                }
+                catch (Exception ex) when (IsExpectedTransportFailure(ex))
+                {
+                    // The transport genuinely died mid-call -- expected under this much churn.
+                }
+                catch (Exception ex)
+                {
+                    unexpectedExceptions.Add(ex);
+                }
+            }
+        });
+
+        await Task.WhenAll(reconnectLoop, caller);
+
+        Assert.True(buildCount > RebuildCycles, "the rebuild loop never actually cycled through several transports");
+        Assert.Empty(unexpectedExceptions);
+    }
+
+    private static bool IsExpectedTransportFailure(Exception ex) =>
+        ex is ObjectDisposedException or SerialTransportTimeoutException or OperationCanceledException;
 
     private static FakeDeconzCoordinator NewConfiguredDongle()
     {
