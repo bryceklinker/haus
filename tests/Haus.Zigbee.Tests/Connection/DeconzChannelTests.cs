@@ -22,7 +22,7 @@ public class DeconzChannelTests
 
     public DeconzChannelTests()
     {
-        _channel = new DeconzChannel(_transport, _loggerFactory);
+        _channel = new DeconzChannel(_transport, loggerFactory: _loggerFactory);
     }
 
     [Fact]

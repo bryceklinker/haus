@@ -245,18 +245,16 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
 
     // A single transient failure must not tear down the long-running loop -- the next poll simply
     // retries. But a failure that means the transport itself is now dead can never self-heal by
-    // retrying in place, so that case is reported back as fatal instead of being swallowed like
-    // every other poll error. Besides our own bounded-timeout dispose (SerialTransportTimeoutException)
-    // and the ObjectDisposedException a real torn-down SerialPort raises on the next call against
-    // it, a physically-unplugged dongle on Linux is also documented to surface as a plain
-    // IOException from SerialPort -- treating it as transient-and-retry-forever would reproduce
-    // this exact PR's root-cause outage class through a different exception type, so it's
-    // classified as fatal too.
-    // Returns the fatal exception when the transport itself is now dead, or null when the poll
-    // either succeeded or hit a transient failure that the next iteration can simply retry past.
-    // The exception is threaded through to HandleTransportFailure rather than being turned into
-    // a ZigbeeTransportError here, so both diagnostics events it raises can be built from the
-    // exact same failure at the exact same call site.
+    // retrying in place, so that case is reported back as fatal (a non-null exception) instead of
+    // being swallowed like every other poll error (which returns null). Besides our own
+    // bounded-timeout dispose (SerialTransportTimeoutException) and the ObjectDisposedException a
+    // real torn-down SerialPort raises on the next call against it, a physically-unplugged dongle
+    // on Linux is also documented to surface as a plain IOException from SerialPort -- treating it
+    // as transient-and-retry-forever would reproduce this exact PR's root-cause outage class
+    // through a different exception type, so it's classified as fatal too. The fatal exception is
+    // threaded through to HandleTransportFailure rather than being turned into a
+    // ZigbeeTransportError here, so both diagnostics events it raises can be built from the exact
+    // same failure at the exact same call site.
     private async Task<Exception?> PollSafelyAsync(ApsPollLoop pollLoop, CancellationToken token)
     {
         try

@@ -6,9 +6,6 @@ using Haus.Zigbee.Transport;
 
 namespace Haus.Zigbee.Tests.Coordinator;
 
-// Throws instead of writing whenever the outgoing frame is the chosen deCONZ command, to simulate
-// a transport-level failure while sending -- everything else (polling, parameter reads) passes
-// through to the inner transport untouched.
 internal class FailingCommandTransport(ISerialTransport inner, byte failingCommandId, Exception exception)
     : ISerialTransport
 {

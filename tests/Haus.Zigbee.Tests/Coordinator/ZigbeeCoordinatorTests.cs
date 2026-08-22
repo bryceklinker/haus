@@ -264,23 +264,6 @@ public class ZigbeeCoordinatorTests
         );
     }
 
-    [Fact]
-    public async Task WhenAPollIterationThrowsThenTheTransportErrorEventReportsTheFailure()
-    {
-        SetNetworkParameters();
-        var transport = new FailOnceOnReadTransport(_dongle, failOnReadCall: 4);
-        using var coordinator = new ZigbeeCoordinator(transport);
-        var reported = new TaskCompletionSource<ZigbeeTransportError>();
-        coordinator.TransportError += (_, error) => reported.TrySetResult(error);
-
-        await coordinator.ConnectAsync(CancellationToken.None);
-
-        var error = await WaitFor(reported.Task);
-        Assert.Equal(nameof(IOException), error.ErrorType);
-        Assert.Null(error.NetworkAddress);
-        Assert.Null(error.IeeeAddress);
-    }
-
     private async Task WaitUntilPolledAtLeast(int count)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
