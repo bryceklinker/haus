@@ -9,12 +9,15 @@ public static class ConfigurationFactory
     public const string DefaultHausCommandsTopic = Defaults.HausOptions.CommandsTopic;
     public const string DefaultHausUnknownTopic = Defaults.HausOptions.UnknownTopic;
     public const string DefaultHausHealthTopic = Defaults.HausOptions.HealthTopic;
+    public const string DefaultHausZigbeeTopic = Defaults.HausOptions.ZigbeeTopic;
 
     public static IConfiguration CreateConfig(
         string hausEventsTopic = DefaultHausEventsTopic,
         string hausCommandsTopic = DefaultHausCommandsTopic,
         string hausUnknownTopic = DefaultHausUnknownTopic,
-        string hausHealthTopic = DefaultHausHealthTopic
+        string hausHealthTopic = DefaultHausHealthTopic,
+        string hausZigbeeTopic = DefaultHausZigbeeTopic,
+        string? hausServer = null
     )
     {
         return new ConfigurationBuilder()
@@ -22,11 +25,12 @@ public static class ConfigurationFactory
                 new List<KeyValuePair<string, string?>>
                 {
                     new("Zigbee:SerialPort", "/dev/ttyACM0"),
-                    new("Haus:Server", "mqtt://localhost:1883"),
+                    new("Haus:Server", hausServer ?? "mqtt://localhost:1883"),
                     new("Haus:EventsTopic", hausEventsTopic),
                     new("Haus:CommandsTopic", hausCommandsTopic),
                     new("Haus:UnknownTopic", hausUnknownTopic),
                     new("Haus:Health", hausHealthTopic),
+                    new("Haus:ZigbeeTopic", hausZigbeeTopic),
                 }.AsReadOnly()
             )
             .Build();

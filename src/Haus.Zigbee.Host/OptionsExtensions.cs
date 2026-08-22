@@ -9,4 +9,9 @@ public static class OptionsExtensions
     {
         return options.Value.EventsTopic;
     }
+
+    public static string GetZigbeeTopic(this IOptions<HausOptions> options)
+    {
+        return options.Value.ZigbeeTopic;
+    }
 }

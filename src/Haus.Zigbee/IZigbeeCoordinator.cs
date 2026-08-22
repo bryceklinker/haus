@@ -32,4 +32,10 @@ public interface IZigbeeCoordinator : IDisposable
     event EventHandler<ZigbeeAttributeReport>? AttributeReported;
 
     event EventHandler<ZigbeeDeviceJoined>? DeviceJoined;
+
+    event EventHandler<ZigbeeConnectionStatus>? ConnectionStatusChanged;
+
+    event EventHandler<ZigbeeCommandSent>? CommandSent;
+
+    event EventHandler<ZigbeeTransportError>? TransportError;
 }

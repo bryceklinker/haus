@@ -25,6 +25,9 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
 
     public event System.EventHandler<ZigbeeAttributeReport>? AttributeReported;
     public event System.EventHandler<ZigbeeDeviceJoined>? DeviceJoined;
+    public event System.EventHandler<ZigbeeConnectionStatus>? ConnectionStatusChanged;
+    public event System.EventHandler<ZigbeeCommandSent>? CommandSent;
+    public event System.EventHandler<ZigbeeTransportError>? TransportError;
 
     public Task ConnectAsync(CancellationToken token)
     {
@@ -69,6 +72,21 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public void RaiseAttributeReported(ZigbeeAttributeReport report)
     {
         AttributeReported?.Invoke(this, report);
+    }
+
+    public void RaiseConnectionStatusChanged(ZigbeeConnectionStatus status)
+    {
+        ConnectionStatusChanged?.Invoke(this, status);
+    }
+
+    public void RaiseCommandSent(ZigbeeCommandSent sent)
+    {
+        CommandSent?.Invoke(this, sent);
+    }
+
+    public void RaiseTransportError(ZigbeeTransportError error)
+    {
+        TransportError?.Invoke(this, error);
     }
 
     public void Dispose() { }
