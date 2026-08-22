@@ -151,10 +151,7 @@ public class ZigbeeCoordinatorReconnectTests
                 {
                     await coordinator.SetPermitJoinAsync(true, CancellationToken.None);
                 }
-                catch (Exception ex) when (IsExpectedTransportFailure(ex))
-                {
-                    // The transport genuinely died mid-call -- expected under this much churn.
-                }
+                catch (Exception ex) when (IsExpectedTransportFailure(ex)) { }
                 catch (Exception ex)
                 {
                     unexpectedExceptions.Add(ex);

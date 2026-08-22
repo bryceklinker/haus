@@ -75,10 +75,6 @@ public class DeconzChannel(ISerialTransport transport, TimeSpan? roundTripTimeou
         throw new SerialTransportTimeoutException(_roundTripTimeout);
     }
 
-    // Gives the caller-abandoned round trip one more bounded window to finish on its own. If it
-    // does, the transport was healthy all along and nothing else is needed. If it doesn't, it's
-    // indistinguishable from a genuine hang, so it gets the same recovery as an internal timeout:
-    // dispose the transport so it can't be silently wedged for whichever caller goes next.
     private async Task ResolveAbandonedRoundTripAsync(Task<byte[]> roundTrip)
     {
         var grace = Task.Delay(_roundTripTimeout, CancellationToken.None);

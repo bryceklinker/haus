@@ -149,10 +149,6 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
             return _components;
     }
 
-    // Builds a fresh, fully-wired set of every component that depends on the current transport
-    // instance. Called once from the constructor and again whenever a fatal transport failure
-    // marks the existing set as dead, so the next connect attempt talks to a freshly built
-    // transport instead of the broken one.
     private TransportComponents BuildTransportComponents()
     {
         var transport = _transportFactory();
