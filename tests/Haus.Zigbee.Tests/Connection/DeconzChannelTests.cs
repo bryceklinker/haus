@@ -90,6 +90,32 @@ public class DeconzChannelTests
         await Assert.ThrowsAsync<ObjectDisposedException>(() => channel.SendAndReceiveAsync(command, timeout.Token));
     }
 
+    // Reproduces a race the mutex depends on for safety: the caller's own token fires before the
+    // channel's internal round-trip timeout, while the transport underneath is genuinely hung (not
+    // just abandoned by an impatient caller). If SendAndReceiveAsync returned as soon as the caller
+    // cancelled -- without finding out whether the transport was actually still wedged -- the
+    // mutex would still release via the outer finally, and the NEXT caller could start writing
+    // into the same never-disposed, still-hung transport underneath it.
+    [Fact]
+    public async Task WhenTheCallerCancelsBeforeTheRoundTripTimeoutButTheTransportIsHungThenItIsStillDisposed()
+    {
+        var transport = new HangUntilDisposedTransport();
+        var channel = new DeconzChannel(transport, roundTripTimeout: TimeSpan.FromMilliseconds(200));
+        var command = new byte[] { 0x0A, 0x05, 0x01 };
+
+        using var callerTimeout = new CancellationTokenSource(TimeSpan.FromMilliseconds(20));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            channel.SendAndReceiveAsync(command, callerTimeout.Token)
+        );
+
+        Assert.Equal(1, transport.DisposeCallCount);
+
+        using var nextCallTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+        await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+            channel.SendAndReceiveAsync(command, nextCallTimeout.Token)
+        );
+    }
+
     [Fact]
     public async Task WhenTwoSendsOverlapOnTheSameChannelThenEachCallerGetsItsOwnMatchingResponse()
     {

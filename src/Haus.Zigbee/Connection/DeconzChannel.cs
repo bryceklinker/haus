@@ -56,13 +56,38 @@ public class DeconzChannel(ISerialTransport transport, TimeSpan? roundTripTimeou
             return await roundTrip;
 
         // Task.Delay observes the caller's token too, so it can also be the one that "won" the
-        // race because the caller cancelled -- that's not a timeout, and must not dispose the
-        // still-healthy transport out from under any other in-flight caller.
-        token.ThrowIfCancellationRequested();
+        // race because the caller cancelled -- that's not necessarily a hang. But it isn't
+        // necessarily a healthy transport either: Linux's SerialPort doesn't reliably honor
+        // CancellationToken, so the abandoned round trip can still be silently wedged. We can't
+        // just let it go -- this method returning is what lets the mutex's finally release, and
+        // handing the mutex to the next caller while this round trip might still be stuck against
+        // the transport underneath it is exactly the interleaved-I/O hazard the mutex exists to
+        // prevent. So even on caller cancellation, we must find out whether the transport is
+        // actually still alive before returning control.
+        if (token.IsCancellationRequested)
+        {
+            await ResolveAbandonedRoundTripAsync(roundTrip);
+            throw new OperationCanceledException(token);
+        }
 
         _transport.Dispose();
         ObserveFault(roundTrip);
         throw new SerialTransportTimeoutException(_roundTripTimeout);
+    }
+
+    // Gives the caller-abandoned round trip one more bounded window to finish on its own. If it
+    // does, the transport was healthy all along and nothing else is needed. If it doesn't, it's
+    // indistinguishable from a genuine hang, so it gets the same recovery as an internal timeout:
+    // dispose the transport so it can't be silently wedged for whichever caller goes next.
+    private async Task ResolveAbandonedRoundTripAsync(Task<byte[]> roundTrip)
+    {
+        var grace = Task.Delay(_roundTripTimeout, CancellationToken.None);
+        var finished = await Task.WhenAny(roundTrip, grace);
+        if (finished == roundTrip)
+            return;
+
+        _transport.Dispose();
+        ObserveFault(roundTrip);
     }
 
     private async Task<byte[]> RoundTripAsync(byte[] frame, CancellationToken token)
