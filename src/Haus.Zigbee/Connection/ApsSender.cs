@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Serial.Frames;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Haus.Zigbee.Connection;
 
@@ -18,6 +20,7 @@ public class ApsSender : IDisposable
     private readonly ApsPollLoop _pollLoop;
     private readonly DeconzChannel _channel;
     private readonly TimeSpan _confirmTimeout;
+    private readonly ILogger<ApsSender> _logger;
     private readonly ConcurrentDictionary<byte, TaskCompletionSource<ApsDataConfirm>> _pendingConfirms = new();
 
     // Interviews for different devices call SendAsync concurrently (each is its own detached
@@ -25,11 +28,17 @@ public class ApsSender : IDisposable
     // needs its own atomic counter rather than a plain field.
     private readonly ByteSequenceCounter _sequenceNumber = new();
 
-    public ApsSender(ApsPollLoop pollLoop, DeconzChannel channel, TimeSpan? confirmTimeout = null)
+    public ApsSender(
+        ApsPollLoop pollLoop,
+        DeconzChannel channel,
+        TimeSpan? confirmTimeout = null,
+        ILogger<ApsSender>? logger = null
+    )
     {
         _pollLoop = pollLoop;
         _channel = channel;
         _confirmTimeout = confirmTimeout ?? DefaultConfirmTimeout;
+        _logger = logger ?? NullLogger<ApsSender>.Instance;
         _pollLoop.ConfirmReceived += OnConfirmReceived;
     }
 
@@ -54,7 +63,21 @@ public class ApsSender : IDisposable
 
             using var timeout = new CancellationTokenSource(_confirmTimeout);
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, timeout.Token);
-            return await pendingConfirm.Task.WaitAsync(linked.Token);
+            try
+            {
+                var confirm = await pendingConfirm.Task.WaitAsync(linked.Token);
+                _logger.LogDebug("Received confirm for request 0x{@RequestId:x2}", request.RequestId);
+                return confirm;
+            }
+            catch (OperationCanceledException) when (!token.IsCancellationRequested)
+            {
+                _logger.LogWarning(
+                    "Timed out after {@Timeout} waiting for confirm for request 0x{@RequestId:x2}",
+                    _confirmTimeout,
+                    request.RequestId
+                );
+                throw;
+            }
         }
         finally
         {

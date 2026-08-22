@@ -2,6 +2,7 @@ using System;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Transport;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Haus.Zigbee;
@@ -22,8 +23,17 @@ public static class ServiceCollectionExtensions
     private static ISerialTransport CreateTransport(IServiceProvider provider)
     {
         var options = provider.GetRequiredService<IOptions<ZigbeeConnectionOptions>>().Value;
+        var loggerFactory = provider.GetService<ILoggerFactory>();
         return string.IsNullOrEmpty(options.TcpHost)
-            ? new SerialPortTransport(options.SerialPort, options.BaudRate)
-            : new TcpSerialTransport(options.TcpHost, options.TcpPort);
+            ? new SerialPortTransport(
+                options.SerialPort,
+                options.BaudRate,
+                loggerFactory?.CreateLogger<SerialPortTransport>()
+            )
+            : new TcpSerialTransport(
+                options.TcpHost,
+                options.TcpPort,
+                loggerFactory?.CreateLogger<TcpSerialTransport>()
+            );
     }
 }

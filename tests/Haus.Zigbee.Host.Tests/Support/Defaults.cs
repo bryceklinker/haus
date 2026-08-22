@@ -10,5 +10,6 @@ public static class Defaults
         public const string CommandsTopic = DefaultHausMqttTopics.CommandsTopic;
         public const string UnknownTopic = DefaultHausMqttTopics.UnknownTopic;
         public const string HealthTopic = DefaultHausMqttTopics.HealthTopic;
+        public const string ZigbeeTopic = DefaultHausMqttTopics.ZigbeeTopic;
     }
 }

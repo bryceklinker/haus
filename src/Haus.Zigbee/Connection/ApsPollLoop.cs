@@ -2,10 +2,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Serial.Frames;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Haus.Zigbee.Connection;
 
-public class ApsPollLoop(DeconzChannel channel)
+public class ApsPollLoop(DeconzChannel channel, ILogger<ApsPollLoop>? logger = null)
 {
     private const byte ReadIndicationCommandId = 0x17;
     private const byte ReadConfirmCommandId = 0x04;
@@ -14,6 +16,7 @@ public class ApsPollLoop(DeconzChannel channel)
     private const byte ReadConfirmFrameLength = 0x07;
 
     private readonly DeconzChannel _channel = channel;
+    private readonly ILogger<ApsPollLoop> _logger = logger ?? NullLogger<ApsPollLoop>.Instance;
     private byte _sequenceNumber;
 
     public event EventHandler<ApsIndicationReceived>? IndicationReceived;
@@ -40,8 +43,15 @@ public class ApsPollLoop(DeconzChannel channel)
         var response = await _channel.SendAndReceiveAsync(readRequest, token);
 
         var indication = ApsDataIndicationFrameCodec.Decode(response);
-        if (indication is not null)
-            IndicationReceived?.Invoke(this, new ApsIndicationReceived(indication));
+        if (indication is null)
+            return;
+
+        _logger.LogDebug(
+            "Received APS indication from 0x{@SourceNwkAddress:x4} on cluster 0x{@ClusterId:x4}",
+            indication.SourceNwkAddress,
+            indication.ClusterId
+        );
+        IndicationReceived?.Invoke(this, new ApsIndicationReceived(indication));
     }
 
     private async Task DrainConfirmAsync(CancellationToken token)

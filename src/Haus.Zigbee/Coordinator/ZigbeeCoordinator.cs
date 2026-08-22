@@ -73,6 +73,12 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
 
     public event EventHandler<ZigbeeDeviceJoined>? DeviceJoined;
 
+    public event EventHandler<ZigbeeConnectionStatus>? ConnectionStatusChanged;
+
+    public event EventHandler<ZigbeeCommandSent>? CommandSent;
+
+    public event EventHandler<ZigbeeTransportError>? TransportError;
+
     public async Task ConnectAsync(CancellationToken token)
     {
         var components = AcquireComponentsForConnect();
@@ -92,6 +98,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         }
 
         _isConnected = true;
+        ConnectionStatusChanged?.Invoke(this, new ZigbeeConnectionStatus(true, NetworkConfig, null));
         StartPolling(components);
     }
 
@@ -114,9 +121,19 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         return CurrentComponents().PermitJoinController.SetPermitJoinAsync(enabled, token);
     }
 
-    public Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token)
+    public async Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token)
     {
-        return CurrentComponents().CommandSender.SendCommandAsync(request, token);
+        try
+        {
+            var confirm = await CurrentComponents().CommandSender.SendCommandAsync(request, token);
+            CommandSent?.Invoke(this, new ZigbeeCommandSent(request.Destination, request.ClusterId, request.CommandId));
+            return confirm;
+        }
+        catch (Exception ex)
+        {
+            TransportError?.Invoke(this, BuildTransportError(ex, request.Destination));
+            throw;
+        }
     }
 
     public void Dispose()
@@ -152,11 +169,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     private TransportComponents BuildTransportComponents()
     {
         var transport = _transportFactory();
-        var channel = new DeconzChannel(transport, _channelRoundTripTimeout);
+        var channel = new DeconzChannel(transport, _channelRoundTripTimeout, _loggerFactory);
         var connection = new DeconzConnection(channel);
-        var pollLoop = new ApsPollLoop(channel);
+        var pollLoop = new ApsPollLoop(channel, _loggerFactory.CreateLogger<ApsPollLoop>());
         var permitJoinController = new PermitJoinController(channel);
-        var sender = new ApsSender(pollLoop, channel);
+        var sender = new ApsSender(pollLoop, channel, logger: _loggerFactory.CreateLogger<ApsSender>());
         var commandSender = new CommandSender(sender);
         var attributeReportListener = new AttributeReportListener(pollLoop);
         var deviceInterview = new DeviceInterview(
@@ -215,9 +232,10 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     {
         while (!token.IsCancellationRequested)
         {
-            if (!await PollSafelyAsync(components.PollLoop, token))
+            var fatalFailure = await PollSafelyAsync(components.PollLoop, token);
+            if (fatalFailure is not null)
             {
-                HandleTransportFailure(components);
+                HandleTransportFailure(components, fatalFailure);
                 return;
             }
 
@@ -227,34 +245,44 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
 
     // A single transient failure must not tear down the long-running loop -- the next poll simply
     // retries. But a failure that means the transport itself is now dead can never self-heal by
-    // retrying in place, so that case is reported back as fatal instead of being swallowed like
-    // every other poll error. Besides our own bounded-timeout dispose (SerialTransportTimeoutException)
-    // and the ObjectDisposedException a real torn-down SerialPort raises on the next call against
-    // it, a physically-unplugged dongle on Linux is also documented to surface as a plain
-    // IOException from SerialPort -- treating it as transient-and-retry-forever would reproduce
-    // this exact PR's root-cause outage class through a different exception type, so it's
-    // classified as fatal too.
-    private async Task<bool> PollSafelyAsync(ApsPollLoop pollLoop, CancellationToken token)
+    // retrying in place, so that case is reported back as fatal (a non-null exception) instead of
+    // being swallowed like every other poll error (which returns null). Besides our own
+    // bounded-timeout dispose (SerialTransportTimeoutException) and the ObjectDisposedException a
+    // real torn-down SerialPort raises on the next call against it, a physically-unplugged dongle
+    // on Linux is also documented to surface as a plain IOException from SerialPort -- treating it
+    // as transient-and-retry-forever would reproduce this exact PR's root-cause outage class
+    // through a different exception type, so it's classified as fatal too. The fatal exception is
+    // threaded through to HandleTransportFailure rather than being turned into a
+    // ZigbeeTransportError here, so both diagnostics events it raises can be built from the exact
+    // same failure at the exact same call site.
+    private async Task<Exception?> PollSafelyAsync(ApsPollLoop pollLoop, CancellationToken token)
     {
         try
         {
             await pollLoop.PollOnceAsync(token);
-            return true;
+            return null;
         }
         catch (OperationCanceledException)
         {
-            return true;
+            return null;
         }
         catch (Exception ex) when (ex is SerialTransportTimeoutException or ObjectDisposedException or IOException)
         {
             _logger.LogWarning(ex, "Zigbee transport failed; marking the connection down so it can reconnect");
-            return false;
+            return ex;
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Poll iteration failed, will retry on the next interval");
-            return true;
+            return null;
         }
+    }
+
+    private static ZigbeeTransportError BuildTransportError(Exception ex, ApsDestination destination)
+    {
+        var networkAddress = destination.Mode == DeconzAddressMode.Nwk ? destination.ShortAddress : (ushort?)null;
+        var ieeeAddress = destination.Mode == DeconzAddressMode.Ieee ? destination.IeeeAddress : (IeeeAddress?)null;
+        return new ZigbeeTransportError(ex.GetType().Name, ex.Message, networkAddress, ieeeAddress);
     }
 
     // Takes the exact bundle the failing poll loop was using -- rather than re-reading the
@@ -263,16 +291,20 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     // whatever _components happens to hold *then* would tear down a perfectly healthy, currently
     // in-use bundle instead of the one that actually failed.
     //
-    // IsConnected is flipped false only once this bundle is fully torn down and
-    // _transportNeedsRebuild is set, not before -- ZigbeeHausBridge's reconnect supervisor reacts
-    // to IsConnected becoming false, so if it observed that flip any earlier it could call
-    // ConnectAsync while cleanup was still in flight on another thread.
-    private void HandleTransportFailure(TransportComponents failedComponents)
+    // IsConnected is flipped false, and TransportError/ConnectionStatusChanged(false, ...) raised,
+    // only once this bundle is fully torn down and _transportNeedsRebuild is set, not before --
+    // ZigbeeHausBridge's reconnect supervisor reacts to IsConnected becoming false, so if it
+    // observed that flip any earlier it could call ConnectAsync while cleanup was still in flight
+    // on another thread.
+    private void HandleTransportFailure(TransportComponents failedComponents, Exception failure)
     {
         MarkFailedForRebuild(failedComponents);
         _pollCancellation?.Dispose();
         _pollCancellation = null;
         _isConnected = false;
+
+        TransportError?.Invoke(this, new ZigbeeTransportError(failure.GetType().Name, failure.Message, null, null));
+        ConnectionStatusChanged?.Invoke(this, new ZigbeeConnectionStatus(false, null, failure.Message));
     }
 
     private void MarkFailedForRebuild(TransportComponents failedComponents)

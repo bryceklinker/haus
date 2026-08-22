@@ -17,6 +17,7 @@ public class ZigbeeHausBridge(
     ZigbeeInboundRelay inboundRelay,
     ZigbeeOutboundRelay outboundRelay,
     DeviceBackfillService backfillService,
+    ZigbeeDiagnosticsPublisher diagnosticsPublisher,
     IHausMqttClientFactory hausMqttClientFactory,
     IOptions<HausOptions> hausOptions,
     ILogger<ZigbeeHausBridge> logger
@@ -42,6 +43,9 @@ public class ZigbeeHausBridge(
     {
         coordinator.DeviceJoined += OnDeviceJoined;
         coordinator.AttributeReported += OnAttributeReported;
+        coordinator.ConnectionStatusChanged += OnConnectionStatusChanged;
+        coordinator.CommandSent += OnCommandSent;
+        coordinator.TransportError += OnTransportError;
 
         _hausMqttClient = await hausMqttClientFactory.CreateClient();
         await HausMqttClient.SubscribeAsync(hausOptions.Value.CommandsTopic, HandleHausCommandAsync);
@@ -54,6 +58,9 @@ public class ZigbeeHausBridge(
     {
         coordinator.DeviceJoined -= OnDeviceJoined;
         coordinator.AttributeReported -= OnAttributeReported;
+        coordinator.ConnectionStatusChanged -= OnConnectionStatusChanged;
+        coordinator.CommandSent -= OnCommandSent;
+        coordinator.TransportError -= OnTransportError;
         if (_hausMqttClient != null)
             await _hausMqttClient.DisposeAsync();
         await base.StopAsync(cancellationToken);
@@ -133,6 +140,15 @@ public class ZigbeeHausBridge(
         {
             logger.LogError(e, "Failed to relay device-joined for {@Address}", joined.IeeeAddress);
         }
+
+        try
+        {
+            await diagnosticsPublisher.HandleDeviceJoinedAsync(joined);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to publish diagnostics for device-joined {@Address}", joined.IeeeAddress);
+        }
     }
 
     private async void OnAttributeReported(object? sender, ZigbeeAttributeReport report)
@@ -144,6 +160,55 @@ public class ZigbeeHausBridge(
         catch (Exception e)
         {
             logger.LogError(e, "Failed to relay attribute report from {@Address}", report.SourceNwkAddress);
+        }
+
+        try
+        {
+            await diagnosticsPublisher.HandleAttributeReportedAsync(report);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(
+                e,
+                "Failed to publish diagnostics for attribute report from {@Address}",
+                report.SourceNwkAddress
+            );
+        }
+    }
+
+    private async void OnConnectionStatusChanged(object? sender, ZigbeeConnectionStatus status)
+    {
+        try
+        {
+            await diagnosticsPublisher.HandleConnectionStatusChangedAsync(status);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to publish diagnostics for connection status change");
+        }
+    }
+
+    private async void OnCommandSent(object? sender, ZigbeeCommandSent sent)
+    {
+        try
+        {
+            await diagnosticsPublisher.HandleCommandSentAsync(sent);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to publish diagnostics for command sent");
+        }
+    }
+
+    private async void OnTransportError(object? sender, ZigbeeTransportError error)
+    {
+        try
+        {
+            await diagnosticsPublisher.HandleTransportErrorAsync(error);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to publish diagnostics for transport error");
         }
     }
 }

@@ -4,7 +4,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Zigbee.Tests.Support;
 using Haus.Zigbee.Transport;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Transport;
@@ -38,6 +40,47 @@ public class TcpSerialTransportTests : IAsyncLifetime
 
         using var accepted = await acceptTask;
         Assert.True(accepted.Connected);
+    }
+
+    [Fact]
+    public async Task OpenAsync_LogsTheConnectionAtInformationLevel()
+    {
+        var loggerFactory = new CapturingLoggerFactory();
+        using var transport = new TcpSerialTransport(
+            "127.0.0.1",
+            _port,
+            loggerFactory.CreateLogger<TcpSerialTransport>()
+        );
+        var acceptTask = _listener!.AcceptTcpClientAsync();
+
+        await transport.OpenAsync(CancellationToken.None);
+        using var accepted = await acceptTask;
+
+        Assert.Contains(
+            loggerFactory.Entries,
+            entry => entry.Level == LogLevel.Information && entry.Message.Contains($"{_port}")
+        );
+    }
+
+    [Fact]
+    public async Task ReadAsync_WhenTheConnectionResetsWhileAReadIsPendingThenAWarningIsLogged()
+    {
+        var loggerFactory = new CapturingLoggerFactory();
+        using var transport = new TcpSerialTransport(
+            "127.0.0.1",
+            _port,
+            loggerFactory.CreateLogger<TcpSerialTransport>()
+        );
+        var acceptTask = _listener!.AcceptTcpClientAsync();
+        await transport.OpenAsync(CancellationToken.None);
+        using var accepted = await acceptTask;
+
+        var readTask = transport.ReadAsync(new byte[4], CancellationToken.None);
+        accepted.Client.LingerState = new LingerOption(true, 0);
+        accepted.Client.Close();
+        await Assert.ThrowsAsync<IOException>(() => readTask);
+
+        Assert.Contains(loggerFactory.Entries, entry => entry.Level == LogLevel.Warning);
     }
 
     [Fact]

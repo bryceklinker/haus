@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Serial;
 using Haus.Zigbee.Tests.Coordinator;
+using Haus.Zigbee.Tests.Support;
 using Haus.Zigbee.Tests.Transport;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Connection;
@@ -12,11 +14,12 @@ namespace Haus.Zigbee.Tests.Connection;
 public class FrameReaderTests
 {
     private readonly FakeSerialTransport _transport = new();
+    private readonly CapturingLoggerFactory _loggerFactory = new();
     private readonly FrameReader _reader;
 
     public FrameReaderTests()
     {
-        _reader = new FrameReader(_transport);
+        _reader = new FrameReader(_transport, _loggerFactory.CreateLogger<FrameReader>());
     }
 
     [Fact]
@@ -49,6 +52,26 @@ public class FrameReaderTests
         var frames = await _reader.ReadFramesAsync(CancellationToken.None);
 
         Assert.Empty(frames);
+    }
+
+    [Fact]
+    public async Task WhenAFrameFailsChecksumValidationThenAWarningIsLogged()
+    {
+        _transport.FeedIncoming(FramedWithCorruptedChecksum(new byte[] { 0x07, 0x03, 0xAA }));
+
+        await _reader.ReadFramesAsync(CancellationToken.None);
+
+        Assert.Contains(_loggerFactory.Entries, entry => entry.Level == LogLevel.Warning);
+    }
+
+    [Fact]
+    public async Task WhenAValidFrameArrivesThenItIsLoggedAtDebugLevel()
+    {
+        _transport.FeedIncoming(DeconzFrames.Framed(new byte[] { 0x07, 0x03, 0xAA }));
+
+        await _reader.ReadFramesAsync(CancellationToken.None);
+
+        Assert.Contains(_loggerFactory.Entries, entry => entry.Level == LogLevel.Debug);
     }
 
     [Fact]

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Connection;
 using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Models;
 using Haus.Zigbee.Transport;
 using Xunit;
 
@@ -97,6 +98,38 @@ public class ZigbeeCoordinatorReconnectTests
         Assert.False(coordinator.IsConnected);
     }
 
+    // The MQTT-facing diagnostics events (see Haus.Zigbee.Host's ZigbeeDiagnosticsPublisher) are
+    // this coordinator's only externally-observable signal of a fatal transport failure besides
+    // IsConnected itself, so both need to fire from the exact same HandleTransportFailure call
+    // that flips IsConnected false above -- not just once at initial connect.
+    [Fact]
+    public async Task WhenTheTransportThrowsIOExceptionDuringPollingThenTransportErrorAndDisconnectedStatusFire()
+    {
+        var dongle = NewConfiguredDongle();
+        var unpluggedTransport = new ThrowOnceOnReadTransport(dongle, throwOnReadCall: 4);
+        using var coordinator = new ZigbeeCoordinator(
+            () => unpluggedTransport,
+            channelRoundTripTimeout: ShortRoundTripTimeout
+        );
+        var reportedError = new TaskCompletionSource<ZigbeeTransportError>();
+        coordinator.TransportError += (_, error) => reportedError.TrySetResult(error);
+        var disconnectedStatus = new TaskCompletionSource<ZigbeeConnectionStatus>();
+        coordinator.ConnectionStatusChanged += (_, status) =>
+        {
+            if (!status.IsConnected)
+                disconnectedStatus.TrySetResult(status);
+        };
+
+        await coordinator.ConnectAsync(CancellationToken.None);
+
+        var error = await WaitFor(reportedError.Task);
+        var status = await WaitFor(disconnectedStatus.Task);
+
+        Assert.Equal(nameof(IOException), error.ErrorType);
+        Assert.False(status.IsConnected);
+        Assert.False(coordinator.IsConnected);
+    }
+
     // Before TransportComponents, ZigbeeCoordinator held eight separately-mutable fields
     // (_transport, _channel, _sender, ...) that a rebuild reassigned one at a time with no
     // synchronization: a concurrent caller could read a mismatched mix of old and new
@@ -183,6 +216,13 @@ public class ZigbeeCoordinatorReconnectTests
         while (!condition() && !timeout.IsCancellationRequested)
             await Task.Delay(10);
         Assert.True(condition(), "condition was not met within the timeout");
+    }
+
+    private static async Task<T> WaitFor<T>(Task<T> task)
+    {
+        var completed = await Task.WhenAny(task, Task.Delay(TimeSpan.FromSeconds(5)));
+        Assert.Same(task, completed);
+        return await task;
     }
 
     // Wraps a working transport and makes exactly one chosen ReadAsync call hang forever instead
