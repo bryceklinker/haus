@@ -32,6 +32,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<HausLightingToZigbeeMapper>()
             .AddSingleton<ZigbeeInboundRelay>()
             .AddSingleton<ZigbeeOutboundRelay>()
+            .AddSingleton<ZigbeeDiagnosticsPublisher>()
             .AddSingleton<DeviceBackfillService>()
             .Configure<ZigbeeConnectionOptions>(config.GetSection("Zigbee"))
             .AddHausZigbee()
