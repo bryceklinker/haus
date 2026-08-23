@@ -21,7 +21,7 @@ public class ShellDrawerViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(5, view.FindAllByComponent<MudNavLink>().Count());
+            Assert.Equal(6, view.FindAllByComponent<MudNavLink>().Count());
         });
     }
 
@@ -34,7 +34,21 @@ public class ShellDrawerViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(4, view.FindAllByComponent<MudNavLink>().Count());
+            Assert.Equal(5, view.FindAllByComponent<MudNavLink>().Count());
+        });
+    }
+
+    [Fact]
+    public async Task WhenRenderedThenShowsNavigationLinkForZigbee()
+    {
+        await HausApiHandler.SetupGetAsJson(SettingsUrl, new ApplicationSettingsModel(IsDeviceSimulatorEnabled: false));
+
+        var view = RenderView<ShellDrawerView>();
+
+        Eventually.Assert(() =>
+        {
+            var navLink = view.FindByComponent<MudNavLink>(opts => opts.WithText("Zigbee"));
+            Assert.Equal("/zigbee", navLink.Instance.Href);
         });
     }
 }
