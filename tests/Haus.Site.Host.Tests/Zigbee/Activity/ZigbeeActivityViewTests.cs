@@ -80,13 +80,38 @@ public class ZigbeeActivityViewTests : HausSiteTestContext
 
         await _eventsSubscriber.SimulateAsync(
             HausEventsEventNames.OnEvent,
-            new ZigbeeDeviceJoinedEvent("00:11:22:33:44:55:66:77", 1234).AsHausEvent()
+            new HausEvent<object>(
+                ZigbeeDeviceJoinedEvent.Type,
+                new ZigbeeDeviceJoinedEvent("00:11:22:33:44:55:66:77", 1234)
+            )
         );
 
         Eventually.Assert(() =>
         {
-            var entry = view.FindByComponent<ZigbeeActivityEntryView>();
-            Assert.Equal(ZigbeeDeviceJoinedEvent.Type, entry.Instance.Entry?.EventType);
+            var entries = view.FindAllByComponent<ZigbeeActivityEntryView>().ToArray();
+            Assert.Single(entries);
+            Assert.Equal(ZigbeeDeviceJoinedEvent.Type, entries[0].Instance.Entry?.EventType);
+        });
+    }
+
+    [Fact]
+    public async Task WhenNonZigbeeEventReceivedThenIgnoresIt()
+    {
+        await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>());
+        var view = RenderView<ZigbeeActivityView>();
+        Eventually.Assert(() =>
+        {
+            view.FindByComponent<MudText>(opts => opts.WithText("No recent zigbee activity"));
+        });
+
+        await _eventsSubscriber.SimulateAsync(
+            HausEventsEventNames.OnEvent,
+            new HausEvent<object>("device_deleted", new { })
+        );
+
+        Eventually.Assert(() =>
+        {
+            view.FindByComponent<MudText>(opts => opts.WithText("No recent zigbee activity"));
         });
     }
 
@@ -103,7 +128,10 @@ public class ZigbeeActivityViewTests : HausSiteTestContext
 
         await _eventsSubscriber.SimulateAsync(
             HausEventsEventNames.OnEvent,
-            new ZigbeeDeviceJoinedEvent("00:11:22:33:44:55:66:77", 1234).AsHausEvent()
+            new HausEvent<object>(
+                ZigbeeDeviceJoinedEvent.Type,
+                new ZigbeeDeviceJoinedEvent("00:11:22:33:44:55:66:77", 1234)
+            )
         );
 
         Eventually.Assert(() =>
