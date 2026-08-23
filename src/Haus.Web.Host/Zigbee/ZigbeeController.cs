@@ -10,20 +10,20 @@ namespace Haus.Web.Host.Zigbee;
 public class ZigbeeController(IHausBus hausBus) : HausBusController(hausBus)
 {
     [HttpGet("status")]
-    public Task<IActionResult> GetStatus()
+    public async Task<IActionResult> GetStatus()
     {
-        return QueryAsync(new GetZigbeeConnectionStatusQuery());
+        return await QueryAsync(new GetZigbeeConnectionStatusQuery());
     }
 
     [HttpGet("activity")]
-    public Task<IActionResult> GetActivity()
+    public async Task<IActionResult> GetActivity()
     {
-        return QueryAsync(new GetRecentZigbeeActivityQuery());
+        return await QueryAsync(new GetRecentZigbeeActivityQuery());
     }
 
     [HttpGet("devices")]
-    public Task<IActionResult> GetDevices()
+    public async Task<IActionResult> GetDevices()
     {
-        return QueryAsync(new GetKnownZigbeeDevicesQuery());
+        return await QueryAsync(new GetKnownZigbeeDevicesQuery());
     }
 }
