@@ -86,12 +86,42 @@ public class ZigbeeDevicesViewTests : HausSiteTestContext
         );
         await _eventsSubscriber.SimulateAsync(
             HausEventsEventNames.OnEvent,
-            new ZigbeeDeviceJoinedEvent("00:11:22:33:44:55:66:77", 1234).AsHausEvent()
+            new HausEvent<object>(
+                ZigbeeDeviceJoinedEvent.Type,
+                new ZigbeeDeviceJoinedEvent("00:11:22:33:44:55:66:77", 1234)
+            )
         );
 
         Eventually.Assert(() =>
         {
             Assert.Single(view.FindAllByComponent<ZigbeeDeviceView>());
+        });
+    }
+
+    [Fact]
+    public async Task WhenNonZigbeeEventReceivedThenDoesNotRefreshDevices()
+    {
+        var callCount = 0;
+        await HausApiHandler.SetupGetAsJson(
+            DevicesUrl,
+            new ListResult<ZigbeeKnownDeviceModel>(),
+            opts => opts.WithCapture(_ => callCount++)
+        );
+        var view = RenderView<ZigbeeDevicesView>();
+        Eventually.Assert(() =>
+        {
+            view.FindByComponent<MudText>(opts => opts.WithText("No zigbee devices discovered yet"));
+        });
+        var callCountAfterInitialLoad = callCount;
+
+        await _eventsSubscriber.SimulateAsync(
+            HausEventsEventNames.OnEvent,
+            new HausEvent<object>("device_deleted", new { })
+        );
+
+        Eventually.Assert(() =>
+        {
+            Assert.Equal(callCountAfterInitialLoad, callCount);
         });
     }
 }

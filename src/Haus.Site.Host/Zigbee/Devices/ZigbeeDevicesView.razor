@@ -28,6 +28,12 @@
 </LoadingContentView>
 
 @code {
+    private static readonly HashSet<string> DeviceRefreshEventTypes =
+    [
+        ZigbeeDeviceJoinedEvent.Type,
+        ZigbeeDeviceInfoDiscoveredEvent.Type,
+    ];
+
     private bool IsLoading { get; set; }
     private ListResult<ZigbeeKnownDeviceModel> Devices { get; set; } = new();
     private IRealtimeDataSubscriber? _eventsSubscriber;
@@ -39,19 +45,15 @@
         IsLoading = false;
 
         _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
-        _eventsSubscriber.Subscribe<HausEvent<ZigbeeDeviceJoinedEvent>>(
-            HausEventsEventNames.OnEvent,
-            _ => RefreshDevicesAsync()
-        );
-        _eventsSubscriber.Subscribe<HausEvent<ZigbeeDeviceInfoDiscoveredEvent>>(
-            HausEventsEventNames.OnEvent,
-            _ => RefreshDevicesAsync()
-        );
+        _eventsSubscriber.Subscribe<HausEvent<dynamic>>(HausEventsEventNames.OnEvent, HandleEvent);
         await _eventsSubscriber.StartAsync();
     }
 
-    private async Task RefreshDevicesAsync()
+    private async Task HandleEvent(HausEvent<dynamic> @event)
     {
+        if (@event.Type is null || !DeviceRefreshEventTypes.Contains(@event.Type))
+            return;
+
         Devices = await ApiClient.GetZigbeeDevicesAsync();
         await InvokeAsync(StateHasChanged);
     }
