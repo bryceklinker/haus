@@ -74,7 +74,7 @@ public class ShellDrawerViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            Assert.Equal(4, view.FindAllByComponent<MudNavLink>().Count());
+            Assert.Equal(5, view.FindAllByComponent<MudNavLink>().Count());
         });
     }
 
