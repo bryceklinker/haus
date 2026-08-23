@@ -12,12 +12,19 @@ namespace Haus.Site.Host.Tests.Support.Http;
 public class InMemoryHttpMessageHandler : HttpMessageHandler
 {
     private readonly ConcurrentBag<ConfiguredHttpResponse> _responses = [];
+    private readonly ConcurrentBag<(HttpMethod Method, Uri Uri, Exception Exception)> _throwingResponses = [];
 
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         CancellationToken cancellationToken
     )
     {
+        foreach (var throwing in _throwingResponses)
+        {
+            if (request.Method == throwing.Method && UrisMatch(throwing.Uri, request.RequestUri))
+                throw throwing.Exception;
+        }
+
         foreach (var response in _responses)
         {
             var result = await response.GetResponseAsync(request);
@@ -27,6 +34,39 @@ public class InMemoryHttpMessageHandler : HttpMessageHandler
         }
 
         return new HttpResponseMessage(HttpStatusCode.NotFound);
+    }
+
+    public void SetupThrows(
+        HttpMethod method,
+        string url,
+        Exception exception,
+        Func<ConfigureHttpResponseOptions, ConfigureHttpResponseOptions>? configure = null
+    )
+    {
+        var defaultOptions = new ConfigureHttpResponseOptions();
+        var options = configure != null ? configure.Invoke(defaultOptions) : defaultOptions;
+        var uri = CreateUriFromString(url, options.BaseUri);
+        _throwingResponses.Add((method, uri, exception));
+    }
+
+    public void SetupGetThrows(
+        string url,
+        Exception exception,
+        Func<ConfigureHttpResponseOptions, ConfigureHttpResponseOptions>? configure = null
+    )
+    {
+        SetupThrows(HttpMethod.Get, url, exception, configure);
+    }
+
+    private static bool UrisMatch(Uri configured, Uri? incoming)
+    {
+        if (incoming == null)
+            return false;
+
+        if (configured == incoming)
+            return true;
+
+        return configured.IsBaseOf(incoming) && configured.AbsolutePath == incoming.AbsolutePath;
     }
 
     public async Task SetupResponse(

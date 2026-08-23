@@ -36,6 +36,12 @@ public abstract class HausPageTest : PageTest
         await Context.StopTracingAsync();
     }
 
+    [TearDown]
+    public async Task AssertBlazorErrorUiStaysHidden()
+    {
+        await Expect(Page.CssLocator("#blazor-error-ui")).Not.ToBeVisibleAsync();
+    }
+
     public DeconzSimulatorClient GetDeconzSimulatorClient()
     {
         return new DeconzSimulatorClient(SimulatorHttpClient);
