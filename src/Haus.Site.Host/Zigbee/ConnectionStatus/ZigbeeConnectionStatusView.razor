@@ -33,6 +33,8 @@
     [CascadingParameter]
     private MudTheme? Theme { get; set; }
 
+    // ZigbeeConnectionStatusModel.Unknown is the only status with a null ChangedAt; every real
+    // connected/disconnected status the API or live events produce sets it.
     private bool IsUnknown => Status.ChangedAt is null;
 
     private string StatusText => IsUnknown ? "Unknown" : Status.IsConnected ? "Connected" : "Disconnected";
