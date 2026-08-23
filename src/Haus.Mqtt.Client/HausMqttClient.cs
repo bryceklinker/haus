@@ -22,8 +22,8 @@ public interface IHausMqttClient : IAsyncDisposable
     Task<IHausMqttSubscription> SubscribeAsync(string topic, Func<MqttApplicationMessage, Task> handler);
     Task<IHausMqttSubscription> SubscribeAsync(string topic, Action<MqttApplicationMessage> handler);
     Task PublishAsync(MqttApplicationMessage message);
-    Task PublishAsync(string topic, object payload);
-    Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string? topicName = null);
+    Task PublishAsync(string topic, object payload, bool retain = false);
+    Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string? topicName = null, bool retain = false);
 }
 
 internal class HausMqttClient : IHausMqttClient
@@ -79,16 +79,25 @@ internal class HausMqttClient : IHausMqttClient
         await _mqttClient.EnqueueAsync(message);
     }
 
-    public async Task PublishAsync(string topic, object payload)
+    public async Task PublishAsync(string topic, object payload, bool retain = false)
     {
         await PublishAsync(
-            new MqttApplicationMessage { Topic = topic, PayloadSegment = HausJsonSerializer.SerializeToBytes(payload) }
+            new MqttApplicationMessage
+            {
+                Topic = topic,
+                PayloadSegment = HausJsonSerializer.SerializeToBytes(payload),
+                Retain = retain,
+            }
         );
     }
 
-    public async Task PublishHausEventAsync<T>(IHausEventCreator<T> creator, string? topicName = null)
+    public async Task PublishHausEventAsync<T>(
+        IHausEventCreator<T> creator,
+        string? topicName = null,
+        bool retain = false
+    )
     {
-        await PublishAsync(topicName ?? EventsTopic, creator.AsHausEvent());
+        await PublishAsync(topicName ?? EventsTopic, creator.AsHausEvent(), retain);
     }
 
     public ValueTask DisposeAsync()

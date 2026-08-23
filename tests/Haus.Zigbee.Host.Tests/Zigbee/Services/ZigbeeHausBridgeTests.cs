@@ -36,7 +36,7 @@ public class ZigbeeHausBridgeTests
         await mqttClient.SubscribeToHausEventsAsync<ZigbeeConnectionStatusChangedEvent>(
             ZigbeeConnectionStatusChangedEvent.Type,
             e => published = e.Payload,
-            DefaultHausMqttTopics.ZigbeeTopic
+            $"{DefaultHausMqttTopics.ZigbeeTopic}/status"
         );
 
         coordinator.RaiseConnectionStatusChanged(new ZigbeeConnectionStatus(true, null, null));

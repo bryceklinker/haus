@@ -1,0 +1,19 @@
+@page "/zigbee"
+
+@using Haus.Site.Host.Zigbee.Activity
+@using Haus.Site.Host.Zigbee.ConnectionStatus
+@using Haus.Site.Host.Zigbee.Devices
+
+@attribute [Authorize]
+
+<MudGrid>
+    <MudItem xs="12">
+        <ZigbeeConnectionStatusView/>
+    </MudItem>
+    <MudItem xs="6">
+        <ZigbeeDevicesView/>
+    </MudItem>
+    <MudItem xs="6">
+        <ZigbeeActivityView/>
+    </MudItem>
+</MudGrid>

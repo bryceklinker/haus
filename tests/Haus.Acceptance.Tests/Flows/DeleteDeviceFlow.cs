@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Haus.Acceptance.Tests.Support;
+using Haus.Testing.Support;
 using Microsoft.Playwright;
 
 namespace Haus.Acceptance.Tests.Flows;
@@ -51,10 +52,19 @@ public class DeleteDeviceFlow : HausPageTest
         var externalId = await _deconzSimulator.JoinPhilipsLightAsync();
         var devices = await Page.NavigateToDevicesAsync();
         var discovery = await devices.NavigateToDiscoveryAsync();
-        await discovery.AssignDeviceToRoomAsync(externalId, roomName);
 
-        await Expect(discovery.GetRoomDropZone(roomName))
-            .ToContainTextAsync(externalId, new LocatorAssertionsToContainTextOptions { Timeout = 10_000 });
+        // The unassigned devices list re-renders live as other zigbee devices are discovered, which
+        // can shift element positions mid-gesture and drop a single drag attempt on the floor.
+        // Retrying the whole drag is safe: it's idempotent against an already-assigned device.
+        await Eventually.AssertAsync(
+            async () =>
+            {
+                await discovery.AssignDeviceToRoomAsync(externalId, roomName);
+                await Expect(discovery.GetRoomDropZone(roomName))
+                    .ToContainTextAsync(externalId, new LocatorAssertionsToContainTextOptions { Timeout = 2_000 });
+            },
+            timeout: 15_000
+        );
 
         var devicesAgain = await Page.NavigateToDevicesAsync();
         var detail = await devicesAgain.NavigateToDeviceAsync(externalId);

@@ -34,13 +34,13 @@ public class ZigbeeDiagnosticsPublisherRealBrokerTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task HandleConnectionStatusChangedAsync_RealBroker_RoundTripsOverHausZigbeeTopic()
+    public async Task HandleConnectionStatusChangedAsync_RealBroker_RoundTripsOverHausZigbeeStatusTopic()
     {
         ZigbeeConnectionStatusChangedEvent? published = null;
         await _hausMqttClient!.SubscribeToHausEventsAsync<ZigbeeConnectionStatusChangedEvent>(
             ZigbeeConnectionStatusChangedEvent.Type,
             e => published = e.Payload,
-            DefaultHausMqttTopics.ZigbeeTopic
+            $"{DefaultHausMqttTopics.ZigbeeTopic}/status"
         );
 
         // MQTTnet's managed client applies a SubscribeAsync call asynchronously in the background

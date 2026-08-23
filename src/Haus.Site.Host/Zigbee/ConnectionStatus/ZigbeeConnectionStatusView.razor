@@ -1,0 +1,85 @@
+@using Haus.Api.Client
+@using Haus.Core.Models
+@using Haus.Core.Models.ExternalMessages
+@using Haus.Core.Models.Zigbee
+@using Haus.Core.Models.Zigbee.Events
+@using Haus.Site.Host.Shared.Realtime
+
+@implements IAsyncDisposable
+
+@inject IHausApiClient ApiClient
+@inject IRealtimeDataFactory RealtimeDataFactory
+
+<LoadingContentView IsLoading="IsLoading" LoadingText="Loading zigbee status...">
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h5" Style="@($"background-color: {StatusColor}")" Class="pa-4 rounded">
+            @StatusText
+        </MudText>
+        @if (!string.IsNullOrEmpty(Status.Reason))
+        {
+            <MudText>@Status.Reason</MudText>
+        }
+        @if (Status.ChangedAt != null)
+        {
+            <MudText Typo="Typo.caption">Last changed: @Status.ChangedAt.Value.FormatTimestamp()</MudText>
+        }
+    </MudPaper>
+</LoadingContentView>
+
+@code {
+    private bool IsLoading { get; set; }
+    private ZigbeeConnectionStatusModel Status { get; set; } = ZigbeeConnectionStatusModel.Unknown;
+
+    [CascadingParameter]
+    private MudTheme? Theme { get; set; }
+
+    // ZigbeeConnectionStatusModel.Unknown is the only status with a null ChangedAt; every real
+    // connected/disconnected status the API or live events produce sets it.
+    private bool IsUnknown => Status.ChangedAt is null;
+
+    private string StatusText => IsUnknown ? "Unknown" : Status.IsConnected ? "Connected" : "Disconnected";
+
+    private string StatusColor
+    {
+        get
+        {
+            var theme = Theme ?? new HausTheme();
+            if (IsUnknown)
+                return theme.PaletteLight.Info.Value;
+
+            return Status.IsConnected ? theme.PaletteLight.Success.Value : theme.PaletteLight.Error.Value;
+        }
+    }
+
+    private IRealtimeDataSubscriber? _eventsSubscriber;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        Status = await ApiClient.GetZigbeeStatusAsync() ?? ZigbeeConnectionStatusModel.Unknown;
+        IsLoading = false;
+
+        _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
+        _eventsSubscriber.Subscribe<HausEvent<ZigbeeConnectionStatusChangedEvent>>(
+            HausEventsEventNames.OnEvent,
+            HandleConnectionStatusChanged
+        );
+        await _eventsSubscriber.StartAsync();
+    }
+
+    private async Task HandleConnectionStatusChanged(HausEvent<ZigbeeConnectionStatusChangedEvent> @event)
+    {
+        if (@event.Type != ZigbeeConnectionStatusChangedEvent.Type)
+            return;
+
+        var changedAt = DateTimeOffset.TryParse(@event.Timestamp, out var parsed) ? parsed : DateTimeOffset.Now;
+        Status = new ZigbeeConnectionStatusModel(@event.Payload.IsConnected, @event.Payload.Reason, changedAt);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_eventsSubscriber != null)
+            await _eventsSubscriber.DisposeAsync();
+    }
+}

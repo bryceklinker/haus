@@ -45,7 +45,7 @@ public class ZigbeeDiagnosticsPublisherTests : IAsyncLifetime
         await _hausMqttClient!.SubscribeToHausEventsAsync<ZigbeeConnectionStatusChangedEvent>(
             ZigbeeConnectionStatusChangedEvent.Type,
             e => published = e.Payload,
-            DefaultHausMqttTopics.ZigbeeTopic
+            $"{DefaultHausMqttTopics.ZigbeeTopic}/status"
         );
         var networkConfig = new NetworkConfig(new IeeeAddress(0x00124b0001aabbcc), 0x1a62, 0x0f);
         var status = new ZigbeeConnectionStatus(true, networkConfig, null);
@@ -70,7 +70,7 @@ public class ZigbeeDiagnosticsPublisherTests : IAsyncLifetime
         await _hausMqttClient!.SubscribeToHausEventsAsync<ZigbeeConnectionStatusChangedEvent>(
             ZigbeeConnectionStatusChangedEvent.Type,
             e => published = e.Payload,
-            DefaultHausMqttTopics.ZigbeeTopic
+            $"{DefaultHausMqttTopics.ZigbeeTopic}/status"
         );
         var status = new ZigbeeConnectionStatus(false, null, "dongle unplugged");
 

@@ -30,7 +30,16 @@ public class ZigbeeDiagnosticsPublisher(
                 status.NetworkConfig.PanId,
                 status.NetworkConfig.Channel
             );
-        await PublishAsync(new ZigbeeConnectionStatusChangedEvent(status.IsConnected, networkConfig, status.Reason));
+        // Published retained, on its own topic separate from the shared diagnostics firehose
+        // topic (whose retained slot is constantly overwritten by high-frequency events like
+        // attribute reports) -- so a web host that starts up or reconnects after the coordinator
+        // already connected still gets the current status immediately, instead of showing
+        // "Unknown" until the next connection change.
+        await PublishAsync(
+            new ZigbeeConnectionStatusChangedEvent(status.IsConnected, networkConfig, status.Reason),
+            $"{hausOptions.GetZigbeeTopic()}/status",
+            retain: true
+        );
     }
 
     public async Task HandleDeviceJoinedAsync(ZigbeeDeviceJoined joined)
@@ -97,7 +106,12 @@ public class ZigbeeDiagnosticsPublisher(
 
     private async Task PublishAsync<T>(IHausEventCreator<T> creator)
     {
+        await PublishAsync(creator, hausOptions.GetZigbeeTopic());
+    }
+
+    private async Task PublishAsync<T>(IHausEventCreator<T> creator, string topic, bool retain = false)
+    {
         var mqttClient = await mqttClientFactory.CreateClient();
-        await mqttClient.PublishHausEventAsync(creator, hausOptions.GetZigbeeTopic());
+        await mqttClient.PublishHausEventAsync(creator, topic, retain);
     }
 }

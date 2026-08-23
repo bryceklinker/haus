@@ -43,6 +43,18 @@ public class ZigbeeQueriesTests
     }
 
     [Fact]
+    public async Task WhenGettingRecentActivityWithMultipleEntriesThenReturnsNewestFirst()
+    {
+        var older = new ZigbeeActivityEntryModel("older", DateTimeOffset.UtcNow, new { });
+        var newer = new ZigbeeActivityEntryModel("newer", DateTimeOffset.UtcNow, new { });
+        _store.Publish(_store.Current.RecordActivity(older).RecordActivity(newer));
+
+        var result = await _hausBus.ExecuteQueryAsync(new GetRecentZigbeeActivityQuery());
+
+        Assert.Equal([newer, older], result.Items);
+    }
+
+    [Fact]
     public async Task WhenGettingKnownDevicesThenReturnsKnownDevices()
     {
         _store.Publish(_store.Current.RecordDeviceJoined("ieee-1", 42, DateTimeOffset.UtcNow));

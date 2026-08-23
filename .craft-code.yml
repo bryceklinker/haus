@@ -1,0 +1,21 @@
+stack: [dotnet]
+package_manager: dotnet
+commands:
+  install:      dotnet tool restore
+  build:        dotnet build
+  test:         dotnet test tests/Haus.Site.Host.Tests --no-build
+  test_all:     make test-unit
+  acceptance:   make test-acceptance
+  run:          make site-host
+  lint:         dotnet husky run --group pre-commit
+  format_check: dotnet csharpier check .
+git:
+  main_branch: main
+  worktree_dir: .worktrees
+paths:
+  plans:  docs/craft-code/plans
+  design: docs/craft-code/design
+notes:
+  - "test-unit boots a disposable mosquitto MQTT broker on port 21883; test-acceptance boots the full stack via docker-compose.local.yml with its own MQTT broker on non-standard ports."
+  - "Commit messages must follow Conventional Commits (enforced by a Husky.Net commit-msg hook)."
+  - "CSharpier + dotnet format run automatically on staged *.cs files via Husky.Net pre-commit hook — do not bypass."

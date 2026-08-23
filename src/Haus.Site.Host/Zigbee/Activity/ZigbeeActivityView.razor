@@ -1,0 +1,76 @@
+@using Haus.Api.Client
+@using Haus.Core.Models
+@using Haus.Core.Models.ExternalMessages
+@using Haus.Core.Models.Zigbee
+@using Haus.Core.Models.Zigbee.Events
+@using Haus.Site.Host.Shared.Realtime
+
+@implements IAsyncDisposable
+
+@inject IHausApiClient ApiClient
+@inject IRealtimeDataFactory RealtimeDataFactory
+
+<LoadingContentView IsLoading="IsLoading" LoadingText="Loading zigbee activity...">
+    @if (Entries.Length == 0)
+    {
+        <MudText>No recent zigbee activity</MudText>
+    }
+    else
+    {
+        <div style="max-height: 400px; overflow-y: auto;">
+            <MudExpansionPanels>
+                @foreach (var entry in Entries)
+                {
+                    <ZigbeeActivityEntryView Entry="entry"/>
+                }
+            </MudExpansionPanels>
+        </div>
+    }
+</LoadingContentView>
+
+@code {
+    private const int MaxEntries = 100;
+
+    private static readonly HashSet<string> ZigbeeEventTypes =
+    [
+        ZigbeeConnectionStatusChangedEvent.Type,
+        ZigbeeDeviceJoinedEvent.Type,
+        ZigbeeDeviceInfoDiscoveredEvent.Type,
+        ZigbeeAttributeReportReceivedEvent.Type,
+        ZigbeeCommandSentEvent.Type,
+        ZigbeeTransportErrorEvent.Type,
+    ];
+
+    private bool IsLoading { get; set; }
+    private ZigbeeActivityEntryModel[] Entries { get; set; } = [];
+    private IRealtimeDataSubscriber? _eventsSubscriber;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        var activity = await ApiClient.GetZigbeeActivityAsync();
+        Entries = activity.Items.Take(MaxEntries).ToArray();
+        IsLoading = false;
+
+        _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
+        _eventsSubscriber.Subscribe<HausEvent<dynamic>>(HausEventsEventNames.OnEvent, HandleEvent);
+        await _eventsSubscriber.StartAsync();
+    }
+
+    private async Task HandleEvent(HausEvent<dynamic> @event)
+    {
+        if (@event.Type is null || !ZigbeeEventTypes.Contains(@event.Type))
+            return;
+
+        var occurredAt = DateTimeOffset.TryParse(@event.Timestamp, out var parsed) ? parsed : DateTimeOffset.Now;
+        var entry = new ZigbeeActivityEntryModel(@event.Type, occurredAt, @event.Payload);
+        Entries = new[] { entry }.Concat(Entries).Take(MaxEntries).ToArray();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_eventsSubscriber != null)
+            await _eventsSubscriber.DisposeAsync();
+    }
+}

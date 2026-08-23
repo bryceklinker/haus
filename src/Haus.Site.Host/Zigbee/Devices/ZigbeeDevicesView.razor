@@ -1,0 +1,66 @@
+@using Haus.Api.Client
+@using Haus.Core.Models
+@using Haus.Core.Models.Common
+@using Haus.Core.Models.ExternalMessages
+@using Haus.Core.Models.Zigbee
+@using Haus.Core.Models.Zigbee.Events
+@using Haus.Site.Host.Shared.Realtime
+
+@implements IAsyncDisposable
+
+@inject IHausApiClient ApiClient
+@inject IRealtimeDataFactory RealtimeDataFactory
+
+<LoadingContentView IsLoading="IsLoading" LoadingText="Loading zigbee devices...">
+    @if (Devices.Items.Length == 0)
+    {
+        <MudText>No zigbee devices discovered yet</MudText>
+    }
+    else
+    {
+        <MudExpansionPanels>
+            @foreach (var device in Devices.Items)
+            {
+                <ZigbeeDeviceView Device="device"/>
+            }
+        </MudExpansionPanels>
+    }
+</LoadingContentView>
+
+@code {
+    private static readonly HashSet<string> DeviceRefreshEventTypes =
+    [
+        ZigbeeDeviceJoinedEvent.Type,
+        ZigbeeDeviceInfoDiscoveredEvent.Type,
+    ];
+
+    private bool IsLoading { get; set; }
+    private ListResult<ZigbeeKnownDeviceModel> Devices { get; set; } = new();
+    private IRealtimeDataSubscriber? _eventsSubscriber;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        Devices = await ApiClient.GetZigbeeDevicesAsync();
+        IsLoading = false;
+
+        _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
+        _eventsSubscriber.Subscribe<HausEvent<dynamic>>(HausEventsEventNames.OnEvent, HandleEvent);
+        await _eventsSubscriber.StartAsync();
+    }
+
+    private async Task HandleEvent(HausEvent<dynamic> @event)
+    {
+        if (@event.Type is null || !DeviceRefreshEventTypes.Contains(@event.Type))
+            return;
+
+        Devices = await ApiClient.GetZigbeeDevicesAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_eventsSubscriber != null)
+            await _eventsSubscriber.DisposeAsync();
+    }
+}
