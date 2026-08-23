@@ -11,26 +11,26 @@ namespace Haus.Web.Host.Discovery;
 public class DiscoveryController(IHausBus hausBus) : HausBusController(hausBus)
 {
     [HttpGet("state")]
-    public Task<IActionResult> GetDiscovery()
+    public async Task<IActionResult> GetDiscovery()
     {
-        return QueryAsync(new GetDiscoveryQuery());
+        return await QueryAsync(new GetDiscoveryQuery());
     }
 
     [HttpPost("start")]
-    public Task<IActionResult> StartDiscovery()
+    public async Task<IActionResult> StartDiscovery()
     {
-        return CommandAsync(new StartDiscoveryCommand());
+        return await CommandAsync(new StartDiscoveryCommand());
     }
 
     [HttpPost("stop")]
-    public Task<IActionResult> StopDiscovery()
+    public async Task<IActionResult> StopDiscovery()
     {
-        return CommandAsync(new StopDiscoveryCommand());
+        return await CommandAsync(new StopDiscoveryCommand());
     }
 
     [HttpPost("sync")]
-    public Task<IActionResult> Sync()
+    public async Task<IActionResult> Sync()
     {
-        return CommandAsync(new SyncDiscoveryCommand());
+        return await CommandAsync(new SyncDiscoveryCommand());
     }
 }

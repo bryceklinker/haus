@@ -12,7 +12,7 @@ namespace Haus.Web.Host.Logs;
 public class LogsController(IHausBus hausBus, ILogsDirectoryProvider logsDirectoryProvider) : HausBusController(hausBus)
 {
     [HttpGet]
-    public Task<IActionResult> GetLogs(
+    public async Task<IActionResult> GetLogs(
         [FromQuery] int pageSize = GetLogsParameters.DefaultPageSize,
         [FromQuery] int pageNumber = GetLogsParameters.DefaultPageNumber,
         [FromQuery] string? searchTerm = null,
@@ -23,6 +23,6 @@ public class LogsController(IHausBus hausBus, ILogsDirectoryProvider logsDirecto
             logsDirectoryProvider.GetLogsDirectory(),
             new GetLogsParameters(pageNumber, pageSize, searchTerm, level)
         );
-        return QueryAsync(query);
+        return await QueryAsync(query);
     }
 }

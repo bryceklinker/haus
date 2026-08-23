@@ -13,50 +13,53 @@ namespace Haus.Web.Host.Devices;
 public class DevicesController(IHausBus hausBus) : HausBusController(hausBus)
 {
     [HttpGet("")]
-    public Task<IActionResult> Get([FromQuery] string? externalId = null)
+    public async Task<IActionResult> Get([FromQuery] string? externalId = null)
     {
-        return QueryAsync(new GetDevicesQuery(externalId));
+        return await QueryAsync(new GetDevicesQuery(externalId));
     }
 
     [HttpGet("{id}")]
-    public Task<IActionResult> GetById([FromRoute] long id)
+    public async Task<IActionResult> GetById([FromRoute] long id)
     {
-        return QueryAsync(new GetDeviceByIdQuery(id));
+        return await QueryAsync(new GetDeviceByIdQuery(id));
     }
 
     [HttpPut("{id}/lighting")]
-    public Task<IActionResult> ChangeLighting([FromRoute] long id, [FromBody] LightingModel model)
+    public async Task<IActionResult> ChangeLighting([FromRoute] long id, [FromBody] LightingModel model)
     {
-        return CommandAsync(new ChangeDeviceLightingCommand(id, model));
+        return await CommandAsync(new ChangeDeviceLightingCommand(id, model));
     }
 
     [HttpPut("{id}/lighting-constraints")]
-    public Task<IActionResult> ChangeLightingConstraints([FromRoute] long id, [FromBody] LightingConstraintsModel model)
+    public async Task<IActionResult> ChangeLightingConstraints(
+        [FromRoute] long id,
+        [FromBody] LightingConstraintsModel model
+    )
     {
-        return CommandAsync(new ChangeDeviceLightingConstraintsCommand(id, model));
+        return await CommandAsync(new ChangeDeviceLightingConstraintsCommand(id, model));
     }
 
     [HttpPost("{id}/turn-off")]
-    public Task<IActionResult> TurnOff([FromRoute] long id)
+    public async Task<IActionResult> TurnOff([FromRoute] long id)
     {
-        return CommandAsync(new TurnDeviceOffCommand(id));
+        return await CommandAsync(new TurnDeviceOffCommand(id));
     }
 
     [HttpPost("{id}/turn-on")]
-    public Task<IActionResult> TurnOn([FromRoute] long id)
+    public async Task<IActionResult> TurnOn([FromRoute] long id)
     {
-        return CommandAsync(new TurnDeviceOnCommand(id));
+        return await CommandAsync(new TurnDeviceOnCommand(id));
     }
 
     [HttpPut("{id}")]
-    public Task<IActionResult> Update([FromRoute] long id, [FromBody] DeviceModel model)
+    public async Task<IActionResult> Update([FromRoute] long id, [FromBody] DeviceModel model)
     {
-        return CommandAsync(new UpdateDeviceCommand(model with { Id = id }));
+        return await CommandAsync(new UpdateDeviceCommand(model with { Id = id }));
     }
 
     [HttpDelete("{id}")]
-    public Task<IActionResult> Delete([FromRoute] long id)
+    public async Task<IActionResult> Delete([FromRoute] long id)
     {
-        return CommandAsync(new DeleteDeviceCommand(id));
+        return await CommandAsync(new DeleteDeviceCommand(id));
     }
 }

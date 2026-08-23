@@ -23,15 +23,15 @@ public class ApplicationController(IHausBus hausBus, IOptions<DeviceSimulatorOpt
     }
 
     [HttpGet("latest-version")]
-    public Task<IActionResult> GetLatestVersion()
+    public async Task<IActionResult> GetLatestVersion()
     {
-        return QueryAsync(new GetLatestVersionQuery());
+        return await QueryAsync(new GetLatestVersionQuery());
     }
 
     [HttpGet("latest-version/packages")]
-    public Task<IActionResult> GetLatestPackages()
+    public async Task<IActionResult> GetLatestPackages()
     {
-        return QueryAsync(new GetLatestVersionPackagesQuery());
+        return await QueryAsync(new GetLatestVersionPackagesQuery());
     }
 
     [HttpGet("latest-version/packages/{id}/download")]
