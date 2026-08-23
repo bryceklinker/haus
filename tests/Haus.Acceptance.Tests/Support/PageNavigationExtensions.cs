@@ -19,4 +19,11 @@ public static class PageNavigationExtensions
         await roomsPage.NavigateAsync();
         return roomsPage;
     }
+
+    public static async Task<ZigbeePage> NavigateToZigbeeAsync(this IPage page)
+    {
+        var zigbeePage = new ZigbeePage(page);
+        await zigbeePage.NavigateAsync();
+        return zigbeePage;
+    }
 }
