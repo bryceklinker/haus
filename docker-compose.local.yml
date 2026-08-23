@@ -1,3 +1,8 @@
+# Explicit name: local dev/CI's project namespace must never collide with
+# the production stack's, regardless of the directory this is invoked from
+# (see docker-compose.yml's own name: for the production side of this).
+name: haus-local
+
 services:
   haus_mqtt:
     container_name: haus_mqtt_local

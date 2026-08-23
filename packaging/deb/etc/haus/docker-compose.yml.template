@@ -1,3 +1,10 @@
+# Explicit name: without this, Compose falls back to the containing
+# directory's basename ("haus", since this renders to /etc/haus) as the
+# project name. Pinning it here means the actual deployed production compose
+# file no longer depends on that inference either (see issue #41 and the
+# root docker-compose.yml's matching name:).
+name: haus
+
 services:
   haus_mqtt:
     container_name: haus_mqtt
