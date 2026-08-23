@@ -62,7 +62,8 @@
         if (@event.Type is null || !ZigbeeEventTypes.Contains(@event.Type))
             return;
 
-        var entry = new ZigbeeActivityEntryModel(@event.Type, DateTimeOffset.Now, @event.Payload);
+        var occurredAt = DateTimeOffset.TryParse(@event.Timestamp, out var parsed) ? parsed : DateTimeOffset.Now;
+        var entry = new ZigbeeActivityEntryModel(@event.Type, occurredAt, @event.Payload);
         Entries = new[] { entry }.Concat(Entries).Take(MaxEntries).ToArray();
         await InvokeAsync(StateHasChanged);
     }

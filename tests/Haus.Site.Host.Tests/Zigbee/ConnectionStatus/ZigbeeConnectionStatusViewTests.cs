@@ -1,8 +1,10 @@
+using System;
 using System.Threading.Tasks;
 using Haus.Core.Models;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Zigbee;
 using Haus.Core.Models.Zigbee.Events;
+using Haus.Site.Host.Shared.Formatting;
 using Haus.Site.Host.Shared.Theming;
 using Haus.Site.Host.Tests.Support;
 using Haus.Site.Host.Tests.Support.Realtime;
@@ -111,6 +113,38 @@ public class ZigbeeConnectionStatusViewTests : HausSiteTestContext
         {
             var banner = view.FindByComponent<MudText>(opts => opts.WithText("Connected"));
             Assert.Contains($"background-color: {Theme.PaletteLight.Success.Value}", banner.Instance.Style);
+        });
+    }
+
+    [Fact]
+    public async Task WhenConnectionStatusChangedEventReceivedThenUsesTheEventsTimestampNotReceiptTime()
+    {
+        await HausApiHandler.SetupGetAsJson(
+            StatusUrl,
+            HausModelFactory.ZigbeeConnectionStatusModel() with
+            {
+                IsConnected = false,
+            }
+        );
+        var view = RenderView<ZigbeeConnectionStatusView>();
+        Eventually.Assert(() =>
+        {
+            view.FindByComponent<MudText>(opts => opts.WithText("Disconnected"));
+        });
+
+        var eventTimestamp = DateTimeOffset.UtcNow.AddDays(-3);
+        await _eventsSubscriber.SimulateAsync(
+            HausEventsEventNames.OnEvent,
+            new HausEvent<ZigbeeConnectionStatusChangedEvent>(
+                ZigbeeConnectionStatusChangedEvent.Type,
+                new ZigbeeConnectionStatusChangedEvent(true, null, null),
+                eventTimestamp.ToString("O")
+            )
+        );
+
+        Eventually.Assert(() =>
+        {
+            view.FindByComponent<MudText>(opts => opts.WithText(eventTimestamp.FormatTimestamp()));
         });
     }
 }

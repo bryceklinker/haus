@@ -70,7 +70,8 @@
         if (@event.Type != ZigbeeConnectionStatusChangedEvent.Type)
             return;
 
-        Status = new ZigbeeConnectionStatusModel(@event.Payload.IsConnected, @event.Payload.Reason, DateTimeOffset.Now);
+        var changedAt = DateTimeOffset.TryParse(@event.Timestamp, out var parsed) ? parsed : DateTimeOffset.Now;
+        Status = new ZigbeeConnectionStatusModel(@event.Payload.IsConnected, @event.Payload.Reason, changedAt);
         await InvokeAsync(StateHasChanged);
     }
 

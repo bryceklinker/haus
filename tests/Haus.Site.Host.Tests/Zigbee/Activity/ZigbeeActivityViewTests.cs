@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Haus.Core.Models;
@@ -91,6 +92,33 @@ public class ZigbeeActivityViewTests : HausSiteTestContext
             var entries = view.FindAllByComponent<ZigbeeActivityEntryView>().ToArray();
             Assert.Single(entries);
             Assert.Equal(ZigbeeDeviceJoinedEvent.Type, entries[0].Instance.Entry?.EventType);
+        });
+    }
+
+    [Fact]
+    public async Task WhenZigbeeEventReceivedThenUsesTheEventsTimestampNotReceiptTime()
+    {
+        await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>());
+        var view = RenderView<ZigbeeActivityView>();
+        Eventually.Assert(() =>
+        {
+            view.FindByComponent<MudText>(opts => opts.WithText("No recent zigbee activity"));
+        });
+
+        var eventTimestamp = DateTimeOffset.UtcNow.AddDays(-3);
+        await _eventsSubscriber.SimulateAsync(
+            HausEventsEventNames.OnEvent,
+            new HausEvent<object>(
+                ZigbeeDeviceJoinedEvent.Type,
+                new ZigbeeDeviceJoinedEvent("00:11:22:33:44:55:66:77", 1234),
+                eventTimestamp.ToString("O")
+            )
+        );
+
+        Eventually.Assert(() =>
+        {
+            var entry = view.FindByComponent<ZigbeeActivityEntryView>();
+            Assert.Equal(eventTimestamp, entry.Instance.Entry?.OccurredAt);
         });
     }
 
