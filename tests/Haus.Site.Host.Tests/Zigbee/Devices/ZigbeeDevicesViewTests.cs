@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Zigbee;
@@ -36,6 +37,26 @@ public class ZigbeeDevicesViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             view.FindByComponent<MudText>(opts => opts.WithText("No zigbee devices discovered yet"));
+        });
+    }
+
+    [Fact]
+    public async Task WhenRenderedThenShowsEachKnownDevice()
+    {
+        await HausApiHandler.SetupGetAsJson(
+            DevicesUrl,
+            new ListResult<ZigbeeKnownDeviceModel>([
+                HausModelFactory.ZigbeeKnownDeviceModel(),
+                HausModelFactory.ZigbeeKnownDeviceModel(),
+                HausModelFactory.ZigbeeKnownDeviceModel(),
+            ])
+        );
+
+        var view = RenderView<ZigbeeDevicesView>();
+
+        Eventually.Assert(() =>
+        {
+            Assert.Equal(3, view.FindAllByComponent<ZigbeeDeviceView>().Count());
         });
     }
 }

@@ -9,6 +9,15 @@
     {
         <MudText>No zigbee devices discovered yet</MudText>
     }
+    else
+    {
+        <MudExpansionPanels>
+            @foreach (var device in Devices.Items)
+            {
+                <ZigbeeDeviceView Device="device"/>
+            }
+        </MudExpansionPanels>
+    }
 </LoadingContentView>
 
 @code {
