@@ -31,9 +31,10 @@
             var settings = await ApiClient.GetSettingsAsync();
             _isDeviceSimulatorEnabled = settings?.IsDeviceSimulatorEnabled ?? false;
         }
-        catch (AccessTokenNotAvailableException exception)
+        catch (AccessTokenNotAvailableException)
         {
-            exception.Redirect();
+            // ShellDrawerView is the default layout's chrome, rendered on public routes like
+            // /welcome before any user has logged in, so it must never force navigation itself.
         }
     }
 }

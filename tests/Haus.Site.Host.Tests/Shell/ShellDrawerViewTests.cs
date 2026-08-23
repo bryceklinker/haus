@@ -63,4 +63,28 @@ public class ShellDrawerViewTests : HausSiteTestContext
             Assert.Equal(4, view.FindAllByComponent<MudNavLink>().Count());
         });
     }
+
+    [Fact]
+    public async Task WhenAccessTokenIsNotYetAvailableThenDoesNotNavigateAway()
+    {
+        var interactiveRequestOptions = new InteractiveRequestOptions
+        {
+            Interaction = InteractionType.SignIn,
+            ReturnUrl = "authentication/login",
+        };
+        var accessTokenResult = new AccessTokenResult(
+            AccessTokenResultStatus.RequiresRedirect,
+            null!,
+            "authentication/login",
+            interactiveRequestOptions
+        );
+        var exception = new AccessTokenNotAvailableException(NavigationManager, accessTokenResult, null);
+        HausApiHandler.SetupGetThrows(SettingsUrl, exception);
+
+        RenderView<ShellDrawerView>();
+
+        await Task.Delay(500);
+
+        Assert.Empty(NavigationManager.History);
+    }
 }
