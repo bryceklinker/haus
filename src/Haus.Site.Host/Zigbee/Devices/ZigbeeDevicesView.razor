@@ -1,8 +1,15 @@
 @using Haus.Api.Client
+@using Haus.Core.Models
 @using Haus.Core.Models.Common
+@using Haus.Core.Models.ExternalMessages
 @using Haus.Core.Models.Zigbee
+@using Haus.Core.Models.Zigbee.Events
+@using Haus.Site.Host.Shared.Realtime
+
+@implements IAsyncDisposable
 
 @inject IHausApiClient ApiClient
+@inject IRealtimeDataFactory RealtimeDataFactory
 
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading zigbee devices...">
     @if (Devices.Items.Length == 0)
@@ -23,11 +30,35 @@
 @code {
     private bool IsLoading { get; set; }
     private ListResult<ZigbeeKnownDeviceModel> Devices { get; set; } = new();
+    private IRealtimeDataSubscriber? _eventsSubscriber;
 
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
         Devices = await ApiClient.GetZigbeeDevicesAsync();
         IsLoading = false;
+
+        _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
+        _eventsSubscriber.Subscribe<HausEvent<ZigbeeDeviceJoinedEvent>>(
+            HausEventsEventNames.OnEvent,
+            _ => RefreshDevicesAsync()
+        );
+        _eventsSubscriber.Subscribe<HausEvent<ZigbeeDeviceInfoDiscoveredEvent>>(
+            HausEventsEventNames.OnEvent,
+            _ => RefreshDevicesAsync()
+        );
+        await _eventsSubscriber.StartAsync();
+    }
+
+    private async Task RefreshDevicesAsync()
+    {
+        Devices = await ApiClient.GetZigbeeDevicesAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_eventsSubscriber != null)
+            await _eventsSubscriber.DisposeAsync();
     }
 }
