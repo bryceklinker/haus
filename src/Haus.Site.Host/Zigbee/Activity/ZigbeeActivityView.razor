@@ -1,7 +1,14 @@
 @using Haus.Api.Client
+@using Haus.Core.Models
+@using Haus.Core.Models.ExternalMessages
 @using Haus.Core.Models.Zigbee
+@using Haus.Core.Models.Zigbee.Events
+@using Haus.Site.Host.Shared.Realtime
+
+@implements IAsyncDisposable
 
 @inject IHausApiClient ApiClient
+@inject IRealtimeDataFactory RealtimeDataFactory
 
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading zigbee activity...">
     @if (Entries.Length == 0)
@@ -22,8 +29,11 @@
 </LoadingContentView>
 
 @code {
+    private const int MaxEntries = 100;
+
     private bool IsLoading { get; set; }
     private ZigbeeActivityEntryModel[] Entries { get; set; } = [];
+    private IRealtimeDataSubscriber? _eventsSubscriber;
 
     protected override async Task OnInitializedAsync()
     {
@@ -31,5 +41,45 @@
         var activity = await ApiClient.GetZigbeeActivityAsync();
         Entries = activity.Items.Reverse().ToArray();
         IsLoading = false;
+
+        _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
+        _eventsSubscriber.Subscribe<HausEvent<ZigbeeConnectionStatusChangedEvent>>(
+            HausEventsEventNames.OnEvent,
+            e => AddEntryAsync(e.Type, e.Payload)
+        );
+        _eventsSubscriber.Subscribe<HausEvent<ZigbeeDeviceJoinedEvent>>(
+            HausEventsEventNames.OnEvent,
+            e => AddEntryAsync(e.Type, e.Payload)
+        );
+        _eventsSubscriber.Subscribe<HausEvent<ZigbeeDeviceInfoDiscoveredEvent>>(
+            HausEventsEventNames.OnEvent,
+            e => AddEntryAsync(e.Type, e.Payload)
+        );
+        _eventsSubscriber.Subscribe<HausEvent<ZigbeeAttributeReportReceivedEvent>>(
+            HausEventsEventNames.OnEvent,
+            e => AddEntryAsync(e.Type, e.Payload)
+        );
+        _eventsSubscriber.Subscribe<HausEvent<ZigbeeCommandSentEvent>>(
+            HausEventsEventNames.OnEvent,
+            e => AddEntryAsync(e.Type, e.Payload)
+        );
+        _eventsSubscriber.Subscribe<HausEvent<ZigbeeTransportErrorEvent>>(
+            HausEventsEventNames.OnEvent,
+            e => AddEntryAsync(e.Type, e.Payload)
+        );
+        await _eventsSubscriber.StartAsync();
+    }
+
+    private async Task AddEntryAsync(string? eventType, object payload)
+    {
+        var entry = new ZigbeeActivityEntryModel(eventType ?? "", DateTimeOffset.Now, payload);
+        Entries = new[] { entry }.Concat(Entries).Take(MaxEntries).ToArray();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_eventsSubscriber != null)
+            await _eventsSubscriber.DisposeAsync();
     }
 }
