@@ -89,4 +89,26 @@ public class ZigbeeActivityViewTests : HausSiteTestContext
             Assert.Equal(ZigbeeDeviceJoinedEvent.Type, entry.Instance.Entry?.EventType);
         });
     }
+
+    [Fact]
+    public async Task WhenActivityExceedsMaxThenOldestEntriesAreDropped()
+    {
+        var initial = Enumerable.Range(0, 100).Select(_ => HausModelFactory.ZigbeeActivityEntryModel()).ToArray();
+        await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>(initial));
+        var view = RenderView<ZigbeeActivityView>();
+        Eventually.Assert(() =>
+        {
+            Assert.Equal(100, view.FindAllByComponent<ZigbeeActivityEntryView>().Count());
+        });
+
+        await _eventsSubscriber.SimulateAsync(
+            HausEventsEventNames.OnEvent,
+            new ZigbeeDeviceJoinedEvent("00:11:22:33:44:55:66:77", 1234).AsHausEvent()
+        );
+
+        Eventually.Assert(() =>
+        {
+            Assert.Equal(100, view.FindAllByComponent<ZigbeeActivityEntryView>().Count());
+        });
+    }
 }
