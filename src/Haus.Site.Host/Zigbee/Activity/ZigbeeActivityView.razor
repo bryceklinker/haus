@@ -1,24 +1,35 @@
 @using Haus.Api.Client
-@using Haus.Core.Models.Common
 @using Haus.Core.Models.Zigbee
 
 @inject IHausApiClient ApiClient
 
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading zigbee activity...">
-    @if (Activity.Items.Length == 0)
+    @if (Entries.Length == 0)
     {
         <MudText>No recent zigbee activity</MudText>
+    }
+    else
+    {
+        <div style="max-height: 400px; overflow-y: auto;">
+            <MudExpansionPanels>
+                @foreach (var entry in Entries)
+                {
+                    <ZigbeeActivityEntryView Entry="entry"/>
+                }
+            </MudExpansionPanels>
+        </div>
     }
 </LoadingContentView>
 
 @code {
     private bool IsLoading { get; set; }
-    private ListResult<ZigbeeActivityEntryModel> Activity { get; set; } = new();
+    private ZigbeeActivityEntryModel[] Entries { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
-        Activity = await ApiClient.GetZigbeeActivityAsync();
+        var activity = await ApiClient.GetZigbeeActivityAsync();
+        Entries = activity.Items.Reverse().ToArray();
         IsLoading = false;
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Zigbee;
@@ -36,6 +37,24 @@ public class ZigbeeActivityViewTests : HausSiteTestContext
         Eventually.Assert(() =>
         {
             view.FindByComponent<MudText>(opts => opts.WithText("No recent zigbee activity"));
+        });
+    }
+
+    [Fact]
+    public async Task WhenRenderedThenShowsInitialActivityNewestFirst()
+    {
+        var older = HausModelFactory.ZigbeeActivityEntryModel() with { EventType = "older" };
+        var newer = HausModelFactory.ZigbeeActivityEntryModel() with { EventType = "newer" };
+        await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>([older, newer]));
+
+        var view = RenderView<ZigbeeActivityView>();
+
+        Eventually.Assert(() =>
+        {
+            var entries = view.FindAllByComponent<ZigbeeActivityEntryView>().ToArray();
+            Assert.Equal(2, entries.Length);
+            Assert.Equal("newer", entries[0].Instance.Entry?.EventType);
+            Assert.Equal("older", entries[1].Instance.Entry?.EventType);
         });
     }
 }
