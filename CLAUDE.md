@@ -11,7 +11,7 @@ HAUS is a home automation system that runs on the user's personal network (only 
 - .NET (SDK pinned in `global.json`, currently 10.0.100, `rollForward: latestMinor`)
 - Docker (used by `make start` to run the full stack via `docker-compose.local.yml`, including the MQTT broker — no separate MQTT install needed)
 
-Required environment variables for auth (both plain and `CYPRESS_`-prefixed variants are needed since acceptance tests use Cypress-style env vars): `GITHUB_TOKEN`, `AUTH_DOMAIN`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_AUDIENCE`, `AUTH_USERNAME`, `AUTH_PASSWORD`. See `readme.md` for the full export block.
+Required environment variables for auth: `GITHUB_TOKEN`, `AUTH_DOMAIN`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_AUDIENCE`, `AUTH_USERNAME`, `AUTH_PASSWORD`. See `readme.md` for the full export block.
 
 ## Common commands
 
@@ -86,7 +86,7 @@ Organized by feature/bounded-context folder, not by technical layer: `Devices`, 
 
 ### Tests
 
-Test projects mirror `src/` 1:1 by name (e.g. `tests/Haus.Core.Tests` ↔ `src/Haus.Core`), with the same feature-folder layout inside. `Haus.Testing.Support` holds shared test infrastructure/fixtures. `Haus.Acceptance.Tests` is a separate end-to-end suite that runs against the full stack booted via `docker-compose.local.yml` (see `make test-acceptance`) — Cypress-style env vars (`CYPRESS_AUTH_*`) drive its Auth0 login.
+Test projects mirror `src/` 1:1 by name (e.g. `tests/Haus.Core.Tests` ↔ `src/Haus.Core`), with the same feature-folder layout inside. `Haus.Testing.Support` holds shared test infrastructure/fixtures. `Haus.Acceptance.Tests` is a separate end-to-end suite that runs against the full stack booted via `docker-compose.local.yml` (see `make test-acceptance`) — the `AUTH_*` env vars drive its Auth0 login.
 
 ## CI/CD
 
