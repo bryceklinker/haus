@@ -1,0 +1,47 @@
+@using Haus.Core.Models.Zigbee
+
+@if (Device != null)
+{
+    <MudExpansionPanel>
+        <TitleContent>
+            <MudText Typo="Typo.h6">@Device.IeeeAddress</MudText>
+        </TitleContent>
+        <ChildContent>
+            <MudTextField T="string"
+                          Label="IEEE Address"
+                          ReadOnly="true"
+                          InputId="ieeeAddress"
+                          Value="@Device.IeeeAddress"/>
+            <MudTextField T="string"
+                          Label="Network Address"
+                          ReadOnly="true"
+                          InputId="networkAddress"
+                          Value="@Device.NetworkAddress?.ToString()"/>
+            <MudTextField T="string"
+                          Label="Manufacturer"
+                          ReadOnly="true"
+                          InputId="manufacturerName"
+                          Value="@Device.ManufacturerName"/>
+            <MudTextField T="string"
+                          Label="Model"
+                          ReadOnly="true"
+                          InputId="modelIdentifier"
+                          Value="@Device.ModelIdentifier"/>
+            <MudTextField T="string"
+                          Label="Last Seen"
+                          ReadOnly="true"
+                          InputId="lastSeenAt"
+                          Value="@Device.LastSeenAt.FormatTimestamp()"/>
+            @foreach (var endpoint in Device.Endpoints)
+            {
+                <MudText>
+                    Endpoint @endpoint.EndpointId — In: @string.Join(", ", endpoint.InClusters), Out: @string.Join(", ", endpoint.OutClusters)
+                </MudText>
+            }
+        </ChildContent>
+    </MudExpansionPanel>
+}
+
+@code {
+    [Parameter] public ZigbeeKnownDeviceModel? Device { get; set; }
+}
