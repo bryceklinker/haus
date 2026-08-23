@@ -10,6 +10,7 @@ using Haus.Core.Models.Health;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Logs;
 using Haus.Core.Models.Rooms;
+using Haus.Core.Models.Zigbee;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
@@ -108,6 +109,45 @@ public static class HausModelFactory
             Id: Faker.Random.Uuid().ToString(),
             Timestamp: Faker.Date.Recent().ToUniversalTime(),
             Topic: Faker.Lorem.Sentence(),
+            Payload: new { }
+        );
+    }
+
+    public static ZigbeeConnectionStatusModel ZigbeeConnectionStatusModel()
+    {
+        return new ZigbeeConnectionStatusModel(
+            IsConnected: Faker.Random.Bool(),
+            Reason: Faker.Lorem.Sentence(),
+            ChangedAt: Faker.Date.RecentOffset()
+        );
+    }
+
+    public static ZigbeeEndpointModel ZigbeeEndpointModel()
+    {
+        return new ZigbeeEndpointModel(
+            EndpointId: Faker.Random.Byte(),
+            InClusters: [Faker.Random.UShort()],
+            OutClusters: [Faker.Random.UShort()]
+        );
+    }
+
+    public static ZigbeeKnownDeviceModel ZigbeeKnownDeviceModel()
+    {
+        return new ZigbeeKnownDeviceModel(
+            IeeeAddress: Faker.Random.Hexadecimal(16),
+            NetworkAddress: Faker.Random.UShort(),
+            ManufacturerName: Faker.Company.CompanyName(),
+            ModelIdentifier: Faker.Commerce.ProductName(),
+            Endpoints: [ZigbeeEndpointModel()],
+            LastSeenAt: Faker.Date.RecentOffset()
+        );
+    }
+
+    public static ZigbeeActivityEntryModel ZigbeeActivityEntryModel()
+    {
+        return new ZigbeeActivityEntryModel(
+            EventType: Faker.Lorem.Word(),
+            OccurredAt: Faker.Date.RecentOffset(),
             Payload: new { }
         );
     }

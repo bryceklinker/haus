@@ -1,0 +1,18 @@
+@using Haus.Api.Client
+@using Haus.Core.Models.Zigbee
+
+@inject IHausApiClient ApiClient
+
+<LoadingContentView IsLoading="IsLoading" LoadingText="Loading zigbee status...">
+</LoadingContentView>
+
+@code {
+    private bool IsLoading { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        await ApiClient.GetZigbeeStatusAsync();
+        IsLoading = false;
+    }
+}
