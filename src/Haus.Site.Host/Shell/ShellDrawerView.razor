@@ -1,4 +1,5 @@
 @using Haus.Api.Client
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject IHausApiClient ApiClient
 
 <MudDrawer Open="IsOpen">
@@ -25,7 +26,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var settings = await ApiClient.GetSettingsAsync();
-        _isDeviceSimulatorEnabled = settings?.IsDeviceSimulatorEnabled ?? false;
+        try
+        {
+            var settings = await ApiClient.GetSettingsAsync();
+            _isDeviceSimulatorEnabled = settings?.IsDeviceSimulatorEnabled ?? false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
     }
 }
