@@ -25,4 +25,17 @@ public class ZigbeeDevicesViewTests : HausSiteTestContext
 
         Assert.Single(view.FindAllByComponent<MudProgressCircular>());
     }
+
+    [Fact]
+    public async Task WhenNoDevicesThenShowsEmptyMessage()
+    {
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<ZigbeeKnownDeviceModel>());
+
+        var view = RenderView<ZigbeeDevicesView>();
+
+        Eventually.Assert(() =>
+        {
+            view.FindByComponent<MudText>(opts => opts.WithText("No zigbee devices discovered yet"));
+        });
+    }
 }
