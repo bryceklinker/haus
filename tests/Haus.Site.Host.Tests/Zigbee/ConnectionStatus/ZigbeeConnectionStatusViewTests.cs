@@ -1,7 +1,11 @@
 using System.Threading.Tasks;
+using Haus.Core.Models;
+using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Zigbee;
+using Haus.Core.Models.Zigbee.Events;
 using Haus.Site.Host.Shared.Theming;
 using Haus.Site.Host.Tests.Support;
+using Haus.Site.Host.Tests.Support.Realtime;
 using Haus.Site.Host.Zigbee.ConnectionStatus;
 using Haus.Testing.Support;
 using MudBlazor;
@@ -12,6 +16,12 @@ public class ZigbeeConnectionStatusViewTests : HausSiteTestContext
 {
     private const string StatusUrl = "/api/zigbee/status";
     private static readonly HausTheme Theme = new();
+    private readonly InMemoryRealtimeDataSubscriber _eventsSubscriber;
+
+    public ZigbeeConnectionStatusViewTests()
+    {
+        _eventsSubscriber = GetSubscriber(HausRealtimeSources.Events);
+    }
 
     [Fact]
     public async Task WhenRenderedThenShowsLoadingWhileFetchingStatus()
@@ -73,6 +83,34 @@ public class ZigbeeConnectionStatusViewTests : HausSiteTestContext
         {
             var banner = view.FindByComponent<MudText>(opts => opts.WithText("Unknown"));
             Assert.Contains($"background-color: {Theme.PaletteLight.Info.Value}", banner.Instance.Style);
+        });
+    }
+
+    [Fact]
+    public async Task WhenConnectionStatusChangedEventReceivedThenUpdatesBannerLive()
+    {
+        await HausApiHandler.SetupGetAsJson(
+            StatusUrl,
+            HausModelFactory.ZigbeeConnectionStatusModel() with
+            {
+                IsConnected = false,
+            }
+        );
+        var view = RenderView<ZigbeeConnectionStatusView>();
+        Eventually.Assert(() =>
+        {
+            view.FindByComponent<MudText>(opts => opts.WithText("Disconnected"));
+        });
+
+        await _eventsSubscriber.SimulateAsync(
+            HausEventsEventNames.OnEvent,
+            new ZigbeeConnectionStatusChangedEvent(true, null, null).AsHausEvent()
+        );
+
+        Eventually.Assert(() =>
+        {
+            var banner = view.FindByComponent<MudText>(opts => opts.WithText("Connected"));
+            Assert.Contains($"background-color: {Theme.PaletteLight.Success.Value}", banner.Instance.Style);
         });
     }
 }

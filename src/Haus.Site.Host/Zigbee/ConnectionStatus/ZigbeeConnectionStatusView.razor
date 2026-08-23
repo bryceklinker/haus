@@ -1,7 +1,14 @@
 @using Haus.Api.Client
+@using Haus.Core.Models
+@using Haus.Core.Models.ExternalMessages
 @using Haus.Core.Models.Zigbee
+@using Haus.Core.Models.Zigbee.Events
+@using Haus.Site.Host.Shared.Realtime
+
+@implements IAsyncDisposable
 
 @inject IHausApiClient ApiClient
+@inject IRealtimeDataFactory RealtimeDataFactory
 
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading zigbee status...">
     <MudPaper Class="pa-4">
@@ -42,10 +49,34 @@
         }
     }
 
+    private IRealtimeDataSubscriber? _eventsSubscriber;
+
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
         Status = await ApiClient.GetZigbeeStatusAsync() ?? ZigbeeConnectionStatusModel.Unknown;
         IsLoading = false;
+
+        _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
+        _eventsSubscriber.Subscribe<HausEvent<ZigbeeConnectionStatusChangedEvent>>(
+            HausEventsEventNames.OnEvent,
+            HandleConnectionStatusChanged
+        );
+        await _eventsSubscriber.StartAsync();
+    }
+
+    private async Task HandleConnectionStatusChanged(HausEvent<ZigbeeConnectionStatusChangedEvent> @event)
+    {
+        if (@event.Type != ZigbeeConnectionStatusChangedEvent.Type)
+            return;
+
+        Status = new ZigbeeConnectionStatusModel(@event.Payload.IsConnected, @event.Payload.Reason, DateTimeOffset.Now);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_eventsSubscriber != null)
+            await _eventsSubscriber.DisposeAsync();
     }
 }
