@@ -1,0 +1,20 @@
+@using Haus.Api.Client
+@using Haus.Core.Models.Common
+@using Haus.Core.Models.Zigbee
+
+@inject IHausApiClient ApiClient
+
+<LoadingContentView IsLoading="IsLoading" LoadingText="Loading zigbee activity...">
+</LoadingContentView>
+
+@code {
+    private bool IsLoading { get; set; }
+    private ListResult<ZigbeeActivityEntryModel> Activity { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        Activity = await ApiClient.GetZigbeeActivityAsync();
+        IsLoading = false;
+    }
+}
