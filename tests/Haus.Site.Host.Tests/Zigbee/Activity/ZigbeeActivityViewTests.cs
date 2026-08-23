@@ -56,7 +56,7 @@ public class ZigbeeActivityViewTests : HausSiteTestContext
     {
         var older = HausModelFactory.ZigbeeActivityEntryModel() with { EventType = "older" };
         var newer = HausModelFactory.ZigbeeActivityEntryModel() with { EventType = "newer" };
-        await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>([older, newer]));
+        await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>([newer, older]));
 
         var view = RenderView<ZigbeeActivityView>();
 

@@ -49,7 +49,7 @@
     {
         IsLoading = true;
         var activity = await ApiClient.GetZigbeeActivityAsync();
-        Entries = activity.Items.Reverse().Take(MaxEntries).ToArray();
+        Entries = activity.Items.Take(MaxEntries).ToArray();
         IsLoading = false;
 
         _eventsSubscriber = await RealtimeDataFactory.CreateSubscriber(HausRealtimeSources.Events);
