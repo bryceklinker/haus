@@ -11,20 +11,20 @@ namespace Haus.Web.Host.DeviceSimulator;
 public class DeviceSimulatorController(IHausBus hausBus) : HausBusController(hausBus)
 {
     [HttpPost("devices")]
-    public Task<IActionResult> AddDevice([FromBody] SimulatedDeviceModel model)
+    public async Task<IActionResult> AddDevice([FromBody] SimulatedDeviceModel model)
     {
-        return CommandAsync(new CreateSimulatedDeviceCommand(model));
+        return await CommandAsync(new CreateSimulatedDeviceCommand(model));
     }
 
     [HttpPost("devices/{id}/trigger-occupancy-change")]
-    public Task<IActionResult> TriggerOccupancyChange([FromRoute] string id)
+    public async Task<IActionResult> TriggerOccupancyChange([FromRoute] string id)
     {
-        return CommandAsync(new TriggerOccupancyChangedCommand(id));
+        return await CommandAsync(new TriggerOccupancyChangedCommand(id));
     }
 
     [HttpPost("reset")]
-    public Task<IActionResult> Reset()
+    public async Task<IActionResult> Reset()
     {
-        return CommandAsync(new ResetDeviceSimulatorCommand());
+        return await CommandAsync(new ResetDeviceSimulatorCommand());
     }
 }
