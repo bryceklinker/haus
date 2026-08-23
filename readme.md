@@ -88,11 +88,4 @@ export AUTH_CLIENT_SECRET="{insert client secret for above client id}"
 export AUTH_AUDIENCE="https://haus-portal-api.com"
 export AUTH_USERNAME="{insert user name}"
 export AUTH_PASSWORD="{insert user password"
-
-export CYPRESS_AUTH_DOMAIN="${AUTH_DOMAIN}"
-export CYPRESS_AUTH_CLIENT_ID="${AUTH_CLIENT_ID}"
-export CYPRESS_AUTH_CLIENT_SECRET="${AUTH_CLIENT_SECRET}"
-export CYPRESS_AUTH_AUDIENCE="${AUTH_AUDIENCE}"
-export CYPRESS_AUTH_USERNAME="${AUTH_USERNAME}"
-export CYPRESS_AUTH_PASSWORD="${AUTH_PASSWORD}"
 ```

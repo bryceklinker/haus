@@ -1,3 +1,10 @@
+# Explicit name: without this, Compose falls back to the containing
+# directory's basename as the project name, which is "haus" for both this
+# file's production deploy directory (/etc/haus) and this repo's checkout
+# directory -- letting `docker compose -f docker-compose.local.yml down` run
+# from the repo tear down the live production stack (see issue #41).
+name: haus
+
 services:
   haus_mqtt:
     container_name: haus_mqtt

@@ -1,33 +1,29 @@
 using System.Threading.Tasks;
-using Haus.Core.Models.Common;
-using Haus.Core.Models.Zigbee;
 using Haus.Core.Zigbee.Queries;
 using Haus.Cqrs;
-using Microsoft.AspNetCore.Authorization;
+using Haus.Web.Host.Common.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Haus.Web.Host.Zigbee;
 
-[Authorize]
-[ApiController]
 [Route("api/zigbee")]
-public class ZigbeeController(IHausBus hausBus) : Controller
+public class ZigbeeController(IHausBus hausBus) : HausBusController(hausBus)
 {
     [HttpGet("status")]
-    public async Task<ZigbeeConnectionStatusModel> GetStatus()
+    public async Task<IActionResult> GetStatus()
     {
-        return await hausBus.ExecuteQueryAsync(new GetZigbeeConnectionStatusQuery());
+        return await QueryAsync(new GetZigbeeConnectionStatusQuery());
     }
 
     [HttpGet("activity")]
-    public async Task<ListResult<ZigbeeActivityEntryModel>> GetActivity()
+    public async Task<IActionResult> GetActivity()
     {
-        return await hausBus.ExecuteQueryAsync(new GetRecentZigbeeActivityQuery());
+        return await QueryAsync(new GetRecentZigbeeActivityQuery());
     }
 
     [HttpGet("devices")]
-    public async Task<ListResult<ZigbeeKnownDeviceModel>> GetDevices()
+    public async Task<IActionResult> GetDevices()
     {
-        return await hausBus.ExecuteQueryAsync(new GetKnownZigbeeDevicesQuery());
+        return await QueryAsync(new GetKnownZigbeeDevicesQuery());
     }
 }

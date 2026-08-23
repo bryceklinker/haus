@@ -1,5 +1,8 @@
 @using Haus.Api.Client
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Logging
 @inject IHausApiClient ApiClient
+@inject ILogger<ShellDrawerView> Logger
 
 <MudDrawer Open="IsOpen">
     <MudNavMenu>
@@ -26,7 +29,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var settings = await ApiClient.GetSettingsAsync();
-        _isDeviceSimulatorEnabled = settings?.IsDeviceSimulatorEnabled ?? false;
+        try
+        {
+            var settings = await ApiClient.GetSettingsAsync();
+            _isDeviceSimulatorEnabled = settings?.IsDeviceSimulatorEnabled ?? false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            Logger.LogWarning(exception, "No access token was available when loading application settings");
+        }
     }
 }

@@ -10,8 +10,8 @@ namespace Haus.Web.Host.Devices;
 public class DeviceTypesController(IHausBus hausBus) : HausBusController(hausBus)
 {
     [HttpGet]
-    public Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        return QueryAsync(new GetDeviceTypesQuery());
+        return await QueryAsync(new GetDeviceTypesQuery());
     }
 }

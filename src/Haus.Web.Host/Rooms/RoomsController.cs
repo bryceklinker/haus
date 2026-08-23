@@ -13,56 +13,56 @@ namespace Haus.Web.Host.Rooms;
 public class RoomsController(IHausBus hausBus) : HausBusController(hausBus)
 {
     [HttpGet]
-    public Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        return QueryAsync(new GetRoomsQuery());
+        return await QueryAsync(new GetRoomsQuery());
     }
 
     [HttpGet("{id}", Name = "GetRoomById")]
-    public Task<IActionResult> GetById([FromRoute] long id)
+    public async Task<IActionResult> GetById([FromRoute] long id)
     {
-        return QueryAsync(new GetRoomByIdQuery(id));
+        return await QueryAsync(new GetRoomByIdQuery(id));
     }
 
     [HttpPost]
-    public Task<IActionResult> Create([FromBody] RoomModel model)
+    public async Task<IActionResult> Create([FromBody] RoomModel model)
     {
-        return CreateCommandAsync(new CreateRoomCommand(model), "GetRoomById", m => new { id = m.Id });
+        return await CreateCommandAsync(new CreateRoomCommand(model), "GetRoomById", m => new { id = m.Id });
     }
 
     [HttpPut("{id}")]
-    public Task<IActionResult> Update([FromRoute] long id, [FromBody] RoomModel model)
+    public async Task<IActionResult> Update([FromRoute] long id, [FromBody] RoomModel model)
     {
-        return CommandAsync(new UpdateRoomCommand(model with { Id = id }));
+        return await CommandAsync(new UpdateRoomCommand(model with { Id = id }));
     }
 
     [HttpPost("{id}/add-devices")]
-    public Task<IActionResult> AddDevicesToRoom([FromRoute] long id, [FromBody] long[] deviceIds)
+    public async Task<IActionResult> AddDevicesToRoom([FromRoute] long id, [FromBody] long[] deviceIds)
     {
-        return CommandAsync(new AssignDevicesToRoomCommand(id, deviceIds));
+        return await CommandAsync(new AssignDevicesToRoomCommand(id, deviceIds));
     }
 
     [HttpGet("{id}/devices")]
-    public Task<IActionResult> GetDevicesInRoom([FromRoute] long id)
+    public async Task<IActionResult> GetDevicesInRoom([FromRoute] long id)
     {
-        return QueryAsync(new GetDevicesInRoomQuery(id));
+        return await QueryAsync(new GetDevicesInRoomQuery(id));
     }
 
     [HttpPut("{id}/lighting")]
-    public Task<IActionResult> ChangeLighting([FromRoute] long id, [FromBody] LightingModel model)
+    public async Task<IActionResult> ChangeLighting([FromRoute] long id, [FromBody] LightingModel model)
     {
-        return CommandAsync(new ChangeRoomLightingCommand(id, model));
+        return await CommandAsync(new ChangeRoomLightingCommand(id, model));
     }
 
     [HttpPost("{id}/turn-off")]
-    public Task<IActionResult> TurnOff([FromRoute] long id)
+    public async Task<IActionResult> TurnOff([FromRoute] long id)
     {
-        return CommandAsync(new TurnRoomOffCommand(id));
+        return await CommandAsync(new TurnRoomOffCommand(id));
     }
 
     [HttpPost("{id}/turn-on")]
-    public Task<IActionResult> TurnOn([FromRoute] long id)
+    public async Task<IActionResult> TurnOn([FromRoute] long id)
     {
-        return CommandAsync(new TurnRoomOnCommand(id));
+        return await CommandAsync(new TurnRoomOnCommand(id));
     }
 }
