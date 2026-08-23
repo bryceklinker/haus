@@ -5,6 +5,10 @@
 @inject IHausApiClient ApiClient
 
 <LoadingContentView IsLoading="IsLoading" LoadingText="Loading zigbee activity...">
+    @if (Activity.Items.Length == 0)
+    {
+        <MudText>No recent zigbee activity</MudText>
+    }
 </LoadingContentView>
 
 @code {

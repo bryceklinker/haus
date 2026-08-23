@@ -25,4 +25,17 @@ public class ZigbeeActivityViewTests : HausSiteTestContext
 
         Assert.Single(view.FindAllByComponent<MudProgressCircular>());
     }
+
+    [Fact]
+    public async Task WhenNoActivityThenShowsEmptyMessage()
+    {
+        await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>());
+
+        var view = RenderView<ZigbeeActivityView>();
+
+        Eventually.Assert(() =>
+        {
+            view.FindByComponent<MudText>(opts => opts.WithText("No recent zigbee activity"));
+        });
+    }
 }
