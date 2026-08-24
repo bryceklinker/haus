@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -127,6 +128,77 @@ public class DeviceDetailViewTests : HausSiteTestContext
         // "mud-icon-button" class, so the delete button needs its own selector to stay
         // uniquely identifiable (regression test for that collision).
         Assert.Single(page.FindAll(".delete-device-button"));
+    }
+
+    [Fact]
+    public void WhenDeviceTypeIsLightThenShowsLightingViewTitledLighting()
+    {
+        var device = HausModelFactory.DeviceModel() with { DeviceType = DeviceType.Light };
+
+        var page = Context.Render<DeviceDetailView>(opts =>
+        {
+            opts.Add(p => p.Device, device);
+        });
+
+        Assert.Equal("Lighting", page.FindByComponent<LightingView>().Instance.Title);
+    }
+
+    [Fact]
+    public void WhenRenderedThenSectionsAreOrderedDeviceDetailsThenLightingThenMetadata()
+    {
+        var device = HausModelFactory.DeviceModel() with
+        {
+            DeviceType = DeviceType.Light,
+            Metadata = [HausModelFactory.MetadataModel()],
+        };
+
+        var page = Context.Render<DeviceDetailView>(opts =>
+        {
+            opts.Add(p => p.Device, device);
+        });
+
+        var markup = page.Markup;
+        var deviceDetailsIndex = markup.IndexOf("id=\"roomId\"", StringComparison.Ordinal);
+        var lightingIndex = markup.IndexOf(">Lighting<", StringComparison.Ordinal);
+        var metadataIndex = markup.IndexOf("Metadata", StringComparison.Ordinal);
+
+        Assert.True(deviceDetailsIndex >= 0);
+        Assert.True(lightingIndex >= 0);
+        Assert.True(metadataIndex >= 0);
+        Assert.True(deviceDetailsIndex < lightingIndex, "device details should render before the lighting section");
+        Assert.True(lightingIndex < metadataIndex, "the lighting section should render before the metadata section");
+    }
+
+    [Fact]
+    public void WhenRenderedThenMetadataSectionIsCollapsedByDefault()
+    {
+        var device = HausModelFactory.DeviceModel() with { Metadata = [HausModelFactory.MetadataModel()] };
+
+        var page = Context.Render<DeviceDetailView>(opts =>
+        {
+            opts.Add(p => p.Device, device);
+        });
+
+        Assert.False(page.FindByComponent<MudExpansionPanel>().Instance.Expanded);
+    }
+
+    [Fact]
+    public void WhenMetadataPanelHeaderIsClickedThenMetadataSectionExpands()
+    {
+        var device = HausModelFactory.DeviceModel() with { Metadata = [HausModelFactory.MetadataModel()] };
+
+        var page = Context.Render<DeviceDetailView>(opts =>
+        {
+            opts.Add(p => p.Device, device);
+        });
+
+        var panel = page.FindByComponent<MudExpansionPanel>();
+        panel.Find(".mud-expand-panel-header").Click();
+
+        Eventually.Assert(() =>
+        {
+            Assert.True(panel.Instance.Expanded);
+        });
     }
 
     [Fact]

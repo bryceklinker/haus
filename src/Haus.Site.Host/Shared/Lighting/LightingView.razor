@@ -11,7 +11,7 @@ else
 {
     <MudGrid>
         <MudItem>
-            <MudText Typo="Typo.h5">Room Lighting</MudText>
+            <MudText Typo="Typo.h5">@Title</MudText>
         </MudItem>
         <MudItem xs="12">
             <MudSwitch T="bool"
@@ -106,6 +106,8 @@ else
     private IDisposable? _subscription;
 
     [Parameter] public bool Disabled { get; set; }
+
+    [Parameter] public string Title { get; set; } = "Room Lighting";
 
     [Parameter] public LightingModel? Lighting { get; set; }
 
