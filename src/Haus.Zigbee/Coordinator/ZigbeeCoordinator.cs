@@ -116,6 +116,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         return await components.DeviceInterview.ReadBasicInfoAsync(device.NetworkAddress, device.Endpoints, token);
     }
 
+    public Task<ushort?> ResolveNetworkAddressAsync(IeeeAddress ieeeAddress, CancellationToken token)
+    {
+        return CurrentComponents().NetworkAddressResolver.ResolveAsync(ieeeAddress, token);
+    }
+
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)
     {
         return CurrentComponents().PermitJoinController.SetPermitJoinAsync(enabled, token);
@@ -182,6 +187,12 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
             _knownDeviceTable,
             logger: _loggerFactory.CreateLogger<DeviceInterview>()
         );
+        var networkAddressResolver = new NetworkAddressResolver(
+            pollLoop,
+            sender,
+            _knownDeviceTable,
+            logger: _loggerFactory.CreateLogger<NetworkAddressResolver>()
+        );
 
         attributeReportListener.AttributeReported += RelayAttributeReport;
         deviceInterview.DeviceJoined += RelayDeviceJoined;
@@ -195,7 +206,8 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
             sender,
             commandSender,
             attributeReportListener,
-            deviceInterview
+            deviceInterview,
+            networkAddressResolver
         );
     }
 

@@ -25,6 +25,11 @@ public interface IZigbeeCoordinator : IDisposable
     // re-reads its Basic cluster, the same way a fresh device-interview would.
     Task<ZigbeeDeviceInfo?> ReadDeviceInfoAsync(IeeeAddress ieeeAddress, CancellationToken token);
 
+    // Broadcasts a ZDP NWK_addr_req to discover the current short address of a device known only by
+    // its IEEE address, for a previously-paired device that has not re-announced since the last
+    // restart. Returns null when no device answers before the request times out.
+    Task<ushort?> ResolveNetworkAddressAsync(IeeeAddress ieeeAddress, CancellationToken token);
+
     Task SetPermitJoinAsync(bool enabled, CancellationToken token);
 
     Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token);

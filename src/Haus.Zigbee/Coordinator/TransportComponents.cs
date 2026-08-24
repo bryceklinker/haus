@@ -18,7 +18,8 @@ internal sealed class TransportComponents(
     ApsSender sender,
     CommandSender commandSender,
     AttributeReportListener attributeReportListener,
-    DeviceInterview deviceInterview
+    DeviceInterview deviceInterview,
+    NetworkAddressResolver networkAddressResolver
 ) : IDisposable
 {
     public ISerialTransport Transport { get; } = transport;
@@ -30,12 +31,14 @@ internal sealed class TransportComponents(
     public CommandSender CommandSender { get; } = commandSender;
     public AttributeReportListener AttributeReportListener { get; } = attributeReportListener;
     public DeviceInterview DeviceInterview { get; } = deviceInterview;
+    public NetworkAddressResolver NetworkAddressResolver { get; } = networkAddressResolver;
 
     // Channel, Connection, PollLoop, PermitJoinController, and CommandSender hold no unmanaged
     // resources and subscribe to nothing on their own -- only the members disposed below do, so
     // only those need tearing down here.
     public void Dispose()
     {
+        NetworkAddressResolver.Dispose();
         DeviceInterview.Dispose();
         AttributeReportListener.Dispose();
         Sender.Dispose();
