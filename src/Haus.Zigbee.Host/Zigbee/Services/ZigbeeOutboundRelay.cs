@@ -2,8 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
+using Haus.Core.Models.Zigbee.Events;
 using Haus.Mqtt.Client;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
@@ -89,10 +91,7 @@ public class ZigbeeOutboundRelay(
         var device = command.Payload.Device;
         if (device.NetworkAddress is not { } networkAddress)
         {
-            logger.LogWarning(
-                "Cannot send a lighting command to {@ExternalId}: no known network address",
-                device.ExternalId
-            );
+            await HandleMissingNetworkAddressAsync(device);
             return;
         }
 
@@ -116,6 +115,14 @@ public class ZigbeeOutboundRelay(
                     confirm.ConfirmStatus
                 );
         }
+    }
+
+    private async Task HandleMissingNetworkAddressAsync(DeviceModel device)
+    {
+        const string reason = "no known network address";
+        logger.LogWarning("Cannot send a lighting command to {@ExternalId}: {@Reason}", device.ExternalId, reason);
+        var hausMqttClient = await mqttClientFactory.CreateClient();
+        await hausMqttClient.PublishHausEventAsync(new ZigbeeCommandDroppedEvent(device.ExternalId, reason));
     }
 
     // Mirrors zigbee-herdsman's deCONZ adapter: on a failed confirm, retry exactly once at the

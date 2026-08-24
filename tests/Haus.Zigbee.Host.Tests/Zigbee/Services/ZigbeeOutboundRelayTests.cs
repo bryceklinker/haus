@@ -4,6 +4,7 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Discovery;
 using Haus.Core.Models.Lighting;
+using Haus.Core.Models.Zigbee.Events;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
@@ -123,6 +124,25 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
         Assert.Empty(_coordinator!.SentCommands);
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddress_PublishesCommandDroppedEvent()
+    {
+        var externalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1));
+        var device = new DeviceModel { ExternalId = externalId };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+        ZigbeeCommandDroppedEvent? published = null;
+        await _hausMqttClient!.SubscribeToHausEventsAsync<ZigbeeCommandDroppedEvent>(
+            ZigbeeCommandDroppedEvent.Type,
+            e => published = e.Payload
+        );
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Eventually.Assert(() => Assert.Equal(externalId, published?.ExternalId));
     }
 
     [Fact]

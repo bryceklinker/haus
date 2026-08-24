@@ -31,6 +31,7 @@ public class RoutableEventFactory : IRoutableEventFactory
             ZigbeeAttributeReportReceivedEvent.Type => CreateRoutableEvent<ZigbeeAttributeReportReceivedEvent>(bytes),
             ZigbeeCommandSentEvent.Type => CreateRoutableEvent<ZigbeeCommandSentEvent>(bytes),
             ZigbeeTransportErrorEvent.Type => CreateRoutableEvent<ZigbeeTransportErrorEvent>(bytes),
+            ZigbeeCommandDroppedEvent.Type => CreateRoutableEvent<ZigbeeCommandDroppedEvent>(bytes),
             _ => null,
         };
     }

@@ -123,6 +123,32 @@ public class ZigbeeActivityViewTests : HausSiteTestContext
     }
 
     [Fact]
+    public async Task WhenCommandDroppedEventReceivedThenPrependsToActivityFeed()
+    {
+        await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>());
+        var view = RenderView<ZigbeeActivityView>();
+        Eventually.Assert(() =>
+        {
+            view.FindByComponent<MudText>(opts => opts.WithText("No recent zigbee activity"));
+        });
+
+        await _eventsSubscriber.SimulateAsync(
+            HausEventsEventNames.OnEvent,
+            new HausEvent<object>(
+                ZigbeeCommandDroppedEvent.Type,
+                new ZigbeeCommandDroppedEvent("ext-1", "no known network address")
+            )
+        );
+
+        Eventually.Assert(() =>
+        {
+            var entries = view.FindAllByComponent<ZigbeeActivityEntryView>().ToArray();
+            Assert.Single(entries);
+            Assert.Equal(ZigbeeCommandDroppedEvent.Type, entries[0].Instance.Entry?.EventType);
+        });
+    }
+
+    [Fact]
     public async Task WhenNonZigbeeEventReceivedThenIgnoresIt()
     {
         await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>());
