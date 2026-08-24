@@ -44,6 +44,23 @@ public class NetworkAddressResolverTests
         Assert.Equal(0x1a2b, known.NetworkAddress);
     }
 
+    [Fact]
+    public async Task WhenTheIeeeAddressIsAlreadyKnownWithEndpointsThenResolvingUpdatesItsNetworkAddressWhilePreservingThoseEndpoints()
+    {
+        var ieee = new IeeeAddress(0x00124b0001aabbcc);
+        var endpoint = new ZigbeeEndpoint(0x01, 0x0104, 0x0100, new ushort[] { 0x0000 }, Array.Empty<ushort>());
+        _knownDeviceTable.AddOrUpdate(new ZigbeeDevice(ieee, NetworkAddress: 0x0001, new[] { endpoint }));
+        _dongle.ReleaseAfterSend(sendIndex: 0, NwkAddrResponse(ieee, networkAddress: 0x1a2b, tsn: 0x00));
+
+        var resolved = await RunToCompletion(_resolver.ResolveAsync(ieee, CancellationToken.None));
+
+        Assert.Equal((ushort?)0x1a2b, resolved);
+        var known = Assert.Single(_knownDeviceTable.GetDevices());
+        Assert.Equal(0x1a2b, known.NetworkAddress);
+        var preserved = Assert.Single(known.Endpoints);
+        Assert.Equal(0x01, preserved.EndpointId);
+    }
+
     private async Task<T> RunToCompletion<T>(Task<T> task)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
