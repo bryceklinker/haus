@@ -105,6 +105,31 @@ public class DeviceDetailViewTests : HausSiteTestContext
     }
 
     [Fact]
+    public void WhenDeviceIsLightWithFullLightingThenOnlyOneDeleteButtonIsRendered()
+    {
+        var device = HausModelFactory.DeviceModel() with
+        {
+            DeviceType = DeviceType.Light,
+            Lighting = new LightingModel(
+                State: LightingState.On,
+                Level: new LevelLightingModel(),
+                Temperature: new TemperatureLightingModel(),
+                Color: new ColorLightingModel()
+            ),
+        };
+
+        var page = Context.Render<DeviceDetailView>(opts =>
+        {
+            opts.Add(p => p.Device, device);
+        });
+
+        // LightingView's MudSwitch also renders markup carrying MudBlazor's generic
+        // "mud-icon-button" class, so the delete button needs its own selector to stay
+        // uniquely identifiable (regression test for that collision).
+        Assert.Single(page.FindAll(".delete-device-button"));
+    }
+
+    [Fact]
     public void WhenDeviceTypeIsLightThenShowsLightingView()
     {
         var device = HausModelFactory.DeviceModel() with { DeviceType = DeviceType.Light };

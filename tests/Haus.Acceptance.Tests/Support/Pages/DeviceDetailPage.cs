@@ -14,7 +14,9 @@ public class DeviceDetailPage(IPage page)
 
     public async Task DeleteAsync()
     {
-        await page.CssLocator(".device-detail .mud-icon-button").ClickAsync();
+        // A generic ".mud-icon-button" selector also matches MudSwitch's internal thumb markup
+        // (LightingView renders one for light-type devices), so target the delete button explicitly.
+        await page.CssLocator(".device-detail .delete-device-button").ClickAsync();
         var dialogTitle = page.GetByText("Delete Device");
         await page.ClickButtonAsync("Delete");
         await dialogTitle.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Hidden });
