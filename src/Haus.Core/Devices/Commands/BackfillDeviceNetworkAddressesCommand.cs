@@ -10,10 +10,6 @@ namespace Haus.Core.Devices.Commands;
 
 public record BackfillDeviceNetworkAddressesCommand : ICommand;
 
-// PR #62 promoted NetworkAddress to a typed column but never backfilled it, so every device that
-// was known before that migration has NetworkAddress == null even though its network address was
-// already captured in the legacy Metadata["network_address"] entry -- this reconciles the two on
-// every startup, which is what makes it safe to run repeatedly.
 internal class BackfillDeviceNetworkAddressesCommandHandler(HausDbContext context)
     : ICommandHandler<BackfillDeviceNetworkAddressesCommand>
 {
