@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models;
@@ -35,6 +36,11 @@ public class ZigbeeOutboundRelay(
     // Per the Zigbee APS spec, a confirm status of 0x00 is APS_SUCCESS; anything else is a delivery
     // failure reported back from the stack for that specific request.
     private const byte SuccessConfirmStatus = 0x00;
+
+    // Tracks which devices currently have a background resolution in flight, keyed by ExternalId,
+    // so repeated commands for the same stale device while one is already pending don't each fire
+    // their own broadcast.
+    private readonly ConcurrentDictionary<string, byte> _pendingResolutions = new();
 
     public async Task HandleCommandAsync(MqttApplicationMessage message, CancellationToken token)
     {
@@ -89,10 +95,10 @@ public class ZigbeeOutboundRelay(
         }
 
         var device = command.Payload.Device;
-        var resolvedNetworkAddress = device.NetworkAddress ?? await ResolveNetworkAddressAsync(device, token);
-        if (resolvedNetworkAddress is not { } networkAddress)
+        if (device.NetworkAddress is not { } networkAddress)
         {
             await HandleMissingNetworkAddressAsync(device);
+            TriggerBackgroundResolve(device);
             return;
         }
 
@@ -119,16 +125,45 @@ public class ZigbeeOutboundRelay(
     }
 
     // A previously-paired device whose NetworkAddress went stale over a Host restart can still be
-    // reached by broadcasting for its current short address before giving up. An ExternalId that
-    // does not parse to an IEEE address, or a broadcast nobody answers, both resolve to null and
-    // fall through to the same drop-and-log path as before.
-    private async Task<ushort?> ResolveNetworkAddressAsync(DeviceModel device, CancellationToken token)
+    // reached by broadcasting for its current short address -- but that broadcast is bounded by a
+    // 30s timeout, and this relay runs inside the MQTT client's single serialized message handler,
+    // so awaiting it inline here would block every other incoming command for up to 30s. Instead
+    // the current command drops immediately (HandleMissingNetworkAddressAsync, unchanged) and the
+    // resolution runs detached so the *next* command for this device can succeed without waiting.
+    private void TriggerBackgroundResolve(DeviceModel device)
+    {
+        if (!_pendingResolutions.TryAdd(device.ExternalId, 0))
+            return;
+
+        _ = ResolveInBackgroundAsync(device);
+    }
+
+    private async Task ResolveInBackgroundAsync(DeviceModel device)
+    {
+        try
+        {
+            await ResolveNetworkAddressAsync(device, CancellationToken.None);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to resolve network address in background for {@ExternalId}", device.ExternalId);
+        }
+        finally
+        {
+            _pendingResolutions.TryRemove(device.ExternalId, out _);
+        }
+    }
+
+    // An ExternalId that does not parse to an IEEE address, or a broadcast nobody answers, both
+    // resolve to null and this quietly does nothing further -- the device stays unresolved until
+    // the next dropped command retriggers this.
+    private async Task ResolveNetworkAddressAsync(DeviceModel device, CancellationToken token)
     {
         if (!ExternalIdConverter.TryParseAddress(device.ExternalId, out var ieeeAddress))
-            return null;
+            return;
 
         if (await coordinator.ResolveNetworkAddressAsync(ieeeAddress, token) is not { } networkAddress)
-            return null;
+            return;
 
         addressRegistry.Register(networkAddress, device.ExternalId);
 
@@ -140,7 +175,6 @@ public class ZigbeeOutboundRelay(
         await hausMqttClient.PublishHausEventAsync(
             new DeviceDiscoveredEvent(device.ExternalId, device.DeviceType, device.Metadata, networkAddress)
         );
-        return networkAddress;
     }
 
     private async Task HandleMissingNetworkAddressAsync(DeviceModel device)

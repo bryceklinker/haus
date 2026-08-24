@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models.Common;
@@ -115,10 +116,11 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddressButResolvable_SendsCommandsUsingTheResolvedNetworkAddress()
+    public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddress_DoesNotWaitOnResolutionBeforeReturning()
     {
-        const ushort resolvedNetworkAddress = 0x1234;
-        _coordinator!.NetworkAddressToReturn = resolvedNetworkAddress;
+        _coordinator!.ResolveNetworkAddressGate = new TaskCompletionSource<ushort?>(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
         var device = new DeviceModel
         {
             ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
@@ -128,18 +130,65 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
             .AsHausCommand()
             .ToMqttMessage("haus/commands");
 
+        var handleTask = _relay!.HandleCommandAsync(message, CancellationToken.None);
+        var completed = await Task.WhenAny(handleTask, Task.Delay(TimeSpan.FromSeconds(2)));
+
+        Assert.Same(handleTask, completed);
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddressButResolvable_DropsTheCommandAndResolvesTheAddressInTheBackgroundForNextTime()
+    {
+        const ushort resolvedNetworkAddress = 0x1234;
+        _coordinator!.NetworkAddressToReturn = resolvedNetworkAddress;
+        var externalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1));
+        var device = new DeviceModel { ExternalId = externalId, DeviceType = DeviceType.Light };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+        ZigbeeCommandDroppedEvent? dropped = null;
+        await _hausMqttClient!.SubscribeToHausEventsAsync<ZigbeeCommandDroppedEvent>(
+            ZigbeeCommandDroppedEvent.Type,
+            e => dropped = e.Payload
+        );
+
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
-        Assert.Equal([new IeeeAddress(1)], _coordinator.ResolveNetworkAddressCalls);
-        Assert.NotEmpty(_coordinator.SentCommands);
-        Assert.All(
-            _coordinator.SentCommands,
-            request =>
-            {
-                Assert.Equal(DeconzAddressMode.Nwk, request.Destination.Mode);
-                Assert.Equal(resolvedNetworkAddress, request.Destination.ShortAddress);
-            }
+        Assert.Empty(_coordinator.SentCommands);
+        Eventually.Assert(() =>
+        {
+            Assert.Equal(externalId, dropped?.ExternalId);
+            Assert.Equal([new IeeeAddress(1)], _coordinator.ResolveNetworkAddressCalls);
+            Assert.True(_addressRegistry!.TryGetExternalId(resolvedNetworkAddress, out var registeredExternalId));
+            Assert.Equal(externalId, registeredExternalId);
+        });
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_RepeatedLightingCommandsWithoutNetworkAddressForTheSameDevice_OnlyResolvesOnceWhileAResolutionIsPending()
+    {
+        _coordinator!.ResolveNetworkAddressGate = new TaskCompletionSource<ushort?>(
+            TaskCreationOptions.RunContinuationsAsynchronously
         );
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            DeviceType = DeviceType.Light,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+        await Task.WhenAny(
+            Task.WhenAll(
+                _relay!.HandleCommandAsync(message, CancellationToken.None),
+                _relay.HandleCommandAsync(message, CancellationToken.None)
+            ),
+            Task.Delay(Timeout.Infinite, timeout.Token)
+        );
+
+        Eventually.Assert(() => Assert.Single(_coordinator!.ResolveNetworkAddressCalls));
     }
 
     [Fact]

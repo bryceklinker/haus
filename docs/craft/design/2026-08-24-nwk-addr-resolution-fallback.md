@@ -104,25 +104,65 @@ and disposed in `DisposeComponents`, exactly like `DeviceInterview` today.
 
 ## Wiring in `ZigbeeOutboundRelay`
 
-`HandleLightingAsync` currently drops straight to `HandleMissingNetworkAddressAsync` (added by
-PR #66, unchanged) when `device.NetworkAddress` is null. New flow:
+**Revised after fresh-eyes review** (see "Not blocking the shared MQTT pump" below): the resolve
+does *not* run inline on the command that discovered the stale address. `HandleLightingAsync`
+still drops straight to `HandleMissingNetworkAddressAsync` (added by PR #66, unchanged) when
+`device.NetworkAddress` is null, but now *also* fires the resolution off as a detached background
+task so the *next* command for that device succeeds instead:
 
 ```
-networkAddress = device.NetworkAddress ?? await ResolveNetworkAddressAsync(device, token)
-null  -> HandleMissingNetworkAddressAsync(device)   // unchanged: log warning + ZigbeeCommandDroppedEvent
-value -> proceed exactly as today, using the resolved address
+if device.NetworkAddress is null:
+    HandleMissingNetworkAddressAsync(device)   // unchanged: log warning + ZigbeeCommandDroppedEvent
+    TriggerBackgroundResolve(device)           // detached, deduped per ExternalId, doesn't block this call
+    return
+// device.NetworkAddress present -> proceed exactly as today
 ```
 
-`ResolveNetworkAddressAsync(DeviceModel device, token)`:
+`TriggerBackgroundResolve` dedupes on `DeviceModel.ExternalId` via a `ConcurrentDictionary` so
+repeated commands for the same still-unresolved device (e.g. several lighting commands queued up
+right after a restart) don't each fire their own broadcast — only one resolution is in flight per
+device at a time.
+
+`ResolveNetworkAddressAsync(DeviceModel device, token)` (now `void`-returning, called only from the
+background path):
 1. `ExternalIdConverter.TryParseAddress(device.ExternalId, ...)` — mirrors the converter already
-   used elsewhere in this codebase; an unparseable `ExternalId` resolves to `null` (falls back to
-   drop, same as a resolution timeout).
-2. `coordinator.ResolveNetworkAddressAsync(ieeeAddress, token)`.
+   used elsewhere in this codebase; an unparseable `ExternalId` is a no-op.
+2. `coordinator.ResolveNetworkAddressAsync(ieeeAddress, token)`; a timeout/no-answer is also a
+   no-op — the device stays unresolved until the next dropped command retriggers this.
 3. On success: `addressRegistry.Register(...)` (same registry `SyncDevicesAsync` populates), then
    publish `DeviceDiscoveredEvent` so `Haus.Web.Host`'s existing
    `DeviceDiscoveredEventHandler`/`DeviceEntity.UpdateFromDiscoveredDevice` path persists the
    resolved `NetworkAddress` — no new DB-write path needed, this event already updates an existing
    `DeviceEntity` in place.
+
+### Not blocking the shared MQTT pump
+
+The original version of this design had `HandleLightingAsync` `await` the resolve inline and send
+the original command using the resolved address in the same call. A fresh-eyes review caught that
+this runs inside `HausMqttClient`'s single serialized message handler
+(`MqttMessageHandler` → each subscription's `ExecuteAsync`, awaited via `Task.WhenAll` before the
+managed MQTT client dispatches the next message) — so a stale-address command would block *every*
+other incoming MQTT command/message for up to the resolver's 30s timeout. Firing the resolution
+off detached (not awaited by `HandleCommandAsync`) removes that blocking without shortening the
+timeout: the current command still drops immediately (same visible behavior as before this whole
+feature — PR #66's drop-and-log), and the resolved address becomes available for the *next*
+command via the same `DeviceDiscoveredEvent` → persisted `DeviceEntity.NetworkAddress` path.
+
+### RequestId collision (re-checked, not fixed here)
+
+`ApsSender._pendingConfirms` correlates every outstanding APS confirm by a single `byte RequestId`
+across *all* callers of `ApsSender.SendAsync` (`CommandSender`, `DeviceInterview`, and now
+`NetworkAddressResolver`), but each caller owns an *independent* `ByteSequenceCounter` for that
+field (see the explicit comment in `CommandSender`: "the ZCL transaction sequence number and the
+APS request id are distinct concerns, so each layer owns its own counter here"). Two concurrent
+in-flight sends from different collaborators can in principle land on the same byte value and
+overwrite each other's pending-confirm entry. This is a pre-existing property of the codebase
+(already shared between `CommandSender` and `DeviceInterview` before this PR); `NetworkAddressResolver`
+becomes a third participant in the same shared keyspace but does not introduce a new failure mode.
+Centralizing RequestId issuance in `ApsSender` would close this properly, but touches two
+established collaborators outside this PR's scope — left as a follow-up rather than folded in here.
+The new device-backfill sweep (below) mitigates its own added exposure by resolving devices
+sequentially rather than firing many broadcasts concurrently at startup.
 
 **Important correctness point found during this design pass:** `DeviceDiscoveredEvent` carries
 `DeviceType`, and `DeviceEntity.UpdateFromDiscoveredDevice` **unconditionally overwrites**
