@@ -21,6 +21,11 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public Queue<ApsDataConfirm> ConfirmSequence { get; } = new();
     public ZigbeeDeviceInfo? DeviceInfoToReturn { get; set; }
 
+    // Default null means "no resolution" -- the relay's stale-address fallback treats that as a
+    // timeout and drops the command, exactly like a device that never answered the broadcast.
+    public ushort? NetworkAddressToReturn { get; set; }
+    public List<IeeeAddress> ResolveNetworkAddressCalls { get; } = [];
+
     public bool IsConnected { get; set; }
     public NetworkConfig? NetworkConfig { get; set; }
     public Exception? ConnectShouldThrow { get; set; }
@@ -51,6 +56,12 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public Task<ZigbeeDeviceInfo?> ReadDeviceInfoAsync(IeeeAddress ieeeAddress, CancellationToken token)
     {
         return Task.FromResult(DeviceInfoToReturn);
+    }
+
+    public Task<ushort?> ResolveNetworkAddressAsync(IeeeAddress ieeeAddress, CancellationToken token)
+    {
+        ResolveNetworkAddressCalls.Add(ieeeAddress);
+        return Task.FromResult(NetworkAddressToReturn);
     }
 
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)
