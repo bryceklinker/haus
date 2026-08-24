@@ -79,6 +79,19 @@ public class NetworkAddressResolverTests
     }
 
     [Fact]
+    public async Task WhenTheResponseIeeeAddressDoesNotMatchTheRequestedAddressThenResolvingReturnsNullWithoutRecordingAnything()
+    {
+        var requested = new IeeeAddress(0x00124b0001aabbcc);
+        var responder = new IeeeAddress(0x00124b0009999999);
+        _dongle.ReleaseAfterSend(sendIndex: 0, NwkAddrResponse(responder, networkAddress: 0x1a2b, tsn: 0x00));
+
+        var resolved = await RunToCompletion(_resolver.ResolveAsync(requested, CancellationToken.None));
+
+        Assert.Null(resolved);
+        Assert.Empty(_knownDeviceTable.GetDevices());
+    }
+
+    [Fact]
     public async Task WhenAnIndicationOnAnUnrelatedClusterArrivesFirstThenItIsIgnoredAndTheResolverKeepsWaitingForItsResponse()
     {
         var ieee = new IeeeAddress(0x00124b0001aabbcc);

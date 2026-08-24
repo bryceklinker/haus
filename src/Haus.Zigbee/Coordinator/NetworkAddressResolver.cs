@@ -108,6 +108,8 @@ public class NetworkAddressResolver : IDisposable
         var response = NwkAddrResponseCodec.Decode(indication.AsduPayload);
         if (response is null || response.Status != ZdoStatus.Success)
             return null;
+        if (response.IeeeAddress != ieeeAddress)
+            return null;
 
         var endpoints = _knownDeviceTable.TryGet(ieeeAddress, out var existing) ? existing.Endpoints : [];
         _knownDeviceTable.AddOrUpdate(new ZigbeeDevice(ieeeAddress, response.NetworkAddress, endpoints));
