@@ -12,7 +12,8 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
         return new DeviceDiscoveredEvent(
             ExternalIdConverter.ToExternalId(joined.IeeeAddress),
             deviceTypeResolver.Resolve(joined.ManufacturerName, joined.ModelIdentifier),
-            CreateMetadata(joined)
+            CreateMetadata(joined),
+            NetworkAddress: joined.NetworkAddress
         );
     }
 
@@ -31,7 +32,6 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
         [
             new MetadataModel("vendor", joined.ManufacturerName),
             new MetadataModel("model", joined.ModelIdentifier),
-            new MetadataModel("network_address", joined.NetworkAddress.ToString()),
         ];
     }
 }

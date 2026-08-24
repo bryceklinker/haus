@@ -27,6 +27,19 @@ public class DeviceDiscoveredTests(HausWebHostApplicationFactory factory)
     }
 
     [Fact]
+    public async Task WhenDeviceDiscoveredEventReceivedThenNetworkAddressIsAvailableFromTheApi()
+    {
+        await factory.PublishHausEventAsync(new DeviceDiscoveredEvent("network-address-id", NetworkAddress: 0x9abc));
+
+        await Eventually.AssertAsync(async () =>
+        {
+            var client = factory.CreateAuthenticatedClient();
+            var list = await client.GetDevicesAsync();
+            Assert.Contains(list.Items, m => m.ExternalId == "network-address-id" && m.NetworkAddress == 0x9abc);
+        });
+    }
+
+    [Fact]
     public async Task WhenUnauthorizedThenReturnsUnauthorized()
     {
         var client = factory.CreateUnauthenticatedClient();

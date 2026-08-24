@@ -25,6 +25,7 @@ public record DeviceEntity : Entity
         d.DeviceType,
         d.LightType,
         d.Metadata.Select(m => new MetadataModel(m.Key, m.Value)).ToArray(),
+        d.NetworkAddress,
         d.Lighting == null
             ? null
             : new LightingModel(
@@ -54,6 +55,8 @@ public record DeviceEntity : Entity
 
     public ICollection<DeviceMetadataEntity> Metadata { get; init; } = [];
 
+    public ushort? NetworkAddress { get; set; }
+
     public RoomEntity? Room { get; set; }
 
     public LightingEntity? Lighting { get; set; }
@@ -71,7 +74,8 @@ public record DeviceEntity : Entity
         LightType lightType = LightType.None,
         RoomEntity? room = null,
         LightingEntity? lighting = null,
-        ICollection<DeviceMetadataEntity>? metadata = null
+        ICollection<DeviceMetadataEntity>? metadata = null,
+        ushort? networkAddress = null
     )
     {
         Id = id;
@@ -82,6 +86,7 @@ public record DeviceEntity : Entity
         Room = room;
         Lighting = lighting ?? GenerateDefaultLighting();
         Metadata = metadata ?? new List<DeviceMetadataEntity>();
+        NetworkAddress = networkAddress;
     }
 
     public DeviceModel ToModel()
@@ -100,6 +105,7 @@ public record DeviceEntity : Entity
     {
         DeviceType = @event.DeviceType;
         LightType = GetValidLightType(@event.DeviceType, LightType);
+        NetworkAddress = @event.NetworkAddress;
         Lighting = GenerateDefaultLighting();
         if (IsLight)
             ChangeLighting(Lighting, domainEventBus);

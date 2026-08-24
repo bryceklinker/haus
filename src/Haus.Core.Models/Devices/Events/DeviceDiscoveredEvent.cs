@@ -7,7 +7,8 @@ namespace Haus.Core.Models.Devices.Events;
 public record DeviceDiscoveredEvent(
     string Id,
     DeviceType DeviceType = DeviceType.Unknown,
-    MetadataModel[]? Metadata = null
+    MetadataModel[]? Metadata = null,
+    ushort? NetworkAddress = null
 ) : IHausEventCreator<DeviceDiscoveredEvent>
 {
     public const string Type = "device_discovered";
