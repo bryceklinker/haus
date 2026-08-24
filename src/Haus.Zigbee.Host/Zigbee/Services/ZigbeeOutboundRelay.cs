@@ -26,6 +26,10 @@ public class ZigbeeOutboundRelay(
     // the overwhelming majority of commercial Zigbee lighting devices expose.
     private const byte DefaultDestinationEndpoint = 0x01;
 
+    // Per the Zigbee APS spec, a confirm status of 0x00 is APS_SUCCESS; anything else is a delivery
+    // failure reported back from the stack for that specific request.
+    private const byte SuccessConfirmStatus = 0x00;
+
     public async Task HandleCommandAsync(MqttApplicationMessage message, CancellationToken token)
     {
         var command = HausJsonSerializer.Deserialize<HausCommand>(message.PayloadSegment);
@@ -78,14 +82,17 @@ public class ZigbeeOutboundRelay(
             return;
         }
 
-        var externalId = command.Payload.Device.ExternalId;
-        if (!ExternalIdConverter.TryParseAddress(externalId, out var address))
+        var device = command.Payload.Device;
+        if (device.NetworkAddress is not { } networkAddress)
         {
-            logger.LogWarning("Cannot resolve a Zigbee address for ExternalId {@ExternalId}", externalId);
+            logger.LogWarning(
+                "Cannot send a lighting command to {@ExternalId}: no known network address",
+                device.ExternalId
+            );
             return;
         }
 
-        var destination = ApsDestination.Ieee(address, DefaultDestinationEndpoint);
+        var destination = ApsDestination.Nwk(networkAddress, DefaultDestinationEndpoint);
         var requests = lightingMapper.Map(destination, command.Payload.Lighting);
         foreach (var request in requests)
         {
@@ -93,9 +100,17 @@ public class ZigbeeOutboundRelay(
                 "Sending ZCL command {@ClusterId}/{@CommandId} to {@ExternalId}",
                 request.ClusterId,
                 request.CommandId,
-                externalId
+                device.ExternalId
             );
-            await coordinator.SendCommandAsync(request, token);
+            var confirm = await coordinator.SendCommandAsync(request, token);
+            if (confirm.ConfirmStatus != SuccessConfirmStatus)
+                logger.LogWarning(
+                    "Zigbee command {@ClusterId}/{@CommandId} to {@ExternalId} failed with APS confirm status {@ConfirmStatus}",
+                    request.ClusterId,
+                    request.CommandId,
+                    device.ExternalId,
+                    confirm.ConfirmStatus
+                );
         }
     }
 }
