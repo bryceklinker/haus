@@ -61,6 +61,45 @@ public class NetworkAddressResolverTests
         Assert.Equal(0x01, preserved.EndpointId);
     }
 
+    [Fact]
+    public async Task WhenNoDeviceAnswersTheBroadcastRequestThenResolvingReturnsNullWithoutRecordingAnything()
+    {
+        using var resolver = new NetworkAddressResolver(
+            _pollLoop,
+            _sender,
+            _knownDeviceTable,
+            responseTimeout: TimeSpan.FromMilliseconds(50)
+        );
+        var ieee = new IeeeAddress(0x00124b0001aabbcc);
+
+        var resolved = await RunToCompletion(resolver.ResolveAsync(ieee, CancellationToken.None));
+
+        Assert.Null(resolved);
+        Assert.Empty(_knownDeviceTable.GetDevices());
+    }
+
+    [Fact]
+    public async Task WhenAnIndicationOnAnUnrelatedClusterArrivesFirstThenItIsIgnoredAndTheResolverKeepsWaitingForItsResponse()
+    {
+        var ieee = new IeeeAddress(0x00124b0001aabbcc);
+        // Same transaction sequence number as the request, but a different cluster -- proves the
+        // resolver filters on cluster and does not complete on this indication.
+        _dongle.InjectIndication(
+            new IndicationBody(
+                SourceNwk: 0x1a2b,
+                SourceEndpoint: 0x00,
+                ZdpProfile,
+                ActiveEndpointsResponseCluster,
+                Asdu: new byte[] { 0x00, 0x00, 0x00 }
+            )
+        );
+        _dongle.ReleaseAfterSend(sendIndex: 0, NwkAddrResponse(ieee, networkAddress: 0x1a2b, tsn: 0x00));
+
+        var resolved = await RunToCompletion(_resolver.ResolveAsync(ieee, CancellationToken.None));
+
+        Assert.Equal((ushort?)0x1a2b, resolved);
+    }
+
     private async Task<T> RunToCompletion<T>(Task<T> task)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
