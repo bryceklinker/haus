@@ -11,7 +11,9 @@ using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Services;
 using Haus.Zigbee.Models;
+using Haus.Zigbee.Serial.Frames;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Services;
@@ -22,13 +24,16 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
     private FakeZigbeeCoordinator? _coordinator;
     private DeviceAddressRegistry? _addressRegistry;
     private ZigbeeOutboundRelay? _relay;
+    private CapturingLoggerFactory? _loggerFactory;
 
     public async Task InitializeAsync()
     {
         _coordinator = new FakeZigbeeCoordinator();
+        _loggerFactory = new CapturingLoggerFactory();
         var provider = ServiceProviderFactory.Create(
             mqttFactory: new FakeMqttClientFactory(),
-            zigbeeCoordinator: _coordinator
+            zigbeeCoordinator: _coordinator,
+            configureServices: services => services.AddSingleton<ILoggerFactory>(_loggerFactory)
         );
         var mqttClientFactory = provider.GetRequiredService<IHausMqttClientFactory>();
         _hausMqttClient = await mqttClientFactory.CreateClient();
@@ -82,10 +87,14 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task HandleCommandAsync_LightingCommand_ResolvesAddressAndSendsCommands()
+    public async Task HandleCommandAsync_LightingCommand_ResolvesNetworkAddressAndSendsCommands()
     {
-        var address = new IeeeAddress(1);
-        var device = new DeviceModel { ExternalId = ExternalIdConverter.ToExternalId(address) };
+        const ushort networkAddress = 0x1234;
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            NetworkAddress = networkAddress,
+        };
         var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
             .AsHausCommand()
             .ToMqttMessage("haus/commands");
@@ -93,12 +102,20 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
         Assert.NotEmpty(_coordinator!.SentCommands);
+        Assert.All(
+            _coordinator.SentCommands,
+            request =>
+            {
+                Assert.Equal(DeconzAddressMode.Nwk, request.Destination.Mode);
+                Assert.Equal(networkAddress, request.Destination.ShortAddress);
+            }
+        );
     }
 
     [Fact]
-    public async Task HandleCommandAsync_LightingCommandWithUnresolvableExternalId_SendsNothing()
+    public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddress_SendsNothing()
     {
-        var device = new DeviceModel { ExternalId = "not-an-address" };
+        var device = new DeviceModel { ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)) };
         var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
             .AsHausCommand()
             .ToMqttMessage("haus/commands");
@@ -106,5 +123,65 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
         Assert.Empty(_coordinator!.SentCommands);
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithFailedConfirmThenSuccessOnRetry_RetriesOnceWithApsAckAndDoesNotLogFailure()
+    {
+        _coordinator!.ConfirmSequence.Enqueue(FailedConfirm());
+        _coordinator.ConfirmSequence.Enqueue(SuccessfulConfirm());
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            NetworkAddress = 0x1234,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.Off))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Assert.Equal(2, _coordinator.SentCommands.Count);
+        Assert.False(_coordinator.SentCommands[0].RequestApsAck);
+        Assert.True(_coordinator.SentCommands[1].RequestApsAck);
+        Assert.Equal(_coordinator.SentCommands[0].Destination, _coordinator.SentCommands[1].Destination);
+        Assert.DoesNotContain(
+            _loggerFactory!.Entries,
+            entry => entry.Level == LogLevel.Warning && entry.Message.Contains("failed with APS confirm status")
+        );
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithConfirmFailingTwice_RetriesExactlyOnceThenLogsFailure()
+    {
+        _coordinator!.ConfirmToReturn = FailedConfirm();
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            NetworkAddress = 0x1234,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.Off))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Assert.Equal(2, _coordinator.SentCommands.Count);
+        Assert.False(_coordinator.SentCommands[0].RequestApsAck);
+        Assert.True(_coordinator.SentCommands[1].RequestApsAck);
+        Assert.Single(
+            _loggerFactory!.Entries,
+            entry => entry.Level == LogLevel.Warning && entry.Message.Contains("failed with APS confirm status")
+        );
+    }
+
+    private static ApsDataConfirm FailedConfirm()
+    {
+        return new ApsDataConfirm(0, 0, 0, DeconzAddressMode.Nwk, 0x1234, null, 1, 1, ConfirmStatus: 0xAD);
+    }
+
+    private static ApsDataConfirm SuccessfulConfirm()
+    {
+        return new ApsDataConfirm(0, 0, 0, DeconzAddressMode.Nwk, 0x1234, null, 1, 1, ConfirmStatus: 0x00);
     }
 }
