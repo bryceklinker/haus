@@ -112,6 +112,18 @@ public class RoutableHausEventFactoryTest
     }
 
     [Fact]
+    public void WhenZigbeeCommandDroppedThenReturnsRoutableEventFromZigbeeCommandDropped()
+    {
+        var bytes = HausJsonSerializer.SerializeToBytes(
+            new ZigbeeCommandDroppedEvent("ext-1", "no known network address").AsHausEvent()
+        );
+
+        var routableEvent = _factory.Create(bytes);
+
+        Assert.IsType<RoutableEvent<ZigbeeCommandDroppedEvent>>(routableEvent);
+    }
+
+    [Fact]
     public void WhenBytesDoesNotRepresentAHausEventThenReturnsNull()
     {
         var bytes = HausJsonSerializer.SerializeToBytes("this is data");

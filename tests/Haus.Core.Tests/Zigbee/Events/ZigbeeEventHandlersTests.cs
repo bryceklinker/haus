@@ -98,4 +98,14 @@ public class ZigbeeEventHandlersTests
 
         Assert.Contains(_store.Current.RecentActivity, e => e.EventType == ZigbeeTransportErrorEvent.Type);
     }
+
+    [Fact]
+    public async Task WhenCommandDroppedEventReceivedThenActivityIsRecorded()
+    {
+        await _hausBus.PublishAsync(
+            RoutableEvent.FromEvent(new ZigbeeCommandDroppedEvent("ext-1", "no known network address"))
+        );
+
+        Assert.Contains(_store.Current.RecentActivity, e => e.EventType == ZigbeeCommandDroppedEvent.Type);
+    }
 }

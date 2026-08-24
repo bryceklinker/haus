@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
+using Haus.Core.Models.Zigbee.Events;
 using Haus.Mqtt.Client;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
@@ -89,10 +90,10 @@ public class ZigbeeOutboundRelay(
         var device = command.Payload.Device;
         if (device.NetworkAddress is not { } networkAddress)
         {
-            logger.LogWarning(
-                "Cannot send a lighting command to {@ExternalId}: no known network address",
-                device.ExternalId
-            );
+            const string reason = "no known network address";
+            logger.LogWarning("Cannot send a lighting command to {@ExternalId}: {@Reason}", device.ExternalId, reason);
+            var hausMqttClient = await mqttClientFactory.CreateClient();
+            await hausMqttClient.PublishHausEventAsync(new ZigbeeCommandDroppedEvent(device.ExternalId, reason));
             return;
         }
 
