@@ -62,4 +62,14 @@ public class BackfillDeviceNetworkAddressesCommandHandlerTests
 
         Assert.Equal((ushort)1, device.NetworkAddress);
     }
+
+    [Fact]
+    public async Task WhenLegacyMetadataValueIsNotNumericThenNetworkAddressRemainsNull()
+    {
+        var device = _context.AddDevice(configure: d => d.AddOrUpdateMetadata("network_address", "not-a-number"));
+
+        await _hausBus.ExecuteCommandAsync(new BackfillDeviceNetworkAddressesCommand());
+
+        Assert.Null(device.NetworkAddress);
+    }
 }
