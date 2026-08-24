@@ -30,6 +30,7 @@ public static class HausModelFactory
             DeviceType: Faker.PickRandom<DeviceType>(),
             LightType: Faker.PickRandom<LightType>(),
             Metadata: [],
+            NetworkAddress: Faker.Random.UShort(),
             Lighting: null
         );
     }

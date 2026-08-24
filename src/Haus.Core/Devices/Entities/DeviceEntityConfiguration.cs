@@ -13,6 +13,7 @@ public class DeviceEntityConfiguration : IEntityTypeConfiguration<DeviceEntity>
         builder.Property(d => d.Name).IsRequired();
         builder.Property(d => d.ExternalId).IsRequired();
         builder.Property(d => d.DeviceType).IsRequired().HasConversion<string>();
+        builder.Property(d => d.NetworkAddress);
 
         builder.Ignore(d => d.IsLight);
 

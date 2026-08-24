@@ -29,6 +29,16 @@ public class GetDeviceByIdQueryHandlerTests
     }
 
     [Fact]
+    public async Task WhenDeviceHasNetworkAddressThenReturnedModelIncludesIt()
+    {
+        var device = _context.AddDevice(configure: d => d.NetworkAddress = 0x9abc);
+
+        var model = await _hausBus.ExecuteQueryAsync(new GetDeviceByIdQuery(device.Id));
+
+        Assert.Equal((ushort)0x9abc, model.NetworkAddress);
+    }
+
+    [Fact]
     public async Task WhenIdDoesNotMatchDeviceThenReturnsNull()
     {
         var model = await _hausBus.ExecuteQueryAsync(new GetDeviceByIdQuery(long.MaxValue));

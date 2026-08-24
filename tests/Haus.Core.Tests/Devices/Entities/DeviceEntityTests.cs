@@ -70,6 +70,27 @@ public class DeviceEntityTest
     }
 
     [Fact]
+    public void WhenCreatedFromDeviceDiscoveredThenNetworkAddressIsSet()
+    {
+        var model = new DeviceDiscoveredEvent("this-id", NetworkAddress: 0x9abc);
+
+        var entity = DeviceEntity.FromDiscoveredDevice(model, new FakeDomainEventBus());
+
+        Assert.Equal((ushort)0x9abc, entity.NetworkAddress);
+    }
+
+    [Fact]
+    public void WhenUpdatedFromDiscoveredDeviceThenNetworkAddressIsUpdated()
+    {
+        var model = new DeviceDiscoveredEvent("", NetworkAddress: 0x1234);
+        var entity = new DeviceEntity();
+
+        entity.UpdateFromDiscoveredDevice(model, new FakeDomainEventBus());
+
+        Assert.Equal((ushort)0x1234, entity.NetworkAddress);
+    }
+
+    [Fact]
     public void WhenUpdatedFromDiscoveredDeviceToLightThenLightTypeIsLevel()
     {
         var model = new DeviceDiscoveredEvent("", DeviceType.Light);
@@ -381,7 +402,8 @@ public class DeviceEntityTest
             LightType.Level,
             new RoomEntity(89, "ignore"),
             lighting,
-            metadata
+            metadata,
+            networkAddress: 0x9abc
         );
 
         var model = device.ToModel();
@@ -394,6 +416,7 @@ public class DeviceEntityTest
         Assert.Equal(89, model.RoomId);
         Assert.Equal(lighting.ToModel(), model.Lighting);
         Assert.Equal(metadata[0].ToModel(), Assert.Single(model.Metadata));
+        Assert.Equal((ushort)0x9abc, model.NetworkAddress);
     }
 
     [Fact]

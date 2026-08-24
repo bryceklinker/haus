@@ -50,4 +50,14 @@ public class DeviceJoinedMapperTests
         Assert.Contains(new MetadataModel("vendor", "acme"), result.Metadata);
         Assert.Contains(new MetadataModel("model", "widget-1"), result.Metadata);
     }
+
+    [Fact]
+    public void Map_SetsNetworkAddress()
+    {
+        var joined = new ZigbeeDeviceJoined(new IeeeAddress(1), 0x9abc, [], "acme", "widget-1");
+
+        var result = _mapper.Map(joined);
+
+        Assert.Equal((ushort)0x9abc, result.NetworkAddress);
+    }
 }
