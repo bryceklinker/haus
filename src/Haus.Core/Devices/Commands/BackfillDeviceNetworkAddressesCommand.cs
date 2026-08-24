@@ -24,7 +24,6 @@ internal class BackfillDeviceNetworkAddressesCommandHandler(HausDbContext contex
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var backfilled = false;
         foreach (var device in devicesMissingNetworkAddress)
         {
             var legacyValue = device.Metadata.FirstOrDefault(m => m.Key == LegacyNetworkAddressMetadataKey)?.Value;
@@ -32,10 +31,8 @@ internal class BackfillDeviceNetworkAddressesCommandHandler(HausDbContext contex
                 continue;
 
             device.NetworkAddress = networkAddress;
-            backfilled = true;
         }
 
-        if (backfilled)
-            await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 }
