@@ -47,23 +47,32 @@
                   InputId="roomId"
                   Value="Device.RoomId"/>
 
-    @if (Device.Metadata.Length > 0)
-    {
-        <MudPaper Class="pa-4">
-            <MudText Typo="Typo.h4">Metadata</MudText>
-            <EditableMetadataListView Items="Device.Metadata"/>
-        </MudPaper>
-    }
-
     @if (Device.DeviceType == DeviceType.Light)
     {
         <LightingView Lighting="Device.Lighting ?? new LightingModel()"
+                      Title="Lighting"
                       OnLightingChanged="HandleLightingChanged"/>
+    }
+
+    @if (Device.Metadata.Length > 0)
+    {
+        <MudExpansionPanels>
+            <MudExpansionPanel @bind-Expanded="_metadataExpanded">
+                <TitleContent>
+                    <MudText Typo="Typo.h6">Metadata</MudText>
+                </TitleContent>
+                <ChildContent>
+                    <EditableMetadataListView Items="Device.Metadata"/>
+                </ChildContent>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
     }
 </MudPaper>
 
 @code {
     [Parameter] public required DeviceModel Device { get; set; }
+
+    private bool _metadataExpanded;
 
     private async Task HandleDeleteClicked()
     {

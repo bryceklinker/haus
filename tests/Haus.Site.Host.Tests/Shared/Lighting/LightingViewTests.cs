@@ -21,6 +21,24 @@ public class LightingViewTests : HausSiteTestContext
     }
 
     [Fact]
+    public void WhenRenderedWithoutTitleThenDefaultsToRoomLighting()
+    {
+        var lighting = HausModelFactory.LightingModel();
+        var view = RenderLighting(lighting);
+
+        Assert.NotNull(view.FindByComponent<MudText>(opts => opts.WithText("Room Lighting")));
+    }
+
+    [Fact]
+    public void WhenRenderedWithTitleThenShowsGivenTitle()
+    {
+        var lighting = HausModelFactory.LightingModel();
+        var view = RenderLighting(lighting, title: "Lighting");
+
+        Assert.NotNull(view.FindByComponent<MudText>(opts => opts.WithText("Lighting")));
+    }
+
+    [Fact]
     public void WhenRenderedDisabledThenAllInputsAreDisabled()
     {
         var lighting = HausModelFactory.LightingModel() with
@@ -220,7 +238,8 @@ public class LightingViewTests : HausSiteTestContext
     private IRenderedComponent<LightingView> RenderLighting(
         LightingModel? lighting,
         Action<LightingModel>? onChanged = null,
-        bool disabled = false
+        bool disabled = false,
+        string? title = null
     )
     {
         return Context.Render<LightingView>(opts =>
@@ -230,6 +249,10 @@ public class LightingViewTests : HausSiteTestContext
             if (onChanged != null)
             {
                 opts.Add(o => o.OnLightingChanged, onChanged);
+            }
+            if (title != null)
+            {
+                opts.Add(o => o.Title, title);
             }
         });
     }
