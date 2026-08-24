@@ -178,11 +178,40 @@ and `device.Metadata` from the inbound command's `DeviceModel`, not `Unknown`:
 ```csharp
 new DeviceDiscoveredEvent(device.ExternalId, device.DeviceType, device.Metadata, networkAddress)
 ```
-4. Return the resolved address so the caller proceeds to send the original lighting command in the
-   same handler invocation (no second round trip through MQTT).
+(Step 4 in the original plan — "return the resolved address so the caller proceeds to send the
+original command in the same handler invocation" — no longer applies; see "Not blocking the shared
+MQTT pump" above. The background resolve's only remaining job is steps 1-3.)
 
 `HandleMissingNetworkAddressAsync` is untouched — diagnostics visibility from PR #66 is preserved
 verbatim for the genuine-timeout / unparseable-IEEE case.
+
+## Startup sweep: resolving already-known devices proactively
+
+Added scope beyond the original request: rather than waiting for a lighting command to discover a
+stale address reactively, `DeviceBackfillService` — already invoked once per connect, off the
+connect hot path (`ZigbeeHausBridge.TryConnectAsync` → detached `BackfillSafelyAsync`) — now also
+resolves each already-known device's `NetworkAddress` before re-reading its Basic cluster, reusing
+`IZigbeeCoordinator.ResolveNetworkAddressAsync` (no new resolution logic; this is the same
+`NetworkAddressResolver` the reactive path uses).
+
+`BackfillDeviceAsync` per device, in order (unchanged: `BackfillAsync` iterates sequentially, not
+concurrently — see the RequestId-collision note above for why that matters):
+1. `coordinator.ResolveNetworkAddressAsync(device.IeeeAddress, token) ?? device.NetworkAddress` — a
+   successful resolve also updates `KnownDeviceTable` as a side effect (`NetworkAddressResolver`'s
+   existing behavior), so the subsequent `ReadDeviceInfoAsync` call (which looks the device back up
+   in `KnownDeviceTable` by IEEE address) automatically uses the freshened address too. No answer
+   falls back to the address already on record, exactly like `NetworkAddressToReturn: null` in the
+   reactive path — best-effort, not a hard failure.
+2. `ReadDeviceInfoAsync` and the publish-if-classified logic are unchanged from the existing
+   backfill behavior; DeviceType/Metadata still come from a fresh Basic-cluster read (not "Unknown"
+   overwriting a known device), so the same landmine documented above for the reactive path doesn't
+   apply here either — this path was already safe against it.
+
+Why fold this into `DeviceBackfillService` instead of a new collaborator: a separate sweep that
+resolved-then-published its own `DeviceDiscoveredEvent` would need its own answer to "what
+DeviceType do I publish," and `ZigbeeDevice` (from `KnownDeviceTable`) carries no DeviceType at
+all — reusing `DeviceBackfillService`'s existing Basic-cluster-read-then-classify-then-publish flow
+avoids reinventing that safeguard.
 
 ## Test seams (no real hardware, no real DB — per hard constraint)
 
