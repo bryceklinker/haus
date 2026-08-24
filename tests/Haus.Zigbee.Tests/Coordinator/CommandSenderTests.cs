@@ -79,6 +79,48 @@ public class CommandSenderTests
     }
 
     [Fact]
+    public void WhenRequestingApsAckThenTheApsRequestSetsTheApsAckTxOptionsBit()
+    {
+        var request = new ZigbeeCommandRequest(
+            Destination: ApsDestination.Nwk(0x1234, 0x01),
+            SourceEndpoint: 0x01,
+            ProfileId: 0x0104,
+            ClusterId: 0x0006,
+            CommandId: 0x01,
+            Payload: new byte[] { 0xaa, 0xbb },
+            DisableDefaultResponse: true,
+            RequestApsAck: true
+        );
+
+        var timeout = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
+        _ = _commandSender.SendCommandAsync(request, timeout.Token);
+
+        var expectedAsdu = ZclCommandFactory.Encode(
+            new ZclCommand(
+                TransactionSequenceNumber: 0,
+                CommandId: 0x01,
+                Payload: new byte[] { 0xaa, 0xbb },
+                DisableDefaultResponse: true
+            )
+        );
+        var expectedFrame = new ApsDataRequestFrame(
+            SequenceNumber: 0,
+            RequestId: 0,
+            Destination: ApsDestination.Nwk(0x1234, 0x01),
+            ProfileId: 0x0104,
+            ClusterId: 0x0006,
+            SourceEndpoint: 0x01,
+            AsduPayload: expectedAsdu,
+            TxOptions: 0x04,
+            Radius: 0x00
+        );
+        Assert.Equal(
+            DeconzFrames.Framed(ApsDataRequestFrameCodec.Encode(expectedFrame)),
+            _senderTransport.WrittenBytes
+        );
+    }
+
+    [Fact]
     public async Task WhenTheCoordinatorConfirmsDeliveryThenThatConfirmIsReturnedToTheCaller()
     {
         _senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(sequenceNumber: 0)));

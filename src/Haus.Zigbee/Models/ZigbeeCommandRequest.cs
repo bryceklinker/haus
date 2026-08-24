@@ -9,5 +9,6 @@ public record ZigbeeCommandRequest(
     ushort ClusterId,
     byte CommandId,
     byte[] Payload,
-    bool DisableDefaultResponse
+    bool DisableDefaultResponse,
+    bool RequestApsAck = false
 );

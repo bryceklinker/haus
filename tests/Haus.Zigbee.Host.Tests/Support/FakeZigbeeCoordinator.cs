@@ -15,6 +15,10 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public IReadOnlyList<ZigbeeDevice> DevicesToReturn { get; set; } = [];
     public ApsDataConfirm ConfirmToReturn { get; set; } =
         new(0, 0, 0, DeconzAddressMode.Nwk, 0, null, 0, 0, ConfirmStatus: 0);
+
+    // Lets a test script successive confirms across retried sends (e.g. fail then succeed);
+    // SendCommandAsync falls back to ConfirmToReturn once this is exhausted.
+    public Queue<ApsDataConfirm> ConfirmSequence { get; } = new();
     public ZigbeeDeviceInfo? DeviceInfoToReturn { get; set; }
 
     public bool IsConnected { get; set; }
@@ -61,7 +65,8 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token)
     {
         SentCommands.Add(request);
-        return Task.FromResult(ConfirmToReturn);
+        var confirm = ConfirmSequence.Count > 0 ? ConfirmSequence.Dequeue() : ConfirmToReturn;
+        return Task.FromResult(confirm);
     }
 
     public void RaiseDeviceJoined(ZigbeeDeviceJoined joined)

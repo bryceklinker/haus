@@ -126,34 +126,62 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task HandleCommandAsync_LightingCommandWithFailedConfirmStatus_LogsWarningWithoutThrowing()
+    public async Task HandleCommandAsync_LightingCommandWithFailedConfirmThenSuccessOnRetry_RetriesOnceWithApsAckAndDoesNotLogFailure()
     {
-        _coordinator!.ConfirmToReturn = new ApsDataConfirm(
-            0,
-            0,
-            0,
-            DeconzAddressMode.Nwk,
-            0x1234,
-            null,
-            1,
-            1,
-            ConfirmStatus: 0xAD
-        );
+        _coordinator!.ConfirmSequence.Enqueue(FailedConfirm());
+        _coordinator.ConfirmSequence.Enqueue(SuccessfulConfirm());
         var device = new DeviceModel
         {
             ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
             NetworkAddress = 0x1234,
         };
-        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.Off))
             .AsHausCommand()
             .ToMqttMessage("haus/commands");
 
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
-        Assert.NotEmpty(_coordinator.SentCommands);
-        Assert.Contains(
+        Assert.Equal(2, _coordinator.SentCommands.Count);
+        Assert.False(_coordinator.SentCommands[0].RequestApsAck);
+        Assert.True(_coordinator.SentCommands[1].RequestApsAck);
+        Assert.Equal(_coordinator.SentCommands[0].Destination, _coordinator.SentCommands[1].Destination);
+        Assert.DoesNotContain(
             _loggerFactory!.Entries,
-            entry => entry.Level == LogLevel.Warning && entry.Message.Contains("confirm status")
+            entry => entry.Level == LogLevel.Warning && entry.Message.Contains("failed with APS confirm status")
         );
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithConfirmFailingTwice_RetriesExactlyOnceThenLogsFailure()
+    {
+        _coordinator!.ConfirmToReturn = FailedConfirm();
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            NetworkAddress = 0x1234,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.Off))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Assert.Equal(2, _coordinator.SentCommands.Count);
+        Assert.False(_coordinator.SentCommands[0].RequestApsAck);
+        Assert.True(_coordinator.SentCommands[1].RequestApsAck);
+        Assert.Single(
+            _loggerFactory!.Entries,
+            entry => entry.Level == LogLevel.Warning && entry.Message.Contains("failed with APS confirm status")
+        );
+    }
+
+    private static ApsDataConfirm FailedConfirm()
+    {
+        return new ApsDataConfirm(0, 0, 0, DeconzAddressMode.Nwk, 0x1234, null, 1, 1, ConfirmStatus: 0xAD);
+    }
+
+    private static ApsDataConfirm SuccessfulConfirm()
+    {
+        return new ApsDataConfirm(0, 0, 0, DeconzAddressMode.Nwk, 0x1234, null, 1, 1, ConfirmStatus: 0x00);
     }
 }

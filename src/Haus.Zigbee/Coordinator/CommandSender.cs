@@ -12,6 +12,10 @@ namespace Haus.Zigbee.Coordinator;
 public class CommandSender(ApsSender sender)
 {
     private const byte NoApsAckRequested = 0x00;
+
+    // deCONZ APS-DATA.request TxOptions bit 2: request an APS-layer acknowledgment (a real
+    // delivery receipt from the destination) rather than just the usual MAC-layer confirm.
+    private const byte ApsAckRequested = 0x04;
     private const byte UnlimitedRadius = 0x00;
 
     private readonly ApsSender _sender = sender;
@@ -36,7 +40,7 @@ public class CommandSender(ApsSender sender)
             ClusterId: request.ClusterId,
             SourceEndpoint: request.SourceEndpoint,
             AsduPayload: asdu,
-            TxOptions: NoApsAckRequested,
+            TxOptions: request.RequestApsAck ? ApsAckRequested : NoApsAckRequested,
             Radius: UnlimitedRadius
         );
         return _sender.SendAsync(apsRequest, token);
