@@ -127,7 +127,20 @@ public class ZigbeeOutboundRelay(
         if (!ExternalIdConverter.TryParseAddress(device.ExternalId, out var ieeeAddress))
             return null;
 
-        return await coordinator.ResolveNetworkAddressAsync(ieeeAddress, token);
+        if (await coordinator.ResolveNetworkAddressAsync(ieeeAddress, token) is not { } networkAddress)
+            return null;
+
+        addressRegistry.Register(networkAddress, device.ExternalId);
+
+        // DeviceEntity.UpdateFromDiscoveredDevice unconditionally overwrites DeviceType, so the
+        // event must carry this command's already-classified DeviceType/Metadata -- publishing
+        // DeviceType.Unknown here would silently reclassify a known light back to Unknown on every
+        // stale-address command after a restart.
+        var hausMqttClient = await mqttClientFactory.CreateClient();
+        await hausMqttClient.PublishHausEventAsync(
+            new DeviceDiscoveredEvent(device.ExternalId, device.DeviceType, device.Metadata, networkAddress)
+        );
+        return networkAddress;
     }
 
     private async Task HandleMissingNetworkAddressAsync(DeviceModel device)
