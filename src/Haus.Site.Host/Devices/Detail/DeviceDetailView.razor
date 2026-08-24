@@ -1,15 +1,19 @@
+@using Haus.Api.Client.Devices
 @using Haus.Core.Models.Devices
+@using Haus.Core.Models.Lighting
+@using Haus.Site.Host.Shared.Lighting
 @using Haus.Site.Host.Shared.Metadata
 
 @attribute [Authorize]
 
 @inject IDialogService DialogService
+@inject IDeviceApiClient DevicesClient
 
 <MudPaper Class="pa-4 device-detail">
     <MudToolBar Class="pa-0">
         <MudText Typo="Typo.h5">Device Details</MudText>
         <MudSpacer/>
-        <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="HandleDeleteClicked"/>
+        <MudIconButton Class="delete-device-button" Icon="@Icons.Material.Filled.Delete" OnClick="HandleDeleteClicked"/>
     </MudToolBar>
 
     <MudTextField T="string"
@@ -48,7 +52,13 @@
         <MudPaper Class="pa-4">
             <MudText Typo="Typo.h4">Metadata</MudText>
             <EditableMetadataListView Items="Device.Metadata"/>
-        </MudPaper>    
+        </MudPaper>
+    }
+
+    @if (Device.DeviceType == DeviceType.Light)
+    {
+        <LightingView Lighting="Device.Lighting ?? new LightingModel()"
+                      OnLightingChanged="HandleLightingChanged"/>
     }
 </MudPaper>
 
@@ -59,5 +69,16 @@
     {
         var parameters = new DialogParameters<DeleteDeviceDialogView> { { x => x.Device, Device } };
         await DialogService.ShowAsync<DeleteDeviceDialogView>(null, parameters);
+    }
+
+    private async Task HandleLightingChanged(LightingModel? lighting)
+    {
+        if (lighting == null || lighting == Device.Lighting)
+        {
+            return;
+        }
+
+        await DevicesClient.ChangeDeviceLightingAsync(Device.Id, lighting);
+        Device = await DevicesClient.GetDeviceAsync(Device.Id) ?? Device;
     }
 }
