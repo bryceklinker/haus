@@ -24,15 +24,19 @@ internal class BackfillDeviceNetworkAddressesCommandHandler(HausDbContext contex
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        foreach (var device in devicesMissingNetworkAddress)
-        {
-            var legacyValue = device.Metadata.FirstOrDefault(m => m.Key == LegacyNetworkAddressMetadataKey)?.Value;
-            if (legacyValue == null || !ushort.TryParse(legacyValue, out var networkAddress))
-                continue;
+        var devicesToBackfill = devicesMissingNetworkAddress
+            .Select(d => (Device: d, NetworkAddress: ParseLegacyNetworkAddress(d)))
+            .Where(d => d.NetworkAddress != null);
 
+        foreach (var (device, networkAddress) in devicesToBackfill)
             device.NetworkAddress = networkAddress;
-        }
 
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    private static ushort? ParseLegacyNetworkAddress(DeviceEntity device)
+    {
+        var legacyValue = device.Metadata.FirstOrDefault(m => m.Key == LegacyNetworkAddressMetadataKey)?.Value;
+        return legacyValue != null && ushort.TryParse(legacyValue, out var networkAddress) ? networkAddress : null;
     }
 }
