@@ -89,7 +89,8 @@ public class ZigbeeOutboundRelay(
         }
 
         var device = command.Payload.Device;
-        if (device.NetworkAddress is not { } networkAddress)
+        var resolvedNetworkAddress = device.NetworkAddress ?? await ResolveNetworkAddressAsync(device, token);
+        if (resolvedNetworkAddress is not { } networkAddress)
         {
             await HandleMissingNetworkAddressAsync(device);
             return;
@@ -115,6 +116,18 @@ public class ZigbeeOutboundRelay(
                     confirm.ConfirmStatus
                 );
         }
+    }
+
+    // A previously-paired device whose NetworkAddress went stale over a Host restart can still be
+    // reached by broadcasting for its current short address before giving up. An ExternalId that
+    // does not parse to an IEEE address, or a broadcast nobody answers, both resolve to null and
+    // fall through to the same drop-and-log path as before.
+    private async Task<ushort?> ResolveNetworkAddressAsync(DeviceModel device, CancellationToken token)
+    {
+        if (!ExternalIdConverter.TryParseAddress(device.ExternalId, out var ieeeAddress))
+            return null;
+
+        return await coordinator.ResolveNetworkAddressAsync(ieeeAddress, token);
     }
 
     private async Task HandleMissingNetworkAddressAsync(DeviceModel device)

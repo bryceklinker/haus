@@ -114,6 +114,34 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddressButResolvable_SendsCommandsUsingTheResolvedNetworkAddress()
+    {
+        const ushort resolvedNetworkAddress = 0x1234;
+        _coordinator!.NetworkAddressToReturn = resolvedNetworkAddress;
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            DeviceType = DeviceType.Light,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Assert.Equal([new IeeeAddress(1)], _coordinator.ResolveNetworkAddressCalls);
+        Assert.NotEmpty(_coordinator.SentCommands);
+        Assert.All(
+            _coordinator.SentCommands,
+            request =>
+            {
+                Assert.Equal(DeconzAddressMode.Nwk, request.Destination.Mode);
+                Assert.Equal(resolvedNetworkAddress, request.Destination.ShortAddress);
+            }
+        );
+    }
+
+    [Fact]
     public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddress_SendsNothing()
     {
         var device = new DeviceModel { ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)) };
