@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
   <ItemGroup>
     <PackageReference Include="Humanizer" Version="3.0.10" />
-    <PackageReference Include="MudBlazor" Version="9.8.0" />
+    <PackageReference Include="MudBlazor" Version="9.9.0" />
     <PackageReference
       Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication"
       Version="$(MicrosoftPackageVersion)"
