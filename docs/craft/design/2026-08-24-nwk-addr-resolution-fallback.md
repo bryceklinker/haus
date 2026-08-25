@@ -207,6 +207,40 @@ concurrently — see the RequestId-collision note above for why that matters):
    overwriting a known device), so the same landmine documented above for the reactive path doesn't
    apply here either — this path was already safe against it.
 
+Correction to the RequestId-collision note above: "resolving devices sequentially" only guarantees
+no two broadcasts are in flight *within the sweep itself*. It does not prevent the sweep's resolve
+for one device from overlapping a *reactive* background resolve (`ZigbeeOutboundRelay`'s
+`TriggerBackgroundResolve`) for a different device racing in from a queued MQTT command at the same
+time — those two collaborators don't share a dedupe set. That overlap is a redundant broadcast at
+worst (both still go through `NetworkAddressResolver`'s single `Interlocked`-based counters, so
+their transaction sequence numbers and request IDs never collide with each other), not a
+correctness problem, so it's left as-is rather than adding a second dedupe layer across collaborators.
+
+### Second fresh-eyes review pass: lost-update race in `KnownDeviceTable` (fixed)
+
+A second review round, run after the pump-blocking/IEEE-verification/RequestId findings above were
+already addressed, found one more real gap: `NetworkAddressResolver.RecordResolvedAddress` did a
+`TryGet` (read the existing entry's `Endpoints`) followed by a separate `AddOrUpdate` (write a
+rebuilt `ZigbeeDevice`) — two independent `ConcurrentDictionary` operations, not one atomic step.
+`DeviceInterview.InterviewAsync` does its own unsynchronized `AddOrUpdate` with a freshly-discovered
+endpoint list. If a device's own re-announce interview completed *between* the resolver's `TryGet`
+and its `AddOrUpdate` for that same device, the resolver's write would silently clobber the
+interview's newly-discovered endpoints with the stale ones it read a moment earlier. The resolved
+*address* was always correct either way (the resolver only ever writes the value it just verified),
+but endpoints could be lost — and the new startup sweep meaningfully raises the odds of exactly
+this interleaving, since it proactively resolves every known device right at connect, precisely
+when devices are most likely to be re-announcing after the same restart.
+
+Fixed by giving `KnownDeviceTable` an atomic `UpdateNetworkAddress(ieeeAddress, networkAddress)`
+method built on `ConcurrentDictionary.AddOrUpdate`'s factory overload — the read of the existing
+entry and the write of the updated one now happen as a single dictionary operation (retried against
+the latest value on contention, per `ConcurrentDictionary`'s documented semantics), so there is no
+window between them for a concurrent `AddOrUpdate` to land in. `NetworkAddressResolver` now calls
+this instead of doing its own `TryGet` + `AddOrUpdate`. `DeviceInterview.InterviewAsync` still does
+a plain `AddOrUpdate` for its own full-device write (network address, endpoints, and everything
+else it just discovered) — that write is intentionally the fresher, complete replacement in this
+race, and is unaffected by this fix.
+
 Why fold this into `DeviceBackfillService` instead of a new collaborator: a separate sweep that
 resolved-then-published its own `DeviceDiscoveredEvent` would need its own answer to "what
 DeviceType do I publish," and `ZigbeeDevice` (from `KnownDeviceTable`) carries no DeviceType at

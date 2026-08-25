@@ -111,8 +111,7 @@ public class NetworkAddressResolver : IDisposable
         if (response.IeeeAddress != ieeeAddress)
             return null;
 
-        var endpoints = _knownDeviceTable.TryGet(ieeeAddress, out var existing) ? existing.Endpoints : [];
-        _knownDeviceTable.AddOrUpdate(new ZigbeeDevice(ieeeAddress, response.NetworkAddress, endpoints));
+        _knownDeviceTable.UpdateNetworkAddress(ieeeAddress, response.NetworkAddress);
         return response.NetworkAddress;
     }
 

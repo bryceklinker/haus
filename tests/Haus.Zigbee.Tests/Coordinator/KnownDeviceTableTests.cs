@@ -76,6 +76,34 @@ public class KnownDeviceTableTests
         Assert.False(found);
     }
 
+    [Fact]
+    public void WhenNetworkAddressIsUpdatedForAnAlreadyKnownDeviceThenItsEndpointsArePreserved()
+    {
+        var table = new KnownDeviceTable();
+        var endpoint = new ZigbeeEndpoint(0x01, 0x0104, 0x0100, new ushort[] { 0x0000 }, Array.Empty<ushort>());
+        var ieeeAddress = new IeeeAddress(0x00124b0001234567);
+        table.AddOrUpdate(new ZigbeeDevice(ieeeAddress, NetworkAddress: 0x1234, new[] { endpoint }));
+
+        table.UpdateNetworkAddress(ieeeAddress, networkAddress: 0x9999);
+
+        table.TryGet(ieeeAddress, out var updated);
+        Assert.Equal(0x9999, updated!.NetworkAddress);
+        Assert.Equal(new[] { endpoint }, updated.Endpoints);
+    }
+
+    [Fact]
+    public void WhenNetworkAddressIsUpdatedForAnUnknownDeviceThenItIsAddedWithNoEndpoints()
+    {
+        var table = new KnownDeviceTable();
+        var ieeeAddress = new IeeeAddress(0x00124b0001234567);
+
+        table.UpdateNetworkAddress(ieeeAddress, networkAddress: 0x9999);
+
+        table.TryGet(ieeeAddress, out var added);
+        Assert.Equal(0x9999, added!.NetworkAddress);
+        Assert.Empty(added.Endpoints);
+    }
+
     private static ZigbeeDevice DeviceWith(ulong ieeeAddress, ushort networkAddress)
     {
         return new ZigbeeDevice(new IeeeAddress(ieeeAddress), networkAddress, Array.Empty<ZigbeeEndpoint>());
