@@ -32,13 +32,18 @@ public class DeviceBackfillService(
     {
         try
         {
+            // A resolve refreshes the address in case it changed since this device was last seen;
+            // no answer falls back to the address already on record rather than abandoning backfill.
+            var networkAddress =
+                await coordinator.ResolveNetworkAddressAsync(device.IeeeAddress, token) ?? device.NetworkAddress;
+
             var info = await coordinator.ReadDeviceInfoAsync(device.IeeeAddress, token);
             if (info == null)
                 return;
 
             var joined = new ZigbeeDeviceJoined(
                 device.IeeeAddress,
-                device.NetworkAddress,
+                networkAddress,
                 device.Endpoints,
                 info.ManufacturerName,
                 info.ModelIdentifier
