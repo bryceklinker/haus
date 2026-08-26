@@ -30,6 +30,8 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     // block waiting on it. Left null, resolution completes immediately with NetworkAddressToReturn.
     public TaskCompletionSource<ushort?>? ResolveNetworkAddressGate { get; set; }
 
+    public Exception? ResolveNetworkAddressShouldThrow { get; set; }
+
     public bool IsConnected { get; set; }
     public NetworkConfig? NetworkConfig { get; set; }
     public Exception? ConnectShouldThrow { get; set; }
@@ -65,6 +67,9 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public Task<ushort?> ResolveNetworkAddressAsync(IeeeAddress ieeeAddress, CancellationToken token)
     {
         ResolveNetworkAddressCalls.Add(ieeeAddress);
+        if (ResolveNetworkAddressShouldThrow != null)
+            throw ResolveNetworkAddressShouldThrow;
+
         return ResolveNetworkAddressGate?.Task ?? Task.FromResult(NetworkAddressToReturn);
     }
 

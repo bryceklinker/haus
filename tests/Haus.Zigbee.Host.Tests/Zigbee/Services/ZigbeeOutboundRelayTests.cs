@@ -192,6 +192,29 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task HandleCommandAsync_BackgroundResolutionThrows_LogsTheFailureAndDoesNotPropagateFromHandleCommandAsync()
+    {
+        _coordinator!.ResolveNetworkAddressShouldThrow = new InvalidOperationException("boom");
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            DeviceType = DeviceType.Light,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Eventually.Assert(() =>
+            Assert.Contains(
+                _loggerFactory!.Entries,
+                entry => entry.Level == LogLevel.Error && entry.Exception?.Message == "boom"
+            )
+        );
+    }
+
+    [Fact]
     public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddressButResolvable_PublishesDeviceDiscoveredCarryingOriginalDeviceTypeAndMetadata()
     {
         const ushort resolvedNetworkAddress = 0x1234;
