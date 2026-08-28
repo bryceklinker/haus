@@ -46,6 +46,12 @@
                   ReadOnly="true"
                   InputId="roomId"
                   Value="Device.RoomId"/>
+    <MudTextField T="string"
+                  Label="Network Address"
+                  FullWidth="true"
+                  ReadOnly="true"
+                  InputId="networkAddress"
+                  Value="@NetworkAddressDisplay"/>
 
     @if (Device.DeviceType == DeviceType.Light)
     {
@@ -73,6 +79,8 @@
     [Parameter] public required DeviceModel Device { get; set; }
 
     private bool _metadataExpanded;
+
+    private string NetworkAddressDisplay => Device.NetworkAddress?.ToString() ?? "Unknown";
 
     private async Task HandleDeleteClicked()
     {

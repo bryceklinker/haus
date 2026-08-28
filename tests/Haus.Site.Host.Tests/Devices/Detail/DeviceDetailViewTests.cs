@@ -42,6 +42,23 @@ public class DeviceDetailViewTests : HausSiteTestContext
             page.FindMudTextFieldById<LightType>("lightType").Instance.GetState(x => x.Value)
         );
         Assert.Equal(device.RoomId, page.FindMudTextFieldById<long?>("roomId").Instance.GetState(x => x.Value));
+        Assert.Equal(
+            device.NetworkAddress.ToString(),
+            page.FindMudTextFieldById<string>("networkAddress").Instance.GetState(x => x.Value)
+        );
+    }
+
+    [Fact]
+    public void WhenDeviceNetworkAddressIsNullThenShowsUnknown()
+    {
+        var device = HausModelFactory.DeviceModel() with { NetworkAddress = null };
+
+        var page = Context.Render<DeviceDetailView>(opts =>
+        {
+            opts.Add(p => p.Device, device);
+        });
+
+        Assert.Equal("Unknown", page.FindMudTextFieldById<string>("networkAddress").Instance.GetState(x => x.Value));
     }
 
     [Fact]
