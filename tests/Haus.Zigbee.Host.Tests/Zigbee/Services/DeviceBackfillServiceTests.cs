@@ -75,6 +75,43 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task BackfillAsync_ResolvesEachKnownDevicesNetworkAddressAndUsesTheResolvedAddress()
+    {
+        var address = new IeeeAddress(1);
+        _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [])];
+        _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
+        _coordinator.NetworkAddressToReturn = 0x5678;
+        DeviceDiscoveredEvent? published = null;
+        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
+            DeviceDiscoveredEvent.Type,
+            e => published = e.Payload
+        );
+
+        await _service!.BackfillAsync(CancellationToken.None);
+
+        Assert.Equal([address], _coordinator.ResolveNetworkAddressCalls);
+        Eventually.Assert(() => Assert.Equal((ushort?)0x5678, published?.NetworkAddress));
+    }
+
+    [Fact]
+    public async Task BackfillAsync_ResolutionFindsNoAnswer_FallsBackToTheAlreadyKnownNetworkAddress()
+    {
+        var address = new IeeeAddress(1);
+        _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [])];
+        _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
+        _coordinator.NetworkAddressToReturn = null;
+        DeviceDiscoveredEvent? published = null;
+        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
+            DeviceDiscoveredEvent.Type,
+            e => published = e.Payload
+        );
+
+        await _service!.BackfillAsync(CancellationToken.None);
+
+        Eventually.Assert(() => Assert.Equal((ushort?)0x1234, published?.NetworkAddress));
+    }
+
+    [Fact]
     public async Task BackfillAsync_DeviceInfoResolvesToUnknown_DoesNotPublish()
     {
         var address = new IeeeAddress(1);

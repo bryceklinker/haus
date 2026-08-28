@@ -361,6 +361,45 @@ public class ZigbeeCoordinatorTests
         Assert.Equal(string.Empty, info.ModelIdentifier);
     }
 
+    [Fact]
+    public async Task WhenABroadcastNwkAddressRequestIsAnsweredThenResolveNetworkAddressReturnsItAndRecordsTheDevice()
+    {
+        SetNetworkParameters();
+        using var coordinator = new ZigbeeCoordinator(_dongle);
+        await coordinator.ConnectAsync(CancellationToken.None);
+        _dongle.ReleaseAfterApsRequest(
+            apsRequestIndex: 0,
+            NwkAddrResponseIndication(networkAddress: 0x1a2b, ieee: 0x00124b0001aabbcc)
+        );
+
+        var resolved = await WaitFor(
+            coordinator.ResolveNetworkAddressAsync(new IeeeAddress(0x00124b0001aabbcc), CancellationToken.None)
+        );
+
+        Assert.Equal((ushort?)0x1a2b, resolved);
+        var devices = await coordinator.GetDevicesAsync(CancellationToken.None);
+        var device = Assert.Single(devices);
+        Assert.Equal(new IeeeAddress(0x00124b0001aabbcc), device.IeeeAddress);
+        Assert.Equal((ushort)0x1a2b, device.NetworkAddress);
+    }
+
+    private static IndicationBody NwkAddrResponseIndication(ushort networkAddress, ulong ieee)
+    {
+        const ushort zdpProfile = 0x0000;
+        const ushort nwkAddrResponseCluster = 0x8000;
+        const byte successStatus = 0x00;
+        var asdu = new List<byte> { 0x00, successStatus };
+        AddUInt64(asdu, ieee);
+        AddUInt16(asdu, networkAddress);
+        return new IndicationBody(
+            networkAddress,
+            SourceEndpoint: 0x00,
+            zdpProfile,
+            nwkAddrResponseCluster,
+            asdu.ToArray()
+        );
+    }
+
     private void DriveJoinWithNoEndpoints(ushort networkAddress, ulong ieee)
     {
         _dongle.InjectIndication(AnnounceIndication(networkAddress, ieee));

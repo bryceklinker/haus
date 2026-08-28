@@ -1,5 +1,7 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Discovery;
@@ -111,6 +113,140 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
                 Assert.Equal(networkAddress, request.Destination.ShortAddress);
             }
         );
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddress_DoesNotWaitOnResolutionBeforeReturning()
+    {
+        _coordinator!.ResolveNetworkAddressGate = new TaskCompletionSource<ushort?>(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            DeviceType = DeviceType.Light,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        var handleTask = _relay!.HandleCommandAsync(message, CancellationToken.None);
+        var completed = await Task.WhenAny(handleTask, Task.Delay(TimeSpan.FromSeconds(2)));
+
+        Assert.Same(handleTask, completed);
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddressButResolvable_DropsTheCommandAndResolvesTheAddressInTheBackgroundForNextTime()
+    {
+        const ushort resolvedNetworkAddress = 0x1234;
+        _coordinator!.NetworkAddressToReturn = resolvedNetworkAddress;
+        var externalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1));
+        var device = new DeviceModel { ExternalId = externalId, DeviceType = DeviceType.Light };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+        ZigbeeCommandDroppedEvent? dropped = null;
+        await _hausMqttClient!.SubscribeToHausEventsAsync<ZigbeeCommandDroppedEvent>(
+            ZigbeeCommandDroppedEvent.Type,
+            e => dropped = e.Payload
+        );
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Assert.Empty(_coordinator.SentCommands);
+        Eventually.Assert(() =>
+        {
+            Assert.Equal(externalId, dropped?.ExternalId);
+            Assert.Equal([new IeeeAddress(1)], _coordinator.ResolveNetworkAddressCalls);
+            Assert.True(_addressRegistry!.TryGetExternalId(resolvedNetworkAddress, out var registeredExternalId));
+            Assert.Equal(externalId, registeredExternalId);
+        });
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_RepeatedLightingCommandsWithoutNetworkAddressForTheSameDevice_OnlyResolvesOnceWhileAResolutionIsPending()
+    {
+        _coordinator!.ResolveNetworkAddressGate = new TaskCompletionSource<ushort?>(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            DeviceType = DeviceType.Light,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+        await Task.WhenAny(
+            Task.WhenAll(
+                _relay!.HandleCommandAsync(message, CancellationToken.None),
+                _relay.HandleCommandAsync(message, CancellationToken.None)
+            ),
+            Task.Delay(Timeout.Infinite, timeout.Token)
+        );
+
+        Eventually.Assert(() => Assert.Single(_coordinator!.ResolveNetworkAddressCalls));
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_BackgroundResolutionThrows_LogsTheFailureAndDoesNotPropagateFromHandleCommandAsync()
+    {
+        _coordinator!.ResolveNetworkAddressShouldThrow = new InvalidOperationException("boom");
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            DeviceType = DeviceType.Light,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Eventually.Assert(() =>
+            Assert.Contains(
+                _loggerFactory!.Entries,
+                entry => entry.Level == LogLevel.Error && entry.Exception?.Message == "boom"
+            )
+        );
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddressButResolvable_PublishesDeviceDiscoveredCarryingOriginalDeviceTypeAndMetadata()
+    {
+        const ushort resolvedNetworkAddress = 0x1234;
+        _coordinator!.NetworkAddressToReturn = resolvedNetworkAddress;
+        var externalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1));
+        var metadata = new[] { new MetadataModel("model", "LED1836G9") };
+        var device = new DeviceModel
+        {
+            ExternalId = externalId,
+            DeviceType = DeviceType.Light,
+            Metadata = metadata,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+        DeviceDiscoveredEvent? published = null;
+        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
+            DeviceDiscoveredEvent.Type,
+            e => published = e.Payload
+        );
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Assert.True(_addressRegistry!.TryGetExternalId(resolvedNetworkAddress, out var registeredExternalId));
+        Assert.Equal(externalId, registeredExternalId);
+        Eventually.Assert(() =>
+        {
+            Assert.Equal(externalId, published?.Id);
+            Assert.Equal(DeviceType.Light, published?.DeviceType);
+            Assert.Equal(resolvedNetworkAddress, published?.NetworkAddress);
+            Assert.Equal(metadata, published?.Metadata);
+        });
     }
 
     [Fact]
