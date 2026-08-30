@@ -70,6 +70,18 @@ public class DeviceEntityTest
     }
 
     [Fact]
+    public void WhenAlreadyClassifiedDeviceIsUpdatedFromDiscoveredDeviceWithUnknownTypeThenDeviceTypeIsUnchanged()
+    {
+        var model = new DeviceDiscoveredEvent("", DeviceType.Unknown, NetworkAddress: 0x4321);
+        var entity = new DeviceEntity(deviceType: DeviceType.Light);
+
+        entity.UpdateFromDiscoveredDevice(model, new FakeDomainEventBus());
+
+        Assert.Equal(DeviceType.Light, entity.DeviceType);
+        Assert.Equal((ushort)0x4321, entity.NetworkAddress);
+    }
+
+    [Fact]
     public void WhenCreatedFromDeviceDiscoveredThenNetworkAddressIsSet()
     {
         var model = new DeviceDiscoveredEvent("this-id", NetworkAddress: 0x9abc);

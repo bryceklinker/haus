@@ -103,8 +103,14 @@ public record DeviceEntity : Entity
 
     public void UpdateFromDiscoveredDevice(DeviceDiscoveredEvent @event, IDomainEventBus domainEventBus)
     {
-        DeviceType = @event.DeviceType;
-        LightType = GetValidLightType(@event.DeviceType, LightType);
+        // A full discovery resync republishes every already-known device with DeviceType.Unknown
+        // (see DevicesMapper.CreateDeviceDiscoveredEvent); an already-classified device must keep
+        // its DeviceType rather than being silently reclassified back to Unknown on restart.
+        var isRediscoveredAsUnknown = @event.DeviceType == DeviceType.Unknown && DeviceType != DeviceType.Unknown;
+        if (!isRediscoveredAsUnknown)
+            DeviceType = @event.DeviceType;
+
+        LightType = GetValidLightType(DeviceType, LightType);
         NetworkAddress = @event.NetworkAddress;
         Lighting = GenerateDefaultLighting();
         if (IsLight)
