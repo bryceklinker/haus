@@ -81,7 +81,7 @@ public class ZigbeeOutboundRelay(
             addressRegistry.Register(device.NetworkAddress, ExternalIdConverter.ToExternalId(device.IeeeAddress));
 
         var hausMqttClient = await mqttClientFactory.CreateClient();
-        foreach (var discovered in devicesMapper.Map(devices))
+        foreach (var discovered in await devicesMapper.MapAsync(devices, token))
             await hausMqttClient.PublishHausEventAsync(discovered);
     }
 

@@ -21,6 +21,11 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public Queue<ApsDataConfirm> ConfirmSequence { get; } = new();
     public ZigbeeDeviceInfo? DeviceInfoToReturn { get; set; }
 
+    // Lets a test make ReadDeviceInfoAsync throw for one specific device while others still
+    // resolve normally, to prove a caller isolates per-device failures instead of aborting a
+    // whole-batch operation like SyncDevicesAsync.
+    public Dictionary<IeeeAddress, Exception> ReadDeviceInfoShouldThrowForAddress { get; } = new();
+
     // Default null means "no resolution" -- the relay's stale-address fallback treats that as a
     // timeout and drops the command, exactly like a device that never answered the broadcast.
     public ushort? NetworkAddressToReturn { get; set; }
@@ -61,6 +66,9 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
 
     public Task<ZigbeeDeviceInfo?> ReadDeviceInfoAsync(IeeeAddress ieeeAddress, CancellationToken token)
     {
+        if (ReadDeviceInfoShouldThrowForAddress.TryGetValue(ieeeAddress, out var exception))
+            throw exception;
+
         return Task.FromResult(DeviceInfoToReturn);
     }
 

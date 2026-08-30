@@ -75,6 +75,7 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
     {
         var address = new IeeeAddress(1);
         _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [])];
+        _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
         DeviceDiscoveredEvent? published = null;
         await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
             DeviceDiscoveredEvent.Type,
@@ -87,6 +88,48 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         Assert.True(_addressRegistry!.TryGetExternalId(0x1234, out var externalId));
         Assert.Equal(ExternalIdConverter.ToExternalId(address), externalId);
         Eventually.Assert(() => Assert.Equal(ExternalIdConverter.ToExternalId(address), published?.Id));
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_SyncDiscovery_DeviceResolvesToAKnownType_PublishesTheResolvedDeviceType()
+    {
+        var address = new IeeeAddress(1);
+        _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [])];
+        _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
+        DeviceDiscoveredEvent? published = null;
+        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
+            DeviceDiscoveredEvent.Type,
+            e => published = e.Payload
+        );
+        var message = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Eventually.Assert(() => Assert.Equal(DeviceType.Light, published?.DeviceType));
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_SyncDiscovery_DeviceInfoResolvesToUnknown_DoesNotPublishAndDoesNotClobberAnAlreadyKnownDevice()
+    {
+        _coordinator!.DevicesToReturn = [new ZigbeeDevice(new IeeeAddress(1), 0x1234, [])];
+        _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("nope", "nope");
+        var published = false;
+        var canaryReceived = false;
+        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
+            DeviceDiscoveredEvent.Type,
+            _ => published = true
+        );
+        await _hausMqttClient!.SubscribeToHausEventsAsync<DiscoveryStoppedEvent>(
+            DiscoveryStoppedEvent.Type,
+            _ => canaryReceived = true
+        );
+        var message = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+        await _hausMqttClient!.PublishHausEventAsync(new DiscoveryStoppedEvent());
+
+        Eventually.Assert(() => Assert.True(canaryReceived));
+        Assert.False(published);
     }
 
     [Fact]
