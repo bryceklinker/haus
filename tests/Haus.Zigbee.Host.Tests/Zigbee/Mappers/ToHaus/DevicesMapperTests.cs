@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -8,6 +9,7 @@ using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 using Haus.Zigbee.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Mappers.ToHaus;
@@ -16,9 +18,17 @@ public class DevicesMapperTests
 {
     private static readonly ZigbeeDeviceInfo ResolvableDeviceInfo = new("Philips", "929002335001");
 
-    private static DevicesMapper CreateMapper(FakeZigbeeCoordinator coordinator)
+    private static DevicesMapper CreateMapper(
+        FakeZigbeeCoordinator coordinator,
+        CapturingLoggerFactory? loggerFactory = null
+    )
     {
-        var provider = ServiceProviderFactory.Create(zigbeeCoordinator: coordinator);
+        var provider = ServiceProviderFactory.Create(
+            zigbeeCoordinator: coordinator,
+            configureServices: loggerFactory == null
+                ? null
+                : services => services.AddSingleton<ILoggerFactory>(loggerFactory)
+        );
         return provider.GetRequiredService<DevicesMapper>();
     }
 
@@ -98,5 +108,37 @@ public class DevicesMapperTests
         var result = await mapper.MapAsync([device], CancellationToken.None);
 
         Assert.Empty(result);
+    }
+
+    [Fact]
+    public async Task MapAsync_OneDeviceFailsToResolve_StillReturnsEventsForTheOtherDevices()
+    {
+        var failingAddress = new IeeeAddress(1);
+        var succeedingAddress = new IeeeAddress(2);
+        var coordinator = new FakeZigbeeCoordinator { DeviceInfoToReturn = ResolvableDeviceInfo };
+        coordinator.ReadDeviceInfoShouldThrowForAddress[failingAddress] = new InvalidOperationException("boom");
+        var devices = new List<ZigbeeDevice> { new(failingAddress, 1, []), new(succeedingAddress, 2, []) };
+        var mapper = CreateMapper(coordinator);
+
+        var result = await mapper.MapAsync(devices, CancellationToken.None);
+
+        Assert.Equal([ExternalIdConverter.ToExternalId(succeedingAddress)], result.Select(e => e.Id));
+    }
+
+    [Fact]
+    public async Task MapAsync_OneDeviceFailsToResolve_LogsTheFailure()
+    {
+        var failingAddress = new IeeeAddress(1);
+        var coordinator = new FakeZigbeeCoordinator { DeviceInfoToReturn = ResolvableDeviceInfo };
+        coordinator.ReadDeviceInfoShouldThrowForAddress[failingAddress] = new InvalidOperationException("boom");
+        var loggerFactory = new CapturingLoggerFactory();
+        var mapper = CreateMapper(coordinator, loggerFactory);
+
+        await mapper.MapAsync([new ZigbeeDevice(failingAddress, 1, [])], CancellationToken.None);
+
+        Assert.Contains(
+            loggerFactory.Entries,
+            entry => entry.Level == LogLevel.Error && entry.Exception?.Message == "boom"
+        );
     }
 }
