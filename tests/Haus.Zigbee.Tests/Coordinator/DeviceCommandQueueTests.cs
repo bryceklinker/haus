@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Models;
+using Haus.Zigbee.Serial.Frames;
 using Xunit;
 
 namespace Haus.Zigbee.Tests.Coordinator;
@@ -159,5 +160,120 @@ public class DeviceCommandQueueTests
         cts.Cancel();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => task1);
+    }
+
+    [Fact]
+    public async Task GroupCommands_DoNotSerialize()
+    {
+        var queue = new DeviceCommandQueue();
+        var startedCount = 0;
+        var allStarted = new TaskCompletionSource();
+        var canComplete = new TaskCompletionSource();
+
+        async Task<int> ExecuteCommand(CancellationToken token)
+        {
+            Interlocked.Increment(ref startedCount);
+            if (Volatile.Read(ref startedCount) == 3)
+                allStarted.TrySetResult();
+            await canComplete.Task;
+            return 1;
+        }
+
+        var group = ApsDestination.Group(0x0001);
+        var task1 = queue.EnqueueAsync(group, ExecuteCommand, CancellationToken.None);
+        var task2 = queue.EnqueueAsync(group, ExecuteCommand, CancellationToken.None);
+        var task3 = queue.EnqueueAsync(group, ExecuteCommand, CancellationToken.None);
+
+        var startedInTime = await Task.WhenAny(allStarted.Task, Task.Delay(1000)) == allStarted.Task;
+        Assert.True(startedInTime, "Group commands should execute in parallel");
+
+        canComplete.SetResult();
+        await Task.WhenAll(task1, task2, task3);
+    }
+
+    [Fact]
+    public async Task NetworkAddressCommands_AreSerializedByAddress()
+    {
+        var queue = new DeviceCommandQueue();
+        var executionOrder = new List<int>();
+
+        var tcs1 = new TaskCompletionSource<int>();
+        var tcs2 = new TaskCompletionSource<int>();
+
+        var dest = ApsDestination.Nwk(0x1234, 0x01);
+        var task1 = queue.EnqueueAsync(
+            dest,
+            async _ =>
+            {
+                executionOrder.Add(1);
+                return await tcs1.Task;
+            },
+            CancellationToken.None
+        );
+
+        var task2 = queue.EnqueueAsync(
+            dest,
+            async _ =>
+            {
+                executionOrder.Add(2);
+                return await tcs2.Task;
+            },
+            CancellationToken.None
+        );
+
+        await Task.Delay(50);
+        Assert.Single(executionOrder);
+
+        tcs1.SetResult(100);
+        await task1;
+
+        await Task.Delay(50);
+        Assert.Equal(2, executionOrder.Count);
+
+        tcs2.SetResult(200);
+        await task2;
+    }
+
+    [Fact]
+    public async Task IeeeAddressCommands_AreSerializedByAddress()
+    {
+        var queue = new DeviceCommandQueue();
+        var executionOrder = new List<int>();
+
+        var tcs1 = new TaskCompletionSource<int>();
+        var tcs2 = new TaskCompletionSource<int>();
+
+        var dest = ApsDestination.Ieee(new IeeeAddress(0x1122334455667788), 0x01);
+        var task1 = queue.EnqueueAsync(
+            dest,
+            async _ =>
+            {
+                executionOrder.Add(1);
+                return await tcs1.Task;
+            },
+            CancellationToken.None
+        );
+
+        var task2 = queue.EnqueueAsync(
+            dest,
+            async _ =>
+            {
+                executionOrder.Add(2);
+                return await tcs2.Task;
+            },
+            CancellationToken.None
+        );
+
+        await Task.Delay(50);
+        Assert.Single(executionOrder);
+
+        tcs1.SetResult(100);
+        await task1;
+
+        await Task.Delay(50);
+        Assert.Equal(2, executionOrder.Count);
+
+        tcs2.SetResult(200);
+        await task2;
     }
 }
