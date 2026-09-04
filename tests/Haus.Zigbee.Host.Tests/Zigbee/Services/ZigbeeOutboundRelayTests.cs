@@ -159,6 +159,46 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithStoredEndpointId_SendsToThatEndpoint()
+    {
+        const ushort networkAddress = 0x1234;
+        const byte endpointId = 0x0b;
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            NetworkAddress = networkAddress,
+            EndpointId = endpointId,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Assert.NotEmpty(_coordinator!.SentCommands);
+        Assert.All(_coordinator.SentCommands, request => Assert.Equal(endpointId, request.Destination.Endpoint));
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_LightingCommandWithoutStoredEndpointId_FallsBackToDefaultEndpoint()
+    {
+        const ushort networkAddress = 0x1234;
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            NetworkAddress = networkAddress,
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Assert.NotEmpty(_coordinator!.SentCommands);
+        Assert.All(_coordinator.SentCommands, request => Assert.Equal((byte)0x01, request.Destination.Endpoint));
+    }
+
+    [Fact]
     public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddress_DoesNotWaitOnResolutionBeforeReturning()
     {
         _coordinator!.ResolveNetworkAddressGate = new TaskCompletionSource<ushort?>(

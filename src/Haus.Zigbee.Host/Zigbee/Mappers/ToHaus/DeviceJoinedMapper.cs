@@ -1,3 +1,4 @@
+using System.Linq;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices.Events;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
@@ -7,14 +8,32 @@ namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 
 public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
 {
+    private const ushort OnOffClusterId = 0x0006;
+    private const ushort LevelClusterId = 0x0008;
+    private const ushort ColorControlClusterId = 0x0300;
+
     public DeviceDiscoveredEvent Map(ZigbeeDeviceJoined joined)
     {
         return new DeviceDiscoveredEvent(
             ExternalIdConverter.ToExternalId(joined.IeeeAddress),
             deviceTypeResolver.Resolve(joined.ManufacturerName, joined.ModelIdentifier),
             CreateMetadata(joined),
-            NetworkAddress: joined.NetworkAddress
+            NetworkAddress: joined.NetworkAddress,
+            EndpointId: SelectEndpointId(joined)
         );
+    }
+
+    private static byte? SelectEndpointId(ZigbeeDeviceJoined joined)
+    {
+        return FindEndpointWithCluster(joined, OnOffClusterId)?.EndpointId
+            ?? FindEndpointWithCluster(joined, LevelClusterId)?.EndpointId
+            ?? FindEndpointWithCluster(joined, ColorControlClusterId)?.EndpointId
+            ?? joined.Endpoints.FirstOrDefault()?.EndpointId;
+    }
+
+    private static ZigbeeEndpoint? FindEndpointWithCluster(ZigbeeDeviceJoined joined, ushort clusterId)
+    {
+        return joined.Endpoints.FirstOrDefault(endpoint => endpoint.InClusters.Contains(clusterId));
     }
 
     // Registering the device's network address before mapping it is a step every caller needs --

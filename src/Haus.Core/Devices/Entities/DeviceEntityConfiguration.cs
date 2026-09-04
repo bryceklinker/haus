@@ -14,6 +14,7 @@ public class DeviceEntityConfiguration : IEntityTypeConfiguration<DeviceEntity>
         builder.Property(d => d.ExternalId).IsRequired();
         builder.Property(d => d.DeviceType).IsRequired().HasConversion<string>();
         builder.Property(d => d.NetworkAddress);
+        builder.Property(d => d.EndpointId);
 
         builder.Ignore(d => d.IsLight);
 
