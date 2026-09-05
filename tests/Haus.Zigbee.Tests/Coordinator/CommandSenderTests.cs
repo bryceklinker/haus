@@ -307,7 +307,7 @@ public class CommandSenderRetryIntegrationTests
         var sendTask = commandSender.SendCommandAsync(AnyRequest(), CancellationToken.None);
 
         await pollLoop.PollOnceAsync(CancellationToken.None);
-        await Task.Delay(10);
+        await senderTransport.WaitForWriteCountAsync(2, CancellationToken.None);
         await pollLoop.PollOnceAsync(CancellationToken.None);
 
         var confirm = await sendTask;
@@ -337,12 +337,45 @@ public class CommandSenderRetryIntegrationTests
         var sendTask = commandSender.SendCommandAsync(AnyRequest(), CancellationToken.None);
 
         await pollLoop.PollOnceAsync(CancellationToken.None);
-        await Task.Delay(10);
+        await senderTransport.WaitForWriteCountAsync(2, CancellationToken.None);
         await pollLoop.PollOnceAsync(CancellationToken.None);
 
         var ex = await Assert.ThrowsAsync<CommandDeliveryFailedException>(() => sendTask);
         Assert.Equal(NoAckStatus, ex.LastConfirmStatus);
         Assert.Equal(2, ex.AttemptCount);
+    }
+
+    [Fact]
+    public async Task WhenRetryTakesLongerThanAFixedWindow_StillDeliversTheSecondAttemptsConfirm()
+    {
+        var pollTransport = new ScriptedSerialTransport();
+        var senderTransport = new ScriptedSerialTransport();
+        var pollLoop = new ApsPollLoop(new DeconzChannel(pollTransport));
+        var retryOptions = new CommandRetryOptions { MaxRetries = 2, BaseBackoffMs = 1 };
+        // A real retry only needs to clear the backoff delay before resending, but scheduler/GC
+        // pressure (the kind CI runners see under load) can push that well past any fixed guess a
+        // test makes for "surely long enough". This stand-in models that slow retry deliberately.
+        var commandSender = new CommandSender(
+            new ApsSender(pollLoop, new DeconzChannel(senderTransport)),
+            new DeviceCommandQueue(),
+            new CommandRetryHandler(retryOptions, _ => Task.Delay(50))
+        );
+
+        senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(0)));
+        senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(1)));
+        pollTransport.QueueResponse(DeconzFrames.Framed(DeviceStateResponse(0, ConfirmAvailable)));
+        pollTransport.QueueResponse(DeconzFrames.Framed(ConfirmResponse(1, 0x00, NoAckStatus)));
+        pollTransport.QueueResponse(DeconzFrames.Framed(DeviceStateResponse(2, ConfirmAvailable)));
+        pollTransport.QueueResponse(DeconzFrames.Framed(ConfirmResponse(3, 0x01, SuccessStatus)));
+
+        var sendTask = commandSender.SendCommandAsync(AnyRequest(), CancellationToken.None);
+
+        await pollLoop.PollOnceAsync(CancellationToken.None);
+        await senderTransport.WaitForWriteCountAsync(2, CancellationToken.None);
+        await pollLoop.PollOnceAsync(CancellationToken.None);
+
+        var confirm = await sendTask;
+        Assert.Equal(SuccessStatus, confirm.ConfirmStatus);
     }
 
     private static ZigbeeCommandRequest AnyRequest()
