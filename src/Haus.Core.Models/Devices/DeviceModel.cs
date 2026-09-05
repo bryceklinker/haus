@@ -13,7 +13,6 @@ public record DeviceModel(
     LightType LightType = LightType.None,
     MetadataModel[]? Metadata = null,
     ushort? NetworkAddress = null,
-    byte? EndpointId = null,
     LightingModel? Lighting = null
 ) : IdentityModel
 {

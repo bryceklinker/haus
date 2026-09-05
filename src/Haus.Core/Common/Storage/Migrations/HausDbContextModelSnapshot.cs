@@ -27,9 +27,6 @@ namespace Haus.Core.Common.Storage.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<byte?>("EndpointId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("ExternalId")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -124,7 +121,7 @@ namespace Haus.Core.Common.Storage.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HealthCheckEntity");
+                    b.ToTable("HealthCheckEntity", (string)null);
                 });
 
             modelBuilder.Entity("Haus.Core.Rooms.Entities.RoomEntity", b =>
@@ -167,7 +164,7 @@ namespace Haus.Core.Common.Storage.Migrations
 
                             b1.HasKey("DeviceEntityId");
 
-                            b1.ToTable("Devices");
+                            b1.ToTable("Devices", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("DeviceEntityId");
@@ -188,7 +185,7 @@ namespace Haus.Core.Common.Storage.Migrations
 
                                     b2.HasKey("LightingEntityDeviceEntityId");
 
-                                    b2.ToTable("Devices");
+                                    b2.ToTable("Devices", (string)null);
 
                                     b2.WithOwner()
                                         .HasForeignKey("LightingEntityDeviceEntityId");
@@ -210,7 +207,7 @@ namespace Haus.Core.Common.Storage.Migrations
 
                                     b2.HasKey("LightingEntityDeviceEntityId");
 
-                                    b2.ToTable("Devices");
+                                    b2.ToTable("Devices", (string)null);
 
                                     b2.WithOwner()
                                         .HasForeignKey("LightingEntityDeviceEntityId");
@@ -232,7 +229,7 @@ namespace Haus.Core.Common.Storage.Migrations
 
                                     b2.HasKey("LightingEntityDeviceEntityId");
 
-                                    b2.ToTable("Devices");
+                                    b2.ToTable("Devices", (string)null);
 
                                     b2.WithOwner()
                                         .HasForeignKey("LightingEntityDeviceEntityId");
@@ -275,7 +272,7 @@ namespace Haus.Core.Common.Storage.Migrations
 
                             b1.HasKey("RoomEntityId");
 
-                            b1.ToTable("Rooms");
+                            b1.ToTable("Rooms", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("RoomEntityId");
@@ -296,7 +293,7 @@ namespace Haus.Core.Common.Storage.Migrations
 
                                     b2.HasKey("LightingEntityRoomEntityId");
 
-                                    b2.ToTable("Rooms");
+                                    b2.ToTable("Rooms", (string)null);
 
                                     b2.WithOwner()
                                         .HasForeignKey("LightingEntityRoomEntityId");
@@ -318,7 +315,7 @@ namespace Haus.Core.Common.Storage.Migrations
 
                                     b2.HasKey("LightingEntityRoomEntityId");
 
-                                    b2.ToTable("Rooms");
+                                    b2.ToTable("Rooms", (string)null);
 
                                     b2.WithOwner()
                                         .HasForeignKey("LightingEntityRoomEntityId");
@@ -340,7 +337,7 @@ namespace Haus.Core.Common.Storage.Migrations
 
                                     b2.HasKey("LightingEntityRoomEntityId");
 
-                                    b2.ToTable("Rooms");
+                                    b2.ToTable("Rooms", (string)null);
 
                                     b2.WithOwner()
                                         .HasForeignKey("LightingEntityRoomEntityId");

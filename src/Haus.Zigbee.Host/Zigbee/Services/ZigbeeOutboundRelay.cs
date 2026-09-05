@@ -102,7 +102,7 @@ public class ZigbeeOutboundRelay(
             return;
         }
 
-        var destination = ApsDestination.Nwk(networkAddress, device.EndpointId ?? DefaultDestinationEndpoint);
+        var destination = ApsDestination.Nwk(networkAddress, DefaultDestinationEndpoint);
         var requests = lightingMapper.Map(destination, command.Payload.Lighting);
         foreach (var request in requests)
         {
