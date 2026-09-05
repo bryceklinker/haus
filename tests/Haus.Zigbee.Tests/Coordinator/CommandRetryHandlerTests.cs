@@ -138,6 +138,38 @@ public class CommandRetryHandlerTests
     }
 
     [Fact]
+    public async Task WhenMaxRetriesIsZero_FailsAfterSingleAttemptWithoutDelay()
+    {
+        var attempts = new List<int>();
+        var delays = new List<TimeSpan>();
+        var options = new CommandRetryOptions { MaxRetries = 0 };
+        var handler = new CommandRetryHandler(
+            options,
+            delay =>
+            {
+                delays.Add(delay);
+                return Task.CompletedTask;
+            }
+        );
+
+        var ex = await Assert.ThrowsAsync<CommandDeliveryFailedException>(() =>
+            handler.ExecuteWithRetryAsync(
+                attempt =>
+                {
+                    attempts.Add(attempt);
+                    return Task.FromResult(MakeConfirm(ApsNoAck));
+                },
+                CancellationToken.None
+            )
+        );
+
+        Assert.Single(attempts);
+        Assert.Empty(delays);
+        Assert.Equal(ApsNoAck, ex.LastConfirmStatus);
+        Assert.Equal(1, ex.AttemptCount);
+    }
+
+    [Fact]
     public async Task WhenCancelled_DoesNotRetry()
     {
         var attemptCount = 0;

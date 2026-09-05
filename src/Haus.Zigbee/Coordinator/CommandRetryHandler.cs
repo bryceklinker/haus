@@ -2,6 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Serial.Frames;
+using Polly;
+using Polly.Retry;
 
 namespace Haus.Zigbee.Coordinator;
 
@@ -12,6 +14,7 @@ public class CommandRetryHandler
 
     private readonly CommandRetryOptions _options;
     private readonly Func<TimeSpan, Task> _delayFunc;
+    private readonly ResiliencePipeline<ApsDataConfirm> _pipeline;
 
     public CommandRetryHandler(CommandRetryOptions options)
         : this(options, delay => Task.Delay(delay)) { }
@@ -20,6 +23,7 @@ public class CommandRetryHandler
     {
         _options = options;
         _delayFunc = delayFunc;
+        _pipeline = BuildPipeline();
     }
 
     public async Task<ApsDataConfirm> ExecuteWithRetryAsync(
@@ -27,35 +31,59 @@ public class CommandRetryHandler
         CancellationToken token
     )
     {
-        var attempt = 0;
-        ApsDataConfirm? lastConfirm = null;
+        var attemptCount = 0;
 
-        while (attempt <= _options.MaxRetries)
-        {
-            token.ThrowIfCancellationRequested();
-
-            lastConfirm = await operation(attempt);
-
-            if (lastConfirm.ConfirmStatus == ApsSuccess)
-                return lastConfirm;
-
-            if (attempt < _options.MaxRetries)
+        var result = await _pipeline.ExecuteAsync(
+            async ct =>
             {
-                var delay = CalculateBackoff(attempt);
-                await WaitCancellableAsync(delay, token);
-            }
+                ct.ThrowIfCancellationRequested();
+                var confirm = await operation(attemptCount);
+                attemptCount++;
+                return confirm;
+            },
+            token
+        );
 
-            attempt++;
-        }
+        if (result.ConfirmStatus != ApsSuccess)
+            throw new CommandDeliveryFailedException(result.ConfirmStatus, attemptCount);
 
-        throw new CommandDeliveryFailedException(lastConfirm!.ConfirmStatus, attempt);
+        return result;
+    }
+
+    private ResiliencePipeline<ApsDataConfirm> BuildPipeline()
+    {
+        // RetryStrategyOptions requires MaxRetryAttempts >= 1; MaxRetries == 0 means "attempt once,
+        // never retry", which the empty pipeline already gives us without an initial failing attempt.
+        if (_options.MaxRetries <= 0)
+            return ResiliencePipeline<ApsDataConfirm>.Empty;
+
+        return new ResiliencePipelineBuilder<ApsDataConfirm>()
+            .AddRetry(
+                new RetryStrategyOptions<ApsDataConfirm>
+                {
+                    ShouldHandle = new PredicateBuilder<ApsDataConfirm>().HandleResult(confirm =>
+                        confirm.ConfirmStatus != ApsSuccess
+                    ),
+                    MaxRetryAttempts = _options.MaxRetries,
+                    // Backoff timing is computed and awaited by hand below via OnRetry so tests can
+                    // inject a synchronous delayFunc stand-in and cancellation stays responsive;
+                    // Polly's own delay is disabled here to avoid a second, redundant sleep.
+                    Delay = TimeSpan.Zero,
+                    OnRetry = async args =>
+                    {
+                        var delay = CalculateBackoff(args.AttemptNumber);
+                        await WaitCancellableAsync(delay, args.Context.CancellationToken);
+                    },
+                }
+            )
+            .Build();
     }
 
     private async Task WaitCancellableAsync(TimeSpan delay, CancellationToken token)
     {
         // _delayFunc doesn't accept a token (tests inject a synchronous stand-in to record/skip
         // delays), so race it against the caller's token here to keep backoff waits responsive to
-        // cancellation instead of blocking for the full delay before the next loop check notices.
+        // cancellation instead of blocking for the full delay before the pipeline retries.
         var delayTask = _delayFunc(delay);
         var cancellationTask = Task.Delay(Timeout.InfiniteTimeSpan, token);
         var completed = await Task.WhenAny(delayTask, cancellationTask);
