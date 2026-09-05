@@ -41,7 +41,8 @@ public record DeviceEntity : Entity
                 d.Lighting.Color == null
                     ? null
                     : new ColorLightingModel(d.Lighting.Color.Red, d.Lighting.Color.Green, d.Lighting.Color.Blue)
-            )
+            ),
+        d.Endpoints.Select(e => new DeviceEndpointModel(e.EndpointId, e.InClusters)).ToArray()
     );
 
     private static readonly Lazy<Func<DeviceEntity, DeviceModel>> ToModelFunc = new(ToModelExpression.Compile);
@@ -54,6 +55,8 @@ public record DeviceEntity : Entity
     public LightType LightType { get; set; }
 
     public ICollection<DeviceMetadataEntity> Metadata { get; init; } = [];
+
+    public ICollection<DeviceEndpointEntity> Endpoints { get; init; } = [];
 
     public ushort? NetworkAddress { get; set; }
 
@@ -75,7 +78,8 @@ public record DeviceEntity : Entity
         RoomEntity? room = null,
         LightingEntity? lighting = null,
         ICollection<DeviceMetadataEntity>? metadata = null,
-        ushort? networkAddress = null
+        ushort? networkAddress = null,
+        ICollection<DeviceEndpointEntity>? endpoints = null
     )
     {
         Id = id;
@@ -87,6 +91,7 @@ public record DeviceEntity : Entity
         Lighting = lighting ?? GenerateDefaultLighting();
         Metadata = metadata ?? new List<DeviceMetadataEntity>();
         NetworkAddress = networkAddress;
+        Endpoints = endpoints ?? new List<DeviceEndpointEntity>();
     }
 
     public DeviceModel ToModel()
@@ -111,6 +116,7 @@ public record DeviceEntity : Entity
             ChangeLighting(Lighting, domainEventBus);
 
         AddOrUpdateMetadata(@event.Metadata);
+        ReplaceEndpoints(@event.Endpoints);
     }
 
     public void UpdateFromModel(DeviceModel model, IDomainEventBus domainEvenBus)
@@ -152,6 +158,16 @@ public record DeviceEntity : Entity
             existing.Update(value);
         else
             Metadata.Add(new DeviceMetadataEntity(key, value) { Device = this });
+    }
+
+    // The endpoint list a discovery reports is authoritative for the whole device -- unlike
+    // metadata, there's no per-key identity to merge against, so each discovery replaces the
+    // full set rather than adding-or-updating individual entries.
+    private void ReplaceEndpoints(IEnumerable<DeviceEndpointModel> models)
+    {
+        Endpoints.Clear();
+        foreach (var model in models)
+            Endpoints.Add(new DeviceEndpointEntity(model.EndpointId, model.InClusters) { Device = this });
     }
 
     public void AssignToRoom(RoomEntity room, IDomainEventBus domainEventBus)

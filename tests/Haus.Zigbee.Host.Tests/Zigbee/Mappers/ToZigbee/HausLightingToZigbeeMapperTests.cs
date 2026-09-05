@@ -1,4 +1,5 @@
 using System.Linq;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
@@ -114,5 +115,72 @@ public class HausLightingToZigbeeMapperTests
         var result = _mapper.Map(_destination, lighting).ToArray();
 
         Assert.DoesNotContain(result, r => r.ClusterId == ColorControlCluster);
+    }
+
+    [Fact]
+    public void ResolveDestinationEndpoint_SingleEndpointDevice_ReturnsThatEndpoint()
+    {
+        DeviceEndpointModel[] endpoints = [new DeviceEndpointModel(5, [OnOffCluster])];
+
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, fallbackEndpoint: 1);
+
+        Assert.Equal((byte)5, result);
+    }
+
+    [Fact]
+    public void ResolveDestinationEndpoint_MultipleEndpoints_PrefersTheOneExposingOnOff()
+    {
+        DeviceEndpointModel[] endpoints =
+        [
+            new DeviceEndpointModel(1, [ColorControlCluster]),
+            new DeviceEndpointModel(2, [LevelControlCluster]),
+            new DeviceEndpointModel(3, [OnOffCluster]),
+        ];
+
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, fallbackEndpoint: 9);
+
+        Assert.Equal((byte)3, result);
+    }
+
+    [Fact]
+    public void ResolveDestinationEndpoint_NoEndpointExposesOnOff_FallsBackToLevel()
+    {
+        DeviceEndpointModel[] endpoints =
+        [
+            new DeviceEndpointModel(1, [ColorControlCluster]),
+            new DeviceEndpointModel(2, [LevelControlCluster]),
+        ];
+
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, fallbackEndpoint: 9);
+
+        Assert.Equal((byte)2, result);
+    }
+
+    [Fact]
+    public void ResolveDestinationEndpoint_OnlyColorClusterExposed_FallsBackToColor()
+    {
+        DeviceEndpointModel[] endpoints = [new DeviceEndpointModel(1, [ColorControlCluster])];
+
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, fallbackEndpoint: 9);
+
+        Assert.Equal((byte)1, result);
+    }
+
+    [Fact]
+    public void ResolveDestinationEndpoint_NoneOfThePreferredClustersExposed_FallsBackToFirstDiscoveredEndpoint()
+    {
+        DeviceEndpointModel[] endpoints = [new DeviceEndpointModel(7, [0x0402]), new DeviceEndpointModel(8, [0x0403])];
+
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, fallbackEndpoint: 9);
+
+        Assert.Equal((byte)7, result);
+    }
+
+    [Fact]
+    public void ResolveDestinationEndpoint_NoEndpointsPersisted_FallsBackToTheGivenDefault()
+    {
+        var result = _mapper.ResolveDestinationEndpoint([], fallbackEndpoint: 9);
+
+        Assert.Equal((byte)9, result);
     }
 }

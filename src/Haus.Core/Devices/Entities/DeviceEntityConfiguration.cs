@@ -20,5 +20,6 @@ public class DeviceEntityConfiguration : IEntityTypeConfiguration<DeviceEntity>
         builder.OwnsOne(d => d.Lighting, LightingEntity.Configure);
 
         builder.HasMany(d => d.Metadata).WithOne(m => m.Device);
+        builder.HasMany(d => d.Endpoints).WithOne(e => e.Device);
     }
 }
