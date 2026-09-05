@@ -1,6 +1,8 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Linq;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Haus.Zigbee.Models;
@@ -31,6 +33,25 @@ public class HausLightingToZigbeeMapper
     public bool IsSupported(string type)
     {
         return type == DeviceLightingChangedEvent.Type;
+    }
+
+    // Prefers whichever endpoint exposes the cluster a lighting command would target first --
+    // On/Off, then Level, then Color -- so a split-cluster device still gets one destination that
+    // can at least turn on/off, falling back to the first discovered endpoint if none of those
+    // clusters are present, and to the caller-supplied default when no endpoints are known at all
+    // (e.g. a device persisted before endpoint discovery existed).
+    public byte ResolveDestinationEndpoint(IReadOnlyList<DeviceEndpointModel> endpoints, byte fallbackEndpoint)
+    {
+        if (endpoints.Count == 0)
+            return fallbackEndpoint;
+
+        var preferred =
+            endpoints.FirstOrDefault(e => e.InClusters.Contains(OnOffCluster))
+            ?? endpoints.FirstOrDefault(e => e.InClusters.Contains(LevelControlCluster))
+            ?? endpoints.FirstOrDefault(e => e.InClusters.Contains(ColorControlCluster))
+            ?? endpoints[0];
+
+        return preferred.EndpointId;
     }
 
     public IEnumerable<ZigbeeCommandRequest> Map(ApsDestination destination, LightingModel lighting)

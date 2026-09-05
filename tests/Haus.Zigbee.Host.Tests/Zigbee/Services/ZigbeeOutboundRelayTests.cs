@@ -154,8 +154,29 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
             {
                 Assert.Equal(DeconzAddressMode.Nwk, request.Destination.Mode);
                 Assert.Equal(networkAddress, request.Destination.ShortAddress);
+                Assert.Equal((byte)0x01, request.Destination.Endpoint);
             }
         );
+    }
+
+    [Fact]
+    public async Task HandleCommandAsync_LightingCommandForMultiEndpointDevice_SendsToTheEndpointExposingOnOff()
+    {
+        const ushort networkAddress = 0x1234;
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            NetworkAddress = networkAddress,
+            Endpoints = [new DeviceEndpointModel(11, [0x0300]), new DeviceEndpointModel(12, [0x0006, 0x0008])],
+        };
+        var message = new DeviceLightingChangedEvent(device, new LightingModel(LightingState.On))
+            .AsHausCommand()
+            .ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        Assert.NotEmpty(_coordinator!.SentCommands);
+        Assert.All(_coordinator.SentCommands, request => Assert.Equal((byte)12, request.Destination.Endpoint));
     }
 
     [Fact]

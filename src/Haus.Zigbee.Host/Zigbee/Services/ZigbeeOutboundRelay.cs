@@ -29,8 +29,9 @@ public class ZigbeeOutboundRelay(
     ILogger<ZigbeeOutboundRelay> logger
 )
 {
-    // The Host doesn't yet track a per-device endpoint from ZDP discovery, and endpoint 1 is what
-    // the overwhelming majority of commercial Zigbee lighting devices expose.
+    // Fallback for devices with no discovered endpoints persisted yet (e.g. joined before endpoint
+    // discovery existed) -- endpoint 1 is what the overwhelming majority of commercial Zigbee
+    // lighting devices expose.
     private const byte DefaultDestinationEndpoint = 0x01;
 
     // Per the Zigbee APS spec, a confirm status of 0x00 is APS_SUCCESS; anything else is a delivery
@@ -102,7 +103,11 @@ public class ZigbeeOutboundRelay(
             return;
         }
 
-        var destination = ApsDestination.Nwk(networkAddress, DefaultDestinationEndpoint);
+        var destinationEndpoint = lightingMapper.ResolveDestinationEndpoint(
+            device.Endpoints,
+            DefaultDestinationEndpoint
+        );
+        var destination = ApsDestination.Nwk(networkAddress, destinationEndpoint);
         var requests = lightingMapper.Map(destination, command.Payload.Lighting);
         foreach (var request in requests)
         {
