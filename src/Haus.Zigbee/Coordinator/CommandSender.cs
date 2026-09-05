@@ -7,9 +7,14 @@ using Haus.Zigbee.Zcl;
 
 namespace Haus.Zigbee.Coordinator;
 
+// The ZCL transaction sequence number and the APS request id are distinct concerns, so each
+// layer owns its own counter here.
 public class CommandSender
 {
     private const byte NoApsAckRequested = 0x00;
+
+    // deCONZ APS-DATA.request TxOptions bit 2: request an APS-layer acknowledgment (a real
+    // delivery receipt from the destination) rather than just the usual MAC-layer confirm.
     private const byte ApsAckRequested = 0x04;
     private const byte UnlimitedRadius = 0x00;
 

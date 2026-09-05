@@ -42,13 +42,25 @@ public class CommandRetryHandler
             if (attempt < _options.MaxRetries)
             {
                 var delay = CalculateBackoff(attempt);
-                await _delayFunc(delay);
+                await WaitCancellableAsync(delay, token);
             }
 
             attempt++;
         }
 
         throw new CommandDeliveryFailedException(lastConfirm!.ConfirmStatus, attempt);
+    }
+
+    private async Task WaitCancellableAsync(TimeSpan delay, CancellationToken token)
+    {
+        // _delayFunc doesn't accept a token (tests inject a synchronous stand-in to record/skip
+        // delays), so race it against the caller's token here to keep backoff waits responsive to
+        // cancellation instead of blocking for the full delay before the next loop check notices.
+        var delayTask = _delayFunc(delay);
+        var cancellationTask = Task.Delay(Timeout.InfiniteTimeSpan, token);
+        var completed = await Task.WhenAny(delayTask, cancellationTask);
+        if (completed == cancellationTask)
+            token.ThrowIfCancellationRequested();
     }
 
     private TimeSpan CalculateBackoff(int attempt)

@@ -14,6 +14,8 @@ namespace Haus.Zigbee.Coordinator;
 
 public class ZigbeeCoordinator : IZigbeeCoordinator
 {
+    // The dongle only surfaces inbound APS traffic when polled, so this interval trades a little
+    // added latency on received reports against wasted serial bandwidth from polling too eagerly.
     private static readonly TimeSpan PollInterval = TimeSpan.FromMilliseconds(100);
 
     private readonly Func<ISerialTransport> _transportFactory;
@@ -59,6 +61,8 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
         _logger = _loggerFactory.CreateLogger<ZigbeeCoordinator>();
 
+        // No lock needed here: the constructor runs before this instance is published to any
+        // other thread, so nothing else can be reading _components concurrently yet.
         _components = BuildTransportComponents();
     }
 
