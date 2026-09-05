@@ -17,7 +17,13 @@ public static class ServiceCollectionExtensions
         // ZigbeeCoordinator's constructor unambiguous for the DI container.
         return services
             .AddSingleton<Func<ISerialTransport>>(provider => () => CreateTransport(provider))
-            .AddSingleton<IZigbeeCoordinator, ZigbeeCoordinator>();
+            .AddSingleton<IZigbeeCoordinator>(provider =>
+            {
+                var transportFactory = provider.GetRequiredService<Func<ISerialTransport>>();
+                var loggerFactory = provider.GetService<ILoggerFactory>();
+                var retryOptions = provider.GetService<IOptions<CommandRetryOptions>>()?.Value;
+                return new ZigbeeCoordinator(transportFactory, loggerFactory, retryOptions: retryOptions);
+            });
     }
 
     private static ISerialTransport CreateTransport(IServiceProvider provider)
