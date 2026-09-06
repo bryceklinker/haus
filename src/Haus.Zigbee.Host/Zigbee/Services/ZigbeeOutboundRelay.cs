@@ -29,10 +29,7 @@ public class ZigbeeOutboundRelay(
     ILogger<ZigbeeOutboundRelay> logger
 )
 {
-    // Fallback for devices with no discovered endpoints persisted yet (e.g. joined before endpoint
-    // discovery existed) -- endpoint 1 is what the overwhelming majority of commercial Zigbee
-    // lighting devices expose.
-    private const byte DefaultDestinationEndpoint = 0x01;
+    private const byte FallbackDestinationEndpoint = 0x01;
 
     // Per the Zigbee APS spec, a confirm status of 0x00 is APS_SUCCESS; anything else is a delivery
     // failure reported back from the stack for that specific request.
@@ -105,7 +102,7 @@ public class ZigbeeOutboundRelay(
 
         var destinationEndpoint = lightingMapper.ResolveDestinationEndpoint(
             device.Endpoints,
-            DefaultDestinationEndpoint
+            FallbackDestinationEndpoint
         );
         var destination = ApsDestination.Nwk(networkAddress, destinationEndpoint);
         var requests = lightingMapper.Map(destination, command.Payload.Lighting);

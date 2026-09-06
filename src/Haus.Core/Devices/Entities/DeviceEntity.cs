@@ -160,9 +160,6 @@ public record DeviceEntity : Entity
             Metadata.Add(new DeviceMetadataEntity(key, value) { Device = this });
     }
 
-    // The endpoint list a discovery reports is authoritative for the whole device -- unlike
-    // metadata, there's no per-key identity to merge against, so each discovery replaces the
-    // full set rather than adding-or-updating individual entries.
     private void ReplaceEndpoints(IEnumerable<DeviceEndpointModel> models)
     {
         Endpoints.Clear();
