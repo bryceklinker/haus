@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-HAUS is a home automation system that runs on the user's personal network (only auth touches the cloud, via Auth0). It targets Zigbee devices via Zigbee2Mqtt/MQTT. The system is composed of several .NET services plus a Blazor site, orchestrated with a Makefile for local dev and Docker Compose for deployment.
+HAUS is a home automation system that runs on the user's personal network (only auth touches the cloud, via Auth0). It targets Zigbee devices directly over a deCONZ-protocol coordinator radio (serial/TCP), via a first-party protocol library (`Haus.Zigbee`) — MQTT is retained only as HAUS's own internal service bus, not as the path to physical devices. The system is composed of several .NET services plus a Blazor site, orchestrated with a Makefile for local dev and Docker Compose for deployment.
 
 ## System requirements
 
@@ -62,7 +62,7 @@ Creates the project under `src/` (or `tests/` for `test` type) and adds it to `H
 
 ### Service topology
 
-- **Haus.Zigbee.Host** — connects to Zigbee2Mqtt over MQTT, translates Zigbee2Mqtt messages to/from Haus domain messages.
+- **Haus.Zigbee.Host** — connects to a deCONZ-protocol Zigbee coordinator radio over serial/TCP via `Haus.Zigbee` (`Haus.Zigbee.Coordinator`/`.Serial`/`.Zcl`/`.Zdp`), translates deCONZ/ZCL/ZDP protocol messages to/from Haus domain messages, and bridges them onto the Haus MQTT bus.
 - **Haus.Web.Host** — the API host: ASP.NET Core (Kestrel), owns the SQLite-backed domain data (EF Core via `HausDbContext`), exposes REST + SignalR, talks to MQTT, and hosts the CQRS bus (`IHausBus`).
 - **Haus.Site.Host** — Blazor front end (`App.razor` root), consumes the Web Host API (via `Haus.Api.Client`) and SignalR for realtime updates; served behind nginx in Docker (`nginx.conf`, `haus-site-dockerfile`).
 - **haus_mqtt** — mosquitto broker connecting all services (see `docker-compose.yml`, `mosquitto.conf`).
