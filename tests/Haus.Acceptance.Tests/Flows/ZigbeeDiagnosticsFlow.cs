@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Haus.Acceptance.Tests.Support;
+using Haus.Testing.Support;
 using Microsoft.Playwright;
 
 namespace Haus.Acceptance.Tests.Flows;
@@ -45,19 +46,31 @@ public class ZigbeeDiagnosticsFlow : HausPageTest
 
         var zigbee = await Page.NavigateToZigbeeAsync();
 
-        var ieeeAddress = await _deconzSimulator.JoinPhilipsMotionSensorAsync();
+        // ZigbeeActivityView only creates and starts its live SignalR subscriber *after* its
+        // initial REST-backed history load completes (both awaited in the same OnInitializedAsync),
+        // so a join fired immediately after this navigation can race a subscription that isn't
+        // listening yet. When that happens the event isn't delayed, it's missed for good -- no
+        // amount of waiting recovers it. Confirmed with real evidence, not assumed: CI run
+        // #34037014074 still failed this exact assertion after its fixed timeout was doubled from
+        // 15s to 30s (https://github.com/bryceklinker/haus/actions/runs/34037014074), and the
+        // failing snapshot showed 5 live "zigbee_device_joined" entries for 6 connected devices --
+        // one join's event was genuinely never delivered to this page's feed, not just slow.
+        //
+        // Retrying with a *fresh* device join closes that race deterministically instead of just
+        // waiting longer for the same one: once any join has been observed live, the subscription
+        // is definitely up, so every subsequent join can only ever be slow, never lost.
+        await Eventually.AssertAsync(
+            async () =>
+            {
+                var ieeeAddress = await _deconzSimulator.JoinPhilipsMotionSensorAsync();
 
-        // Entry content sits inside a collapsed MudExpansionPanel, so it's attached but not
-        // visible until expanded -- attachment alone proves it. The page is never reloaded after
-        // navigating, so this entry can only have arrived via the live realtime subscription, not
-        // the initial REST-backed history load. Unlike the other two tests in this fixture, this
-        // is the only assertion that depends on a live SignalR push racing a fixed deadline
-        // (ShowsJoinedDeviceInDevicesList joins before navigating, so it only needs the initial
-        // REST-backed load). That live round trip is exposed to CI runner/docker-compose resource
-        // contention that has caused comparable device-address locator timeouts on main before
-        // (e.g. AssignDevicesToRoomFlow.AssignDeviceToRoom, CI runs #32024628357 and #31976167118)
-        // -- given a generous but still condition-based Playwright poll, not a fixed sleep.
-        await Expect(zigbee.GetActivityEntryContaining(ieeeAddress))
-            .ToBeAttachedAsync(new LocatorAssertionsToBeAttachedOptions { Timeout = 30_000 });
+                // Entry content sits inside a collapsed MudExpansionPanel, so it's attached but
+                // not visible until expanded -- attachment alone proves it.
+                await Expect(zigbee.GetActivityEntryContaining(ieeeAddress))
+                    .ToBeAttachedAsync(new LocatorAssertionsToBeAttachedOptions { Timeout = 5_000 });
+            },
+            timeout: 30_000,
+            delay: 0
+        );
     }
 }
