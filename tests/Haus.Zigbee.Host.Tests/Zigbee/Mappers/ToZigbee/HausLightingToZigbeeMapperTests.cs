@@ -45,7 +45,7 @@ public class HausLightingToZigbeeMapperTests
             new ColorLightingModel(98, 54, 234)
         );
 
-        var result = _mapper.Map(_destination, lighting).ToArray();
+        var result = _mapper.Map(_ => _destination, lighting).ToArray();
 
         var request = Assert.Single(result);
         Assert.Equal(OnOffCluster, request.ClusterId);
@@ -58,7 +58,7 @@ public class HausLightingToZigbeeMapperTests
     {
         var lighting = new LightingModel(LightingState.On, new LevelLightingModel(54));
 
-        var result = _mapper.Map(_destination, lighting).ToArray();
+        var result = _mapper.Map(_ => _destination, lighting).ToArray();
 
         Assert.Equal(2, result.Length);
         Assert.Contains(result, r => r.ClusterId == OnOffCluster && r.CommandId == OnCommand && r.Payload.Length == 0);
@@ -76,7 +76,7 @@ public class HausLightingToZigbeeMapperTests
             new TemperatureLightingModel(4000)
         );
 
-        var result = _mapper.Map(_destination, lighting).ToArray();
+        var result = _mapper.Map(_ => _destination, lighting).ToArray();
 
         var command = Assert.Single(
             result,
@@ -95,7 +95,7 @@ public class HausLightingToZigbeeMapperTests
             Color: new ColorLightingModel(255, 0, 0)
         );
 
-        var result = _mapper.Map(_destination, lighting).ToArray();
+        var result = _mapper.Map(_ => _destination, lighting).ToArray();
 
         var command = Assert.Single(
             result,
@@ -112,9 +112,48 @@ public class HausLightingToZigbeeMapperTests
     {
         var lighting = new LightingModel(LightingState.On, new LevelLightingModel(54));
 
-        var result = _mapper.Map(_destination, lighting).ToArray();
+        var result = _mapper.Map(_ => _destination, lighting).ToArray();
 
         Assert.DoesNotContain(result, r => r.ClusterId == ColorControlCluster);
+    }
+
+    [Fact]
+    public void Map_DestinationVariesPerCluster_StampsEachRequestWithItsOwnClustersDestination()
+    {
+        var lighting = new LightingModel(
+            LightingState.On,
+            new LevelLightingModel(54),
+            Color: new ColorLightingModel(255, 0, 0)
+        );
+        var onOffDestination = ApsDestination.Ieee(new IeeeAddress(1), 1);
+        var colorDestination = ApsDestination.Ieee(new IeeeAddress(1), 2);
+        ApsDestination DestinationForCluster(ushort clusterId) =>
+            clusterId == ColorControlCluster ? colorDestination : onOffDestination;
+
+        var result = _mapper.Map(DestinationForCluster, lighting).ToArray();
+
+        Assert.Equal(onOffDestination, Assert.Single(result, r => r.ClusterId == OnOffCluster).Destination);
+        Assert.Equal(onOffDestination, Assert.Single(result, r => r.ClusterId == LevelControlCluster).Destination);
+        Assert.Equal(
+            colorDestination,
+            Assert
+                .Single(result, r => r.ClusterId == ColorControlCluster && r.CommandId == MoveToColorCommand)
+                .Destination
+        );
+    }
+
+    [Fact]
+    public void ResolveDestinationEndpoint_EndpointDeclaresTheRequestedCluster_RoutesToThatEndpoint()
+    {
+        DeviceEndpointModel[] endpoints =
+        [
+            new DeviceEndpointModel(1, [OnOffCluster]),
+            new DeviceEndpointModel(2, [ColorControlCluster]),
+        ];
+
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, ColorControlCluster, fallbackEndpoint: 9);
+
+        Assert.Equal((byte)2, result);
     }
 
     [Fact]
@@ -122,13 +161,13 @@ public class HausLightingToZigbeeMapperTests
     {
         DeviceEndpointModel[] endpoints = [new DeviceEndpointModel(5, [OnOffCluster])];
 
-        var result = _mapper.ResolveDestinationEndpoint(endpoints, fallbackEndpoint: 1);
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, OnOffCluster, fallbackEndpoint: 1);
 
         Assert.Equal((byte)5, result);
     }
 
     [Fact]
-    public void ResolveDestinationEndpoint_MultipleEndpoints_PrefersTheOneExposingOnOff()
+    public void ResolveDestinationEndpoint_RequestedClusterNotFoundOnAnyEndpoint_FallsBackToTheEndpointExposingOnOff()
     {
         DeviceEndpointModel[] endpoints =
         [
@@ -137,13 +176,13 @@ public class HausLightingToZigbeeMapperTests
             new DeviceEndpointModel(3, [OnOffCluster]),
         ];
 
-        var result = _mapper.ResolveDestinationEndpoint(endpoints, fallbackEndpoint: 9);
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, 0x0402, fallbackEndpoint: 9);
 
         Assert.Equal((byte)3, result);
     }
 
     [Fact]
-    public void ResolveDestinationEndpoint_NoEndpointExposesOnOff_FallsBackToLevel()
+    public void ResolveDestinationEndpoint_RequestedClusterAndOnOffNotFound_FallsBackToTheEndpointExposingLevel()
     {
         DeviceEndpointModel[] endpoints =
         [
@@ -151,17 +190,17 @@ public class HausLightingToZigbeeMapperTests
             new DeviceEndpointModel(2, [LevelControlCluster]),
         ];
 
-        var result = _mapper.ResolveDestinationEndpoint(endpoints, fallbackEndpoint: 9);
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, 0x0402, fallbackEndpoint: 9);
 
         Assert.Equal((byte)2, result);
     }
 
     [Fact]
-    public void ResolveDestinationEndpoint_OnlyColorClusterExposed_FallsBackToColor()
+    public void ResolveDestinationEndpoint_RequestedClusterOnOffAndLevelNotFound_FallsBackToTheEndpointExposingColor()
     {
         DeviceEndpointModel[] endpoints = [new DeviceEndpointModel(1, [ColorControlCluster])];
 
-        var result = _mapper.ResolveDestinationEndpoint(endpoints, fallbackEndpoint: 9);
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, 0x0402, fallbackEndpoint: 9);
 
         Assert.Equal((byte)1, result);
     }
@@ -171,7 +210,7 @@ public class HausLightingToZigbeeMapperTests
     {
         DeviceEndpointModel[] endpoints = [new DeviceEndpointModel(7, [0x0402]), new DeviceEndpointModel(8, [0x0403])];
 
-        var result = _mapper.ResolveDestinationEndpoint(endpoints, fallbackEndpoint: 9);
+        var result = _mapper.ResolveDestinationEndpoint(endpoints, 0x0501, fallbackEndpoint: 9);
 
         Assert.Equal((byte)7, result);
     }
@@ -179,7 +218,7 @@ public class HausLightingToZigbeeMapperTests
     [Fact]
     public void ResolveDestinationEndpoint_NoEndpointsPersisted_FallsBackToTheGivenDefault()
     {
-        var result = _mapper.ResolveDestinationEndpoint([], fallbackEndpoint: 9);
+        var result = _mapper.ResolveDestinationEndpoint([], OnOffCluster, fallbackEndpoint: 9);
 
         Assert.Equal((byte)9, result);
     }

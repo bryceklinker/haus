@@ -180,6 +180,31 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task HandleCommandAsync_LightingCommandForSplitClusterDevice_RoutesOnOffAndColorToTheirOwnDeclaredEndpoints()
+    {
+        const ushort networkAddress = 0x1234;
+        var device = new DeviceModel
+        {
+            ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
+            NetworkAddress = networkAddress,
+            Endpoints = [new DeviceEndpointModel(1, [0x0006]), new DeviceEndpointModel(2, [0x0300])],
+        };
+        var lighting = new LightingModel(
+            LightingState.On,
+            new LevelLightingModel(54),
+            Color: new ColorLightingModel(255, 0, 0)
+        );
+        var message = new DeviceLightingChangedEvent(device, lighting).AsHausCommand().ToMqttMessage("haus/commands");
+
+        await _relay!.HandleCommandAsync(message, CancellationToken.None);
+
+        var onOffRequest = Assert.Single(_coordinator!.SentCommands, r => r.ClusterId == 0x0006);
+        Assert.Equal((byte)1, onOffRequest.Destination.Endpoint);
+        var colorRequest = Assert.Single(_coordinator.SentCommands, r => r.ClusterId == 0x0300 && r.CommandId == 0x07);
+        Assert.Equal((byte)2, colorRequest.Destination.Endpoint);
+    }
+
+    [Fact]
     public async Task HandleCommandAsync_LightingCommandWithoutNetworkAddress_DoesNotWaitOnResolutionBeforeReturning()
     {
         _coordinator!.ResolveNetworkAddressGate = new TaskCompletionSource<ushort?>(

@@ -100,12 +100,12 @@ public class ZigbeeOutboundRelay(
             return;
         }
 
-        var destinationEndpoint = lightingMapper.ResolveDestinationEndpoint(
-            device.Endpoints,
-            FallbackDestinationEndpoint
-        );
-        var destination = ApsDestination.Nwk(networkAddress, destinationEndpoint);
-        var requests = lightingMapper.Map(destination, command.Payload.Lighting);
+        ApsDestination DestinationForCluster(ushort clusterId) =>
+            ApsDestination.Nwk(
+                networkAddress,
+                lightingMapper.ResolveDestinationEndpoint(device.Endpoints, clusterId, FallbackDestinationEndpoint)
+            );
+        var requests = lightingMapper.Map(DestinationForCluster, command.Payload.Lighting);
         foreach (var request in requests)
         {
             logger.LogInformation(
