@@ -1,10 +1,12 @@
 using System;
 using System.Numerics;
+using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Haus.Core.Models.Lighting;
 using Haus.Site.Host.Shared.Lighting;
 using Haus.Site.Host.Tests.Support;
 using Haus.Testing.Support;
+using Microsoft.Reactive.Testing;
 using MudBlazor;
 using MudBlazor.Extensions;
 
@@ -197,7 +199,8 @@ public class LightingViewTests : HausSiteTestContext
     {
         var lighting = HausModelFactory.LightingModel();
         var timesChanged = 0;
-        var view = RenderLighting(lighting, _ => timesChanged++);
+        var scheduler = new TestScheduler();
+        var view = RenderLighting(lighting, _ => timesChanged++, throttleScheduler: scheduler);
 
         await view.InvokeAsync(async () =>
         {
@@ -205,10 +208,14 @@ public class LightingViewTests : HausSiteTestContext
             await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(42);
             await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(44);
             await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(46);
-            await Task.Delay(400);
         });
 
-        Assert.Equal(1, timesChanged);
+        scheduler.AdvanceBy(TimeSpan.FromMilliseconds(301).Ticks);
+
+        Eventually.Assert(() =>
+        {
+            Assert.Equal(1, timesChanged);
+        });
     }
 
     [Fact]
@@ -220,7 +227,8 @@ public class LightingViewTests : HausSiteTestContext
             Color = new ColorLightingModel(Red: 100, Green: 100, Blue: 100),
         };
         var timesChanged = 0;
-        var view = RenderLighting(lighting, _ => timesChanged++);
+        var scheduler = new TestScheduler();
+        var view = RenderLighting(lighting, _ => timesChanged++, throttleScheduler: scheduler);
 
         await view.InvokeAsync(async () =>
         {
@@ -229,17 +237,34 @@ public class LightingViewTests : HausSiteTestContext
             await FindSliderById<byte>(view, "red").Instance.ValueChanged.InvokeAsync(44);
             await FindSliderById<byte>(view, "green").Instance.ValueChanged.InvokeAsync(46);
             await FindSliderById<byte>(view, "blue").Instance.ValueChanged.InvokeAsync(46);
-            await Task.Delay(400);
         });
 
-        Assert.Equal(1, timesChanged);
+        scheduler.AdvanceBy(TimeSpan.FromMilliseconds(301).Ticks);
+
+        Eventually.Assert(() =>
+        {
+            Assert.Equal(1, timesChanged);
+        });
+
+        await view.InvokeAsync(async () =>
+        {
+            await FindSliderById<double>(view, "level").Instance.ValueChanged.InvokeAsync(50);
+        });
+
+        scheduler.AdvanceBy(TimeSpan.FromMilliseconds(301).Ticks);
+
+        Eventually.Assert(() =>
+        {
+            Assert.Equal(2, timesChanged);
+        });
     }
 
     private IRenderedComponent<LightingView> RenderLighting(
         LightingModel? lighting,
         Action<LightingModel>? onChanged = null,
         bool disabled = false,
-        string? title = null
+        string? title = null,
+        IScheduler? throttleScheduler = null
     )
     {
         return Context.Render<LightingView>(opts =>
@@ -253,6 +278,10 @@ public class LightingViewTests : HausSiteTestContext
             if (title != null)
             {
                 opts.Add(o => o.Title, title);
+            }
+            if (throttleScheduler != null)
+            {
+                opts.Add(o => o.ThrottleScheduler, throttleScheduler);
             }
         });
     }
