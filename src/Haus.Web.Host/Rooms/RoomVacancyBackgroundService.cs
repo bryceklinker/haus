@@ -6,10 +6,14 @@ using Haus.Core.Rooms.Commands;
 using Haus.Cqrs.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Haus.Web.Host.Rooms;
 
-public class RoomVacancyBackgroundService(IServiceScopeFactory scopeFactory) : BackgroundService
+public class RoomVacancyBackgroundService(
+    IServiceScopeFactory scopeFactory,
+    ILogger<RoomVacancyBackgroundService> logger
+) : BackgroundService
 {
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
 
@@ -20,8 +24,26 @@ public class RoomVacancyBackgroundService(IServiceScopeFactory scopeFactory) : B
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            await ExecuteTurnOffVacantRooms(stoppingToken).ConfigureAwait(false);
+            await TryExecuteTurnOffVacantRooms(stoppingToken).ConfigureAwait(false);
             await Task.Delay(_delay, stoppingToken).ConfigureAwait(false);
+        }
+    }
+
+    private async Task TryExecuteTurnOffVacantRooms(CancellationToken stoppingToken)
+    {
+        try
+        {
+            await ExecuteTurnOffVacantRooms(stoppingToken).ConfigureAwait(false);
+        }
+        catch (Exception e) when (e is not OperationCanceledException)
+        {
+            // A single sweep racing a concurrent write to the same room (e.g. an explicit
+            // vacant/occupied event landing at the same moment) must not permanently stop
+            // this loop - HostOptions.BackgroundServiceExceptionBehavior defaults to
+            // StopHost, so an unhandled exception here would silently disable vacancy
+            // turn-off for every room for the rest of the process lifetime. Skip this
+            // sweep and retry on the next poll instead.
+            logger.LogWarning(e, "Skipping this vacancy sweep after a failure; will retry on the next poll");
         }
     }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Haus.Core.Common;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Lighting.Entities;
@@ -135,26 +136,26 @@ public record RoomEntity : Entity
         ChangeLighting(lightingCopy, domainEventBus);
     }
 
-    public void ChangeOccupancy(OccupancyChangedModel model, IDomainEventBus domainEventBus)
+    public void ChangeOccupancy(OccupancyChangedModel model, IDomainEventBus domainEventBus, IClock clock)
     {
         if (model.Occupancy)
-            HandleRoomOccupied(domainEventBus);
+            HandleRoomOccupied(domainEventBus, clock);
         else
-            HandleRoomVacant(domainEventBus);
+            HandleRoomVacant(domainEventBus, clock);
     }
 
-    private void HandleRoomVacant(IDomainEventBus domainEventBus)
+    private void HandleRoomVacant(IDomainEventBus domainEventBus, IClock clock)
     {
         var lastOccupied = LastOccupiedTime.GetValueOrDefault();
-        if (lastOccupied.AddSeconds(OccupancyTimeoutInSeconds) > DateTime.UtcNow)
+        if (lastOccupied.AddSeconds(OccupancyTimeoutInSeconds) > clock.UtcNow)
             return;
 
         TurnOff(domainEventBus);
     }
 
-    private void HandleRoomOccupied(IDomainEventBus domainEventBus)
+    private void HandleRoomOccupied(IDomainEventBus domainEventBus, IClock clock)
     {
-        LastOccupiedTime = DateTime.UtcNow;
+        LastOccupiedTime = clock.UtcNow;
         TurnOn(domainEventBus);
     }
 }
