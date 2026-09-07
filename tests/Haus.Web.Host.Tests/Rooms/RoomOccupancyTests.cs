@@ -19,6 +19,11 @@ public class RoomOccupancyTests
     private static readonly DateTime BaseClockTime = new(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     private const int OccupancyTimeoutInSeconds = 3600;
 
+    // Deliberately far outside the range any other fact in this shared-clock collection ever
+    // advances to, so this test's still-on room can never become collaterally eligible for
+    // RoomVacancyBackgroundService's sweep once a later fact jumps the (process-wide) FakeClock.
+    private const int NeverExpiresTimeoutInSeconds = 1_000_000;
+
     private readonly HausWebHostApplicationFactory _factory;
     private readonly IHausApiClient _apiClient;
     private readonly ConcurrentBag<RoomLightingChangedEvent> _roomLightingCommands;
@@ -35,7 +40,7 @@ public class RoomOccupancyTests
     public async Task WhenRoomHasMotionSensorThenRoomStaysOnDuringOccupancyTimeout()
     {
         var (room, device) = await SetupRoomWithDevice();
-        await _apiClient.UpdateRoomAsync(room.Id, new RoomModel(room.Id, room.Name, OccupancyTimeoutInSeconds));
+        await _apiClient.UpdateRoomAsync(room.Id, new RoomModel(room.Id, room.Name, NeverExpiresTimeoutInSeconds));
 
         await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId, true));
         Eventually.Assert(() =>
@@ -47,7 +52,7 @@ public class RoomOccupancyTests
         });
         _roomLightingCommands.Clear();
 
-        _factory.SetClockTime(BaseClockTime.AddSeconds(OccupancyTimeoutInSeconds - 1));
+        _factory.SetClockTime(BaseClockTime.AddSeconds(NeverExpiresTimeoutInSeconds - 1));
         await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId));
         await Task.Delay(TimeSpan.FromSeconds(1));
 
@@ -76,6 +81,11 @@ public class RoomOccupancyTests
         });
 
         _factory.SetClockTime(BaseClockTime.AddSeconds(OccupancyTimeoutInSeconds + 1));
+
+        // Once the clock passes the timeout, RoomVacancyBackgroundService's own poll also
+        // becomes eligible to turn this room off; give it a full cycle to land its write
+        // before publishing our own vacant event, so the two writers don't race the same row.
+        await Task.Delay(TimeSpan.FromSeconds(1));
         await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId));
 
         Eventually.Assert(() =>
