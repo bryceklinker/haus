@@ -8,11 +8,13 @@ public record DeviceDiscoveredEvent(
     string Id,
     DeviceType DeviceType = DeviceType.Unknown,
     MetadataModel[]? Metadata = null,
-    ushort? NetworkAddress = null
+    ushort? NetworkAddress = null,
+    DeviceEndpointModel[]? Endpoints = null
 ) : IHausEventCreator<DeviceDiscoveredEvent>
 {
     public const string Type = "device_discovered";
     public MetadataModel[] Metadata { get; } = Metadata ?? [];
+    public DeviceEndpointModel[] Endpoints { get; } = Endpoints ?? [];
 
     public HausEvent<DeviceDiscoveredEvent> AsHausEvent()
     {

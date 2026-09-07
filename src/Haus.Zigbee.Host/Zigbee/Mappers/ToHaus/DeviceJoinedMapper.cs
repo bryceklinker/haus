@@ -1,4 +1,6 @@
+using System.Linq;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
 using Haus.Zigbee.Models;
@@ -13,7 +15,8 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
             ExternalIdConverter.ToExternalId(joined.IeeeAddress),
             deviceTypeResolver.Resolve(joined.ManufacturerName, joined.ModelIdentifier),
             CreateMetadata(joined),
-            NetworkAddress: joined.NetworkAddress
+            NetworkAddress: joined.NetworkAddress,
+            Endpoints: CreateEndpoints(joined)
         );
     }
 
@@ -33,5 +36,10 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
             new MetadataModel("vendor", joined.ManufacturerName),
             new MetadataModel("model", joined.ModelIdentifier),
         ];
+    }
+
+    private static DeviceEndpointModel[] CreateEndpoints(ZigbeeDeviceJoined joined)
+    {
+        return joined.Endpoints.Select(e => new DeviceEndpointModel(e.EndpointId, e.InClusters)).ToArray();
     }
 }

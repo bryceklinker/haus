@@ -13,10 +13,12 @@ public record DeviceModel(
     LightType LightType = LightType.None,
     MetadataModel[]? Metadata = null,
     ushort? NetworkAddress = null,
-    LightingModel? Lighting = null
+    LightingModel? Lighting = null,
+    DeviceEndpointModel[]? Endpoints = null
 ) : IdentityModel
 {
     public MetadataModel[] Metadata { get; init; } = Metadata ?? [];
+    public DeviceEndpointModel[] Endpoints { get; init; } = Endpoints ?? [];
 
     // MudBlazor's MudDropZone keys rendered items by GetHashCode(); the default
     // record equality includes Metadata (an array, compared by reference), so a

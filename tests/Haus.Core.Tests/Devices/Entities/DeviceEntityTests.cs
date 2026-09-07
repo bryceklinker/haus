@@ -49,6 +49,46 @@ public class DeviceEntityTest
     }
 
     [Fact]
+    public void WhenCreatedFromDeviceDiscoveredThenEndpointsArePersisted()
+    {
+        var model = new DeviceDiscoveredEvent(
+            "this-id",
+            Endpoints: [new DeviceEndpointModel(1, [0x0006, 0x0008]), new DeviceEndpointModel(2, [0x0300])]
+        );
+
+        var entity = DeviceEntity.FromDiscoveredDevice(model, new FakeDomainEventBus());
+
+        Assert.Equal(2, entity.Endpoints.Count);
+        Assert.Contains(
+            entity.Endpoints,
+            e => e.EndpointId == 1 && e.InClusters.SequenceEqual(new ushort[] { 0x0006, 0x0008 })
+        );
+        Assert.Contains(
+            entity.Endpoints,
+            e => e.EndpointId == 2 && e.InClusters.SequenceEqual(new ushort[] { 0x0300 })
+        );
+    }
+
+    [Fact]
+    public void WhenUpdatedFromDeviceDiscoveredThenEndpointsAreReplacedWithTheFullDiscoveredList()
+    {
+        var entity = new DeviceEntity();
+        entity.UpdateFromDiscoveredDevice(
+            new DeviceDiscoveredEvent("", Endpoints: [new DeviceEndpointModel(1, [0x0006])]),
+            new FakeDomainEventBus()
+        );
+
+        entity.UpdateFromDiscoveredDevice(
+            new DeviceDiscoveredEvent("", Endpoints: [new DeviceEndpointModel(2, [0x0300])]),
+            new FakeDomainEventBus()
+        );
+
+        var endpoint = Assert.Single(entity.Endpoints);
+        Assert.Equal(2, endpoint.EndpointId);
+        Assert.Equal(new ushort[] { 0x0300 }, endpoint.InClusters);
+    }
+
+    [Fact]
     public void WhenCreatedFromDeviceDiscoveredThenNameIsSetToExternalId()
     {
         var model = new DeviceDiscoveredEvent("this-id");
