@@ -35,36 +35,52 @@ public class HausLightingToZigbeeMapper
         return type == DeviceLightingChangedEvent.Type;
     }
 
-    // Prefers whichever endpoint exposes the cluster a lighting command would target first --
-    // On/Off, then Level, then Color -- so a split-cluster device still gets one destination that
-    // can at least turn on/off, falling back to the first discovered endpoint if none of those
-    // clusters are present, and to the caller-supplied default when no endpoints are known at all
-    // (e.g. a device persisted before endpoint discovery existed).
-    public byte ResolveDestinationEndpoint(IReadOnlyList<DeviceEndpointModel> endpoints, byte fallbackEndpoint)
+    // Resolves the destination endpoint for ONE specific cluster: prefers the endpoint that
+    // actually declares that cluster (so a split-cluster device routes On/Off and Color to their
+    // own endpoints), else falls back to whichever endpoint exposes On/Off, then Level, then
+    // Color -- so a lighting command for a cluster no endpoint declares still lands somewhere
+    // capable of at least turning the device on/off -- falling back further to the first
+    // discovered endpoint if none of those clusters are present, and to the caller-supplied
+    // default when no endpoints are known at all (e.g. a device persisted before endpoint
+    // discovery existed).
+    public byte ResolveDestinationEndpoint(
+        IReadOnlyList<DeviceEndpointModel> endpoints,
+        ushort clusterId,
+        byte fallbackEndpoint
+    )
     {
         if (endpoints.Count == 0)
             return fallbackEndpoint;
 
-        var preferred =
-            endpoints.FirstOrDefault(e => e.InClusters.Contains(OnOffCluster))
+        var resolved =
+            endpoints.FirstOrDefault(e => e.InClusters.Contains(clusterId))
+            ?? endpoints.FirstOrDefault(e => e.InClusters.Contains(OnOffCluster))
             ?? endpoints.FirstOrDefault(e => e.InClusters.Contains(LevelControlCluster))
             ?? endpoints.FirstOrDefault(e => e.InClusters.Contains(ColorControlCluster))
             ?? endpoints[0];
 
-        return preferred.EndpointId;
+        return resolved.EndpointId;
     }
 
-    public IEnumerable<ZigbeeCommandRequest> Map(ApsDestination destination, LightingModel lighting)
+    public IEnumerable<ZigbeeCommandRequest> Map(
+        IClusterDestinationResolver destinationResolver,
+        LightingModel lighting
+    )
     {
         if (lighting.State == LightingState.Off)
         {
-            yield return CreateRequest(destination, OnOffCluster, OffCommand, []);
+            yield return CreateRequest(
+                destinationResolver.ResolveDestination(OnOffCluster),
+                OnOffCluster,
+                OffCommand,
+                []
+            );
             yield break;
         }
 
-        yield return CreateRequest(destination, OnOffCluster, OnCommand, []);
+        yield return CreateRequest(destinationResolver.ResolveDestination(OnOffCluster), OnOffCluster, OnCommand, []);
         yield return CreateRequest(
-            destination,
+            destinationResolver.ResolveDestination(LevelControlCluster),
             LevelControlCluster,
             MoveToLevelWithOnOffCommand,
             LevelPayload(lighting.Level)
@@ -72,14 +88,19 @@ public class HausLightingToZigbeeMapper
 
         if (lighting.Temperature is { } temperature)
             yield return CreateRequest(
-                destination,
+                destinationResolver.ResolveDestination(ColorControlCluster),
                 ColorControlCluster,
                 MoveToColorTemperatureCommand,
                 ColorTemperaturePayload(temperature)
             );
 
         if (lighting.Color is { } color)
-            yield return CreateRequest(destination, ColorControlCluster, MoveToColorCommand, ColorPayload(color));
+            yield return CreateRequest(
+                destinationResolver.ResolveDestination(ColorControlCluster),
+                ColorControlCluster,
+                MoveToColorCommand,
+                ColorPayload(color)
+            );
     }
 
     private static ZigbeeCommandRequest CreateRequest(
