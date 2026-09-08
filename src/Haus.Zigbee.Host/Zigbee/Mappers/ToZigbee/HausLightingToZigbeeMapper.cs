@@ -63,19 +63,24 @@ public class HausLightingToZigbeeMapper
     }
 
     public IEnumerable<ZigbeeCommandRequest> Map(
-        Func<ushort, ApsDestination> destinationForCluster,
+        IClusterDestinationResolver destinationResolver,
         LightingModel lighting
     )
     {
         if (lighting.State == LightingState.Off)
         {
-            yield return CreateRequest(destinationForCluster(OnOffCluster), OnOffCluster, OffCommand, []);
+            yield return CreateRequest(
+                destinationResolver.ResolveDestination(OnOffCluster),
+                OnOffCluster,
+                OffCommand,
+                []
+            );
             yield break;
         }
 
-        yield return CreateRequest(destinationForCluster(OnOffCluster), OnOffCluster, OnCommand, []);
+        yield return CreateRequest(destinationResolver.ResolveDestination(OnOffCluster), OnOffCluster, OnCommand, []);
         yield return CreateRequest(
-            destinationForCluster(LevelControlCluster),
+            destinationResolver.ResolveDestination(LevelControlCluster),
             LevelControlCluster,
             MoveToLevelWithOnOffCommand,
             LevelPayload(lighting.Level)
@@ -83,7 +88,7 @@ public class HausLightingToZigbeeMapper
 
         if (lighting.Temperature is { } temperature)
             yield return CreateRequest(
-                destinationForCluster(ColorControlCluster),
+                destinationResolver.ResolveDestination(ColorControlCluster),
                 ColorControlCluster,
                 MoveToColorTemperatureCommand,
                 ColorTemperaturePayload(temperature)
@@ -91,7 +96,7 @@ public class HausLightingToZigbeeMapper
 
         if (lighting.Color is { } color)
             yield return CreateRequest(
-                destinationForCluster(ColorControlCluster),
+                destinationResolver.ResolveDestination(ColorControlCluster),
                 ColorControlCluster,
                 MoveToColorCommand,
                 ColorPayload(color)

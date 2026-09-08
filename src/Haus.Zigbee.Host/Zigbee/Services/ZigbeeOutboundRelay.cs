@@ -100,12 +100,13 @@ public class ZigbeeOutboundRelay(
             return;
         }
 
-        ApsDestination DestinationForCluster(ushort clusterId) =>
-            ApsDestination.Nwk(
-                networkAddress,
-                lightingMapper.ResolveDestinationEndpoint(device.Endpoints, clusterId, FallbackDestinationEndpoint)
-            );
-        var requests = lightingMapper.Map(DestinationForCluster, command.Payload.Lighting);
+        var destinationResolver = new DeviceClusterDestinationResolver(
+            lightingMapper,
+            device.Endpoints,
+            networkAddress,
+            FallbackDestinationEndpoint
+        );
+        var requests = lightingMapper.Map(destinationResolver, command.Payload.Lighting);
         foreach (var request in requests)
         {
             logger.LogInformation(
@@ -231,5 +232,21 @@ public class ZigbeeOutboundRelay(
             ),
             token
         );
+    }
+
+    private class DeviceClusterDestinationResolver(
+        HausLightingToZigbeeMapper lightingMapper,
+        DeviceEndpointModel[] endpoints,
+        ushort networkAddress,
+        byte fallbackEndpoint
+    ) : IClusterDestinationResolver
+    {
+        public ApsDestination ResolveDestination(ushort clusterId)
+        {
+            return ApsDestination.Nwk(
+                networkAddress,
+                lightingMapper.ResolveDestinationEndpoint(endpoints, clusterId, fallbackEndpoint)
+            );
+        }
     }
 }
