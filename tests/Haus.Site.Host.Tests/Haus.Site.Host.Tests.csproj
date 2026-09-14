@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <ItemGroup>
     <PackageReference Include="bunit" Version="2.9.0" />
+    <PackageReference Include="Microsoft.Reactive.Testing" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,3 +1,4 @@
+@using System.Reactive.Concurrency
 @using System.Reactive.Linq
 @using System.Reactive.Subjects
 @using Haus.Core.Models.Lighting
@@ -113,6 +114,8 @@ else
 
     [Parameter] public EventCallback<LightingModel> OnLightingChanged { get; set; }
 
+    [Parameter] public IScheduler ThrottleScheduler { get; set; } = Scheduler.Default;
+
     // The subject -- not the Lighting parameter itself -- is the live render source: slider drags
     // push through it via OnNext without waiting for the parent to round-trip a new parameter value,
     // so mid-drag state (and each successive drag building on the last) renders immediately.
@@ -211,7 +214,7 @@ else
         _subscription?.Dispose();
         _lightingSubject = new BehaviorSubject<LightingModel?>(lighting);
         _subscription = _lightingSubject
-            .Throttle(TimeSpan.FromMilliseconds(300))
+            .Throttle(TimeSpan.FromMilliseconds(300), ThrottleScheduler)
             .Select(l => InvokeAsync(() => OnLightingChanged.InvokeAsync(l)))
             .Subscribe();
     }

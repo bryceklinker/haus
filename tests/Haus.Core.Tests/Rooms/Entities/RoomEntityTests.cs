@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks;
+using Haus.Core.Common;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Devices;
@@ -9,6 +9,7 @@ using Haus.Core.Models.Rooms;
 using Haus.Core.Rooms.DomainEvents;
 using Haus.Core.Rooms.Entities;
 using Haus.Core.Tests.Support;
+using Haus.Testing.Support.Fakes;
 using Xunit;
 
 namespace Haus.Core.Tests.Rooms.Entities;
@@ -213,7 +214,7 @@ public class RoomEntityTests
         var lighting = new LightingEntity(LightingState.Off);
         var room = new RoomEntity(12, $"{Guid.NewGuid()}", lighting: lighting);
 
-        room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus());
+        room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus(), new Clock());
 
         Assert.Equal(LightingState.On, room.Lighting?.State);
     }
@@ -223,7 +224,7 @@ public class RoomEntityTests
     {
         var room = new RoomEntity(12, "");
 
-        room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus());
+        room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus(), new Clock());
 
         Assert.True(
             Math.Abs((DateTime.UtcNow - room.LastOccupiedTime!.Value).Ticks) <= TimeSpan.FromMilliseconds(500).Ticks
@@ -236,21 +237,22 @@ public class RoomEntityTests
         var lighting = new LightingEntity(LightingState.On);
         var room = new RoomEntity(12, "", 100, lighting: lighting);
 
-        room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus());
-        room.ChangeOccupancy(new OccupancyChangedModel(""), new FakeDomainEventBus());
+        room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus(), new Clock());
+        room.ChangeOccupancy(new OccupancyChangedModel(""), new FakeDomainEventBus(), new Clock());
 
         Assert.Equal(LightingState.On, room.Lighting?.State);
     }
 
     [Fact]
-    public async Task WhenRoomIsNoLongerOccupiedAndOccupancyTimeoutIsExceededThenRoomIsTurnedOff()
+    public void WhenRoomIsNoLongerOccupiedAndOccupancyTimeoutIsExceededThenRoomIsTurnedOff()
     {
         var lighting = new LightingEntity(LightingState.On);
         var room = new RoomEntity(12, "", 1, lighting: lighting);
+        var clock = new FakeClock();
 
-        room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus());
-        await Task.Delay(TimeSpan.FromSeconds(2));
-        room.ChangeOccupancy(new OccupancyChangedModel(""), new FakeDomainEventBus());
+        room.ChangeOccupancy(new OccupancyChangedModel("", true), new FakeDomainEventBus(), clock);
+        clock.SetNow(clock.UtcNow.AddSeconds(2));
+        room.ChangeOccupancy(new OccupancyChangedModel(""), new FakeDomainEventBus(), clock);
 
         Assert.Equal(LightingState.Off, room.Lighting?.State);
     }

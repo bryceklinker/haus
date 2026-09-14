@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Devices.Sensors.Motion;
@@ -79,7 +80,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
             r =>
             {
                 r.ChangeLighting(new LightingEntity(), new FakeDomainEventBus());
-                r.ChangeOccupancy(new OccupancyChangedModel("idk", true), new FakeDomainEventBus());
+                r.ChangeOccupancy(new OccupancyChangedModel("idk", true), new FakeDomainEventBus(), new Clock());
             }
         );
 
@@ -105,7 +106,7 @@ public class TurnOffVacantRoomsCommandHandlerTests
             e =>
             {
                 e.OccupancyTimeoutInSeconds = occupancyTimeoutInSeconds;
-                e.ChangeOccupancy(new OccupancyChangedModel("", true), _bus);
+                e.ChangeOccupancy(new OccupancyChangedModel("", true), _bus, new Clock());
             }
         );
     }

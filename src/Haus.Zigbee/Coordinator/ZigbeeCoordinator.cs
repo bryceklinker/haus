@@ -20,9 +20,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
 
     private readonly Func<ISerialTransport> _transportFactory;
     private readonly TimeSpan? _channelRoundTripTimeout;
+    private readonly CommandRetryOptions _retryOptions;
     private readonly ILoggerFactory _loggerFactory;
     private readonly ILogger<ZigbeeCoordinator> _logger;
     private readonly KnownDeviceTable _knownDeviceTable = new();
+    private readonly DeviceCommandQueue _commandQueue = new();
 
     // Guards every read AND write of _components and _transportNeedsRebuild. A plain field
     // (even one reference-swapped atomically) gives no cross-thread visibility guarantee on its
@@ -49,11 +51,13 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     public ZigbeeCoordinator(
         Func<ISerialTransport> transportFactory,
         ILoggerFactory? loggerFactory = null,
-        TimeSpan? channelRoundTripTimeout = null
+        TimeSpan? channelRoundTripTimeout = null,
+        CommandRetryOptions? retryOptions = null
     )
     {
         _transportFactory = transportFactory;
         _channelRoundTripTimeout = channelRoundTripTimeout;
+        _retryOptions = retryOptions ?? new CommandRetryOptions();
         _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
         _logger = _loggerFactory.CreateLogger<ZigbeeCoordinator>();
 
@@ -179,7 +183,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         var pollLoop = new ApsPollLoop(channel, _loggerFactory.CreateLogger<ApsPollLoop>());
         var permitJoinController = new PermitJoinController(channel);
         var sender = new ApsSender(pollLoop, channel, logger: _loggerFactory.CreateLogger<ApsSender>());
-        var commandSender = new CommandSender(sender);
+        var commandSender = new CommandSender(sender, _commandQueue, new CommandRetryHandler(_retryOptions));
         var attributeReportListener = new AttributeReportListener(pollLoop);
         var deviceInterview = new DeviceInterview(
             pollLoop,

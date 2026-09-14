@@ -6,6 +6,7 @@
     />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="Polly.Core" Version="8.7.0" />
     <PackageReference Include="System.IO.Ports" Version="$(MicrosoftPackageVersion)" />
   </ItemGroup>
 </Project>

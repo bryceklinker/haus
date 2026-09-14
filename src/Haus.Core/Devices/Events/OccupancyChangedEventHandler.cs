@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Core.Common;
 using Haus.Core.Common.Events;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Rooms.Repositories;
@@ -8,8 +9,11 @@ using Haus.Cqrs.Events;
 
 namespace Haus.Core.Devices.Events;
 
-internal class OccupancyChangedEventHandler(IDomainEventBus domainEventBus, IRoomCommandRepository repository)
-    : IEventHandler<RoutableEvent<OccupancyChangedModel>>
+internal class OccupancyChangedEventHandler(
+    IDomainEventBus domainEventBus,
+    IRoomCommandRepository repository,
+    IClock clock
+) : IEventHandler<RoutableEvent<OccupancyChangedModel>>
 {
     public async Task Handle(RoutableEvent<OccupancyChangedModel> notification, CancellationToken cancellationToken)
     {
@@ -20,7 +24,7 @@ internal class OccupancyChangedEventHandler(IDomainEventBus domainEventBus, IRoo
         if (room == null)
             return;
 
-        room.ChangeOccupancy(notification.Payload, domainEventBus);
+        room.ChangeOccupancy(notification.Payload, domainEventBus, clock);
 
         await repository.SaveAsync(room, cancellationToken).ConfigureAwait(false);
         await domainEventBus.FlushAsync(cancellationToken).ConfigureAwait(false);
