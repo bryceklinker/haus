@@ -18,6 +18,9 @@ internal class InitializeCommandHandler(IHausBus hausBus) : ICommandHandler<Init
         await hausBus
             .ExecuteCommandAsync(new BackfillDeviceNetworkAddressesCommand(), cancellationToken)
             .ConfigureAwait(false);
+        await hausBus
+            .ExecuteCommandAsync(new ReclassifyUnknownDevicesCommand(), cancellationToken)
+            .ConfigureAwait(false);
         await Task.WhenAll(
                 hausBus.ExecuteCommandAsync(new InitializeDiscoveryCommand(), cancellationToken),
                 hausBus.ExecuteCommandAsync(new SyncDiscoveryCommand(), cancellationToken)

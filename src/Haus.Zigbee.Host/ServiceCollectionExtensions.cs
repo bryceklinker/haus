@@ -1,4 +1,5 @@
 using System;
+using Haus.Core.Models.Devices.Resolvers;
 using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Settings;
 using Haus.Zigbee.Coordinator;
@@ -7,12 +8,12 @@ using Haus.Zigbee.Host.Health;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
-using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.Resolvers;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
 using Haus.Zigbee.Host.Zigbee.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 
 namespace Haus.Zigbee.Host;
 
@@ -23,7 +24,9 @@ public static class ServiceCollectionExtensions
         services.AddHealthChecks().AddHausMqttHealthChecks();
 
         return services
-            .AddSingleton<IDeviceTypeResolver, DeviceTypeResolver>()
+            .AddSingleton<IDeviceTypeResolver>(sp => new DeviceTypeResolver(
+                sp.GetRequiredService<IOptions<HausOptions>>().Value.DeviceTypeOptions
+            ))
             .AddSingleton<DeviceAddressRegistry>()
             .AddSingleton<DevicesMapper>()
             .AddSingleton<DeviceJoinedMapper>()

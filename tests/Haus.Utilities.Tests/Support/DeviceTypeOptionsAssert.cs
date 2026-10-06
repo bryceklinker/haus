@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Haus.Core.Models.Devices;
-using Haus.Zigbee.Host.Configuration;
+using Haus.Core.Models.Devices.Resolvers;
 using Xunit;
 
 namespace Haus.Utilities.Tests.Support;

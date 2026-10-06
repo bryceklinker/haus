@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Haus.Core.Models;
-using Haus.Zigbee.Host.Configuration;
+using Haus.Core.Models.Devices.Resolvers;
 
 namespace Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
 

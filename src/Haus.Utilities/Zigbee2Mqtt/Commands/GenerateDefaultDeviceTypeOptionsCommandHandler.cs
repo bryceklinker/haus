@@ -6,10 +6,10 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models;
+using Haus.Core.Models.Devices.Resolvers;
 using Haus.Cqrs.Commands;
 using Haus.Utilities.Common.Cli;
 using Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
-using Haus.Zigbee.Host.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Utilities.Zigbee2Mqtt.Commands;
@@ -28,15 +28,7 @@ public class GenerateDefaultDeviceTypeOptionsCommandHandler(
         "https://raw.githubusercontent.com/Koenkk/zigbee2mqtt.io/master/docs/supported-devices/README.md";
 
     private static readonly string DefaultDeviceTypeOptionsPath = Path.GetFullPath(
-        Path.Combine(
-            "..",
-            "Haus.Zigbee.Host",
-            "Zigbee2Mqtt",
-            "Mappers",
-            "ToHaus",
-            "Resolvers",
-            "DefaultDeviceTypeOptions.json"
-        )
+        Path.Combine("..", "Haus.Core.Models", "Devices", "Resolvers", "DefaultDeviceTypeOptions.json")
     );
 
     public async Task Handle(GenerateDefaultDeviceTypeOptionsCommand request, CancellationToken cancellationToken)

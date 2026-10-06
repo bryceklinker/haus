@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 
-namespace Haus.Zigbee.Host.Tests.Support;
+namespace Haus.Testing.Support;
 
 // Each CreateLogger call gets its own logger instance tagged with its own category, all writing
 // into one shared, lock-protected list -- so entries stay attributed to whichever type actually

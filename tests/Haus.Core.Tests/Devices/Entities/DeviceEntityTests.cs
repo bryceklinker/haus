@@ -442,4 +442,67 @@ public class DeviceEntityTest
 
         Assert.Single(domainEventBus.GetEvents.OfType<DeviceLightingChangedDomainEvent>());
     }
+
+    [Fact]
+    public void WhenUnknownDeviceIsReclassifiedToLightThenDeviceTypeIsUpgraded()
+    {
+        var device = new DeviceEntity(deviceType: DeviceType.Unknown);
+
+        device.ReclassifyIfResolvable(DeviceType.Light, new FakeDomainEventBus());
+
+        Assert.Equal(DeviceType.Light, device.DeviceType);
+    }
+
+    [Fact]
+    public void WhenUnknownDeviceResolvesToStillUnknownThenDeviceTypeRemainsUnknown()
+    {
+        var device = new DeviceEntity(deviceType: DeviceType.Unknown);
+
+        device.ReclassifyIfResolvable(DeviceType.Unknown, new FakeDomainEventBus());
+
+        Assert.Equal(DeviceType.Unknown, device.DeviceType);
+    }
+
+    [Fact]
+    public void WhenDeviceIsAlreadyClassifiedThenReclassifyDoesNotOverwriteExistingType()
+    {
+        var device = new DeviceEntity(deviceType: DeviceType.Switch);
+
+        device.ReclassifyIfResolvable(DeviceType.Light, new FakeDomainEventBus());
+
+        Assert.Equal(DeviceType.Switch, device.DeviceType);
+    }
+
+    [Fact]
+    public void WhenUnknownDeviceIsReclassifiedToLightThenLightTypeAndLightingAreInitialized()
+    {
+        var device = new DeviceEntity(deviceType: DeviceType.Unknown);
+
+        device.ReclassifyIfResolvable(DeviceType.Light, new FakeDomainEventBus());
+
+        Assert.Equal(LightType.Level, device.LightType);
+        Assert.Equal(new LightingEntity(LightingDefaults.State, new LevelLightingEntity()), device.Lighting);
+    }
+
+    [Fact]
+    public void WhenUnknownDeviceIsReclassifiedToLightThenDeviceLightingChangedEventIsQueued()
+    {
+        var domainEventBus = new FakeDomainEventBus();
+        var device = new DeviceEntity(deviceType: DeviceType.Unknown);
+
+        device.ReclassifyIfResolvable(DeviceType.Light, domainEventBus);
+
+        Assert.Single(domainEventBus.GetEvents.OfType<DeviceLightingChangedDomainEvent>());
+    }
+
+    [Fact]
+    public void WhenUnknownDeviceIsReclassifiedToNonLightTypeThenNoLightingChangedEventIsQueued()
+    {
+        var domainEventBus = new FakeDomainEventBus();
+        var device = new DeviceEntity(deviceType: DeviceType.Unknown);
+
+        device.ReclassifyIfResolvable(DeviceType.Switch, domainEventBus);
+
+        Assert.Empty(domainEventBus.GetEvents.OfType<DeviceLightingChangedDomainEvent>());
+    }
 }

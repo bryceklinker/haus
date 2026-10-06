@@ -6,20 +6,31 @@ using Haus.Core.Lighting.Entities;
 using Haus.Core.Models.Lighting;
 using Haus.Cqrs.Commands;
 using Haus.Cqrs.DomainEvents;
+using Microsoft.Extensions.Logging;
 
 namespace Haus.Core.Devices.Commands;
 
 public record ChangeDeviceLightingCommand(long DeviceId, LightingModel Lighting) : ICommand;
 
-internal class ChangeDeviceLightingCommandHandler(IDomainEventBus domainEventBus, IDeviceCommandRepository repository)
-    : ICommandHandler<ChangeDeviceLightingCommand>
+internal class ChangeDeviceLightingCommandHandler(
+    IDomainEventBus domainEventBus,
+    IDeviceCommandRepository repository,
+    ILogger<ChangeDeviceLightingCommandHandler> logger
+) : ICommandHandler<ChangeDeviceLightingCommand>
 {
     public async Task Handle(ChangeDeviceLightingCommand request, CancellationToken cancellationToken)
     {
         var device = await repository.GetById(request.DeviceId, cancellationToken).ConfigureAwait(false);
 
         if (!device.IsLight)
+        {
+            logger.LogWarning(
+                "Rejected lighting command for device {@Id} because it is not classified as a light (DeviceType={@DeviceType})",
+                device.Id,
+                device.DeviceType
+            );
             throw new InvalidOperationException($"Device with id {device.Id} is not a light");
+        }
 
         var lighting = LightingEntity.FromModel(request.Lighting);
         device.ChangeLighting(lighting, domainEventBus);
