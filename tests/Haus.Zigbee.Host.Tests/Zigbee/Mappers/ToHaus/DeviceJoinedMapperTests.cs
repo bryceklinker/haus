@@ -1,3 +1,4 @@
+using System.Linq;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Zigbee.Host.Tests.Support;
@@ -49,6 +50,29 @@ public class DeviceJoinedMapperTests
 
         Assert.Contains(new MetadataModel("vendor", "acme"), result.Metadata);
         Assert.Contains(new MetadataModel("model", "widget-1"), result.Metadata);
+    }
+
+    [Fact]
+    public void Map_MapsTheFullEndpointListNotJustOneWinner()
+    {
+        var endpoints = new[]
+        {
+            new ZigbeeEndpoint(1, 0x0104, 0x0100, [0x0000, 0x0006], [0x0019]),
+            new ZigbeeEndpoint(2, 0x0104, 0x0102, [0x0300], []),
+        };
+        var joined = new ZigbeeDeviceJoined(new IeeeAddress(1), 0x1234, endpoints, "acme", "widget-1");
+
+        var result = _mapper.Map(joined);
+
+        Assert.Equal(2, result.Endpoints.Length);
+        Assert.Contains(
+            result.Endpoints,
+            e => e.EndpointId == 1 && e.InClusters.SequenceEqual(new ushort[] { 0x0000, 0x0006 })
+        );
+        Assert.Contains(
+            result.Endpoints,
+            e => e.EndpointId == 2 && e.InClusters.SequenceEqual(new ushort[] { 0x0300 })
+        );
     }
 
     [Fact]

@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Core.Common;
 using Haus.Core.Common.Storage;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Lighting;
@@ -13,7 +14,7 @@ namespace Haus.Core.Rooms.Commands;
 
 public record TurnOffVacantRoomsCommand : ICommand;
 
-public class TurnOffVacantRoomsCommandHandler(IDomainEventBus domainEventBus, HausDbContext context)
+public class TurnOffVacantRoomsCommandHandler(IDomainEventBus domainEventBus, HausDbContext context, IClock clock)
     : ICommandHandler<TurnOffVacantRoomsCommand>
 {
     public async Task Handle(TurnOffVacantRoomsCommand request, CancellationToken cancellationToken)
@@ -27,7 +28,8 @@ public class TurnOffVacantRoomsCommandHandler(IDomainEventBus domainEventBus, Ha
         foreach (var room in rooms)
             room.ChangeOccupancy(
                 new OccupancyChangedModel(RoomDefaults.SimulatedOccupancyChangeDeviceId),
-                domainEventBus
+                domainEventBus,
+                clock
             );
 
         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

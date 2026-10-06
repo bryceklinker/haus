@@ -6,7 +6,6 @@ SITE_HOST_DIR := src/Haus.Site.Host
 ZIGBEE_HOST_DIR := src/Haus.Zigbee.Host
 ACCEPTANCE_TESTS_DIR := tests/Haus.Acceptance.Tests
 MQTT_TEST_CONTAINER := haus_mqtt_unit_tests
-MQTT_TEST_PORT := 21883
 
 .PHONY: build certs publish start stop watch web-host site-host zigbee-host \
         test-unit test-acceptance docker-publish deb-package add-project migration \
@@ -50,15 +49,24 @@ zigbee-host:
 	cd $(ZIGBEE_HOST_DIR) && dotnet run
 
 test-unit:
-	docker rm -f $(MQTT_TEST_CONTAINER) >/dev/null 2>&1 || true; \
-	docker run -d --name $(MQTT_TEST_CONTAINER) -p $(MQTT_TEST_PORT):1883 \
+	container="$(MQTT_TEST_CONTAINER)_$$$$"; \
+	port=""; \
+	for candidate in $$(shuf -i 30000-65000 -n 20); do \
+		if ! bash -c "echo > /dev/tcp/127.0.0.1/$$candidate" 2>/dev/null; then \
+			port=$$candidate; \
+			break; \
+		fi; \
+	done; \
+	if [ -z "$$port" ]; then echo "unable to find a free port for $$container" >&2; exit 1; fi; \
+	docker rm -f "$$container" >/dev/null 2>&1 || true; \
+	docker run -d --name "$$container" -p "$$port:1883" \
 		-v $(CURDIR)/mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto:latest >/dev/null; \
-	until bash -c 'echo > /dev/tcp/127.0.0.1/$(MQTT_TEST_PORT)' 2>/dev/null; do sleep 1; done; \
-	export Mqtt__Server="mqtt://localhost:$(MQTT_TEST_PORT)"; \
-	export Haus__Server="mqtt://localhost:$(MQTT_TEST_PORT)"; \
+	until bash -c "echo > /dev/tcp/127.0.0.1/$$port" 2>/dev/null; do sleep 1; done; \
+	export Mqtt__Server="mqtt://localhost:$$port"; \
+	export Haus__Server="mqtt://localhost:$$port"; \
 	./scripts/run-unit-tests.sh; \
 	status=$$?; \
-	docker rm -f $(MQTT_TEST_CONTAINER) >/dev/null 2>&1 || true; \
+	docker rm -f "$$container" >/dev/null 2>&1 || true; \
 	exit $$status
 
 test-acceptance: certs publish
