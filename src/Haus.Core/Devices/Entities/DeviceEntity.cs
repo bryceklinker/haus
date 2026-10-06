@@ -135,6 +135,18 @@ public record DeviceEntity : Entity
         AddOrUpdateMetadata(model.Metadata);
     }
 
+    public void ReclassifyIfUnknownAndResolvable(DeviceType resolvedType, IDomainEventBus domainEventBus)
+    {
+        if (DeviceType != DeviceType.Unknown || resolvedType == DeviceType.Unknown)
+            return;
+
+        DeviceType = resolvedType;
+        LightType = GetValidLightType(resolvedType, LightType);
+        Lighting = GenerateDefaultLighting();
+        if (IsLight)
+            ChangeLighting(Lighting, domainEventBus);
+    }
+
     public void UpdateFromLightingConstraints(LightingConstraintsModel model, IDomainEventBus domainEventBus)
     {
         Lighting = (Lighting ?? GenerateDefaultLighting()).ConvertToConstraints(model);

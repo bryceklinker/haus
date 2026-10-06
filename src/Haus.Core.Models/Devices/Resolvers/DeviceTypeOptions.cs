@@ -1,6 +1,4 @@
-using Haus.Core.Models.Devices;
-
-namespace Haus.Zigbee.Host.Configuration;
+namespace Haus.Core.Models.Devices.Resolvers;
 
 public record DeviceTypeOptions(string? Vendor = null, string? Model = null, DeviceType DeviceType = DeviceType.Unknown)
 {

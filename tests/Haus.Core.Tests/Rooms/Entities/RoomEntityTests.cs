@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Haus.Core.Common;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Lighting.Entities;
@@ -241,6 +242,36 @@ public class RoomEntityTests
         room.ChangeOccupancy(new OccupancyChangedModel(""), new FakeDomainEventBus(), new Clock());
 
         Assert.Equal(LightingState.On, room.Lighting?.State);
+    }
+
+    [Fact]
+    public void WhenRoomContainsAnUnclassifiedDeviceThenLightingChangeQueuesAnExclusionEvent()
+    {
+        var domainEventBus = new FakeDomainEventBus();
+        var room = new RoomEntity();
+        var unclassifiedDevice = new DeviceEntity(deviceType: DeviceType.Unknown);
+        room.AddDevice(unclassifiedDevice, domainEventBus);
+
+        room.ChangeLighting(new LightingEntity(), domainEventBus);
+
+        var exclusionEvent = Assert.Single(
+            domainEventBus.GetEvents.OfType<DeviceExcludedFromRoomLightingDomainEvent>()
+        );
+        Assert.Equal(unclassifiedDevice, exclusionEvent.Device);
+        Assert.Equal(room, exclusionEvent.Room);
+    }
+
+    [Fact]
+    public void WhenRoomContainsADeliberatelyNonLightDeviceThenLightingChangeDoesNotQueueAnExclusionEvent()
+    {
+        var domainEventBus = new FakeDomainEventBus();
+        var room = new RoomEntity();
+        var switchDevice = new DeviceEntity(deviceType: DeviceType.Switch);
+        room.AddDevice(switchDevice, domainEventBus);
+
+        room.ChangeLighting(new LightingEntity(), domainEventBus);
+
+        Assert.Empty(domainEventBus.GetEvents.OfType<DeviceExcludedFromRoomLightingDomainEvent>());
     }
 
     [Fact]

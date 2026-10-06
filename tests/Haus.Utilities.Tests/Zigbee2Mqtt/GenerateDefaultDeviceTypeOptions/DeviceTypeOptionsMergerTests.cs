@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using Haus.Core.Models.Devices;
+using Haus.Core.Models.Devices.Resolvers;
 using Haus.Utilities.Tests.Support;
 using Haus.Utilities.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;
-using Haus.Zigbee.Host.Configuration;
 using Xunit;
 
 namespace Haus.Utilities.Tests.Zigbee2Mqtt.GenerateDefaultDeviceTypeOptions;

@@ -10,6 +10,8 @@ using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Lighting;
 using Haus.Testing.Support;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Haus.Core.Tests.Devices.Commands;
@@ -70,5 +72,25 @@ public class ChangeDeviceLightingCommandHandlerTests
         var hausCommand = _hausBus.GetPublishedHausCommands<DeviceLightingChangedEvent>().Single();
         Assert.Equal(device.Id, hausCommand.Payload?.Device.Id);
         Assert.Equal(new LevelLightingModel(65), hausCommand.Payload?.Lighting?.Level);
+    }
+
+    [Fact]
+    public async Task WhenDeviceIsNotALightThenRejectionIsLogged()
+    {
+        var loggerFactory = new CapturingLoggerFactory();
+        var hausBus = HausBusFactory.CreateCapturingBus(
+            _context,
+            services => services.AddSingleton<ILoggerFactory>(loggerFactory)
+        );
+        var device = _context.AddDevice(deviceType: DeviceType.Switch);
+        var command = new ChangeDeviceLightingCommand(device.Id, new LightingModel());
+
+        var act = () => hausBus.ExecuteCommandAsync(command);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(act);
+        Assert.Contains(
+            loggerFactory.Entries,
+            entry => entry.Level == LogLevel.Warning && entry.Message.Contains(device.Id.ToString())
+        );
     }
 }

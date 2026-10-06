@@ -1,4 +1,5 @@
 using System;
+using Haus.Core.Models.Devices.Resolvers;
 using Haus.Mqtt.Client.Settings;
 
 namespace Haus.Zigbee.Host.Configuration;

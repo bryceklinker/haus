@@ -8,6 +8,7 @@ using Haus.Core.DeviceSimulator.State;
 using Haus.Core.Diagnostics.Factories;
 using Haus.Core.Logs;
 using Haus.Core.Logs.Factories;
+using Haus.Core.Models.Devices.Resolvers;
 using Haus.Core.Rooms.Repositories;
 using Haus.Core.Zigbee.State;
 using Haus.Cqrs;
@@ -30,6 +31,7 @@ public static class ServiceCollectionExtensions
             .AddTransient<IRoomCommandRepository, RoomCommandRepository>()
             .AddTransient<IDeviceCommandRepository, DeviceCommandRepository>()
             .AddTransient<ILogEntryFilterer, LogEntryFilterer>()
+            .AddSingleton<IDeviceTypeResolver, DeviceTypeResolver>()
             .AddValidatorsFromAssembly(coreAssembly)
             .AddHausCqrs(coreAssembly)
             .AddTransient(p => p.GetRequiredService<IDeviceSimulatorStore>().Current)

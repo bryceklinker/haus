@@ -16,16 +16,4 @@
     <ProjectReference Include="..\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj" />
     <ProjectReference Include="..\Haus.Zigbee\Haus.Zigbee.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Zigbee\Resolvers\DefaultDeviceTypeOptions.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Zigbee\Mappers\ToHaus\Resolvers\DefaultDeviceTypeOptions.json">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
 </Project>

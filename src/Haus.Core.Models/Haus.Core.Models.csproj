@@ -6,4 +6,12 @@
       Version="$(MicrosoftPackageVersion)"
     />
   </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Devices\Resolvers\DefaultDeviceTypeOptions.json">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

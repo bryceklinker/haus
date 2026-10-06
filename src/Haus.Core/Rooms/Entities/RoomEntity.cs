@@ -6,6 +6,7 @@ using Haus.Core.Common;
 using Haus.Core.Common.Entities;
 using Haus.Core.Devices.Entities;
 using Haus.Core.Lighting.Entities;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Models.Rooms;
@@ -116,8 +117,13 @@ public record RoomEntity : Entity
     public void ChangeLighting(LightingEntity lighting, IDomainEventBus domainEventBus)
     {
         Lighting = LightingEntity.CalculateTarget(Lighting, lighting);
-        foreach (var light in Lights)
-            light.ChangeLighting(Lighting, domainEventBus);
+        foreach (var device in Devices)
+        {
+            if (device.IsLight)
+                device.ChangeLighting(Lighting, domainEventBus);
+            else if (device.DeviceType == DeviceType.Unknown)
+                domainEventBus.Enqueue(new DeviceExcludedFromRoomLightingDomainEvent(device, this));
+        }
 
         domainEventBus.Enqueue(new RoomLightingChangedDomainEvent(this, Lighting));
     }
