@@ -2,7 +2,10 @@ using System;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Devices.Sensors;
+using Haus.Core.Models.Devices.Sensors.Battery;
+using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
+using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Zigbee.Events;
 
@@ -25,6 +28,9 @@ public class RoutableEventFactory : IRoutableEventFactory
             DeviceDiscoveredEvent.Type => CreateRoutableEvent<DeviceDiscoveredEvent>(bytes),
             MultiSensorChanged.Type => CreateRoutableEvent<MultiSensorChanged>(bytes),
             OccupancyChangedModel.Type => CreateRoutableEvent<OccupancyChangedModel>(bytes),
+            IlluminanceChangedModel.Type => CreateRoutableEvent<IlluminanceChangedModel>(bytes),
+            TemperatureChangedModel.Type => CreateRoutableEvent<TemperatureChangedModel>(bytes),
+            BatteryChangedModel.Type => CreateRoutableEvent<BatteryChangedModel>(bytes),
             ZigbeeConnectionStatusChangedEvent.Type => CreateRoutableEvent<ZigbeeConnectionStatusChangedEvent>(bytes),
             ZigbeeDeviceJoinedEvent.Type => CreateRoutableEvent<ZigbeeDeviceJoinedEvent>(bytes),
             ZigbeeDeviceInfoDiscoveredEvent.Type => CreateRoutableEvent<ZigbeeDeviceInfoDiscoveredEvent>(bytes),

@@ -3,7 +3,10 @@ using Haus.Core.Common.Events;
 using Haus.Core.Models;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Devices.Sensors;
+using Haus.Core.Models.Devices.Sensors.Battery;
+using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
+using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Core.Models.Zigbee.Events;
 using Xunit;
 
@@ -41,6 +44,40 @@ public class RoutableHausEventFactoryTest
         var routableEvent = _factory.Create(bytes);
 
         Assert.IsType<RoutableEvent<OccupancyChangedModel>>(routableEvent);
+    }
+
+    [Fact]
+    public void WhenIlluminanceChangedThenReturnsRoutableEventFromIlluminanceChanged()
+    {
+        var bytes = HausJsonSerializer.SerializeToBytes(
+            new IlluminanceChangedModel($"{Guid.NewGuid()}", 1, 1).AsHausEvent()
+        );
+
+        var routableEvent = _factory.Create(bytes);
+
+        Assert.IsType<RoutableEvent<IlluminanceChangedModel>>(routableEvent);
+    }
+
+    [Fact]
+    public void WhenTemperatureSensorChangedThenReturnsRoutableEventFromTemperatureSensorChanged()
+    {
+        var bytes = HausJsonSerializer.SerializeToBytes(
+            new TemperatureChangedModel($"{Guid.NewGuid()}", 21.5).AsHausEvent()
+        );
+
+        var routableEvent = _factory.Create(bytes);
+
+        Assert.IsType<RoutableEvent<TemperatureChangedModel>>(routableEvent);
+    }
+
+    [Fact]
+    public void WhenBatteryChangedThenReturnsRoutableEventFromBatteryChanged()
+    {
+        var bytes = HausJsonSerializer.SerializeToBytes(new BatteryChangedModel($"{Guid.NewGuid()}", 80).AsHausEvent());
+
+        var routableEvent = _factory.Create(bytes);
+
+        Assert.IsType<RoutableEvent<BatteryChangedModel>>(routableEvent);
     }
 
     [Fact]
