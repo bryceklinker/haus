@@ -9,8 +9,6 @@ namespace Haus.Core.Rooms.DomainEvents;
 
 public record DeviceExcludedFromRoomLightingDomainEvent(DeviceEntity Device, RoomEntity Room) : IDomainEvent;
 
-// A device stuck at DeviceType.Unknown silently drops out of RoomEntity.Lights with no error --
-// indistinguishable from a device that was never meant to be a light unless something logs it.
 internal class DeviceExcludedFromRoomLightingDomainEventHandler(
     ILogger<DeviceExcludedFromRoomLightingDomainEventHandler> logger
 ) : IDomainEventHandler<DeviceExcludedFromRoomLightingDomainEvent>

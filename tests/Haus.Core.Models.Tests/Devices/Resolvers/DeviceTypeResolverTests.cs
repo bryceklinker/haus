@@ -44,10 +44,6 @@ public class DeviceTypeResolverTests
         Assert.Equal(DeviceType.Light, deviceType);
     }
 
-    // Regression coverage for devices 3 ('Underdesk Lighting Strip') and 4 ('Middle Basement
-    // Light') stuck at DeviceType.Unknown in production -- the catalog has always classified these
-    // Gledopto models as Light, the bug was that reclassification never ran for them, not that the
-    // catalog was missing entries.
     [Theory]
     [InlineData("Gledopto", "GL-MC-001")]
     [InlineData("Gledopto", "GL-B-007P")]

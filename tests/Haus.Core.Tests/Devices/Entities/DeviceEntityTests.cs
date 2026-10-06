@@ -488,7 +488,7 @@ public class DeviceEntityTest
     {
         var device = new DeviceEntity(deviceType: DeviceType.Unknown);
 
-        device.ReclassifyIfResolvable(DeviceType.Light, new FakeDomainEventBus());
+        device.ReclassifyIfUnknownAndResolvable(DeviceType.Light, new FakeDomainEventBus());
 
         Assert.Equal(DeviceType.Light, device.DeviceType);
     }
@@ -498,7 +498,7 @@ public class DeviceEntityTest
     {
         var device = new DeviceEntity(deviceType: DeviceType.Unknown);
 
-        device.ReclassifyIfResolvable(DeviceType.Unknown, new FakeDomainEventBus());
+        device.ReclassifyIfUnknownAndResolvable(DeviceType.Unknown, new FakeDomainEventBus());
 
         Assert.Equal(DeviceType.Unknown, device.DeviceType);
     }
@@ -508,7 +508,7 @@ public class DeviceEntityTest
     {
         var device = new DeviceEntity(deviceType: DeviceType.Switch);
 
-        device.ReclassifyIfResolvable(DeviceType.Light, new FakeDomainEventBus());
+        device.ReclassifyIfUnknownAndResolvable(DeviceType.Light, new FakeDomainEventBus());
 
         Assert.Equal(DeviceType.Switch, device.DeviceType);
     }
@@ -518,7 +518,7 @@ public class DeviceEntityTest
     {
         var device = new DeviceEntity(deviceType: DeviceType.Unknown);
 
-        device.ReclassifyIfResolvable(DeviceType.Light, new FakeDomainEventBus());
+        device.ReclassifyIfUnknownAndResolvable(DeviceType.Light, new FakeDomainEventBus());
 
         Assert.Equal(LightType.Level, device.LightType);
         Assert.Equal(new LightingEntity(LightingDefaults.State, new LevelLightingEntity()), device.Lighting);
@@ -530,7 +530,7 @@ public class DeviceEntityTest
         var domainEventBus = new FakeDomainEventBus();
         var device = new DeviceEntity(deviceType: DeviceType.Unknown);
 
-        device.ReclassifyIfResolvable(DeviceType.Light, domainEventBus);
+        device.ReclassifyIfUnknownAndResolvable(DeviceType.Light, domainEventBus);
 
         Assert.Single(domainEventBus.GetEvents.OfType<DeviceLightingChangedDomainEvent>());
     }
@@ -541,7 +541,7 @@ public class DeviceEntityTest
         var domainEventBus = new FakeDomainEventBus();
         var device = new DeviceEntity(deviceType: DeviceType.Unknown);
 
-        device.ReclassifyIfResolvable(DeviceType.Switch, domainEventBus);
+        device.ReclassifyIfUnknownAndResolvable(DeviceType.Switch, domainEventBus);
 
         Assert.Empty(domainEventBus.GetEvents.OfType<DeviceLightingChangedDomainEvent>());
     }

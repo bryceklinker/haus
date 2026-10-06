@@ -14,10 +14,6 @@ namespace Haus.Core.Devices.Commands;
 
 public record ReclassifyUnknownDevicesCommand : ICommand;
 
-// Mirrors BackfillDeviceNetworkAddressesCommand: a device whose Vendor/Model was stored at
-// original pairing can still be reachable here even when the Zigbee coordinator's live
-// KnownDeviceTable no longer carries it (it only repopulates on a fresh ZDP rediscovery/announce
-// since process start) -- so this re-resolves straight from already-persisted metadata instead.
 internal class ReclassifyUnknownDevicesCommandHandler(
     HausDbContext context,
     IDeviceTypeResolver deviceTypeResolver,
@@ -52,7 +48,7 @@ internal class ReclassifyUnknownDevicesCommandHandler(
         if (resolvedType == DeviceType.Unknown)
             return;
 
-        device.ReclassifyIfResolvable(resolvedType, domainEventBus);
+        device.ReclassifyIfUnknownAndResolvable(resolvedType, domainEventBus);
         logger.LogInformation(
             "Reclassified device {@Id} from Unknown to {@DeviceType} using stored vendor/model metadata",
             device.Id,

@@ -20,10 +20,6 @@ public class ReclassifyUnknownDevicesCommandHandlerTests
         _hausBus = HausBusFactory.Create(_context);
     }
 
-    // Regression coverage for production devices 3 ('Underdesk Lighting Strip') and 4 ('Middle
-    // Basement Light') stuck at DeviceType.Unknown -- their Vendor/Model metadata was already
-    // stored from original pairing, but nothing ever re-ran classification against it without a
-    // live Zigbee rediscovery.
     [Fact]
     public async Task WhenUnknownDeviceHasVendorAndModelThatNowResolveThenDeviceTypeIsUpgraded()
     {

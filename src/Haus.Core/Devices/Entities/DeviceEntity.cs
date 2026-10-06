@@ -135,10 +135,7 @@ public record DeviceEntity : Entity
         AddOrUpdateMetadata(model.Metadata);
     }
 
-    // Guards preserve the never-overwrite invariant from the sink's side too: only an Unknown
-    // device can be upgraded, and only to a now-resolvable type -- a device that is already
-    // correctly classified, or one that still resolves to Unknown, is left untouched.
-    public void ReclassifyIfResolvable(DeviceType resolvedType, IDomainEventBus domainEventBus)
+    public void ReclassifyIfUnknownAndResolvable(DeviceType resolvedType, IDomainEventBus domainEventBus)
     {
         if (DeviceType != DeviceType.Unknown || resolvedType == DeviceType.Unknown)
             return;
