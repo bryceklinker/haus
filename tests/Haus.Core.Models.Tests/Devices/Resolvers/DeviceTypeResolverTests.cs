@@ -53,4 +53,20 @@ public class DeviceTypeResolverTests
 
         Assert.Equal(DeviceType.Light, resolver.Resolve(vendor, model));
     }
+
+    [Theory]
+    [InlineData("SML001")]
+    [InlineData("SML002")]
+    [InlineData("SML003")]
+    [InlineData("SML004")]
+    public void WhenVendorAndModelMatchAPhilipsHueMotionSensorThenResolvesToMultiFunctionSensor(string model)
+    {
+        var resolver = new DeviceTypeResolver();
+
+        var deviceType = resolver.Resolve("Philips", model);
+
+        Assert.True(deviceType.HasFlag(DeviceType.LightSensor));
+        Assert.True(deviceType.HasFlag(DeviceType.MotionSensor));
+        Assert.True(deviceType.HasFlag(DeviceType.TemperatureSensor));
+    }
 }

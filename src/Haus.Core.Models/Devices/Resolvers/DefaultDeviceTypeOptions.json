@@ -6111,7 +6111,17 @@
   },
   {
     "Vendor": "Philips",
+    "Model": "SML001",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Philips",
     "Model": "9290019758",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "SML002",
     "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
   },
   {
@@ -6246,6 +6256,11 @@
   },
   {
     "Vendor": "Philips",
+    "Model": "SML003",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Philips",
     "Model": "8719514344723",
     "DeviceType": "Light"
   },
@@ -6292,6 +6307,11 @@
   {
     "Vendor": "Philips",
     "Model": "9290030675",
+    "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
+  },
+  {
+    "Vendor": "Philips",
+    "Model": "SML004",
     "DeviceType": "LightSensor, MotionSensor, TemperatureSensor"
   },
   {
