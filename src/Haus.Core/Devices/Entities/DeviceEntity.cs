@@ -9,6 +9,9 @@ using Haus.Core.Lighting.Generators;
 using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
+using Haus.Core.Models.Devices.Sensors.Battery;
+using Haus.Core.Models.Devices.Sensors.Light;
+using Haus.Core.Models.Devices.Sensors.Temperature;
 using Haus.Core.Models.Lighting;
 using Haus.Core.Rooms.Entities;
 using Haus.Cqrs.DomainEvents;
@@ -63,6 +66,11 @@ public record DeviceEntity : Entity
     public RoomEntity? Room { get; set; }
 
     public LightingEntity? Lighting { get; set; }
+
+    public long? Illuminance { get; set; }
+    public long? Lux { get; set; }
+    public double? Temperature { get; set; }
+    public long? BatteryLevel { get; set; }
 
     public bool IsLight => DeviceType == DeviceType.Light;
 
@@ -152,6 +160,22 @@ public record DeviceEntity : Entity
         Lighting = (Lighting ?? GenerateDefaultLighting()).ConvertToConstraints(model);
         if (IsLight)
             ChangeLighting(Lighting, domainEventBus);
+    }
+
+    public void ChangeIlluminance(IlluminanceChangedModel model)
+    {
+        Illuminance = model.Illuminance;
+        Lux = model.Lux;
+    }
+
+    public void ChangeTemperature(TemperatureChangedModel model)
+    {
+        Temperature = model.Temperature;
+    }
+
+    public void ChangeBatteryLevel(BatteryChangedModel model)
+    {
+        BatteryLevel = model.BatteryLevel;
     }
 
     private void AddOrUpdateMetadata(IEnumerable<MetadataModel> models)
