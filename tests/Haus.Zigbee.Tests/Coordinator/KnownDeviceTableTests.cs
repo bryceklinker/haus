@@ -104,6 +104,21 @@ public class KnownDeviceTableTests
         Assert.Empty(added.Endpoints);
     }
 
+    [Fact]
+    public void WhenNetworkAddressIsUpdatedForAnAlreadyKnownSleepyDeviceThenIsSleepyIsPreserved()
+    {
+        var table = new KnownDeviceTable();
+        var ieeeAddress = new IeeeAddress(0x00124b0001234567);
+        table.AddOrUpdate(
+            new ZigbeeDevice(ieeeAddress, NetworkAddress: 0x1234, Array.Empty<ZigbeeEndpoint>(), IsSleepy: true)
+        );
+
+        table.UpdateNetworkAddress(ieeeAddress, networkAddress: 0x9999);
+
+        table.TryGet(ieeeAddress, out var updated);
+        Assert.True(updated!.IsSleepy);
+    }
+
     private static ZigbeeDevice DeviceWith(ulong ieeeAddress, ushort networkAddress)
     {
         return new ZigbeeDevice(new IeeeAddress(ieeeAddress), networkAddress, Array.Empty<ZigbeeEndpoint>());

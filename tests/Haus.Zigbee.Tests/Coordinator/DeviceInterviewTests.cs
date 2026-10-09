@@ -424,6 +424,34 @@ public class DeviceInterviewTests
     }
 
     [Fact]
+    public async Task WhenADeviceAnnouncesWithReceiverOnWhenIdleSetThenTheJoinEventAndKnownDeviceAreNotSleepy()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        _dongle.InjectIndication(Announce(device, capabilities: 0x08));
+        _dongle.ReleaseAfterSend(sendIndex: 0, ActiveEndpointsResponse(device, endpointIds: new byte[0]));
+
+        var joined = await RunInterview();
+
+        Assert.False(joined.IsSleepy);
+        var known = Assert.Single(_knownDeviceTable.GetDevices());
+        Assert.False(known.IsSleepy);
+    }
+
+    [Fact]
+    public async Task WhenADeviceAnnouncesWithReceiverOnWhenIdleClearThenTheJoinEventAndKnownDeviceAreSleepy()
+    {
+        var device = new DeviceScript(Nwk: 0x1a2b, Ieee: 0x00124b0001aabbcc);
+        _dongle.InjectIndication(Announce(device, capabilities: 0x00));
+        _dongle.ReleaseAfterSend(sendIndex: 0, ActiveEndpointsResponse(device, endpointIds: new byte[0]));
+
+        var joined = await RunInterview();
+
+        Assert.True(joined.IsSleepy);
+        var known = Assert.Single(_knownDeviceTable.GetDevices());
+        Assert.True(known.IsSleepy);
+    }
+
+    [Fact]
     public async Task ReadBasicInfoAsync_NoEndpoints_ReturnsEmptyInfoWithoutSendingAnything()
     {
         var info = await _interview.ReadBasicInfoAsync(0x1a2b, [], CancellationToken.None);
@@ -451,12 +479,12 @@ public class DeviceInterviewTests
         return await task;
     }
 
-    private static IndicationBody Announce(DeviceScript device)
+    private static IndicationBody Announce(DeviceScript device, byte capabilities = 0x80)
     {
         var asdu = new List<byte> { 0x00 };
         AddUInt16(asdu, device.Nwk);
         AddUInt64(asdu, device.Ieee);
-        asdu.Add(0x80);
+        asdu.Add(capabilities);
         return new IndicationBody(device.Nwk, SourceEndpoint: 0x00, ZdpProfile, DeviceAnnounceCluster, asdu.ToArray());
     }
 
