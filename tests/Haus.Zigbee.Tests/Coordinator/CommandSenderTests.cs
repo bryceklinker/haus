@@ -314,6 +314,45 @@ public class CommandSenderRetryIntegrationTests
         Assert.Equal(SuccessStatus, confirm.ConfirmStatus);
     }
 
+    // The single CommandSender/CommandRetryHandler path now owns the APS-ACK escalation that used
+    // to live as a second, separate retry pipeline in ZigbeeOutboundRelay -- a retried attempt
+    // escalates to request an APS-ACK regardless of what the original request asked for, so every
+    // command type (not just lighting) gets this protection for free.
+    [Fact]
+    public async Task WhenFirstAttemptFailsAndRetries_TheRetryEscalatesToRequestApsAck()
+    {
+        var pollTransport = new ScriptedSerialTransport();
+        var senderTransport = new ScriptedSerialTransport();
+        var pollLoop = new ApsPollLoop(new DeconzChannel(pollTransport));
+        var retryOptions = new CommandRetryOptions { MaxRetries = 1, BaseBackoffMs = 1 };
+        var commandSender = new CommandSender(
+            new ApsSender(pollLoop, new DeconzChannel(senderTransport)),
+            new DeviceCommandQueue(),
+            new CommandRetryHandler(retryOptions)
+        );
+
+        senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(0)));
+        senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(1)));
+        pollTransport.QueueResponse(DeconzFrames.Framed(DeviceStateResponse(0, ConfirmAvailable)));
+        pollTransport.QueueResponse(DeconzFrames.Framed(ConfirmResponse(1, 0x00, NoAckStatus)));
+        pollTransport.QueueResponse(DeconzFrames.Framed(DeviceStateResponse(2, ConfirmAvailable)));
+        pollTransport.QueueResponse(DeconzFrames.Framed(ConfirmResponse(3, 0x01, SuccessStatus)));
+
+        var sendTask = commandSender.SendCommandAsync(AnyRequest(), CancellationToken.None);
+
+        await pollLoop.PollOnceAsync(CancellationToken.None);
+        await senderTransport.WaitForWriteCountAsync(2, CancellationToken.None);
+        await pollLoop.PollOnceAsync(CancellationToken.None);
+        await sendTask;
+
+        // Each decoded deconz frame ends with [..., TxOptions, Radius, ChecksumLo, ChecksumHi] --
+        // TxOptions is therefore the 4th-from-last byte.
+        var frames = new SlipDecoder().Decode(senderTransport.WrittenBytes.ToArray());
+        Assert.Equal(2, frames.Count);
+        Assert.Equal(0x00, frames[0][^4]);
+        Assert.Equal(0x04, frames[1][^4]);
+    }
+
     [Fact]
     public async Task WhenAllRetriesFail_ThrowsCommandDeliveryFailedException()
     {

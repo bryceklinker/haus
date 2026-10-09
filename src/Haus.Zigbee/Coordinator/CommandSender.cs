@@ -55,8 +55,15 @@ public class CommandSender
 
     public Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token)
     {
+        // Unifies ZigbeeOutboundRelay's former "retry once, escalating to APS-ACK" behavior into
+        // this single path: any retried attempt (not the first) escalates to request an APS-ACK,
+        // regardless of what the original request asked for, so every command type gets this
+        // protection from the one retry implementation instead of a second, duplicate pipeline.
         Task<ApsDataConfirm> SendWithRetryAsync(CancellationToken ct) =>
-            _retryHandler.ExecuteWithRetryAsync(_ => SendOnceAsync(request, ct), ct);
+            _retryHandler.ExecuteWithRetryAsync(
+                attempt => SendOnceAsync(attempt > 0 ? request with { RequestApsAck = true } : request, ct),
+                ct
+            );
 
         if (TryResolveSleepyDeviceKey(request.Destination, out var key))
             return _sleepyHold.HoldAsync(key, SendWithRetryAsync, token);
