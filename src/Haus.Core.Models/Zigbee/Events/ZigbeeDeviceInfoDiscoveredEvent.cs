@@ -8,7 +8,8 @@ public record ZigbeeDeviceInfoDiscoveredEvent(
     string IeeeAddress,
     string ManufacturerName,
     string ModelIdentifier,
-    IReadOnlyList<ZigbeeEndpointModel> Endpoints
+    IReadOnlyList<ZigbeeEndpointModel> Endpoints,
+    bool IsSleepy = false
 ) : IHausEventCreator<ZigbeeDeviceInfoDiscoveredEvent>
 {
     public const string Type = "zigbee_device_info_discovered";

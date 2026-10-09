@@ -136,6 +136,27 @@ public class ZigbeeDiagnosticsPublisherTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task HandleDeviceJoinedAsync_DeviceIsSleepy_PublishesIsSleepyOnDeviceInfoDiscoveredEvent()
+    {
+        ZigbeeDeviceInfoDiscoveredEvent? published = null;
+        await _hausMqttClient!.SubscribeToHausEventsAsync<ZigbeeDeviceInfoDiscoveredEvent>(
+            ZigbeeDeviceInfoDiscoveredEvent.Type,
+            e => published = e.Payload,
+            DefaultHausMqttTopics.ZigbeeTopic
+        );
+        var address = new IeeeAddress(0x00124b0001aabbcc);
+        var joined = new ZigbeeDeviceJoined(address, 0x1a2b, [], "acme", "widget", IsSleepy: true);
+
+        await _publisher!.HandleDeviceJoinedAsync(joined);
+
+        Eventually.Assert(() =>
+        {
+            Assert.NotNull(published);
+            Assert.True(published!.IsSleepy);
+        });
+    }
+
+    [Fact]
     public async Task HandleAttributeReportedAsync_KnownDevice_PublishesReportWithResolvedIeeeAddress()
     {
         _addressRegistry!.Register(0x1a2b, "0x00124b0001aabbcc");
