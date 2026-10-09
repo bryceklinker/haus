@@ -51,7 +51,8 @@ public class DevicesMapper(
                 device.NetworkAddress,
                 device.Endpoints,
                 info.ManufacturerName,
-                info.ModelIdentifier
+                info.ModelIdentifier,
+                device.IsSleepy
             );
             var discovered = deviceJoinedMapper.Map(joined);
             return discovered.DeviceType == DeviceType.Unknown ? null : discovered;

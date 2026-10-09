@@ -71,6 +71,18 @@ public class DevicesMapperTests
     }
 
     [Fact]
+    public async Task MapAsync_DeviceIsSleepy_CarriesIsSleepyOntoTheDiscoveredEvent()
+    {
+        var coordinator = new FakeZigbeeCoordinator { DeviceInfoToReturn = ResolvableDeviceInfo };
+        var device = new ZigbeeDevice(new IeeeAddress(1), 0x1234, [], IsSleepy: true);
+        var mapper = CreateMapper(coordinator);
+
+        var result = (await mapper.MapAsync([device], CancellationToken.None)).Single();
+
+        Assert.True(result.IsSleepy);
+    }
+
+    [Fact]
     public async Task MapAsync_MultipleDevicesEachResolveToAKnownType_ReturnsOneEventPerDevice()
     {
         var coordinator = new FakeZigbeeCoordinator { DeviceInfoToReturn = ResolvableDeviceInfo };

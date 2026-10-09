@@ -9,7 +9,8 @@ public record DeviceDiscoveredEvent(
     DeviceType DeviceType = DeviceType.Unknown,
     MetadataModel[]? Metadata = null,
     ushort? NetworkAddress = null,
-    DeviceEndpointModel[]? Endpoints = null
+    DeviceEndpointModel[]? Endpoints = null,
+    bool IsSleepy = false
 ) : IHausEventCreator<DeviceDiscoveredEvent>
 {
     public const string Type = "device_discovered";

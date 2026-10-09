@@ -46,7 +46,8 @@ public class DeviceBackfillService(
                 networkAddress,
                 device.Endpoints,
                 info.ManufacturerName,
-                info.ModelIdentifier
+                info.ModelIdentifier,
+                device.IsSleepy
             );
             var discovered = deviceJoinedMapper.RegisterAndMap(addressRegistry, joined);
             if (discovered.DeviceType == DeviceType.Unknown)
