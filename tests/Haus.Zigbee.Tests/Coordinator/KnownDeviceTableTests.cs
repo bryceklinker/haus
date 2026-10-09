@@ -119,6 +119,29 @@ public class KnownDeviceTableTests
         Assert.True(updated!.IsSleepy);
     }
 
+    [Fact]
+    public void WhenNetworkAddressIsKnownThenTryGetByNetworkAddressReturnsTrueAndTheDevice()
+    {
+        var table = new KnownDeviceTable();
+        var device = DeviceWith(0x00124b0001234567, 0x1234);
+        table.AddOrUpdate(device);
+
+        var found = table.TryGetByNetworkAddress(0x1234, out var result);
+
+        Assert.True(found);
+        Assert.Equal(device, result);
+    }
+
+    [Fact]
+    public void WhenNetworkAddressIsUnknownThenTryGetByNetworkAddressReturnsFalse()
+    {
+        var table = new KnownDeviceTable();
+
+        var found = table.TryGetByNetworkAddress(0x1234, out _);
+
+        Assert.False(found);
+    }
+
     private static ZigbeeDevice DeviceWith(ulong ieeeAddress, ushort networkAddress)
     {
         return new ZigbeeDevice(new IeeeAddress(ieeeAddress), networkAddress, Array.Empty<ZigbeeEndpoint>());

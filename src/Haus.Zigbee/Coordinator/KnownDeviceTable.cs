@@ -39,4 +39,12 @@ public class KnownDeviceTable
     {
         return _devices.TryGetValue(address, out device);
     }
+
+    // Linear scan is acceptable here: this mirrors GetDevices' own O(n) materialization, and the
+    // known-device table is bounded by how many physical devices a single coordinator manages.
+    public bool TryGetByNetworkAddress(ushort networkAddress, [MaybeNullWhen(false)] out ZigbeeDevice device)
+    {
+        device = _devices.Values.FirstOrDefault(d => d.NetworkAddress == networkAddress);
+        return device is not null;
+    }
 }
