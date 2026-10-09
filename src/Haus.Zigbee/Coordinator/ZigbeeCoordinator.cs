@@ -206,6 +206,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
             _knownDeviceTable,
             logger: _loggerFactory.CreateLogger<NetworkAddressResolver>()
         );
+        var wakeSignalListener = new WakeSignalListener(pollLoop, _sleepyHold);
 
         attributeReportListener.AttributeReported += RelayAttributeReport;
         deviceInterview.DeviceJoined += RelayDeviceJoined;
@@ -220,7 +221,8 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
             commandSender,
             attributeReportListener,
             deviceInterview,
-            networkAddressResolver
+            networkAddressResolver,
+            wakeSignalListener
         );
     }
 
