@@ -21,6 +21,11 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public Queue<ApsDataConfirm> ConfirmSequence { get; } = new();
     public ZigbeeDeviceInfo? DeviceInfoToReturn { get; set; }
 
+    // Models the real CommandSender/CommandRetryHandler's behavior of throwing rather than
+    // returning a failed confirm once its own retries are exhausted -- callers (e.g.
+    // ZigbeeOutboundRelay) must not retry on top of that themselves.
+    public Exception? SendCommandShouldThrow { get; set; }
+
     // Lets a test make ReadDeviceInfoAsync throw for one specific device while others still
     // resolve normally, to prove a caller isolates per-device failures instead of aborting a
     // whole-batch operation like SyncDevicesAsync.
@@ -105,6 +110,9 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token)
     {
         SentCommands.Add(request);
+        if (SendCommandShouldThrow != null)
+            throw SendCommandShouldThrow;
+
         var confirm = ConfirmSequence.Count > 0 ? ConfirmSequence.Dequeue() : ConfirmToReturn;
         return Task.FromResult(confirm);
     }
