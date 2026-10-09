@@ -409,3 +409,124 @@ public class CommandSenderRetryIntegrationTests
         return header.Concat(requestAndAddress).Concat(endpointsAndStatus).ToArray();
     }
 }
+
+public class CommandSenderSleepyHoldTests
+{
+    private const byte SuccessStatus = 0x00;
+    private const byte NwkAddressMode = 0x02;
+
+    private static readonly CommandRetryOptions NoRetryOptions = new() { MaxRetries = 0 };
+
+    [Fact]
+    public async Task WhenTargetDeviceIsSleepyThenTheCommandIsHeldNotSentImmediately()
+    {
+        var senderTransport = new ScriptedSerialTransport();
+        var pollLoop = new ApsPollLoop(new DeconzChannel(new ScriptedSerialTransport()));
+        var knownDeviceTable = new KnownDeviceTable();
+        knownDeviceTable.AddOrUpdate(
+            new ZigbeeDevice(new IeeeAddress(1), 0x1234, Array.Empty<ZigbeeEndpoint>(), IsSleepy: true)
+        );
+        var commandSender = new CommandSender(
+            new ApsSender(pollLoop, new DeconzChannel(senderTransport)),
+            new DeviceCommandQueue(),
+            new CommandRetryHandler(NoRetryOptions),
+            knownDeviceTable,
+            new SleepyCommandHold(new SleepyHoldOptions(), _ => Task.Delay(Timeout.Infinite))
+        );
+
+        _ = commandSender.SendCommandAsync(AnyRequestTo(0x1234), CancellationToken.None);
+        await Task.Delay(50);
+
+        Assert.Empty(senderTransport.WrittenBytes);
+    }
+
+    [Fact]
+    public async Task WhenTargetDeviceIsSleepyAndThenWakesThenTheHeldCommandIsSentAndSucceeds()
+    {
+        var senderTransport = new ScriptedSerialTransport();
+        var pollTransport = new ScriptedSerialTransport();
+        var pollLoop = new ApsPollLoop(new DeconzChannel(pollTransport));
+        var knownDeviceTable = new KnownDeviceTable();
+        var ieee = new IeeeAddress(1);
+        knownDeviceTable.AddOrUpdate(new ZigbeeDevice(ieee, 0x1234, Array.Empty<ZigbeeEndpoint>(), IsSleepy: true));
+        var sleepyHold = new SleepyCommandHold(new SleepyHoldOptions(), _ => Task.Delay(Timeout.Infinite));
+        var commandSender = new CommandSender(
+            new ApsSender(pollLoop, new DeconzChannel(senderTransport)),
+            new DeviceCommandQueue(),
+            new CommandRetryHandler(NoRetryOptions),
+            knownDeviceTable,
+            sleepyHold
+        );
+
+        senderTransport.QueueResponse(DeconzFrames.Framed(DeconzAck(sequenceNumber: 0)));
+        pollTransport.QueueResponse(DeconzFrames.Framed(DeviceStateResponse(sequenceNumber: 0, deviceState: 0x04)));
+        pollTransport.QueueResponse(
+            DeconzFrames.Framed(ConfirmResponse(sequenceNumber: 1, requestId: 0x00, confirmStatus: SuccessStatus))
+        );
+
+        var sendTask = commandSender.SendCommandAsync(AnyRequestTo(0x1234), CancellationToken.None);
+        await Task.Delay(50);
+        Assert.Empty(senderTransport.WrittenBytes);
+
+        sleepyHold.Release(DeviceKey.FromNwk(0x1234), CancellationToken.None);
+        await pollLoop.PollOnceAsync(CancellationToken.None);
+
+        var confirm = await sendTask;
+        Assert.Equal(SuccessStatus, confirm.ConfirmStatus);
+    }
+
+    [Fact]
+    public async Task WhenTargetDeviceIsNotSleepyThenTheCommandIsSentImmediatelyDespiteAKnownDeviceTable()
+    {
+        var senderTransport = new ScriptedSerialTransport();
+        var pollLoop = new ApsPollLoop(new DeconzChannel(new ScriptedSerialTransport()));
+        var knownDeviceTable = new KnownDeviceTable();
+        knownDeviceTable.AddOrUpdate(
+            new ZigbeeDevice(new IeeeAddress(1), 0x1234, Array.Empty<ZigbeeEndpoint>(), IsSleepy: false)
+        );
+        var commandSender = new CommandSender(
+            new ApsSender(pollLoop, new DeconzChannel(senderTransport)),
+            new DeviceCommandQueue(),
+            new CommandRetryHandler(NoRetryOptions),
+            knownDeviceTable,
+            new SleepyCommandHold(new SleepyHoldOptions(), _ => Task.Delay(Timeout.Infinite))
+        );
+
+        var timeout = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
+        _ = commandSender.SendCommandAsync(AnyRequestTo(0x1234), timeout.Token);
+        await Task.Delay(50);
+
+        Assert.NotEmpty(senderTransport.WrittenBytes);
+    }
+
+    private static ZigbeeCommandRequest AnyRequestTo(ushort networkAddress)
+    {
+        return new ZigbeeCommandRequest(
+            Destination: ApsDestination.Nwk(networkAddress, 0x01),
+            SourceEndpoint: 0x01,
+            ProfileId: 0x0104,
+            ClusterId: 0x0006,
+            CommandId: 0x01,
+            Payload: new byte[] { 0x00 },
+            DisableDefaultResponse: false
+        );
+    }
+
+    private static byte[] DeconzAck(byte sequenceNumber)
+    {
+        return new byte[] { 0x12, sequenceNumber, SuccessStatus, 0x00, 0x00 };
+    }
+
+    private static byte[] DeviceStateResponse(byte sequenceNumber, byte deviceState)
+    {
+        return new byte[] { 0x07, sequenceNumber, 0x00, 0x00, 0x00, deviceState };
+    }
+
+    private static byte[] ConfirmResponse(byte sequenceNumber, byte requestId, byte confirmStatus)
+    {
+        var header = new byte[] { 0x04, sequenceNumber, SuccessStatus, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        var requestAndAddress = new byte[] { requestId, NwkAddressMode, 0x34, 0x12 };
+        var endpointsAndStatus = new byte[] { 0x01, 0x01, confirmStatus };
+        return header.Concat(requestAndAddress).Concat(endpointsAndStatus).ToArray();
+    }
+}
