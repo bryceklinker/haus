@@ -37,6 +37,12 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
 
     public Exception? ResolveNetworkAddressShouldThrow { get; set; }
 
+    // Default null means "no fresh classification" -- callers fall back to the already-known
+    // device.IsSleepy rather than regressing it, the same way a real timed-out/unknown-device
+    // query would.
+    public bool? IsSleepyToReturn { get; set; }
+    public List<IeeeAddress> QueryIsSleepyCalls { get; } = [];
+
     public bool IsConnected { get; set; }
     public NetworkConfig? NetworkConfig { get; set; }
     public Exception? ConnectShouldThrow { get; set; }
@@ -79,6 +85,12 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
             throw ResolveNetworkAddressShouldThrow;
 
         return ResolveNetworkAddressGate?.Task ?? Task.FromResult(NetworkAddressToReturn);
+    }
+
+    public Task<bool?> QueryIsSleepyAsync(IeeeAddress ieeeAddress, CancellationToken token)
+    {
+        QueryIsSleepyCalls.Add(ieeeAddress);
+        return Task.FromResult(IsSleepyToReturn);
     }
 
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)

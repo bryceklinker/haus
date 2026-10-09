@@ -46,13 +46,18 @@ public class DevicesMapper(
             if (info == null)
                 return null;
 
+            // A live Device_annce isn't guaranteed to re-fire on every sync (e.g. after a host
+            // restart), so re-query the Node Descriptor for a fresh classification -- falling
+            // back to the already-known value (never to a default) when no answer arrives.
+            var isSleepy = await coordinator.QueryIsSleepyAsync(device.IeeeAddress, token) ?? device.IsSleepy;
+
             var joined = new ZigbeeDeviceJoined(
                 device.IeeeAddress,
                 device.NetworkAddress,
                 device.Endpoints,
                 info.ManufacturerName,
                 info.ModelIdentifier,
-                device.IsSleepy
+                isSleepy
             );
             var discovered = deviceJoinedMapper.Map(joined);
             return discovered.DeviceType == DeviceType.Unknown ? null : discovered;

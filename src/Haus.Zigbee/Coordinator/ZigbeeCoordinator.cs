@@ -128,6 +128,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         return CurrentComponents().NetworkAddressResolver.ResolveAsync(ieeeAddress, token);
     }
 
+    public Task<bool?> QueryIsSleepyAsync(IeeeAddress ieeeAddress, CancellationToken token)
+    {
+        return CurrentComponents().NodeDescriptorQuery.QueryIsSleepyAsync(ieeeAddress, token);
+    }
+
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)
     {
         return CurrentComponents().PermitJoinController.SetPermitJoinAsync(enabled, token);
@@ -207,6 +212,12 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
             logger: _loggerFactory.CreateLogger<NetworkAddressResolver>()
         );
         var wakeSignalListener = new WakeSignalListener(pollLoop, _sleepyHold);
+        var nodeDescriptorQuery = new NodeDescriptorQuery(
+            pollLoop,
+            sender,
+            _knownDeviceTable,
+            logger: _loggerFactory.CreateLogger<NodeDescriptorQuery>()
+        );
 
         attributeReportListener.AttributeReported += RelayAttributeReport;
         deviceInterview.DeviceJoined += RelayDeviceJoined;
@@ -222,7 +233,8 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
             attributeReportListener,
             deviceInterview,
             networkAddressResolver,
-            wakeSignalListener
+            wakeSignalListener,
+            nodeDescriptorQuery
         );
     }
 

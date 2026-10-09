@@ -41,13 +41,18 @@ public class DeviceBackfillService(
             if (info == null)
                 return;
 
+            // Backfill runs without a live Device_annce by definition, so re-query the Node
+            // Descriptor for a fresh classification -- falling back to the already-known value
+            // (never to a default) when no answer arrives.
+            var isSleepy = await coordinator.QueryIsSleepyAsync(device.IeeeAddress, token) ?? device.IsSleepy;
+
             var joined = new ZigbeeDeviceJoined(
                 device.IeeeAddress,
                 networkAddress,
                 device.Endpoints,
                 info.ManufacturerName,
                 info.ModelIdentifier,
-                device.IsSleepy
+                isSleepy
             );
             var discovered = deviceJoinedMapper.RegisterAndMap(addressRegistry, joined);
             if (discovered.DeviceType == DeviceType.Unknown)

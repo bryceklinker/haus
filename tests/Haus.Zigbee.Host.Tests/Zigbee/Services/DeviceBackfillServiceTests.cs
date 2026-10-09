@@ -129,6 +129,24 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task BackfillAsync_NodeDescriptorReQueryReportsSleepy_OverridesTheAlreadyKnownValue()
+    {
+        var address = new IeeeAddress(1);
+        _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [], IsSleepy: false)];
+        _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
+        _coordinator.IsSleepyToReturn = true;
+        DeviceDiscoveredEvent? published = null;
+        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
+            DeviceDiscoveredEvent.Type,
+            e => published = e.Payload
+        );
+
+        await _service!.BackfillAsync(CancellationToken.None);
+
+        Eventually.Assert(() => Assert.True(published?.IsSleepy));
+    }
+
+    [Fact]
     public async Task BackfillAsync_DeviceInfoResolvesToUnknown_DoesNotPublish()
     {
         var address = new IeeeAddress(1);
