@@ -30,6 +30,17 @@ public class KnownDeviceTable
         );
     }
 
+    // Only updates an already-known device -- re-querying the Node Descriptor for a device this
+    // table has never heard of has nothing to refresh, unlike UpdateNetworkAddress (which can
+    // legitimately learn about a brand-new device from a resolve broadcast). A lost race against a
+    // concurrent write is an acceptable no-op here: this is a best-effort refresh, not a path that
+    // must never lose data the way UpdateNetworkAddress's endpoint preservation is.
+    public void UpdateIsSleepy(IeeeAddress ieeeAddress, bool isSleepy)
+    {
+        if (_devices.TryGetValue(ieeeAddress, out var existing))
+            _devices.TryUpdate(ieeeAddress, existing with { IsSleepy = isSleepy }, existing);
+    }
+
     public IReadOnlyList<ZigbeeDevice> GetDevices()
     {
         return _devices.Values.ToList();
