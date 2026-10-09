@@ -9,7 +9,10 @@ public record DeviceAnnounce(
     ushort NetworkAddress,
     IeeeAddress IeeeAddress,
     byte Capabilities
-);
+)
+{
+    public bool IsSleepy => !MacCapabilityFlags.IsReceiverOnWhenIdle(Capabilities);
+}
 
 public static class DeviceAnnounceParser
 {

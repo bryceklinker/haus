@@ -23,7 +23,8 @@ internal class ZigbeeDeviceInfoDiscoveredEventHandler(IZigbeeStore store, IClock
                     payload.ManufacturerName,
                     payload.ModelIdentifier,
                     payload.Endpoints,
-                    seenAt
+                    seenAt,
+                    payload.IsSleepy
                 )
                 .RecordActivity(new ZigbeeActivityEntryModel(notification.Type, seenAt, payload))
         );

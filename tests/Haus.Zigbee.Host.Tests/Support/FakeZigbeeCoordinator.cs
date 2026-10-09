@@ -21,6 +21,11 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public Queue<ApsDataConfirm> ConfirmSequence { get; } = new();
     public ZigbeeDeviceInfo? DeviceInfoToReturn { get; set; }
 
+    // Models the real CommandSender/CommandRetryHandler's behavior of throwing rather than
+    // returning a failed confirm once its own retries are exhausted -- callers (e.g.
+    // ZigbeeOutboundRelay) must not retry on top of that themselves.
+    public Exception? SendCommandShouldThrow { get; set; }
+
     // Lets a test make ReadDeviceInfoAsync throw for one specific device while others still
     // resolve normally, to prove a caller isolates per-device failures instead of aborting a
     // whole-batch operation like SyncDevicesAsync.
@@ -36,6 +41,12 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public TaskCompletionSource<ushort?>? ResolveNetworkAddressGate { get; set; }
 
     public Exception? ResolveNetworkAddressShouldThrow { get; set; }
+
+    // Default null means "no fresh classification" -- callers fall back to the already-known
+    // device.IsSleepy rather than regressing it, the same way a real timed-out/unknown-device
+    // query would.
+    public bool? IsSleepyToReturn { get; set; }
+    public List<IeeeAddress> QueryIsSleepyCalls { get; } = [];
 
     public bool IsConnected { get; set; }
     public NetworkConfig? NetworkConfig { get; set; }
@@ -81,6 +92,12 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
         return ResolveNetworkAddressGate?.Task ?? Task.FromResult(NetworkAddressToReturn);
     }
 
+    public Task<bool?> QueryIsSleepyAsync(IeeeAddress ieeeAddress, CancellationToken token)
+    {
+        QueryIsSleepyCalls.Add(ieeeAddress);
+        return Task.FromResult(IsSleepyToReturn);
+    }
+
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)
     {
         if (SetPermitJoinShouldThrow != null)
@@ -93,6 +110,9 @@ public class FakeZigbeeCoordinator : IZigbeeCoordinator
     public Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token)
     {
         SentCommands.Add(request);
+        if (SendCommandShouldThrow != null)
+            throw SendCommandShouldThrow;
+
         var confirm = ConfirmSequence.Count > 0 ? ConfirmSequence.Dequeue() : ConfirmToReturn;
         return Task.FromResult(confirm);
     }

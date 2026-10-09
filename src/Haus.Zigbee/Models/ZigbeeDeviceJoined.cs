@@ -7,5 +7,6 @@ public record ZigbeeDeviceJoined(
     ushort NetworkAddress,
     IReadOnlyList<ZigbeeEndpoint> Endpoints,
     string ManufacturerName,
-    string ModelIdentifier
+    string ModelIdentifier,
+    bool IsSleepy = false
 );

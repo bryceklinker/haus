@@ -104,6 +104,71 @@ public class KnownDeviceTableTests
         Assert.Empty(added.Endpoints);
     }
 
+    [Fact]
+    public void WhenNetworkAddressIsUpdatedForAnAlreadyKnownSleepyDeviceThenIsSleepyIsPreserved()
+    {
+        var table = new KnownDeviceTable();
+        var ieeeAddress = new IeeeAddress(0x00124b0001234567);
+        table.AddOrUpdate(
+            new ZigbeeDevice(ieeeAddress, NetworkAddress: 0x1234, Array.Empty<ZigbeeEndpoint>(), IsSleepy: true)
+        );
+
+        table.UpdateNetworkAddress(ieeeAddress, networkAddress: 0x9999);
+
+        table.TryGet(ieeeAddress, out var updated);
+        Assert.True(updated!.IsSleepy);
+    }
+
+    [Fact]
+    public void WhenNetworkAddressIsKnownThenTryGetByNetworkAddressReturnsTrueAndTheDevice()
+    {
+        var table = new KnownDeviceTable();
+        var device = DeviceWith(0x00124b0001234567, 0x1234);
+        table.AddOrUpdate(device);
+
+        var found = table.TryGetByNetworkAddress(0x1234, out var result);
+
+        Assert.True(found);
+        Assert.Equal(device, result);
+    }
+
+    [Fact]
+    public void WhenNetworkAddressIsUnknownThenTryGetByNetworkAddressReturnsFalse()
+    {
+        var table = new KnownDeviceTable();
+
+        var found = table.TryGetByNetworkAddress(0x1234, out _);
+
+        Assert.False(found);
+    }
+
+    [Fact]
+    public void WhenIsSleepyIsUpdatedForAnAlreadyKnownDeviceThenItsOtherFieldsArePreserved()
+    {
+        var table = new KnownDeviceTable();
+        var endpoint = new ZigbeeEndpoint(0x01, 0x0104, 0x0100, new ushort[] { 0x0000 }, Array.Empty<ushort>());
+        var ieeeAddress = new IeeeAddress(0x00124b0001234567);
+        table.AddOrUpdate(new ZigbeeDevice(ieeeAddress, 0x1234, new[] { endpoint }, IsSleepy: false));
+
+        table.UpdateIsSleepy(ieeeAddress, isSleepy: true);
+
+        table.TryGet(ieeeAddress, out var updated);
+        Assert.True(updated!.IsSleepy);
+        Assert.Equal(0x1234, updated.NetworkAddress);
+        Assert.Equal(new[] { endpoint }, updated.Endpoints);
+    }
+
+    [Fact]
+    public void WhenIsSleepyIsUpdatedForAnUnknownDeviceThenNothingHappens()
+    {
+        var table = new KnownDeviceTable();
+        var ieeeAddress = new IeeeAddress(0x00124b0001234567);
+
+        table.UpdateIsSleepy(ieeeAddress, isSleepy: true);
+
+        Assert.False(table.TryGet(ieeeAddress, out _));
+    }
+
     private static ZigbeeDevice DeviceWith(ulong ieeeAddress, ushort networkAddress)
     {
         return new ZigbeeDevice(new IeeeAddress(ieeeAddress), networkAddress, Array.Empty<ZigbeeEndpoint>());

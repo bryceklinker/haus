@@ -32,4 +32,39 @@ public class DeviceAnnounceParserTests
         Assert.Equal(new IeeeAddress(0x00124b0001234567), announce.IeeeAddress);
         Assert.Equal((byte)0x8e, announce.Capabilities);
     }
+
+    [Fact]
+    public void WhenReceiverOnWhenIdleBitIsSetThenIsSleepyIsFalse()
+    {
+        var announce = DeviceAnnounceParser.Parse(PayloadWithCapabilities(0x08));
+
+        Assert.False(announce.IsSleepy);
+    }
+
+    [Fact]
+    public void WhenReceiverOnWhenIdleBitIsClearThenIsSleepyIsTrue()
+    {
+        var announce = DeviceAnnounceParser.Parse(PayloadWithCapabilities(0x00));
+
+        Assert.True(announce.IsSleepy);
+    }
+
+    private static byte[] PayloadWithCapabilities(byte capabilities)
+    {
+        return new byte[]
+        {
+            0x2a, // TSN
+            0xb2,
+            0xa1, // NWKAddrOfInterest (u16 LE) => 0xa1b2
+            0x67,
+            0x45,
+            0x23,
+            0x01,
+            0x00,
+            0x4b,
+            0x12,
+            0x00, // IEEEAddr (u64 LE) => 0x00124b0001234567
+            capabilities,
+        };
+    }
 }

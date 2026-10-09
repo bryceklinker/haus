@@ -51,19 +51,4 @@ public class DeviceCommandQueue
             deviceLock.Release();
         }
     }
-
-    private readonly record struct DeviceKey(bool IsIeee, ulong Address)
-    {
-        public static DeviceKey FromIeee(IeeeAddress ieee) => new(true, ieee.Value);
-
-        public static DeviceKey? FromDestination(ApsDestination destination)
-        {
-            return destination.Mode switch
-            {
-                DeconzAddressMode.Ieee => new DeviceKey(true, destination.IeeeAddress.Value),
-                DeconzAddressMode.Nwk => new DeviceKey(false, destination.ShortAddress),
-                _ => null,
-            };
-        }
-    }
 }
