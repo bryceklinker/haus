@@ -26,7 +26,7 @@ public class DeviceTypeOptionsParser : IDeviceTypeOptionsParser
     {
         var variableNameIndex = markdown.IndexOf(SUPPORTED_DEVICES_VARIABLE_NAME, StringComparison.Ordinal);
         var arrayStartIndex = variableNameIndex + SUPPORTED_DEVICES_VARIABLE_NAME.Length + 3;
-        var arrayEndIndex = markdown.IndexOf(";", StringComparison.Ordinal);
+        var arrayEndIndex = markdown.IndexOf("];", arrayStartIndex, StringComparison.Ordinal) + 1;
         return markdown.Substring(arrayStartIndex, arrayEndIndex - arrayStartIndex);
     }
 }
