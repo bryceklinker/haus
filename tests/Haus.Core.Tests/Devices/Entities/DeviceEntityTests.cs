@@ -33,6 +33,27 @@ public class DeviceEntityTest
     }
 
     [Fact]
+    public void WhenCreatedFromASleepyDiscoveredDeviceThenIsSleepyIsPersisted()
+    {
+        var model = new DeviceDiscoveredEvent("this-id", IsSleepy: true);
+
+        var entity = DeviceEntity.FromDiscoveredDevice(model, new FakeDomainEventBus());
+
+        Assert.True(entity.IsSleepy);
+    }
+
+    [Fact]
+    public void WhenUpdatedFromADiscoveredDeviceThenIsSleepyIsOverwritten()
+    {
+        var entity = new DeviceEntity();
+        entity.UpdateFromDiscoveredDevice(new DeviceDiscoveredEvent("", IsSleepy: true), new FakeDomainEventBus());
+
+        entity.UpdateFromDiscoveredDevice(new DeviceDiscoveredEvent("", IsSleepy: false), new FakeDomainEventBus());
+
+        Assert.False(entity.IsSleepy);
+    }
+
+    [Fact]
     public void WhenLightCreatedFromDeviceDiscoveredThenLightTypeIsLevel()
     {
         var model = new DeviceDiscoveredEvent(

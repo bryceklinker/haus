@@ -30,6 +30,13 @@ public interface IZigbeeCoordinator : IDisposable
     // restart. Returns null when no device answers before the request times out.
     Task<ushort?> ResolveNetworkAddressAsync(IeeeAddress ieeeAddress, CancellationToken token);
 
+    // Queries a known device's rx-on-when-idle capability bit on demand via ZDP Node Descriptor
+    // Request/Response, re-establishing its sleepy classification when a live Device_annce hasn't
+    // re-fired (e.g. after a host restart). Returns null when the device is unknown, the request
+    // times out, or the response is non-Success; otherwise also refreshes the persisted
+    // classification and returns the freshly-queried value.
+    Task<bool?> QueryIsSleepyAsync(IeeeAddress ieeeAddress, CancellationToken token);
+
     Task SetPermitJoinAsync(bool enabled, CancellationToken token);
 
     Task<ApsDataConfirm> SendCommandAsync(ZigbeeCommandRequest request, CancellationToken token);

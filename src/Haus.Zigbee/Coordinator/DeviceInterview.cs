@@ -90,7 +90,7 @@ public class DeviceInterview : IDisposable
         var endpoints = await DescribeEndpointsAsync(announce.NetworkAddress, token).ConfigureAwait(false);
         var basicInfo = await ReadBasicInfoAsync(announce.NetworkAddress, endpoints, token).ConfigureAwait(false);
 
-        var device = new ZigbeeDevice(announce.IeeeAddress, announce.NetworkAddress, endpoints);
+        var device = new ZigbeeDevice(announce.IeeeAddress, announce.NetworkAddress, endpoints, announce.IsSleepy);
         _knownDeviceTable.AddOrUpdate(device);
         DeviceJoined?.Invoke(
             this,
@@ -99,7 +99,8 @@ public class DeviceInterview : IDisposable
                 announce.NetworkAddress,
                 endpoints,
                 basicInfo.ManufacturerName,
-                basicInfo.ModelIdentifier
+                basicInfo.ModelIdentifier,
+                announce.IsSleepy
             )
         );
     }

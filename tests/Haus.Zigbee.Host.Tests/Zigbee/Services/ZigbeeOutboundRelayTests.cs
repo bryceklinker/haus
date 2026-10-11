@@ -10,6 +10,7 @@ using Haus.Core.Models.Zigbee.Events;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
+using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Services;
@@ -371,10 +372,9 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task HandleCommandAsync_LightingCommandWithFailedConfirmThenSuccessOnRetry_RetriesOnceWithApsAckAndDoesNotLogFailure()
+    public async Task HandleCommandAsync_LightingCommandSendsSuccessfully_SendsThroughTheSingleCoordinatorPathExactlyOnce()
     {
-        _coordinator!.ConfirmSequence.Enqueue(FailedConfirm());
-        _coordinator.ConfirmSequence.Enqueue(SuccessfulConfirm());
+        _coordinator!.ConfirmToReturn = SuccessfulConfirm();
         var device = new DeviceModel
         {
             ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
@@ -386,20 +386,18 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
 
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
-        Assert.Equal(2, _coordinator.SentCommands.Count);
-        Assert.False(_coordinator.SentCommands[0].RequestApsAck);
-        Assert.True(_coordinator.SentCommands[1].RequestApsAck);
-        Assert.Equal(_coordinator.SentCommands[0].Destination, _coordinator.SentCommands[1].Destination);
-        Assert.DoesNotContain(
-            _loggerFactory!.Entries,
-            entry => entry.Level == LogLevel.Warning && entry.Message.Contains("failed with APS confirm status")
-        );
+        var sent = Assert.Single(_coordinator.SentCommands);
+        Assert.False(sent.RequestApsAck);
     }
 
+    // Retry/backoff and APS-ACK escalation now live entirely inside CommandSender (the single
+    // path every command type goes through) -- the relay itself must not retry on top of that.
+    // CommandDeliveryFailedException is what the real coordinator throws once its own retries are
+    // exhausted; the relay's job is only to log it, once, without a second retry attempt.
     [Fact]
-    public async Task HandleCommandAsync_LightingCommandWithConfirmFailingTwice_RetriesExactlyOnceThenLogsFailure()
+    public async Task HandleCommandAsync_LightingCommandSendThrowsCommandDeliveryFailedException_LogsFailureWithoutRetryingItself()
     {
-        _coordinator!.ConfirmToReturn = FailedConfirm();
+        _coordinator!.SendCommandShouldThrow = new CommandDeliveryFailedException(0xAD, attemptCount: 1);
         var device = new DeviceModel
         {
             ExternalId = ExternalIdConverter.ToExternalId(new IeeeAddress(1)),
@@ -411,18 +409,11 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
 
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
-        Assert.Equal(2, _coordinator.SentCommands.Count);
-        Assert.False(_coordinator.SentCommands[0].RequestApsAck);
-        Assert.True(_coordinator.SentCommands[1].RequestApsAck);
+        Assert.Single(_coordinator.SentCommands);
         Assert.Single(
             _loggerFactory!.Entries,
             entry => entry.Level == LogLevel.Warning && entry.Message.Contains("failed with APS confirm status")
         );
-    }
-
-    private static ApsDataConfirm FailedConfirm()
-    {
-        return new ApsDataConfirm(0, 0, 0, DeconzAddressMode.Nwk, 0x1234, null, 1, 1, ConfirmStatus: 0xAD);
     }
 
     private static ApsDataConfirm SuccessfulConfirm()

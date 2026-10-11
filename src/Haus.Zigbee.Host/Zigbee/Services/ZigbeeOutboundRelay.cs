@@ -8,14 +8,13 @@ using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Zigbee.Events;
 using Haus.Mqtt.Client;
+using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
 using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
-using Polly;
-using Polly.Retry;
 
 namespace Haus.Zigbee.Host.Zigbee.Services;
 
@@ -30,10 +29,6 @@ public class ZigbeeOutboundRelay(
 )
 {
     private const byte FallbackDestinationEndpoint = 0x01;
-
-    // Per the Zigbee APS spec, a confirm status of 0x00 is APS_SUCCESS; anything else is a delivery
-    // failure reported back from the stack for that specific request.
-    private const byte SuccessConfirmStatus = 0x00;
 
     // Tracks which devices currently have a background resolution in flight, keyed by ExternalId,
     // so repeated commands for the same stale device while one is already pending don't each fire
@@ -115,15 +110,27 @@ public class ZigbeeOutboundRelay(
                 request.CommandId,
                 device.ExternalId
             );
-            var confirm = await SendWithApsAckRetryAsync(request, device.ExternalId, token);
-            if (confirm.ConfirmStatus != SuccessConfirmStatus)
+            // Routes through the single CommandSender/DeviceCommandQueue path every other command
+            // type already uses -- its own retry/backoff already escalates to an APS-ACK on
+            // retry (unified from this relay's former separate pipeline) and already branches on
+            // sleepy-device state, so lighting commands get both for free with no second,
+            // duplicate retry implementation here. CommandDeliveryFailedException is what that
+            // path throws once its own retries are exhausted; this relay does not retry on top of
+            // that, only logs it.
+            try
+            {
+                await coordinator.SendCommandAsync(request, token);
+            }
+            catch (CommandDeliveryFailedException ex)
+            {
                 logger.LogWarning(
                     "Zigbee command {@ClusterId}/{@CommandId} to {@ExternalId} failed with APS confirm status {@ConfirmStatus}",
                     request.ClusterId,
                     request.CommandId,
                     device.ExternalId,
-                    confirm.ConfirmStatus
+                    ex.LastConfirmStatus
                 );
+            }
         }
     }
 
@@ -186,52 +193,6 @@ public class ZigbeeOutboundRelay(
         logger.LogWarning("Cannot send a lighting command to {@ExternalId}: {@Reason}", device.ExternalId, reason);
         var hausMqttClient = await mqttClientFactory.CreateClient();
         await hausMqttClient.PublishHausEventAsync(new ZigbeeCommandDroppedEvent(device.ExternalId, reason));
-    }
-
-    // Mirrors zigbee-herdsman's deCONZ adapter: on a failed confirm, retry exactly once at the
-    // same NWK address (no re-resolve, no mode switch) escalated to an APS-ACK request, then
-    // surface whatever the last attempt reported. `token` already bounds "time remains" -- if it's
-    // been canceled the pipeline won't retry. The retry flag is captured per call, not shared
-    // state, since concurrent lighting commands each build and run their own pipeline instance;
-    // that construction is negligible next to the tens-of-seconds a real Zigbee round trip takes.
-    private async Task<ApsDataConfirm> SendWithApsAckRetryAsync(
-        ZigbeeCommandRequest request,
-        string externalId,
-        CancellationToken token
-    )
-    {
-        var isRetryAttempt = false;
-        var pipeline = new ResiliencePipelineBuilder<ApsDataConfirm>()
-            .AddRetry(
-                new RetryStrategyOptions<ApsDataConfirm>
-                {
-                    MaxRetryAttempts = 1,
-                    Delay = TimeSpan.Zero,
-                    ShouldHandle = new PredicateBuilder<ApsDataConfirm>().HandleResult(confirm =>
-                        confirm.ConfirmStatus != SuccessConfirmStatus
-                    ),
-                    OnRetry = args =>
-                    {
-                        isRetryAttempt = true;
-                        logger.LogWarning(
-                            "Retrying Zigbee command {@ClusterId}/{@CommandId} to {@ExternalId} with APS-ACK after confirm status {@ConfirmStatus}",
-                            request.ClusterId,
-                            request.CommandId,
-                            externalId,
-                            args.Outcome.Result?.ConfirmStatus
-                        );
-                        return default;
-                    },
-                }
-            )
-            .Build();
-
-        return await pipeline.ExecuteAsync(
-            ct => new ValueTask<ApsDataConfirm>(
-                coordinator.SendCommandAsync(request with { RequestApsAck = isRetryAttempt }, ct)
-            ),
-            token
-        );
     }
 
     private class DeviceClusterDestinationResolver(

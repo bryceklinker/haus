@@ -60,6 +60,9 @@ namespace Haus.Core.Common.Storage.Migrations
                     b.Property<long?>("Illuminance")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsSleepy")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("LightType")
                         .HasColumnType("INTEGER");
 

@@ -71,6 +71,50 @@ public class DevicesMapperTests
     }
 
     [Fact]
+    public async Task MapAsync_DeviceIsSleepy_CarriesIsSleepyOntoTheDiscoveredEvent()
+    {
+        var coordinator = new FakeZigbeeCoordinator { DeviceInfoToReturn = ResolvableDeviceInfo };
+        var device = new ZigbeeDevice(new IeeeAddress(1), 0x1234, [], IsSleepy: true);
+        var mapper = CreateMapper(coordinator);
+
+        var result = (await mapper.MapAsync([device], CancellationToken.None)).Single();
+
+        Assert.True(result.IsSleepy);
+    }
+
+    [Fact]
+    public async Task MapAsync_NodeDescriptorReQueryReportsSleepy_OverridesTheAlreadyKnownValue()
+    {
+        var coordinator = new FakeZigbeeCoordinator
+        {
+            DeviceInfoToReturn = ResolvableDeviceInfo,
+            IsSleepyToReturn = true,
+        };
+        var device = new ZigbeeDevice(new IeeeAddress(1), 0x1234, [], IsSleepy: false);
+        var mapper = CreateMapper(coordinator);
+
+        var result = (await mapper.MapAsync([device], CancellationToken.None)).Single();
+
+        Assert.True(result.IsSleepy);
+    }
+
+    [Fact]
+    public async Task MapAsync_NodeDescriptorReQueryReportsNothing_FallsBackToTheAlreadyKnownValue()
+    {
+        var coordinator = new FakeZigbeeCoordinator
+        {
+            DeviceInfoToReturn = ResolvableDeviceInfo,
+            IsSleepyToReturn = null,
+        };
+        var device = new ZigbeeDevice(new IeeeAddress(1), 0x1234, [], IsSleepy: true);
+        var mapper = CreateMapper(coordinator);
+
+        var result = (await mapper.MapAsync([device], CancellationToken.None)).Single();
+
+        Assert.True(result.IsSleepy);
+    }
+
+    [Fact]
     public async Task MapAsync_MultipleDevicesEachResolveToAKnownType_ReturnsOneEventPerDevice()
     {
         var coordinator = new FakeZigbeeCoordinator { DeviceInfoToReturn = ResolvableDeviceInfo };

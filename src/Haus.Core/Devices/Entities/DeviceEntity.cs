@@ -72,6 +72,8 @@ public record DeviceEntity : Entity
     public double? Temperature { get; set; }
     public long? BatteryLevel { get; set; }
 
+    public bool IsSleepy { get; set; }
+
     public bool IsLight => DeviceType == DeviceType.Light;
 
     public DeviceEntity()
@@ -119,6 +121,7 @@ public record DeviceEntity : Entity
         DeviceType = @event.DeviceType;
         LightType = GetValidLightType(@event.DeviceType, LightType);
         NetworkAddress = @event.NetworkAddress;
+        IsSleepy = @event.IsSleepy;
         Lighting = GenerateDefaultLighting();
         if (IsLight)
             ChangeLighting(Lighting, domainEventBus);

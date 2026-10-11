@@ -9,5 +9,6 @@ public record ZigbeeKnownDeviceModel(
     string? ManufacturerName,
     string? ModelIdentifier,
     IReadOnlyList<ZigbeeEndpointModel> Endpoints,
-    DateTimeOffset LastSeenAt
+    DateTimeOffset LastSeenAt,
+    bool IsSleepy = false
 );

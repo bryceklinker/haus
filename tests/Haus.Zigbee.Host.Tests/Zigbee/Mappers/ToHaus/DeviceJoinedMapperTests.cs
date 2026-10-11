@@ -84,4 +84,14 @@ public class DeviceJoinedMapperTests
 
         Assert.Equal((ushort)0x9abc, result.NetworkAddress);
     }
+
+    [Fact]
+    public void Map_CarriesIsSleepy()
+    {
+        var joined = new ZigbeeDeviceJoined(new IeeeAddress(1), 0x1234, [], "acme", "widget-1", IsSleepy: true);
+
+        var result = _mapper.Map(joined);
+
+        Assert.True(result.IsSleepy);
+    }
 }

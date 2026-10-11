@@ -18,7 +18,8 @@ public interface IZigbeeState
         string manufacturerName,
         string modelIdentifier,
         IReadOnlyList<ZigbeeEndpointModel> endpoints,
-        DateTimeOffset seenAt
+        DateTimeOffset seenAt,
+        bool isSleepy = false
     );
 }
 
@@ -75,18 +76,28 @@ public record ZigbeeState(
         string manufacturerName,
         string modelIdentifier,
         IReadOnlyList<ZigbeeEndpointModel> endpoints,
-        DateTimeOffset seenAt
+        DateTimeOffset seenAt,
+        bool isSleepy = false
     )
     {
         var existing = KnownDevices.GetValueOrDefault(ieeeAddress);
         var device = existing is null
-            ? new ZigbeeKnownDeviceModel(ieeeAddress, null, manufacturerName, modelIdentifier, endpoints, seenAt)
+            ? new ZigbeeKnownDeviceModel(
+                ieeeAddress,
+                null,
+                manufacturerName,
+                modelIdentifier,
+                endpoints,
+                seenAt,
+                isSleepy
+            )
             : existing with
             {
                 ManufacturerName = manufacturerName,
                 ModelIdentifier = modelIdentifier,
                 Endpoints = endpoints,
                 LastSeenAt = seenAt,
+                IsSleepy = isSleepy,
             };
 
         return this with

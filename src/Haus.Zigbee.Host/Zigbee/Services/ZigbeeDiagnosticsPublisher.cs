@@ -51,7 +51,8 @@ public class ZigbeeDiagnosticsPublisher(
                 ieeeAddress,
                 joined.ManufacturerName,
                 joined.ModelIdentifier,
-                joined.Endpoints.Select(ToEndpointModel).ToList()
+                joined.Endpoints.Select(ToEndpointModel).ToList(),
+                joined.IsSleepy
             )
         );
     }

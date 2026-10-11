@@ -95,4 +95,20 @@ public class ZigbeeStateTests
         var device = Assert.Single(state.KnownDevices.Values);
         Assert.Null(device.NetworkAddress);
     }
+
+    [Fact]
+    public void WhenDeviceInfoDiscoveredWithIsSleepyThenIsSleepyIsRecorded()
+    {
+        var state = ZigbeeState.Initial.RecordDeviceInfoDiscovered(
+            "ieee-1",
+            "Acme",
+            "Widget",
+            ImmutableArray<ZigbeeEndpointModel>.Empty,
+            DateTimeOffset.UtcNow,
+            isSleepy: true
+        );
+
+        var device = Assert.Single(state.KnownDevices.Values);
+        Assert.True(device.IsSleepy);
+    }
 }

@@ -16,7 +16,8 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
             deviceTypeResolver.Resolve(joined.ManufacturerName, joined.ModelIdentifier),
             CreateMetadata(joined),
             NetworkAddress: joined.NetworkAddress,
-            Endpoints: CreateEndpoints(joined)
+            Endpoints: CreateEndpoints(joined),
+            IsSleepy: joined.IsSleepy
         );
     }
 

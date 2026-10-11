@@ -25,6 +25,7 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
     private readonly ILogger<ZigbeeCoordinator> _logger;
     private readonly KnownDeviceTable _knownDeviceTable = new();
     private readonly DeviceCommandQueue _commandQueue = new();
+    private readonly SleepyCommandHold _sleepyHold;
 
     // Guards every read AND write of _components and _transportNeedsRebuild. A plain field
     // (even one reference-swapped atomically) gives no cross-thread visibility guarantee on its
@@ -52,12 +53,14 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         Func<ISerialTransport> transportFactory,
         ILoggerFactory? loggerFactory = null,
         TimeSpan? channelRoundTripTimeout = null,
-        CommandRetryOptions? retryOptions = null
+        CommandRetryOptions? retryOptions = null,
+        SleepyHoldOptions? sleepyHoldOptions = null
     )
     {
         _transportFactory = transportFactory;
         _channelRoundTripTimeout = channelRoundTripTimeout;
         _retryOptions = retryOptions ?? new CommandRetryOptions();
+        _sleepyHold = new SleepyCommandHold(sleepyHoldOptions);
         _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
         _logger = _loggerFactory.CreateLogger<ZigbeeCoordinator>();
 
@@ -125,6 +128,11 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         return CurrentComponents().NetworkAddressResolver.ResolveAsync(ieeeAddress, token);
     }
 
+    public Task<bool?> QueryIsSleepyAsync(IeeeAddress ieeeAddress, CancellationToken token)
+    {
+        return CurrentComponents().NodeDescriptorQuery.QueryIsSleepyAsync(ieeeAddress, token);
+    }
+
     public Task SetPermitJoinAsync(bool enabled, CancellationToken token)
     {
         return CurrentComponents().PermitJoinController.SetPermitJoinAsync(enabled, token);
@@ -183,7 +191,13 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
         var pollLoop = new ApsPollLoop(channel, _loggerFactory.CreateLogger<ApsPollLoop>());
         var permitJoinController = new PermitJoinController(channel);
         var sender = new ApsSender(pollLoop, channel, logger: _loggerFactory.CreateLogger<ApsSender>());
-        var commandSender = new CommandSender(sender, _commandQueue, new CommandRetryHandler(_retryOptions));
+        var commandSender = new CommandSender(
+            sender,
+            _commandQueue,
+            new CommandRetryHandler(_retryOptions),
+            _knownDeviceTable,
+            _sleepyHold
+        );
         var attributeReportListener = new AttributeReportListener(pollLoop);
         var deviceInterview = new DeviceInterview(
             pollLoop,
@@ -196,6 +210,13 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
             sender,
             _knownDeviceTable,
             logger: _loggerFactory.CreateLogger<NetworkAddressResolver>()
+        );
+        var wakeSignalListener = new WakeSignalListener(pollLoop, _sleepyHold);
+        var nodeDescriptorQuery = new NodeDescriptorQuery(
+            pollLoop,
+            sender,
+            _knownDeviceTable,
+            logger: _loggerFactory.CreateLogger<NodeDescriptorQuery>()
         );
 
         attributeReportListener.AttributeReported += RelayAttributeReport;
@@ -211,7 +232,9 @@ public class ZigbeeCoordinator : IZigbeeCoordinator
             commandSender,
             attributeReportListener,
             deviceInterview,
-            networkAddressResolver
+            networkAddressResolver,
+            wakeSignalListener,
+            nodeDescriptorQuery
         );
     }
 
