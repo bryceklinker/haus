@@ -26,7 +26,7 @@ jobs:
       LOG_LEVEL: Warning
     steps:
       - name: Clone
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           # Full history + all tags: scripts/compute-next-version.sh needs every
           # existing tag to find the latest one, and git-cliff needs the full
@@ -37,7 +37,7 @@ jobs:
         uses: ./.github/actions/setup-machine
 
       - name: Install git-cliff
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@v2.87.28
         with:
           tool: git-cliff
 
@@ -86,7 +86,7 @@ jobs:
         run: ./scripts/generate-release-notes.sh "${{ steps.compute_version.outputs.new_tag }}" > release-notes.md
 
       - name: Create Release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@v3.0.3
         with:
           tag_name: ${{ steps.compute_version.outputs.new_tag }}
           name: Release ${{ steps.compute_version.outputs.new_tag }}
