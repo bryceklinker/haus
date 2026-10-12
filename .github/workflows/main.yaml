@@ -25,8 +25,8 @@ jobs:
       LOG_LEVEL: Information
     steps:
       - name: Clone
-        uses: actions/checkout@v7
-      
+        uses: actions/checkout@v7.0.1
+
       - name: Setup Machine
         uses: ./.github/actions/setup-machine
 
