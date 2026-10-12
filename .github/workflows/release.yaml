@@ -86,7 +86,7 @@ jobs:
         run: ./scripts/generate-release-notes.sh "${{ steps.compute_version.outputs.new_tag }}" > release-notes.md
 
       - name: Create Release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@v3.0.3
         with:
           tag_name: ${{ steps.compute_version.outputs.new_tag }}
           name: Release ${{ steps.compute_version.outputs.new_tag }}
