@@ -26,7 +26,12 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
     // same register-then-map sequence before deciding what (if anything) to publish.
     public DeviceDiscoveredEvent RegisterAndMap(DeviceAddressRegistry addressRegistry, ZigbeeDeviceJoined joined)
     {
-        addressRegistry.Register(joined.NetworkAddress, ExternalIdConverter.ToExternalId(joined.IeeeAddress));
+        addressRegistry.RegisterKnownDevice(
+            joined.IeeeAddress,
+            joined.NetworkAddress,
+            joined.Endpoints,
+            joined.IsSleepy
+        );
         return Map(joined);
     }
 

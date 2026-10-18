@@ -71,7 +71,12 @@ public class ZigbeeOutboundRelay(
         var devices = await coordinator.GetDevicesAsync(token);
         logger.LogInformation("Syncing {@Count} known device(s) to Haus", devices.Count);
         foreach (var device in devices)
-            addressRegistry.Register(device.NetworkAddress, ExternalIdConverter.ToExternalId(device.IeeeAddress));
+            addressRegistry.RegisterKnownDevice(
+                device.IeeeAddress,
+                device.NetworkAddress,
+                device.Endpoints,
+                device.IsSleepy
+            );
 
         var hausMqttClient = await mqttClientFactory.CreateClient();
         foreach (var discovered in await devicesMapper.MapAsync(devices, token))

@@ -1,5 +1,6 @@
 using System;
 using Haus.Mqtt.Client.Wrappers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -17,9 +18,14 @@ public static class ServiceProviderFactory
         Action<IServiceCollection>? configureServices = null
     )
     {
+        // Every test instance gets its own isolated in-memory database instead of touching a real
+        // Sqlite file on disk -- the production connection string is irrelevant here.
         var services = new ServiceCollection()
             .AddLogging(builder => builder.ClearProviders())
-            .AddHausZigbee(configuration ?? ConfigurationFactory.CreateConfig());
+            .AddHausZigbee(
+                configuration ?? ConfigurationFactory.CreateConfig(),
+                opts => opts.UseInMemoryDatabase(Guid.NewGuid().ToString())
+            );
 
         if (mqttFactory != null)
         {
