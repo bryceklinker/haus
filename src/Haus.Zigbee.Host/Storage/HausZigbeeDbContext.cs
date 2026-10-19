@@ -9,11 +9,7 @@ public class HausZigbeeDbContext(DbContextOptions<HausZigbeeDbContext> options) 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<KnownZigbeeDeviceEntity>(builder =>
-        {
-            builder.HasKey(e => e.Id);
-            builder.HasIndex(e => e.ExternalId).IsUnique();
-        });
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(HausZigbeeDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 }
