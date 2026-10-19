@@ -19,32 +19,22 @@ public class KnownZigbeeDeviceStore(IDbContextFactory<HausZigbeeDbContext> conte
             .ToListAsync(token);
     }
 
-    public async Task UpsertNetworkAddressAsync(
-        string externalId,
-        ushort networkAddress,
-        CancellationToken token = default
-    )
+    public async Task UpsertNetworkAddressAsync(UpsertNetworkAddressArgs args, CancellationToken token = default)
     {
         await using var context = await contextFactory.CreateDbContextAsync(token);
-        var entity = await FindOrCreateAsync(context, externalId, token);
-        entity.NetworkAddress = networkAddress;
+        var entity = await FindOrCreateAsync(context, args.ExternalId, token);
+        entity.NetworkAddress = args.NetworkAddress;
         entity.UpdatedAt = DateTimeOffset.UtcNow;
         await context.SaveChangesAsync(token);
     }
 
-    public async Task UpsertAsync(
-        string externalId,
-        ushort networkAddress,
-        string endpointsJson,
-        bool isSleepy,
-        CancellationToken token = default
-    )
+    public async Task UpsertAsync(UpsertKnownZigbeeDeviceArgs args, CancellationToken token = default)
     {
         await using var context = await contextFactory.CreateDbContextAsync(token);
-        var entity = await FindOrCreateAsync(context, externalId, token);
-        entity.NetworkAddress = networkAddress;
-        entity.EndpointsJson = endpointsJson;
-        entity.IsSleepy = isSleepy;
+        var entity = await FindOrCreateAsync(context, args.ExternalId, token);
+        entity.NetworkAddress = args.NetworkAddress;
+        entity.EndpointsJson = args.EndpointsJson;
+        entity.IsSleepy = args.IsSleepy;
         entity.UpdatedAt = DateTimeOffset.UtcNow;
         await context.SaveChangesAsync(token);
     }

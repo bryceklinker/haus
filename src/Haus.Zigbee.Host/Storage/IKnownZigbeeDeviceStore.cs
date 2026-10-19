@@ -8,13 +8,7 @@ public interface IKnownZigbeeDeviceStore
 {
     Task<IReadOnlyList<KnownZigbeeDeviceRecord>> GetAllAsync(CancellationToken token = default);
 
-    Task UpsertNetworkAddressAsync(string externalId, ushort networkAddress, CancellationToken token = default);
+    Task UpsertNetworkAddressAsync(UpsertNetworkAddressArgs args, CancellationToken token = default);
 
-    Task UpsertAsync(
-        string externalId,
-        ushort networkAddress,
-        string endpointsJson,
-        bool isSleepy,
-        CancellationToken token = default
-    );
+    Task UpsertAsync(UpsertKnownZigbeeDeviceArgs args, CancellationToken token = default);
 }

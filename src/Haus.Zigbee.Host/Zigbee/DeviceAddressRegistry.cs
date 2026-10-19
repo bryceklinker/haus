@@ -60,7 +60,7 @@ public class DeviceAddressRegistry(IKnownZigbeeDeviceStore store, ILogger<Device
     {
         try
         {
-            await store.UpsertNetworkAddressAsync(externalId, networkAddress);
+            await store.UpsertNetworkAddressAsync(new UpsertNetworkAddressArgs(externalId, networkAddress));
         }
         catch (Exception e)
         {
@@ -77,7 +77,14 @@ public class DeviceAddressRegistry(IKnownZigbeeDeviceStore store, ILogger<Device
     {
         try
         {
-            await store.UpsertAsync(externalId, networkAddress, JsonSerializer.Serialize(endpoints), isSleepy);
+            await store.UpsertAsync(
+                new UpsertKnownZigbeeDeviceArgs(
+                    externalId,
+                    networkAddress,
+                    JsonSerializer.Serialize(endpoints),
+                    isSleepy
+                )
+            );
         }
         catch (Exception e)
         {

@@ -27,7 +27,7 @@ public class KnownZigbeeDeviceStoreTests
     [Fact]
     public async Task UpsertAsync_NewExternalId_CreatesADevice()
     {
-        await _store.UpsertAsync("0x1", 0x1234, "[]", isSleepy: true);
+        await _store.UpsertAsync(new UpsertKnownZigbeeDeviceArgs("0x1", 0x1234, "[]", IsSleepy: true));
 
         var device = Assert.Single(await _store.GetAllAsync());
         Assert.Equal("0x1", device.ExternalId);
@@ -38,9 +38,9 @@ public class KnownZigbeeDeviceStoreTests
     [Fact]
     public async Task UpsertAsync_ExistingExternalId_UpdatesTheSameDeviceRatherThanCreatingASecondOne()
     {
-        await _store.UpsertAsync("0x1", 0x1234, "[]", isSleepy: false);
+        await _store.UpsertAsync(new UpsertKnownZigbeeDeviceArgs("0x1", 0x1234, "[]", IsSleepy: false));
 
-        await _store.UpsertAsync("0x1", 0x5678, "[1]", isSleepy: true);
+        await _store.UpsertAsync(new UpsertKnownZigbeeDeviceArgs("0x1", 0x5678, "[1]", IsSleepy: true));
 
         var device = Assert.Single(await _store.GetAllAsync());
         Assert.Equal((ushort)0x5678, device.NetworkAddress);
@@ -51,7 +51,7 @@ public class KnownZigbeeDeviceStoreTests
     [Fact]
     public async Task UpsertNetworkAddressAsync_NewExternalId_CreatesAMinimalDevice()
     {
-        await _store.UpsertNetworkAddressAsync("0x1", 0x1234);
+        await _store.UpsertNetworkAddressAsync(new UpsertNetworkAddressArgs("0x1", 0x1234));
 
         var device = Assert.Single(await _store.GetAllAsync());
         Assert.Equal("0x1", device.ExternalId);
@@ -62,9 +62,9 @@ public class KnownZigbeeDeviceStoreTests
     [Fact]
     public async Task UpsertNetworkAddressAsync_ExistingDevice_UpdatesOnlyTheNetworkAddress()
     {
-        await _store.UpsertAsync("0x1", 0x1234, "[1]", isSleepy: true);
+        await _store.UpsertAsync(new UpsertKnownZigbeeDeviceArgs("0x1", 0x1234, "[1]", IsSleepy: true));
 
-        await _store.UpsertNetworkAddressAsync("0x1", 0x9abc);
+        await _store.UpsertNetworkAddressAsync(new UpsertNetworkAddressArgs("0x1", 0x9abc));
 
         var device = Assert.Single(await _store.GetAllAsync());
         Assert.Equal((ushort)0x9abc, device.NetworkAddress);
