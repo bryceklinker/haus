@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Host.Storage;
-using Haus.Zigbee.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Haus.Zigbee.Host.Zigbee;
@@ -29,25 +27,19 @@ public class DeviceAddressRegistry(IKnownZigbeeDeviceStore store, ILogger<Device
             _externalIdsByNetworkAddress[device.NetworkAddress] = device.ExternalId;
     }
 
-    public void Register(ushort networkAddress, string externalId)
+    public void Register(RegisterNetworkAddress args)
     {
-        _externalIdsByNetworkAddress[networkAddress] = externalId;
-        Forget(PersistNetworkAddressAsync(networkAddress, externalId));
+        _externalIdsByNetworkAddress[args.NetworkAddress] = args.ExternalId;
+        Forget(PersistNetworkAddressAsync(args));
     }
 
     // Used by callers that already have the full joined/known-device info (a fresh join, or a
     // backfilled/synced already-known device), so endpoints and sleepy classification are
     // persisted alongside the address rather than only the address itself.
-    public void RegisterKnownDevice(
-        IeeeAddress ieeeAddress,
-        ushort networkAddress,
-        IReadOnlyList<ZigbeeEndpoint> endpoints,
-        bool isSleepy
-    )
+    public void RegisterKnownDevice(RegisterKnownDevice args)
     {
-        var externalId = ExternalIdConverter.ToExternalId(ieeeAddress);
-        _externalIdsByNetworkAddress[networkAddress] = externalId;
-        Forget(PersistKnownDeviceAsync(externalId, networkAddress, endpoints, isSleepy));
+        _externalIdsByNetworkAddress[args.NetworkAddress] = args.ExternalId;
+        Forget(PersistKnownDeviceAsync(args));
     }
 
     public bool TryGetExternalId(ushort networkAddress, [MaybeNullWhen(false)] out string externalId)
@@ -55,32 +47,27 @@ public class DeviceAddressRegistry(IKnownZigbeeDeviceStore store, ILogger<Device
         return _externalIdsByNetworkAddress.TryGetValue(networkAddress, out externalId);
     }
 
-    private async Task PersistNetworkAddressAsync(ushort networkAddress, string externalId)
+    private async Task PersistNetworkAddressAsync(RegisterNetworkAddress args)
     {
         try
         {
-            await store.UpsertNetworkAddressAsync(new RegisterNetworkAddress(externalId, networkAddress));
+            await store.UpsertNetworkAddressAsync(args);
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to persist network address for {@ExternalId}", externalId);
+            logger.LogError(e, "Failed to persist network address for {@ExternalId}", args.ExternalId);
         }
     }
 
-    private async Task PersistKnownDeviceAsync(
-        string externalId,
-        ushort networkAddress,
-        IReadOnlyList<ZigbeeEndpoint> endpoints,
-        bool isSleepy
-    )
+    private async Task PersistKnownDeviceAsync(RegisterKnownDevice args)
     {
         try
         {
-            await store.UpsertAsync(new RegisterKnownDevice(externalId, networkAddress, endpoints, isSleepy));
+            await store.UpsertAsync(args);
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to persist known device state for {@ExternalId}", externalId);
+            logger.LogError(e, "Failed to persist known device state for {@ExternalId}", args.ExternalId);
         }
     }
 

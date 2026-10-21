@@ -6,6 +6,7 @@ using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
 using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Host.Storage;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Services;
@@ -159,7 +160,7 @@ public class ZigbeeDiagnosticsPublisherTests : IAsyncLifetime
     [Fact]
     public async Task HandleAttributeReportedAsync_KnownDevice_PublishesReportWithResolvedIeeeAddress()
     {
-        _addressRegistry!.Register(0x1a2b, "0x00124b0001aabbcc");
+        _addressRegistry!.Register(new RegisterNetworkAddress("0x00124b0001aabbcc", 0x1a2b));
         ZigbeeAttributeReportReceivedEvent? published = null;
         await _hausMqttClient!.SubscribeToHausEventsAsync<ZigbeeAttributeReportReceivedEvent>(
             ZigbeeAttributeReportReceivedEvent.Type,

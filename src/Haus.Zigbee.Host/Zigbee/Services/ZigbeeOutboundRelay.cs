@@ -9,6 +9,7 @@ using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Zigbee.Events;
 using Haus.Mqtt.Client;
 using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Host.Storage;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToZigbee;
 using Haus.Zigbee.Models;
@@ -72,10 +73,12 @@ public class ZigbeeOutboundRelay(
         logger.LogInformation("Syncing {@Count} known device(s) to Haus", devices.Count);
         foreach (var device in devices)
             addressRegistry.RegisterKnownDevice(
-                device.IeeeAddress,
-                device.NetworkAddress,
-                device.Endpoints,
-                device.IsSleepy
+                new RegisterKnownDevice(
+                    ExternalIdConverter.ToExternalId(device.IeeeAddress),
+                    device.NetworkAddress,
+                    device.Endpoints,
+                    device.IsSleepy
+                )
             );
 
         var hausMqttClient = await mqttClientFactory.CreateClient();
@@ -180,7 +183,7 @@ public class ZigbeeOutboundRelay(
         if (await coordinator.ResolveNetworkAddressAsync(ieeeAddress, token) is not { } networkAddress)
             return;
 
-        addressRegistry.Register(networkAddress, device.ExternalId);
+        addressRegistry.Register(new RegisterNetworkAddress(device.ExternalId, networkAddress));
 
         // DeviceEntity.UpdateFromDiscoveredDevice unconditionally overwrites DeviceType, so the
         // event must carry this command's already-classified DeviceType/Metadata -- publishing

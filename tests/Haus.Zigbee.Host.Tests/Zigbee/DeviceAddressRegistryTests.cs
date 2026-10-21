@@ -33,7 +33,7 @@ public class DeviceAddressRegistryTests
     [Fact]
     public void TryGetExternalId_RegisteredNetworkAddress_ReturnsTrueAndExternalId()
     {
-        _registry.Register(0x1234, "0x00124b0012345678");
+        _registry.Register(new RegisterNetworkAddress("0x00124b0012345678", 0x1234));
 
         var found = _registry.TryGetExternalId(0x1234, out var externalId);
 
@@ -44,8 +44,8 @@ public class DeviceAddressRegistryTests
     [Fact]
     public void Register_SameNetworkAddressTwice_LatestExternalIdWins()
     {
-        _registry.Register(0x1234, "0xold");
-        _registry.Register(0x1234, "0xnew");
+        _registry.Register(new RegisterNetworkAddress("0xold", 0x1234));
+        _registry.Register(new RegisterNetworkAddress("0xnew", 0x1234));
 
         _registry.TryGetExternalId(0x1234, out var externalId);
 
@@ -55,7 +55,7 @@ public class DeviceAddressRegistryTests
     [Fact]
     public async Task Register_PersistsTheNetworkAddressForFutureRestarts()
     {
-        _registry.Register(0x1234, "0x00124b0012345678");
+        _registry.Register(new RegisterNetworkAddress("0x00124b0012345678", 0x1234));
 
         await Eventually.AssertAsync(async () =>
         {
@@ -72,7 +72,9 @@ public class DeviceAddressRegistryTests
         var address = new IeeeAddress(1);
         var endpoints = new[] { new ZigbeeEndpoint(1, 0x0104, 0x0100, [0x0000, 0x0006], [0x0019]) };
 
-        _registry.RegisterKnownDevice(address, 0x1234, endpoints, isSleepy: true);
+        _registry.RegisterKnownDevice(
+            new RegisterKnownDevice(ExternalIdConverter.ToExternalId(address), 0x1234, endpoints, IsSleepy: true)
+        );
 
         await Eventually.AssertAsync(async () =>
         {
@@ -90,7 +92,9 @@ public class DeviceAddressRegistryTests
     public async Task LoadAsync_PrimesTheCacheFromAlreadyPersistedDevices_SoAFreshInstanceResolvesWithoutReregistering()
     {
         var address = new IeeeAddress(1);
-        _registry.RegisterKnownDevice(address, 0x1234, [], isSleepy: false);
+        _registry.RegisterKnownDevice(
+            new RegisterKnownDevice(ExternalIdConverter.ToExternalId(address), 0x1234, [], IsSleepy: false)
+        );
         await Eventually.AssertAsync(async () => Assert.Single(await _store.GetAllAsync()));
 
         var registryAfterRestart = new DeviceAddressRegistry(_store, NullLogger<DeviceAddressRegistry>.Instance);

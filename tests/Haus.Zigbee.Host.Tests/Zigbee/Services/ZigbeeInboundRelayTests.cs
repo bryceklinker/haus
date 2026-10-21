@@ -4,6 +4,7 @@ using Haus.Core.Models.Devices.Sensors.Battery;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
+using Haus.Zigbee.Host.Storage;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Services;
@@ -70,7 +71,7 @@ public class ZigbeeInboundRelayTests : IAsyncLifetime
     [Fact]
     public async Task HandleAttributeReportedAsync_KnownDevice_PublishesSensorEvent()
     {
-        _addressRegistry!.Register(0x1234, "the-device-id");
+        _addressRegistry!.Register(new RegisterNetworkAddress("the-device-id", 0x1234));
         BatteryChangedModel? published = null;
         await _hausMqttClient!.SubscribeToHausEventsAsync<BatteryChangedModel>(
             BatteryChangedModel.Type,
@@ -92,7 +93,7 @@ public class ZigbeeInboundRelayTests : IAsyncLifetime
     [Fact]
     public async Task HandleAttributeReportedAsync_UnrecognizedReport_DoesNotThrowOrPublish()
     {
-        _addressRegistry!.Register(0x1234, "the-device-id");
+        _addressRegistry!.Register(new RegisterNetworkAddress("the-device-id", 0x1234));
         var report = new ZigbeeAttributeReport(
             0x1234,
             1,

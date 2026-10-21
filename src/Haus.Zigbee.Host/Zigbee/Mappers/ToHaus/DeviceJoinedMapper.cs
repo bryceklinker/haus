@@ -3,6 +3,7 @@ using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.Devices.Events;
 using Haus.Core.Models.Devices.Resolvers;
+using Haus.Zigbee.Host.Storage;
 using Haus.Zigbee.Models;
 
 namespace Haus.Zigbee.Host.Zigbee.Mappers.ToHaus;
@@ -27,10 +28,12 @@ public class DeviceJoinedMapper(IDeviceTypeResolver deviceTypeResolver)
     public DeviceDiscoveredEvent RegisterAndMap(DeviceAddressRegistry addressRegistry, ZigbeeDeviceJoined joined)
     {
         addressRegistry.RegisterKnownDevice(
-            joined.IeeeAddress,
-            joined.NetworkAddress,
-            joined.Endpoints,
-            joined.IsSleepy
+            new RegisterKnownDevice(
+                ExternalIdConverter.ToExternalId(joined.IeeeAddress),
+                joined.NetworkAddress,
+                joined.Endpoints,
+                joined.IsSleepy
+            )
         );
         return Map(joined);
     }
