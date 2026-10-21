@@ -67,6 +67,9 @@ services:
       - "Haus__Server=mqtt://haus_mqtt:1883"
       - "Zigbee__TcpHost=haus_zigbee_simulator"
       - "Zigbee__TcpPort=4901"
+      - "Database__ConnectionString=Data Source=/app/data/haus_zigbee_acceptance.db;"
+    volumes:
+      - haus_zigbee_local_data:/app/data
     depends_on:
       - haus_mqtt
       - haus_zigbee_simulator
@@ -94,3 +97,4 @@ services:
 
 volumes:
   haus_web_local_data:
+  haus_zigbee_local_data:

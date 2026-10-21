@@ -1,16 +1,30 @@
 using System;
+using System.Threading.Tasks;
 using Haus.Hosting;
+using Haus.Zigbee.Host.Storage;
+using Haus.Zigbee.Host.Zigbee;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Haus.Zigbee.Host;
 
 public class Program
 {
-    public static int Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
         try
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            using var scope = host.Services.CreateScope();
+            var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<HausZigbeeDbContext>>();
+            await using var context = await contextFactory.CreateDbContextAsync();
+            await context.Database.MigrateAsync();
+
+            var addressRegistry = scope.ServiceProvider.GetRequiredService<DeviceAddressRegistry>();
+            await addressRegistry.LoadAsync();
+
+            await host.RunAsync();
             return 0;
         }
         catch (Exception e)

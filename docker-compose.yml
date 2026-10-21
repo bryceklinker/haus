@@ -26,6 +26,7 @@ services:
     environment:
       - "Haus__Server=mqtt://haus_mqtt:1883"
       - "Zigbee__SerialPort=${ZIGBEE_SERIAL_PORT:-/dev/ttyACM0}"
+      - "Database__ConnectionString=Data Source=./data/haus_zigbee.db;"
     links:
       - haus_mqtt
     devices:

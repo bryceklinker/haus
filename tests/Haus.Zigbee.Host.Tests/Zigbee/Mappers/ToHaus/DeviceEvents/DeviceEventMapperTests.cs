@@ -2,6 +2,7 @@ using Haus.Core.Models.Devices.Sensors.Battery;
 using Haus.Core.Models.Devices.Sensors.Light;
 using Haus.Core.Models.Devices.Sensors.Motion;
 using Haus.Core.Models.Devices.Sensors.Temperature;
+using Haus.Zigbee.Host.Storage;
 using Haus.Zigbee.Host.Tests.Support;
 using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Mappers.ToHaus.DeviceEvents;
@@ -30,7 +31,9 @@ public class DeviceEventMapperTests
     public DeviceEventMapperTests()
     {
         var provider = ServiceProviderFactory.Create();
-        provider.GetRequiredService<DeviceAddressRegistry>().Register(KnownNetworkAddress, KnownExternalId);
+        provider
+            .GetRequiredService<DeviceAddressRegistry>()
+            .Register(new RegisterNetworkAddress(KnownExternalId, KnownNetworkAddress));
         _mapper = provider.GetRequiredService<DeviceEventMapper>();
     }
 
