@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Host.Storage.Entities;
+using Haus.Zigbee.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Haus.Zigbee.Host.Storage;
@@ -13,13 +15,18 @@ public class KnownZigbeeDeviceStore(IDbContextFactory<HausZigbeeDbContext> conte
     public async Task<IReadOnlyList<KnownZigbeeDeviceRecord>> GetAllAsync(CancellationToken token = default)
     {
         await using var context = await contextFactory.CreateDbContextAsync(token);
-        return await context
-            .KnownDevices.AsNoTracking()
-            .Select(e => new KnownZigbeeDeviceRecord(e.ExternalId, e.NetworkAddress, e.EndpointsJson, e.IsSleepy))
-            .ToListAsync(token);
+        var entities = await context.KnownDevices.AsNoTracking().ToListAsync(token);
+        return entities
+            .Select(e => new KnownZigbeeDeviceRecord(
+                e.ExternalId,
+                e.NetworkAddress,
+                DeserializeEndpoints(e.EndpointsJson),
+                e.IsSleepy
+            ))
+            .ToList();
     }
 
-    public async Task UpsertNetworkAddressAsync(UpsertNetworkAddressArgs args, CancellationToken token = default)
+    public async Task UpsertNetworkAddressAsync(RegisterNetworkAddress args, CancellationToken token = default)
     {
         await using var context = await contextFactory.CreateDbContextAsync(token);
         var entity = await FindOrCreateAsync(context, args.ExternalId, token);
@@ -28,15 +35,20 @@ public class KnownZigbeeDeviceStore(IDbContextFactory<HausZigbeeDbContext> conte
         await context.SaveChangesAsync(token);
     }
 
-    public async Task UpsertAsync(UpsertKnownZigbeeDeviceArgs args, CancellationToken token = default)
+    public async Task UpsertAsync(RegisterKnownDevice args, CancellationToken token = default)
     {
         await using var context = await contextFactory.CreateDbContextAsync(token);
         var entity = await FindOrCreateAsync(context, args.ExternalId, token);
         entity.NetworkAddress = args.NetworkAddress;
-        entity.EndpointsJson = args.EndpointsJson;
+        entity.EndpointsJson = JsonSerializer.Serialize(args.Endpoints);
         entity.IsSleepy = args.IsSleepy;
         entity.UpdatedAt = DateTimeOffset.UtcNow;
         await context.SaveChangesAsync(token);
+    }
+
+    private static IReadOnlyList<ZigbeeEndpoint> DeserializeEndpoints(string endpointsJson)
+    {
+        return JsonSerializer.Deserialize<IReadOnlyList<ZigbeeEndpoint>>(endpointsJson) ?? [];
     }
 
     private static async Task<KnownZigbeeDeviceEntity> FindOrCreateAsync(

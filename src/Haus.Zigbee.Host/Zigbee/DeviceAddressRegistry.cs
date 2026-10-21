@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Zigbee.Host.Storage;
@@ -60,7 +59,7 @@ public class DeviceAddressRegistry(IKnownZigbeeDeviceStore store, ILogger<Device
     {
         try
         {
-            await store.UpsertNetworkAddressAsync(new UpsertNetworkAddressArgs(externalId, networkAddress));
+            await store.UpsertNetworkAddressAsync(new RegisterNetworkAddress(externalId, networkAddress));
         }
         catch (Exception e)
         {
@@ -77,14 +76,7 @@ public class DeviceAddressRegistry(IKnownZigbeeDeviceStore store, ILogger<Device
     {
         try
         {
-            await store.UpsertAsync(
-                new UpsertKnownZigbeeDeviceArgs(
-                    externalId,
-                    networkAddress,
-                    JsonSerializer.Serialize(endpoints),
-                    isSleepy
-                )
-            );
+            await store.UpsertAsync(new RegisterKnownDevice(externalId, networkAddress, endpoints, isSleepy));
         }
         catch (Exception e)
         {

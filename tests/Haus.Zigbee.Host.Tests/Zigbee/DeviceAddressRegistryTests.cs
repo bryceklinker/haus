@@ -80,7 +80,9 @@ public class DeviceAddressRegistryTests
             var device = Assert.Single(devices);
             Assert.Equal(ExternalIdConverter.ToExternalId(address), device.ExternalId);
             Assert.True(device.IsSleepy);
-            Assert.Contains("\"EndpointId\":1", device.EndpointsJson);
+            var persistedEndpoint = Assert.Single(device.Endpoints);
+            Assert.Equal((byte)1, persistedEndpoint.EndpointId);
+            Assert.Equal(new ushort[] { 0x0000, 0x0006 }, persistedEndpoint.InClusters);
         });
     }
 
