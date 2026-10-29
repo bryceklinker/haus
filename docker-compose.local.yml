@@ -63,7 +63,10 @@ services:
         PUBLISH_DIR: publish/haus-zigbee
         ENTRY_FILE: Haus.Zigbee.Host.dll
         RUNTIME_ENVIRONMENT: ${RUNTIME_ENVIRONMENT:-Acceptance}
+    ports:
+      - "15005:8080"
     environment:
+      - "ASPNETCORE_URLS=http://+:8080"
       - "Haus__Server=mqtt://haus_mqtt:1883"
       - "Zigbee__TcpHost=haus_zigbee_simulator"
       - "Zigbee__TcpPort=4901"
@@ -73,6 +76,11 @@ services:
     depends_on:
       - haus_mqtt
       - haus_zigbee_simulator
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/8080'"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   haus_site:
     container_name: haus_site_local

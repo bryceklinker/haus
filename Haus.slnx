@@ -63,6 +63,7 @@
     <Project Path="src/Haus.Utilities/Haus.Utilities.csproj" />
     <Project Path="src/Haus.Web.Host/Haus.Web.Host.csproj" />
     <Project Path="src/Haus.Zigbee.Host/Haus.Zigbee.Host.csproj" />
+    <Project Path="src/Haus.Zigbee.Models/Haus.Zigbee.Models.csproj" />
     <Project Path="src/Haus.Zigbee.Simulator/Haus.Zigbee.Simulator.csproj" />
     <Project Path="src/Haus.Zigbee/Haus.Zigbee.csproj" />
   </Folder>
