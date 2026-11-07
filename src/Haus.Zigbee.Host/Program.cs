@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Haus.Hosting;
 using Haus.Zigbee.Host.Storage;
 using Haus.Zigbee.Host.Zigbee;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,11 +46,10 @@ public class Program
             .UseHausLogging("Haus Zigbee")
             .UseSystemd()
             .UseWindowsService()
-            .ConfigureServices(
-                (ctx, services) =>
-                {
-                    services.AddHausZigbee(ctx.Configuration);
-                }
-            );
+            .ConfigureWebHostDefaults(web =>
+            {
+                web.UseKestrel();
+                web.UseStartup<Startup>();
+            });
     }
 }

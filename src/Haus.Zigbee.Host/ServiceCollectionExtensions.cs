@@ -4,6 +4,7 @@ using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Settings;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Diagnostics;
 using Haus.Zigbee.Host.Health;
 using Haus.Zigbee.Host.Storage;
 using Haus.Zigbee.Host.Zigbee;
@@ -49,6 +50,9 @@ public static class ServiceCollectionExtensions
                     )
             )
             .AddSingleton<IKnownZigbeeDeviceStore, KnownZigbeeDeviceStore>()
+            .AddSingleton(TimeProvider.System)
+            .AddSingleton<IZigbeeDiagnosticsStore, ZigbeeDiagnosticsStore>()
+            .AddHostedService<ZigbeeDiagnosticsRecorder>()
             .AddSingleton<DeviceAddressRegistry>()
             .AddSingleton<DevicesMapper>()
             .AddSingleton<DeviceJoinedMapper>()
