@@ -42,15 +42,10 @@ public class DeviceAddressRegistry(IKnownZigbeeDeviceStore store, ILogger<Device
         Forget(PersistKnownDeviceAsync(args));
     }
 
-    // Used by #105's cross-service seed, applied on every (re)subscribe to the retained seed
-    // snapshot: never overwrites an address already cached from live discovery -- the cache
-    // primes only when this address has nothing registered yet, and persistence defers the same
-    // way via the store's insert-if-absent SeedIfAbsentAsync, so live data always wins.
+    // Primes the cache only if absent and persists via the store's insert-if-absent path, so a
+    // live-discovered record always wins over a later seed.
     public void SeedKnownDevice(RegisterKnownDevice args)
     {
-        // TryAdd, not a ContainsKey check followed by an indexer write: those two steps are not
-        // atomic on a ConcurrentDictionary, and a live Register racing between them could have its
-        // write silently overwritten by this seed.
         _externalIdsByNetworkAddress.TryAdd(args.NetworkAddress, args.ExternalId);
         Forget(PersistSeedAsync(args));
     }

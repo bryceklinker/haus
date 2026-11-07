@@ -17,10 +17,8 @@ using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Services;
 
-// Unlike ZigbeeHausBridgeTests (FakeMqttClientFactory, a single in-process connection), this proves
-// the actual guarantee #105 depends on against a real broker: a snapshot retained BEFORE this host
-// ever existed is still delivered the moment a brand-new connection (re)subscribes -- the exact
-// cold-start/restart race DeviceBackfillService's live-only reachability cannot cover.
+// Unlike ZigbeeHausBridgeTests (FakeMqttClientFactory), this uses a real broker to prove a snapshot
+// retained before this host existed is still delivered the moment a fresh connection subscribes.
 public class ZigbeeHausBridgeKnownDeviceSeedRealBrokerTests : IAsyncLifetime
 {
     private IHausMqttClient? _publisherMqttClient;
@@ -48,8 +46,7 @@ public class ZigbeeHausBridgeKnownDeviceSeedRealBrokerTests : IAsyncLifetime
             retain: true
         );
 
-        // A brand-new provider is a brand-new MQTT connection that has never subscribed to this
-        // topic before -- the real stand-in for a Zigbee.Host process starting cold.
+        // A new provider means a new, never-subscribed MQTT connection -- a stand-in for a cold start.
         var coldProvider = ServiceProviderFactory.Create(configuration: ConfigurationFactory.CreateConfig());
         var registry = coldProvider.GetRequiredService<DeviceAddressRegistry>();
         var store = coldProvider.GetRequiredService<IKnownZigbeeDeviceStore>();

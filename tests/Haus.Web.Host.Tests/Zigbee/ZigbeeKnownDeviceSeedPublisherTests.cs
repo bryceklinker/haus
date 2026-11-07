@@ -20,10 +20,8 @@ using Xunit;
 
 namespace Haus.Web.Host.Tests.Zigbee;
 
-// Resolves the handler through the real DI container (not `new ZigbeeKnownDeviceSeedPublisher(...)`)
-// so this test would fail if the handler were ever unregistered/misregistered, not just if its
-// logic were wrong -- a handler that silently never fires is otherwise invisible, since events
-// dispatch to zero-to-many handlers rather than erroring on zero (see Haus.Cqrs.Events.EventBus).
+// Resolves the handler through DI, not `new ZigbeeKnownDeviceSeedPublisher(...)`, so a dropped
+// registration would fail this test -- events dispatch to zero-to-many handlers, never erroring on zero.
 public class ZigbeeKnownDeviceSeedPublisherTests : IAsyncLifetime
 {
     private readonly FakeMqttClientFactory _fakeMqttClientFactory = new();

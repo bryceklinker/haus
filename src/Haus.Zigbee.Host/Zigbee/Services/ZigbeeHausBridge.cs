@@ -137,11 +137,8 @@ public class ZigbeeHausBridge(
         }
     }
 
-    // #105: seeds already-known devices' NetworkAddress/Endpoints/IsSleepy from Haus.Web.Host's
-    // retained snapshot -- the broker replays it on this (re)subscribe, so a device offline at
-    // cutover (never live on the coordinator, so DeviceBackfillService can't reach it) still lands
-    // in this host's own database. SeedKnownDevice never overwrites a richer live-discovered
-    // record, so this is safe to run on every (re)subscribe.
+    // The broker replays the retained snapshot on this (re)subscribe, so a device offline at
+    // cutover -- never live on the coordinator -- still lands in this host's database.
     private async Task HandleKnownDeviceSeedAsync(MqttApplicationMessage message)
     {
         try

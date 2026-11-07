@@ -14,12 +14,8 @@ using Xunit;
 
 namespace Haus.Web.Host.Tests.Zigbee;
 
-// Unlike ZigbeeKnownDeviceSeedPublisherTests (which resolves and calls the handler directly), this
-// drives the whole real chain through the full app's DI container and a real MQTT broker:
-// PublishZigbeeKnownDeviceSeedCommand -> Core's query -> ZigbeeKnownDeviceSeedRequestedEvent ->
-// Web.Host's registered handler -> the wire. Events dispatch to zero-to-many handlers rather than
-// erroring on zero, so a handler that silently stopped being registered would be invisible to a
-// test that only unit-tests the handler class in isolation.
+// Unlike ZigbeeKnownDeviceSeedPublisherTests, this drives the command through the full app's real
+// DI container and a real broker, proving the whole dispatch chain wires up, not just the handler.
 [Collection(HausWebHostCollectionFixture.Name)]
 public class ZigbeeKnownDeviceSeedPublishingFlowTests(HausWebHostApplicationFactory factory)
 {
