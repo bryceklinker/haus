@@ -15,22 +15,47 @@ public interface IZigbeeHostApiClient : IApiClient
     Task<IReadOnlyList<ZigbeeKnownDeviceModel>> GetDevicesAsync();
 }
 
+// Zigbee.Host is reachable only over the internal network and can be mid-restart or simply not
+// running yet (e.g. local dev via `make watch` without `make zigbee-host`). The old in-memory
+// mirror it replaces never threw, so connectivity failures here degrade to the same
+// Unknown/empty defaults rather than surfacing as a 500 from ZigbeeController.
 public class ZigbeeHostApiClient(HttpClient httpClient, IOptions<ZigbeeHostApiClientSettings> options)
     : ApiClient<ZigbeeHostApiClientSettings>(httpClient, options),
         IZigbeeHostApiClient
 {
-    public Task<ZigbeeConnectionStatusModel?> GetStatusAsync()
+    public async Task<ZigbeeConnectionStatusModel?> GetStatusAsync()
     {
-        return GetAsJsonAsync<ZigbeeConnectionStatusModel>("zigbee/status");
+        try
+        {
+            return await GetAsJsonAsync<ZigbeeConnectionStatusModel>("zigbee/status");
+        }
+        catch (HttpRequestException)
+        {
+            return ZigbeeConnectionStatusModel.Unknown;
+        }
     }
 
     public async Task<IReadOnlyList<ZigbeeActivityEntryModel>> GetActivityAsync()
     {
-        return await GetAsJsonAsync<List<ZigbeeActivityEntryModel>>("zigbee/activity") ?? [];
+        try
+        {
+            return await GetAsJsonAsync<List<ZigbeeActivityEntryModel>>("zigbee/activity") ?? [];
+        }
+        catch (HttpRequestException)
+        {
+            return [];
+        }
     }
 
     public async Task<IReadOnlyList<ZigbeeKnownDeviceModel>> GetDevicesAsync()
     {
-        return await GetAsJsonAsync<List<ZigbeeKnownDeviceModel>>("zigbee/devices") ?? [];
+        try
+        {
+            return await GetAsJsonAsync<List<ZigbeeKnownDeviceModel>>("zigbee/devices") ?? [];
+        }
+        catch (HttpRequestException)
+        {
+            return [];
+        }
     }
 }

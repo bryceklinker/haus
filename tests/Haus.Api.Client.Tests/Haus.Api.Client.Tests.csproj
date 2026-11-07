@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Haus.Api.Client\Haus.Api.Client.csproj" />
+  </ItemGroup>
+</Project>
