@@ -37,7 +37,7 @@ jobs:
         uses: ./.github/actions/setup-machine
 
       - name: Install git-cliff
-        uses: taiki-e/install-action@v2.87.29
+        uses: taiki-e/install-action@v2.90.2
         with:
           tool: git-cliff
 
@@ -86,7 +86,7 @@ jobs:
         run: ./scripts/generate-release-notes.sh "${{ steps.compute_version.outputs.new_tag }}" > release-notes.md
 
       - name: Create Release
-        uses: softprops/action-gh-release@v3.0.3
+        uses: softprops/action-gh-release@v3.0.4
         with:
           tag_name: ${{ steps.compute_version.outputs.new_tag }}
           name: Release ${{ steps.compute_version.outputs.new_tag }}
