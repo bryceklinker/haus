@@ -7,39 +7,42 @@ using Haus.Core.Models.Common;
 using Haus.Core.Models.Devices;
 using Haus.Core.Models.ExternalMessages;
 using Haus.Core.Models.Zigbee.Events;
+using Haus.Cqrs;
+using Haus.Cqrs.Events;
 using Haus.Mqtt.Client;
 using Haus.Mqtt.Client.Settings;
 using Haus.Mqtt.Client.Wrappers;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
-using Haus.Web.Host.Zigbee;
+using Haus.Web.Host;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Haus.Web.Host.Tests.Zigbee;
 
+// Resolves the handler through the real DI container (not `new ZigbeeKnownDeviceSeedPublisher(...)`)
+// so this test would fail if the handler were ever unregistered/misregistered, not just if its
+// logic were wrong -- a handler that silently never fires is otherwise invisible, since events
+// dispatch to zero-to-many handlers rather than erroring on zero (see Haus.Cqrs.Events.EventBus).
 public class ZigbeeKnownDeviceSeedPublisherTests : IAsyncLifetime
 {
     private readonly FakeMqttClientFactory _fakeMqttClientFactory = new();
     private IHausMqttClient? _mqttClient;
-    private ZigbeeKnownDeviceSeedPublisher? _publisher;
+    private IEventHandler<ZigbeeKnownDeviceSeedRequestedEvent>? _publisher;
 
     public async Task InitializeAsync()
     {
         var provider = new ServiceCollection()
             .AddLogging()
             .AddHausMqtt()
+            .AddHausCqrs(typeof(ServiceCollectionExtensions).Assembly)
             .Replace<IMqttFactory>(_fakeMqttClientFactory)
             .Configure<HausMqttSettings>(opts => opts.Server = "mqtt://localhost:1883")
             .BuildServiceProvider();
 
         var mqttClientFactory = provider.GetRequiredService<IHausMqttClientFactory>();
         _mqttClient = await mqttClientFactory.CreateClient();
-        _publisher = new ZigbeeKnownDeviceSeedPublisher(
-            mqttClientFactory,
-            provider.GetRequiredService<IOptions<HausMqttSettings>>()
-        );
+        _publisher = provider.GetRequiredService<IEventHandler<ZigbeeKnownDeviceSeedRequestedEvent>>();
     }
 
     public async Task DisposeAsync()

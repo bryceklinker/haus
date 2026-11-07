@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace Haus.Web.Host.Zigbee;
 
-public class ZigbeeKnownDeviceSeedPublisher(
+internal class ZigbeeKnownDeviceSeedPublisher(
     IHausMqttClientFactory mqttClientFactory,
     IOptions<HausMqttSettings> options
 ) : IEventHandler<ZigbeeKnownDeviceSeedRequestedEvent>
