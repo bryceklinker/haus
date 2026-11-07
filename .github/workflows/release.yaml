@@ -37,7 +37,7 @@ jobs:
         uses: ./.github/actions/setup-machine
 
       - name: Install git-cliff
-        uses: taiki-e/install-action@v2.87.29
+        uses: taiki-e/install-action@v2.90.2
         with:
           tool: git-cliff
 
