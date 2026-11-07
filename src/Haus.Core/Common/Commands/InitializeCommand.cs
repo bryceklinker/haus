@@ -19,6 +19,9 @@ internal class InitializeCommandHandler(IHausBus hausBus) : ICommandHandler<Init
             .ExecuteCommandAsync(new BackfillDeviceNetworkAddressesCommand(), cancellationToken)
             .ConfigureAwait(false);
         await hausBus
+            .ExecuteCommandAsync(new PublishZigbeeKnownDeviceSeedCommand(), cancellationToken)
+            .ConfigureAwait(false);
+        await hausBus
             .ExecuteCommandAsync(new ReclassifyUnknownDevicesCommand(), cancellationToken)
             .ConfigureAwait(false);
         await Task.WhenAll(
