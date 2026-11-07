@@ -89,6 +89,32 @@ public class DeviceAddressRegistryTests
     }
 
     [Fact]
+    public async Task SeedKnownDevice_AddressNotCached_PrimesCacheAndPersistsViaSeed()
+    {
+        var address = new IeeeAddress(1);
+
+        _registry.SeedKnownDevice(
+            new RegisterKnownDevice(ExternalIdConverter.ToExternalId(address), 0x1234, [], IsSleepy: false)
+        );
+
+        var found = _registry.TryGetExternalId(0x1234, out var externalId);
+        Assert.True(found);
+        Assert.Equal(ExternalIdConverter.ToExternalId(address), externalId);
+        await Eventually.AssertAsync(async () => Assert.Single(await _store.GetAllAsync()));
+    }
+
+    [Fact]
+    public void SeedKnownDevice_AddressAlreadyCached_DoesNotOverwriteCachedExternalId()
+    {
+        _registry.Register(new RegisterNetworkAddress("0xlive", 0x1234));
+
+        _registry.SeedKnownDevice(new RegisterKnownDevice("0xseed", 0x1234, [], IsSleepy: false));
+
+        _registry.TryGetExternalId(0x1234, out var externalId);
+        Assert.Equal("0xlive", externalId);
+    }
+
+    [Fact]
     public async Task LoadAsync_PrimesTheCacheFromAlreadyPersistedDevices_SoAFreshInstanceResolvesWithoutReregistering()
     {
         var address = new IeeeAddress(1);
