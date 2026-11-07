@@ -27,9 +27,11 @@ Why this and not the alternatives:
 
 ### The load-bearing correctness decision: seed must never clobber live data
 
-The seed is **lossy** -- Core only has `EndpointId`+`InClusters`, whereas `ZigbeeEndpoint` also carries `ProfileId`/`DeviceId`/`OutClusters`, which the seed fills with defaults. Therefore the seed must **defer to live-discovered data**, never downgrade it. `SeedIfAbsentAsync` (insert-if-absent) gives *live-wins convergence in either order*:
+The seed is **lossy** -- Core only has `EndpointId`+`InClusters`, whereas `ZigbeeEndpoint` also carries `ProfileId`/`DeviceId`/`OutClusters`, which the seed fills with defaults. Therefore the seed must **defer to live-discovered data**, never downgrade it. `SeedIfAbsentAsync` (insert-if-absent) gives *live-wins convergence in either sequential order*:
 - seed first -> live join later overwrites via the existing rich `UpsertAsync` path;
 - live join first -> later seed no-ops.
+
+This is a sequential-arrival guarantee, not a concurrent one: `SeedIfAbsentAsync`'s existence-check-then-insert is not atomic against a *concurrent* `UpsertAsync` for the same brand-new device. The unique index on `ExternalId` turns that race into the loser's insert throwing (logged), not a duplicate or silently corrupted row -- and because the targeted offline-at-cutover case can't race (the device isn't live to begin with), and a live device that does lose the race will simply re-announce and have `UpsertAsync` overwrite the seed row on the next pass, this is a narrow, self-healing window rather than a permanent loss. Adversarial review (2026-11-07) confirmed this reading and recommended documenting it rather than adding locking disproportionate to the risk.
 
 This is why the seed does **not** route through the existing `DeviceAddressRegistry.RegisterKnownDevice` (which calls the clobbering `UpsertAsync`) -- that would downgrade a richer live record. It is also what makes the whole mechanism safe to run on every restart.
 

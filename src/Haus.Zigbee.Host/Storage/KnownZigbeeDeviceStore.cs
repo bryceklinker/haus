@@ -48,7 +48,12 @@ public class KnownZigbeeDeviceStore(IDbContextFactory<HausZigbeeDbContext> conte
 
     // Insert-only: never routes through the clobbering FindOrCreateAsync+overwrite shape UpsertAsync
     // uses, so a richer record already persisted via live discovery is never downgraded by a seed
-    // that only knows EndpointId/InClusters/IsSleepy.
+    // that only knows EndpointId/InClusters/IsSleepy. The AnyAsync-then-Add is not atomic against a
+    // concurrent UpsertAsync for the same brand-new ExternalId -- the unique index on ExternalId
+    // (KnownZigbeeDeviceEntityConfiguration) makes the loser's insert throw rather than duplicate or
+    // corrupt data, so this is only a narrow, logged, self-healing window (the device is live and
+    // will re-announce, and the next UpsertAsync is a true overwrite), not a permanent data loss --
+    // "live always wins" is a sequential-arrival guarantee, not a concurrent one.
     public async Task SeedIfAbsentAsync(RegisterKnownDevice args, CancellationToken token = default)
     {
         await using var context = await contextFactory.CreateDbContextAsync(token);

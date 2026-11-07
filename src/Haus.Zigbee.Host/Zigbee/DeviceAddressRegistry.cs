@@ -48,8 +48,10 @@ public class DeviceAddressRegistry(IKnownZigbeeDeviceStore store, ILogger<Device
     // way via the store's insert-if-absent SeedIfAbsentAsync, so live data always wins.
     public void SeedKnownDevice(RegisterKnownDevice args)
     {
-        if (!_externalIdsByNetworkAddress.ContainsKey(args.NetworkAddress))
-            _externalIdsByNetworkAddress[args.NetworkAddress] = args.ExternalId;
+        // TryAdd, not a ContainsKey check followed by an indexer write: those two steps are not
+        // atomic on a ConcurrentDictionary, and a live Register racing between them could have its
+        // write silently overwritten by this seed.
+        _externalIdsByNetworkAddress.TryAdd(args.NetworkAddress, args.ExternalId);
         Forget(PersistSeedAsync(args));
     }
 
