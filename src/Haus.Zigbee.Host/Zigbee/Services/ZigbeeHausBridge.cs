@@ -1,9 +1,14 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Haus.Core.Models;
+using Haus.Core.Models.ExternalMessages;
+using Haus.Core.Models.Zigbee.Events;
 using Haus.Mqtt.Client;
 using Haus.Zigbee.Coordinator;
 using Haus.Zigbee.Host.Configuration;
+using Haus.Zigbee.Host.Storage;
 using Haus.Zigbee.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -18,6 +23,7 @@ public class ZigbeeHausBridge(
     ZigbeeOutboundRelay outboundRelay,
     DeviceBackfillService backfillService,
     ZigbeeDiagnosticsPublisher diagnosticsPublisher,
+    DeviceAddressRegistry addressRegistry,
     IHausMqttClientFactory hausMqttClientFactory,
     IOptions<HausOptions> hausOptions,
     ILogger<ZigbeeHausBridge> logger
@@ -49,6 +55,7 @@ public class ZigbeeHausBridge(
 
         _hausMqttClient = await hausMqttClientFactory.CreateClient();
         await HausMqttClient.SubscribeAsync(hausOptions.Value.CommandsTopic, HandleHausCommandAsync);
+        await HausMqttClient.SubscribeAsync(hausOptions.Value.ZigbeeKnownDeviceSeedTopic, HandleKnownDeviceSeedAsync);
 
         await TryConnectAsync(cancellationToken);
         await base.StartAsync(cancellationToken);
@@ -128,6 +135,39 @@ public class ZigbeeHausBridge(
         {
             logger.LogError(e, "Failed to handle Haus command on {@Topic}", message.Topic);
         }
+    }
+
+    // #105: seeds already-known devices' NetworkAddress/Endpoints/IsSleepy from Haus.Web.Host's
+    // retained snapshot -- the broker replays it on this (re)subscribe, so a device offline at
+    // cutover (never live on the coordinator, so DeviceBackfillService can't reach it) still lands
+    // in this host's own database. SeedKnownDevice never overwrites a richer live-discovered
+    // record, so this is safe to run on every (re)subscribe.
+    private async Task HandleKnownDeviceSeedAsync(MqttApplicationMessage message)
+    {
+        try
+        {
+            var seedEvent = HausJsonSerializer.Deserialize<HausEvent<ZigbeeKnownDeviceSeedEvent>>(
+                message.PayloadSegment
+            );
+            if (seedEvent?.Payload == null)
+            {
+                logger.LogWarning("Received an unparseable Zigbee known-device seed on {@Topic}", message.Topic);
+                return;
+            }
+
+            foreach (var entry in seedEvent.Payload.Devices)
+                addressRegistry.SeedKnownDevice(ToRegisterKnownDevice(entry));
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to handle Zigbee known-device seed on {@Topic}", message.Topic);
+        }
+    }
+
+    private static RegisterKnownDevice ToRegisterKnownDevice(ZigbeeKnownDeviceSeedEntry entry)
+    {
+        var endpoints = entry.Endpoints.Select(e => new ZigbeeEndpoint(e.EndpointId, 0, 0, e.InClusters, [])).ToArray();
+        return new RegisterKnownDevice(entry.ExternalId, entry.NetworkAddress, endpoints, entry.IsSleepy);
     }
 
     private async void OnDeviceJoined(object? sender, ZigbeeDeviceJoined joined)
