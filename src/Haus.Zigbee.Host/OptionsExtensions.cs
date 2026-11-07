@@ -14,4 +14,9 @@ public static class OptionsExtensions
     {
         return options.Value.ZigbeeTopic;
     }
+
+    public static string GetZigbeeKnownDeviceSeedTopic(this IOptions<HausOptions> options)
+    {
+        return options.Value.ZigbeeKnownDeviceSeedTopic;
+    }
 }

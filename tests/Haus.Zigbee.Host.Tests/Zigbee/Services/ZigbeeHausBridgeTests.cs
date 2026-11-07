@@ -1,20 +1,25 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models.Common;
+using Haus.Core.Models.Devices;
 using Haus.Core.Models.Discovery;
 using Haus.Core.Models.Zigbee.Events;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
 using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Host.Storage;
 using Haus.Zigbee.Host.Tests.Support;
+using Haus.Zigbee.Host.Zigbee;
 using Haus.Zigbee.Host.Zigbee.Services;
 using Haus.Zigbee.Models;
 using Haus.Zigbee.Serial.Frames;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MQTTnet;
 using Xunit;
 
 namespace Haus.Zigbee.Host.Tests.Zigbee.Services;
@@ -233,6 +238,63 @@ public class ZigbeeHausBridgeTests
         var exception = await Record.ExceptionAsync(() => bridge.StopAsync(CancellationToken.None));
 
         Assert.Null(exception);
+    }
+
+    [Fact]
+    public async Task WhenKnownDeviceSeedSnapshotArrivesThenEachDeviceIsSeeded()
+    {
+        var provider = ServiceProviderFactory.Create(mqttFactory: new FakeMqttClientFactory());
+        var bridge = ResolveBridge(provider);
+        await bridge.StartAsync(CancellationToken.None);
+        var mqttClient = await provider.GetRequiredService<IHausMqttClientFactory>().CreateClient();
+        var registry = provider.GetRequiredService<DeviceAddressRegistry>();
+        var store = provider.GetRequiredService<IKnownZigbeeDeviceStore>();
+        var seed = new ZigbeeKnownDeviceSeedEvent([
+            new ZigbeeKnownDeviceSeedEntry("0x1", 0x1234, [new DeviceEndpointModel(1, [6])], true),
+            new ZigbeeKnownDeviceSeedEntry("0x2", 0x5678, [], false),
+        ]);
+
+        await mqttClient.PublishHausEventAsync(seed, DefaultHausMqttTopics.ZigbeeKnownDeviceSeedTopic, retain: true);
+
+        await Eventually.AssertAsync(async () =>
+        {
+            Assert.True(registry.TryGetExternalId(0x1234, out var firstId));
+            Assert.Equal("0x1", firstId);
+            Assert.True(registry.TryGetExternalId(0x5678, out var secondId));
+            Assert.Equal("0x2", secondId);
+            Assert.Equal(2, (await store.GetAllAsync()).Count);
+        });
+
+        await bridge.StopAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task WhenUnparseableSeedMessageArrivesThenSubsequentValidSnapshotsStillSeed()
+    {
+        var provider = ServiceProviderFactory.Create(mqttFactory: new FakeMqttClientFactory());
+        var bridge = ResolveBridge(provider);
+        await bridge.StartAsync(CancellationToken.None);
+        var mqttClient = await provider.GetRequiredService<IHausMqttClientFactory>().CreateClient();
+        var registry = provider.GetRequiredService<DeviceAddressRegistry>();
+
+        await mqttClient.PublishAsync(
+            new MqttApplicationMessage
+            {
+                Topic = DefaultHausMqttTopics.ZigbeeKnownDeviceSeedTopic,
+                PayloadSegment = Encoding.UTF8.GetBytes("not valid json"),
+            }
+        );
+        var seed = new ZigbeeKnownDeviceSeedEvent([new ZigbeeKnownDeviceSeedEntry("0x1", 0x1234, [], false)]);
+        await mqttClient.PublishHausEventAsync(seed, DefaultHausMqttTopics.ZigbeeKnownDeviceSeedTopic, retain: true);
+
+        await Eventually.AssertAsync(async () =>
+        {
+            Assert.True(registry.TryGetExternalId(0x1234, out var externalId));
+            Assert.Equal("0x1", externalId);
+            await Task.CompletedTask;
+        });
+
+        await bridge.StopAsync(CancellationToken.None);
     }
 
     private static IHostedService ResolveBridge(IServiceProvider provider)

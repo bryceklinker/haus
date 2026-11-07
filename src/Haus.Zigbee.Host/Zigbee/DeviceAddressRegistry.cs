@@ -42,6 +42,14 @@ public class DeviceAddressRegistry(IKnownZigbeeDeviceStore store, ILogger<Device
         Forget(PersistKnownDeviceAsync(args));
     }
 
+    // Primes the cache only if absent and persists via the store's insert-if-absent path, so a
+    // live-discovered record always wins over a later seed.
+    public void SeedKnownDevice(RegisterKnownDevice args)
+    {
+        _externalIdsByNetworkAddress.TryAdd(args.NetworkAddress, args.ExternalId);
+        Forget(PersistSeedAsync(args));
+    }
+
     public bool TryGetExternalId(ushort networkAddress, [MaybeNullWhen(false)] out string externalId)
     {
         return _externalIdsByNetworkAddress.TryGetValue(networkAddress, out externalId);
@@ -68,6 +76,18 @@ public class DeviceAddressRegistry(IKnownZigbeeDeviceStore store, ILogger<Device
         catch (Exception e)
         {
             logger.LogError(e, "Failed to persist known device state for {@ExternalId}", args.ExternalId);
+        }
+    }
+
+    private async Task PersistSeedAsync(RegisterKnownDevice args)
+    {
+        try
+        {
+            await store.SeedIfAbsentAsync(args);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to persist seeded known device state for {@ExternalId}", args.ExternalId);
         }
     }
 

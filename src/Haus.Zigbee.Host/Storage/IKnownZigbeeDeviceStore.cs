@@ -11,4 +11,6 @@ public interface IKnownZigbeeDeviceStore
     Task UpsertNetworkAddressAsync(RegisterNetworkAddress args, CancellationToken token = default);
 
     Task UpsertAsync(RegisterKnownDevice args, CancellationToken token = default);
+
+    Task SeedIfAbsentAsync(RegisterKnownDevice args, CancellationToken token = default);
 }

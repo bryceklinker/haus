@@ -46,6 +46,29 @@ public class KnownZigbeeDeviceStore(IDbContextFactory<HausZigbeeDbContext> conte
         await context.SaveChangesAsync(token);
     }
 
+    // Insert-only, unlike UpsertAsync, so a richer live-discovered record is never downgraded.
+    // AnyAsync-then-Add isn't atomic against a concurrent UpsertAsync, but ExternalId's unique index
+    // makes the loser throw (logged) rather than corrupt data, and a live device just re-announces.
+    public async Task SeedIfAbsentAsync(RegisterKnownDevice args, CancellationToken token = default)
+    {
+        await using var context = await contextFactory.CreateDbContextAsync(token);
+        var exists = await context.KnownDevices.AnyAsync(e => e.ExternalId == args.ExternalId, token);
+        if (exists)
+            return;
+
+        context.KnownDevices.Add(
+            new KnownZigbeeDeviceEntity
+            {
+                ExternalId = args.ExternalId,
+                NetworkAddress = args.NetworkAddress,
+                EndpointsJson = JsonSerializer.Serialize(args.Endpoints),
+                IsSleepy = args.IsSleepy,
+                UpdatedAt = DateTimeOffset.UtcNow,
+            }
+        );
+        await context.SaveChangesAsync(token);
+    }
+
     private static IReadOnlyList<ZigbeeEndpoint> DeserializeEndpoints(string endpointsJson)
     {
         return JsonSerializer.Deserialize<IReadOnlyList<ZigbeeEndpoint>>(endpointsJson) ?? [];
