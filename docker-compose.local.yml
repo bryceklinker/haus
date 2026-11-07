@@ -28,10 +28,12 @@ services:
       - "ASPNETCORE_URLS=http://+:80"
       - "Mqtt__Server=mqtt://haus_mqtt:1883"
       - "Database__ConnectionString=Data Source=/app/data/haus_acceptance.db;"
+      - "ZigbeeHost__BaseUrl=http://haus_zigbee:8080"
     volumes:
       - haus_web_local_data:/app/data
     depends_on:
       - haus_mqtt
+      - haus_zigbee
     healthcheck:
       test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/80'"]
       interval: 5s

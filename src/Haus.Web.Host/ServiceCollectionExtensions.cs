@@ -1,4 +1,5 @@
 using System;
+using Haus.Api.Client;
 using Haus.Core;
 using Haus.Core.Application;
 using Haus.Core.Common.Storage;
@@ -68,6 +69,8 @@ public static class ServiceCollectionExtensions
 
         if (isDeviceSimulatorEnabled)
             services.AddHostedService<DeviceSimulatorStatePublisher>();
+
+        services.AddZigbeeHostApiClient(opts => configuration.Bind("ZigbeeHost", opts));
 
         return services;
     }

@@ -1,9 +1,11 @@
+using System;
 using System.Threading.Tasks;
 using Haus.Api.Client;
-using Haus.Core.Models.Common;
-using Haus.Core.Models.Zigbee.Events;
 using Haus.Testing.Support;
 using Haus.Web.Host.Tests.Support;
+using Haus.Zigbee.Coordinator;
+using Haus.Zigbee.Host.Storage;
+using Haus.Zigbee.Models;
 using Xunit;
 
 namespace Haus.Web.Host.Tests.Zigbee;
@@ -14,9 +16,11 @@ public class ZigbeeApiTests(HausWebHostApplicationFactory factory)
     private readonly IHausApiClient _client = factory.CreateAuthenticatedClient();
 
     [Fact]
-    public async Task WhenConnectionStatusChangedEventPublishedThenStatusEndpointReflectsIt()
+    public async Task WhenZigbeeHostReportsConnectionStatusChangedThenStatusEndpointReflectsIt()
     {
-        await factory.PublishZigbeeEventAsync(new ZigbeeConnectionStatusChangedEvent(true, null, "connected"));
+        factory.ZigbeeHostFactory.Coordinator.RaiseConnectionStatusChanged(
+            new ZigbeeConnectionStatus(true, new NetworkConfig(new IeeeAddress(0x1), 0x1a62, 11), "connected")
+        );
 
         await Eventually.AssertAsync(async () =>
         {
@@ -28,28 +32,32 @@ public class ZigbeeApiTests(HausWebHostApplicationFactory factory)
     }
 
     [Fact]
-    public async Task WhenZigbeeEventsPublishedThenActivityEndpointHasThem()
+    public async Task WhenZigbeeHostCoordinatorRaisesDeviceJoinedThenActivityEndpointHasIt()
     {
-        var ieeeAddress = $"{System.Guid.NewGuid()}";
-        await factory.PublishZigbeeEventAsync(new ZigbeeDeviceJoinedEvent(ieeeAddress, 7));
+        var ieeeAddress = new IeeeAddress((ulong)Random.Shared.NextInt64());
+        factory.ZigbeeHostFactory.Coordinator.RaiseDeviceJoined(
+            new ZigbeeDeviceJoined(ieeeAddress, 7, [], "ACME", "Bulb")
+        );
 
         await Eventually.AssertAsync(async () =>
         {
             var activity = await _client.GetZigbeeActivityAsync();
-            Assert.Contains(activity.Items, e => e.EventType == ZigbeeDeviceJoinedEvent.Type);
+            Assert.Contains(activity.Items, e => e.EventType == "zigbee_device_joined");
         });
     }
 
     [Fact]
-    public async Task WhenDeviceJoinedEventPublishedThenDevicesEndpointHasKnownDevice()
+    public async Task WhenZigbeeHostStoresKnownDeviceThenDevicesEndpointHasIt()
     {
-        var ieeeAddress = $"{System.Guid.NewGuid()}";
-        await factory.PublishZigbeeEventAsync(new ZigbeeDeviceJoinedEvent(ieeeAddress, 9));
+        var externalId = $"{Guid.NewGuid()}";
+        await factory
+            .ZigbeeHostFactory.GetKnownDeviceStore()
+            .UpsertAsync(new RegisterKnownDevice(externalId, 9, [], IsSleepy: false));
 
         await Eventually.AssertAsync(async () =>
         {
             var devices = await _client.GetZigbeeDevicesAsync();
-            Assert.Contains(devices.Items, d => d.IeeeAddress == ieeeAddress);
+            Assert.Contains(devices.Items, d => d.IeeeAddress == externalId);
         });
     }
 }

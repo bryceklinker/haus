@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -6,6 +7,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Haus.Api.Client;
 using Haus.Api.Client.Options;
+using Haus.Api.Client.Zigbee;
 using Haus.Core.Common;
 using Haus.Core.Common.Commands;
 using Haus.Core.Common.Storage.Commands;
@@ -20,6 +22,7 @@ using Haus.Cqrs;
 using Haus.Mqtt.Client;
 using Haus.Testing.Support;
 using Haus.Testing.Support.Fakes;
+using Haus.Zigbee.Host.Tests.Support;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -36,6 +39,10 @@ namespace Haus.Web.Host.Tests.Support;
 public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
 {
     private readonly FakeClock _clock = new();
+
+    // A real in-memory instance of Haus.Zigbee.Host backs ZigbeeController's new HTTP client --
+    // exercising the actual diagnostics API this host calls in production, not a hand-rolled double.
+    public HausZigbeeHostApplicationFactory ZigbeeHostFactory { get; } = new();
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
@@ -56,9 +63,25 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
             {
                 opts.BaseUrl = Server.BaseAddress.ToString();
             });
+            // Resolved eagerly (not inside the deferred options callback) so the embedded Zigbee
+            // host's hosted services -- including the recorder that subscribes to coordinator
+            // events -- are already running before any test raises a coordinator event.
+            var zigbeeHostBaseUrl = ZigbeeHostFactory.Server.BaseAddress.ToString();
+            services.AddZigbeeHostApiClient(opts =>
+            {
+                opts.BaseUrl = zigbeeHostBaseUrl;
+            });
             services
                 .RemoveAll(typeof(IHttpClientFactory))
-                .AddSingleton<IHttpClientFactory>(new FakeHttpClientFactory(CreateHttpClientWithAuth));
+                .AddSingleton<IHttpClientFactory>(
+                    new FakeHttpClientFactory(
+                        CreateHttpClientWithAuth,
+                        new Dictionary<string, Func<HttpClient>>
+                        {
+                            [ZigbeeHostApiClientNames.Default] = ZigbeeHostFactory.CreateClient,
+                        }
+                    )
+                );
 
             services
                 .AddAuthentication(opts =>
@@ -198,5 +221,12 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
             TestingAuthenticationHandler.TestingScheme
         );
         return client;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (disposing)
+            ZigbeeHostFactory.Dispose();
     }
 }

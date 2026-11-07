@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Haus.Api.Client\Haus.Api.Client.csproj" />
     <ProjectReference Include="..\Haus.Core\Haus.Core.csproj" />
     <ProjectReference Include="..\Haus.Hosting\Haus.Hosting.csproj" />
     <ProjectReference Include="..\Haus.Mqtt.Client\Haus.Mqtt.Client.csproj" />
