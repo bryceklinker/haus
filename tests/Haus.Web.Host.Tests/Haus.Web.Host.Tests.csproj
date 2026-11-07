@@ -10,5 +10,6 @@
     <ProjectReference Include="..\..\src\Haus.Api.Client\Haus.Api.Client.csproj" />
     <ProjectReference Include="..\..\src\Haus.Web.Host\Haus.Web.Host.csproj" />
     <ProjectReference Include="..\Haus.Testing.Support\Haus.Testing.Support.csproj" />
+    <ProjectReference Include="..\Haus.Zigbee.Host.Tests\Haus.Zigbee.Host.Tests.csproj" />
   </ItemGroup>
 </Project>

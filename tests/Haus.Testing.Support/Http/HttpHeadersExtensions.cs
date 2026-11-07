@@ -1,6 +1,6 @@
 using System.Net.Http.Headers;
 
-namespace Haus.Site.Host.Tests.Support.Http;
+namespace Haus.Testing.Support.Http;
 
 public static class HttpHeadersExtensions
 {

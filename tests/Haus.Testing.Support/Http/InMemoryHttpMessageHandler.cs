@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Haus.Core.Models;
 
-namespace Haus.Site.Host.Tests.Support.Http;
+namespace Haus.Testing.Support.Http;
 
 public class InMemoryHttpMessageHandler : HttpMessageHandler
 {

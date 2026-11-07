@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 
-namespace Haus.Site.Host.Tests.Support.Http;
+namespace Haus.Testing.Support.Http;
 
 public class InMemoryHttpClientFactory : IHttpClientFactory
 {

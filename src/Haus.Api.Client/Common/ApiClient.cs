@@ -14,7 +14,13 @@ public interface IApiClient
     string BaseUrl { get; }
 }
 
-public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options) : IApiClient
+public interface IHasBaseUrl
+{
+    string? BaseUrl { get; }
+}
+
+public abstract class ApiClient<TSettings>(HttpClient httpClient, IOptions<TSettings> options) : IApiClient
+    where TSettings : class, IHasBaseUrl
 {
     private const string ApiPath = "api";
 
@@ -65,3 +71,6 @@ public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSet
         return UrlUtility.Join(parameters, ApiBaseUrl, path);
     }
 }
+
+public abstract class ApiClient(HttpClient httpClient, IOptions<HausApiClientSettings> options)
+    : ApiClient<HausApiClientSettings>(httpClient, options);

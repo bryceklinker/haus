@@ -69,6 +69,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Haus.Acceptance.Tests/Haus.Acceptance.Tests.csproj" />
+    <Project Path="tests/Haus.Api.Client.Tests/Haus.Api.Client.Tests.csproj" />
     <Project Path="tests/Haus.Core.Models.Tests/Haus.Core.Models.Tests.csproj" />
     <Project Path="tests/Haus.Core.Tests/Haus.Core.Tests.csproj" />
     <Project Path="tests/Haus.Cqrs.Tests/Haus.Cqrs.Tests.csproj" />

@@ -1,10 +1,8 @@
 using System;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace Haus.Site.Host.Tests.Support.Http;
+namespace Haus.Testing.Support.Http;
 
 public record ConfiguredHttpResponse(
     InMemoryHttpRequest Request,

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\Haus.Core.Models\Haus.Core.Models.csproj" />
+    <ProjectReference Include="..\Haus.Zigbee.Models\Haus.Zigbee.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
