@@ -78,4 +78,51 @@ public class KnownZigbeeDeviceStoreTests
         Assert.Equal(new ushort[] { 0x0006 }, endpoint.InClusters);
         Assert.True(device.IsSleepy);
     }
+
+    [Fact]
+    public async Task SeedIfAbsentAsync_NoExistingRow_CreatesADeviceFromTheSeed()
+    {
+        var endpoints = new[] { new ZigbeeEndpoint(1, 0x0104, 0x0100, [0x0006], []) };
+        await _store.SeedIfAbsentAsync(new RegisterKnownDevice("0x1", 0x1234, endpoints, IsSleepy: true));
+
+        var device = Assert.Single(await _store.GetAllAsync());
+        Assert.Equal("0x1", device.ExternalId);
+        Assert.Equal((ushort)0x1234, device.NetworkAddress);
+        Assert.True(device.IsSleepy);
+    }
+
+    [Fact]
+    public async Task SeedIfAbsentAsync_ExistingRow_LeavesItUnchanged()
+    {
+        await _store.UpsertAsync(new RegisterKnownDevice("0x1", 0x1234, [], IsSleepy: false));
+
+        await _store.SeedIfAbsentAsync(new RegisterKnownDevice("0x1", 0x9abc, [], IsSleepy: true));
+
+        var device = Assert.Single(await _store.GetAllAsync());
+        Assert.Equal((ushort)0x1234, device.NetworkAddress);
+        Assert.False(device.IsSleepy);
+    }
+
+    [Fact]
+    public async Task SeedIfAbsentAsync_RichLiveRecordAlreadyPersisted_IsNotDowngradedBySeed()
+    {
+        var liveEndpoints = new[] { new ZigbeeEndpoint(1, 0x0104, 0x0100, [0x0006], [0x0019]) };
+        await _store.UpsertAsync(new RegisterKnownDevice("0x1", 0x1234, liveEndpoints, IsSleepy: true));
+
+        await _store.SeedIfAbsentAsync(new RegisterKnownDevice("0x1", 0x1234, [], IsSleepy: false));
+
+        var device = Assert.Single(await _store.GetAllAsync());
+        var endpoint = Assert.Single(device.Endpoints);
+        Assert.Equal(new ushort[] { 0x0019 }, endpoint.OutClusters);
+        Assert.True(device.IsSleepy);
+    }
+
+    [Fact]
+    public async Task SeedIfAbsentAsync_AppliedTwice_LeavesExactlyOneRowForTheExternalId()
+    {
+        await _store.SeedIfAbsentAsync(new RegisterKnownDevice("0x1", 0x1234, [], IsSleepy: true));
+        await _store.SeedIfAbsentAsync(new RegisterKnownDevice("0x1", 0x1234, [], IsSleepy: true));
+
+        Assert.Single(await _store.GetAllAsync());
+    }
 }
