@@ -45,9 +45,8 @@ public class RoomOccupancyTests
         await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId, true));
         Eventually.Assert(() =>
         {
-            Assert.Contains(
-                _roomLightingCommands,
-                cmd => cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.On
+            Assert.Contains(_roomLightingCommands, cmd =>
+                cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.On
             );
         });
         _roomLightingCommands.Clear();
@@ -58,9 +57,8 @@ public class RoomOccupancyTests
 
         Eventually.Assert(() =>
         {
-            Assert.DoesNotContain(
-                _roomLightingCommands,
-                cmd => cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.Off
+            Assert.DoesNotContain(_roomLightingCommands, cmd =>
+                cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.Off
             );
         });
     }
@@ -74,9 +72,8 @@ public class RoomOccupancyTests
         await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId, true));
         Eventually.Assert(() =>
         {
-            Assert.Contains(
-                _roomLightingCommands,
-                cmd => cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.On
+            Assert.Contains(_roomLightingCommands, cmd =>
+                cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.On
             );
         });
 
@@ -90,9 +87,8 @@ public class RoomOccupancyTests
 
         Eventually.Assert(() =>
         {
-            Assert.Contains(
-                _roomLightingCommands,
-                cmd => cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.Off
+            Assert.Contains(_roomLightingCommands, cmd =>
+                cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.Off
             );
         });
     }
@@ -105,9 +101,8 @@ public class RoomOccupancyTests
         await _factory.PublishHausEventAsync(new OccupancyChangedModel(device.ExternalId, true));
         Eventually.Assert(() =>
         {
-            Assert.Contains(
-                _roomLightingCommands,
-                cmd => cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.On
+            Assert.Contains(_roomLightingCommands, cmd =>
+                cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.On
             );
         });
 
@@ -115,9 +110,8 @@ public class RoomOccupancyTests
 
         Eventually.Assert(() =>
         {
-            Assert.Contains(
-                _roomLightingCommands,
-                cmd => cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.Off
+            Assert.Contains(_roomLightingCommands, cmd =>
+                cmd.Room.Id == room.Id && cmd.Lighting.State == LightingState.Off
             );
         });
     }

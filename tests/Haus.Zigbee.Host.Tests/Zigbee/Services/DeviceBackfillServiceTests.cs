@@ -46,9 +46,8 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
         _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [])];
         _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
         DeviceDiscoveredEvent? published = null;
-        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            e => published = e.Payload
+        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, e =>
+            published = e.Payload
         );
 
         await _service!.BackfillAsync(CancellationToken.None);
@@ -82,9 +81,8 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
         _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
         _coordinator.NetworkAddressToReturn = 0x5678;
         DeviceDiscoveredEvent? published = null;
-        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            e => published = e.Payload
+        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, e =>
+            published = e.Payload
         );
 
         await _service!.BackfillAsync(CancellationToken.None);
@@ -101,9 +99,8 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
         _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
         _coordinator.NetworkAddressToReturn = null;
         DeviceDiscoveredEvent? published = null;
-        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            e => published = e.Payload
+        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, e =>
+            published = e.Payload
         );
 
         await _service!.BackfillAsync(CancellationToken.None);
@@ -118,9 +115,8 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
         _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [], IsSleepy: true)];
         _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
         DeviceDiscoveredEvent? published = null;
-        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            e => published = e.Payload
+        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, e =>
+            published = e.Payload
         );
 
         await _service!.BackfillAsync(CancellationToken.None);
@@ -136,9 +132,8 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
         _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
         _coordinator.IsSleepyToReturn = true;
         DeviceDiscoveredEvent? published = null;
-        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            e => published = e.Payload
+        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, e =>
+            published = e.Payload
         );
 
         await _service!.BackfillAsync(CancellationToken.None);
@@ -154,13 +149,11 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
         _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("nope", "nope");
         var published = false;
         var canaryReceived = false;
-        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            _ => published = true
+        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, _ =>
+            published = true
         );
-        await _mqttClient!.SubscribeToHausEventsAsync<DiscoveryStoppedEvent>(
-            DiscoveryStoppedEvent.Type,
-            _ => canaryReceived = true
+        await _mqttClient!.SubscribeToHausEventsAsync<DiscoveryStoppedEvent>(DiscoveryStoppedEvent.Type, _ =>
+            canaryReceived = true
         );
 
         await _service!.BackfillAsync(CancellationToken.None);
@@ -177,13 +170,11 @@ public class DeviceBackfillServiceTests : IAsyncLifetime
         _coordinator.DeviceInfoToReturn = null;
         var published = false;
         var canaryReceived = false;
-        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            _ => published = true
+        await _mqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, _ =>
+            published = true
         );
-        await _mqttClient!.SubscribeToHausEventsAsync<DiscoveryStoppedEvent>(
-            DiscoveryStoppedEvent.Type,
-            _ => canaryReceived = true
+        await _mqttClient!.SubscribeToHausEventsAsync<DiscoveryStoppedEvent>(DiscoveryStoppedEvent.Type, _ =>
+            canaryReceived = true
         );
 
         await _service!.BackfillAsync(CancellationToken.None);

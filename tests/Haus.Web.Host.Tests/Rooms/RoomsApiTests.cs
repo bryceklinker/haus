@@ -97,9 +97,8 @@ public class RoomsApiTests
     public async Task WhenRoomLightingIsSetThenRoomLightingEventPublishedToMqtt()
     {
         HausCommand<RoomLightingChangedEvent>? hausCommand = null;
-        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
-            RoomLightingChangedEvent.Type,
-            msg => hausCommand = msg
+        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(RoomLightingChangedEvent.Type, msg =>
+            hausCommand = msg
         );
 
         var room = await CreateRoomAsync("room");
@@ -118,9 +117,8 @@ public class RoomsApiTests
     public async Task WhenRoomIsTurnedOffThenRoomLightingEventPublishedWithStateOff()
     {
         HausCommand<RoomLightingChangedEvent>? hausCommand = null;
-        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
-            RoomLightingChangedEvent.Type,
-            msg => hausCommand = msg
+        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(RoomLightingChangedEvent.Type, msg =>
+            hausCommand = msg
         );
 
         var room = await CreateRoomAsync("turn-off");
@@ -143,9 +141,8 @@ public class RoomsApiTests
     public async Task WhenRoomIsTurnedOnThenRoomLightingEventPublishedWithStateOn()
     {
         HausCommand<RoomLightingChangedEvent>? hausCommand = null;
-        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(
-            RoomLightingChangedEvent.Type,
-            msg => hausCommand = msg
+        await _factory.SubscribeToHausCommandsAsync<RoomLightingChangedEvent>(RoomLightingChangedEvent.Type, msg =>
+            hausCommand = msg
         );
 
         var room = await CreateRoomAsync("turn-on");

@@ -26,9 +26,8 @@ public class OccupancyChangedTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            Assert.Contains(
-                lightingCommands.Where(cmd => cmd.Payload != null),
-                cmd => cmd.Payload!.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On
+            Assert.Contains(lightingCommands.Where(cmd => cmd.Payload != null), cmd =>
+                cmd.Payload!.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On
             );
         });
     }

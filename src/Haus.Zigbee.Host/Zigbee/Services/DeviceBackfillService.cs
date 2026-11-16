@@ -34,8 +34,8 @@ public class DeviceBackfillService(
         {
             // A resolve refreshes the address in case it changed since this device was last seen;
             // no answer falls back to the address already on record rather than abandoning backfill.
-            var networkAddress =
-                await coordinator.ResolveNetworkAddressAsync(device.IeeeAddress, token) ?? device.NetworkAddress;
+            var networkAddress = await coordinator.ResolveNetworkAddressAsync(device.IeeeAddress, token)
+                ?? device.NetworkAddress;
 
             var info = await coordinator.ReadDeviceInfoAsync(device.IeeeAddress, token);
             if (info == null)

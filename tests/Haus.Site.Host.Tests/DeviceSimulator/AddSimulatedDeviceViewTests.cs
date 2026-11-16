@@ -24,10 +24,8 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
     [Fact]
     public async Task WhenLoadingTakesAwhileThenLoadingSpinnerIsShown()
     {
-        await HausApiHandler.SetupGetAsJson(
-            DeviceTypesUrl,
-            new ListResult<DeviceType>(),
-            opts => opts.WithDelay(TimeSpan.FromSeconds(1))
+        await HausApiHandler.SetupGetAsJson(DeviceTypesUrl, new ListResult<DeviceType>(), opts =>
+            opts.WithDelay(TimeSpan.FromSeconds(1))
         );
 
         var page = RenderView<AddSimulatedDeviceView>();
@@ -123,11 +121,8 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
 
     private async Task SetupSaveSimulatedDevice()
     {
-        await HausApiHandler.SetupPostAsJson<object?>(
-            DeviceSimulatorDevicesUrl,
-            null,
-            opts =>
-                opts.WithCapture(async req =>
+        await HausApiHandler.SetupPostAsJson<object?>(DeviceSimulatorDevicesUrl, null, opts => opts.WithCapture(
+                async req =>
                 {
                     var device =
                         req.Content != null ? await req.Content.ReadFromJsonAsync<SimulatedDeviceModel>() : null;
@@ -135,8 +130,8 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
                     {
                         _savedDevices.Add(device);
                     }
-                })
-        );
+                }
+            ));
     }
 
     private async Task OpenDeviceTypes(IRenderedComponent<AddSimulatedDeviceView> view)

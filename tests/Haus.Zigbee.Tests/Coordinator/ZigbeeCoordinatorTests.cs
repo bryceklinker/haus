@@ -258,9 +258,8 @@ public class ZigbeeCoordinatorTests
         await coordinator.ConnectAsync(CancellationToken.None);
         await WaitUntilPolledAtLeast(2);
 
-        Assert.Contains(
-            loggerFactory.Entries,
-            entry => entry.Category == typeof(ZigbeeCoordinator).FullName && entry.Exception is not null
+        Assert.Contains(loggerFactory.Entries, entry =>
+            entry.Category == typeof(ZigbeeCoordinator).FullName && entry.Exception is not null
         );
     }
 

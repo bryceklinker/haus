@@ -28,9 +28,8 @@ public class DeviceSimulatorFeatureGatingTests(HausWebHostApplicationFactory fac
         using var disabledFactory = factory.WithWebHostBuilder(builder => builder.UseEnvironment("Production"));
         disabledFactory.CreateClient();
         var connection = new HubConnectionBuilder()
-            .WithUrl(
-                "http://localhost/hubs/device-simulator",
-                o => o.HttpMessageHandlerFactory = _ => disabledFactory.Server.CreateHandler()
+            .WithUrl("http://localhost/hubs/device-simulator", o =>
+                o.HttpMessageHandlerFactory = _ => disabledFactory.Server.CreateHandler()
             )
             .Build();
 

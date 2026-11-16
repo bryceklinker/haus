@@ -66,8 +66,7 @@ public record RoomEntity : Entity
         OccupancyTimeoutInSeconds = occupancyTimeoutInSeconds;
         LastOccupiedTime = lastOccupiedTime;
         Name = name;
-        Lighting =
-            lighting
+        Lighting = lighting
             ?? new LightingEntity(
                 LightingDefaults.State,
                 new LevelLightingEntity(),

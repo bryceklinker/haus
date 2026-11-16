@@ -101,13 +101,11 @@ public class DeviceJoinScenarioTests : IAsyncLifetime
 
         await WaitFor(bothJoined.Task);
 
-        Assert.Contains(
-            joinedDevices,
-            d => d.IeeeAddress == addressA && d.ManufacturerName == "Philips" && d.ModelIdentifier == "929002335001"
+        Assert.Contains(joinedDevices, d =>
+            d.IeeeAddress == addressA && d.ManufacturerName == "Philips" && d.ModelIdentifier == "929002335001"
         );
-        Assert.Contains(
-            joinedDevices,
-            d => d.IeeeAddress == addressB && d.ManufacturerName == "Philips" && d.ModelIdentifier == "9290012607"
+        Assert.Contains(joinedDevices, d =>
+            d.IeeeAddress == addressB && d.ManufacturerName == "Philips" && d.ModelIdentifier == "9290012607"
         );
     }
 

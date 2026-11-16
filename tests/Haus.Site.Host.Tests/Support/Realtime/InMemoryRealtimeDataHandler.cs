@@ -15,15 +15,11 @@ public class InMemoryRealtimeDataHandler(string eventName, Type inputType, Func<
 
     public static InMemoryRealtimeDataHandler Create<T>(string eventName, Func<T, Task> handler)
     {
-        return new InMemoryRealtimeDataHandler(
-            eventName,
-            typeof(T),
-            async value =>
-            {
-                if (value is T actual)
-                    await handler(actual);
-            }
-        );
+        return new InMemoryRealtimeDataHandler(eventName, typeof(T), async value =>
+        {
+            if (value is T actual)
+                await handler(actual);
+        });
     }
 
     private bool ShouldInvoke<T>(string @event)

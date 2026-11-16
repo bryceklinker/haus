@@ -78,9 +78,8 @@ public class ChangeDeviceLightingCommandHandlerTests
     public async Task WhenDeviceIsNotALightThenRejectionIsLogged()
     {
         var loggerFactory = new CapturingLoggerFactory();
-        var hausBus = HausBusFactory.CreateCapturingBus(
-            _context,
-            services => services.AddSingleton<ILoggerFactory>(loggerFactory)
+        var hausBus = HausBusFactory.CreateCapturingBus(_context, services =>
+            services.AddSingleton<ILoggerFactory>(loggerFactory)
         );
         var device = _context.AddDevice(deviceType: DeviceType.Switch);
         var command = new ChangeDeviceLightingCommand(device.Id, new LightingModel());
@@ -88,9 +87,8 @@ public class ChangeDeviceLightingCommandHandlerTests
         var act = () => hausBus.ExecuteCommandAsync(command);
 
         await Assert.ThrowsAsync<InvalidOperationException>(act);
-        Assert.Contains(
-            loggerFactory.Entries,
-            entry => entry.Level == LogLevel.Warning && entry.Message.Contains(device.Id.ToString())
+        Assert.Contains(loggerFactory.Entries, entry =>
+            entry.Level == LogLevel.Warning && entry.Message.Contains(device.Id.ToString())
         );
     }
 }

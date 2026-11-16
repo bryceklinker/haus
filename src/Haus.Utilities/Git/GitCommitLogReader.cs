@@ -40,8 +40,8 @@ public class GitCommitLogReader : IGitCommitLogReader
         startInfo.ArgumentList.Add(range);
         startInfo.ArgumentList.Add($"--pretty=format:%B{CommitSeparator}");
 
-        using var process =
-            Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start 'git log' process.");
+        using var process = Process.Start(startInfo)
+            ?? throw new InvalidOperationException("Failed to start 'git log' process.");
         var output = process.StandardOutput.ReadToEnd();
         var error = process.StandardError.ReadToEnd();
         process.WaitForExit();

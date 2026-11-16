@@ -40,9 +40,8 @@ public class ZigbeeStateTests
     {
         var state = Enumerable
             .Range(0, ZigbeeState.MaxRecentActivity + 1)
-            .Aggregate(
-                (IZigbeeState)ZigbeeState.Initial,
-                (s, i) => s.RecordActivity(new ZigbeeActivityEntryModel($"type-{i}", DateTimeOffset.UtcNow, i))
+            .Aggregate((IZigbeeState)ZigbeeState.Initial, (s, i) =>
+                s.RecordActivity(new ZigbeeActivityEntryModel($"type-{i}", DateTimeOffset.UtcNow, i))
             );
 
         Assert.Equal(ZigbeeState.MaxRecentActivity, state.RecentActivity.Length);

@@ -64,14 +64,11 @@ internal class HausMqttClient : IHausMqttClient
 
     public Task<IHausMqttSubscription> SubscribeAsync(string topic, Action<MqttApplicationMessage> handler)
     {
-        return SubscribeAsync(
-            topic,
-            msg =>
-            {
-                handler.Invoke(msg);
-                return Task.CompletedTask;
-            }
-        );
+        return SubscribeAsync(topic, msg =>
+        {
+            handler.Invoke(msg);
+            return Task.CompletedTask;
+        });
     }
 
     public async Task PublishAsync(MqttApplicationMessage message)

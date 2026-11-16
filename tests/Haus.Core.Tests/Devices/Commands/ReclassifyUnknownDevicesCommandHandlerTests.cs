@@ -51,14 +51,11 @@ public class ReclassifyUnknownDevicesCommandHandlerTests
     [Fact]
     public async Task WhenDeviceIsAlreadyClassifiedThenItIsNotTouchedEvenIfVendorAndModelMatchADifferentType()
     {
-        var device = _context.AddDevice(
-            deviceType: DeviceType.Switch,
-            configure: d =>
-            {
-                d.AddOrUpdateMetadata("vendor", "Gledopto");
-                d.AddOrUpdateMetadata("model", "GL-MC-001");
-            }
-        );
+        var device = _context.AddDevice(deviceType: DeviceType.Switch, configure: d =>
+        {
+            d.AddOrUpdateMetadata("vendor", "Gledopto");
+            d.AddOrUpdateMetadata("model", "GL-MC-001");
+        });
 
         await _hausBus.ExecuteCommandAsync(new ReclassifyUnknownDevicesCommand());
 

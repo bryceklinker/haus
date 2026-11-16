@@ -26,10 +26,8 @@ public class ZigbeeDevicesViewTests : HausSiteTestContext
     [Fact]
     public async Task WhenRenderedThenShowsLoadingDevices()
     {
-        await HausApiHandler.SetupGetAsJson(
-            DevicesUrl,
-            new ListResult<ZigbeeKnownDeviceModel>(),
-            opts => opts.WithDelayMs(1000)
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<ZigbeeKnownDeviceModel>(), opts =>
+            opts.WithDelayMs(1000)
         );
 
         var view = RenderView<ZigbeeDevicesView>();
@@ -102,10 +100,8 @@ public class ZigbeeDevicesViewTests : HausSiteTestContext
     public async Task WhenNonZigbeeEventReceivedThenDoesNotRefreshDevices()
     {
         var callCount = 0;
-        await HausApiHandler.SetupGetAsJson(
-            DevicesUrl,
-            new ListResult<ZigbeeKnownDeviceModel>(),
-            opts => opts.WithCapture(_ => callCount++)
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<ZigbeeKnownDeviceModel>(), opts =>
+            opts.WithCapture(_ => callCount++)
         );
         var view = RenderView<ZigbeeDevicesView>();
         Eventually.Assert(() =>

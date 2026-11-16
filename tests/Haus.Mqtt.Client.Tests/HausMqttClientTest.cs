@@ -43,14 +43,11 @@ public class HausMqttClientTest : IAsyncLifetime
     public async Task WhenSubscribingToTopicThenPublishedMessageGoesToSubscriber()
     {
         MqttApplicationMessage? actual = null;
-        await Client.SubscribeAsync(
-            "bob",
-            msg =>
-            {
-                actual = msg;
-                return Task.CompletedTask;
-            }
-        );
+        await Client.SubscribeAsync("bob", msg =>
+        {
+            actual = msg;
+            return Task.CompletedTask;
+        });
 
         var expected = new MqttApplicationMessage { Topic = "bob" };
         await FakeMqttClient.EnqueueAsync(expected);
@@ -62,22 +59,16 @@ public class HausMqttClientTest : IAsyncLifetime
     public async Task WhenMultipleSubscribersThenPublishedMessagesGoToAllSubscribers()
     {
         var actuals = new List<MqttApplicationMessage>();
-        await Client.SubscribeAsync(
-            "#",
-            msg =>
-            {
-                actuals.Add(msg);
-                return Task.CompletedTask;
-            }
-        );
-        await Client.SubscribeAsync(
-            "#",
-            msg =>
-            {
-                actuals.Add(msg);
-                return Task.CompletedTask;
-            }
-        );
+        await Client.SubscribeAsync("#", msg =>
+        {
+            actuals.Add(msg);
+            return Task.CompletedTask;
+        });
+        await Client.SubscribeAsync("#", msg =>
+        {
+            actuals.Add(msg);
+            return Task.CompletedTask;
+        });
 
         await FakeMqttClient.EnqueueAsync(new MqttApplicationMessage());
         Assert.Equal(2, actuals.Count);

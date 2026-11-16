@@ -74,9 +74,8 @@ public class DevicesApiTests
     public async Task WhenLightingOfDeviceIsChangedThenDeviceLightingChangedEventIsPublished()
     {
         HausCommand<DeviceLightingChangedEvent>? hausCommand = null;
-        await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(
-            DeviceLightingChangedEvent.Type,
-            msg => hausCommand = msg
+        await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(DeviceLightingChangedEvent.Type, msg =>
+            hausCommand = msg
         );
 
         var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
@@ -95,9 +94,8 @@ public class DevicesApiTests
     public async Task WhenDeviceIsTurnedOffThenPublishesChangeLightingWithOffState()
     {
         HausCommand<DeviceLightingChangedEvent>? published = null;
-        await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(
-            DeviceLightingChangedEvent.Type,
-            msg => published = msg
+        await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(DeviceLightingChangedEvent.Type, msg =>
+            published = msg
         );
 
         var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);
@@ -116,9 +114,8 @@ public class DevicesApiTests
     public async Task WhenDeviceIsTurnedOnThenPublishesChangeLightingWithOnState()
     {
         HausCommand<DeviceLightingChangedEvent>? published = null;
-        await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(
-            DeviceLightingChangedEvent.Type,
-            msg => published = msg
+        await _factory.SubscribeToHausCommandsAsync<DeviceLightingChangedEvent>(DeviceLightingChangedEvent.Type, msg =>
+            published = msg
         );
 
         var device = await _factory.WaitForDeviceToBeDiscovered(DeviceType.Light);

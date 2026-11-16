@@ -78,9 +78,8 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [])];
         _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
         DeviceDiscoveredEvent? published = null;
-        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            e => published = e.Payload
+        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, e =>
+            published = e.Payload
         );
         var message = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
@@ -98,9 +97,8 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         _coordinator!.DevicesToReturn = [new ZigbeeDevice(address, 0x1234, [])];
         _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("Philips", "929002335001");
         DeviceDiscoveredEvent? published = null;
-        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            e => published = e.Payload
+        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, e =>
+            published = e.Payload
         );
         var message = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
@@ -116,13 +114,11 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         _coordinator.DeviceInfoToReturn = new ZigbeeDeviceInfo("nope", "nope");
         var published = false;
         var canaryReceived = false;
-        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            _ => published = true
+        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, _ =>
+            published = true
         );
-        await _hausMqttClient!.SubscribeToHausEventsAsync<DiscoveryStoppedEvent>(
-            DiscoveryStoppedEvent.Type,
-            _ => canaryReceived = true
+        await _hausMqttClient!.SubscribeToHausEventsAsync<DiscoveryStoppedEvent>(DiscoveryStoppedEvent.Type, _ =>
+            canaryReceived = true
         );
         var message = new SyncDiscoveryModel().AsHausCommand().ToMqttMessage("haus/commands");
 
@@ -149,15 +145,12 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
         Assert.NotEmpty(_coordinator!.SentCommands);
-        Assert.All(
-            _coordinator.SentCommands,
-            request =>
-            {
-                Assert.Equal(DeconzAddressMode.Nwk, request.Destination.Mode);
-                Assert.Equal(networkAddress, request.Destination.ShortAddress);
-                Assert.Equal((byte)0x01, request.Destination.Endpoint);
-            }
-        );
+        Assert.All(_coordinator.SentCommands, request =>
+        {
+            Assert.Equal(DeconzAddressMode.Nwk, request.Destination.Mode);
+            Assert.Equal(networkAddress, request.Destination.ShortAddress);
+            Assert.Equal((byte)0x01, request.Destination.Endpoint);
+        });
     }
 
     [Fact]
@@ -297,9 +290,8 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
         Eventually.Assert(() =>
-            Assert.Contains(
-                _loggerFactory!.Entries,
-                entry => entry.Level == LogLevel.Error && entry.Exception?.Message == "boom"
+            Assert.Contains(_loggerFactory!.Entries, entry =>
+                entry.Level == LogLevel.Error && entry.Exception?.Message == "boom"
             )
         );
     }
@@ -321,9 +313,8 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
             .AsHausCommand()
             .ToMqttMessage("haus/commands");
         DeviceDiscoveredEvent? published = null;
-        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            e => published = e.Payload
+        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, e =>
+            published = e.Payload
         );
 
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
@@ -410,9 +401,8 @@ public class ZigbeeOutboundRelayTests : IAsyncLifetime
         await _relay!.HandleCommandAsync(message, CancellationToken.None);
 
         Assert.Single(_coordinator.SentCommands);
-        Assert.Single(
-            _loggerFactory!.Entries,
-            entry => entry.Level == LogLevel.Warning && entry.Message.Contains("failed with APS confirm status")
+        Assert.Single(_loggerFactory!.Entries, entry =>
+            entry.Level == LogLevel.Warning && entry.Message.Contains("failed with APS confirm status")
         );
     }
 

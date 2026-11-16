@@ -51,9 +51,8 @@ public class DeviceSimulatorStateTests
             .ChangeDeviceLighting(deviceId, new LightingModel(LightingState.On));
 
         Assert.Single(state.Devices);
-        Assert.All(
-            state.Devices,
-            e => Assert.True(e.Id == deviceId && e.Lighting != null && e.Lighting.State == LightingState.On)
+        Assert.All(state.Devices, e =>
+            Assert.True(e.Id == deviceId && e.Lighting != null && e.Lighting.State == LightingState.On)
         );
     }
 

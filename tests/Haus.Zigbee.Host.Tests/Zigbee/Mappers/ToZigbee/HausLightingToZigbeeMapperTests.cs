@@ -84,9 +84,8 @@ public class HausLightingToZigbeeMapperTests
 
         var result = _mapper.Map(new FuncClusterDestinationResolver(_ => _destination), lighting).ToArray();
 
-        var command = Assert.Single(
-            result,
-            r => r.ClusterId == ColorControlCluster && r.CommandId == MoveToColorTemperatureCommand
+        var command = Assert.Single(result, r =>
+            r.ClusterId == ColorControlCluster && r.CommandId == MoveToColorTemperatureCommand
         );
         var mireds = (ushort)(command.Payload[0] | (command.Payload[1] << 8));
         Assert.Equal(250, mireds);
@@ -103,9 +102,8 @@ public class HausLightingToZigbeeMapperTests
 
         var result = _mapper.Map(new FuncClusterDestinationResolver(_ => _destination), lighting).ToArray();
 
-        var command = Assert.Single(
-            result,
-            r => r.ClusterId == ColorControlCluster && r.CommandId == MoveToColorCommand
+        var command = Assert.Single(result, r =>
+            r.ClusterId == ColorControlCluster && r.CommandId == MoveToColorCommand
         );
         var x = (ushort)(command.Payload[0] | (command.Payload[1] << 8));
         var y = (ushort)(command.Payload[2] | (command.Payload[3] << 8));

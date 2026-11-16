@@ -13,7 +13,11 @@ namespace Haus.Zigbee.Connection;
 // the checksum and SLIP-encodes an outbound command before writing it, then correlates the
 // eventual response by the sequence number that every deCONZ frame carries at byte offset 1.
 // It has no knowledge of what any individual command means.
-public class DeconzChannel(ISerialTransport transport, TimeSpan? roundTripTimeout = null, ILoggerFactory? loggerFactory = null)
+public class DeconzChannel(
+    ISerialTransport transport,
+    TimeSpan? roundTripTimeout = null,
+    ILoggerFactory? loggerFactory = null
+)
 {
     private const int SequenceNumberIndex = 1;
 
@@ -26,8 +30,8 @@ public class DeconzChannel(ISerialTransport transport, TimeSpan? roundTripTimeou
     private readonly FrameReader _reader = new(transport, loggerFactory?.CreateLogger<FrameReader>());
     private readonly SlipEncoder _encoder = new();
     private readonly TimeSpan _roundTripTimeout = roundTripTimeout ?? DefaultRoundTripTimeout;
-    private readonly ILogger<DeconzChannel> _logger =
-        loggerFactory?.CreateLogger<DeconzChannel>() ?? NullLogger<DeconzChannel>.Instance;
+    private readonly ILogger<DeconzChannel> _logger = loggerFactory?.CreateLogger<DeconzChannel>()
+        ?? NullLogger<DeconzChannel>.Instance;
 
     // ZigbeeCoordinator shares one DeconzChannel between its background poll loop and every
     // caller sending a command (APS data requests, permit-join, parameter writes). Without this,
@@ -96,11 +100,7 @@ public class DeconzChannel(ISerialTransport transport, TimeSpan? roundTripTimeou
         _logger.LogDebug("Sending frame with sequence number {@SequenceNumber}: {@Frame}", sequenceNumber, frame);
         await _transport.WriteAsync(Encode(frame), token);
         var response = await AwaitResponseAsync(sequenceNumber, token);
-        _logger.LogDebug(
-            "Received response for sequence number {@SequenceNumber}: {@Frame}",
-            sequenceNumber,
-            response
-        );
+        _logger.LogDebug("Received response for sequence number {@SequenceNumber}: {@Frame}", sequenceNumber, response);
         return response;
     }
 

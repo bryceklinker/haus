@@ -56,9 +56,8 @@ public class ZigbeeInboundRelayTests : IAsyncLifetime
     public async Task HandleDeviceJoinedAsync_PublishesDeviceDiscoveredEvent()
     {
         DeviceDiscoveredEvent? published = null;
-        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            e => published = e.Payload
+        await _hausMqttClient!.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, e =>
+            published = e.Payload
         );
         var address = new IeeeAddress(1);
         var joined = new ZigbeeDeviceJoined(address, 0x1234, [], "acme", "widget");
@@ -73,9 +72,8 @@ public class ZigbeeInboundRelayTests : IAsyncLifetime
     {
         _addressRegistry!.Register(new RegisterNetworkAddress("the-device-id", 0x1234));
         BatteryChangedModel? published = null;
-        await _hausMqttClient!.SubscribeToHausEventsAsync<BatteryChangedModel>(
-            BatteryChangedModel.Type,
-            e => published = e.Payload
+        await _hausMqttClient!.SubscribeToHausEventsAsync<BatteryChangedModel>(BatteryChangedModel.Type, e =>
+            published = e.Payload
         );
         var report = new ZigbeeAttributeReport(
             0x1234,

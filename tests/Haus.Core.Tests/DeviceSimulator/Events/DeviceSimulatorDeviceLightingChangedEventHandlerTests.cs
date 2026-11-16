@@ -38,9 +38,8 @@ public class DeviceSimulatorDeviceLightingChangedEventHandlerTests
             )
         );
 
-        Assert.Contains(
-            _simulatorStore.Current.Devices,
-            d => d.Id == simulatedLight.Id && d.Lighting != null && d.Lighting.State == LightingState.On
+        Assert.Contains(_simulatorStore.Current.Devices, d =>
+            d.Id == simulatedLight.Id && d.Lighting != null && d.Lighting.State == LightingState.On
         );
     }
 }

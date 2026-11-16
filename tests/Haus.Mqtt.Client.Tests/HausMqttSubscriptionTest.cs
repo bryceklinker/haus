@@ -29,14 +29,11 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
     public async Task WhenExecutedForMessageWithDifferentTopicThenSubscriberIsNotExecuted()
     {
         MqttApplicationMessage? actual = null;
-        await Client.SubscribeAsync(
-            "one",
-            msg =>
-            {
-                actual = msg;
-                return Task.CompletedTask;
-            }
-        );
+        await Client.SubscribeAsync("one", msg =>
+        {
+            actual = msg;
+            return Task.CompletedTask;
+        });
 
         await Client.PublishAsync(new MqttApplicationMessage { Topic = "other" });
 
@@ -47,14 +44,11 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
     public async Task WhenSubscribedToAllTopicsThenExecuteAlwaysInvokesSubscriber()
     {
         MqttApplicationMessage? actual = null;
-        await Client.SubscribeAsync(
-            "#",
-            msg =>
-            {
-                actual = msg;
-                return Task.CompletedTask;
-            }
-        );
+        await Client.SubscribeAsync("#", msg =>
+        {
+            actual = msg;
+            return Task.CompletedTask;
+        });
 
         var expected = new MqttApplicationMessage { Topic = "other" };
         await Client.PublishAsync(expected);
@@ -69,14 +63,11 @@ public class HausMqttSubscriptionTest : IAsyncLifetime
     public async Task WhenUnsubscribedThenNoLongerReceivesMessages()
     {
         var wasCalled = false;
-        var subscription = await Client.SubscribeAsync(
-            "#",
-            _ =>
-            {
-                wasCalled = true;
-                return Task.CompletedTask;
-            }
-        );
+        var subscription = await Client.SubscribeAsync("#", _ =>
+        {
+            wasCalled = true;
+            return Task.CompletedTask;
+        });
 
         await subscription.UnsubscribeAsync();
         await Client.PublishAsync(new MqttApplicationMessage { Topic = "idk" });

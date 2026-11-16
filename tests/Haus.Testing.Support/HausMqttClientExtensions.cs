@@ -17,15 +17,12 @@ public static class HausMqttClientExtensions
         string topicName = DefaultHausMqttTopics.EventsTopic
     )
     {
-        await client.SubscribeAsync(
-            topicName,
-            msg =>
-            {
-                HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausEvent<T>? evt);
-                if (evt?.Type == eventType)
-                    handler.Invoke(evt);
-            }
-        );
+        await client.SubscribeAsync(topicName, msg =>
+        {
+            HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausEvent<T>? evt);
+            if (evt?.Type == eventType)
+                handler.Invoke(evt);
+        });
     }
 
     public static async Task SubscribeToHausCommandsAsync<T>(
@@ -35,15 +32,12 @@ public static class HausMqttClientExtensions
         string topicName = DefaultHausMqttTopics.CommandsTopic
     )
     {
-        await client.SubscribeAsync(
-            topicName,
-            msg =>
-            {
-                HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausCommand<T>? command);
-                if (command?.Type == commandType)
-                    handler.Invoke(command);
-            }
-        );
+        await client.SubscribeAsync(topicName, msg =>
+        {
+            HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausCommand<T>? command);
+            if (command?.Type == commandType)
+                handler.Invoke(command);
+        });
     }
 
     public static async Task SubscribeToHausHealthAsync(
@@ -52,16 +46,13 @@ public static class HausMqttClientExtensions
         string topicName = DefaultHausMqttTopics.HealthTopic
     )
     {
-        await client.SubscribeAsync(
-            topicName,
-            msg =>
-            {
-                if (
-                    HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausHealthReportModel? report)
-                    && report != null
-                )
-                    handler.Invoke(report);
-            }
-        );
+        await client.SubscribeAsync(topicName, msg =>
+        {
+            if (
+                HausJsonSerializer.TryDeserialize(msg.PayloadSegment, out HausHealthReportModel? report)
+                && report != null
+            )
+                handler.Invoke(report);
+        });
     }
 }

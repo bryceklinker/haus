@@ -26,9 +26,8 @@ public class DeleteDeviceDialogViewTests : HausSiteTestContext
         var device = HausModelFactory.DeviceModel();
         var parameters = new DialogParameters<DeleteDeviceDialogView> { { x => x.Device, device } };
         HttpRequestMessage? request = null;
-        await HausApiHandler.SetupDeleteAsJson<object?>(
-            $"/api/devices/{device.Id}",
-            opts => opts.WithCapture(r => request = r)
+        await HausApiHandler.SetupDeleteAsJson<object?>($"/api/devices/{device.Id}", opts =>
+            opts.WithCapture(r => request = r)
         );
 
         var view = await RenderDialogAsync<DeleteDeviceDialogView>(parameters);
@@ -72,9 +71,8 @@ public class DeleteDeviceDialogViewTests : HausSiteTestContext
         var device = HausModelFactory.DeviceModel();
         var parameters = new DialogParameters<DeleteDeviceDialogView> { { x => x.Device, device } };
         HttpRequestMessage? request = null;
-        await HausApiHandler.SetupDeleteAsJson<object?>(
-            $"/api/devices/{device.Id}",
-            opts => opts.WithCapture(r => request = r)
+        await HausApiHandler.SetupDeleteAsJson<object?>($"/api/devices/{device.Id}", opts =>
+            opts.WithCapture(r => request = r)
         );
 
         var view = await RenderDialogAsync<DeleteDeviceDialogView>(parameters);

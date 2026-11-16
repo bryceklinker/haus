@@ -181,9 +181,8 @@ public class DevicesMapperTests
 
         await mapper.MapAsync([new ZigbeeDevice(failingAddress, 1, [])], CancellationToken.None);
 
-        Assert.Contains(
-            loggerFactory.Entries,
-            entry => entry.Level == LogLevel.Error && entry.Exception?.Message == "boom"
+        Assert.Contains(loggerFactory.Entries, entry =>
+            entry.Level == LogLevel.Error && entry.Exception?.Message == "boom"
         );
     }
 }

@@ -117,9 +117,8 @@ public class ApsSenderTests
         var sendTask = timingOutSender.SendAsync(Request(requestId: 0x42), CancellationToken.None);
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => sendTask);
 
-        Assert.Contains(
-            loggerFactory.Entries,
-            entry => entry.Level == LogLevel.Warning && entry.Message.Contains("0x42")
+        Assert.Contains(loggerFactory.Entries, entry =>
+            entry.Level == LogLevel.Warning && entry.Message.Contains("0x42")
         );
     }
 

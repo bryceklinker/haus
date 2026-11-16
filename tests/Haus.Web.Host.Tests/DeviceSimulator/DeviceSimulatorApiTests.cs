@@ -30,9 +30,8 @@ public class DeviceSimulatorApiTests
     public async Task WhenSimulatedDeviceIsAddedThenPublishesDeviceDiscoveredEvent()
     {
         DeviceDiscoveredEvent? discoveredEvent = null;
-        await _factory.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(
-            DeviceDiscoveredEvent.Type,
-            evt => discoveredEvent = evt.Payload
+        await _factory.SubscribeToHausEventsAsync<DeviceDiscoveredEvent>(DeviceDiscoveredEvent.Type, evt =>
+            discoveredEvent = evt.Payload
         );
 
         await _client.AddSimulatedDeviceAsync(new SimulatedDeviceModel(DeviceType: DeviceType.Light));
