@@ -121,17 +121,16 @@ public class AddSimulatedDeviceViewTests : HausSiteTestContext
 
     private async Task SetupSaveSimulatedDevice()
     {
-        await HausApiHandler.SetupPostAsJson<object?>(DeviceSimulatorDevicesUrl, null, opts => opts.WithCapture(
-                async req =>
+        await HausApiHandler.SetupPostAsJson<object?>(DeviceSimulatorDevicesUrl, null, opts =>
+            opts.WithCapture(async req =>
+            {
+                var device = req.Content != null ? await req.Content.ReadFromJsonAsync<SimulatedDeviceModel>() : null;
+                if (device != null)
                 {
-                    var device =
-                        req.Content != null ? await req.Content.ReadFromJsonAsync<SimulatedDeviceModel>() : null;
-                    if (device != null)
-                    {
-                        _savedDevices.Add(device);
-                    }
+                    _savedDevices.Add(device);
                 }
-            ));
+            })
+        );
     }
 
     private async Task OpenDeviceTypes(IRenderedComponent<AddSimulatedDeviceView> view)

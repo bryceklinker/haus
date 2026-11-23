@@ -121,16 +121,16 @@ public class LogsViewTests : HausSiteTestContext
     public async Task WhenARefreshFailsThenContinuesPollingOnNextTick()
     {
         var requestCount = 0;
-        await HausApiHandler.SetupGetAsJson("/api/logs", new ListResult<LogEntryModel>([]), opts => opts.WithCapture(
-                r =>
+        await HausApiHandler.SetupGetAsJson("/api/logs", new ListResult<LogEntryModel>([]), opts =>
+            opts.WithCapture(r =>
+            {
+                requestCount++;
+                if (requestCount == 2)
                 {
-                    requestCount++;
-                    if (requestCount == 2)
-                    {
-                        throw new HttpRequestException("Simulated failure fetching logs");
-                    }
+                    throw new HttpRequestException("Simulated failure fetching logs");
                 }
-            ));
+            })
+        );
 
         RenderView<LogsView>(opts =>
         {
