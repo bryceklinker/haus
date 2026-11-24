@@ -18,17 +18,14 @@ public class SignalRRealtimeDataFactory(string apiUrl, IAccessTokenProvider toke
             {
                 opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
             })
-            .WithUrl(
-                $"{ApiUrl}{source}",
-                opts =>
+            .WithUrl($"{ApiUrl}{source}", opts =>
+            {
+                opts.AccessTokenProvider = async () =>
                 {
-                    opts.AccessTokenProvider = async () =>
-                    {
-                        var token = await tokenProvider.RequestAccessToken().ConfigureAwait(false);
-                        return token.TryGetToken(out var accessToken) ? accessToken.Value : null;
-                    };
-                }
-            )
+                    var token = await tokenProvider.RequestAccessToken().ConfigureAwait(false);
+                    return token.TryGetToken(out var accessToken) ? accessToken.Value : null;
+                };
+            })
             .Build();
 
         return Task.FromResult<IRealtimeDataSubscriber>(new SignalRRealtimeDataSubscriber(connection));

@@ -248,10 +248,8 @@ public class DeviceDetailViewTests : HausSiteTestContext
     public async Task WhenLightingIsChangedThenDeviceLightingIsUpdated()
     {
         HttpRequestMessage? lightingRequest = null;
-        await HausApiHandler.SetupPutAsJson(
-            "/api/devices/8/lighting",
-            new { },
-            opts => opts.WithCapture(r => lightingRequest = r)
+        await HausApiHandler.SetupPutAsJson("/api/devices/8/lighting", new { }, opts =>
+            opts.WithCapture(r => lightingRequest = r)
         );
         var device = HausModelFactory.DeviceModel() with { Id = 8, DeviceType = DeviceType.Light };
         await HausApiHandler.SetupGetAsJson("/api/devices/8", device);

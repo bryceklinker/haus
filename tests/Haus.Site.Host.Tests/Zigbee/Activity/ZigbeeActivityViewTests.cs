@@ -27,10 +27,8 @@ public class ZigbeeActivityViewTests : HausSiteTestContext
     [Fact]
     public async Task WhenRenderedThenShowsLoadingActivity()
     {
-        await HausApiHandler.SetupGetAsJson(
-            ActivityUrl,
-            new ListResult<ZigbeeActivityEntryModel>(),
-            opts => opts.WithDelayMs(1000)
+        await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>(), opts =>
+            opts.WithDelayMs(1000)
         );
 
         var view = RenderView<ZigbeeActivityView>();
@@ -172,10 +170,8 @@ public class ZigbeeActivityViewTests : HausSiteTestContext
     [Fact]
     public async Task WhenZigbeeEventArrivesWhileHistoryIsStillLoadingThenIsNotDropped()
     {
-        await HausApiHandler.SetupGetAsJson(
-            ActivityUrl,
-            new ListResult<ZigbeeActivityEntryModel>(),
-            opts => opts.WithDelayMs(200)
+        await HausApiHandler.SetupGetAsJson(ActivityUrl, new ListResult<ZigbeeActivityEntryModel>(), opts =>
+            opts.WithDelayMs(200)
         );
 
         var view = RenderView<ZigbeeActivityView>();

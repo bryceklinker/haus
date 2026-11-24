@@ -80,13 +80,11 @@ public class DeviceEntityTest
         var entity = DeviceEntity.FromDiscoveredDevice(model, new FakeDomainEventBus());
 
         Assert.Equal(2, entity.Endpoints.Count);
-        Assert.Contains(
-            entity.Endpoints,
-            e => e.EndpointId == 1 && e.InClusters.SequenceEqual(new ushort[] { 0x0006, 0x0008 })
+        Assert.Contains(entity.Endpoints, e =>
+            e.EndpointId == 1 && e.InClusters.SequenceEqual(new ushort[] { 0x0006, 0x0008 })
         );
-        Assert.Contains(
-            entity.Endpoints,
-            e => e.EndpointId == 2 && e.InClusters.SequenceEqual(new ushort[] { 0x0300 })
+        Assert.Contains(entity.Endpoints, e =>
+            e.EndpointId == 2 && e.InClusters.SequenceEqual(new ushort[] { 0x0300 })
         );
     }
 

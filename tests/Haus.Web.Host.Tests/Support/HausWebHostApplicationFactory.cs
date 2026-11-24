@@ -122,14 +122,11 @@ public class HausWebHostApplicationFactory : WebApplicationFactory<Startup>
             {
                 opts.PayloadSerializerOptions = HausJsonSerializer.DefaultOptions;
             })
-            .WithUrl(
-                $"http://localhost/hubs/{hub}",
-                o =>
-                {
-                    o.HttpMessageHandlerFactory = _ => Server.CreateHandler();
-                    o.AccessTokenProvider = () => Task.FromResult<string?>(TestingAuthenticationHandler.TestingScheme);
-                }
-            )
+            .WithUrl($"http://localhost/hubs/{hub}", o =>
+            {
+                o.HttpMessageHandlerFactory = _ => Server.CreateHandler();
+                o.AccessTokenProvider = () => Task.FromResult<string?>(TestingAuthenticationHandler.TestingScheme);
+            })
             .Build();
         await connection.StartAsync();
         return connection;

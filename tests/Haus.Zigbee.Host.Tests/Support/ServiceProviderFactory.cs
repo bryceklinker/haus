@@ -22,9 +22,8 @@ public static class ServiceProviderFactory
         // Sqlite file on disk -- the production connection string is irrelevant here.
         var services = new ServiceCollection()
             .AddLogging(builder => builder.ClearProviders())
-            .AddHausZigbee(
-                configuration ?? ConfigurationFactory.CreateConfig(),
-                opts => opts.UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .AddHausZigbee(configuration ?? ConfigurationFactory.CreateConfig(), opts =>
+                opts.UseInMemoryDatabase(Guid.NewGuid().ToString())
             );
 
         if (mqttFactory != null)

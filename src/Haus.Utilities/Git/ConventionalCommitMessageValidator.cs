@@ -85,20 +85,19 @@ public class ConventionalCommitMessageValidator : IConventionalCommitMessageVali
         header.StartsWith("Merge ", StringComparison.Ordinal)
         || header.StartsWith("Revert \"", StringComparison.Ordinal);
 
-    private static string BuildError(string header) =>
-        $"""
-            Invalid commit message: "{header}"
+    private static string BuildError(string header) => $"""
+        Invalid commit message: "{header}"
 
-            Commit messages must follow Conventional Commits format:
-              type(scope): description
+        Commit messages must follow Conventional Commits format:
+          type(scope): description
 
-            Allowed types: {string.Join(", ", ConventionalCommitHeaderParser.AllowedTypes)}
+        Allowed types: {string.Join(", ", ConventionalCommitHeaderParser.AllowedTypes)}
 
-            Examples:
-              feat: add device discovery
-              fix(zigbee): handle disconnect race
-              feat(api)!: change device response shape
+        Examples:
+          feat: add device discovery
+          fix(zigbee): handle disconnect race
+          feat(api)!: change device response shape
 
-            See CONTRIBUTING.md for details.
-            """;
+        See CONTRIBUTING.md for details.
+        """;
 }

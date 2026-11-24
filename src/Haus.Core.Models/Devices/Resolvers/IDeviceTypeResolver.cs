@@ -20,8 +20,7 @@ public class DeviceTypeResolver(IEnumerable<DeviceTypeOptions>? customDeviceType
 
     public DeviceType Resolve(string? vendor, string? model)
     {
-        var match =
-            GetDeviceTypeOptionsFromSet(vendor, model, _customDeviceTypeOptions)
+        var match = GetDeviceTypeOptionsFromSet(vendor, model, _customDeviceTypeOptions)
             ?? GetDeviceTypeOptionsFromSet(vendor, model, DefaultOptions);
         return match?.DeviceType ?? DeviceType.Unknown;
     }

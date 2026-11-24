@@ -56,10 +56,8 @@ public class RoomDetailViewTests : HausSiteTestContext
     public async Task WhenLightingIsChangedThenRoomLightingIsUpdated()
     {
         HttpRequestMessage? lightingRequest = null;
-        await HausApiHandler.SetupPutAsJson(
-            "/api/rooms/8/lighting",
-            new { },
-            opts => opts.WithCapture(r => lightingRequest = r)
+        await HausApiHandler.SetupPutAsJson("/api/rooms/8/lighting", new { }, opts =>
+            opts.WithCapture(r => lightingRequest = r)
         );
         var room = HausModelFactory.RoomModel() with { Id = 8 };
         await HausApiHandler.SetupGetAsJson("/api/rooms/8", room);

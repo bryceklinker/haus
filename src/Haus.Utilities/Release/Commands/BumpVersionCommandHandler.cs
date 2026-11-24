@@ -20,8 +20,8 @@ public class BumpVersionCommandHandler(
     // computed version is written to a file rather than stdout -- scripts that
     // capture "the next version" would otherwise have to filter log lines out
     // of their own output.
-    private static readonly string OutputPath =
-        Environment.GetEnvironmentVariable("NEXT_VERSION_FILE") ?? "next-version.txt";
+    private static readonly string OutputPath = Environment.GetEnvironmentVariable("NEXT_VERSION_FILE")
+        ?? "next-version.txt";
 
     public async Task Handle(BumpVersionCommand request, CancellationToken cancellationToken)
     {

@@ -40,15 +40,12 @@ public static class ServiceCollectionExtensions
         services
             .AddHausCore(opts =>
             {
-                opts.UseSqlite(
-                    configuration["Database:ConnectionString"],
-                    sqlite =>
-                    {
-                        sqlite
-                            .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)
-                            .MigrationsAssembly(GetMigrationsAssemblyName());
-                    }
-                );
+                opts.UseSqlite(configuration["Database:ConnectionString"], sqlite =>
+                {
+                    sqlite
+                        .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)
+                        .MigrationsAssembly(GetMigrationsAssemblyName());
+                });
             })
             .Configure<AuthOptions>(configuration.GetSection("Auth"))
             .Configure<HausMqttSettings>(configuration.GetSection("Mqtt"))

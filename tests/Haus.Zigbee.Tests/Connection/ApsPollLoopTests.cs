@@ -40,9 +40,8 @@ public class ApsPollLoopTests
 
         await _loop.PollOnceAsync(CancellationToken.None);
 
-        Assert.Contains(
-            _loggerFactory.Entries,
-            entry => entry.Level == LogLevel.Debug && entry.Message.Contains("0x1234")
+        Assert.Contains(_loggerFactory.Entries, entry =>
+            entry.Level == LogLevel.Debug && entry.Message.Contains("0x1234")
         );
     }
 

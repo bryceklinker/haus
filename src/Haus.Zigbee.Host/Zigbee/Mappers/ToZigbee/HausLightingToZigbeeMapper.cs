@@ -52,8 +52,7 @@ public class HausLightingToZigbeeMapper
         if (endpoints.Count == 0)
             return fallbackEndpoint;
 
-        var resolved =
-            endpoints.FirstOrDefault(e => e.InClusters.Contains(clusterId))
+        var resolved = endpoints.FirstOrDefault(e => e.InClusters.Contains(clusterId))
             ?? endpoints.FirstOrDefault(e => e.InClusters.Contains(OnOffCluster))
             ?? endpoints.FirstOrDefault(e => e.InClusters.Contains(LevelControlCluster))
             ?? endpoints.FirstOrDefault(e => e.InClusters.Contains(ColorControlCluster))

@@ -31,9 +31,8 @@ public class MultiSensorChangedTests(HausWebHostApplicationFactory factory)
 
         Eventually.Assert(() =>
         {
-            Assert.Contains(
-                commands.Where(cmd => cmd.Payload != null),
-                cmd => cmd.Payload!.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On
+            Assert.Contains(commands.Where(cmd => cmd.Payload != null), cmd =>
+                cmd.Payload!.Room.Id == room.Id && cmd.Payload.Lighting.State == LightingState.On
             );
         });
     }

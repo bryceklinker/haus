@@ -28,10 +28,8 @@ public class ZigbeeConnectionStatusViewTests : HausSiteTestContext
     [Fact]
     public async Task WhenRenderedThenShowsLoadingWhileFetchingStatus()
     {
-        await HausApiHandler.SetupGetAsJson(
-            StatusUrl,
-            HausModelFactory.ZigbeeConnectionStatusModel(),
-            opts => opts.WithDelayMs(1000)
+        await HausApiHandler.SetupGetAsJson(StatusUrl, HausModelFactory.ZigbeeConnectionStatusModel(), opts =>
+            opts.WithDelayMs(1000)
         );
 
         var view = RenderView<ZigbeeConnectionStatusView>();

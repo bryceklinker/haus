@@ -124,11 +124,8 @@ public class FakeMqttClient : IManagedMqttClient, IMqttClient
         _publishedMessages.Add(applicationMessage);
         await _events
             .ApplicationMessageReceivedEvent.InvokeAsync(
-                new MqttApplicationMessageReceivedEventArgs(
-                    "",
-                    applicationMessage,
-                    new MqttPublishPacket(),
-                    (_, _) => Task.CompletedTask
+                new MqttApplicationMessageReceivedEventArgs("", applicationMessage, new MqttPublishPacket(), (_, _) =>
+                    Task.CompletedTask
                 )
             )
             .ConfigureAwait(false);

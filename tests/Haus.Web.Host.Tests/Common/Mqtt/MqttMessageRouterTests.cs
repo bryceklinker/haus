@@ -45,12 +45,10 @@ public class MqttMessageRouterTests
 
         await _router.InvokeOnMessageReceived(message);
 
-        Assert.Contains(
-            _loggerFactory.Entries,
-            entry =>
-                entry.Level == LogLevel.Warning
-                && entry.Message.Contains("haus/events")
-                && entry.Message.Contains("some_unmapped_type")
+        Assert.Contains(_loggerFactory.Entries, entry =>
+            entry.Level == LogLevel.Warning
+            && entry.Message.Contains("haus/events")
+            && entry.Message.Contains("some_unmapped_type")
         );
     }
 

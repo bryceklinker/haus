@@ -16,14 +16,11 @@ public class ZigbeeRealtimeApiTests(HausWebHostApplicationFactory factory)
     {
         var hub = await factory.CreateHubConnection("events");
         HausEvent<ZigbeeTransportErrorEvent>? received = null;
-        hub.On<HausEvent<ZigbeeTransportErrorEvent>>(
-            "OnEvent",
-            e =>
-            {
-                if (e.Payload?.ErrorType == "timeout")
-                    received = e;
-            }
-        );
+        hub.On<HausEvent<ZigbeeTransportErrorEvent>>("OnEvent", e =>
+        {
+            if (e.Payload?.ErrorType == "timeout")
+                received = e;
+        });
 
         await factory.PublishZigbeeEventAsync(new ZigbeeTransportErrorEvent("timeout", "boom", 1, "ieee-1"));
 

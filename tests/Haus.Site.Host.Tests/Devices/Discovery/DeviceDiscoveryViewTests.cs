@@ -138,10 +138,8 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
             new ListResult<DeviceModel>([HausModelFactory.DeviceModel() with { RoomId = null, Id = 76 }])
         );
         HttpRequestMessage? postRequest = null;
-        await HausApiHandler.SetupPostAsJson(
-            $"{RoomsUrl}/{6}/add-devices",
-            new { },
-            opts => opts.WithCapture(r => postRequest = r)
+        await HausApiHandler.SetupPostAsJson($"{RoomsUrl}/{6}/add-devices", new { }, opts =>
+            opts.WithCapture(r => postRequest = r)
         );
 
         var page = Context.Render<DeviceDiscoveryView>();
@@ -183,10 +181,8 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
     {
         var fetchedDevice = HausModelFactory.DeviceModel();
         var discoveredDevice = HausModelFactory.DeviceModel();
-        await HausApiHandler.SetupGetAsJson(
-            DevicesUrl,
-            new ListResult<DeviceModel>([fetchedDevice]),
-            opts => opts.WithDelayMs(500)
+        await HausApiHandler.SetupGetAsJson(DevicesUrl, new ListResult<DeviceModel>([fetchedDevice]), opts =>
+            opts.WithDelayMs(500)
         );
 
         var view = Context.Render<DeviceDiscoveryView>();
@@ -219,15 +215,13 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            var deviceBElement = page.FindByTag(
-                "div",
-                opts => opts.WithClassName("device").WithText(deviceB.ExternalId)
+            var deviceBElement = page.FindByTag("div", opts =>
+                opts.WithClassName("device").WithText(deviceB.ExternalId)
             );
             Assert.Contains("pointer-events: none", deviceBElement.GetAttribute("style"));
 
-            var refreshedDeviceAElement = page.FindByTag(
-                "div",
-                opts => opts.WithClassName("device").WithText(deviceA.ExternalId)
+            var refreshedDeviceAElement = page.FindByTag("div", opts =>
+                opts.WithClassName("device").WithText(deviceA.ExternalId)
             );
             Assert.DoesNotContain("pointer-events: none", refreshedDeviceAElement.GetAttribute("style") ?? "");
         });
@@ -251,9 +245,8 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
         var unassignedZone = page.FindByComponent<MudDropZone<DeviceModel>>(opts =>
             opts.WithText("unassigned devices")
         );
-        var deviceAElement = unassignedZone.FindByTag(
-            "div",
-            opts => opts.WithClassName("device").WithText(deviceA.ExternalId)
+        var deviceAElement = unassignedZone.FindByTag("div", opts =>
+            opts.WithClassName("device").WithText(deviceA.ExternalId)
         );
         await deviceAElement.DragStartAsync(new DragEventArgs());
 
@@ -262,9 +255,8 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            var deviceBElement = page.FindByTag(
-                "div",
-                opts => opts.WithClassName("device").WithText(deviceB.ExternalId)
+            var deviceBElement = page.FindByTag("div", opts =>
+                opts.WithClassName("device").WithText(deviceB.ExternalId)
             );
             Assert.Contains("pointer-events: none", deviceBElement.GetAttribute("style"));
         });
@@ -273,9 +265,8 @@ public class DeviceDiscoveryViewTests : HausSiteTestContext
 
         Eventually.Assert(() =>
         {
-            var deviceBElement = page.FindByTag(
-                "div",
-                opts => opts.WithClassName("device").WithText(deviceB.ExternalId)
+            var deviceBElement = page.FindByTag("div", opts =>
+                opts.WithClassName("device").WithText(deviceB.ExternalId)
             );
             Assert.DoesNotContain("pointer-events: none", deviceBElement.GetAttribute("style") ?? "");
         });

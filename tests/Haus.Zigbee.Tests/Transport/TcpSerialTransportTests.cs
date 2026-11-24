@@ -56,9 +56,8 @@ public class TcpSerialTransportTests : IAsyncLifetime
         await transport.OpenAsync(CancellationToken.None);
         using var accepted = await acceptTask;
 
-        Assert.Contains(
-            loggerFactory.Entries,
-            entry => entry.Level == LogLevel.Information && entry.Message.Contains($"{_port}")
+        Assert.Contains(loggerFactory.Entries, entry =>
+            entry.Level == LogLevel.Information && entry.Message.Contains($"{_port}")
         );
     }
 

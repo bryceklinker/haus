@@ -55,20 +55,14 @@ public static class DeviceJoinScenario
     )
     {
         responder.EnqueueIndication(AnnounceIndication(networkAddress, ieeeAddress));
-        responder.ReleaseAfterApsRequest(
-            networkAddress,
-            step: 0,
-            request => ActiveEndpointsIndication(networkAddress, ExtractZdpSequenceNumber(request))
+        responder.ReleaseAfterApsRequest(networkAddress, step: 0, request =>
+            ActiveEndpointsIndication(networkAddress, ExtractZdpSequenceNumber(request))
         );
-        responder.ReleaseAfterApsRequest(
-            networkAddress,
-            step: 1,
-            request => SimpleDescriptorIndication(networkAddress, ExtractZdpSequenceNumber(request))
+        responder.ReleaseAfterApsRequest(networkAddress, step: 1, request =>
+            SimpleDescriptorIndication(networkAddress, ExtractZdpSequenceNumber(request))
         );
-        responder.ReleaseAfterApsRequest(
-            networkAddress,
-            step: 2,
-            request => BasicReadIndication(networkAddress, vendor, model, ExtractZclSequenceNumber(request))
+        responder.ReleaseAfterApsRequest(networkAddress, step: 2, request =>
+            BasicReadIndication(networkAddress, vendor, model, ExtractZclSequenceNumber(request))
         );
     }
 
@@ -84,8 +78,7 @@ public static class DeviceJoinScenario
     private static byte ExtractZclSequenceNumber(byte[] apsDataRequest)
     {
         var asdu = DeconzResponder.ExtractAsduPayload(apsDataRequest);
-        var decoding =
-            ZclFrameHeaderCodec.Decode(asdu)
+        var decoding = ZclFrameHeaderCodec.Decode(asdu)
             ?? throw new InvalidOperationException(
                 "Expected a well-formed ZCL request from the coordinator under test."
             );

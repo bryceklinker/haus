@@ -16,10 +16,8 @@ public class LogsViewTests : HausSiteTestContext
     [Fact]
     public async Task WhenRenderedAndLoadingLogsThenShowsLoading()
     {
-        await HausApiHandler.SetupGetAsJson(
-            "/api/logs",
-            new ListResult<LogEntryModel>([]),
-            opts => opts.WithDelayMs(1000)
+        await HausApiHandler.SetupGetAsJson("/api/logs", new ListResult<LogEntryModel>([]), opts =>
+            opts.WithDelayMs(1000)
         );
 
         var view = RenderView<LogsView>();
@@ -54,10 +52,8 @@ public class LogsViewTests : HausSiteTestContext
     public async Task WhenRenderedThenRefreshesLogsOnProvidedInterval()
     {
         var requestCount = 0;
-        await HausApiHandler.SetupGetAsJson(
-            "/api/logs",
-            new ListResult<LogEntryModel>([]),
-            opts => opts.WithCapture(r => requestCount++)
+        await HausApiHandler.SetupGetAsJson("/api/logs", new ListResult<LogEntryModel>([]), opts =>
+            opts.WithCapture(r => requestCount++)
         );
 
         RenderView<LogsView>(opts =>
@@ -75,10 +71,8 @@ public class LogsViewTests : HausSiteTestContext
     public async Task WhenAutoRefreshTakesAwhileThenSkipsNextRefresh()
     {
         var requestCount = 0;
-        await HausApiHandler.SetupGetAsJson(
-            "/api/logs",
-            new ListResult<LogEntryModel>([]),
-            opts => opts.WithCapture(r => requestCount++).WithDelayMs(1000)
+        await HausApiHandler.SetupGetAsJson("/api/logs", new ListResult<LogEntryModel>([]), opts =>
+            opts.WithCapture(r => requestCount++).WithDelayMs(1000)
         );
 
         RenderView<LogsView>(opts =>
@@ -97,10 +91,8 @@ public class LogsViewTests : HausSiteTestContext
     public async Task WhenDisposedThenStopsRefreshingLogs()
     {
         var requestCount = 0;
-        await HausApiHandler.SetupGetAsJson(
-            "/api/logs",
-            new ListResult<LogEntryModel>([]),
-            opts => opts.WithCapture(r => requestCount++)
+        await HausApiHandler.SetupGetAsJson("/api/logs", new ListResult<LogEntryModel>([]), opts =>
+            opts.WithCapture(r => requestCount++)
         );
 
         var view = RenderView<LogsView>(opts =>
@@ -129,18 +121,15 @@ public class LogsViewTests : HausSiteTestContext
     public async Task WhenARefreshFailsThenContinuesPollingOnNextTick()
     {
         var requestCount = 0;
-        await HausApiHandler.SetupGetAsJson(
-            "/api/logs",
-            new ListResult<LogEntryModel>([]),
-            opts =>
-                opts.WithCapture(r =>
+        await HausApiHandler.SetupGetAsJson("/api/logs", new ListResult<LogEntryModel>([]), opts =>
+            opts.WithCapture(r =>
+            {
+                requestCount++;
+                if (requestCount == 2)
                 {
-                    requestCount++;
-                    if (requestCount == 2)
-                    {
-                        throw new HttpRequestException("Simulated failure fetching logs");
-                    }
-                })
+                    throw new HttpRequestException("Simulated failure fetching logs");
+                }
+            })
         );
 
         RenderView<LogsView>(opts =>

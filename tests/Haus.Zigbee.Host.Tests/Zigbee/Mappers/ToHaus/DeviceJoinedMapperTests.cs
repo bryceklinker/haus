@@ -65,13 +65,11 @@ public class DeviceJoinedMapperTests
         var result = _mapper.Map(joined);
 
         Assert.Equal(2, result.Endpoints.Length);
-        Assert.Contains(
-            result.Endpoints,
-            e => e.EndpointId == 1 && e.InClusters.SequenceEqual(new ushort[] { 0x0000, 0x0006 })
+        Assert.Contains(result.Endpoints, e =>
+            e.EndpointId == 1 && e.InClusters.SequenceEqual(new ushort[] { 0x0000, 0x0006 })
         );
-        Assert.Contains(
-            result.Endpoints,
-            e => e.EndpointId == 2 && e.InClusters.SequenceEqual(new ushort[] { 0x0300 })
+        Assert.Contains(result.Endpoints, e =>
+            e.EndpointId == 2 && e.InClusters.SequenceEqual(new ushort[] { 0x0300 })
         );
     }
 

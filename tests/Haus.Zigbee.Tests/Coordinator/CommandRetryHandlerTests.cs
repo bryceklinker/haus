@@ -88,14 +88,11 @@ public class CommandRetryHandlerTests
             BaseBackoffMs = 100,
             MaxBackoffMs = 10000,
         };
-        var handler = new CommandRetryHandler(
-            options,
-            delay =>
-            {
-                delays.Add(delay);
-                return Task.CompletedTask;
-            }
-        );
+        var handler = new CommandRetryHandler(options, delay =>
+        {
+            delays.Add(delay);
+            return Task.CompletedTask;
+        });
 
         await Assert.ThrowsAsync<CommandDeliveryFailedException>(() =>
             handler.ExecuteWithRetryAsync(_ => Task.FromResult(MakeConfirm(ApsNoAck)), CancellationToken.None)
@@ -118,14 +115,11 @@ public class CommandRetryHandlerTests
             BaseBackoffMs = 1000,
             MaxBackoffMs = 2000,
         };
-        var handler = new CommandRetryHandler(
-            options,
-            delay =>
-            {
-                delays.Add(delay);
-                return Task.CompletedTask;
-            }
-        );
+        var handler = new CommandRetryHandler(options, delay =>
+        {
+            delays.Add(delay);
+            return Task.CompletedTask;
+        });
 
         await Assert.ThrowsAsync<CommandDeliveryFailedException>(() =>
             handler.ExecuteWithRetryAsync(_ => Task.FromResult(MakeConfirm(ApsNoAck)), CancellationToken.None)
@@ -143,14 +137,11 @@ public class CommandRetryHandlerTests
         var attempts = new List<int>();
         var delays = new List<TimeSpan>();
         var options = new CommandRetryOptions { MaxRetries = 0 };
-        var handler = new CommandRetryHandler(
-            options,
-            delay =>
-            {
-                delays.Add(delay);
-                return Task.CompletedTask;
-            }
-        );
+        var handler = new CommandRetryHandler(options, delay =>
+        {
+            delays.Add(delay);
+            return Task.CompletedTask;
+        });
 
         var ex = await Assert.ThrowsAsync<CommandDeliveryFailedException>(() =>
             handler.ExecuteWithRetryAsync(

@@ -43,9 +43,8 @@ public static class ServiceCollectionExtensions
                 configureDatabase
                     ?? (
                         opts =>
-                            opts.UseSqlite(
-                                config["Database:ConnectionString"],
-                                sqlite => sqlite.MigrationsAssembly(GetMigrationsAssemblyName())
+                            opts.UseSqlite(config["Database:ConnectionString"], sqlite =>
+                                sqlite.MigrationsAssembly(GetMigrationsAssemblyName())
                             )
                     )
             )

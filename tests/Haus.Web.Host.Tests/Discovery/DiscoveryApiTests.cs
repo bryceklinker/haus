@@ -44,9 +44,8 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
     public async Task WhenDiscoveryIsStartedThenStartDiscoveryCommandIsPublished()
     {
         HausCommand<StartDiscoveryModel>? hausCommand = null;
-        await factory.SubscribeToHausCommandsAsync<StartDiscoveryModel>(
-            StartDiscoveryModel.Type,
-            cmd => hausCommand = cmd
+        await factory.SubscribeToHausCommandsAsync<StartDiscoveryModel>(StartDiscoveryModel.Type, cmd =>
+            hausCommand = cmd
         );
 
         await _client.StartDiscoveryAsync();
@@ -64,9 +63,8 @@ public class DiscoveryApiTests(HausWebHostApplicationFactory factory)
     public async Task WhenDiscoveryStoppedThenStopDiscoveryCommandIsPublished()
     {
         HausCommand<StopDiscoveryModel>? hausCommand = null;
-        await factory.SubscribeToHausCommandsAsync<StopDiscoveryModel>(
-            StopDiscoveryModel.Type,
-            cmd => hausCommand = cmd
+        await factory.SubscribeToHausCommandsAsync<StopDiscoveryModel>(StopDiscoveryModel.Type, cmd =>
+            hausCommand = cmd
         );
 
         await _client.StopDiscoveryAsync();

@@ -37,9 +37,8 @@ public class CreateSimulatedDeviceCommandHandlerTests
         var command = new CreateSimulatedDeviceCommand(new SimulatedDeviceModel());
         await _hausBus.ExecuteCommandAsync(command);
 
-        Assert.Single(
-            _hausBus.GetPublishedEvents<SimulatedEvent>(),
-            e => e.HausEvent.Type == DeviceDiscoveredEvent.Type
+        Assert.Single(_hausBus.GetPublishedEvents<SimulatedEvent>(), e =>
+            e.HausEvent.Type == DeviceDiscoveredEvent.Type
         );
     }
 }
